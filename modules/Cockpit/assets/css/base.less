@@ -1,0 +1,81 @@
+@mainbgcolor: #EDECE4;
+@marginxl: 30px;
+
+*, *:before, *:after {
+  box-sizing: border-box !important;
+  -moz-box-sizing: border-box !important;
+}
+
+.uk-text-uppercase { text-transform: uppercase; }
+.uk-visible-hover:hover span.uk-hidden { display: inline-block !important;}
+
+.uk-margin-large { margin: @marginxl 0 @marginxl 0; }
+.uk-margin-large-top { margin-top: @marginxl; }
+.uk-margin-large-bottom { margin-bottom: @marginxl; }
+
+.uk-button, .uk-alert, .uk-badge {
+    border-radius: 3px;
+}
+
+.uk-button-group {
+    .uk-button {
+        border-radius: 0;
+        &:first-child { border-radius: 3px 0 0 3px; }
+        &:last-child { border-radius: 0 3px 3px 0; }
+    }
+}
+
+.uk-subnav-pill>li>a, .uk-subnav-pill>li>span { border-radius: 3px; }
+
+.uk-form select,
+.uk-form textarea,
+.uk-form input[type="text"],
+.uk-form input[type="password"],
+.uk-form input[type="datetime"],
+.uk-form input[type="datetime-local"],
+.uk-form input[type="date"],
+.uk-form input[type="month"],
+.uk-form input[type="time"],
+.uk-form input[type="week"],
+.uk-form input[type="number"],
+.uk-form input[type="email"],
+.uk-form input[type="url"],
+.uk-form input[type="search"],
+.uk-form input[type="tel"],
+.uk-form input[type="color"] {
+    border-radius: 3px;
+}
+
+.uk-badge {
+    padding: 2px 5px;
+    &.app-badge {
+        border: 1px #ccc solid;
+        color: #ccc;
+        background: none;
+        border-radius: 2px;
+        font-weight: normal;
+    }
+}
+
+.uk-rounded {
+    border-radius: 50%;
+
+    & > img { border-radius: 50%; }
+}
+
+
+body {
+    background: @mainbgcolor;
+}
+
+hr {
+    border-top: 1px solid darken(@mainbgcolor, 20%);
+}
+
+a {
+    color: #5BA4E5;
+    &:hover {
+        color: #2283da;
+        text-decoration: none;
+    }
+}

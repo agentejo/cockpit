@@ -1,0 +1,14 @@
+*~
+*.diff
+*.patch
+.DS_Store
+.project
+.settings
+.idea
+/storage/cache/assets/*.js
+/storage/cache/assets/*.css
+/storage/cache/thumbs/*.jpg
+/storage/cache/thumbs/*.png
+/storage/cache/thumbs/*.gif
+/storage/data/*.sqlite
+/storage/uploads/*

@@ -1,0 +1,1 @@
+<a class="uk-button uk-button-success uk-button-small" href="@route('/regions/region')" title="Add region" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-sign"></i></a>

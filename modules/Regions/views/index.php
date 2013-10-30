@@ -1,0 +1,55 @@
+{{ $app->assets(['regions:assets/regions.js','regions:assets/js/index.js']) }}
+
+<style>
+    .app-panel-box { min-height: 155px; }
+</style>
+
+<div data-ng-controller="regions">
+
+    <nav class="uk-navbar uk-margin-large-bottom">
+        <span class="uk-navbar-brand">Regions</span>
+        <div class="uk-navbar-content">
+            <form class="uk-form uk-margin-remove uk-display-inline-block">
+                <div class="uk-form-icon">
+                    <i class="uk-icon-eye-open"></i>
+                    <input type="text" placeholder="Filter by name..." data-ng-model="filter">
+                </div>
+            </form>
+        </div>
+        <ul class="uk-navbar-nav">
+            <li><a href="@route('/regions/region')" title="Add region" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-sign"></i></a></li>
+        </ul>
+    </nav>
+
+    <div class="uk-grid" data-uk-grid-margin data-uk-grid-match>
+        <div class="uk-width-1-1 uk-width-medium-1-3 uk-width-large-1-4" data-ng-repeat="region in regions" data-ng-show="matchName(region.name)">
+
+            <div class="app-panel app-panel-box uk-visible-hover">
+
+                <strong>@@ region.name @@</strong>
+
+                <div class="uk-margin">
+                    <span class="uk-badge app-badge" title="Last update">@@ region.modified |fmtdate:'d M, Y H:i' @@</span>
+                </div>
+
+                <div class="uk-margin uk-hidden">
+                    <span class="uk-button-group">
+                        <a class="uk-button uk-button-small" href="@route('/regions/region')/@@ region._id @@" title="Edit region" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
+                        <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, region)" href="#" title="Delete region" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-sign"></i></a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="uk-text-center app-panel" data-ng-show="regions && !regions.length">
+        <h2>Notice</h2>
+        <p class="uk-text-large">
+            It seems you don't have any regions created.
+        </p>
+
+        <a href="@route('/regions/region')" class="uk-button uk-button-success uk-button-large">Create a region</a>
+    </div>
+
+</div>

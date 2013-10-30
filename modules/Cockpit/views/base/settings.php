@@ -1,0 +1,84 @@
+{{ $app->assets(['assets:vendor/uikit/addons/js/form-password.min.js','assets:vendor/uikit/addons/css/form-password.min.css']) }}
+
+<div class="uk-grid" data-ng-controller="settings" data-uk-margin>
+    
+    <div class="uk-width-medium-1-4">
+        
+        <div class="uk-panel uk-text-center">
+
+            <div class="uk-thumbnail uk-rounded">
+                <img src="http://www.gravatar.com/avatar/{{ md5($profile['email']) }}?d=mm&s=100" width="100" height="100" alt="">
+            </div>
+           
+            <h2>@@ profile.name @@</h2>
+        </div>
+
+
+    </div>
+    <div class="uk-width-medium-1-3">
+        
+        <form class="uk-form" data-ng-submit="save()" data-ng-show="profile">
+            
+            
+            <div class="uk-form-row">
+                <label class="uk-text-small">Name</label>
+                <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="profile.name">
+            </div>
+
+            <div class="uk-form-row">
+                <label class="uk-text-small">Username</label>
+                <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="profile.user">
+            </div>
+
+            <div class="uk-form-row">
+                <label class="uk-text-small">Email</label>
+                <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="profile.email">
+            </div>
+
+            <hr>
+
+            <div class="uk-form-row">
+                <label class="uk-text-small">New Password</label>
+                <div class="uk-form-password uk-width-1-1">
+                    <input class="uk-form-large uk-width-1-1" type="password" placeholder="Password" data-ng-model="profile.password">
+                    <a href="" class="uk-form-password-toggle" data-uk-form-password>Show</a>
+                </div>
+                <div class="uk-alert">
+                    Leave the password field empty to keep your current password.
+                </div>
+            </div>
+
+            <div class="uk-form-row">
+                <button class="uk-button uk-button-large uk-button-primary uk-width-1-2">Save</button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+    
+    App.module.controller("settings", function($scope, $rootScope, $http){
+
+        $scope.profile = {{ json_encode($profile) }};
+
+        $scope.save = function(){
+            
+            var profile = angular.copy($scope.profile);
+
+            $http.post(App.route("/settings"), {"profile": profile}).success(function(data){
+
+                if(data && Object.keys(data).length) {
+                    App.notify("Profile saved!");
+                }
+
+            }).error(App.module.callbacks.error.http);
+        };
+
+    });
+
+
+</script>

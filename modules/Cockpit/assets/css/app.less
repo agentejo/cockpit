@@ -1,0 +1,61 @@
+@import url(base.less);
+
+.CodeMirror {
+    border: 4px rgba(0,0,0,0.3) solid;
+    border-radius: 3px;
+}
+
+.app-top-navbar {
+    position: fixed;
+    top:0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    z-index: 5;
+
+    .uk-nav-navbar>li>a:hover, .uk-nav-navbar>li>a:focus {
+        background: #413f2b;
+        background: darken(@mainbgcolor, 70%);
+    }
+}
+
+.app-wrapper {
+    position: relative;
+    margin: 0 auto;
+    max-width: 1240px;
+    padding: 0 20px;
+
+    h1 {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .uk-navbar {
+
+        background: none;
+
+        &.app-navbar { background: darken(@mainbgcolor, 5%); }
+
+        .uk-navbar-brand {
+            font-weight: bold;
+            padding-left: 0;
+        }
+    }
+}
+
+.app-main {
+    margin-top: 80px;
+    padding-bottom: 30px;
+}
+
+.app-panel {
+    background: #fff;
+    padding: 30px;
+    border-radius: 3px;
+
+    &.app-panel-box { padding: 20px; }
+}
+
+.app-dashboard-widget {
+    border: 10px transparent solid;
+}

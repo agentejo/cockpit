@@ -1,0 +1,223 @@
+<?php
+
+namespace Mediamanager\Controller;
+
+class Mediamanager extends \Cockpit\Controller {
+
+	protected $root;
+
+	public function index(){
+		return $this->render("mediamanager:views/index.php");
+	}
+
+
+    public function api() {
+
+        $cmd  = $this->param("cmd", false);
+
+        $this->root = rtrim($this->app->path("uploads:"), '/');
+
+        if(file_exists($this->root) && in_array($cmd, get_class_methods($this))){
+            return $this->{$cmd}();
+        }
+
+        return false;
+    }
+
+    protected function ls() {
+
+        $data = array("folders"=>array(), "files"=>array());
+
+		if($path = $this->param("path", false)){
+
+            $dir = $this->root.'/'.trim($path, '/');
+            $data["path"] = $dir;
+
+            if(file_exists($dir)){
+
+               foreach (new \DirectoryIterator($dir) as $file) {
+
+               		if($file->isDot()) continue;
+
+                    $data[$file->isDir() ? "folders":"files"][] = array(
+                        "is_file" => !$file->isDir(),
+                        "is_dir" => $file->isDir(),
+                        "is_writable" => is_writable($file->getPathname()),
+                        "name" => $file->getFilename(),
+                        "path" => trim($path.'/'.$file->getFilename(), '/'),
+                        "url"  => str_replace($_SERVER['DOCUMENT_ROOT'], '', $file->getPathname()),
+                        "size" => $file->isDir() ? "" : $this->formatFileSize($file->getSize()),
+                        "lastmodified" => $file->isDir() ? "" : date("d.m.y H:m", strtotime($file->getMTime())),
+                    );
+                }
+            }
+        }
+
+    	return json_encode($data);
+    }
+
+    protected function upload() {
+
+        $files      = isset($_FILES['files']) ? $_FILES['files'] : array();
+        $path       = $this->param('path', false);
+        $targetpath = $this->root.'/'.trim($path, '/');
+        $uploaded   = array();
+
+        if (isset($files['name']) && $path && file_exists($targetpath)) {
+            for ($i = 0; $i < count($files['name']); $i++) {
+                if (!$files['error'][$i] && move_uploaded_file($files['tmp_name'][$i], $targetpath.'/'.$files['name'][$i])) {
+                    $uploaded[] = $files['name'][$i];
+                }
+            }
+        }
+
+        return json_encode($uploaded);
+    }
+
+    protected function createfolder() {
+
+        $path = $this->param('path', false);
+        $name = $this->param('name', false);
+        $ret  = false;
+
+        if ($name && $path) {
+            $ret = mkdir($this->root.'/'.trim($path, '/').'/'.$name);
+        }
+
+        return json_encode(array("success"=>$ret));
+    }
+
+    protected function createfile() {
+
+        $path = $this->param('path', false);
+        $name = $this->param('name', false);
+        $ret  = false;
+
+        if ($name && $path) {
+            $ret = @file_put_contents($this->root.'/'.trim($path, '/').'/'.$name, "");
+        }
+
+        return json_encode(array("success"=>$ret));
+    }
+
+
+    protected function removefiles() {
+
+        $paths = $this->param('paths', array());
+
+        foreach ($paths as $path) {
+
+            $delpath = $this->root.'/'.trim($path, '/');
+
+            if(is_dir($delpath)) {
+                $this->_rrmdir($delpath);
+            }
+
+            if(is_file($delpath)){
+                unlink($delpath);
+            }
+        }
+
+        return json_encode(array("success"=>true));
+    }
+
+    protected function _rrmdir($dir) {
+
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (filetype($dir."/".$object) == "dir") $this->_rrmdir($dir."/".$object); else unlink($dir."/".$object);
+                }
+            }
+
+            reset($objects);
+            rmdir($dir);
+        }
+    }
+
+    protected function rename() {
+
+        $path = $this->param('path', false);
+        $name = $this->param('name', false);
+
+        if ($path && $name) {
+            $source = $this->root.'/'.trim($path, '/');
+            $target = dirname($source).'/'.$name;
+
+            rename($source, $target);
+        }
+
+        return json_encode(array("success"=>true));
+    }
+
+    protected function formatFileSize($size) {
+      $sizes = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB");
+      return ($size == 0) ? "n/a" : (round($size/pow(1024, ($i = floor(log($size, 1024)))), 2) . $sizes[$i]);
+    }
+
+    protected function readfile() {
+
+        $path = $this->param('path', false);
+        $file = $this->root.'/'.trim($path, '/');
+
+        if($path && file_exists($file)) {
+            return file_get_contents($file);
+        }
+
+        $this->app->stop();
+    }
+
+    protected function writefile() {
+
+        $path    = $this->param('path', false);
+        $content = $this->param('content', false);
+        $file    = $this->root.'/'.trim($path, '/');
+        $ret     = false;
+
+        if($path && file_exists($file) && $content!==false) {
+            $ret = file_put_contents($file, $content);
+        }
+
+        return json_encode(array("success"=>$ret));
+    }
+
+    protected function download() {
+
+        $path = $this->param('path', false);
+        $file = $this->root.'/'.trim($path, '/');
+
+        if(!$path && !file_exists($file)) {
+            $this->app->stop();
+        }
+
+        $pathinfo = $path_parts = pathinfo($file);
+
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Cache-Control: private",false);
+        header("Content-Type: application/force-download");
+        header("Content-Disposition: attachment; filename=\"".$pathinfo["basename"]."\";" );
+        header("Content-Transfer-Encoding: binary");
+        header("Content-Length: ".filesize($file));
+        readfile($file);
+
+        $this->app->stop();
+    }
+
+    protected function savebookmarks() {
+
+        if($bookmarks = $this->param('bookmarks', false)) {
+            $this->memory->set("mediamanager.bookmarks.".$this->user["id"], $bookmarks);
+        }
+
+        return json_encode($bookmarks);
+    }
+
+    protected function loadbookmarks() {
+
+        return $this->memory->get("mediamanager.bookmarks.".$this->user["id"], '[]');
+    }
+
+}
