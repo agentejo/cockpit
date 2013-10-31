@@ -26,7 +26,8 @@ class Mediamanager extends \Cockpit\Controller {
 
     protected function ls() {
 
-        $data = array("folders"=>array(), "files"=>array());
+        $data     = array("folders"=>array(), "files"=>array());
+        $toignore = ['.git','.svn','.ds_store'];
 
 		if($path = $this->param("path", false)){
 
@@ -39,11 +40,15 @@ class Mediamanager extends \Cockpit\Controller {
 
                		if($file->isDot()) continue;
 
+                    $filename = $file->getFilename();
+
+                    if($filename[0]=='.' && in_array(strtolower($filename), $toignore)) continue;
+
                     $data[$file->isDir() ? "folders":"files"][] = array(
                         "is_file" => !$file->isDir(),
                         "is_dir" => $file->isDir(),
                         "is_writable" => is_writable($file->getPathname()),
-                        "name" => $file->getFilename(),
+                        "name" => $filename,
                         "path" => trim($path.'/'.$file->getFilename(), '/'),
                         "url"  => str_replace($_SERVER['DOCUMENT_ROOT'], '', $file->getPathname()),
                         "size" => $file->isDir() ? "" : $this->formatFileSize($file->getSize()),
