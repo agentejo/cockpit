@@ -16,9 +16,9 @@ $app['app.assets.backend'] = [
     'cockpit:assets/js/bootstrap.js',
 ];
 
-$app->helpers["admin"] = 'Cockpit\\Helper\\Admin';
-
 if (COCKPIT_ADMIN) {
+
+    $app->helpers["admin"] = 'Cockpit\\Helper\\Admin';
 
     $app->bind("/", function() use($app){
         return $app->invoke("Cockpit\\Controller\\Base", "dashboard");

@@ -2,115 +2,110 @@
 
 namespace Lime\Helper;
 
-use Imagine\Image\Box;
-use Imagine\Image\Point;
-use Imagine\Image\Color;
 
 class Image extends \Lime\Helper {
 
 	public function take($imgpath) {
 
-        $img = new ImagineImage($imgpath);
+        $img = new Img($imgpath);
 
         return $img;
 	}
 }
 
-class ImagineImage {
+class Img {
 
     protected $imagine;
     protected $image;
 
     public function __construct($img) {
 
-        if(class_exists("Imagick")) {
-            $imagine = new \Imagine\Imagick\Imagine();
-        } elseif(class_exists('Gmagick')) {
-            $imagine = new \Imagine\Gmagick\Imagine();
-        } else {
-            $imagine = new \Imagine\Gd\Imagine();
-        }
-
-        $this->image   = $imagine->open($img);
-        $this->imagine = $imagine;
+        $this->image = new \SimpleImage($img);
     }
 
     public function negative() {
-        $this->image->effects()->negative();
-        return $this;
-    }
-
-    public function gamma($value) {
-        $this->image->effects()->gamma($value);
+        $this->image->invert();
         return $this;
     }
 
     public function grayscale() {
-        $this->image->effects()->grayscale();
+        $this->image->desaturate();
         return $this;
     }
 
-    public function colorize($colorhexcode) {
+    public function sketch() {
+        $this->image->sketch();
+        return $this;
+    }
 
-        $color = new Color($colorhexcode);
-        $this->image->effects()->colorize($color);
-
+    public function colorize($colorhex, $opacity=1) {
+        $this->image->colorize($colorhex, $opacity);
         return $this;
     }
 
     public function flipHorizontally(){
 
-        $this->image->flipHorizontally();
+        $this->image->flip('x');
 
         return $this;
     }
 
     public function flipVertically(){
 
-        $this->image->flipVertically();
+        $this->image->flip('y');
 
         return $this;
     }
 
-    public function thumbnail($width, $height, $mode="inset") {
+    public function overlay($overlay_file, $position = 'center', $opacity = 1, $x_offset = 0, $y_offset = 0) {
 
-        $thumb = $this->image->thumbnail(new Box($width, $height), $mode);
+        $this->image->overlay($overlay_file, $position , $opacity, $x_offset, $y_offset);
 
-        return $thumb;
+        return $this;
     }
 
-    public function crop($startX, $startY, $width, $height) {
+    public function text($text, $font_file, $font_size = 12, $color = '#000000', $position = 'center', $x_offset = 0, $y_offset = 0) {
 
-        $this->image->crop(new Point($startX, $startY), new Box($width, $height));
+        $this->image->text($text, $font_file, $font_size, $color, $position, $x_offset, $y_offset);
+
+        return $this;
+    }
+
+    public function thumbnail($width, $height) {
+
+        $this->image->thumbnail($width, $height);
+
+        return $this;
+    }
+
+    public function crop($startX, $startY, $endX, $endY) {
+
+        $this->image->crop($startX, $startY, $endX, $endY);
 
         return $this;
     }
 
     public function resize($width, $height) {
 
-        $this->image->resize(new Box($width, $height));
+        $this->image->resize($width, $height);
 
         return $this;
     }
 
-    public function rotate($angle, $background=null) {
+    public function rotate($angle) {
 
-        if($background) {
-            $background = new Color($background);
-        }
-
-        $this->image->rotate($angl, $backgrounde);
+        $this->image->rotate($angle);
 
         return $this;
     }
 
-    public function show($format) {
-        $this->image->save($format);
+    public function show($format=null, $quality=100) {
+        $this->image->output($format, $quality);
     }
 
 
-    public function save($path) {
-        $this->image->save($path);
+    public function save($path, $quality=100) {
+        $this->image->save($path, $quality);
         return $this;
     }
 }
