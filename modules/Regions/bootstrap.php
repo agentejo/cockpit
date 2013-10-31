@@ -50,9 +50,10 @@ if(COCKPIT_ADMIN) {
 
     $app->on("admin.dashboard", function() use($app){
 
-        $title = "Regions";
-        $badge = $app->data->common->regions->count();
+        $title   = "Regions";
+        $badge   = $app->data->common->regions->count();
+        $regions = $app->data->common->regions->find()->limit(3)->sort(["created"=>-1])->toArray();
 
-        echo $app->view("regions:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge'));
+        echo $app->view("regions:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'regions'));
     });
 }
