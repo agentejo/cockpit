@@ -2,14 +2,14 @@
 {{ $app->assets(['assets:vendor/uikit/addons/css/sortable.min.css','assets:vendor/uikit/addons/js/sortable.min.js']) }}
 
 <div data-ng-controller="collection" data-id="{{ $id }}">
-    
+
     <form class="uk-form" data-ng-submit="save()" data-ng-show="collection">
 
         <div class="uk-grid">
-            
+
             <div class="uk-width-3-4">
                 <div class="app-panel">
-                    
+
                     <div class="uk-form-row">
                         <input class="uk-width-1-1 uk-form-large" type="text" placeholder="Collection name" data-ng-model="collection.name"  pattern="[a-zA-Z0-9]+" required>
                     </div>
@@ -29,9 +29,9 @@
                     <div class="uk-form-row" data-ng-show="collection.fields && collection.fields.length">
                         <ul class="uk-list">
                             <li class="uk-margin-bottom" data-ng-repeat="field in collection.fields">
-  
 
-                                <input type="text" data-ng-model="field.name" placeholder="Field name" pattern="[a-zA-Z0-9]+" required> 
+
+                                <input type="text" data-ng-model="field.name" placeholder="Field name" pattern="[a-zA-Z0-9]+" required>
                                 <select data-ng-model="field.type" title="Field type" data-uk-tooltip>
                                     <option value="text">Text</option>
                                     <option value="select">Select</option>
@@ -40,9 +40,9 @@
                                     <option value="code">Code</option>
                                     <option value="date">Date</option>
                                     <option value="time">Time</option>
-                                </select> 
+                                </select>
 
-                                <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="options...."> 
+                                <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="options...." title="Separate different options by comma" data-uk-tooltip>
 
                                 <select data-ng-if="field.type=='code'" data-ng-model="field.syntax" title="Code syntax" data-uk-tooltip>
                                     <option value="text">Text</option>
@@ -52,8 +52,8 @@
                                     <option value="markdown">Markdown</option>
                                 </select>
 
-                                <input type="text" data-ng-model="field.default" placeholder="default value..."> 
-                
+                                <input type="text" data-ng-model="field.default" placeholder="default value...">
+
                                 <a data-ng-click="remove(field)" class="uk-close"></a>
                             </li>
                         </ul>
@@ -67,7 +67,7 @@
                         <div class="uk-button-group">
                             <button type="submit" class="uk-button uk-button-primary uk-button-large">Save Collection</button>
                             <a href="@route('/collections/entries')/@@ collection._id @@" class="uk-button uk-button-large" data-ng-show="collection._id"><i class="uk-icon-reorder"></i> Goto entries</a>
-                        </div> 
+                        </div>
                         <a href="@route('/collections')">Cancel</a>
                     </div>
                 </div>
@@ -83,7 +83,7 @@
                         <li data-ng-repeat="field in collection.fields">
                             <div class="uk-sortable-item uk-sortable-item-table">
                                 <div class="uk-sortable-handle"></div>
-                                <input type="checkbox" data-ng-checked="field.lst" data-ng-model="field.lst"> 
+                                <input type="checkbox" data-ng-checked="field.lst" data-ng-model="field.lst">
                                 @@ field.name @@
                             </div>
                         </li>

@@ -36,6 +36,13 @@ if (COCKPIT_ADMIN) {
         return $app->invoke("Cockpit\\Controller\\Base", "profile");
     });
 
+    $app->on("admin.dashboard", function() use($app){
+
+        $title = "Today";
+
+        echo $app->view("cockpit:views/dashboard/datetime.php with cockpit:views/layouts/dashboard.widget.php", compact('title'));
+    });
+
     $app['admin.menu.top']      = new \PriorityQueue();
     $app['admin.menu.dropdown'] = new \PriorityQueue();
 }

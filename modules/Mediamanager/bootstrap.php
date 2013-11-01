@@ -8,7 +8,8 @@ $this->module("mediamanager")->thumbnail = function($image, $width, $height, $op
     $options = array_merge(array(
         "rebuild"     => false,
         "cachefolder" => "cache:thumbs",
-        "quality"     => 100
+        "quality"     => 100,
+        "base64"      => false
     ), $options);
 
     extract($options);
@@ -25,18 +26,32 @@ $this->module("mediamanager")->thumbnail = function($image, $width, $height, $op
         return $url;
     }
 
-    $filetime = filemtime($path);
-    $savepath = $app->path($cachefolder)."/".md5($path)."_{$width}x{$height}_{$quality}_{$filetime}.{$ext}";
 
-    if($rebuild || !file_exists($savepath)) {
+    if($base64) {
+
         try {
-            $app("image")->take($path)->thumbnail($width, $height)->save($savepath, $quality);
+            $data = $app("image")->take($path)->thumbnail($width, $height)->base64data(null, $quality);
         } catch(Exception $e) {
             return $url;
         }
-    }
 
-    $url = $app->pathToUrl($savepath);
+        $url = $data;
+
+    } else {
+
+        $filetime = filemtime($path);
+        $savepath = $app->path($cachefolder)."/".md5($path)."_{$width}x{$height}_{$quality}_{$filetime}.{$ext}";
+
+        if($rebuild || !file_exists($savepath)) {
+            try {
+                $app("image")->take($path)->thumbnail($width, $height)->save($savepath, $quality);
+            } catch(Exception $e) {
+                return $url;
+            }
+        }
+
+        $url = $app->pathToUrl($savepath);
+    }
 
     return $url;
 };
@@ -61,11 +76,16 @@ if (!function_exists('thumbnail')) {
 
 if(COCKPIT_ADMIN) {
 
-
     // bind controllers
     foreach (array('Mediamanager') as $controller) {
         $app->bindClass("Mediamanager\\Controller\\{$controller}", strtolower($controller));
     }
+
+    // thumbnail api
+    $app->bind("/media/thumbnail/*", function($params) use($app){
+        $options = $app->params("options", []);
+        return $app->module("mediamanager")->thumbnail($params[":splat"], $options);
+    });
 
     $app->on("app.layout.header", function() use($app){
     ?>

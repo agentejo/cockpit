@@ -27,7 +27,10 @@ class Mediamanager extends \Cockpit\Controller {
     protected function ls() {
 
         $data     = array("folders"=>array(), "files"=>array());
-        $toignore = ['.git','.svn','.ds_store'];
+        $toignore = [
+            '.svn', '_svn', 'cvs', '_darcs', '.arch-params', '.monotone', '.bzr', '.git', '.hg',
+            '.ds_store', '.thumb'
+        ];
 
 		if($path = $this->param("path", false)){
 

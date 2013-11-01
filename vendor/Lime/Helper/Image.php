@@ -99,6 +99,10 @@ class Img {
         return $this;
     }
 
+    public function base64data($format=null, $quality=100) {
+        return $this->image->output_base64($format, $quality);
+    }
+
     public function show($format=null, $quality=100) {
         $this->image->output($format, $quality);
     }

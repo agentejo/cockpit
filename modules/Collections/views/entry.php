@@ -54,7 +54,7 @@
 
                         <div data-ng-switch-when="select">
                             <select class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]">
-                                <option value="@@ option @@" data-ng-repeat="option in (field.options || [])">@@ option @@</option>
+                                <option value="@@ option @@" data-ng-repeat="option in (field.options || [])" data-ng-selected="(entry[field.name]==option)">@@ option @@</option>
                             </select>
                         </div>
 

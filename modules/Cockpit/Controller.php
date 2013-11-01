@@ -11,8 +11,9 @@ class Controller extends \LimeExtra\Controller\Auth {
 
         parent::__construct($app);
 
-        $this->user = $app["user"] = $this("session")->read("app.auth");
-        $this->data = $app->data;
+        $this->user   = $app["user"] = $this("session")->read("app.auth");
+        $this->data   = $app->data;
+        $this->memory = $app->memory;
 
         $controller = strtolower(str_replace('\\', '.', get_class($this)));
 
