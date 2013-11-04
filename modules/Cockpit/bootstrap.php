@@ -11,14 +11,32 @@ $app['app.assets.base'] = [
     'assets:vendor/uikit/addons/css/form-icon.min.css'
 ];
 
-$app['app.assets.backend'] = [
-    'cockpit:assets/js/app.js',
-    'cockpit:assets/js/app.module.js',
-    'cockpit:assets/css/app.less',
-    'cockpit:assets/js/bootstrap.js',
-];
+
+// API
+
+$this->module("cockpit")->assets = function($assets, $key=null, $cache=0, $cache_folder=null) use($app) {
+
+    $key          = $key ? $key : md5(serialize($assets));
+    $cache_folder = $cache_folder ? $cache_folder : $app->path("cache:assets");
+
+    $app("assets")->style_and_script($assets, $key, $cache_folder, $cache);
+};
+
+if (!function_exists('assets')) {
+    
+    function assets($assets, $key=null, $cache=0, $cache_folder=null) {
+        c("cockpit")->assets($assets, $key, $cache, $cache_folder);
+    }
+}
 
 if (COCKPIT_ADMIN) {
+
+    $app['app.assets.backend'] = [
+        'cockpit:assets/js/app.js',
+        'cockpit:assets/js/app.module.js',
+        'cockpit:assets/css/app.less',
+        'cockpit:assets/js/bootstrap.js',
+    ];
 
     $app->helpers["admin"] = 'Cockpit\\Helper\\Admin';
 
