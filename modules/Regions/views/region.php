@@ -93,8 +93,8 @@
                             </div>
 
                             <div data-ng-switch-when="select">
-                                <select class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value">
-                                    <option value="@@ option @@" data-ng-repeat="option in (field.options || [])">@@ option @@</option>
+                                <select class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value" data-ng-init="fieldindex=$index">
+                                    <option value="@@ option @@" data-ng-repeat="option in (field.options || [])" data-ng-selected="(region.fields[fieldindex].value==option)">@@ option @@</option>
                                 </select>
                             </div>
 
