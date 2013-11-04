@@ -44,9 +44,9 @@
 
 
     <div class="uk-text-center app-panel" data-ng-show="regions && !regions.length">
-        <h2>Notice</h2>
+        <h2><i class="uk-icon-th-large"></i></h2>
         <p class="uk-text-large">
-            It seems you don't have any regions created.
+            You don't have any regions created.
         </p>
 
         <a href="@route('/regions/region')" class="uk-button uk-button-success uk-button-large">Create a region</a>

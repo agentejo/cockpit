@@ -1,5 +1,7 @@
 {{ $app->assets(['regions:assets/regions.js','regions:assets/js/region.js']) }}
 
+{{ $app->assets(['mediamanager:assets/pathpicker.directive.js']) }}
+
 {{ $app->assets(['assets:vendor/codemirror/lib/codemirror.js','assets:vendor/codemirror/lib/codemirror.css','assets:vendor/codemirror/theme/monokai.css']) }}
 {{ $app->assets(['assets:vendor/codemirror/mode/xml/xml.js']) }}
 {{ $app->assets(['assets:vendor/codemirror/mode/htmlmixed/htmlmixed.js']) }}
@@ -54,6 +56,7 @@
                                    <option value="code">Code</option>
                                    <option value="date">Date</option>
                                    <option value="time">Time</option>
+                                   <option value="media">Media</option>
                                </select>
 
                                <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="options....">
@@ -96,6 +99,10 @@
                                 <select class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value" data-ng-init="fieldindex=$index">
                                     <option value="@@ option @@" data-ng-repeat="option in (field.options || [])" data-ng-selected="(region.fields[fieldindex].value==option)">@@ option @@</option>
                                 </select>
+                            </div>
+
+                            <div data-ng-switch-when="media">
+                                <input type="text" media-path-picker data-ng-model="region.fields[$index].value">
                             </div>
 
                             <div data-ng-switch-default>

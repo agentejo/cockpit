@@ -1,5 +1,7 @@
 {{ $app->assets(['collections:assets/collections.js','collections:assets/js/entry.js']) }}
 
+{{ $app->assets(['mediamanager:assets/pathpicker.directive.js']) }}
+
 {{ $app->assets(['assets:vendor/codemirror/lib/codemirror.js','assets:vendor/codemirror/lib/codemirror.css','assets:vendor/codemirror/theme/monokai.css']) }}
 {{ $app->assets(['assets:vendor/codemirror/mode/xml/xml.js']) }}
 {{ $app->assets(['assets:vendor/codemirror/mode/htmlmixed/htmlmixed.js']) }}
@@ -56,6 +58,10 @@
                             <select class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]">
                                 <option value="@@ option @@" data-ng-repeat="option in (field.options || [])" data-ng-selected="(entry[field.name]==option)">@@ option @@</option>
                             </select>
+                        </div>
+
+                        <div data-ng-switch-when="media">
+                            <input type="text" media-path-picker data-ng-model="entry[field.name]">
                         </div>
 
                         <div data-ng-switch-default>

@@ -1,0 +1,42 @@
+.modalbox-win{
+    position: fixed;
+    visibility: hidden;
+    top: -1000px;
+    left: -1000px;
+    max-width: 80%;
+    background: #fff;
+    padding: 20px 20px 20px 20px;
+    border-radius: 4px;
+    border: 1px #f7f7f7;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.33);
+    z-index: 8100;
+}
+
+.modalbox-overlay{
+    z-index: 8000;
+    background: #222;
+}
+
+.modalbox-win > div.modalbox-close {
+    position: absolute;
+    text-align: center;
+    color: #fff;
+    background: #000;
+    border-radius: 50%;
+    border: 2px #fff solid;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    right: -35px;
+    top: 8px;
+    line-height: 1;
+    border-radius: 50%;
+}
+
+.modalbox-win > div.modalbox-close:after {
+    display: block;
+    content: "\f00d";
+    font-family: "FontAwesome";
+    font-size: 12px;
+    margin-top: 7px;
+}

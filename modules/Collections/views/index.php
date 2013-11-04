@@ -46,9 +46,9 @@
 
 
     <div class="uk-text-center app-panel" data-ng-show="collections && !collections.length">
-        <h2>Notice</h2>
+        <h2><i class="uk-icon-list"></i></h2>
         <p class="uk-text-large">
-            It seems you don't have any collections created.
+            You don't have any collections created.
         </p>
 
         <a href="@route('/collections/collection')" class="uk-button uk-button-success uk-button-large">Create a collection</a>

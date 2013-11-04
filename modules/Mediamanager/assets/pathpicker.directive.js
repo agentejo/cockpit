@@ -1,11 +1,11 @@
-(function(app, $){
+(function(module, $){
 
     var Picker = function(onselect, type) {
 
         var modal    = '<div class="media-path-picker" style="width:600px;"> \
-                          <strong class="caption">&nbsp;</strong> \
-                          <ul class="dir-view mt10 mb20 block-grid four-columns" style="height:250px;overflow-y:scroll;"></ul>     \
-                          <div class="text-center"><button class="media-select button primary" type="button">Select</button></div> \
+                          <div class="caption">&nbsp;</div> \
+                          <ul class="dir-view uk-list uk-clearfix" style="height:250px;overflow-y:scroll;"></ul>     \
+                          <div class="uk-text-center"><button class="media-select uk-button uk-button-primary" type="button">Select</button></div> \
                         </div>',
             $this    = this;
 
@@ -15,14 +15,14 @@
         this.caption = this.modal.find('.caption');
         this.btnOk   = this.modal.find('button.media-select').attr("disabled", true);
 
-        $.baseui.modal(this.modal);
+        $.UIkit.modalbox(this.modal);
 
         this.dirview.on("click", "li", function(){
             var data = $(this).data();
 
             $this.dirview.children().removeClass("active").filter(this).addClass("active");
 
-            $this.mediapath = 'media:'+data.path;
+            $this.mediapath = 'uploads:'+data.path;
 
             $this.btnOk.attr("disabled", !matchName($this.type, data.path));
 
@@ -43,17 +43,17 @@
 
         this.btnOk.on("click", function(){
             if($this.mediapath) onselect($this.mediapath);
-            $.baseui.modal.close();
+            $.UIkit.modalbox.close();
         });
 
         this.loadPath('/');
 
 
-        Cockpit.require(['/Cockpit/assets/vendor/ajaxupload.js'], function(){
+        App.assets.require(['assets/vendor/ajaxupload.js'], function(){
 
 
             var uploadsettings = {
-                    "action": Cockpit.baseRoute+"/mediamanager/api",
+                    "action": App.route('/mediamanager/api'),
                     "single": true,
                     "params": {"cmd":"upload"},
                     "before": function(o) {
@@ -87,7 +87,7 @@
 
             var $this = this;
 
-            Cockpit.post("/mediamanager/api", {"cmd":"ls", "path": path}, function(data){
+            App.request("/mediamanager/api", {"cmd":"ls", "path": path}, function(data){
 
                 $this.currentpath = path;
 
@@ -96,11 +96,11 @@
                     $this.dirview.html('');
 
                     $.each(data.folders, function(index, folder){
-                       $this.dirview.append($('<li class="p10"><i class="icon-folder-close"></i><br>'+folder.name+'</li>').data(folder));
+                       $this.dirview.append($('<li class="uk-width-1-4 uk-float-left"><i class="uk-icon-folder-close"></i><br>'+folder.name+'</li>').data(folder));
                     });
 
                     $.each(data.files, function(index, file){
-                       $this.dirview.append($('<li class="p10"><i class="icon-file-alt"></i><br>'+file.name+'</li>').data(file));
+                       $this.dirview.append($('<li class="uk-width-1-4 uk-float-left"><i class="uk-icon-file-alt"></i><br>'+file.name+'</li>').data(file));
                     });
 
                     $this.caption.html('');
@@ -108,7 +108,7 @@
                     var parts   = path.split('/'),
                         tmppath = [];
 
-                    $this.caption.append('<span data-path="/">media:</span>');
+                    $this.caption.append('<span data-path="/"><strong>uploads:</strong></span>');
 
                     for(var i=0;i<parts.length;i++){
 
@@ -132,7 +132,7 @@
         }
     });
 
-    app.directive("mediaPathPicker", function(){
+    App.module.directive("mediaPathPicker", function(){
 
         return {
             require: '?ngModel',
@@ -146,17 +146,17 @@
 
                     $element = $(elm);
 
-                    var $tpl = $('<div><div class="mb10" data-preview=""></div><button class="button button-small dark" type="button"><i class="icon-code-fork"></i> Pick Media path</button></div>'),
+                    var $tpl = $('<div><div class="uk-margin" data-preview=""></div><button class="uk-button uk-button-small uk-button-primary" type="button"><i class="uk-icon-code-fork"></i> Pick Media path</button></div>'),
                         $btn = $tpl.find('button'),
                         $prv = $tpl.find('[data-preview]');
 
                     $element.after($tpl);
 
                     function setPath(path) {
-                        $prv.html(path ? '<span class="label label-info">'+path+'</span>':'No path selected');
+                        $prv.html(path ? '<div class="uk-trunkate" title="'+path+'">'+path+'</div>':'<div class="uk-alert">No path selected</div>');
 
                         if(path && path.match(/\.(jpg|jpeg|png|gif)/i)) {
-                            $prv.append('<div class="mt10"><img class="auto-size" src="'+path.replace('media:', window.MEDIA_BASE_URL)+'"></div>');
+                            //$prv.append('<div class="uk-margin"><img class="auto-size" src="'+path.replace('media:', window.MEDIA_BASE_URL)+'"></div>');
                         }
                     }
 
@@ -199,16 +199,11 @@
     }
 
     $("head").append('<style> \
-        .media-path-picker .caption { display: block; text-align:center;} \
         .media-path-picker .dir-view { \
-            background: -webkit-radial-gradient(50% 0, rgba(0,0,0,.2), transparent 70%) no-repeat; \
-            background: radial-gradient(at top, rgba(0,0,0,.2), transparent 70%) no-repeat; \
-            background-size: 100% 10px; \
             padding-top: 20px; \
             min-height: 40px; \
-            -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; \
         } \
-        .media-path-picker .dir-view li {cursor:pointer;text-align:center;border-radius:3px;} \
+        .media-path-picker .dir-view li {cursor:pointer;text-align:center;border-radius:3px;padding:10px;-moz-user-select:none;-webkit-user-select:none;user-select:none;} \
         .media-path-picker .dir-view li:hover {background: #fcfef0;} \
         .media-path-picker .dir-view li.active {color: #fff;background:#222;} \
         .media-path-picker .caption [data-path] {cursor:pointer;} \
@@ -217,4 +212,4 @@
         .media-path-picker .media-select[disabled] { opacity:0; } \
     </style>');
 
-})(Cockpit.app, jQuery);
+})(App.module, jQuery);

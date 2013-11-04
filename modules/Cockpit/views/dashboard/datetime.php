@@ -9,7 +9,7 @@
 </div>
 
 <div>
-    <span app-clock="d. M Y"></span>,
+    <span class="uk-text-large" app-clock="d. M Y"></span>
 </div>
 
 <div style="font-size:35px;margin-top:20px;margin-bottom:20px;">

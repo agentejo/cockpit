@@ -39,7 +39,7 @@
 
             if(area=="side"){
                 fields = $scope.collection.fields.filter(function(field){
-                    return ['select','date','time'].indexOf(field.type) > -1;
+                    return ['select','date','time','media'].indexOf(field.type) > -1;
                 });
             }
 
