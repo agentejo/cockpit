@@ -32,7 +32,7 @@
                     <span class="uk-badge app-badge" title="Last update">@@ region.modified |fmtdate:'d M, Y H:i' @@</span>
                 </div>
 
-                <div class="uk-margin uk-hidden">
+                <div class="uk-margin uk-hidden uk-animation-fade">
                     <span class="uk-button-group">
                         <a class="uk-button uk-button-small" href="@route('/regions/region')/@@ region._id @@" title="Edit region" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
                         <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, region)" href="#" title="Delete region" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-sign"></i></a>

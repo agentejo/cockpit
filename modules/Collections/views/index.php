@@ -32,7 +32,7 @@
                     <span class="uk-badge app-badge">@@ collection.count @@ Items</span>
                 </div>
 
-                <div class="uk-margin uk-hidden">
+                <div class="uk-margin uk-hidden uk-animation-fade">
                     <span class="uk-button-group">
                         <a class="uk-button uk-button-small" href="@route('/collections/entries')/@@ collection._id @@" title="Show entries" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-reorder"></i></a>
                         <a class="uk-button uk-button-small" href="@route('/collections/entry')/@@ collection._id @@" title="Create new entry" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-sign"></i></a>

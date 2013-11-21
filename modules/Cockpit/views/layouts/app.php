@@ -29,7 +29,7 @@
                             <li class="uk-nav-header uk-text-truncate">
                                 {{ $app["user"]["user"] }}
                             </li>
-                            <li><a href="@route('/settings')"><i class="uk-icon-cog icon-spacer"></i> Settings</a></li>
+                            <li><a href="@route('/settingspage')"><i class="uk-icon-cog icon-spacer"></i> Settings</a></li>
 
                             <li class="uk-nav-divider"></li>
                             <li><a href="@route('/auth/logout')"><i class="uk-icon-off icon-spacer"></i> Logout</a></li>

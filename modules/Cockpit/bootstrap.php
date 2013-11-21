@@ -23,7 +23,7 @@ $this->module("cockpit")->assets = function($assets, $key=null, $cache=0, $cache
 };
 
 if (!function_exists('assets')) {
-    
+
     function assets($assets, $key=null, $cache=0, $cache_folder=null) {
         c("cockpit")->assets($assets, $key, $cache, $cache_folder);
     }
@@ -48,9 +48,11 @@ if (COCKPIT_ADMIN) {
         return $app->invoke("Cockpit\\Controller\\Base", "dashboard");
     });
 
-    $app->bind("/settings", function() use($app){
+    $app->bind("/settingspage", function() use($app){
         return $app->invoke("Cockpit\\Controller\\Base", "settings");
     });
+
+    $app->bindClass("Cockpit\\Controller\\Settings", "settings");
 
     $app->bind("/profile/:id", function($params) use($app){
         return $app->invoke("Cockpit\\Controller\\Base", "profile");

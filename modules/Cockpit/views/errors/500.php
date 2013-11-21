@@ -1,5 +1,16 @@
-<div class="app-wrapper uk-text-center">
-    <h1>500</h1>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Page not found</title>
+    @assets($app['app.assets.base'], 'app.base', 'cache:assets', 0)
+</head>
+<body>
 
-    <p class="uk-text-large">Uuuups, something went wrong.</p>
-</div>
+    <div class="app-wrapper uk-text-center">
+        <h1>500</h1>
+
+        <p class="uk-text-large">Uuuups, something went wrong.</p>
+    </div>
+</body>
+</html>
