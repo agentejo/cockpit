@@ -26,7 +26,7 @@ $this->module("regions")->render = function($name, $params = []) use($app) {
 
 if(!function_exists("region")) {
     function region($name, $params = []) {
-        echo c("regions")->render($name, $params);
+        echo cockpit("regions")->render($name, $params);
     }
 }
 

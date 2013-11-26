@@ -17,7 +17,7 @@ $this->module("collections")->collection = function($name) use($app) {
 
 if(!function_exists("collection")) {
     function collection($name) {
-        return c("collections")->collection($name);
+        return cockpit("collections")->collection($name);
     }
 }
 

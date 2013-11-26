@@ -59,15 +59,15 @@ $this->module("mediamanager")->thumbnail = function($image, $width, $height, $op
 if (!function_exists('thumbnail_url')) {
 
     function thumbnail_url($image, $width, $height, $options=array()) {
-        return c("mediamanager")->thumbnail($image, $width, $height, $options);
+        return cockpit("mediamanager")->thumbnail($image, $width, $height, $options);
     }
 }
 
 if (!function_exists('thumbnail')) {
-
+    var_dump(1);
     function thumbnail($image, $width, $height, $options=array()) {
 
-        $url =  c("mediamanager")->thumbnail($image, $width, $height, $options=array());
+        $url =  cockpit("mediamanager")->thumbnail($image, $width, $height, $options=array());
 
         echo '<img src="'.$url.'" alt="'.$url.'">';
     }

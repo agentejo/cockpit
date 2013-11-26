@@ -11,7 +11,7 @@ spl_autoload_register(function($class){
 });
 
 
-function c($module = null) {
+function cockpit($module = null) {
 
     static $app;
 
@@ -46,4 +46,8 @@ function c($module = null) {
     }
 
     return $module ? $app->module($module) : $app;
+}
+
+if(!COCKPIT_ADMIN) {
+    $cockpit = cockpit();
 }
