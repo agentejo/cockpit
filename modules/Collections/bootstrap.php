@@ -7,7 +7,10 @@ $this->module("collections")->collection = function($name) use($app) {
     $entriesdb  = null;
     $collection = $app->data->common->collections->findOne(["name"=>$name]);
 
-    if($collection) $entriesdb  = "collection".$collection["_id"];
+    if($collection) {
+        $collection = "collection".$collection["_id"];
+        $entriesdb  = $app->data->collections->{$collection};
+    }
 
     return $entriesdb;
 };
