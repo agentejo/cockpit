@@ -7,8 +7,7 @@ $app['app.assets.base'] = [
     'assets:vendor/uikit/js/uikit.min.js',
     'assets:vendor/uikit/css/uikit.min.css',
     'assets:vendor/modalbox/modalbox.css',
-    'assets:vendor/modalbox/modalbox.js',
-    'assets:vendor/uikit/addons/css/form-icon.min.css'
+    'assets:vendor/modalbox/modalbox.js'
 ];
 
 

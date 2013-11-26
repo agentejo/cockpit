@@ -67,31 +67,31 @@
 /* Sub-object `[data-action='toggle']`
  ========================================================================== */
 /* Hidden by default */
-[data-action='toggle'] {
+[data-sortable-action='toggle'] {
   display: inline-block;
   color: #999999;
   visibility: hidden;
 }
 /* Hover */
-[data-action='toggle']:hover {
+[data-sortable-action='toggle']:hover {
   color: #444444;
   cursor: pointer;
 }
 /* Icon */
-[data-action='toggle']:after {
+[data-sortable-action='toggle']:after {
   content: "\f117";
   font-family: "FontAwesome";
 }
 /*
  * Show if nested
  */
-.uk-parent > .uk-sortable-item [data-action='toggle'] {
+.uk-parent > .uk-sortable-item [data-sortable-action='toggle'] {
   visibility: visible;
 }
 /*
  * Collapsed
  */
-.uk-collapsed > .uk-sortable-item [data-action='toggle']:after {
+.uk-collapsed > .uk-sortable-item [data-sortable-action='toggle']:after {
   content: "\f116";
 }
 .uk-collapsed .uk-sortable-list {

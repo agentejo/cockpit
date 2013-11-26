@@ -124,7 +124,7 @@ class App extends \Lime\App {
                 
                 $content = preg_replace('/(\s*)@start\((.+?)\)/'   , '$1<?php $app->start($2); ?>', $content);
                 $content = preg_replace('/(\s*)@end\((.+?)\)/'   , '$1<?php $app->end($2); ?>', $content);
-                $content = preg_replace('/(\s*)@block\((.+?)\)/'   , '$1<?php echo $app->block($2); ?>', $content);
+                $content = preg_replace('/(\s*)@block\((.+?)\)/'   , '$1<?php $app->block($2); ?>', $content);
 
                 return $content;
             });

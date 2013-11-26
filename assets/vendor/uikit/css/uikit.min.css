@@ -2829,6 +2829,23 @@ select.uk-form-width-mini {
     padding-top: 5px;
   }
 }
+/* Sub-object: `uk-form-icon`
+ ========================================================================== */
+.uk-form-icon {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+.uk-form-icon > [class*='uk-icon-'] {
+  position: absolute;
+  width: 30px;
+  line-height: 30px;
+  color: #999999;
+  text-align: center;
+}
+.uk-form-icon > input {
+  padding-left: 30px !important;
+}
 /* ========================================================================
    Component: Button
  ========================================================================== */
