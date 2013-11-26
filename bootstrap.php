@@ -48,6 +48,4 @@ function cockpit($module = null) {
     return $module ? $app->module($module) : $app;
 }
 
-if(!COCKPIT_ADMIN) {
-    $cockpit = cockpit();
-}
+$cockpit = cockpit();

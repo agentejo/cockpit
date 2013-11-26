@@ -6,18 +6,16 @@ date_default_timezone_set('UTC');
 
 require(__DIR__.'/bootstrap.php');
 
-$app = c();
+$cockpit->on("after", function() use($cockpit) {
 
-$app->on("after", function() use($app) {
-
-    switch ($app->response->status) {
+    switch ($cockpit->response->status) {
         case 500:
         case 404:
-            if(!$app->req_is('ajax')) {
-                $app->response->body = $app->view("cockpit:views/errors/{$app->response->status}.php");
+            if(!$cockpit->req_is('ajax')) {
+                $cockpit->response->body = $cockpit->view("cockpit:views/errors/{$cockpit->response->status}.php");
             }
             break;
     }
 });
 
-$app->trigger("admin.init")->run();
+$cockpit->trigger("admin.init")->run();
