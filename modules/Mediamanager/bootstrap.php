@@ -64,7 +64,7 @@ if (!function_exists('thumbnail_url')) {
 }
 
 if (!function_exists('thumbnail')) {
-    var_dump(1);
+
     function thumbnail($image, $width, $height, $options=array()) {
 
         $url =  cockpit("mediamanager")->thumbnail($image, $width, $height, $options=array());
