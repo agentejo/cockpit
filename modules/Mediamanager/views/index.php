@@ -74,7 +74,7 @@
     </div>
 
     <div class="uk-alert uk-hidden-small">
-        <i class="uk-icon-lightbulb"></i> <strong>Upload new files:</strong> just drag'n drop the files you want to upload into this window.
+        <i class="uk-icon-lightbulb"></i> <strong>Upload new files:</strong> Just drag'n drop the files you want to upload into this window.
     </div>
 
 </div>
