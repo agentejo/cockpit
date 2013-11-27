@@ -28,7 +28,7 @@ foreach($checks as $info => $check) {
 
 require(__DIR__.'/../bootstrap.php');
 
-$app = c();
+$app = cockpit();
 
 if($app->data->cockpit->accounts->count()) {
     header('Location: ../index.php');
