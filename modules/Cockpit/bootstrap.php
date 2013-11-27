@@ -28,6 +28,20 @@ if (!function_exists('assets')) {
     }
 }
 
+$this->module("cockpit")->markdown = function($content) use($app) {
+
+    return \Parsedown::instance()->parse($content);
+};
+
+if (!function_exists('markdown')) {
+
+    function markdown($content) {
+        echo cockpit("cockpit")->markdown($content);
+    }
+}
+
+// Admin
+
 if (COCKPIT_ADMIN) {
 
     $app['app.assets.backend'] = [

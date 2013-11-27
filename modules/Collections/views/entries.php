@@ -49,8 +49,17 @@
                             </td>
                             <td>@@ entry.modified | fmtdate:'d M, Y' @@</td>
                             <td class="uk-text-right">
-                                <a href="@route('/collections/entry/'.$collection["_id"])/@@ entry._id @@"><i class="uk-icon-pencil"></i></a> &nbsp;
-                                <a href="#" data-ng-click="remove($index, entry._id)"><i class="uk-icon-remove"></i></a>
+                                <div data-uk-dropdown>
+
+                                    <i class="uk-icon-reorder"></i>
+
+                                    <div class="uk-dropdown uk-dropdown-flip uk-text-left">
+                                        <ul class="uk-nav uk-nav-dropdown">
+                                            <li><a href="@route('/collections/entry/'.$collection["_id"])/@@ entry._id @@"><i class="uk-icon-pencil"></i> Edit entry</a></li>
+                                            <li><a href="#" data-ng-click="remove($index, entry._id)"><i class="uk-icon-remove"></i> Delete Entry</li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>

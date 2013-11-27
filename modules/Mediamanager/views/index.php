@@ -35,7 +35,7 @@
     <div class="uk-alert uk-alert-warning uk-margin" data-ng-show="dir && (dir.files.length && viewfilter=='folders')">@@ dir.files.length @@ files are hidden via filter</div>
 
     <div class="app-panel">
-        
+
         <ul class="uk-grid media-dir" data-ng-show="dir && (dir.folders.length || dir.files.length)">
             <li class="uk-width-medium-1-4 uk-grid-margin uk-visible-hover" ng-repeat="folder in dir.folders" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
                 <div class="uk-panel">
@@ -71,6 +71,10 @@
             </p>
         </div>
 
+    </div>
+
+    <div class="uk-alert uk-hidden-small">
+        <i class="uk-icon-lightbulb"></i> <strong>Upload new files:</strong> just drag'n drop the files you want to upload into this window.
     </div>
 
 </div>
