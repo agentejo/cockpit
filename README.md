@@ -4,6 +4,10 @@ The CMS for developers. Add content management functionality to any site - plug 
 Manage content like collections and regions which you can reuse anywhere on your website.
 
 
+* Homepage: [http://getcockpit.com](http://getcockpit.com)
+* Twitter: [@getcockpit](http://twitter.com/getcockpit)
+
+
 ### Requirements
 
 * PHP >= 5.4
