@@ -3,6 +3,9 @@
 
 <div data-ng-controller="collection" data-id="{{ $id }}">
 
+    <h1><a class="app-link" href="@route("/collections")">Collections</a> / Collection</h1>
+
+
     <form class="uk-form" data-ng-submit="save()" data-ng-show="collection">
 
         <div class="uk-grid">

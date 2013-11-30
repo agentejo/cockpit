@@ -3,7 +3,7 @@
 
 
 	$.support.ajaxupload = (function() {
-		
+
 		function supportFileAPI() {
 			var fi = document.createElement('INPUT'); fi.type = 'file'; return 'files' in fi;
 		}
@@ -29,24 +29,7 @@
 			return this;
 		}
 
-		settings = $.extend({
-			"action": '',
-			"progressui": false,
-			"single": false,
-			"method": 'POST',
-			"params": {},
-
-			// events
-			"before": function(o){},
-			"loadstart": function(){},
-			"load": function(){},
-			"loadend": function(){},
-			"progress": function(){},
-			"complete": function(){},
-			"allcomplete": function(){},
-			"readystatechange": function(){}
-		}, settings);
-
+		settings = $.extend({}, $.xhrupload.defaults, settings);
 
 		if(!files.length){
 			return;
@@ -97,30 +80,30 @@
 			xhr.upload.addEventListener("progress", function(e){
 				var percent = (e.loaded / e.total)*100;
 				settings.progress(percent, e);
-			}, false);  
+			}, false);
 			xhr.addEventListener("loadstart", function(e){
 				settings.loadstart(e);
-			}, false);   
+			}, false);
 			xhr.addEventListener("load", function(e){
 				settings.load(e);
-			}, false);    
+			}, false);
 			xhr.addEventListener("loadend", function(e){
 				settings.loadend(e);
-			}, false);  
+			}, false);
 			xhr.addEventListener("error", function(e){
 				settings.error(e);
-			}, false);  
+			}, false);
 			xhr.addEventListener("abort", function(e){
 				settings.abort(e);
 			}, false);
 
 			xhr.open(settings.method, settings.action, true);
 			xhr.onreadystatechange = function() {
-				
+
 				settings.readystatechange(xhr);
 
 				if(xhr.readyState==4){
-					
+
 					var response = xhr.responseText;
 
 					if(settings.type=="json") {
@@ -137,6 +120,24 @@
 		    xhr.send(formData);
 		}
 
+	};
+
+	$.xhrupload.defaults = {
+		"action": '',
+		"progressui": false,
+		"single": false,
+		"method": 'POST',
+		"params": {},
+
+		// events
+		"before": function(o){},
+		"loadstart": function(){},
+		"load": function(){},
+		"loadend": function(){},
+		"progress": function(){},
+		"complete": function(){},
+		"allcomplete": function(){},
+		"readystatechange": function(){}
 	};
 
 
@@ -173,18 +174,9 @@
 		return this.each(function(){
 
 			var form     = $(this),
-				settings = $.extend({
+				settings = $.extend({}, $.xhrupload.defaults, {
 					"action"    : form.attr("action"),
-					"method"    : form.attr("method"),
-					"progressui": false,
-
-					// events
-					"loadstart": function(){},
-					"load": function(){},
-					"loadend": function(){},
-					"progress": function(){},
-					"complete": function(){},
-					"readystatechange": function(){}
+					"method"    : form.attr("method") || "POST"
 				}, options);
 
 			form.on("submit", function(e){
@@ -194,36 +186,44 @@
 				var formData = new FormData(this),
 					xhr      = new XMLHttpRequest();
 
+				if(settings.before(settings)===false){
+					return false;
+				}
+
+				for(var p in settings.params){
+					formData.append(p, settings.params[p]);
+				}
+
 				formData.append("formdata", "1");
 
 				// Add any event handlers here...
 				xhr.upload.addEventListener("progress", function(e){
 					var percent = (e.loaded / e.total)*100;
 					settings.progress(percent, e);
-				}, false);  
+				}, false);
 				xhr.addEventListener("loadstart", function(e){
 					settings.loadstart(e);
-				}, false);   
+				}, false);
 				xhr.addEventListener("load", function(e){
 					settings.load(e);
-				}, false);    
+				}, false);
 				xhr.addEventListener("loadend", function(e){
 					settings.loadend(e);
-				}, false);  
+				}, false);
 				xhr.addEventListener("error", function(e){
 					settings.error(e);
-				}, false);  
+				}, false);
 				xhr.addEventListener("abort", function(e){
 					settings.abort(e);
 				}, false);
 
 				xhr.open(settings.method, settings.action, true);
 				xhr.onreadystatechange = function() {
-					
+
 					settings.readystatechange(xhr);
 
 					if(xhr.readyState==4){
-						
+
 						var response = xhr.responseText;
 
 						if(settings.type=="json") {
@@ -235,9 +235,12 @@
 						}
 
 						settings.complete(response, xhr);
+						settings.allcomplete(response, xhr);
 					}
 			    };
 			    xhr.send(formData);
+
+			    return false;
 			});
 		});
 	};

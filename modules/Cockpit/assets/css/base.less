@@ -13,7 +13,7 @@
 .uk-margin-large-top { margin-top: @marginxl; }
 .uk-margin-large-bottom { margin-bottom: @marginxl; }
 
-.uk-button, .uk-alert, .uk-badge, .uk-panel-box {
+.uk-button, .uk-alert, .uk-badge, .uk-panel-box, .uk-tooltip, .uk-dropdown {
     border-radius: 3px;
 }
 
@@ -65,6 +65,19 @@
 
 [data-uk-dropdown] {
     position: relative;
+}
+
+.uk-tooltip { color: #fff; }
+
+.uk-dropdown {
+    border: 1px solid rgba(0,0,0,0.12);
+    box-shadow: 0 6px 8px rgba(0,0,0,0.06);
+    margin: 6px 0;
+    background: #fff;
+
+    ul li a:hover {
+        background: #222;
+    }
 }
 
 

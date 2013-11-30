@@ -7,9 +7,10 @@
 <div data-ng-controller="entries" data-collection='{{ json_encode($collection) }}'>
 
     <nav class="uk-navbar uk-margin-bottom" data-ng-show="entries && entries.length">
-        <span class="uk-navbar-brand"><a href="@route("/collections")">Collections</a> / {{ $collection['name'] }}</span>
+        <span class="uk-navbar-brand"><a class="app-link" href="@route("/collections")">Collections</a> / {{ $collection['name'] }}</span>
         <ul class="uk-navbar-nav">
-            <li><a href="@route('/collections/entry/'.$collection["_id"])" title="Add entry" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-sign"></i></a></li>
+            <li><a href="@route('/collections/collection/'.$collection["_id"])" title="Edit collection" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a></li>
+            <li><a href="@route('/collections/entry/'.$collection["_id"])" title="Add entry" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-sign"></i></a></li>
         </ul>
     </nav>
 

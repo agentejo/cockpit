@@ -7,21 +7,13 @@
         <ul class="uk-navbar-nav">
             <span class="uk-navbar-brand">Mediamanager</span>
             <li><a href="" class="uk-icon-plus-sign" ng-click="action('createfolder')">&nbsp; Folder</a></li>
+            <li class="media-upload-button">
+                <a class="uk-icon-upload"></a>
+                <form id="frmMediaUpload" action="">
+                    <input type="file" name="files[]" onchange="jQuery(this.form).trigger('submit')">
+                </form>
+            </li>
         </ul>
-
-        <div class="uk-navbar-flip">
-            <div class="uk-navbar-content uk-form">
-                <div class="uk-form-icon">
-                    <i class="uk-icon-eye-open"></i>
-                    <input type="text" placeholder="Filter by name..." data-ng-model="namefilter">
-                </div>
-                <div class="uk-button-group">
-                    <button class="uk-button" data-ng-class="viewfilter=='all' ? 'uk-active':''" data-ng-click="(viewfilter='all')" title="Show files + directories" data-uk-tooltip="{pos:'bottom'}">All</button>
-                    <button class="uk-button" data-ng-class="viewfilter=='folders' ? 'uk-active':''" data-ng-click="(viewfilter='folders')" title="Show only directories" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-folder-close"></i> <span class="uk-text-small">@@dir.folders.length@@</span></button>
-                    <button class="uk-button" data-ng-class="viewfilter=='files' ? 'uk-active':''" data-ng-click="(viewfilter='files')" title="Show only files" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-file"></i> <span class="uk-text-small">@@dir.files.length@@</span></button>
-                </div>
-            </div>
-        </div>
     </nav>
 
     <div class="uk-margin uk-panel uk-panel-box">
@@ -31,13 +23,30 @@
         </ul>
     </div>
 
-    <div class="uk-alert uk-alert-warning uk-margin" data-ng-show="dir && (dir.folders.length && viewfilter=='files')">@@ dir.folders.length @@ folders are hidden via filter</div>
-    <div class="uk-alert uk-alert-warning uk-margin" data-ng-show="dir && (dir.files.length && viewfilter=='folders')">@@ dir.files.length @@ files are hidden via filter</div>
-
     <div class="app-panel">
 
-        <ul class="uk-grid media-dir" data-ng-show="dir && (dir.folders.length || dir.files.length)">
-            <li class="uk-width-medium-1-4 uk-grid-margin uk-visible-hover" ng-repeat="folder in dir.folders" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
+        <nav class="uk-navbar uk-clearfix uk-margin-large-bottom">
+            <div class="uk-navbar-content">
+                <span class="uk-alert uk-alert-warning" data-ng-show="dir && (dir.folders.length && viewfilter=='files')"><span class="uk-icon-bolt"></span> <strong>@@ dir.folders.length @@ folders are hidden</strong> via filter</span>
+                <span class="uk-alert uk-alert-warning" data-ng-show="dir && (dir.files.length && viewfilter=='folders')"><span class="uk-icon-bolt"></span> <strong>@@ dir.files.length @@ files are hidden</strong> via filter</span>
+            </div>
+            <div class="uk-navbar-flip">
+                <div class="uk-navbar-content uk-form">
+                    <div class="uk-form-icon">
+                        <i class="uk-icon-eye-open"></i>
+                        <input type="text" placeholder="Filter by name..." data-ng-model="namefilter">
+                    </div>
+                    <div class="uk-button-group">
+                        <button class="uk-button" data-ng-class="viewfilter=='all' ? 'uk-button-primary':''" data-ng-click="(viewfilter='all')" title="Show files + directories" data-uk-tooltip="{pos:'bottom'}">All</button>
+                        <button class="uk-button" data-ng-class="viewfilter=='folders' ? 'uk-button-primary':''" data-ng-click="(viewfilter='folders')" title="Show only directories" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-folder-close"></i> <span class="uk-text-small">@@dir.folders.length@@</span></button>
+                        <button class="uk-button" data-ng-class="viewfilter=='files' ? 'uk-button-primary':''" data-ng-click="(viewfilter='files')" title="Show only files" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-file"></i> <span class="uk-text-small">@@dir.files.length@@</span></button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <ul class="uk-grid media-dir" data-ng-show="dir && (dir.folders.length || dir.files.length)" style="margin-top:-35px;">
+            <li class="uk-width-medium-1-5 uk-grid-margin uk-visible-hover" ng-repeat="folder in dir.folders" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
                 <div class="uk-panel">
                     <div class="uk-button-group uk-hidden">
                         <button class="uk-button" title="Rename folder"><i class="uk-icon-text-width" ng-click="action('rename', folder)"></i></button>
@@ -49,7 +58,7 @@
                     <div class="uk-text-truncate mm-caption" title="@@ folder.name @@"><a href="#@@ folder.path @@" ng-click="updatepath(folder.path)">@@ folder.name @@</a></div>
                 </div>
             </li>
-            <li class="uk-width-medium-1-4 uk-grid-margin uk-visible-hover" ng-repeat="file in dir.files" data-ng-hide="(viewfilter=='folders' || !matchName(file.name))">
+            <li class="uk-width-medium-1-5 uk-grid-margin uk-visible-hover" ng-repeat="file in dir.files" data-ng-hide="(viewfilter=='folders' || !matchName(file.name))">
                 <div class="uk-panel">
                     <div class="uk-button-group uk-hidden">
                         <button class="uk-button" title="Rename file"><i class="uk-icon-text-width" ng-click="action('rename', file)"></i></button>
@@ -73,10 +82,6 @@
 
     </div>
 
-    <div class="uk-alert uk-hidden-small">
-        <i class="uk-icon-lightbulb"></i> <strong>Upload new files:</strong> Just drag'n drop the files you want to upload into this window.
-    </div>
-
 </div>
 
 <style>
@@ -84,7 +89,6 @@
     .media-dir > li > .uk-panel {
         position: relative;
         padding: 10px;
-        border: 1px #eee dotted;
         min-height: 100px;
     }
 
@@ -101,6 +105,20 @@
     }
     .media-dir .mm-caption {
         text-align: center;
+    }
+
+    .media-upload-button {
+        position: relative;
+        overflow: hidden;
+    }
+    .media-upload-button form {
+        opacity: 0;
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        top:0;
+        left:0;
+        font-size: 500px;
     }
 
 </style>

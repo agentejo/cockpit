@@ -150,6 +150,7 @@
                 };
 
             $("body").uploadOnDrag(uploadsettings);
+            $("#frmMediaUpload").ajaxform(uploadsettings);
 
     });
 

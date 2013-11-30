@@ -11,6 +11,8 @@
 
 <div data-ng-controller="region" data-id="{{ $id }}">
 
+    <h1><a class="app-link" href="@route("/regions")">Regions</a> / Entry</h1>
+
     <form class="uk-form" data-ng-submit="save()" data-ng-show="region">
 
         <div class="uk-grid">
