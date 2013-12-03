@@ -1,9 +1,10 @@
 {{ $app->assets(['assets:vendor/ajaxupload.js']) }}
+{{ $app->assets(['assets:vendor/loadie/jquery.loadie.js', 'assets:vendor/loadie/loadie.css']) }}
 {{ $app->assets(['mediamanager:assets/js/index.js']) }}
 
 <div class="app-wrapper" data-ng-controller="mediamanager">
 
-    <nav class="uk-navbar uk-margin-large-bottom">
+    <div class="uk-navbar uk-margin-large-bottom">
         <ul class="uk-navbar-nav">
             <span class="uk-navbar-brand">Mediamanager</span>
             <li><a href="" class="uk-icon-plus-sign" ng-click="action('createfolder')">&nbsp; Folder</a></li>
@@ -14,7 +15,7 @@
                 </form>
             </li>
         </ul>
-    </nav>
+    </div>
 
     <div class="uk-margin uk-panel uk-panel-box">
         <ul class="uk-breadcrumb">
@@ -25,14 +26,14 @@
 
     <div class="app-panel">
 
-        <nav class="uk-navbar uk-clearfix uk-margin-large-bottom">
+        <div class="uk-navbar uk-margin-large-bottom">
             <div class="uk-navbar-content">
                 <span class="uk-alert uk-alert-warning" data-ng-show="dir && (dir.folders.length && viewfilter=='files')"><span class="uk-icon-bolt"></span> <strong>@@ dir.folders.length @@ folders are hidden</strong> via filter</span>
                 <span class="uk-alert uk-alert-warning" data-ng-show="dir && (dir.files.length && viewfilter=='folders')"><span class="uk-icon-bolt"></span> <strong>@@ dir.files.length @@ files are hidden</strong> via filter</span>
             </div>
             <div class="uk-navbar-flip">
                 <div class="uk-navbar-content uk-form">
-                    <div class="uk-form-icon">
+                    <div class="uk-form-icon uk-hidden-small">
                         <i class="uk-icon-eye-open"></i>
                         <input type="text" placeholder="Filter by name..." data-ng-model="namefilter">
                     </div>
@@ -43,30 +44,34 @@
                     </div>
                 </div>
             </div>
-        </nav>
+        </div>
 
-        <ul class="uk-grid media-dir" data-ng-show="dir && (dir.folders.length || dir.files.length)" style="margin-top:-35px;">
-            <li class="uk-width-medium-1-5 uk-grid-margin uk-visible-hover" ng-repeat="folder in dir.folders" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
-                <div class="uk-panel">
-                    <div class="uk-button-group uk-hidden">
-                        <button class="uk-button" title="Rename folder"><i class="uk-icon-text-width" ng-click="action('rename', folder)"></i></button>
-                        <button class="uk-button" title="Delete folder"><i class="uk-icon-minus-sign" ng-click="action('remove', folder)"></i></button>
-                    </div>
+        <ul class="uk-clearfix media-dir" data-ng-show="dir && (dir.folders.length || dir.files.length)">
+            <li class="uk-width-medium-1-5 uk-width-1-1 uk-float-left" ng-repeat="folder in dir.folders" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
+                <div>
                     <div class="mm-type">
                         <i class="uk-icon-folder-close"></i>
+                        <div>
+                            <ul class="uk-subnav uk-subnav-line">
+                                <li><a ng-click="action('rename', folder)" title="Rename folder"><i class="uk-icon-text-width"></i></a></li>
+                                <li><a ng-click="action('remove', folder)" title="Delete folder"><i class="uk-icon-minus-sign"></i></a></li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="uk-text-truncate mm-caption" title="@@ folder.name @@"><a href="#@@ folder.path @@" ng-click="updatepath(folder.path)">@@ folder.name @@</a></div>
                 </div>
             </li>
-            <li class="uk-width-medium-1-5 uk-grid-margin uk-visible-hover" ng-repeat="file in dir.files" data-ng-hide="(viewfilter=='folders' || !matchName(file.name))">
-                <div class="uk-panel">
-                    <div class="uk-button-group uk-hidden">
-                        <button class="uk-button" title="Rename file"><i class="uk-icon-text-width" ng-click="action('rename', file)"></i></button>
-                        <button class="uk-button" title="Download file"><i class="uk-icon-paper-clip" ng-click="action('download', file)"></i></button>
-                        <button class="uk-button" title="Delete file"><i class="uk-icon-minus-sign" ng-click="action('remove', file)"></i></button>
-                    </div>
+            <li class="uk-width-medium-1-5 uk-width-1-1 uk-float-left" ng-repeat="file in dir.files" data-ng-hide="(viewfilter=='folders' || !matchName(file.name))">
+                <div>
                     <div class="mm-type">
                         <i class="uk-icon-file"></i>
+                        <div>
+                            <ul class="uk-subnav uk-subnav-line">
+                                <li><a ng-click="action('rename', file)" title="Rename file"><i class="uk-icon-text-width"></i></a></li>
+                                <li><a ng-click="action('download', file)" title="Download file"><i class="uk-icon-paper-clip"></i></a></li>
+                                <li><a ng-click="action('remove', file)" title="Delete file"><i class="uk-icon-minus-sign"></i></a></li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="uk-text-truncate mm-caption" title="@@ file.name @@" ng-click="open(file)">@@ file.name @@</div>
                 </div>
@@ -86,23 +91,53 @@
 
 <style>
 
-    .media-dir > li > .uk-panel {
-        position: relative;
+    .media-dir {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .media-dir > li > div {
         padding: 10px;
         min-height: 100px;
     }
 
-    .media-dir > li .uk-button-group {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-    }
-
     .media-dir .mm-type {
+        position: relative;
         text-align: center;
-        font-size: 40px;
         padding: 15px;
     }
+
+    .media-dir .mm-type > i {
+        font-size: 40px;
+    }    
+
+    .media-dir .mm-type > div {
+        display: none;
+        position: absolute;
+        top: 45%;
+        left: 0;
+        right: 0;
+    }
+
+    .media-dir .mm-type:hover > div {
+        display: block;
+    }
+
+    .media-dir .mm-type > div > ul {
+        display: inline-block;
+        background: #eee;
+        background: rgba(0,0,0,0.75);
+        padding: 5px 20px;
+        border-radius: 3px;
+    }
+
+    .media-dir .mm-type > div a { 
+        color: #fff;
+        cursor: pointer; 
+    }
+
+
     .media-dir .mm-caption {
         text-align: center;
     }

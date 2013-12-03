@@ -1,0 +1,16 @@
+.loadie {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #3ea80d;
+	width: 0;
+	height: 4px;
+    -webkit-transition: width 0.5s ease-out;
+	transition: width 0.5s ease-out;
+	box-shadow: 0px 1px 5px rgba(0,0,0,0.25);
+	z-index: 1000;
+}
+
+body > .loadie {
+    position: fixed;
+}

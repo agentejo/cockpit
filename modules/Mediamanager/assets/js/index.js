@@ -87,7 +87,7 @@
                     return true;
                 }
 
-                return (name.indexOf($scope.namefilter) !== -1);
+                return (name.toLowerCase().indexOf($scope.namefilter.toLowerCase()) !== -1);
             };
 
             function requestapi(data, fn, type) {
@@ -127,7 +127,7 @@
 
             loadPath(currentpath);
 
-            var progessbar     = null,
+            var progessbar     = $('body').loadie(),
                 uploadsettings = {
                     "action": apiurl,
                     "single": true,
@@ -139,7 +139,8 @@
 
                     },
                     "progress": function(percent){
-
+                        console.log(percent)
+                        progessbar.loadie(percent/100);
                     },
                     "allcomplete": function(){
                         loadPath(currentpath);
