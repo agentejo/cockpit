@@ -3,7 +3,9 @@
     App.module.controller("mediamanager", function($scope, $rootScope, $http){
 
             var currentpath = location.hash ? location.hash.replace("#", ''):"/",
-                apiurl      = App.route('/mediamanager/api');
+                apiurl      = App.route('/mediamanager/api'),
+
+                imgpreview  = new $.UIkit.modal.Modal("#mm-image-preview");
 
             $scope.dir;
             $scope.breadcrumbs = [];
@@ -75,6 +77,9 @@
 
                 switch(media){
                     case "image":
+                        imgpreview.element.find('.modal-content').html('<img src="'+file.url+'" style="max-width:100%;height:auto;">');
+                        imgpreview.show();
+                        break;
                     case "text":
                     default:
                         alert("Sorry, this file type is not supported.");

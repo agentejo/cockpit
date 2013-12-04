@@ -73,7 +73,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="uk-text-truncate mm-caption" title="@@ file.name @@" ng-click="open(file)">@@ file.name @@</div>
+                    <div class="uk-text-truncate mm-caption" title="@@ file.name @@"><a href="#" ng-click="open(file)">@@ file.name @@</a></div>
                 </div>
             </li>
         </ul>
@@ -87,6 +87,12 @@
 
     </div>
 
+</div>
+
+<div id="mm-image-preview" class="uk-modal">
+    <div class="uk-modal-dialog">
+        <div class="modal-content uk-text-center"></div>
+    </div>
 </div>
 
 <style>
