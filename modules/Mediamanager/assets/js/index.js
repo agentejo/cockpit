@@ -13,6 +13,8 @@
             $scope.viewfilter = 'all';
             $scope.namefilter = '';
 
+            $scope.mode       = 'table';
+
             $scope.updatepath = function(path) {
                 loadPath(path);
             };

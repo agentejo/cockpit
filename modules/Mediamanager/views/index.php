@@ -27,6 +27,14 @@
     <div class="app-panel">
 
         <div class="uk-navbar uk-margin-large-bottom">
+            
+            <div class="uk-navbar-content">
+                <div class="uk-button-group">
+                    <button class="uk-button" data-ng-class="mode=='table' ? 'uk-button-danger':''" data-ng-click="(mode='table')" title="Table mode" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-list-alt"></i></button>
+                    <button class="uk-button" data-ng-class="mode=='list' ? 'uk-button-danger':''" data-ng-click="(mode='list')" title="List mode" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-th"></i></button>
+                </div>
+            </div>
+
             <div class="uk-navbar-content">
                 <span class="uk-alert uk-alert-warning" data-ng-show="dir && (dir.folders.length && viewfilter=='files')"><span class="uk-icon-bolt"></span> <strong>@@ dir.folders.length @@ folders are hidden</strong> via filter</span>
                 <span class="uk-alert uk-alert-warning" data-ng-show="dir && (dir.files.length && viewfilter=='folders')"><span class="uk-icon-bolt"></span> <strong>@@ dir.files.length @@ files are hidden</strong> via filter</span>
@@ -46,7 +54,7 @@
             </div>
         </div>
 
-        <ul class="uk-clearfix media-dir" data-ng-show="dir && (dir.folders.length || dir.files.length)">
+        <ul class="uk-clearfix media-dir" data-ng-show="mode=='list' && dir && (dir.folders.length || dir.files.length)">
             <li class="uk-width-medium-1-5 uk-width-1-1 uk-float-left" ng-repeat="folder in dir.folders" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
                 <div>
                     <div class="mm-type">
@@ -77,6 +85,47 @@
                 </div>
             </li>
         </ul>
+
+
+        <table class="uk-table" data-ng-show="mode=='table' && dir && (dir.folders.length || dir.files.length)">
+            <thead>
+                <tr>
+                    <th width="20"></th>
+                    <th>Name</th>
+                    <th class="uk-text-right">Size</th>
+                    <th class="uk-text-right">Lastmodified</th>
+                    <th class="uk-text-right">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="folder in dir.folders" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
+                   <td><i class="uk-icon-folder-close"></i></td> 
+                   <td><div class="uk-text-truncate" title="@@ folder.name @@"><a href="#@@ folder.path @@" ng-click="updatepath(folder.path)">@@ folder.name @@</a></div></td> 
+                   <td>&nbsp;</td> 
+                   <td>&nbsp;</td> 
+                   <td class="uk-text-right">
+                       <ul class="uk-subnav uk-subnav-line">
+                           <li><a ng-click="action('rename', folder)" title="Rename folder"><i class="uk-icon-text-width"></i></a></li>
+                           <li><a ng-click="action('remove', folder)" title="Delete folder"><i class="uk-icon-minus-sign"></i></a></li>
+                       </ul>
+                   </td>
+                </tr>
+
+                <tr ng-repeat="file in dir.files" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
+                   <td><i class="uk-icon-file"></i></td> 
+                   <td><div class="uk-text-truncate" title="@@ file.name @@"><a href="#" ng-click="open(file)">@@ file.name @@</a></div></td> 
+                   <td class="uk-text-right">@@ file.size @@</td> 
+                   <td class="uk-text-right">@@ file.lastmodified @@</td> 
+                   <td class="uk-text-right">
+                       <ul class="uk-subnav uk-subnav-line">
+                           <li><a ng-click="action('rename', file)" title="Rename file"><i class="uk-icon-text-width"></i></a></li>
+                           <li><a ng-click="action('download', file)" title="Download file"><i class="uk-icon-paper-clip"></i></a></li>
+                           <li><a ng-click="action('remove', file)" title="Delete file"><i class="uk-icon-minus-sign"></i></a></li>
+                       </ul>
+                   </td> 
+                </tr>
+            </tbody>
+        </table>
 
         <div class="uk-margin uk-text-center" data-ng-show="dir && (!dir.folders.length && !dir.files.length)">
             <h2><i class="uk-icon-folder-open-alt"></i></h2>
@@ -141,6 +190,15 @@
     .media-dir .mm-type > div a { 
         color: #fff;
         cursor: pointer; 
+    }
+
+    table.uk-table .uk-subnav {
+        padding: 0;
+        margin: 0;
+    }    
+
+    table.uk-table .uk-subnav a {
+        cursor: pointer;
     }
 
 
