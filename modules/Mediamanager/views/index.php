@@ -111,7 +111,7 @@
                    </td>
                 </tr>
 
-                <tr ng-repeat="file in dir.files" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
+                <tr ng-repeat="file in dir.files" data-type="folder" data-ng-hide="(viewfilter=='folders' || !matchName(file.name))">
                    <td><i class="uk-icon-file"></i></td> 
                    <td><div class="uk-text-truncate" title="@@ file.name @@"><a href="#" ng-click="open(file)">@@ file.name @@</a></div></td> 
                    <td class="uk-text-right">@@ file.size @@</td> 
