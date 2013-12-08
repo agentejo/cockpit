@@ -110,7 +110,6 @@ class Parsedown
 
 		foreach ($lines as $line)
 		{
-			#
 			# fenced elements
 
 			switch ($element['type'])
@@ -168,7 +167,6 @@ class Parsedown
 				continue;
 			}
 
-			#
 			# composite elements
 
 			switch ($element['type'])
@@ -223,6 +221,8 @@ class Parsedown
 
 							$element['lines'] []= $line;
 
+							unset($element['interrupted']);
+
 							continue 2;
 						}
 					}
@@ -238,7 +238,6 @@ class Parsedown
 					break;
 			}
 
-			#
 			# indentation sensitive types
 
 			$deindented_line = $line;
@@ -336,7 +335,6 @@ class Parsedown
 					break;
 			}
 
-			#
 			# indentation insensitive types
 
 			switch ($deindented_line[0])
@@ -572,7 +570,11 @@ class Parsedown
 
 					strpos($text, "\x1A\\") !== FALSE and $text = strtr($text, $this->escape_sequence_map);
 
-					$markup .= '<pre><code>'.$text.'</code></pre>'."\n";
+					$markup .= isset($element['language'])
+						? '<pre><code class="language-'.$element['language'].'">'.$text.'</code></pre>'
+						: '<pre><code>'.$text.'</code></pre>';
+
+					$markup .= "\n";
 
 					break;
 
@@ -627,6 +629,81 @@ class Parsedown
 
 		$index = 0;
 
+		# inline link / inline image (recursive)
+
+		if (strpos($text, '](') !== FALSE and preg_match_all('/(!?)(\[((?:[^\[\]]|(?2))*)\])\((.*?)\)/', $text, $matches, PREG_SET_ORDER))
+		{
+			foreach ($matches as $matches)
+			{
+				$url = $matches[4];
+
+				strpos($url, '&') !== FALSE and $url = preg_replace('/&(?!#?\w+;)/', '&amp;', $url);
+
+				if ($matches[1]) # image
+				{
+					$element = '<img alt="'.$matches[3].'" src="'.$url.'">';
+				}
+				else # link
+				{
+					$element_text = $this->parse_span_elements($matches[3]);
+
+					$element = '<a href="'.$url.'">'.$element_text.'</a>';
+				}
+
+				# ~
+
+				$code = "\x1A".'$'.$index;
+
+				$text = str_replace($matches[0], $code, $text);
+
+				$map[$code] = $element;
+
+				$index ++;
+			}
+		}
+
+		# reference link / reference image (recursive)
+
+		if ($this->reference_map and strpos($text, '[') !== FALSE and preg_match_all('/(!?)\[(.+?)\](?:\n?[ ]?\[(.*?)\])?/ms', $text, $matches, PREG_SET_ORDER))
+		{
+			foreach ($matches as $matches)
+			{
+				$link_definition = isset($matches[3]) && $matches[3]
+					? $matches[3]
+					: $matches[2]; # implicit
+
+				$link_definition = strtolower($link_definition);
+
+				if (isset($this->reference_map[$link_definition]))
+				{
+					$url = $this->reference_map[$link_definition];
+
+					strpos($url, '&') !== FALSE and $url = preg_replace('/&(?!#?\w+;)/', '&amp;', $url);
+
+					if ($matches[1]) # image
+					{
+						$element = '<img alt="'.$matches[2].'" src="'.$url.'">';
+					}
+					else # link
+					{
+						$element_text = $this->parse_span_elements($matches[2]);
+
+						$element = '<a href="'.$url.'">'.$element_text.'</a>';
+					}
+
+					# ~
+
+					$code = "\x1A".'$'.$index;
+
+					$text = str_replace($matches[0], $code, $text);
+
+					$map[$code] = $element;
+
+					$index ++;
+				}
+			}
+		}
+
 		# code span
 
 		if (strpos($text, '`') !== FALSE and preg_match_all('/`(.+?)`/', $text, $matches, PREG_SET_ORDER))
@@ -658,80 +735,7 @@ class Parsedown
 			}
 		}
 
-		# inline link or image
-
-		if (strpos($text, '](') !== FALSE and preg_match_all('/(!?)(\[((?:[^\[\]]|(?2))*)\])\((.*?)\)/', $text, $matches, PREG_SET_ORDER)) # inline
-		{
-			foreach ($matches as $matches)
-			{
-				$url = $matches[4];
-
-				strpos($url, '&') !== FALSE and $url = preg_replace('/&(?!#?\w+;)/', '&amp;', $url);
-
-				if ($matches[1]) # image
-				{
-					$element = '<img alt="'.$matches[3].'" src="'.$url.'">';
-				}
-				else
-				{
-					$element_text = $this->parse_span_elements($matches[3]);
-
-					$element = '<a href="'.$url.'">'.$element_text.'</a>';
-				}
-
-				# ~
-
-				$code = "\x1A".'$'.$index;
-
-				$text = str_replace($matches[0], $code, $text);
-
-				$map[$code] = $element;
-
-				$index ++;
-			}
-		}
-
-		# reference link or image
-
-		if ($this->reference_map and strpos($text, '[') !== FALSE and preg_match_all('/(!?)\[(.+?)\](?:\n?[ ]?\[(.*?)\])?/ms', $text, $matches, PREG_SET_ORDER))
-		{
-			foreach ($matches as $matches)
-			{
-				$link_definition = isset($matches[3]) && $matches[3]
-					? $matches[3]
-					: $matches[2]; # implicit
-
-				$link_definition = strtolower($link_definition);
-
-				if (isset($this->reference_map[$link_definition]))
-				{
-					$url = $this->reference_map[$link_definition];
-
-					strpos($url, '&') !== FALSE and $url = preg_replace('/&(?!#?\w+;)/', '&amp;', $url);
-
-					if ($matches[1]) # image
-					{
-						$element = '<img alt="'.$matches[2].'" src="'.$url.'">';
-					}
-					else # anchor
-					{
-						$element_text = $this->parse_span_elements($matches[2]);
-
-						$element = '<a href="'.$url.'">'.$element_text.'</a>';
-					}
-
-					# ~
-
-					$code = "\x1A".'$'.$index;
-
-					$text = str_replace($matches[0], $code, $text);
-
-					$map[$code] = $element;
-
-					$index ++;
-				}
-			}
-		}
+		# automatic link
 
 		if (strpos($text, '://') !== FALSE)
 		{
@@ -780,18 +784,15 @@ class Parsedown
 		if (strpos($text, '_') !== FALSE)
 		{
 			$text = preg_replace('/__(?=\S)([^_]+?)(?<=\S)__/s', '<strong>$1</strong>', $text, -1, $count);
-			$count or $text = preg_replace('/__(?=\S)(.+?)(?<=\S)__(?!_)/s', '<strong>$1</strong>', $text);
-
-			$text = preg_replace('/\b_(?=\S)(.+?)(?<=\S)_\b/s', '<em>$1</em>', $text);
+			$text = preg_replace('/(\b|_)_(?=\S)([^_]+?)(?<=\S)_(\b|_)/s', '$1<em>$2</em>$3', $text);
+			$text = preg_replace('/__(?=\S)([^_]+?)(?<=\S)__/s', '<strong>$1</strong>', $text, -1, $count);
 		}
 
 		if (strpos($text, '*') !== FALSE)
 		{
-			$text = preg_replace('/\*\*(?=\S)([^*]+?)(?<=\S)\*\*/s', '<strong>$1</strong>', $text, -1, $count);
-			$count or $text = preg_replace('/\*\*(?=\S)(.+?)(?<=\S)\*\*(?!\*)/s', '<strong>$1</strong>', $text);
-
-			$text = preg_replace('/\*(?=\S)([^*]+?)(?<=\S)\*/s', '<em>$1</em>', $text, -1, $count);
-			$count or $text = preg_replace('/\*(?=\S)(.+?)(?<=\S)\*(?!\*)/s', '<em>$1</em>', $text);
+			$text = preg_replace('/\*\*(?=\S)([^*]+?)(?<=\S)\*\*/s', '<strong>$1</strong>', $text);
+			$text = preg_replace('/\*(?=\S)([^*]+?)(?<=\S)\*/s', '<em>$1</em>', $text);
+			$text = preg_replace('/\*\*(?=\S)([^*]+?)(?<=\S)\*\*/s', '<strong>$1</strong>', $text);
 		}
 
 		$text = strtr($text, $map);
