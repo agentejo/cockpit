@@ -7,9 +7,9 @@
     <div class="uk-navbar uk-margin-large-bottom">
         <ul class="uk-navbar-nav">
             <span class="uk-navbar-brand">Mediamanager</span>
-            <li><a href="" class="uk-icon-plus-sign" ng-click="action('createfolder')">&nbsp; Folder</a></li>
+            <li><a href="" ng-click="action('createfolder')"><i class="uk-icon-plus-circle"></i>&nbsp; Folder</a></li>
             <li class="media-upload-button">
-                <a class="uk-icon-upload"></a>
+                <a><i class="uk-icon-upload"></i>&nbsp; </a>
                 <form id="frmMediaUpload" action="">
                     <input type="file" name="files[]" onchange="jQuery(this.form).trigger('submit')">
                 </form>
@@ -27,7 +27,7 @@
     <div class="app-panel">
 
         <div class="uk-navbar uk-margin-large-bottom">
-            
+
             <div class="uk-navbar-content">
                 <div class="uk-button-group">
                     <button class="uk-button" data-ng-class="mode=='table' ? 'uk-button-danger':''" data-ng-click="(mode='table')" title="Table mode" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-list-alt"></i></button>
@@ -42,12 +42,12 @@
             <div class="uk-navbar-flip">
                 <div class="uk-navbar-content uk-form">
                     <div class="uk-form-icon uk-hidden-small">
-                        <i class="uk-icon-eye-open"></i>
+                        <i class="uk-icon-eye"></i>
                         <input type="text" placeholder="Filter by name..." data-ng-model="namefilter">
                     </div>
                     <div class="uk-button-group">
                         <button class="uk-button" data-ng-class="viewfilter=='all' ? 'uk-button-primary':''" data-ng-click="(viewfilter='all')" title="Show files + directories" data-uk-tooltip="{pos:'bottom'}">All</button>
-                        <button class="uk-button" data-ng-class="viewfilter=='folders' ? 'uk-button-primary':''" data-ng-click="(viewfilter='folders')" title="Show only directories" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-folder-close"></i> <span class="uk-text-small">@@dir.folders.length@@</span></button>
+                        <button class="uk-button" data-ng-class="viewfilter=='folders' ? 'uk-button-primary':''" data-ng-click="(viewfilter='folders')" title="Show only directories" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-folder"></i> <span class="uk-text-small">@@dir.folders.length@@</span></button>
                         <button class="uk-button" data-ng-class="viewfilter=='files' ? 'uk-button-primary':''" data-ng-click="(viewfilter='files')" title="Show only files" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-file"></i> <span class="uk-text-small">@@dir.files.length@@</span></button>
                     </div>
                 </div>
@@ -58,11 +58,11 @@
             <li class="uk-width-medium-1-5 uk-width-1-1 uk-float-left" ng-repeat="folder in dir.folders" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
                 <div>
                     <div class="mm-type">
-                        <i class="uk-icon-folder-close"></i>
+                        <i class="uk-icon-folder"></i>
                         <div>
                             <ul class="uk-subnav uk-subnav-line">
                                 <li><a ng-click="action('rename', folder)" title="Rename folder"><i class="uk-icon-text-width"></i></a></li>
-                                <li><a ng-click="action('remove', folder)" title="Delete folder"><i class="uk-icon-minus-sign"></i></a></li>
+                                <li><a ng-click="action('remove', folder)" title="Delete folder"><i class="uk-icon-minus-circle"></i></a></li>
                             </ul>
                         </div>
                     </div>
@@ -76,8 +76,8 @@
                         <div>
                             <ul class="uk-subnav uk-subnav-line">
                                 <li><a ng-click="action('rename', file)" title="Rename file"><i class="uk-icon-text-width"></i></a></li>
-                                <li><a ng-click="action('download', file)" title="Download file"><i class="uk-icon-paper-clip"></i></a></li>
-                                <li><a ng-click="action('remove', file)" title="Delete file"><i class="uk-icon-minus-sign"></i></a></li>
+                                <li><a ng-click="action('download', file)" title="Download file"><i class="uk-icon-paperclip"></i></a></li>
+                                <li><a ng-click="action('remove', file)" title="Delete file"><i class="uk-icon-minus-circle"></i></a></li>
                             </ul>
                         </div>
                     </div>
@@ -99,36 +99,36 @@
             </thead>
             <tbody>
                 <tr ng-repeat="folder in dir.folders" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
-                   <td><i class="uk-icon-folder-close"></i></td> 
-                   <td><div class="uk-text-truncate" title="@@ folder.name @@"><a href="#@@ folder.path @@" ng-click="updatepath(folder.path)">@@ folder.name @@</a></div></td> 
-                   <td>&nbsp;</td> 
-                   <td>&nbsp;</td> 
+                   <td><i class="uk-icon-folder"></i></td>
+                   <td><div class="uk-text-truncate" title="@@ folder.name @@"><a href="#@@ folder.path @@" ng-click="updatepath(folder.path)">@@ folder.name @@</a></div></td>
+                   <td>&nbsp;</td>
+                   <td>&nbsp;</td>
                    <td class="uk-text-right">
                        <ul class="uk-subnav uk-subnav-line">
                            <li><a ng-click="action('rename', folder)" title="Rename folder"><i class="uk-icon-text-width"></i></a></li>
-                           <li><a ng-click="action('remove', folder)" title="Delete folder"><i class="uk-icon-minus-sign"></i></a></li>
+                           <li><a ng-click="action('remove', folder)" title="Delete folder"><i class="uk-icon-minus-circle"></i></a></li>
                        </ul>
                    </td>
                 </tr>
 
                 <tr ng-repeat="file in dir.files" data-type="folder" data-ng-hide="(viewfilter=='folders' || !matchName(file.name))">
-                   <td><i class="uk-icon-file"></i></td> 
-                   <td><div class="uk-text-truncate" title="@@ file.name @@"><a href="#" ng-click="open(file)">@@ file.name @@</a></div></td> 
-                   <td class="uk-text-right">@@ file.size @@</td> 
-                   <td class="uk-text-right">@@ file.lastmodified @@</td> 
+                   <td><i class="uk-icon-file"></i></td>
+                   <td><div class="uk-text-truncate" title="@@ file.name @@"><a href="#" ng-click="open(file)">@@ file.name @@</a></div></td>
+                   <td class="uk-text-right">@@ file.size @@</td>
+                   <td class="uk-text-right">@@ file.lastmodified @@</td>
                    <td class="uk-text-right">
                        <ul class="uk-subnav uk-subnav-line">
                            <li><a ng-click="action('rename', file)" title="Rename file"><i class="uk-icon-text-width"></i></a></li>
-                           <li><a ng-click="action('download', file)" title="Download file"><i class="uk-icon-paper-clip"></i></a></li>
-                           <li><a ng-click="action('remove', file)" title="Delete file"><i class="uk-icon-minus-sign"></i></a></li>
+                           <li><a ng-click="action('download', file)" title="Download file"><i class="uk-icon-paperclip"></i></a></li>
+                           <li><a ng-click="action('remove', file)" title="Delete file"><i class="uk-icon-minus-circle"></i></a></li>
                        </ul>
-                   </td> 
+                   </td>
                 </tr>
             </tbody>
         </table>
 
         <div class="uk-margin uk-text-center" data-ng-show="dir && (!dir.folders.length && !dir.files.length)">
-            <h2><i class="uk-icon-folder-open-alt"></i></h2>
+            <h2><i class="uk-icon-folder-open-o"></i></h2>
             <p class="uk-text-large">
                 This folder is empty.
             </p>
@@ -165,7 +165,7 @@
 
     .media-dir .mm-type > i {
         font-size: 40px;
-    }    
+    }
 
     .media-dir .mm-type > div {
         display: none;
@@ -187,15 +187,15 @@
         border-radius: 3px;
     }
 
-    .media-dir .mm-type > div a { 
+    .media-dir .mm-type > div a {
         color: #fff;
-        cursor: pointer; 
+        cursor: pointer;
     }
 
     table.uk-table .uk-subnav {
         padding: 0;
         margin: 0;
-    }    
+    }
 
     table.uk-table .uk-subnav a {
         cursor: pointer;

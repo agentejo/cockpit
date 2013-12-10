@@ -11,13 +11,13 @@
         <div class="uk-navbar-content">
             <form class="uk-form uk-margin-remove uk-display-inline-block">
                 <div class="uk-form-icon">
-                    <i class="uk-icon-eye-open"></i>
+                    <i class="uk-icon-eye"></i>
                     <input type="text" placeholder="Filter by name..." data-ng-model="filter">
                 </div>
             </form>
         </div>
         <ul class="uk-navbar-nav">
-            <li><a href="@route('/collections/collection')" title="Add collection" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-sign"></i></a></li>
+            <li><a href="@route('/collections/collection')" title="Add collection" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-circle"></i></a></li>
         </ul>
     </nav>
 
@@ -34,10 +34,10 @@
 
                 <div class="uk-margin uk-hidden uk-animation-fade">
                     <span class="uk-button-group">
-                        <a class="uk-button uk-button-small" href="@route('/collections/entries')/@@ collection._id @@" title="Show entries" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-reorder"></i></a>
-                        <a class="uk-button uk-button-small" href="@route('/collections/entry')/@@ collection._id @@" title="Create new entry" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-sign"></i></a>
+                        <a class="uk-button uk-button-small" href="@route('/collections/entries')/@@ collection._id @@" title="Show entries" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a>
+                        <a class="uk-button uk-button-small" href="@route('/collections/entry')/@@ collection._id @@" title="Create new entry" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
                         <a class="uk-button uk-button-small" href="@route('/collections/collection')/@@ collection._id @@" title="Edit collection" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
-                        <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, collection)" href="#" title="Delete collection" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-sign"></i></a>
+                        <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, collection)" href="#" title="Delete collection" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
                     </span>
                 </div>
             </div>

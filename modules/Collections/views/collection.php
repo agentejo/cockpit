@@ -62,7 +62,7 @@
                             </li>
                         </ul>
 
-                        <button data-ng-click="addfield()" type="button" class="uk-button uk-button-success"><i class="uk-icon-plus-sign" title="Add field"></i></button>
+                        <button data-ng-click="addfield()" type="button" class="uk-button uk-button-success"><i class="uk-icon-plus-circle" title="Add field"></i></button>
                     </div>
                     <br>
                     <br>
@@ -70,7 +70,7 @@
                     <div class="uk-form-row" data-ng-show="collection.fields && collection.fields.length">
                         <div class="uk-button-group">
                             <button type="submit" class="uk-button uk-button-primary uk-button-large">Save Collection</button>
-                            <a href="@route('/collections/entries')/@@ collection._id @@" class="uk-button uk-button-large" data-ng-show="collection._id"><i class="uk-icon-reorder"></i> Goto entries</a>
+                            <a href="@route('/collections/entries')/@@ collection._id @@" class="uk-button uk-button-large" data-ng-show="collection._id"><i class="uk-icon-bars"></i> Goto entries</a>
                         </div>
                         <a href="@route('/collections')">Cancel</a>
                     </div>

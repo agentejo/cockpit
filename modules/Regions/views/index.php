@@ -11,13 +11,13 @@
         <div class="uk-navbar-content">
             <form class="uk-form uk-margin-remove uk-display-inline-block">
                 <div class="uk-form-icon">
-                    <i class="uk-icon-eye-open"></i>
+                    <i class="uk-icon-eye"></i>
                     <input type="text" placeholder="Filter by name..." data-ng-model="filter">
                 </div>
             </form>
         </div>
         <ul class="uk-navbar-nav">
-            <li><a href="@route('/regions/region')" title="Add region" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-sign"></i></a></li>
+            <li><a href="@route('/regions/region')" title="Add region" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-circle"></i></a></li>
         </ul>
     </nav>
 
@@ -35,7 +35,7 @@
                 <div class="uk-margin uk-hidden uk-animation-fade">
                     <span class="uk-button-group">
                         <a class="uk-button uk-button-small" href="@route('/regions/region')/@@ region._id @@" title="Edit region" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
-                        <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, region)" href="#" title="Delete region" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-sign"></i></a>
+                        <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, region)" href="#" title="Delete region" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
                     </span>
                 </div>
             </div>

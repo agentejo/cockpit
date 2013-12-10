@@ -75,7 +75,7 @@
                            </li>
                        </ul>
 
-                       <button data-ng-click="addfield()" type="button" class="uk-button uk-button-success"><i class="uk-icon-plus-sign" title="Add field"></i></button>
+                       <button data-ng-click="addfield()" type="button" class="uk-button uk-button-success"><i class="uk-icon-plus-circle" title="Add field"></i></button>
                     </div>
 
                     <div ng-show="!manageform">

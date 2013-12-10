@@ -10,7 +10,7 @@
         <span class="uk-navbar-brand"><a class="app-link" href="@route("/collections")">Collections</a> / {{ $collection['name'] }}</span>
         <ul class="uk-navbar-nav">
             <li><a href="@route('/collections/collection/'.$collection["_id"])" title="Edit collection" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a></li>
-            <li><a href="@route('/collections/entry/'.$collection["_id"])" title="Add entry" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-sign"></i></a></li>
+            <li><a href="@route('/collections/entry/'.$collection["_id"])" title="Add entry" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a></li>
         </ul>
     </nav>
 
@@ -52,12 +52,12 @@
                             <td class="uk-text-right">
                                 <div data-uk-dropdown>
 
-                                    <i class="uk-icon-reorder"></i>
+                                    <i class="uk-icon-bars"></i>
 
                                     <div class="uk-dropdown uk-dropdown-flip uk-text-left">
                                         <ul class="uk-nav uk-nav-dropdown">
                                             <li><a href="@route('/collections/entry/'.$collection["_id"])/@@ entry._id @@"><i class="uk-icon-pencil"></i> Edit entry</a></li>
-                                            <li><a href="#" data-ng-click="remove($index, entry._id)"><i class="uk-icon-remove"></i> Delete Entry</li>
+                                            <li><a href="#" data-ng-click="remove($index, entry._id)"><i class="uk-icon-trash-o"></i> Delete Entry</li>
                                         </ul>
                                     </div>
                                 </div>

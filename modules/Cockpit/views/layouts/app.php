@@ -21,7 +21,7 @@
 
             <ul class="uk-navbar-nav">
                 <li class="uk-parent" data-uk-dropdown>
-                    <a href="@route('/dashboard')"><i class="uk-icon-reorder"></i><strong class="uk-hidden-small"> &nbsp;{{ $app['app.name'] }}</strong></a>
+                    <a href="@route('/dashboard')"><i class="uk-icon-bars"></i><strong class="uk-hidden-small"> &nbsp;{{ $app['app.name'] }}</strong></a>
                     <div class="uk-dropdown uk-dropdown-navbar">
                         <ul class="uk-nav uk-nav-navbar">
                             <li><a href="@route('/dashboard')"><i class="uk-icon-dashboard icon-spacer"></i> Dashboard</a></li>
@@ -32,7 +32,7 @@
                             <li><a href="@route('/settingspage')"><i class="uk-icon-cog icon-spacer"></i> Settings</a></li>
 
                             <li class="uk-nav-divider"></li>
-                            <li><a href="@route('/auth/logout')"><i class="uk-icon-off icon-spacer"></i> Logout</a></li>
+                            <li><a href="@route('/auth/logout')"><i class="uk-icon-power-off icon-spacer"></i> Logout</a></li>
                         </ul>
                     </div>
                 </li>
