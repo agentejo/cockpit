@@ -11,7 +11,7 @@
         <div class="uk-navbar-content">
             <form class="uk-form uk-margin-remove uk-display-inline-block">
                 <div class="uk-form-icon">
-                    <i class="uk-icon-eye"></i>
+                    <i class="uk-icon-filter"></i>
                     <input type="text" placeholder="Filter by name..." data-ng-model="filter">
                 </div>
             </form>

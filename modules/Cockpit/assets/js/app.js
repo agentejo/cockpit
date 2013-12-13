@@ -22,19 +22,7 @@
 
             notify: function(note, type){
 
-                if(!this.notify.modal) {
-                    this.notify.modal     = new $.UIkit.modal.Modal("#app-note");
-                    this.notify.container = this.notify.modal.element.find('.app-notices');
-                }
-
-                var alert = '<div class="uk-alert '+(type ? 'uk-alert-'+type:'')+'">'+note+'</div>';
-
-                if ( this.notify.modal.isActive() ) {
-                    this.notify.container.append(alert);
-                } else {
-                    this.notify.container.html("").append(alert);
-                    this.notify.modal.show();
-                }
+                $.UIkit.notify(note, type);
             },
 
             Ui: {

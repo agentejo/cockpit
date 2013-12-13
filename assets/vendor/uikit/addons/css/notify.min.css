@@ -1,0 +1,3 @@
+/*! UIkit 2.0.0 | http://www.getuikit.com | (c) 2013 YOOtheme | MIT License */
+
+.uk-notify-container{position:fixed;top:5px;right:5px;width:350px;font-size:13px;z-index:1000;-moz-box-sizing:border-box;box-sizing:border-box}.uk-notify-message{position:relative;padding:10px 20px 10px 10px;margin-bottom:5px;background:#39f;color:#fff;color:rgba(255,255,255,.8)}.uk-notify-message>.uk-close{position:absolute;right:5px;top:10px}.uk-notify-message>strong{color:#fff}.uk-notify-message>span{position:absolute;left:10px;top:13px}.uk-notify-message.uk-notify-message-icon{padding-left:30px}.uk-notify-message[data-status=success]{background:#8cc14c}.uk-notify-message[data-status=warning]{background:#faa732}.uk-notify-message[data-status=danger]{background:#da314b}

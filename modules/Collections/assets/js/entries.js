@@ -31,6 +31,8 @@
                     $scope.entries.splice(index, 1);
                     $scope.collection.count -= 1;
 
+                    App.notify("Entry removed", "success");
+
                 }).error(App.module.callbacks.error.http);
             }
         };

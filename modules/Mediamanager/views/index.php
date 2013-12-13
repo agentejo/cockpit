@@ -42,7 +42,7 @@
             <div class="uk-navbar-flip">
                 <div class="uk-navbar-content uk-form">
                     <div class="uk-form-icon uk-hidden-small">
-                        <i class="uk-icon-eye"></i>
+                        <i class="uk-icon-filter"></i>
                         <input type="text" placeholder="Filter by name..." data-ng-model="namefilter">
                     </div>
                     <div class="uk-button-group">

@@ -19,6 +19,8 @@
 
                     $scope.collections.splice(index, 1);
 
+                    App.notify("Collection removed", "success");
+
                 }).error(App.module.callbacks.error.http);
             }
         };

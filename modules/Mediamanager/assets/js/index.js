@@ -31,6 +31,8 @@
 
                             var index = $scope.dir[item.is_file ? "files":"folders"].indexOf(item);
                             $scope.dir[item.is_file ? "files":"folders"].splice(index, 1);
+
+                            App.notify("File(s) deleted", "success");
                         }
                         break;
 

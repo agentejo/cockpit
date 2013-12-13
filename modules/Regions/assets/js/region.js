@@ -59,7 +59,7 @@
 
                 if(data && Object.keys(data).length) {
                     $scope.region = data;
-                    App.notify("Region saved!");
+                    App.notify("Region saved!", "success");
                 }
 
             }).error(App.module.callbacks.error.http);
