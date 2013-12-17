@@ -17,14 +17,14 @@
         </ul>
     </div>
 
-    <div class="uk-margin uk-panel uk-panel-box">
-        <ul class="uk-breadcrumb">
-            <li ng-click="updatepath('/')"><a href="#/" title="Change dir to root"><i class="uk-icon-home"></i></a></li>
-            <li ng-repeat="crumb in breadcrumbs"><a href="#@@ crumb.path @@" ng-click="updatepath(crumb.path)" title="Change dir to @@ crumb.name @@">@@ crumb.name @@</a></li>
-        </ul>
-    </div>
-
     <div class="app-panel">
+
+        <div class="uk-panel app-panel-box docked">
+            <ul class="uk-breadcrumb">
+                <li ng-click="updatepath('/')"><a href="#/" title="Change dir to root"><i class="uk-icon-home"></i></a></li>
+                <li ng-repeat="crumb in breadcrumbs"><a href="#@@ crumb.path @@" ng-click="updatepath(crumb.path)" title="Change dir to @@ crumb.name @@">@@ crumb.name @@</a></li>
+            </ul>
+        </div>
 
         <div class="uk-navbar uk-margin-large-bottom">
 
@@ -209,6 +209,7 @@
     .media-upload-button {
         position: relative;
         overflow: hidden;
+        cursor: pointer;
     }
     .media-upload-button form {
         opacity: 0;
@@ -219,5 +220,6 @@
         left:0;
         font-size: 500px;
     }
+    .media-upload-button * { cursor: pointer; }
 
 </style>
