@@ -81,7 +81,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="uk-text-truncate mm-caption" title="@@ file.name @@"><a href="#" ng-click="open(file)">@@ file.name @@</a></div>
+                    <div class="uk-text-truncate mm-caption" title="@@ file.name @@"><a ng-click="open(file)">@@ file.name @@</a></div>
                 </div>
             </li>
         </ul>
@@ -113,7 +113,7 @@
 
                 <tr ng-repeat="file in dir.files" data-type="folder" data-ng-hide="(viewfilter=='folders' || !matchName(file.name))">
                    <td><i class="uk-icon-file"></i></td>
-                   <td><div class="uk-text-truncate" title="@@ file.name @@"><a href="#" ng-click="open(file)">@@ file.name @@</a></div></td>
+                   <td><div class="uk-text-truncate" title="@@ file.name @@"><a ng-click="open(file)">@@ file.name @@</a></div></td>
                    <td class="uk-text-right">@@ file.size @@</td>
                    <td class="uk-text-right">@@ file.lastmodified @@</td>
                    <td class="uk-text-right">
@@ -145,6 +145,10 @@
 </div>
 
 <style>
+
+    .app-panel a {
+        cursor: pointer;
+    }
 
     .media-dir {
         list-style: none;
@@ -196,11 +200,6 @@
         padding: 0;
         margin: 0;
     }
-
-    table.uk-table .uk-subnav a {
-        cursor: pointer;
-    }
-
 
     .media-dir .mm-caption {
         text-align: center;

@@ -86,7 +86,7 @@
                         break;
                     case "text":
                     default:
-                        alert("Sorry, this file type is not supported.");
+                        App.notify("Sorry, this file type is not supported.");
                 }
             };
 
