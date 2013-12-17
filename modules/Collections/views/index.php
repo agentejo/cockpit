@@ -1,7 +1,7 @@
 {{ $app->assets(['collections:assets/collections.js','collections:assets/js/index.js']) }}
 
 <style>
-    .app-panel-box { min-height: 155px; }
+    .app-panel-box { min-height: 175px; }
 </style>
 
 <div data-ng-controller="collections">

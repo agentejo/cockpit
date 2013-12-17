@@ -17,7 +17,7 @@
                 }
 
                 opts = angular.extend({
-                    lineNumbers: false,
+                    lineNumbers: true,
                     styleActiveLine: true,
                     matchBrackets: true,
                     mode: 'text',

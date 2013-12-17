@@ -15,7 +15,7 @@ class Mediamanager extends \Cockpit\Controller {
 
         $cmd  = $this->param("cmd", false);
 
-        $this->root = rtrim($this->app->path("uploads:"), '/');
+        $this->root = rtrim($this->app->path("site:"), '/');
 
         if(file_exists($this->root) && in_array($cmd, get_class_methods($this))){
             return $this->{$cmd}();

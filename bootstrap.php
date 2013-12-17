@@ -24,9 +24,9 @@ function cockpit($module = null) {
 
         $app->path('data'    , __DIR__.'/storage/data');
         $app->path('cache'   , __DIR__.'/storage/cache');
-        $app->path('uploads' , __DIR__.'/storage/uploads');
         $app->path('modules' , __DIR__.'/modules');
         $app->path('assets'  , __DIR__.'/assets');
+        $app->path('site'    , dirname(__DIR__));
 
         $app->service('data', function() use($app) {
 
