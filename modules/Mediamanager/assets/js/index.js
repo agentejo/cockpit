@@ -71,11 +71,11 @@
 
                 var media = false;
 
-                if(file.name.match(/\.(jpg|jpeg|png|gif)/i)) {
+                if(file.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
                     media = "image";
                 }
 
-                if(file.name.match(/\.(txt|md|php|js|css|scss|sass|less|htm|html|json|xml|svg)/i)) {
+                if(file.name.match(/\.(txt|md|php|js|css|scss|sass|less|htm|html|json|xml|svg)$/i)) {
                     media = "text";
                 }
 
@@ -148,7 +148,6 @@
 
                     },
                     "progress": function(percent){
-                        console.log(percent)
                         progessbar.loadie(percent/100);
                     },
                     "allcomplete": function(){
