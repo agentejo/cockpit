@@ -53,7 +53,7 @@ class Mediamanager extends \Cockpit\Controller {
                         "is_writable" => is_writable($file->getPathname()),
                         "name" => $filename,
                         "path" => trim($path.'/'.$file->getFilename(), '/'),
-                        "url"  => str_replace($_SERVER['DOCUMENT_ROOT'], '', $file->getPathname()),
+                        "url"  => $this->app->pathToUrl($file->getPathname()),
                         "size" => $file->isDir() ? "" : $this->formatFileSize($file->getSize()),
                         "lastmodified" => $file->isDir() ? "" : date("d.m.y H:m", $file->getMTime()),
                     );

@@ -34,4 +34,20 @@ class Settings extends \Cockpit\Controller {
         return $this->render('cockpit:views/settings/account.php', compact('account'));
     }
 
+    public function info() {
+
+        $info                  = [];
+        $info['system']        = php_uname();
+        $info['phpversion']    = phpversion();
+        $info['sapi_name']     = php_sapi_name();
+
+        $info['folders']       = [];
+
+        foreach (['cache:', 'cache:assets', 'cache:thumbs', 'data:'] as $dir) {
+            $info['folders'][$dir] = is_writable($this->app->path($dir));
+        }
+
+        return $this->render('cockpit:views/settings/info.php', compact('info'));
+    }
+
 }
