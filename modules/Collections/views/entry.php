@@ -15,7 +15,7 @@
 
 <div data-ng-controller="entry" data-collection='{{ json_encode($collection) }}' data-entry='{{ json_encode($entry) }}'>
 
-    <h1><a class="app-link" href="@route("/collections")">Collections</a> / <a class="app-link" href="@route("/collections/entries")/@@ collection._id @@">@@ collection.name @@</a> / Entry</h1>
+    <h1><a href="@route("/collections")">Collections</a> / <a href="@route("/collections/entries")/@@ collection._id @@">@@ collection.name @@</a> / Entry</h1>
 
     <form class="uk-form" data-ng-submit="save()" data-ng-show="collection">
 
