@@ -5,7 +5,15 @@
 (function($){
   angular.module('cockpit.directives').directive("wysiwyg", function($timeout){
 
-      var defaultConfig = {}, generatedIds  = 0;
+      var generatedIds  = 0,
+          defaultConfig = {
+            plugins: [
+                     "advlist autolink link image lists charmap print preview hr anchor pagebreak",
+                     "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+                     "save table contextmenu directionality emoticons template paste textcolor"
+            ],
+            height: 350
+          };
       
       return {
         

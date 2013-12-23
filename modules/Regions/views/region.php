@@ -46,6 +46,8 @@
                                     <span ng-show="manageform">Done</span>
                                 </a>
 
+                                <hr>
+
                             </div>
 
                             <div class="uk-alert" ng-show="region && !region.fields.length">
