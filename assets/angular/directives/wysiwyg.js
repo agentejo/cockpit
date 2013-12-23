@@ -8,15 +8,20 @@
       var defaultConfig = {}, generatedIds  = 0;
       
       return {
+        
         require: 'ngModel',
+        restrict: 'A',
+
         link: function (scope, elm, attrs, ngModel) {
+          
           var expression, options, tinyInstance,
-            updateView = function () {
-              ngModel.$setViewValue(elm.val());
-              if (!scope.$root.$$phase) {
-                scope.$apply();
-              }
-            };
+              updateView = function () {
+                ngModel.$setViewValue(elm.val());
+                if (!scope.$root.$$phase) {
+                  scope.$apply();
+                }
+              };
+
           // generate an ID if not present
           if (!attrs.id) {
             attrs.$set('id', 'wysiwyg' + generatedIds++);
@@ -27,6 +32,7 @@
           } else {
             expression = {};
           }
+
           options = {
             // Update model when calling setContent (such as from the source editor popup)
             setup: function (ed) {
@@ -62,10 +68,10 @@
           
           // extend options with initial defaultConfig and options from directive attribute value
           angular.extend(options, defaultConfig, expression);
+
           setTimeout(function () {
             tinymce.init(options);
           });
-
 
           ngModel.$render = function() {
             if (!tinyInstance) {
@@ -77,6 +83,7 @@
           };
         }
       };
-    }]);
+
+    });
 
 })(jQuery);

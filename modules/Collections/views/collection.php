@@ -40,6 +40,7 @@
                                     <option value="select">Select</option>
                                     <option value="boolean">Boolean</option>
                                     <option value="html">Html</option>
+                                    <option value="wysiwyg">Html (WYSIWYG)</option>
                                     <option value="code">Code</option>
                                     <option value="date">Date</option>
                                     <option value="time">Time</option>

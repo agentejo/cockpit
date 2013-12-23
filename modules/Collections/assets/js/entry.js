@@ -32,7 +32,7 @@
                 
                 fields = $scope.collection.fields.filter(function(field){
 
-                    return (['text','html', 'markdown','code'].indexOf(field.type) > -1);
+                    return (['text','html', 'markdown','code','wysiwyg'].indexOf(field.type) > -1);
                 });
 
             }

@@ -41,7 +41,7 @@
     <div>
         <div class="uk-animation-fade app-login-box">
             <div class="app-login-box-container">
-                <h1>{{ $app['app.name'] }}</h1>
+                <h1>Welcome back!</h1>
 
                 <p class="uk-text-muted">
                     Please login by using your auth credentials.

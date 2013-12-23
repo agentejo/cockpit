@@ -8,6 +8,8 @@
 {{ $app->assets(['assets:vendor/codemirror/addon/edit/matchbrackets.js', 'assets:vendor/codemirror/addon/selection/active-line.js']) }}
 {{ $app->assets(['assets:angular/directives/codearea.js']) }}
 
+{{ $app->assets(['assets:vendor/tinymce/tinymce.min.js']) }}
+{{ $app->assets(['assets:angular/directives/wysiwyg.js']) }}
 
 <style>
     textarea { min-height: 150px; }
@@ -34,6 +36,10 @@
 
                         <div data-ng-switch-when="code">
                             <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]"></textarea>
+                        </div>
+
+                        <div data-ng-switch-when="wysiwyg">
+                            <textarea wysiwyg class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]"></textarea>
                         </div>
 
                         <div data-ng-switch-default>
