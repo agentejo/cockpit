@@ -21,7 +21,13 @@ $this->module("regions")->render = function($name, $params = []) use($app) {
 
     $fields = array_merge($fields, $params);
 
-    return $renderer->execute($region["tpl"], $fields);
+    $app->trigger("region_before_render", [$name, $region["tpl"], $fields]);
+
+    $output = $renderer->execute($region["tpl"], $fields);
+
+    $app->trigger("region_after_render", [$name, $output]);
+
+    return $output;
 };
 
 if(!function_exists("region")) {

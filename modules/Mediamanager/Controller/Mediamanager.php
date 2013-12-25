@@ -170,7 +170,7 @@ class Mediamanager extends \Cockpit\Controller {
         $file = $this->root.'/'.trim($path, '/');
 
         if($path && file_exists($file)) {
-            return file_get_contents($file);
+            echo file_get_contents($file);
         }
 
         $this->app->stop();

@@ -1,6 +1,9 @@
+{{ $app->assets(['assets:vendor/codemirror/lib/codemirror.js','assets:vendor/codemirror/lib/codemirror.css','assets:vendor/codemirror/theme/monokai.css']) }}
+
 {{ $app->assets(['assets:vendor/ajaxupload.js']) }}
 {{ $app->assets(['assets:vendor/loadie/jquery.loadie.js', 'assets:vendor/loadie/loadie.css']) }}
 {{ $app->assets(['mediamanager:assets/js/index.js']) }}
+
 
 <div class="app-wrapper" data-ng-controller="mediamanager">
 
@@ -144,6 +147,23 @@
     </div>
 </div>
 
+<div id="mm-editor">
+    <nav class="uk-navbar">
+        <div class="uk-navbar-content">
+            <i class="uk-icon-pencil"></i> &nbsp; <strong class="uk-text-small filename"></strong>
+        </div>
+        <ul class="uk-navbar-nav">
+            <li><a data-editor-action="save" title="Save file" data-uk-tooltip><i class="uk-icon-save"></i></a></li>
+        </ul>
+        <div class="uk-navbar-flip">
+            <ul class="uk-navbar-nav">
+                <li><a data-editor-action="close" title="Close file" data-uk-tooltip><i class="uk-icon-times"></i></a></li>
+            </ul>
+        </div>
+    </nav>
+    <textarea></textarea>
+</div>
+
 <style>
 
     .app-panel a {
@@ -220,5 +240,32 @@
         font-size: 500px;
     }
     .media-upload-button * { cursor: pointer; }
+
+
+    /* editor */
+
+    #mm-editor {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.3);
+        border: 10px rgba(0,0,0,0.3) solid;
+        z-index: 100;
+    }
+
+    #mm-editor .uk-navbar {
+        background: #f7f7f7;
+        border-radius: 3px 3px 0 0;
+    }
+
+    #mm-editor .CodeMirror {
+        border: none;
+        border-radius:  0 0 3px 3px;
+    }
+
+    #mm-editor a { cursor: pointer; }
 
 </style>

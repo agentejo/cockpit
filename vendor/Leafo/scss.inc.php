@@ -43,7 +43,7 @@
  * @author Leaf Corcoran <leafot@gmail.com>
  */
 class scssc {
-	static public $VERSION = "v0.0.8";
+	static public $VERSION = "v0.0.9";
 
 	static protected $operatorNames = array(
 		'+' => "add",
@@ -67,7 +67,6 @@ class scssc {
 		"function" => "^",
 	);
 
-	static protected $numberPrecision = 5;
 	static protected $unitTable = array(
 		"in" => array(
 			"in" => 1,
@@ -91,9 +90,11 @@ class scssc {
 
 	protected $userFunctions = array();
 
+	protected $numberPrecision = 5;
+
 	protected $formatter = "scss_formatter_nested";
 
-	function compile($code, $name=null) {
+	public function compile($code, $name=null) {
 		$this->indentLevel = -1;
 		$this->commentsSeen = array();
 		$this->extends = array();
@@ -186,6 +187,13 @@ class scssc {
 			$rem = array_diff($single, $target);
 
 			foreach ($origin as $j => $new) {
+				// prevent infinite loop when target extends itself
+				foreach ($new as $new_selector) {
+					if (!array_diff($single, $new_selector)) {
+						continue 2;
+					}
+				}
+
 				$origin[$j][count($origin[$j]) - 1] = $this->combineSelectorSingle(end($new), $rem);
 			}
 
@@ -1132,7 +1140,7 @@ class scssc {
 		return $this->toBool($left[1] < $right[1]);
 	}
 
-	protected function toBool($thing) {
+	public function toBool($thing) {
 		return $thing ? self::$true : self::$false;
 	}
 
@@ -1180,7 +1188,7 @@ class scssc {
 
 			return $h;
 		case "number":
-			return round($value[1], self::$numberPrecision) . $value[2];
+			return round($value[1], $this->numberPrecision) . $value[2];
 		case "string":
 			return $value[1] . $this->compileStringContent($value) . $value[1];
 		case "function":
@@ -1451,24 +1459,22 @@ class scssc {
 		}
 	}
 
-	// todo: this is bugged?
 	protected function setExisting($name, $value, $env = null) {
 		if (is_null($env)) $env = $this->getStoreEnv();
 
-		if (isset($env->store[$name])) {
+		if (isset($env->store[$name]) || is_null($env->parent)) {
 			$env->store[$name] = $value;
-		} elseif (!is_null($env->parent)) {
-			$this->setExisting($name, $value, $env->parent);
 		} else {
-			$this->env->store[$name] = $value;
+			$this->setExisting($name, $value, $env->parent);
 		}
 	}
 
 	protected function setRaw($name, $value) {
-		$this->env->store[$name] = $value;
+		$env = $this->getStoreEnv();
+		$env->store[$name] = $value;
 	}
 
-	protected function get($name, $defaultValue = null, $env = null) {
+	public function get($name, $defaultValue = null, $env = null) {
 		$name = $this->normalizeName($name);
 
 		if (is_null($env)) $env = $this->getStoreEnv();
@@ -1499,6 +1505,10 @@ class scssc {
 
 	public function setImportPaths($path) {
 		$this->importPaths = (array)$path;
+	}
+
+	public function setNumberPrecision($numberPrecision) {
+		$this->numberPrecision = $numberPrecision;
 	}
 
 	public function setFormatter($formatterName) {
@@ -1534,7 +1544,7 @@ class scssc {
 	}
 
 	// results the file path for an import url if it exists
-	protected function findImport($url) {
+	public function findImport($url) {
 		$urls = array();
 
 		// for "normal" scss imports (ignore vanilla css and external requests)
@@ -1690,18 +1700,18 @@ class scssc {
 		return null;
 	}
 
-	protected function assertList($value) {
+	public function assertList($value) {
 		if ($value[0] != "list")
 			$this->throwError("expecting list");
 		return $value;
 	}
 
-	protected function assertColor($value) {
+	public function assertColor($value) {
 		if ($color = $this->coerceColor($value)) return $color;
 		$this->throwError("expecting color");
 	}
 
-	protected function assertNumber($value) {
+	public function assertNumber($value) {
 		if ($value[0] != "number")
 			$this->throwError("expecting number");
 		return $value[1];
@@ -1727,7 +1737,7 @@ class scssc {
 		return $c;
 	}
 
-	function toHSL($red, $green, $blue) {
+	public function toHSL($red, $green, $blue) {
 		$r = $red / 255;
 		$g = $green / 255;
 		$b = $blue / 255;
@@ -1756,7 +1766,7 @@ class scssc {
 		return array('hsl', fmod($h, 360), $s * 100, $l * 100);
 	}
 
-	function hueToRGB($m1, $m2, $h) {
+	public function hueToRGB($m1, $m2, $h) {
 		if ($h < 0)
 			$h += 1;
 		elseif ($h > 1)
@@ -1775,7 +1785,7 @@ class scssc {
 	}
 
 	// H from 0 to 360, S and L from 0 to 100
-	function toRGB($hue, $saturation, $lightness) {
+	public function toRGB($hue, $saturation, $lightness) {
 		if ($hue < 0) {
 			$hue += 360;
 		}
@@ -2355,7 +2365,7 @@ class scssc {
 		return array('string', '', array('counter(' . implode(',', $list) . ')'));
 	}
 
-	protected function throwError($msg = null) {
+	public function throwError($msg = null) {
 		if (func_num_args() > 1) {
 			$msg = call_user_func_array("sprintf", func_get_args());
 		}
@@ -2560,7 +2570,7 @@ class scss_parser {
 	static protected $commentMultiLeft = "/*";
 	static protected $commentMultiRight = "*/";
 
-	function __construct($sourceName = null, $rootParser = true) {
+	public function __construct($sourceName = null, $rootParser = true) {
 		$this->sourceName = $sourceName;
 		$this->rootParser = $rootParser;
 
@@ -2580,7 +2590,7 @@ class scss_parser {
 			$operators)).')';
 	}
 
-	function parse($buffer) {
+	public function parse($buffer) {
 		$this->count = 0;
 		$this->env = null;
 		$this->inParens = false;
@@ -4308,10 +4318,12 @@ class scss_server {
 
 	/**
 	 * Compile requested scss and serve css.  Outputs HTTP response.
+	 *
+	 * @param string $salt Prefix a string to the filename for creating the cache name hash
 	 */
-	public function serve() {
+	public function serve($salt = '') {
 		if ($input = $this->findInput()) {
-			$output = $this->cacheName($input);
+			$output = $this->cacheName($salt . $input);
 			header('Content-type: text/css');
 
 			if ($this->needsCompile($input, $output)) {

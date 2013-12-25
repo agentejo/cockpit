@@ -1,5 +1,127 @@
 (function($){
 
+    var Editor = {
+        
+        init: function($scope) {
+
+            if (this.element) {
+                return;
+            }
+
+            var $this = this;
+
+            this.scope   = $scope;
+
+            this.element = $("#mm-editor");
+            this.toolbar = this.element.find("nav");
+            this.code    = CodeMirror.fromTextArea(this.element.find("textarea")[0], {
+                               lineNumbers: true,
+                               theme: 'monokai'
+                           });
+
+            this.filename = this.element.find(".filename");
+
+            this.resize();
+
+            $(window).on("resize", $.UIkit.Utils.debounce(function(){
+                $this.resize();
+            }, 150));
+
+
+            this.element.on("click", "[data-editor-action]", function(){
+
+                switch($(this).data("editorAction")) {
+                    case "close":
+                        $this.close();
+                        break;
+                    case "save":
+                        $this.save();
+                        break;
+                }
+            });
+        },
+
+        resize: function(){
+
+            if(!this.element.is(":visible")) {
+                return;
+            }
+
+            var wrap = this.code.getWrapperElement();
+
+            wrap.style.height = (this.element.height() - this.toolbar.height())+"px";
+            this.code.refresh();
+        },
+
+        save: function(){
+            
+            if(!this.file) {
+                return;
+            }
+
+            if(!this.file.is_writable) {
+                App.notify("This file is not writable!", "danger");
+                return;
+            }
+
+            this.scope.saveFile(this.file, this.code.getValue());
+        },
+
+        show: function(file, content){
+            
+            var ext  = file.name.split('.').pop().toLowerCase(),
+                mode = "text";
+
+            this.code.setOption("mode", "text");
+
+            switch(ext) {
+                case 'css':
+                case 'less':
+                case 'sql':
+                case 'xml':
+                case 'markdown':
+                    mode = ext;
+                    break;
+                case 'js':
+                    mode = 'javascript';
+                    break;
+                case 'md':
+                    mode = 'markdown';
+                    break;
+                case 'php':
+                    mode = 'php';
+                    break;
+            }
+
+            // autoload modes
+            if(mode!='text') {
+                App.assets.require(['/assets/vendor/codemirror/mode/%N/%N.js'.replace(/%N/g, mode)], function(){
+                    Editor.code.setOption("mode", mode);
+                });
+            }
+
+            this.filename.text(file.name);
+
+            this.code.setValue(content);
+
+            this.element.show();
+            this.resize();
+
+            setTimeout(function(){
+                Editor.code.focus();
+            }, 50);
+
+            this.file = file;
+        },
+
+        close: function(){
+            this.file = null;
+            this.element.hide();
+        }
+    };
+
+
+
     App.module.controller("mediamanager", function($scope, $rootScope, $http){
 
             var currentpath = location.hash ? location.hash.replace("#", ''):"/",
@@ -85,9 +207,24 @@
                         imgpreview.show();
                         break;
                     case "text":
+                        
+                        requestapi({"cmd":"readfile", "path": file.path}, function(content){
+                            Editor.show(file, content);
+                        }, "text");
+
+                        
+                        break;
                     default:
                         App.notify("Sorry, this file type is not supported.");
                 }
+            };
+
+
+            $scope.saveFile = function(file, content) {
+
+                requestapi({"cmd":"writefile", "path": file.path, "content":content}, function(status){
+                    App.notify("File saved", "success");
+                }, "text");
             };
 
             $scope.matchName = function(name) {
@@ -160,6 +297,8 @@
 
             $("body").uploadOnDrag(uploadsettings);
             $("#frmMediaUpload").ajaxform(uploadsettings);
+
+            Editor.init($scope);
 
     });
 

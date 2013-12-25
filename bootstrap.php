@@ -37,7 +37,7 @@ function cockpit($module = null) {
 
         $app->service('memory', function() use($app) {
 
-            $client = new RedisLite(sprintf("%s/common.memory.sqlite", $app->path('data:')));
+            $client = new RedisLite(sprintf("%s/cockpit.memory.sqlite", $app->path('data:')));
 
             return $client;
         });
