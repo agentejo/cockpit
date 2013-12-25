@@ -20,6 +20,7 @@
         <ul class="uk-navbar-nav">
             <span class="uk-navbar-brand">Mediamanager</span>
             <li><a href="" ng-click="action('createfolder')"><i class="uk-icon-plus-circle"></i>&nbsp; Folder</a></li>
+            <li><a href="" ng-click="action('createfile')"><i class="uk-icon-plus-circle"></i>&nbsp; File</a></li>
             <li class="media-upload-button">
                 <a><i class="uk-icon-upload"></i>&nbsp; </a>
                 <form id="frmMediaUpload" action="">

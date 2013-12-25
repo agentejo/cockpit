@@ -85,6 +85,7 @@
                     mode = ext;
                     break;
                 case 'js':
+                case 'json':
                     mode = 'javascript';
                     break;
                 case 'md':
@@ -185,6 +186,18 @@
 
                         if($.trim(name)) {
                             requestapi({"cmd":"createfolder", "path": currentpath, "name":name}, function(){
+                                loadPath(currentpath);
+                            });
+                        }
+
+                        break;
+
+                    case "createfile":
+
+                        var name = prompt("Please enter a filename:", "");
+
+                        if($.trim(name)) {
+                            requestapi({"cmd":"createfile", "path": currentpath, "name":name}, function(){
                                 loadPath(currentpath);
                             });
                         }
