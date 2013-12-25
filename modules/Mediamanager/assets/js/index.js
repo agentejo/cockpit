@@ -16,6 +16,8 @@
             this.toolbar = this.element.find("nav");
             this.code    = CodeMirror.fromTextArea(this.element.find("textarea")[0], {
                                lineNumbers: true,
+                               styleActiveLine: true,
+                               matchBrackets: true,
                                theme: 'monokai'
                            });
 
@@ -96,7 +98,14 @@
             // autoload modes
             if(mode!='text') {
                 App.assets.require(['/assets/vendor/codemirror/mode/%N/%N.js'.replace(/%N/g, mode)], function(){
-                    Editor.code.setOption("mode", mode);
+                    
+                    switch(mode) {
+                        case "php":
+                            Editor.code.setOption("mode", "application/x-httpd-php");
+                            break;
+                        default:
+                          Editor.code.setOption("mode", mode);  
+                    }
                 });
             }
 
