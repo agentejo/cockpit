@@ -3,9 +3,17 @@
 {{ $app->assets(['mediamanager:assets/pathpicker.directive.js']) }}
 
 {{ $app->assets(['assets:vendor/codemirror/lib/codemirror.js','assets:vendor/codemirror/lib/codemirror.css','assets:vendor/codemirror/theme/monokai.css']) }}
+
 {{ $app->assets(['assets:vendor/codemirror/mode/xml/xml.js']) }}
 {{ $app->assets(['assets:vendor/codemirror/mode/htmlmixed/htmlmixed.js']) }}
-{{ $app->assets(['assets:vendor/codemirror/addon/edit/matchbrackets.js', 'assets:vendor/codemirror/addon/selection/active-line.js']) }}
+{{ $app->assets(['assets:vendor/codemirror/mode/javascript/javascript.js']) }}
+{{ $app->assets(['assets:vendor/codemirror/mode/css/css.js']) }}
+{{ $app->assets(['assets:vendor/codemirror/mode/clike/clike.js']) }}
+{{ $app->assets(['assets:vendor/codemirror/mode/php/php.js']) }}
+
+{{ $app->assets(['assets:vendor/codemirror/addon/edit/matchbrackets.js']) }}
+{{ $app->assets(['assets:vendor/codemirror/addon/selection/active-line.js']) }}
+
 {{ $app->assets(['assets:angular/directives/codearea.js']) }}
 
 {{ $app->assets(['assets:vendor/tinymce/tinymce.min.js']) }}
@@ -126,7 +134,7 @@
                         </div>
 
                         <div class="uk-form-row" data-ng-show="mode=='tpl'">
-                            <textarea codearea="{mode:'htmlmixed'}" class="uk-width-1-1 uk-form-large" style="height:450px !important;" placeholder="Region code" data-ng-model="region.tpl"  pattern="[a-zA-Z0-9]+"></textarea>
+                            <textarea codearea="{mode:'application/x-httpd-php'}" class="uk-width-1-1 uk-form-large" style="height:450px !important;" placeholder="Region code" data-ng-model="region.tpl"  pattern="[a-zA-Z0-9]+"></textarea>
                             
                             <div class="uk-margin" ng-show="region.name">
                                 <strong>Embed snippet:</strong>

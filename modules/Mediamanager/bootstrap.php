@@ -67,7 +67,7 @@ if (!function_exists('thumbnail')) {
 
     function thumbnail($image, $width, $height, $options=array()) {
 
-        $url =  cockpit("mediamanager")->thumbnail($image, $width, $height, $options=array());
+        $url = cockpit("mediamanager")->thumbnail($image, $width, $height, $options=array());
 
         echo '<img src="'.$url.'" alt="'.$url.'">';
     }

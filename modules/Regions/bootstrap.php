@@ -36,6 +36,12 @@ if(!function_exists("region")) {
     }
 }
 
+if(!function_exists("get_region")) {
+    function get_region($name, $params = []) {
+        return cockpit("regions")->render($name, $params);
+    }
+}
+
 // ADMIN
 
 if(COCKPIT_ADMIN) {
