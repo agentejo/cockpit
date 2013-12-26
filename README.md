@@ -37,7 +37,7 @@ Embedding Cockpit is really easy. Just include the following snippet anywhere yo
 Render regions api:
 
     <div><?php region("adress") ?></div>
-    <div><?php echo get_region("adress") ?></div>
+    <div><?=get_region("adress") ?></div>
 
 **Collections**
 
