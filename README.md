@@ -23,18 +23,25 @@ Manage content like collections and regions which you can reuse anywhere on your
 
 ### Usage
 
-**Require Cockpit**
+**Embed Cockpit**
+
+Embedding Cockpit is really easy. Just include the following snippet anywhere you want to use Cockpit:
 
     <?php
 
         // make cockpit api available
-        require('cockpit/bootstrap.php');
+        require('path2cockpit/bootstrap.php');
 
 **Regions**
 
+Render regions api:
+
     <div><?php region("adress") ?></div>
+    <div><?php echo get_region("adress") ?></div>
 
 **Collections**
+
+Loop over collection data:
 
     <?php foreach(collection("posts")->find(["active"=>1]) as $post): ?>
         <div class="post">
