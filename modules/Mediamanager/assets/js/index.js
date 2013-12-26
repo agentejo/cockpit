@@ -41,6 +41,14 @@
                         break;
                 }
             });
+
+            // key mappings
+
+            this.code.addKeyMap({
+                'Ctrl-S': function(){ Editor.save(); }, 
+                'Cmd-S': function(){ Editor.save(); },
+                'Esc': function(){ Editor.close(); }
+            });
         },
 
         resize: function(){
