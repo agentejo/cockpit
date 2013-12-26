@@ -70,7 +70,7 @@ class Assets extends \Lime\Helper {
         $rewriteCssUrls = function($content, $asset) use($self) {
 
             $source_dir = dirname($asset["file"]);
-            $root_dir   = $_SERVER['DOCUMENT_ROOT'];
+            $root_dir   = $self->app['docs_root'];
 
             $csspath  = "";
 
