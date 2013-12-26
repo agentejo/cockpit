@@ -2,7 +2,8 @@
 
     App.module.controller("region", function($scope, $rootScope, $http){
 
-        var id = $("[data-ng-controller='region']").data("id");
+        var id       = $("[data-ng-controller='region']").data("id"),
+            template = $("#region-template");
 
         if(id) {
 
@@ -49,6 +50,10 @@
                 $scope.region.fields.splice(index, 1);
             }
 
+        };
+
+        $scope.insertfield = function(fieldname) {
+            template.data("codearea").replaceSelection('{{ $'+fieldname+' }}', 'end');
         };
 
         $scope.save = function() {

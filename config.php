@@ -1,6 +1,9 @@
 <?php
 
 
+// make sure that $_SERVER['DOCUMENT_ROOT'] exists and is set correctly
+
+
 $docsroot = $_SERVER['DOCUMENT_ROOT'];
 
 

@@ -44,6 +44,10 @@
 
                   codeMirror = CodeMirror.fromTextArea(elm[0], opts);
 
+                  if(elm.data) {
+                    elm.data("codearea", codeMirror);
+                  }
+
                   // autoload modes
                   if(opts.mode && opts.mode!='text' && opts.mode.indexOf('/')==-1) {
                     App.assets.require(['/assets/vendor/codemirror/mode/%N/%N.js'.replace(/%N/g, opts.mode)], function(){

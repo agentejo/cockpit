@@ -134,7 +134,32 @@
                         </div>
 
                         <div class="uk-form-row" data-ng-show="mode=='tpl'">
-                            <textarea codearea="{mode:'application/x-httpd-php'}" class="uk-width-1-1 uk-form-large" style="height:450px !important;" placeholder="Region code" data-ng-model="region.tpl"  pattern="[a-zA-Z0-9]+"></textarea>
+                            
+                            <div class="uk-margin uk-clearfix">
+                              
+                              <div class="uk-button-dropdown uk-float-right" data-uk-dropdown>
+                                <button type="button" class="uk-button">
+                                  <i class="uk-icon-indent"></i> Insert form field
+                                </button>
+
+                                <div class="uk-dropdown uk-dropdown-flip">
+                                    <ul class="uk-nav uk-nav-dropdown" ng-show="region.fields && region.fields.length">
+                                      <li class="uk-nav-header">Form fields</li>
+                                      <li ng-repeat="field in region.fields">
+                                        <a ng-click="insertfield(field.name)">@@ field.name @@</a>
+                                      </li>
+                                    </ul>
+
+                                    <div class="uk-text-muted" ng-show="region.fields && !region.fields.length">
+                                      You have no fields added.
+                                    </div>
+                                </div>
+
+                              </div>
+                            </div>
+
+
+                            <textarea id="region-template" codearea="{mode:'application/x-httpd-php'}" class="uk-width-1-1 uk-form-large" style="height:450px !important;" placeholder="Region code" data-ng-model="region.tpl"  pattern="[a-zA-Z0-9]+"></textarea>
                             
                             <div class="uk-margin" ng-show="region.name">
                                 <strong>Embed snippet:</strong>
