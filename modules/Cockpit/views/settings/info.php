@@ -22,6 +22,29 @@
         </tbody>
     </table>
 
+    <h3>Mailer</h3>
+    
+    @if($info["mailer"])
+
+    <table class="uk-table uk-table-striped">
+        <tbody>
+            @foreach($info['mailer'] as $key => $value)
+            <tr>
+                <td>{{ $key }}</td>
+                <td>{{ ($key=="password") ? str_pad("", strlen($value), '*') : $value }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    @else
+    
+    <div class="uk-alert">
+        No mailer settings found.
+    </div>
+
+    @endif
+
 
     <h3>Directories</h3>
     

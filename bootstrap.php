@@ -42,6 +42,15 @@ function cockpit($module = null) {
             return $client;
         });
 
+        // mailer service
+        $app->service("mailer", function() use($app){
+
+            $options   = $app->retrieve("app.config/mailer", []);
+            $mailer    = new \Mailer(isset($options["transport"]) ? $options["transport"]:"mail", $options);
+
+            return $mailer;
+        });
+
         $app->loadModules(__DIR__.'/modules');
     }
 

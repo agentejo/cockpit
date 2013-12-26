@@ -47,6 +47,8 @@ class Settings extends \Cockpit\Controller {
             $info['folders'][$dir] = is_writable($this->app->path($dir));
         }
 
+        $info["mailer"]        = $this->app->retrieve("app.config/mailer", false);
+
         return $this->render('cockpit:views/settings/info.php', compact('info'));
     }
 

@@ -16,6 +16,21 @@ return [
     "base_route"    => "/".ltrim(str_replace($docsroot, '', str_replace(DIRECTORY_SEPARATOR, '/', __DIR__)).'/index.php', "/"), // if rewrite urls is disabled,
     //"base_route"       => "/".ltrim(str_replace($docsroot, '', str_replace(DIRECTORY_SEPARATOR, '/', __DIR__)), "/"),
 
-    "docs_root"        => $docsroot
+    "docs_root"        => $docsroot,
+    "mailer"           => [
+        "transport" => "mail"
+    ],
+    /* mail smtp settings
+    "mailer"           => [
+        "transport" => "smtp",
+        "host"      => "",
+        "user"      => "",
+        "password"  => "xxxxxx",
+        "port"      => 25,
+        "auth"      => true,
+        "encryption"=> ""    // '', ssl' or 'tls'
+    ]
+    */
+    
 
 ];
