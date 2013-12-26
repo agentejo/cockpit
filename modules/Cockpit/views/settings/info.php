@@ -65,4 +65,6 @@
         </tbody>
     </table>
 
+    @trigger("cockpit.settings.infopage")
+
 </div>
