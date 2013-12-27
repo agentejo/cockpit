@@ -14,6 +14,14 @@
         </div>
         <div class="uk-width-medium-1-4">
             <div>
+                <i class="uk-icon-flask"></i>
+            </div>
+            <div class="uk-text-truncate">
+                <a href="@route('/settings/addons')">Addons</a>
+            </div>
+        </div>
+        <div class="uk-width-medium-1-4">
+            <div>
                 <i class="uk-icon-info-circle"></i>
             </div>
             <div class="uk-text-truncate">
