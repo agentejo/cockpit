@@ -51,7 +51,8 @@ function cockpit($module = null) {
             return $mailer;
         });
 
-        $app->loadModules(__DIR__.'/modules');
+        $app->loadModules(__DIR__.'/modules/core');
+        $app->loadModules(__DIR__.'/modules/addons');
     }
 
     return $module ? $app->module($module) : $app;
