@@ -2,10 +2,8 @@
 
 
 // make sure that $_SERVER['DOCUMENT_ROOT'] exists and is set correctly
-
-
-$docsroot = $_SERVER['DOCUMENT_ROOT'];
-
+$docsroot   = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : dirname(__DIR__);
+$servername = isset($_SERVER["SERVER_NAME"])   ? $_SERVER["SERVER_NAME"]   : 'localhost';
 
 return [
 
@@ -19,13 +17,13 @@ return [
     "addons_repository" => "https://raw.github.com/aheinze/cockpit-modules/master/modules.json",
 
     "mailer"            => [
-        "from"      => "info@".$_SERVER["SERVER_NAME"],
+        "from"      => "info@{$servername}",
         "transport" => "mail"
     ],
 
     /* mailer smtp settings
     "mailer"            => [
-        "from"      => "info@".$_SERVER["SERVER_NAME"],
+        "from"      => "info@mydomain.tld",
         "transport" => "smtp",
         "host"      => "",
         "user"      => "",
@@ -35,6 +33,4 @@ return [
         "encryption"=> ""    // '', ssl' or 'tls'
     ]
     */
-    
-
 ];

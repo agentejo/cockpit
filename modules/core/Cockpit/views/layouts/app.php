@@ -30,7 +30,7 @@
                                 {{ $app["user"]["user"] }}
                             </li>
                             <li><a href="@route('/settingspage')"><i class="uk-icon-cog icon-spacer"></i> Settings</a></li>
-                            <li><a href="@route('/settings/addons')"><i class="uk-icon-flask icon-spacer"></i> Addons</a></li>
+                            <li><a href="@route('/settings/addons')"><i class="uk-icon-code-fork icon-spacer"></i> Addons</a></li>
 
                             <li class="uk-nav-divider"></li>
                             <li><a href="@route('/auth/logout')"><i class="uk-icon-power-off icon-spacer"></i> Logout</a></li>

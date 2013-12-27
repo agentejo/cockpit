@@ -14,7 +14,7 @@
         </div>
         <div class="uk-width-medium-1-4">
             <div>
-                <i class="uk-icon-flask"></i>
+                <i class="uk-icon-code-fork"></i>
             </div>
             <div class="uk-text-truncate">
                 <a href="@route('/settings/addons')">Addons</a>
