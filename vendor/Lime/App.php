@@ -211,7 +211,11 @@ class App implements \ArrayAccess {
 
         // check for php://input and merge with $_REQUEST
 
-        if(isset($_SERVER["CONTENT_TYPE"]) && stripos($_SERVER["CONTENT_TYPE"],'application/json')!==false) {
+        if(
+            (isset($_SERVER["CONTENT_TYPE"]) && stripos($_SERVER["CONTENT_TYPE"],'application/json')!==false) ||
+            (!isset($_SERVER["CONTENT_TYPE"])) // PHP build in Webserver !?
+        ) {
+            
             if($json = json_decode(@file_get_contents('php://input'), true)) {
                 $_REQUEST = array_merge($_REQUEST, $json);
             }
