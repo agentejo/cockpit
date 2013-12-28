@@ -100,7 +100,7 @@
         </ul>
 
 
-        <table class="uk-table" data-ng-show="mode=='table' && dir && (dir.folders.length || dir.files.length)">
+        <table class="uk-table uk-table-hover" data-ng-show="mode=='table' && dir && (dir.folders.length || dir.files.length)">
             <thead>
                 <tr>
                     <th width="20"></th>

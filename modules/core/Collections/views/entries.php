@@ -29,6 +29,7 @@
                 <table class="uk-table uk-table-striped">
                     <thead>
                         <tr>
+                            <th width="10">&nbsp;</th>
                             <th>
                                 Fields
                             </th>
@@ -38,6 +39,7 @@
                     </thead>
                     <tbody>
                         <tr data-ng-repeat="entry in entries">
+                            <td><i class="uk-icon-ellipsis-h"></i></td>
                             <td>
                                 <div class="uk-grid uk-grid-preserve uk-text-small" data-ng-repeat="field in fields">
                                     <div class="uk-width-medium-1-5">
