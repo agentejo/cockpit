@@ -52,4 +52,26 @@ class Settings extends \Cockpit\Controller {
         return $this->render('cockpit:views/settings/info.php', compact('info'));
     }
 
+
+    public function test($case) {
+
+        switch ($case) {
+            case 'email':
+                
+                $email = $this->param("email", false);
+
+                if($email) {
+                    $ret = $this->app->mailer->mail($email, "Test Email", "It seems your Server can send Emails with the current mailer settings.");
+                } else {
+                    $ret = false;
+                }
+
+                return json_encode(["status"=>$ret]);
+
+                break;
+        }
+
+        return false;
+    }
+
 }
