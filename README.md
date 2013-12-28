@@ -17,9 +17,10 @@ Manage content like collections and regions which you can reuse anywhere on your
 
 ### Installation
 
-1. Make sure that the __/storage__ folder and all its subfolders are writable
-2. Go to __/install__ via Browser
-3. You're ready to use Cockpit :-)
+1. Download Cockpit and put the cockpit folder in the root of your web project
+2. Make sure that the __/cockpit/storage__ folder and all its subfolders are writable
+3. Go to __/cockpit/install__ via Browser
+4. You're ready to use Cockpit :-)
 
 ### Usage
 
@@ -51,3 +52,8 @@ Loop over collection data:
             </p>
         </div>
     <?php endforeach; ?>
+
+
+## Copyright and license
+
+Copyright 2013 [Agentejo](http://www.agentejo.com) under the [MIT license](https://raw.github.com/aheinze/cockpit/master/LICENSE).
