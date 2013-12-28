@@ -54,6 +54,6 @@ Loop over collection data:
     <?php endforeach; ?>
 
 
-## Copyright and license
+### Copyright and license
 
 Copyright 2013 [Agentejo](http://www.agentejo.com) under the [MIT license](https://raw.github.com/aheinze/cockpit/master/LICENSE).
