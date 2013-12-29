@@ -1,7 +1,7 @@
 {{ $app->assets(['addons:assets/addons.js','addons:assets/js/index.js']) }}
 
 
-<h2><a href="@route('/settingspage')">Settings</a> / Addons</h2>
+<h1>Addons</h1>
 
 <div data-ng-controller="addons">
 

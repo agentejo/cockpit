@@ -59,6 +59,11 @@
                 return;
             }
 
+            if(account.group && account.group == "admin") {
+                App.notify("You can't delete admin accounts!", "danger");
+                return;
+            }
+
             if(confirm("Are you sure?")) {
 
                 $http.post(App.route("/accounts/remove"), {

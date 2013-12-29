@@ -1,5 +1,5 @@
 
-<h2>Settings</h2>
+<h1>Settings</h1>
 
 <div class="app-panel">
 
