@@ -56,6 +56,15 @@ $this->module("mediamanager")->thumbnail = function($image, $width, $height, $op
     return $url;
 };
 
+// extend lexy parser
+$app->renderer()->extend(function($content){
+
+    $content = preg_replace('/(\s*)@thumbnail_url\((.+?)\)/', '$1<?php echo cockpit("mediamanager")->thumbnail($2); ?>', $content);
+    $content = preg_replace('/(\s*)@thumbnail\((.+?)\)/', '$1<?php thumbnail($2); ?>', $content);
+
+    return $content;
+});
+
 if (!function_exists('thumbnail_url')) {
 
     function thumbnail_url($image, $width, $height, $options=array()) {
