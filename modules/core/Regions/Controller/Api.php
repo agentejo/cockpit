@@ -37,6 +37,7 @@ class Api extends \Cockpit\Controller {
         if($region) {
 
             $region["modified"] = time();
+            $region["_uid"]     = @$this->user["_id"];
 
             if(!isset($region["_id"])){
                 $region["created"] = $region["modified"];

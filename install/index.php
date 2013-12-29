@@ -39,6 +39,7 @@ $account = [
     "user"     => "admin",
     "email"    => "test@test.de",
     "active"   => 1,
+    "group"    => "admin",
     "password" => $app->hash("admin")
 ];
 

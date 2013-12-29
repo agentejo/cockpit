@@ -6,10 +6,10 @@
     <div class="uk-grid" uk-grid-margin uk-grid-match>
         <div class="uk-width-medium-1-4">
             <div>
-                <i class="uk-icon-user"></i>
+                <i class="uk-icon-group"></i>
             </div>
             <div class="uk-text-truncate">
-                <a href="@route('/settings/account')">Account</a>
+                <a href="@route('/accounts/index')">Accounts</a>
             </div>
         </div>
         <div class="uk-width-medium-1-4">

@@ -1,6 +1,6 @@
 {{ $app->assets(['assets:vendor/uikit/addons/js/form-password.min.js','assets:vendor/uikit/addons/css/form-password.min.css']) }}
 
-<h2><a href="@route('/settingspage')">Settings</a> / Account</h2>
+<h2><a href="@route('/accounts/index')">Accounts</a> / Account</h2>
 
 <div class="app-panel">
 
@@ -11,7 +11,7 @@
             <div class="uk-panel uk-text-center">
 
                 <div class="uk-thumbnail uk-rounded">
-                    <img src="http://www.gravatar.com/avatar/{{ md5($account['email']) }}?d=mm&s=100" width="100" height="100" alt="">
+                    <img src="http://www.gravatar.com/avatar/{{ md5(@$account['email']) }}?d=mm&s=100" width="100" height="100" alt="">
                 </div>
 
                 <h2>@@ account.name @@</h2>
@@ -69,12 +69,16 @@
 
         $scope.save = function(){
 
-            var account = angular.copy($scope.account);
+            var account = angular.copy($scope.account),
+                isnew   = account["_id"] ? false:true;
 
-            $http.post(App.route("/settings/account"), {"account": account}).success(function(data){
+            $http.post(App.route("/accounts/save"), {"account": account}).success(function(data){
 
                 if(data && Object.keys(data).length) {
                     App.notify("account saved!");
+
+                    $scope.account = data;
+                    $scope.account.password = "";
                 }
 
             }).error(App.module.callbacks.error.http);

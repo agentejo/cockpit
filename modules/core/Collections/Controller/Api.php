@@ -46,6 +46,7 @@ class Api extends \Cockpit\Controller {
         if($collection) {
 
             $collection["modified"] = time();
+            $collection["_uid"]     = @$this->user["_id"];
 
             if(!isset($collection["_id"])){
                 $collection["created"] = $collection["modified"];
@@ -123,6 +124,7 @@ class Api extends \Cockpit\Controller {
             $col = "collection".$collection["_id"];
 
             $entry["modified"] = time();
+            $entry["_uid"]     = @$this->user["_id"];
 
             if(!isset($entry["_id"])){
                 $entry["created"] = $entry["modified"];

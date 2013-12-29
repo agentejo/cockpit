@@ -73,6 +73,8 @@ if (COCKPIT_ADMIN) {
         return $app->invoke("Cockpit\\Controller\\Base", "profile");
     });
 
+    $app->bindClass("Cockpit\\Controller\\Accounts", "accounts");
+
     $app->on("admin.dashboard", function() use($app){
 
         $title = "Today";

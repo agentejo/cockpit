@@ -21,7 +21,7 @@
     @else
 
         <div class="uk-alert">
-            No addons installed.
+            No additional addons installed.
         </div>
 
     @endif
