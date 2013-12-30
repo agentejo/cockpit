@@ -62,9 +62,10 @@ if(COCKPIT_ADMIN) {
     $app->on("admin.init", function() use($app){
 
         $app("admin")->menu("top", [
-            "url"   => $app->routeUrl("/regions"),
-            "label" => '<i class="uk-icon-th-large"></i>',
-            "title" => "Regions"
+            "url"    => $app->routeUrl("/regions"),
+            "label"  => '<i class="uk-icon-th-large"></i>',
+            "title"  => "Regions",
+            "active" => (strpos($app["route"], '/regions') === 0)
         ], 1);
     });
 

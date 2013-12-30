@@ -50,7 +50,7 @@
 
                 <ul class="uk-navbar-nav">
                     @foreach($app("admin")->menu('top') as $item)
-                    <li>
+                    <li class="{{ (isset($item["active"]) && $item["active"]) ? 'uk-active':'' }}">
                         <a href="{{ $item["url"] }}" title="{{ $item["title"] }}" data-uk-tooltip>{{ $item["label"] }}</a>
                     </li>
                     @endforeach

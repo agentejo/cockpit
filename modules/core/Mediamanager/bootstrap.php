@@ -106,9 +106,10 @@ if(COCKPIT_ADMIN) {
     $app->on("admin.init", function() use($app){
 
         $app("admin")->menu("top", [
-            "url"   => $app->routeUrl("/mediamanager"),
-            "label" => '<i class="uk-icon-cloud"></i>',
-            "title" => "Mediamanager"
+            "url"    => $app->routeUrl("/mediamanager"),
+            "label"  => '<i class="uk-icon-cloud"></i>',
+            "title"  => "Mediamanager",
+            "active" => (strpos($app["route"], '/mediamanager') === 0)
         ], 1);
     });
 

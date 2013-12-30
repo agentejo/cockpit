@@ -34,9 +34,10 @@ if(COCKPIT_ADMIN) {
     $app->on("admin.init", function() use($app){
 
         $app("admin")->menu("top", [
-            "url"   => $app->routeUrl("/collections"),
-            "label" => '<i class="uk-icon-list"></i>',
-            "title" => "Collections"
+            "url"    => $app->routeUrl("/collections"),
+            "label"  => '<i class="uk-icon-list"></i>',
+            "title"  => "Collections",
+            "active" => (strpos($app["route"], '/collections') === 0)
         ], 1);
     });
 
