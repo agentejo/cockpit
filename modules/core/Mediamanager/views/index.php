@@ -19,6 +19,28 @@
     <div class="uk-navbar">
         <span class="uk-navbar-brand">Mediamanager</span>
         <ul class="uk-navbar-nav">
+            <li class="uk-parent" data-uk-dropdown>
+                <a><i class="uk-icon-star"></i>&nbsp; Bookmarks</a>
+                <div class="uk-dropdown uk-dropdown-navbar">
+                    
+                    <ul id="mmbookmarks" class="uk-nav uk-nav-navbar">
+
+                        <li class="uk-nav-header" ng-if="bookmarks.folders.length">Folders</li>
+                        <li ng-repeat="folder in bookmarks.folders" ng-if="bookmarks.folders.length">
+                            <a data-index="@@ $i @@" data-group="folders" href="#@@ folder.path @@" ng-click="updatepath(folder.path)" draggable="true">@@ folder.name @@</a>
+                        </li>
+
+                        <li class="uk-nav-header" ng-if="bookmarks.files.length">Files</li>
+                        <li ng-repeat="file in bookmarks.files" ng-if="bookmarks.files.length">
+                            <a data-index="@@ $i @@" data-group="files" ng-click="open(file)" draggable="true">@@ file.name @@</a>
+                        </li>
+
+                        <li ng-show="(!bookmarks.folders.length && !bookmarks.files.length)">
+                            <a>You have nothing bookmarked.</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
             <li><a href="" ng-click="action('createfolder')"><i class="uk-icon-plus-circle"></i>&nbsp; Folder</a></li>
             <li><a href="" ng-click="action('createfile')"><i class="uk-icon-plus-circle"></i>&nbsp; File</a></li>
             <li class="media-upload-button">
@@ -74,6 +96,7 @@
                         <i class="uk-icon-folder"></i>
                         <div>
                             <ul class="uk-subnav uk-subnav-line">
+                                <li><a ng-click="addBookmark(folder)" title="Bookmark folder"><i class="uk-icon-star"></i></a></li>
                                 <li><a ng-click="action('rename', folder)" title="Rename folder"><i class="uk-icon-text-width"></i></a></li>
                                 <li><a ng-click="action('remove', folder)" title="Delete folder"><i class="uk-icon-minus-circle"></i></a></li>
                             </ul>
@@ -88,6 +111,7 @@
                         <i class="uk-icon-file"></i>
                         <div>
                             <ul class="uk-subnav uk-subnav-line">
+                                <li><a ng-click="addBookmark(file)" title="Bookmark file"><i class="uk-icon-star"></i></a></li>
                                 <li><a ng-click="action('rename', file)" title="Rename file"><i class="uk-icon-text-width"></i></a></li>
                                 <li><a ng-click="action('download', file)" title="Download file"><i class="uk-icon-paperclip"></i></a></li>
                                 <li><a ng-click="action('remove', file)" title="Delete file"><i class="uk-icon-minus-circle"></i></a></li>
@@ -118,6 +142,7 @@
                    <td>&nbsp;</td>
                    <td class="uk-text-right">
                        <ul class="uk-subnav uk-subnav-line">
+                           <li><a ng-click="addBookmark(folder)" title="Bookmark folder"><i class="uk-icon-star"></i></a></li>
                            <li><a ng-click="action('rename', folder)" title="Rename folder"><i class="uk-icon-text-width"></i></a></li>
                            <li><a ng-click="action('remove', folder)" title="Delete folder"><i class="uk-icon-minus-circle"></i></a></li>
                        </ul>
@@ -131,6 +156,7 @@
                    <td class="uk-text-right">@@ file.lastmodified @@</td>
                    <td class="uk-text-right">
                        <ul class="uk-subnav uk-subnav-line">
+                           <li><a ng-click="addBookmark(file)" title="Bookmark file"><i class="uk-icon-star"></i></a></li>
                            <li><a ng-click="action('rename', file)" title="Rename file"><i class="uk-icon-text-width"></i></a></li>
                            <li><a ng-click="action('download', file)" title="Download file"><i class="uk-icon-paperclip"></i></a></li>
                            <li><a ng-click="action('remove', file)" title="Delete file"><i class="uk-icon-minus-circle"></i></a></li>

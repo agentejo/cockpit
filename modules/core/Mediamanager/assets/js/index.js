@@ -149,6 +149,7 @@
 
             $scope.dir;
             $scope.breadcrumbs = [];
+            $scope.bookmarks   = {"folders":[], "files":[]};
 
             $scope.viewfilter = 'all';
             $scope.namefilter = '';
@@ -266,6 +267,26 @@
                 return (name.toLowerCase().indexOf($scope.namefilter.toLowerCase()) !== -1);
             };
 
+            $scope.addBookmark = function(item) {
+                
+                var bookmark = {"name": item.name, "path": item.path},
+                    cat      = item.is_dir ? "folders":"files";
+
+                for(var i=0;i<$scope.bookmarks[cat].length;i++) {
+
+                    if($scope.bookmarks[cat][i].path == bookmark.path) {
+                        App.notify(item.name + " is already bookmarked.");
+                        return;
+                    }
+                }
+
+                $scope.bookmarks[cat].push(bookmark);
+
+                $http.post(App.route("/mediamanager/savebookmarks"), {"bookmarks": angular.copy($scope.bookmarks)}).success(function(data){
+                    App.notify(item.name + " bookmarked.", "success");
+                }).error(App.module.callbacks.error.http);
+            }
+
             function requestapi(data, fn, type) {
 
                 data = $.extend({"cmd":""}, data);
@@ -301,6 +322,11 @@
                 }, "json");
             }
 
+            // get bookmarks
+            $http.post(App.route("/mediamanager/loadbookmarks"), {}).success(function(data){
+                $scope.bookmarks = data;
+            }).error(App.module.callbacks.error.http);
+
             loadPath(currentpath);
 
             var progessbar     = $('body').loadie(),
@@ -327,6 +353,22 @@
 
             $("body").uploadOnDrag(uploadsettings);
             $("#frmMediaUpload").ajaxform(uploadsettings);
+
+            $("#mmbookmarks").on("dragend", "a[draggable]", function(e){
+                e.stopPropagation();
+                e.preventDefault();
+
+                var ele = $(this),
+                    cat = ele.data("group"),
+                    idx = ele.data("index");
+
+                $scope.$apply(function(){
+                    $scope.bookmarks[cat].splice(idx, 1);
+                    $http.post(App.route("/mediamanager/savebookmarks"), {"bookmarks": angular.copy($scope.bookmarks)}).success(function(data){
+                        //App.notify("Bookmarks updated.", "success");
+                    }).error(App.module.callbacks.error.http);
+                });
+            });
 
             Editor.init($scope);
 
