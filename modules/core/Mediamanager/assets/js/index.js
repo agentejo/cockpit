@@ -360,7 +360,11 @@
 
                 var ele = $(this),
                     cat = ele.data("group"),
-                    idx = ele.data("index");
+                    idx = ele.data("idx");
+
+                if(!confirm("Do you really want to remove "+$scope.bookmarks[cat][idx].name+" ?")) {
+                    return;
+                }
 
                 $scope.$apply(function(){
                     $scope.bookmarks[cat].splice(idx, 1);

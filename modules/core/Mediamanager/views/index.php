@@ -27,12 +27,12 @@
 
                         <li class="uk-nav-header" ng-if="bookmarks.folders.length">Folders</li>
                         <li ng-repeat="folder in bookmarks.folders" ng-if="bookmarks.folders.length">
-                            <a data-index="@@ $i @@" data-group="folders" href="#@@ folder.path @@" ng-click="updatepath(folder.path)" draggable="true">@@ folder.name @@</a>
+                            <a data-idx="@@ $index @@" data-group="folders" href="#@@ folder.path @@" ng-click="updatepath(folder.path)" draggable="true">@@ folder.name @@</a>
                         </li>
 
                         <li class="uk-nav-header" ng-if="bookmarks.files.length">Files</li>
                         <li ng-repeat="file in bookmarks.files" ng-if="bookmarks.files.length">
-                            <a data-index="@@ $i @@" data-group="files" ng-click="open(file)" draggable="true">@@ file.name @@</a>
+                            <a data-idx="@@ $index @@" data-group="files" ng-click="open(file)" draggable="true">@@ file.name @@</a>
                         </li>
 
                         <li ng-show="(!bookmarks.folders.length && !bookmarks.files.length)">
