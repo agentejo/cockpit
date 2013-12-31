@@ -15,6 +15,9 @@ Manage content like collections and regions which you can reuse anywhere on your
 * PHP >= 5.4
 * PDO + SQLite
 
+make also sure that __$_SERVER['DOCUMENT_ROOT']__ exists and is set correctly
+
+
 ### Installation
 
 1. Download Cockpit and put the cockpit folder in the root of your web project
