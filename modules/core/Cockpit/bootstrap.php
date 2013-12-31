@@ -96,4 +96,8 @@ if (COCKPIT_ADMIN) {
 
     $app['admin.menu.top']      = new \PriorityQueue();
     $app['admin.menu.dropdown'] = new \PriorityQueue();
+
+    $locale = $app("i18n")->locale;
+
+    $app("i18n")->load("cockpit:i18n/{$locale}.php", $locale);
 }

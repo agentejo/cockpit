@@ -13,6 +13,7 @@ return [
     "base_url"          => "/".ltrim(str_replace($docsroot, '', str_replace(DIRECTORY_SEPARATOR, '/', __DIR__)), "/"),
     "base_route"        => "/".ltrim(str_replace($docsroot, '', str_replace(DIRECTORY_SEPARATOR, '/', __DIR__)).'/index.php', "/"),
 
+    "i18n"              => "en",
     "docs_root"         => $docsroot,
     "addons_repository" => "https://raw.github.com/aheinze/cockpit-modules/master/modules.json",
 

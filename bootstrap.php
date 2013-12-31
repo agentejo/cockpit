@@ -51,6 +51,10 @@ function cockpit($module = null) {
             return $mailer;
         });
 
+        // i18n
+
+        $app("i18n")->locale = isset($config["i18n"]) ? $config["i18n"]:"en";
+
         $app->loadModules(__DIR__.'/modules/core');
         $app->loadModules(__DIR__.'/modules/addons');
     }
