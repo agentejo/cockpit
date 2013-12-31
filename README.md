@@ -15,7 +15,11 @@ Manage content like collections and regions which you can reuse anywhere on your
 * PHP >= 5.4
 * PDO + SQLite
 
-make also sure that **$_SERVER['DOCUMENT_ROOT']** exists and is set correctly
+make also sure that 
+    
+    $_SERVER['DOCUMENT_ROOT'] 
+
+exists and is set correctly
 
 
 ### Installation
