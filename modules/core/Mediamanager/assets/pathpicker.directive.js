@@ -22,7 +22,7 @@
 
             $this.dirview.children().removeClass("active").filter(this).addClass("active");
 
-            $this.mediapath = 'uploads:'+data.path;
+            $this.mediapath = 'site:'+data.path;
 
             $this.btnOk.attr("disabled", !matchName($this.type, data.path));
 
@@ -108,7 +108,7 @@
                     var parts   = path.split('/'),
                         tmppath = [];
 
-                    $this.caption.append('<span data-path="/"><strong>uploads:</strong></span>');
+                    $this.caption.append('<span data-path="/"><strong>site:</strong></span>');
 
                     for(var i=0;i<parts.length;i++){
 

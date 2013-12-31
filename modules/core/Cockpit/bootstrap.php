@@ -4,6 +4,7 @@ $app['app.assets.base'] = [
     'assets:vendor/jquery.js',
     'assets:vendor/angular.js',
     'assets:vendor/storage.js',
+    'assets:vendor/i18n.js',
     'assets:vendor/uikit/js/uikit.min.js',
     'assets:vendor/uikit/css/uikit.min.css',
     'assets:vendor/uikit/addons/js/notify.min.js',
@@ -39,6 +40,17 @@ if (!function_exists('markdown')) {
 
     function markdown($content) {
         echo cockpit("cockpit")->markdown($content);
+    }
+}
+
+if (!function_exists('url_to')) {
+
+    function url_to($path) {
+        echo cockpit()->pathToUrl($content);
+    }
+
+    function get_url_to($path) {
+        return cockpit()->pathToUrl($content);
     }
 }
 
