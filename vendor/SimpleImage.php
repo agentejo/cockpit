@@ -981,7 +981,7 @@ class SimpleImage {
 				$x = 0 + $x_offset;
 				$y = ($this->height / 2) - (($box_height / 2) - $box_height) + $y_offset;
 				break;
-			case 'right';
+			case 'right':
 				$x = $this->width - $box_width + $x_offset;
 				$y = ($this->height / 2) - (($box_height / 2) - $box_height) + $y_offset;
 				break;
