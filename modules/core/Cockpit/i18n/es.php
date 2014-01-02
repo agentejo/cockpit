@@ -1,7 +1,7 @@
 <?php
 
 return [
-/*   
+
     // Common
     'Dashboard' => 'Panel de Control',
     'General' => 'General',
@@ -132,5 +132,5 @@ return [
     'Save Region' => 'Guardar región',
     'Region removed' => 'Región eliminada',
     'Region saved!' => 'Región guardada',
-*/
+
 ];
