@@ -18,7 +18,7 @@
 
                 if(data && Object.keys(data).length) {
                     $scope.entry = data;
-                    App.notify("Entry saved!");
+                    App.notify(App.i18n.get("Entry saved!"));
                 }
 
             }).error(App.module.callbacks.error.http);

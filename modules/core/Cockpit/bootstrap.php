@@ -89,7 +89,7 @@ if (COCKPIT_ADMIN) {
 
     $app->on("admin.dashboard", function() use($app){
 
-        $title = "Today";
+        $title = $app("i18n")->get("Today");
 
         echo $app->view("cockpit:views/dashboard/datetime.php with cockpit:views/layouts/dashboard.widget.php", compact('title'));
     });
@@ -97,7 +97,16 @@ if (COCKPIT_ADMIN) {
     $app['admin.menu.top']      = new \PriorityQueue();
     $app['admin.menu.dropdown'] = new \PriorityQueue();
 
+    // load i18n definition
+
     $locale = $app("i18n")->locale;
 
     $app("i18n")->load("cockpit:i18n/{$locale}.php", $locale);
+
+    $app->bind("/i18n.js", function() use($app, $locale){
+        
+        $data = $app("i18n")->data($locale);
+
+        return 'if(i18n) { i18n.register('.(count($data) ? json_encode($data):'{}').'); }';
+    });
 }

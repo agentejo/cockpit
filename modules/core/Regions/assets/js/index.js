@@ -10,7 +10,7 @@
 
         $scope.remove = function(index, region){
 
-            if(confirm("Are you sure?")) {
+            if(confirm(App.i18n.get("Are you sure?"))) {
 
                 $http.post(App.route("/api/regions/remove"), {
 
@@ -20,7 +20,7 @@
 
                     $scope.regions.splice(index, 1);
 
-                    App.notify("Region removed", "success");
+                    App.notify(App.i18n.get("Region removed"), "success");
 
                 }).error(App.module.callbacks.error.http);
             }

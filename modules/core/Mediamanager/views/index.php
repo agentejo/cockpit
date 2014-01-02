@@ -17,32 +17,32 @@
 <div class="app-wrapper" data-ng-controller="mediamanager">
 
     <div class="uk-navbar">
-        <span class="uk-navbar-brand">Mediamanager</span>
+        <span class="uk-navbar-brand">@lang('Mediamanager')</span>
         <ul class="uk-navbar-nav">
             <li class="uk-parent" data-uk-dropdown>
-                <a><i class="uk-icon-star"></i>&nbsp; Bookmarks</a>
+                <a><i class="uk-icon-star"></i>&nbsp; @lang('Bookmarks')</a>
                 <div class="uk-dropdown uk-dropdown-navbar">
                     
                     <ul id="mmbookmarks" class="uk-nav uk-nav-navbar">
 
-                        <li class="uk-nav-header" ng-if="bookmarks.folders.length">Folders</li>
+                        <li class="uk-nav-header" ng-if="bookmarks.folders.length">@lang('Folders')</li>
                         <li ng-repeat="folder in bookmarks.folders" ng-if="bookmarks.folders.length">
                             <a data-idx="@@ $index @@" data-group="folders" href="#@@ folder.path @@" ng-click="updatepath(folder.path)" draggable="true">@@ folder.name @@</a>
                         </li>
 
-                        <li class="uk-nav-header" ng-if="bookmarks.files.length">Files</li>
+                        <li class="uk-nav-header" ng-if="bookmarks.files.length">@lang('Files')</li>
                         <li ng-repeat="file in bookmarks.files" ng-if="bookmarks.files.length">
                             <a data-idx="@@ $index @@" data-group="files" ng-click="open(file)" draggable="true">@@ file.name @@</a>
                         </li>
 
                         <li ng-show="(!bookmarks.folders.length && !bookmarks.files.length)">
-                            <a>You have nothing bookmarked.</a>
+                            <a>@lang('You have nothing bookmarked.')</a>
                         </li>
                     </ul>
                 </div>
             </li>
-            <li><a href="" ng-click="action('createfolder')"><i class="uk-icon-plus-circle"></i>&nbsp; Folder</a></li>
-            <li><a href="" ng-click="action('createfile')"><i class="uk-icon-plus-circle"></i>&nbsp; File</a></li>
+            <li><a href="" ng-click="action('createfolder')"><i class="uk-icon-plus-circle"></i>&nbsp; @lang('Folder')</a></li>
+            <li><a href="" ng-click="action('createfile')"><i class="uk-icon-plus-circle"></i>&nbsp; @lang('File')</a></li>
             <li class="media-upload-button">
                 <a><i class="uk-icon-upload"></i>&nbsp; </a>
                 <form id="frmMediaUpload" action="">
@@ -65,25 +65,25 @@
 
             <div class="uk-navbar-content">
                 <div class="uk-button-group">
-                    <button class="uk-button" data-ng-class="mode=='table' ? 'uk-button-danger':''" data-ng-click="(mode='table')" title="Table mode" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-list-alt"></i></button>
-                    <button class="uk-button" data-ng-class="mode=='list' ? 'uk-button-danger':''" data-ng-click="(mode='list')" title="List mode" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-th"></i></button>
+                    <button class="uk-button" data-ng-class="mode=='table' ? 'uk-button-danger':''" data-ng-click="(mode='table')" title="@lang('Table mode')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-list-alt"></i></button>
+                    <button class="uk-button" data-ng-class="mode=='list' ? 'uk-button-danger':''" data-ng-click="(mode='list')" title="@lang('List mode')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-th"></i></button>
                 </div>
             </div>
 
             <div class="uk-navbar-content">
-                <span class="uk-alert uk-alert-warning" data-ng-show="dir && (dir.folders.length && viewfilter=='files')"><span class="uk-icon-bolt"></span> <strong>@@ dir.folders.length @@ folders are hidden</strong> via filter</span>
-                <span class="uk-alert uk-alert-warning" data-ng-show="dir && (dir.files.length && viewfilter=='folders')"><span class="uk-icon-bolt"></span> <strong>@@ dir.files.length @@ files are hidden</strong> via filter</span>
+                <span class="uk-alert uk-alert-warning" data-ng-show="dir && (dir.folders.length && viewfilter=='files')"><span class="uk-icon-bolt"></span> @lang('Folders hidden via filter'): @@ dir.folders.length @@</span>
+                <span class="uk-alert uk-alert-warning" data-ng-show="dir && (dir.files.length && viewfilter=='folders')"><span class="uk-icon-bolt"></span> @lang('Files hidden via filter'): @@ dir.files.length @@</span>
             </div>
             <div class="uk-navbar-flip">
                 <div class="uk-navbar-content uk-form">
                     <div class="uk-form-icon uk-hidden-small">
                         <i class="uk-icon-filter"></i>
-                        <input type="text" placeholder="Filter by name..." data-ng-model="namefilter">
+                        <input type="text" placeholder="@lang('Filter by name...')" data-ng-model="namefilter">
                     </div>
                     <div class="uk-button-group">
-                        <button class="uk-button" data-ng-class="viewfilter=='all' ? 'uk-button-primary':''" data-ng-click="(viewfilter='all')" title="Show files + directories" data-uk-tooltip="{pos:'bottom'}">All</button>
-                        <button class="uk-button" data-ng-class="viewfilter=='folders' ? 'uk-button-primary':''" data-ng-click="(viewfilter='folders')" title="Show only directories" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-folder"></i> <span class="uk-text-small">@@dir.folders.length@@</span></button>
-                        <button class="uk-button" data-ng-class="viewfilter=='files' ? 'uk-button-primary':''" data-ng-click="(viewfilter='files')" title="Show only files" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-file"></i> <span class="uk-text-small">@@dir.files.length@@</span></button>
+                        <button class="uk-button" data-ng-class="viewfilter=='all' ? 'uk-button-primary':''" data-ng-click="(viewfilter='all')" title="@lang('Show files + directories')" data-uk-tooltip="{pos:'bottom'}">@lang('All')</button>
+                        <button class="uk-button" data-ng-class="viewfilter=='folders' ? 'uk-button-primary':''" data-ng-click="(viewfilter='folders')" title="@lang('Show only directories')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-folder"></i> <span class="uk-text-small">@@dir.folders.length@@</span></button>
+                        <button class="uk-button" data-ng-class="viewfilter=='files' ? 'uk-button-primary':''" data-ng-click="(viewfilter='files')" title="@lang('Show only files')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-file"></i> <span class="uk-text-small">@@dir.files.length@@</span></button>
                     </div>
                 </div>
             </div>
@@ -96,9 +96,9 @@
                         <i class="uk-icon-folder"></i>
                         <div>
                             <ul class="uk-subnav uk-subnav-line">
-                                <li><a ng-click="addBookmark(folder)" title="Bookmark folder"><i class="uk-icon-star"></i></a></li>
-                                <li><a ng-click="action('rename', folder)" title="Rename folder"><i class="uk-icon-text-width"></i></a></li>
-                                <li><a ng-click="action('remove', folder)" title="Delete folder"><i class="uk-icon-minus-circle"></i></a></li>
+                                <li><a ng-click="addBookmark(folder)" title="@lang('Bookmark folder')"><i class="uk-icon-star"></i></a></li>
+                                <li><a ng-click="action('rename', folder)" title="@lang('Rename folder')"><i class="uk-icon-text-width"></i></a></li>
+                                <li><a ng-click="action('remove', folder)" title="@lang('Delete folder')"><i class="uk-icon-minus-circle"></i></a></li>
                             </ul>
                         </div>
                     </div>
@@ -111,10 +111,10 @@
                         <i class="uk-icon-file"></i>
                         <div>
                             <ul class="uk-subnav uk-subnav-line">
-                                <li><a ng-click="addBookmark(file)" title="Bookmark file"><i class="uk-icon-star"></i></a></li>
-                                <li><a ng-click="action('rename', file)" title="Rename file"><i class="uk-icon-text-width"></i></a></li>
-                                <li><a ng-click="action('download', file)" title="Download file"><i class="uk-icon-paperclip"></i></a></li>
-                                <li><a ng-click="action('remove', file)" title="Delete file"><i class="uk-icon-minus-circle"></i></a></li>
+                                <li><a ng-click="addBookmark(file)" title="@lang('Bookmark file')"><i class="uk-icon-star"></i></a></li>
+                                <li><a ng-click="action('rename', file)" title="@lang('Rename file')"><i class="uk-icon-text-width"></i></a></li>
+                                <li><a ng-click="action('download', file)" title="@lang('Download file')"><i class="uk-icon-paperclip"></i></a></li>
+                                <li><a ng-click="action('remove', file)" title="@lang('Delete file')"><i class="uk-icon-minus-circle"></i></a></li>
                             </ul>
                         </div>
                     </div>
@@ -128,9 +128,9 @@
             <thead>
                 <tr>
                     <th width="20"></th>
-                    <th>Name</th>
-                    <th class="uk-text-right">Size</th>
-                    <th class="uk-text-right">Lastmodified</th>
+                    <th>@lang('Name')</th>
+                    <th class="uk-text-right">@lang('Size')</th>
+                    <th class="uk-text-right">@lang('Last modified')</th>
                     <th class="uk-text-right">&nbsp;</th>
                 </tr>
             </thead>
@@ -142,9 +142,9 @@
                    <td>&nbsp;</td>
                    <td class="uk-text-right">
                        <ul class="uk-subnav uk-subnav-line">
-                           <li><a ng-click="addBookmark(folder)" title="Bookmark folder"><i class="uk-icon-star"></i></a></li>
-                           <li><a ng-click="action('rename', folder)" title="Rename folder"><i class="uk-icon-text-width"></i></a></li>
-                           <li><a ng-click="action('remove', folder)" title="Delete folder"><i class="uk-icon-minus-circle"></i></a></li>
+                           <li><a ng-click="addBookmark(folder)" title="@lang('Bookmark folder')"><i class="uk-icon-star"></i></a></li>
+                           <li><a ng-click="action('rename', folder)" title="@lang('Rename folder')"><i class="uk-icon-text-width"></i></a></li>
+                           <li><a ng-click="action('remove', folder)" title="@lang('Delete folder')"><i class="uk-icon-minus-circle"></i></a></li>
                        </ul>
                    </td>
                 </tr>
@@ -156,10 +156,10 @@
                    <td class="uk-text-right">@@ file.lastmodified @@</td>
                    <td class="uk-text-right">
                        <ul class="uk-subnav uk-subnav-line">
-                           <li><a ng-click="addBookmark(file)" title="Bookmark file"><i class="uk-icon-star"></i></a></li>
-                           <li><a ng-click="action('rename', file)" title="Rename file"><i class="uk-icon-text-width"></i></a></li>
-                           <li><a ng-click="action('download', file)" title="Download file"><i class="uk-icon-paperclip"></i></a></li>
-                           <li><a ng-click="action('remove', file)" title="Delete file"><i class="uk-icon-minus-circle"></i></a></li>
+                           <li><a ng-click="addBookmark(file)" title="@lang('Bookmark file')"><i class="uk-icon-star"></i></a></li>
+                           <li><a ng-click="action('rename', file)" title="@lang('Rename file')"><i class="uk-icon-text-width"></i></a></li>
+                           <li><a ng-click="action('download', file)" title="@lang('Download file')"><i class="uk-icon-paperclip"></i></a></li>
+                           <li><a ng-click="action('remove', file)" title="@lang('Delete file')"><i class="uk-icon-minus-circle"></i></a></li>
                        </ul>
                    </td>
                 </tr>
@@ -169,7 +169,7 @@
         <div class="uk-margin uk-text-center" data-ng-show="dir && (!dir.folders.length && !dir.files.length)">
             <h2><i class="uk-icon-folder-open-o"></i></h2>
             <p class="uk-text-large">
-                This folder is empty.
+                @lang('This folder is empty.')
             </p>
         </div>
 
@@ -189,11 +189,11 @@
             <i class="uk-icon-pencil"></i> &nbsp; <strong class="uk-text-small filename"></strong>
         </div>
         <ul class="uk-navbar-nav">
-            <li><a data-editor-action="save" title="Save file" data-uk-tooltip><i class="uk-icon-save"></i></a></li>
+            <li><a data-editor-action="save" title="@lang('Save file')" data-uk-tooltip><i class="uk-icon-save"></i></a></li>
         </ul>
         <div class="uk-navbar-flip">
             <ul class="uk-navbar-nav">
-                <li><a data-editor-action="close" title="Close file" data-uk-tooltip><i class="uk-icon-times"></i></a></li>
+                <li><a data-editor-action="close" title="@lang('Close file')" data-uk-tooltip><i class="uk-icon-times"></i></a></li>
             </ul>
         </div>
     </nav>

@@ -32,15 +32,15 @@
                                 </a>
                             </li>
                             <li class="uk-nav-divider"></li>
-                            <li><a href="@route('/dashboard')"><i class="uk-icon-dashboard icon-spacer"></i> Dashboard</a></li>
+                            <li><a href="@route('/dashboard')"><i class="uk-icon-dashboard icon-spacer"></i> @lang('Dashboard')</a></li>
                             
-                            <li class="uk-nav-header uk-text-truncate">General</li>
+                            <li class="uk-nav-header uk-text-truncate">@lang('General')</li>
                             
-                            <li><a href="@route('/settingspage')"><i class="uk-icon-cog icon-spacer"></i> Settings</a></li>
-                            <li><a href="@route('/settings/addons')"><i class="uk-icon-code-fork icon-spacer"></i> Addons</a></li>
+                            <li><a href="@route('/settingspage')"><i class="uk-icon-cog icon-spacer"></i> @lang('Settings')</a></li>
+                            <li><a href="@route('/settings/addons')"><i class="uk-icon-code-fork icon-spacer"></i> @lang('Addons')</a></li>
                             @trigger("navbar")
                             <li class="uk-nav-divider"></li>
-                            <li><a href="@route('/auth/logout')"><i class="uk-icon-power-off icon-spacer"></i> Logout</a></li>
+                            <li><a href="@route('/auth/logout')"><i class="uk-icon-power-off icon-spacer"></i> @lang('Logout')</a></li>
                         </ul>
                     </div>
                 </li>
@@ -72,14 +72,7 @@
         </div>
     </div>
 
-    <div id="app-note" class="uk-modal">
-        <div class="uk-modal-dialog uk-modal-dialog-slide">
-                <a href="" class="uk-modal-close uk-close"></a>
-                <h3>Notice</h3>
-
-                <div class="app-notices"></div>
-        </div>
-    </div>
+    <script src="@route("/i18n.js")"></script>
 
     @trigger("app.layout.footer")
 

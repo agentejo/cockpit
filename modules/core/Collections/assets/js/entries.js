@@ -19,7 +19,7 @@
         }).error(App.module.callbacks.error.http);
 
         $scope.remove = function(index, entryId){
-            if(confirm("Are you sure?")) {
+            if(confirm(App.i18n.get("Are you sure?"))) {
 
                 $http.post(App.route("/api/collections/removeentry"), {
 
@@ -31,7 +31,7 @@
                     $scope.entries.splice(index, 1);
                     $scope.collection.count -= 1;
 
-                    App.notify("Entry removed", "success");
+                    App.notify(App.i18n.get("Entry removed"), "success");
 
                 }).error(App.module.callbacks.error.http);
             }

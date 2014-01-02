@@ -9,7 +9,7 @@
         }).error(App.module.callbacks.error.http);
 
         $scope.remove = function(index, collection){
-            if(confirm("Are you sure?")) {
+            if(confirm(App.i18n.get("Are you sure?"))) {
 
                 $http.post(App.route("/api/collections/remove"), {
 
@@ -19,7 +19,7 @@
 
                     $scope.collections.splice(index, 1);
 
-                    App.notify("Collection removed", "success");
+                    App.notify(App.i18n.get("Collection removed"), "success");
 
                 }).error(App.module.callbacks.error.http);
             }

@@ -2,7 +2,7 @@
 <html lang="en" data-base="@base('/')" data-route="@route('/')">
 <head>
     <meta charset="UTF-8">
-    <title>Authenticate Please!</title>
+    <title>@lang('Authenticate Please!')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <link rel="icon" href="@base("/favicon.ico")" type="image/x-icon">
 
@@ -41,32 +41,32 @@
     <div>
         <div class="uk-animation-fade app-login-box">
             <div class="app-login-box-container">
-                <h1>Welcome back!</h1>
+                <h1>@lang('Welcome back!')</h1>
 
                 <p class="uk-text-muted">
-                    Please login by using your auth credentials.
+                    @lang('Please login by using your auth credentials.')
                 </p>
 
                 <form class="uk-form" method="post" action="@route('/auth/check')">
 
                     <div class="uk-form-row">
 
-                        <input name="auth[user]" class="uk-form-large uk-width-1-1" type="text" placeholder="User">
+                        <input name="auth[user]" class="uk-form-large uk-width-1-1" type="text" placeholder="@lang('Username')">
                     </div>
                     <div class="uk-form-row">
                         <div class="uk-form-password uk-width-1-1">
-                            <input name="auth[password]" class="uk-form-large uk-width-1-1" type="password" placeholder="Password">
+                            <input name="auth[password]" class="uk-form-large uk-width-1-1" type="password" placeholder="@lang('Password')">
                             <a href="" class="uk-form-password-toggle" data-uk-form-password>Show</a>
                         </div>
                     </div>
 
                     <div class="uk-form-row">
-                        <button class="uk-button uk-button-large uk-button-primary uk-width-1-2">Authenticate</button>
+                        <button class="uk-button uk-button-large uk-button-primary uk-width-1-2">@lang('Authenticate')</button>
                     </div>
                 </form>
 
                 <div class="app-login-fail uk-alert uk-hidden">
-                    Login failed
+                    @lang('Login failed')
                 </div>
             </div>
         </div>

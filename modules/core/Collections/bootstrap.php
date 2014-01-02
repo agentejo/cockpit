@@ -36,14 +36,14 @@ if(COCKPIT_ADMIN) {
         $app("admin")->menu("top", [
             "url"    => $app->routeUrl("/collections"),
             "label"  => '<i class="uk-icon-list"></i>',
-            "title"  => "Collections",
+            "title"  => $app("i18n")->get("Collections"),
             "active" => (strpos($app["route"], '/collections') === 0)
         ], 1);
     });
 
     $app->on("admin.dashboard", function() use($app){
 
-        $title       = "Collections";
+        $title       = $app("i18n")->get("Collections");
         $badge       = $app->data->common->collections->count();
         $collections = $app->data->common->collections->find()->limit(3)->sort(["created"=>-1])->toArray();
 

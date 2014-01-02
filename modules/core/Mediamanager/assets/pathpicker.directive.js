@@ -132,6 +132,20 @@
         }
     });
 
+    if(window.tinymce) {
+
+        tinymce.PluginManager.add('pathpicker', function(editor) {
+
+            tinymce.activeEditor.settings.file_browser_callback = tinypicker;
+            
+            function tinypicker (id, value, type, win) {
+                
+            }
+
+            return false;
+        });
+    }
+
     App.module.directive("mediaPathPicker", function(){
 
         return {

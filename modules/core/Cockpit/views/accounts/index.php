@@ -5,17 +5,17 @@
 <div data-ng-controller="accounts">
 
     <nav class="uk-navbar uk-margin-large-bottom">
-        <span class="uk-navbar-brand">Accounts</span>
+        <span class="uk-navbar-brand">@lang('Accounts')</span>
         <div class="uk-navbar-content">
             <form class="uk-form uk-margin-remove uk-display-inline-block">
                 <div class="uk-form-icon">
                     <i class="uk-icon-filter"></i>
-                    <input type="text" placeholder="Filter by name..." data-ng-model="filter">
+                    <input type="text" placeholder="@lang('Filter by name...')" data-ng-model="filter">
                 </div>
             </form>
         </div>
         <ul class="uk-navbar-nav">
-            <li><a href="@route('/accounts/create')" title="Create account" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-circle"></i></a></li>
+            <li><a href="@route('/accounts/create')" title="@lang('Create account')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-circle"></i></a></li>
         </ul>
     </nav>
 
@@ -34,8 +34,8 @@
 
                 <div class="uk-margin uk-hidden uk-animation-fade">
                     <span class="uk-button-group">
-                        <a class="uk-button uk-button-small" href="@route('/accounts/account')/@@ account._id @@" title="Edit account" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
-                        <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, account)" href="#" title="Delete account" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                        <a class="uk-button uk-button-small" href="@route('/accounts/account')/@@ account._id @@" title="@lang('Edit account')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
+                        <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, account)" href="#" title="@lang('Delete account')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
                     </span>
                 </div>
             </div>

@@ -7,17 +7,17 @@
 <div data-ng-controller="regions">
 
     <nav class="uk-navbar uk-margin-large-bottom">
-        <span class="uk-navbar-brand">Regions</span>
+        <span class="uk-navbar-brand">@lang('Regions')</span>
         <div class="uk-navbar-content">
             <form class="uk-form uk-margin-remove uk-display-inline-block">
                 <div class="uk-form-icon">
                     <i class="uk-icon-filter"></i>
-                    <input type="text" placeholder="Filter by name..." data-ng-model="filter">
+                    <input type="text" placeholder="@lang('Filter by name...')" data-ng-model="filter">
                 </div>
             </form>
         </div>
         <ul class="uk-navbar-nav">
-            <li><a href="@route('/regions/region')" title="Add region" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-circle"></i></a></li>
+            <li><a href="@route('/regions/region')" title="@lang('Add region')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-circle"></i></a></li>
         </ul>
     </nav>
 
@@ -34,8 +34,8 @@
 
                 <div class="uk-margin uk-hidden uk-animation-fade">
                     <span class="uk-button-group">
-                        <a class="uk-button uk-button-small" href="@route('/regions/region')/@@ region._id @@" title="Edit region" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
-                        <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, region)" href="#" title="Delete region" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                        <a class="uk-button uk-button-small" href="@route('/regions/region')/@@ region._id @@" title="@lang('Edit region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
+                        <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
                     </span>
                 </div>
             </div>
@@ -46,10 +46,10 @@
     <div class="uk-text-center app-panel" data-ng-show="regions && !regions.length">
         <h2><i class="uk-icon-th-large"></i></h2>
         <p class="uk-text-large">
-            You don't have any regions created.
+            @lang('You don\'t have any regions created.')
         </p>
 
-        <a href="@route('/regions/region')" class="uk-button uk-button-success uk-button-large">Create a region</a>
+        <a href="@route('/regions/region')" class="uk-button uk-button-success uk-button-large">@lang('Create a region')</a>
     </div>
 
 </div>

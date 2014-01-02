@@ -1,7 +1,7 @@
 {{ $app->assets(['assets:vendor/uikit/addons/js/form-password.min.js','assets:vendor/uikit/addons/css/form-password.min.css']) }}
 
 <h1>
-    <a href="@route('/accounts/index')">Accounts</a> / Account
+    <a href="@route('/accounts/index')">@lang('Accounts')</a> / @lang('Account')
 </h1>
 
 <div class="uk-grid" data-ng-controller="account" data-uk-margin>
@@ -28,35 +28,35 @@
 
 
                         <div class="uk-form-row">
-                            <label class="uk-text-small">Name</label>
+                            <label class="uk-text-small">@lang('Name')</label>
                             <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="account.name">
                         </div>
 
                         <div class="uk-form-row">
-                            <label class="uk-text-small">Username</label>
+                            <label class="uk-text-small">@lang('Username')</label>
                             <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="account.user">
                         </div>
 
                         <div class="uk-form-row">
-                            <label class="uk-text-small">Email</label>
+                            <label class="uk-text-small">@lang('Email')</label>
                             <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="account.email">
                         </div>
 
                         <hr>
 
                         <div class="uk-form-row">
-                            <label class="uk-text-small">New Password</label>
+                            <label class="uk-text-small">@lang('New Password')</label>
                             <div class="uk-form-password uk-width-1-1">
-                                <input class="uk-form-large uk-width-1-1" type="password" placeholder="Password" data-ng-model="account.password">
+                                <input class="uk-form-large uk-width-1-1" type="password" placeholder="@lang('Password')" data-ng-model="account.password">
                                 <a href="" class="uk-form-password-toggle" data-uk-form-password>Show</a>
                             </div>
                             <div class="uk-alert">
-                                Leave the password field empty to keep your current password.
+                                @lang('Leave the password field empty to keep your current password.')
                             </div>
                         </div>
 
                         <div class="uk-form-row">
-                            <button class="uk-button uk-button-large uk-button-primary uk-width-1-2">Save</button>
+                            <button class="uk-button uk-button-large uk-button-primary uk-width-1-2">@lang('Save')</button>
                         </div>
 
                     </form>
@@ -82,7 +82,7 @@
             $http.post(App.route("/accounts/save"), {"account": account}).success(function(data){
 
                 if(data && Object.keys(data).length) {
-                    App.notify("account saved!");
+                    App.notify("@lang('Account saved!')");
 
                     $scope.account = data;
                     $scope.account.password = "";

@@ -64,14 +64,14 @@ if(COCKPIT_ADMIN) {
         $app("admin")->menu("top", [
             "url"    => $app->routeUrl("/regions"),
             "label"  => '<i class="uk-icon-th-large"></i>',
-            "title"  => "Regions",
+            "title"  => $app("i18n")->get("Regions"),
             "active" => (strpos($app["route"], '/regions') === 0)
         ], 1);
     });
 
     $app->on("admin.dashboard", function() use($app){
 
-        $title   = "Regions";
+        $title   = $app("i18n")->get("Regions");
         $badge   = $app->data->common->regions->count();
         $regions = $app->data->common->regions->find()->limit(3)->sort(["created"=>-1])->toArray();
 

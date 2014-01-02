@@ -70,7 +70,7 @@
             }
 
             if(!this.file.is_writable) {
-                App.notify("This file is not writable!", "danger");
+                App.notify(App.i18n.get("This file is not writable!"), "danger");
                 return;
             }
 
@@ -166,7 +166,7 @@
 
                     case "remove":
 
-                        if(confirm("Are you sure?")) {
+                        if(confirm(App.i18n.get("Are you sure?"))) {
 
                             requestapi({"cmd":"removefiles", "paths": [item.path]});
 
@@ -179,7 +179,7 @@
 
                     case "rename":
 
-                        var name = prompt("Please enter new name:", item.name);
+                        var name = prompt(App.i18n.get("Please enter new name:"), item.name);
 
                         if(name!=item.name && $.trim(name)) {
                             requestapi({"cmd":"rename", "path": item.path, "name":name});
@@ -191,7 +191,7 @@
 
                     case "createfolder":
 
-                        var name = prompt("Please enter a name:", "");
+                        var name = prompt(App.i18n.get("Please enter a name:"), "");
 
                         if($.trim(name)) {
                             requestapi({"cmd":"createfolder", "path": currentpath, "name":name}, function(){
@@ -275,7 +275,7 @@
                 for(var i=0;i<$scope.bookmarks[cat].length;i++) {
 
                     if($scope.bookmarks[cat][i].path == bookmark.path) {
-                        App.notify(item.name + " is already bookmarked.");
+                        App.notify(App.i18n.get("%s is already bookmarked.", item.name));
                         return;
                     }
                 }
@@ -283,7 +283,7 @@
                 $scope.bookmarks[cat].push(bookmark);
 
                 $http.post(App.route("/mediamanager/savebookmarks"), {"bookmarks": angular.copy($scope.bookmarks)}).success(function(data){
-                    App.notify(item.name + " bookmarked.", "success");
+                    App.notify(App.i18n.get("%s bookmarked.", item.name), "success");
                 }).error(App.module.callbacks.error.http);
             }
 
@@ -362,7 +362,7 @@
                     cat = ele.data("group"),
                     idx = ele.data("idx");
 
-                if(!confirm("Do you really want to remove "+$scope.bookmarks[cat][idx].name+" ?")) {
+                if(!confirm(App.i18n.get("Do you really want to remove %s ?", $scope.bookmarks[cat][idx].name))) {
                     return;
                 }
 

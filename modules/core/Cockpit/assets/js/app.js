@@ -110,7 +110,7 @@
     App.session = Storage.select("cockpit", "session");
     App.storage = Storage.select("cockpit", "local");
     App.memory  = Storage.select("cockpit", "memory");
-
+    App.i18n    = window.i18n;
 
     global.App = App;
 

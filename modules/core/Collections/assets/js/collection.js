@@ -56,7 +56,7 @@
 
                 if(data && Object.keys(data).length) {
                     $scope.collection = data;
-                    App.notify("Collection saved!");
+                    App.notify(App.i18n.get("Collection saved!"));
                 }
 
             }).error(App.module.callbacks.error.http);

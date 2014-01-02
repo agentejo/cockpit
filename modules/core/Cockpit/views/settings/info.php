@@ -1,5 +1,5 @@
 
-<h1><a href="@route('/settingspage')">Settings</a> / System Information</h1>
+<h1><a href="@route('/settingspage')">@lang('Settings')</a> / System Information</h1>
 
 <div class="app-panel uk-width-medium-3-4">
 

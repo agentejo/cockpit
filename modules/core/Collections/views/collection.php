@@ -3,7 +3,7 @@
 
 <div data-ng-controller="collection" data-id="{{ $id }}">
 
-    <h1><a href="@route("/collections")">Collections</a> / Collection</h1>
+    <h1><a href="@route("/collections")">@lang('Collections')</a> / @lang('Collection')</h1>
 
 
     <form class="uk-form" data-ng-submit="save()" data-ng-show="collection">
@@ -14,19 +14,19 @@
                 <div class="app-panel">
 
                     <div class="uk-form-row">
-                        <input class="uk-width-1-1 uk-form-large" type="text" placeholder="Collection name" data-ng-model="collection.name"  pattern="[a-zA-Z0-9]+" required>
+                        <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="collection.name"  pattern="[a-zA-Z0-9]+" required>
                     </div>
 
                     <div class="uk-form-row uk-margin uk-text-center" data-ng-show="!collection.fields || !collection.fields.length">
-                        <h2>Fields</h2>
+                        <h2>@lang('Fields')</h2>
                         <p>
-                            It seems you don't have any fields created.
+                            @lang('It seems you don\'t have any fields created.')
                         </p>
-                        <button data-ng-click="addfield()" type="button" class="uk-button uk-button-success uk-button-large">Add field</button>
+                        <button data-ng-click="addfield()" type="button" class="uk-button uk-button-success uk-button-large">@lang('Add field')</button>
                     </div>
 
                     <div class="uk-form-row uk-margin" data-ng-show="collection.fields && collection.fields.length">
-                        <strong>Fields</strong>
+                        <strong>@lang('Fields')</strong>
                     </div>
 
                     <div class="uk-form-row" data-ng-show="collection.fields && collection.fields.length">
@@ -47,7 +47,7 @@
                                     <option value="media">Media</option>
                                 </select>
 
-                                <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="options...." title="Separate different options by comma" data-uk-tooltip>
+                                <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="options...." title="@lang('Separate different options by comma')" data-uk-tooltip>
 
                                 <select data-ng-if="field.type=='code'" data-ng-model="field.syntax" title="Code syntax" data-uk-tooltip>
                                     <option value="text">Text</option>
@@ -63,26 +63,26 @@
                             </li>
                         </ul>
 
-                        <button data-ng-click="addfield()" type="button" class="uk-button uk-button-success"><i class="uk-icon-plus-circle" title="Add field"></i></button>
+                        <button data-ng-click="addfield()" type="button" class="uk-button uk-button-success"><i class="uk-icon-plus-circle" title="@lang('Add field')"></i></button>
                     </div>
                     <br>
                     <br>
 
                     <div class="uk-form-row" data-ng-show="collection.fields && collection.fields.length">
                         <div class="uk-button-group">
-                            <button type="submit" class="uk-button uk-button-primary uk-button-large">Save Collection</button>
-                            <a href="@route('/collections/entries')/@@ collection._id @@" class="uk-button uk-button-large" data-ng-show="collection._id"><i class="uk-icon-bars"></i> Goto entries</a>
+                            <button type="submit" class="uk-button uk-button-primary uk-button-large">@lang('Save Collection')</button>
+                            <a href="@route('/collections/entries')/@@ collection._id @@" class="uk-button uk-button-large" data-ng-show="collection._id"><i class="uk-icon-bars"></i> @lang('Goto entries')</a>
                         </div>
-                        <a href="@route('/collections')">Cancel</a>
+                        <a href="@route('/collections')">@lang('Cancel')</a>
                     </div>
                 </div>
             </div>
             <div class="uk-width-1-4" data-ng-show="collection.fields && collection.fields.length">
-                <strong>Settings</strong>
+                <strong>@lang('Settings')</strong>
 
                 <div class="uk-margin">
                     <p>
-                        Fields on entries list page:
+                        @lang('Fields on entries list page'):
                     </p>
                     <ul id="fields-list" class="uk-sortable" data-uk-sortable="{maxDepth:1}">
                         <li data-ng-repeat="field in collection.fields">
@@ -97,22 +97,21 @@
 
                 <div class="uk-margin">
                     <p>
-                        Order entries on list page:
+                        @lang('Order entries on list page'):
                     </p>
                     <select class="uk-width-1-1 uk-margin-bottom" data-ng-model="collection.sortfield">
-                        <option value="created">created</option>
-                        <option value="modified">modified</option>
+                        <option value="created">@lang('created')</option>
+                        <option value="modified">@lang('modified')</option>
                         <option value="@@ field.name @@" data-ng-repeat="field in collection.fields">@@ field.name @@</option>
                     </select>
                     <select class="uk-width-1-1" data-ng-model="collection.sortorder">
-                        <option value="-1">desc</option>
-                        <option value="1">asc</option>
+                        <option value="-1">@lang('descending')</option>
+                        <option value="1">@lang('ascending')</option>
                     </select>
                 </div>
             </div>
 
         </div>
-
 
     </form>
 </div>

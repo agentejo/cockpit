@@ -21,7 +21,7 @@
 
 <div data-ng-controller="region" data-id="{{ $id }}">
 
-    <h1><a href="@route("/regions")">Regions</a> / Entry</h1>
+    <h1><a href="@route("/regions")">@lang('Regions')</a> / @lang('Entry')</h1>
 
     <form class="uk-form" data-ng-submit="save()" data-ng-show="region">
 
@@ -32,12 +32,12 @@
                     <div class="app-panel">
 
                         <div class="uk-form-row">
-                            <input class="uk-width-1-1 uk-form-large" type="text" placeholder="Region name" data-ng-model="region.name"  pattern="[a-zA-Z0-9]+" required>
+                            <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="region.name"  pattern="[a-zA-Z0-9]+" required>
                         </div>
 
                         <ul class="uk-subnav uk-subnav-pill">
-                            <li data-ng-class="mode=='form' ? 'uk-active' : ''"><a href="#form" data-ng-click="mode='form'">Form</a></li>
-                            <li data-ng-class="mode=='tpl' ? 'uk-active' : ''"><a href="#tpl" data-ng-click="mode='tpl'">Template</a></li>
+                            <li data-ng-class="mode=='form' ? 'uk-active' : ''"><a href="#form" data-ng-click="mode='form'">@lang('Form')</a></li>
+                            <li data-ng-class="mode=='tpl' ? 'uk-active' : ''"><a href="#tpl" data-ng-click="mode='tpl'">@lang('Template')</a></li>
                         </ul>
 
                         <div data-ng-show="mode=='form'">
@@ -45,13 +45,12 @@
                             <div class="uk-form-row">
 
                                 <h3>
-                                    Region fields
-                                    
+                                    @lang('Region fields')
                                 </h3>
 
                                 <a href="#" class="uk-button uk-button-small" data-ng-click="(manageform = !manageform)">
-                                    <span ng-show="!manageform">Manage form</span>
-                                    <span ng-show="manageform">Done</span>
+                                    <span ng-show="!manageform">@lang('Manage form')</span>
+                                    <span ng-show="manageform">@lang('Done')</span>
                                 </a>
 
                                 <hr>
@@ -59,7 +58,7 @@
                             </div>
 
                             <div class="uk-alert" ng-show="region && !region.fields.length">
-                              This region has no fields yet.
+                              @lang('This region has no fields yet.')
                             </div>
 
                             <div ng-show="manageform">
@@ -94,7 +93,7 @@
                                    </li>
                                </ul>
 
-                               <button data-ng-click="addfield()" type="button" class="uk-button uk-button-success"><i class="uk-icon-plus-circle" title="Add field"></i></button>
+                               <button data-ng-click="addfield()" type="button" class="uk-button uk-button-success"><i class="uk-icon-plus-circle" title="@lang('Add field')"></i></button>
                             </div>
 
                             <div ng-show="!manageform">
@@ -139,19 +138,19 @@
                               
                               <div class="uk-button-dropdown uk-float-right" data-uk-dropdown>
                                 <button type="button" class="uk-button">
-                                  <i class="uk-icon-indent"></i> Insert form field
+                                  <i class="uk-icon-indent"></i> @lang('Insert form field')
                                 </button>
 
                                 <div class="uk-dropdown uk-dropdown-flip">
                                     <ul class="uk-nav uk-nav-dropdown" ng-show="region.fields && region.fields.length">
-                                      <li class="uk-nav-header">Form fields</li>
+                                      <li class="uk-nav-header">@lang('Form fields')</li>
                                       <li ng-repeat="field in region.fields">
                                         <a ng-click="insertfield(field.name)">@@ field.name @@</a>
                                       </li>
                                     </ul>
 
                                     <div class="uk-text-muted" ng-show="region.fields && !region.fields.length">
-                                      You have no fields added.
+                                      @lang('You have no fields added.')
                                     </div>
                                 </div>
 
@@ -162,14 +161,14 @@
                             <textarea id="region-template" codearea="{mode:'application/x-httpd-php'}" class="uk-width-1-1 uk-form-large" style="height:450px !important;" placeholder="Region code" data-ng-model="region.tpl"  pattern="[a-zA-Z0-9]+"></textarea>
                             
                             <div class="uk-margin" ng-show="region.name">
-                                <strong>Embed snippet:</strong>
+                                <strong>@lang('Embed region snippet'):</strong>
                                 <pre><code>&lt;?php region('@@region.name@@'); ?&gt;</code></pre>
                             </div>
                         </div>
 
                         <div class="uk-form-row">
-                            <button type="submit" class="uk-button uk-button-primary uk-button-large">Save Region</button>
-                            <a href="@route('/regions')">Cancel</a>
+                            <button type="submit" class="uk-button uk-button-primary uk-button-large">@lang('Save Region')</button>
+                            <a href="@route('/regions')">@lang('Cancel')</a>
                         </div>
                     </div>
                 </div>

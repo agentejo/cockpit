@@ -19,7 +19,7 @@
 <hr>
 
 <div class="date-widget-account">
-    <a class="uk-display-block" href="@route('/accounts/account')" class="uk-clearfix" title="Edit account settings" data-uk-tooltip="{pos:'bottom-left', offset:10}">
+    <a class="uk-display-block" href="@route('/accounts/account')" class="uk-clearfix" title="@lang('Edit account settings')" data-uk-tooltip="{pos:'bottom-left', offset:10}">
         <img class="uk-rounded uk-float-left uk-margin-right" src="http://www.gravatar.com/avatar/{{ md5($app['user']['email']) }}?d=mm&s=35" width="35" height="35" alt="avatar">
         <div class="uk-text-truncate"><strong>{{ $app["user"]["user"] }}</strong></div>
         <div class="uk-text-small uk-text-muted uk-text-truncate">{{ (isset($app["user"]["email"]) ? $app["user"]["email"] : 'no email') }}</div>

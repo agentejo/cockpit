@@ -395,4 +395,18 @@ class I18n extends \Lime\Helper {
 
 		return false;
 	}
+
+	/**
+	 * Get language data
+	 * @param  string $lang     language
+	 * @return array
+	 */
+	public function data($lang=null) {
+
+		if($lang) {
+			return isset($this->_languages[$lang]) ? $this->_languages[$lang] : array();
+		}
+
+		return $this->_languages;
+	}
 }

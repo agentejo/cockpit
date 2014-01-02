@@ -17,7 +17,11 @@
 
 <div data-ng-controller="entry" data-collection='{{ json_encode($collection) }}' data-entry='{{ json_encode($entry) }}'>
 
-    <h1><a href="@route("/collections")">Collections</a> / <a href="@route("/collections/entries")/@@ collection._id @@">@@ collection.name @@</a> / Entry</h1>
+    <h1>
+        <a href="@route("/collections")">@lang('Collections')</a> / 
+        <a href="@route("/collections/entries")/@@ collection._id @@">@@ collection.name @@</a> / 
+        @lang('Entry')
+    </h1>
 
     <form class="uk-form" data-ng-submit="save()" data-ng-show="collection">
 
@@ -48,8 +52,8 @@
                     </div>
 
                     <div class="uk-form-row">
-                        <button type="submit" class="uk-button uk-button-primary uk-button-large">Save Collection</button>
-                        <a href="@route('/collections/entries/'.$collection["_id"])" >Cancel</a>
+                        <button type="submit" class="uk-button uk-button-primary uk-button-large">@lang('Save Collection')</button>
+                        <a href="@route('/collections/entries/'.$collection["_id"])" >@lang('Cancel')</a>
                     </div>
 
                 </div>
