@@ -64,8 +64,8 @@ return [
     'Goto entries' => '記事一覧を表示',
     'Fields on entries list page' => '記事一覧で表示するフォールド',
     'Order entries on list page' => '記事一覧の順番',
-    'created' => '作成完了',
-    'modified' => '編集完了',
+    'created' => '作成日時',
+    'modified' => '更新日時',
     'descending' => '降順',
     'ascending' => '昇順',
     'Collection removed' => 'コレクションを削除しました。',
@@ -108,7 +108,7 @@ return [
     'Please enter name:' => '名前を入力してください。',
     '%s is already bookmarked.' => '%sはすでにブックマークされています。',
     '%s bookmarked.' => '%sをブックマークしました。',
-    'Do you really want to remove %s ?' => '%sを削除しますか？',
+    'Do you really want to remove %s ?' => 'ファイルを削除しますか？',
 
     // Regions
     'Regions' => 'リジョン一覧',
