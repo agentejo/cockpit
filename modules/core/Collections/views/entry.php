@@ -9,6 +9,11 @@
 {{ $app->assets(['assets:angular/directives/codearea.js']) }}
 
 {{ $app->assets(['assets:vendor/tinymce/tinymce.min.js']) }}
+
+@if($app->path('assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js'))
+{{ $app->assets(['assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js']) }}
+@endif
+
 {{ $app->assets(['assets:angular/directives/wysiwyg.js']) }}
 
 <style>
