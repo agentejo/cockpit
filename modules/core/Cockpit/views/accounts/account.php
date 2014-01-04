@@ -67,6 +67,18 @@
         </div>
 
     </div>
+
+    <div class="uk-width-medium-1-4 uk-form">
+        <h3>System</h3>
+        <div class="uk-form-row">
+            <label class="uk-text-small">@lang('Language')</label>
+            <select class="uk-width-1-1 uk-form-large" data-ng-model="account.i18n">
+                @foreach($languages as $lang)
+                <option value="{{ $lang['i18n'] }}">{{ $lang['language'] }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
 </div>
 <script>
 

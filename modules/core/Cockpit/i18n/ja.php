@@ -2,6 +2,13 @@
 
 return [
 
+
+    'meta' => [
+
+        'language' => 'Japanese',
+        'author'   => 'yktyshr'
+    ],
+
     // Common
     'Dashboard' => 'ダッシュボード',
     'General' => '一般',
@@ -19,6 +26,8 @@ return [
     'Modified' => '編集済み',
     'Today' => '今日',
     'Info' => '情報',
+    'Language' => '言語',
+    'System' => 'システム',
     'Are you sure?' => '正しく入力してください。',
 
     // Login

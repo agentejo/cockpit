@@ -2,6 +2,12 @@
 
 return [
 
+    'meta' => [
+
+        'language' => 'Spanish',
+        'author'   => 'Francisco Arenas'
+    ],
+
     // Common
     'Dashboard' => 'Panel de Control',
     'General' => 'General',
@@ -19,6 +25,8 @@ return [
     'Modified' => 'Modificado',
     'Today' => 'Hoy',
     'Info' => 'Info',
+    'Language' => 'Idioma',
+    'System' => 'Sistema',
     'Are you sure?' => '¿Estás seguro?',
 
     // Login

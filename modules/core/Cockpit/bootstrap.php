@@ -99,6 +99,10 @@ if (COCKPIT_ADMIN) {
 
     // load i18n definition
 
+    if($user = $app("session")->read("app.auth")) {
+        $app("i18n")->locale = isset($user['i18n']) ? $user['i18n'] : $app("i18n")->locale;
+    }
+
     $locale = $app("i18n")->locale;
 
     $app("i18n")->load("cockpit:i18n/{$locale}.php", $locale);

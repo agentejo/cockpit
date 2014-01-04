@@ -2,6 +2,13 @@
 
 return [
     
+    'meta' => [
+
+        'language' => 'German',
+        'author'   => 'Artur Heinze'
+    ],
+
+
     // Common
     'Dashboard'  => 'Dashboard',
     'General'  => 'Allgemein',
@@ -19,6 +26,8 @@ return [
     'Modified' => 'Modifiziert',
     'Today'  => 'Heute',
     'Info'  => 'Info',
+    'Language' => 'Sprache',
+    'System' => 'System',
     'Are you sure?' => 'Sind Sie sicher?',
 
     // Login

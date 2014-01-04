@@ -1,7 +1,15 @@
 <?php
 
 return [
+
+    'meta' => [
+
+        'language' => 'English',
+        'author'   => 'Artur Heinze'
+    ],
+
 /*   
+
     // Common
     'Dashboard' => '',
     'General' => '',
@@ -19,6 +27,8 @@ return [
     'Modified' => '',
     'Today' => '',
     'Info' => '',
+    'Language' => '',
+    'System' => '',
     'Are you sure?' => '',
 
     // Login

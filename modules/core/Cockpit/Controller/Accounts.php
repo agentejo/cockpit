@@ -24,7 +24,6 @@ class Accounts extends \Cockpit\Controller {
             $uid = $this->user["_id"];
         }
 
-
         $account = $this->data->cockpit->accounts->findOne([
             "_id" => $uid
         ]);
@@ -35,15 +34,19 @@ class Accounts extends \Cockpit\Controller {
 
         unset($account["password"]);
 
-        return $this->render('cockpit:views/accounts/account.php', compact('account', 'uid'));
+        $languages = $this->getLanguages();
+
+        return $this->render('cockpit:views/accounts/account.php', compact('account', 'uid', 'languages'));
     }
 
     public function create() {
 
         $uid     = null;
-        $account = ["user"=>"", "email"=>"", "active"=>1];
+        $account = ["user"=>"", "email"=>"", "active"=>1, "i18n"=>$this->app("i18n")->locale];
 
-        return $this->render('cockpit:views/accounts/account.php', compact('account', 'uid'));
+        $languages = $this->getLanguages();
+
+        return $this->render('cockpit:views/accounts/account.php', compact('account', 'uid', 'languages'));
     }
 
     public function save() {
@@ -86,6 +89,26 @@ class Accounts extends \Cockpit\Controller {
         }
 
         return false;
+    }
+
+    protected function getLanguages() {
+
+        $languages = [];
+
+        foreach (new \DirectoryIterator($this->app->path("cockpit:i18n")) as $file) {
+
+            if(!$file->isFile()) continue;
+            if($file->getExtension()!='php') continue;
+
+            $lang = include($file->getRealPath());
+            $i18n = $file->getBasename('.php');
+            $language = isset($lang['meta']['language']) ? $lang['meta']['language'] : $i18n;
+
+            $languages[] = ["i18n" => $i18n, "language"=> $language];
+
+        }
+
+        return $languages;
     }
 
 }
