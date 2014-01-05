@@ -11,7 +11,7 @@ return [
             'shortdays'   => ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
             'longdays'    => ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'],
             'shortmonths' => ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
-            'longmonths'  => ['Januar', 'Februar', 'Märch', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
+            'longmonths'  => ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
         ]
     ],
 
