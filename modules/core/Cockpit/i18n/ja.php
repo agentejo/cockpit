@@ -9,10 +9,10 @@ return [
         'author'   => 'yktyshr',
 
         'date' => [
-            'shortdays'   => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            'longdays'    => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-            'shortmonths' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            'longmonths'  => ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+            'shortdays'   => ['（月）', '（火）', '（水）', '（木）', '（金）', '（Sat）', '（Sun）'],
+            'longdays'    => ['月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日', '日曜日'],
+            'shortmonths' => ['1月', '2月', '3月', '4月', '5日', '6日', '7月', '8月', '9月', '10月', '11月', '12月'],
+            'longmonths'  => ['1月', '2月', '3月', '4月', '5日', '6日', '7月', '8月', '9月', '10月', '11月', '12月']
         ]
     ],
 
@@ -80,8 +80,8 @@ return [
     'Goto entries' => '記事一覧を表示',
     'Fields on entries list page' => '記事一覧で表示するフォールド',
     'Order entries on list page' => '記事一覧の順番',
-    'created' => '作成完了',
-    'modified' => '編集完了',
+    'created' => '作成日時',
+    'modified' => '更新日時',
     'descending' => '降順',
     'ascending' => '昇順',
     'Collection removed' => 'コレクションを削除しました。',
@@ -118,7 +118,7 @@ return [
     'This folder is empty.' => 'このフォルダは空です。',
     'Save file' => 'ファイルを保存',
     'Close file' => 'ファイルを閉じる',
-    'Do you really want to remove %s ?' => 'ファイルを削除しますか？',
+    'Do you really want to remove %s ?' => '%sを削除しますか？',
     'This file is not writable!' => 'このファイルは編集できません。',
     'Please enter new name:' => '新しい名前を入力してください。',
     'Please enter name:' => '名前を入力してください。',
