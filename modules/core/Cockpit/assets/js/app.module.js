@@ -162,9 +162,9 @@
         
         var d = date(format, input);
 
-        if(App.i18n.__data["@meta"] && App.i18n.__data["@meta"].date) {
+        if(App.i18n.key("@meta") && App.i18n.key("@meta").date) {
 
-            var meta = App.i18n.__data["@meta"].date;
+            var meta = App.i18n.key("@meta").date;
 
             // weekdays
             d = str_replace(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], meta.longdays, d);

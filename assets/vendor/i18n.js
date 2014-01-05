@@ -42,6 +42,9 @@
                     return this.printf(String(this.__data[key]), args);
                 },
 
+                key: function(key) {
+                  return this.__data[key] ? this.__data[key] : null;
+                },
 
                 printf: function() {
                     // From: http://phpjs.org/functions
