@@ -113,7 +113,7 @@
                                     </div>
 
                                     <div data-ng-switch-when="wysiwyg">
-                                        <textarea wysiwyg class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value"></textarea>
+                                        <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value"></textarea>
                                     </div>
 
                                     <div data-ng-switch-when="select">

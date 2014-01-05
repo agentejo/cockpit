@@ -44,7 +44,7 @@
                         </div>
 
                         <div data-ng-switch-when="wysiwyg">
-                            <textarea wysiwyg class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]"></textarea>
+                            <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]"></textarea>
                         </div>
 
                         <div data-ng-switch-default>
@@ -53,7 +53,7 @@
                     </div>
 
                     <div class="uk-form-row">
-                        <button type="submit" class="uk-button uk-button-primary uk-button-large">@lang('Save Collection')</button>
+                        <button type="submit" class="uk-button uk-button-primary uk-button-large">@lang('Save')</button>
                         <a href="@route('/collections/entries/'.$collection["_id"])" >@lang('Cancel')</a>
                     </div>
 
