@@ -2,6 +2,20 @@
 
 return [
 
+
+    '@meta' => [
+
+        'language' => 'Japanese',
+        'author'   => 'yktyshr',
+
+        'date' => [
+            'shortdays'   => ['（月）', '（火）', '（水）', '（木）', '（金）', '（土）', '（日）'],
+            'longdays'    => ['月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日', '日曜日'],
+            'shortmonths' => ['1月', '2月', '3月', '4月', '5日', '6日', '7月', '8月', '9月', '10月', '11月', '12月'],
+            'longmonths'  => ['1月', '2月', '3月', '4月', '5日', '6日', '7月', '8月', '9月', '10月', '11月', '12月']
+        ]
+    ],
+
     // Common
     'Dashboard' => 'ダッシュボード',
     'General' => '一般',
@@ -19,6 +33,8 @@ return [
     'Modified' => '編集済み',
     'Today' => '今日',
     'Info' => '情報',
+    'Language' => '言語',
+    'System' => 'システム',
     'Are you sure?' => '正しく入力してください。',
 
     // Login
@@ -102,13 +118,13 @@ return [
     'This folder is empty.' => 'このフォルダは空です。',
     'Save file' => 'ファイルを保存',
     'Close file' => 'ファイルを閉じる',
-    'Do you really want to remove %s ?' => 'ファイルを削除しますか？',
+    'Do you really want to remove %s ?' => '%sを削除しますか？',
     'This file is not writable!' => 'このファイルは編集できません。',
     'Please enter new name:' => '新しい名前を入力してください。',
     'Please enter name:' => '名前を入力してください。',
     '%s is already bookmarked.' => '%sはすでにブックマークされています。',
     '%s bookmarked.' => '%sをブックマークしました。',
-    'Do you really want to remove %s ?' => 'ファイルを削除しますか？',
+    'Do you really want to remove %s ?' => '%sを削除しますか？',
 
     // Regions
     'Regions' => 'リジョン一覧',
