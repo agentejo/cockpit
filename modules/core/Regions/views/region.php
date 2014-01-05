@@ -36,10 +36,10 @@
                         <div class="uk-form-row">
                             <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="region.name"  pattern="[a-zA-Z0-9]+" required>
                         </div>
-
-                        <ul class="uk-subnav uk-subnav-pill">
-                            <li data-ng-class="mode=='form' ? 'uk-active' : ''"><a href="#form" data-ng-click="mode='form'">@lang('Form')</a></li>
+                        
+                        <ul class="uk-tab uk-tab-flip uk-margin" style="margin:25px 0;">
                             <li data-ng-class="mode=='tpl' ? 'uk-active' : ''"><a href="#tpl" data-ng-click="mode='tpl'">@lang('Template')</a></li>
+                            <li data-ng-class="mode=='form' ? 'uk-active' : ''"><a href="#form" data-ng-click="mode='form'">@lang('Form')</a></li>
                         </ul>
 
                         <div data-ng-show="mode=='form'">
