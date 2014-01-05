@@ -102,7 +102,7 @@ class Accounts extends \Cockpit\Controller {
 
             $lang = include($file->getRealPath());
             $i18n = $file->getBasename('.php');
-            $language = isset($lang['meta']['language']) ? $lang['meta']['language'] : $i18n;
+            $language = isset($lang['@meta']['language']) ? $lang['@meta']['language'] : $i18n;
 
             $languages[] = ["i18n" => $i18n, "language"=> $language];
 

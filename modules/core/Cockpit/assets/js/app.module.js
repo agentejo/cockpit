@@ -26,7 +26,7 @@
                 var timer = setInterval((function(){
 
                     var fn = function(){
-                        elm.text(date(attrs.appClock || "H:i"));
+                        elm.text(i18n_date(attrs.appClock || "H:i"));
                     };
 
                     fn();
@@ -66,7 +66,7 @@
             if(!String(input).match(/^\d+$/)) input = strtotime(input);
             if(!format) format = "Y-m-d H:i";
 
-            return date(format, input);
+            return i18n_date(format, input);
         }
     });
 
@@ -130,7 +130,7 @@
 
                 if(elm.is("a")){
 
-                    var msg = attrs.appConfirmLink || "Are you sure?";
+                    var msg = attrs.appConfirmLink || App.i18n.get("Are you sure?");
 
                     elm.on("click", function(e){
                         e.preventDefault();
@@ -149,7 +149,7 @@
     module.callbacks = {success:{}, error:{}};
 
     module.callbacks.error.http = function(data, status, headers, config){
-        App.notify(data ? String(data) : "Uuups, something went wrong...", "danger");
+        App.notify(data ? String(data) : App.i18n.get("Uuups, something went wrong..."), "danger");
     };
 
     App.module = module;
@@ -157,6 +157,29 @@
 
 
     // helpers
+
+    function i18n_date(format, input) {
+        
+        var d = date(format, input);
+
+        if(App.i18n.__data["@meta"] && App.i18n.__data["@meta"].date) {
+
+            var meta = App.i18n.__data["@meta"].date;
+
+            // weekdays
+            d = str_replace(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], meta.longdays, d);
+            d = str_replace(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], meta.shortdays, d);
+
+            // months
+            d = str_replace(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'], meta.longmonths, d);
+            d = str_replace(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], meta.shortmonths, d);
+        }
+
+        return d;
+    }
+
+
+    function str_replace(e,d,a,f){var b=0,c=0,g="",h="",k=0,l=0;e=[].concat(e);d=[].concat(d);var m="[object Array]"===Object.prototype.toString.call(d),n="[object Array]"===Object.prototype.toString.call(a);a=[].concat(a);f&&(this.window[f]=0);b=0;for(k=a.length;b<k;b++)if(""!==a[b])for(c=0,l=e.length;c<l;c++)g=a[b]+"",h=m?void 0!==d[c]?d[c]:"":d[0],a[b]=g.split(e[c]).join(h),f&&a[b]!==g&&(this.window[f]+=(g.length-a[b].length)/e[c].length);return n?a:a[0]};
 
     function date(k,l){var d,a,h="Sun Mon Tues Wednes Thurs Fri Satur January February March April May June July August September October November December".split(" "),f=/\\?(.?)/gi,g=function(b,c){return a[b]?a[b]():c},e=function(b,a){for(b=String(b);b.length<a;)b="0"+b;return b};a={d:function(){return e(a.j(),2)},D:function(){return a.l().slice(0,3)},j:function(){return d.getDate()},l:function(){return h[a.w()]+"day"},N:function(){return a.w()||7},S:function(){var b=a.j(),c=b%10;3>=c&&1==parseInt(b%
     100/10,10)&&(c=0);return["st","nd","rd"][c-1]||"th"},w:function(){return d.getDay()},z:function(){var b=new Date(a.Y(),a.n()-1,a.j()),c=new Date(a.Y(),0,1);return Math.round((b-c)/864E5)},W:function(){var b=new Date(a.Y(),a.n()-1,a.j()-a.N()+3),c=new Date(b.getFullYear(),0,4);return e(1+Math.round((b-c)/864E5/7),2)},F:function(){return h[6+a.n()]},m:function(){return e(a.n(),2)},M:function(){return a.F().slice(0,3)},n:function(){return d.getMonth()+1},t:function(){return(new Date(a.Y(),a.n(),0)).getDate()},

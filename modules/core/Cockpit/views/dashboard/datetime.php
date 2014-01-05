@@ -1,11 +1,18 @@
-<div id="date-widget-weekdays" class="uk-text-small uk-text-muted uk-margin date-widget-weekdays" data-day="5">
-    <span data-day="1">MON</span>
-    <span data-day="2">TUE</span>
-    <span data-day="3">WED</span>
-    <span data-day="4">THU</span>
-    <span data-day="5">FRI</span>
-    <span data-day="6">SAT</span>
-    <span data-day="7">SUN</span>
+
+<?php 
+    
+    $i18ndata = $app("i18n")->data($app("i18n")->locale);
+    $weekdays = isset($i18ndata["@meta"]["date"]["shortdays"]) ? $i18ndata["@meta"]["date"]["shortdays"] : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+?>
+
+<div id="date-widget-weekdays" class="uk-text-small uk-text-muted uk-margin uk-text-uppercase date-widget-weekdays">
+    <span data-day="1">{{ $weekdays[0] }}</span>
+    <span data-day="2">{{ $weekdays[1] }}</span>
+    <span data-day="3">{{ $weekdays[2] }}</span>
+    <span data-day="4">{{ $weekdays[3] }}</span>
+    <span data-day="5">{{ $weekdays[4] }}</span>
+    <span data-day="6">{{ $weekdays[5] }}</span>
+    <span data-day="0">{{ $weekdays[6] }}</span>
 </div>
 
 <div>
