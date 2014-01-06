@@ -684,11 +684,9 @@ InlineLexer.prototype.outputLink = function(cap, link) {
   var href = escape(link.href)
     , title = link.title ? escape(link.title) : null;
 
-  if (cap[0].charAt(0) !== '!') {
-    return this.renderer.link(href, title, this.output(cap[1]));
-  } else {
-    return this.renderer.image(href, title, escape(cap[1]));
-  }
+  return cap[0].charAt(0) !== '!'
+    ? this.renderer.link(href, title, this.output(cap[1]))
+    : this.renderer.image(href, title, escape(cap[1]));
 };
 
 /**
@@ -739,18 +737,28 @@ InlineLexer.prototype.mangle = function(text) {
 
 function Renderer() {}
 
-Renderer.prototype.code = function(code, lang) {
+Renderer.prototype.code = function(code, lang, escaped, options) {
+  options = options || {};
+
+  if (options.highlight) {
+    var out = options.highlight(code, lang);
+    if (out != null && out !== code) {
+      escaped = true;
+      code = out;
+    }
+  }
+
   if (!lang) {
     return '<pre><code>'
-      + escape(code, true)
+      + (escaped ? code : escape(code, true))
       + '\n</code></pre>';
   }
 
   return '<pre><code class="'
-    + 'lang-'
+    + options.langPrefix
     + lang
     + '">'
-    + escape(code)
+    + (escaped ? code : escape(code))
     + '\n</code></pre>\n';
 };
 
@@ -765,7 +773,10 @@ Renderer.prototype.html = function(html) {
 Renderer.prototype.heading = function(text, level, raw, options) {
   return '<h'
     + level
-    + '>'
+    + ' id="'
+    + options.headerPrefix
+    + raw.toLowerCase().replace(/[^\w]+/g, '-')
+    + '">'
     + text
     + '</h'
     + level
@@ -933,11 +944,16 @@ Parser.prototype.tok = function() {
     case 'heading': {
       return this.renderer.heading(
         this.inline.output(this.token.text),
-        this.token.depth
+        this.token.depth,
+        this.token.text,
+        this.options
       );
     }
     case 'code': {
-      return this.renderer.code(this.token.text, this.token.lang);
+      return this.renderer.code(this.token.text,
+        this.token.lang,
+        this.token.escaped,
+        this.options);
     }
     case 'table': {
       var header = ''
@@ -1116,7 +1132,31 @@ function marked(src, opt, callback) {
         : callback(null, out);
     };
 
-    return done();
+    if (!highlight || highlight.length < 3) {
+      return done();
+    }
+
+    delete opt.highlight;
+
+    if (!pending) return done();
+
+    for (; i < tokens.length; i++) {
+      (function(token) {
+        if (token.type !== 'code') {
+          return --pending || done();
+        }
+        return highlight(token.text, token.lang, function(err, code) {
+          if (code == null || code === token.text) {
+            return --pending || done();
+          }
+          token.text = code;
+          token.escaped = true;
+          --pending || done();
+        });
+      })(tokens[i]);
+    }
+
+    return;
   }
   try {
     if (opt) opt = merge({}, marked.defaults, opt);
@@ -1150,7 +1190,10 @@ marked.defaults = {
   sanitize: false,
   smartLists: false,
   silent: false,
+  highlight: null,
+  langPrefix: 'lang-',
   smartypants: false,
+  headerPrefix: '',
   renderer: new Renderer
 };
 

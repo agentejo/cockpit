@@ -1,10 +1,10 @@
 <?php
 
 return [
-    
+
     '@meta' => [
 
-        'language' => 'German',
+        'language' => 'Deutsch',
         'author'   => 'Artur Heinze',
 
         'date' => [
@@ -59,7 +59,7 @@ return [
     'Delete account' => 'Konto löschen',
     'Account saved!' => 'Account gespeichert',
 
-    // Addons 
+    // Addons
     'Addons'   => 'Erweiterungen',
     'No additional addons installed.' => 'Keine zusätzlichen Erweiterungen sind installiert.',
 

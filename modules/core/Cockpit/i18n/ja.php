@@ -5,7 +5,7 @@ return [
 
     '@meta' => [
 
-        'language' => 'Japanese',
+        'language' => '日本の',
         'author'   => 'yktyshr',
 
         'date' => [
@@ -59,7 +59,7 @@ return [
     'Delete account' => 'アカウントを削除',
     'Account saved!' => 'アカウントが保存されました。',
 
-    // Addons 
+    // Addons
     'Addons' => 'アドオン',
     'No additional addons installed.' => 'アドオンがインストールされていません。',
 
