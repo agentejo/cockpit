@@ -1,6 +1,7 @@
 <?php
 
 $app['app.assets.base'] = [
+    'assets:vendor/promise.js',
     'assets:vendor/jquery.js',
     'assets:vendor/angular.js',
     'assets:vendor/storage.js',
@@ -8,7 +9,7 @@ $app['app.assets.base'] = [
     'assets:vendor/uikit/js/uikit.min.js',
     'assets:vendor/uikit/css/uikit.min.css',
     'assets:vendor/uikit/addons/js/notify.min.js',
-    'assets:vendor/uikit/addons/css/notify.min.css',
+    'assets:vendor/uikit/addons/css/notify.almost-flat.min.css',
     'assets:vendor/modalbox/modalbox.css',
     'assets:vendor/modalbox/modalbox.js'
 ];
@@ -108,7 +109,7 @@ if (COCKPIT_ADMIN) {
     $app("i18n")->load("cockpit:i18n/{$locale}.php", $locale);
 
     $app->bind("/i18n.js", function() use($app, $locale){
-        
+
         $data = $app("i18n")->data($locale);
 
         return 'if(i18n) { i18n.register('.(count($data) ? json_encode($data):'{}').'); }';

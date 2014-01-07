@@ -22,7 +22,7 @@
 
             notify: function(note, type){
 
-                $.UIkit.notify(note, type);
+                $.UIkit.notify(note, (type || 'info'));
             },
 
             Ui: {

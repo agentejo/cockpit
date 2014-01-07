@@ -70,6 +70,17 @@
             }).error(App.module.callbacks.error.http);
         };
 
+        $scope.$watch("mode", function(val){
+
+            setTimeout(function(){
+
+                if(val=="tpl" && template.data("codearea")) {
+                    template.data("codearea").refresh();
+                }
+
+            }, 100);
+        });
+
     });
 
 })(jQuery);

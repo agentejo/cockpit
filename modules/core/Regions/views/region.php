@@ -29,14 +29,14 @@
 
             <div class="uk-grid">
 
-                <div class="uk-width-medium-3-4">
+                <div class="uk-width-medium-1-1">
 
                     <div class="app-panel">
 
                         <div class="uk-form-row">
                             <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="region.name"  pattern="[a-zA-Z0-9]+" required>
                         </div>
-                        
+
                         <ul class="uk-tab uk-tab-flip uk-margin" style="margin:25px 0;">
                             <li data-ng-class="mode=='tpl' ? 'uk-active' : ''"><a href="#tpl" data-ng-click="mode='tpl'">@lang('Template')</a></li>
                             <li data-ng-class="mode=='form' ? 'uk-active' : ''"><a href="#form" data-ng-click="mode='form'">@lang('Form')</a></li>
@@ -45,99 +45,102 @@
                         <div data-ng-show="mode=='form'">
 
                             <div class="uk-form-row">
-
-                                <h3>
-                                    @lang('Region fields')
-                                </h3>
-
-                                <a href="#" class="uk-button uk-button-small" data-ng-click="(manageform = !manageform)">
-                                    <span ng-show="!manageform">@lang('Manage form')</span>
-                                    <span ng-show="manageform">@lang('Done')</span>
-                                </a>
-
-                                <hr>
-
+                                <h3>@lang('Region fields')</h3>
                             </div>
 
-                            <div class="uk-alert" ng-show="region && !region.fields.length">
-                              @lang('This region has no fields yet.')
-                            </div>
+                            <div class="uk-grid">
+                              <div class="uk-width-4-5">
 
-                            <div ng-show="manageform">
+                                  <div class="uk-alert" ng-show="region && !region.fields.length">
+                                    @lang('This region has no fields yet.')
+                                  </div>
 
-                               <ul class="uk-list uk-form">
-                                   <li class="uk-margin-bottom" data-ng-repeat="field in region.fields">
+                                  <div ng-show="manageform">
 
-                                       <input type="text" data-ng-model="field.name" placeholder="Field name" pattern="[a-zA-Z0-9]+" required>
-                                       <select data-ng-model="field.type" title="Field type" data-uk-tooltip>
-                                           <option value="text">Text</option>
-                                           <option value="select">Select</option>
-                                           <option value="boolean">Boolean</option>
-                                           <option value="html">Html</option>
-                                           <option value="wysiwyg">Html (WYSIWYG)</option>
-                                           <option value="code">Code</option>
-                                           <option value="date">Date</option>
-                                           <option value="time">Time</option>
-                                           <option value="media">Media</option>
-                                       </select>
+                                     <ul class="uk-list uk-form">
+                                         <li class="uk-margin-bottom" data-ng-repeat="field in region.fields">
 
-                                       <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="options....">
+                                             <input type="text" data-ng-model="field.name" placeholder="Field name" pattern="[a-zA-Z0-9]+" required>
+                                             <select data-ng-model="field.type" title="Field type" data-uk-tooltip>
+                                                 <option value="text">Text</option>
+                                                 <option value="select">Select</option>
+                                                 <option value="boolean">Boolean</option>
+                                                 <option value="html">Html</option>
+                                                 <option value="wysiwyg">Html (WYSIWYG)</option>
+                                                 <option value="code">Code</option>
+                                                 <option value="date">Date</option>
+                                                 <option value="time">Time</option>
+                                                 <option value="media">Media</option>
+                                             </select>
 
-                                       <select data-ng-if="field.type=='code'" data-ng-model="field.syntax" title="Code syntax" data-uk-tooltip>
-                                           <option value="text">Text</option>
-                                           <option value="css">CSS</option>
-                                           <option value="htmlmixed">Html</option>
-                                           <option value="javascript">Javascript</option>
-                                           <option value="markdown">Markdown</option>
-                                       </select>
+                                             <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="options....">
 
-                                       <a data-ng-click="remove(field)" class="uk-close"></a>
-                                   </li>
-                               </ul>
+                                             <select data-ng-if="field.type=='code'" data-ng-model="field.syntax" title="Code syntax" data-uk-tooltip>
+                                                 <option value="text">Text</option>
+                                                 <option value="css">CSS</option>
+                                                 <option value="htmlmixed">Html</option>
+                                                 <option value="javascript">Javascript</option>
+                                                 <option value="markdown">Markdown</option>
+                                             </select>
 
-                               <button data-ng-click="addfield()" type="button" class="uk-button uk-button-success"><i class="uk-icon-plus-circle" title="@lang('Add field')"></i></button>
-                            </div>
+                                             <a data-ng-click="remove(field)" class="uk-close"></a>
+                                         </li>
+                                     </ul>
 
-                            <div ng-show="!manageform">
+                                     <button data-ng-click="addfield()" type="button" class="uk-button uk-button-success"><i class="uk-icon-plus-circle" title="@lang('Add field')"></i></button>
+                                  </div>
 
-                                <div class="uk-form-row" data-ng-repeat="field in region.fields" data-ng-switch="field.type" data-ng-show="field.name">
+                                  <div ng-show="!manageform">
 
-                                    <label class="uk-text-small">@@ field.name | uppercase @@</label>
+                                      <div class="uk-form-row" data-ng-repeat="field in region.fields" data-ng-switch="field.type" data-ng-show="field.name">
 
-                                    <div data-ng-switch-when="html">
-                                        <textarea class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value"></textarea>
-                                    </div>
+                                          <label class="uk-text-small">@@ field.name | uppercase @@</label>
 
-                                    <div data-ng-switch-when="code">
-                                        <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value"></textarea>
-                                    </div>
+                                          <div data-ng-switch-when="html">
+                                              <textarea class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value"></textarea>
+                                          </div>
 
-                                    <div data-ng-switch-when="wysiwyg">
-                                        <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value"></textarea>
-                                    </div>
+                                          <div data-ng-switch-when="code">
+                                              <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value"></textarea>
+                                          </div>
 
-                                    <div data-ng-switch-when="select">
-                                        <select class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value" data-ng-init="fieldindex=$index">
-                                            <option value="@@ option @@" data-ng-repeat="option in (field.options || [])" data-ng-selected="(region.fields[fieldindex].value==option)">@@ option @@</option>
-                                        </select>
-                                    </div>
+                                          <div data-ng-switch-when="wysiwyg">
+                                              <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value"></textarea>
+                                          </div>
 
-                                    <div data-ng-switch-when="media">
-                                        <input type="text" media-path-picker data-ng-model="region.fields[$index].value">
-                                    </div>
+                                          <div data-ng-switch-when="select">
+                                              <select class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value" data-ng-init="fieldindex=$index">
+                                                  <option value="@@ option @@" data-ng-repeat="option in (field.options || [])" data-ng-selected="(region.fields[fieldindex].value==option)">@@ option @@</option>
+                                              </select>
+                                          </div>
 
-                                    <div data-ng-switch-default>
-                                        <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="region.fields[$index].value">
-                                    </div>
-                                </div>
+                                          <div data-ng-switch-when="media">
+                                              <input type="text" media-path-picker data-ng-model="region.fields[$index].value">
+                                          </div>
+
+                                          <div data-ng-switch-default>
+                                              <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="region.fields[$index].value">
+                                          </div>
+                                      </div>
+                                  </div>
+
+
+                              </div>
+                              <div class="uk-width-1-5">
+                                  <button type="button" class="uk-button uk-button-large uk-width-1-1" data-ng-click="(manageform = !manageform)">
+                                      <i class="uk-icon-cog"></i>
+                                      <span ng-show="!manageform">@lang('Manage form')</span>
+                                      <span ng-show="manageform">@lang('Done')</span>
+                                  </button>
+                              </div>
                             </div>
 
                         </div>
 
                         <div class="uk-form-row" data-ng-show="mode=='tpl'">
-                            
+
                             <div class="uk-margin uk-clearfix">
-                              
+
                               <div class="uk-button-dropdown uk-float-right" data-uk-dropdown>
                                 <button type="button" class="uk-button">
                                   <i class="uk-icon-indent"></i> @lang('Insert form field')
@@ -161,7 +164,7 @@
 
 
                             <textarea id="region-template" codearea="{mode:'application/x-httpd-php'}" class="uk-width-1-1 uk-form-large" style="height:450px !important;" placeholder="Region code" data-ng-model="region.tpl"  pattern="[a-zA-Z0-9]+"></textarea>
-                            
+
                             <div class="uk-margin" ng-show="region.name">
                                 <strong>@lang('Embed region snippet'):</strong>
                                 <pre><code>&lt;?php region('@@region.name@@'); ?&gt;</code></pre>
