@@ -4,7 +4,7 @@ if(!defined('COCKPIT_ADMIN')) {
     define('COCKPIT_ADMIN', 0);
 }
 
-// autoload from vendor
+// autoload from vendor (PSR-0)
 spl_autoload_register(function($class){
     $class_path = __DIR__.'/vendor/'.str_replace('\\', '/', $class).'.php';
     if(file_exists($class_path)) include_once($class_path);
@@ -17,10 +17,10 @@ function cockpit($module = null) {
 
     if(!$app) {
 
-        $config              = include(__DIR__.'/config.php');
-        $app                 = new LimeExtra\App($config);
+        $config = include(__DIR__.'/config.php');
+        $app    = new LimeExtra\App($config);
 
-        $app["app.config"]   = $config;
+        $app["app.config"] = $config;
 
         $app->path('data'    , __DIR__.'/storage/data');
         $app->path('cache'   , __DIR__.'/storage/cache');
@@ -29,16 +29,12 @@ function cockpit($module = null) {
         $app->path('site'    , dirname(__DIR__));
 
         $app->service('data', function() use($app) {
-
             $client = new MongoLite\Client($app->path('data:'));
-
             return $client;
         });
 
         $app->service('memory', function() use($app) {
-
             $client = new RedisLite(sprintf("%s/cockpit.memory.sqlite", $app->path('data:')));
-
             return $client;
         });
 
@@ -52,9 +48,7 @@ function cockpit($module = null) {
         });
 
         // i18n
-
         $app("i18n")->locale = isset($config["i18n"]) ? $config["i18n"]:"en";
-
         $app->loadModules(__DIR__.'/modules/core');
         $app->loadModules(__DIR__.'/modules/addons');
     }
