@@ -78,14 +78,14 @@
 
         $scope.create = function(){
 
-            var info = $.UIkit.notify('<i class="uk-icon-spinner uk-icon-spin"></i> Creating backup...', {timeout:0});
+            var info = $.UIkit.notify(['<i class="uk-icon-spinner uk-icon-spin"></i>', App.i18n.get('Creating backup...')].join(' '), {timeout:0});
 
             $http.post(App.route("/backups/create"), {}, {responseType:"json"}).success(function(data){
 
                 info.close();
 
                 if(data && data.timestamp) {
-                    App.notify("Backup created", "success");
+                    App.notify(App.i18n.get("Backup created"), "success");
 
                     $scope.backups.unshift(data);
                 } else {
@@ -99,7 +99,7 @@
         $scope.remove = function(index, backup){
 
 
-            if(confirm("Are you sure?")) {
+            if(confirm(App.i18n.get("Are you sure?"))) {
 
                 $http.post(App.route("/backups/remove"), {
 
@@ -109,7 +109,7 @@
 
                     $scope.backups.splice(index, 1);
 
-                    App.notify("Backup deleted", "success");
+                    App.notify(App.i18n.get("Backup deleted"), "success");
 
                 }).error(App.module.callbacks.error.http);
             }

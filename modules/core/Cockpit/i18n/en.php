@@ -30,6 +30,7 @@ return [
     'Entries' => '',
     'Field' => '',
     'Fields' => '',
+    'Date' => '',
     'Latest' => '',
     'Modified' => '',
     'Today' => '',
@@ -152,5 +153,13 @@ return [
 
     // Backups
     'Backups' => '',
+    'You don\'t have any backups created.' => '',
+    'Create a new backup' => '',
+    'Backups are located here' => '',
+    'Download backup' => '',
+    'Delete backup' => '',
+    'Creating backup...' => '',
+    'Backup created' => '',
+    'Backup deleted' => '',
 */
 ];
