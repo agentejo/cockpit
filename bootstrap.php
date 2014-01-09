@@ -31,11 +31,13 @@ function cockpit($module = null) {
         $app->path('assets'  , __DIR__.'/assets');
         $app->path('site'    , dirname(__DIR__));
 
+        // nosql storage
         $app->service('data', function() use($app) {
             $client = new MongoLite\Client($app->path('data:'));
             return $client;
         });
 
+        // key-value storage
         $app->service('memory', function() use($app) {
             $client = new RedisLite(sprintf("%s/cockpit.memory.sqlite", $app->path('data:')));
             return $client;
@@ -49,6 +51,9 @@ function cockpit($module = null) {
 
             return $mailer;
         });
+
+        // set cache path
+        $app("cache")->setCachePath("cache:tmp");
 
         // i18n
         $app("i18n")->locale = isset($config["i18n"]) ? $config["i18n"]:"en";

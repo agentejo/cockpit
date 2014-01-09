@@ -18,7 +18,7 @@ class Cache extends \Lime\Helper {
   */
   public function setCachePath($path){
     if($path){
-      $this->cachePath = rtrim($path, "/\\")."/";
+      $this->cachePath = rtrim($this->app->path($path), "/\\")."/";
     }
   }
 
@@ -35,7 +35,7 @@ class Cache extends \Lime\Helper {
   * ...
   *
   */
-	public function write($key, &$value, $duration = -1){
+	public function write($key, $value, $duration = -1){
 
     $expire = ($duration==-1) ? -1:(time() + (is_string($duration) ? strtotime($duration):$duration));
 
@@ -62,6 +62,7 @@ class Cache extends \Lime\Helper {
       $var  = unserialize($var);
 
       if(($var['expire'] < $time) && $var['expire']!=-1){
+        $this->delete($key);
         return is_callable($default) ? call_user_func($default):$default;
       }
 

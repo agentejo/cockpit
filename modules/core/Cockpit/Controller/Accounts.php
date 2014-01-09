@@ -50,7 +50,7 @@ class Accounts extends \Cockpit\Controller {
     }
 
     public function save() {
-        
+
         if($data = $this->param("account", false)) {
 
 
@@ -81,7 +81,7 @@ class Accounts extends \Cockpit\Controller {
 
             // user can't delete himself
             if($data["_id"] != $this->user["_id"]) {
-                
+
                 $this->data->cockpit->accounts->remove(["_id" => $data["_id"]]);
 
                 return '{"success":true}';
@@ -95,10 +95,7 @@ class Accounts extends \Cockpit\Controller {
 
         $languages = [];
 
-        foreach (new \DirectoryIterator($this->app->path("cockpit:i18n")) as $file) {
-
-            if(!$file->isFile()) continue;
-            if($file->getExtension()!='php') continue;
+        foreach ($this->app->helper("filesystem")->ls('*.php', 'cockpit:i18n') as $file) {
 
             $lang = include($file->getRealPath());
             $i18n = $file->getBasename('.php');

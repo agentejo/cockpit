@@ -10,9 +10,10 @@ class App extends \Lime\App {
         $settings["helpers"]  = array_merge(array(
             "assets" => "Lime\\Helper\\Assets",
             "cache"  => "Lime\\Helper\\Cache",
-            "utils"  => "Lime\\Helper\\Utils",
+            "filesystem"  => "Lime\\Helper\\Filesystem",
             "image"  => "Lime\\Helper\\Image",
             "i18n"   => "Lime\\Helper\\I18n",
+            "utils"  => "Lime\\Helper\\Utils",
         ), isset($settings["helpers"]) ? $settings["helpers"] : array());
 
         parent::__construct($settings);
@@ -122,7 +123,7 @@ class App extends \Lime\App {
                 $content = preg_replace('/(\s*)@render\((.+?)\)/' , '$1<?php echo $app->view($2); ?>', $content);
                 $content = preg_replace('/(\s*)@trigger\((.+?)\)/', '$1<?php $app->trigger($2); ?>', $content);
                 $content = preg_replace('/(\s*)@lang\((.+?)\)/'   , '$1<?php echo $app("i18n")->get($2); ?>', $content);
-                
+
                 $content = preg_replace('/(\s*)@start\((.+?)\)/'   , '$1<?php $app->start($2); ?>', $content);
                 $content = preg_replace('/(\s*)@end\((.+?)\)/'   , '$1<?php $app->end($2); ?>', $content);
                 $content = preg_replace('/(\s*)@block\((.+?)\)/'   , '$1<?php $app->block($2); ?>', $content);

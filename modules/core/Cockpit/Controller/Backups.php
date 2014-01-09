@@ -8,12 +8,12 @@ class Backups extends \Cockpit\Controller {
 
         $backups = [];
 
-        foreach (new \DirectoryIterator($this->app->path("backups:")) as $file) {
+        foreach ($this->app->helper("filesystem")->ls('*.zip', 'backups:') as $file) {
 
             if(!$file->isFile()) continue;
             if($file->getExtension()!='zip') continue;
 
-            $backups[] = ["timestamp" => $file->getBasename('.zip')];
+            $backups[] = ["timestamp" => $file->getBasename('.zip'), "size" => $this->app->helper("utils")->formatSize($file->getSize())];
         }
 
         return $this->render('cockpit:views/backups/index.php', compact('backups'));
@@ -54,7 +54,7 @@ class Backups extends \Cockpit\Controller {
 
         $zip->close();
 
-        return '{"timestamp":'.$timestamp.'}';
+        return json_encode(["timestamp" => $timestamp, "size" => $this->app->helper("utils")->formatSize(filesize($this->app->path("backups:/{$filename}")))]);
     }
 
     public function remove() {
@@ -62,7 +62,7 @@ class Backups extends \Cockpit\Controller {
         if($timestamp = $this->param("timestamp", false)) {
 
             if($file = $this->app->path("backups:{$timestamp}.zip")) {
-                
+
                 @unlink($file);
 
                 return '{"success":true}';

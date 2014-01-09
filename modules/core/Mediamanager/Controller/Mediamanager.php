@@ -54,7 +54,7 @@ class Mediamanager extends \Cockpit\Controller {
                         "name" => $filename,
                         "path" => trim($path.'/'.$file->getFilename(), '/'),
                         "url"  => $this->app->pathToUrl($file->getPathname()),
-                        "size" => $file->isDir() ? "" : $this->formatFileSize($file->getSize()),
+                        "size" => $file->isDir() ? "" : $this->app->helper("utils")->formatSize($file->getSize()),
                         "lastmodified" => $file->isDir() ? "" : date("d.m.y H:m", $file->getMTime()),
                     );
                 }
@@ -157,11 +157,6 @@ class Mediamanager extends \Cockpit\Controller {
         }
 
         return json_encode(array("success"=>true));
-    }
-
-    protected function formatFileSize($size) {
-      $sizes = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB");
-      return ($size == 0) ? "n/a" : (round($size/pow(1024, ($i = floor(log($size, 1024)))), 2) . $sizes[$i]);
     }
 
     protected function readfile() {

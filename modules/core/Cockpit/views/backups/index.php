@@ -5,21 +5,23 @@
     </nav>
 
     <div class="uk-grid" data-uk-grid-margin>
-        
+
         <div class="uk-width-medium-2-3">
-            
+
             <div class="app-panel">
 
                 <table class="uk-table uk-table-striped" data-ng-show="backups.length">
                     <thead>
                         <th width="20">&nbsp;</th>
                         <th>@lang('Date')</th>
+                        <th>@lang('Size')</th>
                         <th width="20">&nbsp;</th>
                     </thead>
                     <tbody>
                         <tr data-ng-repeat="backup in backups">
                             <td class="uk-text-center"><i class="uk-icon-archive"></i></td>
                             <td>@@ backup.timestamp |  fmtdate:'d M, Y H:i:s' @@</td>
+                            <td>@@ backup.size @@</td>
                             <td class="uk-text-right">
                                 <div data-uk-dropdown>
 
@@ -49,7 +51,7 @@
             </div>
         </div>
         <div class="uk-width-medium-1-3">
-            
+
             <button class="uk-button uk-button-large uk-button-primary" data-ng-click="create()">
                 @lang('Create a new backup')
             </button>
@@ -85,13 +87,13 @@
                 if(data && data.timestamp) {
                     App.notify("Backup created", "success");
 
-                    $scope.backups.push(data);
+                    $scope.backups.unshift(data);
                 } else {
                     App.module.callbacks.error.http();
                 }
 
             }).error(App.module.callbacks.error.http);
- 
+
         };
 
         $scope.remove = function(index, backup){
