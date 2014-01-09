@@ -87,6 +87,7 @@ if (COCKPIT_ADMIN) {
     });
 
     $app->bindClass("Cockpit\\Controller\\Accounts", "accounts");
+    $app->bindClass("Cockpit\\Controller\\Backups", "backups");
 
     $app->on("admin.dashboard", function() use($app){
 

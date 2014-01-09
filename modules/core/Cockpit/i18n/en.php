@@ -149,5 +149,8 @@ return [
     'Save Region' => '',
     'Region removed' => '',
     'Region saved!' => '',
+
+    // Backups
+    'Backups' => '',
 */
 ];

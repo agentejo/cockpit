@@ -2,7 +2,8 @@
 <h1>@lang('Settings')</h1>
 
 <div class="app-panel">
-
+    <h4 class="uk-text-center">@lang('System')</h4>
+    <hr>
     <div class="uk-grid" uk-grid-margin uk-grid-match>
         <div class="uk-width-medium-1-4">
             <div>
@@ -22,6 +23,14 @@
         </div>
         <div class="uk-width-medium-1-4">
             <div>
+                <i class="uk-icon-archive"></i>
+            </div>
+            <div class="uk-text-truncate">
+                <a href="@route('/backups')">@lang('Backups')</a>
+            </div>
+        </div>
+        <div class="uk-width-medium-1-4">
+            <div>
                 <i class="uk-icon-info-circle"></i>
             </div>
             <div class="uk-text-truncate">
@@ -30,6 +39,8 @@
         </div>
     </div>
 </div>
+
+@trigger('cockpit.settings.index')
 
 <style>
 
