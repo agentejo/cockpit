@@ -16,6 +16,10 @@ class Backups extends \Cockpit\Controller {
             $backups[] = ["timestamp" => $file->getBasename('.zip'), "size" => $this->app->helper("utils")->formatSize($file->getSize())];
         }
 
+        if (count($backups)) {
+            $backups = array_reverse($backups);
+        }
+
         return $this->render('cockpit:views/backups/index.php', compact('backups'));
     }
 
