@@ -61,6 +61,11 @@ Loop over collection data:
     <?php endforeach; ?>
 
 
+### Language files
+
+Please visit and contribute to https://github.com/aheinze/cockpit-i18n
+
+
 ### Copyright and license
 
 Copyright 2013 [Agentejo](http://www.agentejo.com) under the [MIT license](https://raw.github.com/aheinze/cockpit/master/LICENSE).
