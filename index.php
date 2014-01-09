@@ -11,9 +11,7 @@ $cockpit->on("after", function() use($cockpit) {
     switch ($cockpit->response->status) {
         case 500:
         case 404:
-            if(!$cockpit->req_is('ajax')) {
-                //$cockpit->response->body = $cockpit->view("cockpit:views/errors/{$cockpit->response->status}.php");
-            }
+            $cockpit->response->body = $cockpit->view("cockpit:views/errors/{$cockpit->response->status}.php");
             break;
     }
 });
