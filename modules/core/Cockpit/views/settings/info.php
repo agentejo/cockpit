@@ -4,26 +4,30 @@
 <div class="app-panel uk-width-medium-3-4">
 
     <h3>PHP</h3>
-    
+
     <table class="uk-table uk-table-striped">
         <tbody>
             <tr>
-                <td>Version</td>
+                <td width="30%">Version</td>
                 <td>{{ $info['phpversion'] }}</td>
             </tr>
             <tr>
-                <td>PHP to Webserver interface</td>
+                <td width="30%">PHP SAPI</td>
                 <td>{{ $info['sapi_name'] }}</td>
             </tr>
             <tr>
-                <td>System</td>
+                <td width="30%">System</td>
                 <td>{{ $info['system'] }}</td>
+            </tr>
+            <tr>
+                <td width="30%">Loaded Extensions</td>
+                <td>{{ implode(", ", $info['extensions']) }}</td>
             </tr>
         </tbody>
     </table>
 
     <h3>Mailer</h3>
-    
+
     @if($info["mailer"])
 
     <table class="uk-table uk-table-striped">
@@ -59,7 +63,7 @@
     </script>
 
     @else
-    
+
     <div class="uk-alert">
         No mailer settings found.
     </div>
@@ -68,7 +72,7 @@
 
 
     <h3>Directories</h3>
-    
+
     <table class="uk-table uk-table-striped">
         <tbody>
             <tr>

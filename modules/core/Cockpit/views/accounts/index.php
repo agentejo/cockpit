@@ -5,7 +5,7 @@
 <div data-ng-controller="accounts">
 
     <nav class="uk-navbar uk-margin-large-bottom">
-        <span class="uk-navbar-brand">@lang('Accounts')</span>
+        <span class="uk-navbar-brand"><a href="@route('/settingspage')">@lang('Settings')</a> / @lang('Accounts')</span>
         <div class="uk-navbar-content">
             <form class="uk-form uk-margin-remove uk-display-inline-block">
                 <div class="uk-form-icon">

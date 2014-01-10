@@ -11,6 +11,7 @@ class Settings extends \Cockpit\Controller {
         $info['system']        = php_uname();
         $info['phpversion']    = phpversion();
         $info['sapi_name']     = php_sapi_name();
+        $info['extensions']    = get_loaded_extensions();
 
         $info['folders']       = [];
 
@@ -28,7 +29,7 @@ class Settings extends \Cockpit\Controller {
 
         switch ($case) {
             case 'email':
-                
+
                 $email = $this->param("email", false);
 
                 if($email) {

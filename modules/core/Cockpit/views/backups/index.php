@@ -1,7 +1,7 @@
 <div data-ng-controller="backups">
 
     <nav class="uk-navbar uk-margin-large-bottom">
-        <span class="uk-navbar-brand">@lang('Backups')</span>
+        <span class="uk-navbar-brand"><a href="@route('/settingspage')">@lang('Settings')</a> / @lang('Backups')</span>
     </nav>
 
     <div class="uk-grid" data-uk-grid-margin>

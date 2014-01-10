@@ -1,7 +1,7 @@
 {{ $app->assets(['assets:vendor/uikit/addons/js/form-password.min.js','assets:vendor/uikit/addons/css/form-password.min.css']) }}
 
 <h1>
-    <a href="@route('/accounts/index')">@lang('Accounts')</a> / @lang('Account')
+    <a href="@route('/settingspage')">@lang('Settings')</a> / <a href="@route('/accounts/index')">@lang('Accounts')</a> / @lang('Account')
 </h1>
 
 <div class="uk-grid" data-ng-controller="account" data-uk-margin>
@@ -21,7 +21,7 @@
 
 
             <div class="uk-grid" data-uk-margin>
-                
+
                 <div class="uk-width-medium-1-1">
 
                     <form class="uk-form" data-ng-submit="save()" data-ng-show="account">

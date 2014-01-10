@@ -1,13 +1,13 @@
 {{ $app->assets(['addons:assets/addons.js','addons:assets/js/index.js']) }}
 
 
-<h1>@lang('Addons')</h1>
+<h1><a href="@route('/settingspage')">@lang('Settings')</a> / @lang('Addons')</h1>
 
 <div data-ng-controller="addons">
 
 
     @if(count($addons))
-        
+
         <table class="uk-table">
             <tbody>
                 @foreach($addons as $addon)
