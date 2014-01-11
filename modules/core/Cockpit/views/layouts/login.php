@@ -6,15 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <link rel="icon" href="@base("/favicon.ico")" type="image/x-icon">
 
-    @assets($app['app.assets.base'], 'app.base', 'cache:assets', 0)
-    @assets(['assets:vendor/uikit/addons/js/form-password.min.js','assets:vendor/uikit/addons/css/form-password.min.css','cockpit:assets/css/login.less'], 'app.login', 'cache:assets', 0)
+    @assets($app['app.assets.base'], 'app.base', 'cache:assets', 30)
+    @assets(['assets:vendor/uikit/addons/js/form-password.min.js','assets:vendor/uikit/addons/css/form-password.min.css','cockpit:assets/css/login.less'], 'app.login', 'cache:assets', 30)
 
     <script>
         $(function(){
 
             var loginbox  = $(".app-login-box"),
                 container = loginbox.find(".app-login-box-container"),
-                failed    = loginbox.find(".app-login-fail"),
                 form      = $("form").on("submit", function(e){
                                 e.preventDefault();
 
@@ -28,7 +27,7 @@
 
                                         setTimeout(function(){
                                             container.addClass("uk-animation-shake");
-                                            failed.removeClass("uk-hidden");
+                                            $.UIkit.notify("@lang('Login failed')", 'danger');
                                         }, 50);
                                     }
 
@@ -61,13 +60,9 @@
                     </div>
 
                     <div class="uk-form-row">
-                        <button class="uk-button uk-button-large uk-button-primary uk-width-1-2">@lang('Authenticate')</button>
+                        <button class="uk-button uk-button-large uk-button-primary uk-width-1-1">@lang('Authenticate')</button>
                     </div>
                 </form>
-
-                <div class="app-login-fail uk-alert uk-hidden">
-                    @lang('Login failed')
-                </div>
             </div>
         </div>
     </div>

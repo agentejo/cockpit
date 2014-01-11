@@ -16,13 +16,14 @@ class Settings extends \Cockpit\Controller {
         $info['sapi_name']     = php_sapi_name();
         $info['extensions']    = get_loaded_extensions();
 
+        $info["mailer"]        = $this->app->retrieve("app.config/mailer", false);
+        $info["sizeCache"]     = $this->app->helper("utils")->formatSize($this->app->helper("fs")->getDirSize("cache:"));
+        $info["sizeData"]      = $this->app->helper("utils")->formatSize($this->app->helper("fs")->getDirSize("data:"));
         $info['folders']       = [];
 
         foreach (['cache:', 'cache:assets', 'cache:thumbs', 'data:'] as $dir) {
             $info['folders'][$dir] = is_writable($this->app->path($dir));
         }
-
-        $info["mailer"]        = $this->app->retrieve("app.config/mailer", false);
 
         return $this->render('cockpit:views/settings/info.php', compact('info'));
     }

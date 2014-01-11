@@ -16,6 +16,14 @@
                         <td width="30%">Version</td>
                         <td>{{ $info['app']['version'] }}</td>
                     </tr>
+                    <tr>
+                        <td width="30%">Cache size</td>
+                        <td>{{ $info['sizeCache'] }}</td>
+                    </tr>
+                    <tr>
+                        <td width="30%">Data size</td>
+                        <td>{{ $info['sizeData'] }}</td>
+                    </tr>
             </table>
 
 
@@ -107,6 +115,14 @@
                     <tr>
                         <td width="30%">Loaded Extensions</td>
                         <td>{{ implode(", ", $info['extensions']) }}</td>
+                    </tr>
+                    <tr>
+                        <td width="30%">Memory limit</td>
+                        <td>{{ ini_get("memory_limit") }}</td>
+                    </tr>
+                    <tr>
+                        <td width="30%">Upload file size limit</td>
+                        <td>{{ ini_get("upload_max_filesize") }}</td>
                     </tr>
                 </tbody>
             </table>
