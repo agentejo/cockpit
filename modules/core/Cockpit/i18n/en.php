@@ -32,6 +32,7 @@ return [
     'Fields' => '',
     'Date' => '',
     'Latest' => '',
+    'Created' => '',
     'Modified' => '',
     'Today' => '',
     'Info' => '',
@@ -161,5 +162,24 @@ return [
     'Creating backup...' => '',
     'Backup created' => '',
     'Backup deleted' => '',
+
+    // Forms
+
+    'Forms' => '',
+    'Form' => '',
+    'Add form' => '',
+    'Create a form' => '',
+    'Edit form' => '',
+    'Delete form' => '',
+    'You don\'t have any forms created.' => '',
+    'Email form data to this adress' => '',
+    'Leave the field empty if you don\'t want to recieve any form data via email.' => '',
+    'Save form data' => '',
+    'Save form' => '',
+    'Form snippet example' => '',
+    'It is important to prefix the form fields with <strong>form[...]</strong>.' => '',
+    'It seems you don\'t have any form entries.' => '',
+    'Form data' => '',
+
 */
 ];

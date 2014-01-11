@@ -32,7 +32,7 @@
                     </div>
 
                     <div class="uk-form-row">
-                        <button type="submit" class="uk-button uk-button-primary uk-button-large">@lang('Save Form')</button>
+                        <button type="submit" class="uk-button uk-button-primary uk-button-large">@lang('Save form')</button>
                         <a href="@route('/forms')">@lang('Cancel')</a>
                     </div>
 
@@ -46,18 +46,18 @@
 
                     <div class="uk-alert uk-alert-warning">
                         <i class="uk-icon-exclamation-triangle"></i> 
-                        @lang('It is important to name the form fields with <strong>form[...]</strong>.')
+                        @lang('It is important to prefix the form fields with <strong>form[...]</strong>.')
                     </div>
 
 
 <pre><code><strong>&lt;?php form('@@form.name@@'); ?&gt;</strong>
     &lt;p&gt;
         &lt;label&gt;Name&lt;/label&gt;
-        &lt;input type="text" name="form[name]"/&gt;
+        &lt;input type="text" name="<i>form</i>[name]"/&gt;
     &lt;/p&gt;
     &lt;p&gt;
         &lt;label&gt;Message&lt;/label&gt;
-        &lt;textarea name="form[message]"&gt;&lt;/textarea&gt;
+        &lt;textarea name="<i>form</i>[message]"&gt;&lt;/textarea&gt;
     &lt;/p&gt;
     &lt;p&gt;
         &lt;button type="submit"&gt;Send&lt;/button&gt;
