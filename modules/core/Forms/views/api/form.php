@@ -4,39 +4,41 @@
 
         if(!$) return;
 
-        var formid = "<?php echo $options["id"];?>";
+        var formid = "{{ $options["id"] }}";
 
         $(function($){
 
-            var form = $("#"+formid), successmessage = form.find(".success-message").hide(), failmessage = form.find(".fail-message").hide();
+            var form       = $("#"+formid), 
+                msgsuccess = form.find(".form-message-success").hide(), 
+                msgfail    = form.find(".form-message-fail").hide();
 
             form.on("submit", function(){
                 
-                successmessage.hide();
-                failmessage.hide();
+                msgsuccess.hide();
+                msgfail.hide();
 
                 var data   = form.serialize(),
                     inputs = form.find(":input").attr("disabled", true);
 
                 form.trigger("form-submit", [form]);
 
-                $.post("<?php $this->route('/api/forms/submit/'.$name);?>", data, function(response){
+                $.post("@route('/api/forms/submit/'.$name)", data, function(response){
                     
                     form.trigger("form-after-post", [form, response]);
 
                     if(response=='false') {
                         
-                        if(failmessage.length) {
-                            failmessage.show();
+                        if(msgfail.length) {
+                            msgfail.show();
                         } else {
-                            alert('Form submission failed.');
+                            alert("@lang('Form submission failed.')");
                         }
                     } else {
                         
-                        if(successmessage.length) {
-                            successmessage.show();
+                        if(msgsuccess.length) {
+                            msgsuccess.show();
                         } else {
-                            alert('Form submission was successfull.');
+                            alert("@lang('Form submission was successfull.')");
                             form[0].reset();
                         }
                     }
@@ -47,10 +49,10 @@
 
                     form.trigger("form-fail", [form]);
 
-                    if(failmessage.length) {
-                        failmessage.show();
+                    if(msgfail.length) {
+                        msgfail.show();
                     } else {
-                        alert('Form submission failed.');
+                        alert("@lang('Form submission failed.')");
                     }
 
                     inputs.attr("disabled", false); 
@@ -65,8 +67,8 @@
 
 </script>
 
-<form id="<?php echo $options["id"];?>" name="<?php echo $name;?>" class="<?php echo $options["class"];?>" method="post" onsubmit="return false;">
-<input type="hidden" name="__csrf" value="<?php echo $options["csrf"];?>">
-<?php if(isset($options["mailsubject"])): ?>
-<input type="hidden" name="__mailsubject" value="<?php echo $options["mailsubject"];?>">
-<?php endif; ?>
+<form id="{{ $options["id"] }}" name="{{ $name }}" class="{{ $options["class"] }}" method="post" onsubmit="return false;">
+<input type="hidden" name="__csrf" value="{{ $options["csrf"] }}">
+@if(isset($options["mailsubject"])):
+<input type="hidden" name="__mailsubject" value="{{ $options["mailsubject"] }}">
+@endif

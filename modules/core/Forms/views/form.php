@@ -22,8 +22,8 @@
                         <label class="uk-text-small">Email</label>
                         <input class="uk-width-1-1 uk-form-large" type="email" placeholder="@lang('Email form data to this adress')" data-ng-model="form.email">
                     
-                        <div class="uk-alert" data-ng-show="form.email">
-                            @lang('Leave the email field empty if you don\'t want to recieve any form data via email.')
+                        <div class="uk-alert">
+                            @lang('Leave the field empty if you don\'t want to recieve any form data via email.')
                         </div>
                     </div>
 
@@ -43,14 +43,17 @@
 
                 <div class="uk-margin" ng-show="form.name">
                     <strong>@lang('Form snippet example'):</strong>
+
+                    <div class="uk-alert uk-alert-warning">
+                        <i class="uk-icon-exclamation-triangle"></i> 
+                        @lang('It is important to name the form fields with <strong>form[...]</strong>.')
+                    </div>
+
+
 <pre><code><strong>&lt;?php form('@@form.name@@'); ?&gt;</strong>
     &lt;p&gt;
         &lt;label&gt;Name&lt;/label&gt;
         &lt;input type="text" name="form[name]"/&gt;
-    &lt;/p&gt;
-    &lt;p&gt;
-        &lt;label&gt;Email&lt;/label&gt;
-        &lt;input type="email" name="form[email]"/&gt;
     &lt;/p&gt;
     &lt;p&gt;
         &lt;label&gt;Message&lt;/label&gt;

@@ -63,7 +63,7 @@ $this->module("forms")->extend(array(
             "csrf"  => $app->hash($name)
         ), $options);
 
-        echo $app->render("forms:views/api/form.php", compact('name', 'options'));
+        echo $app->view("forms:views/api/form.php", compact('name', 'options'));
     }
 ));
 

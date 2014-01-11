@@ -6,7 +6,8 @@
 
         $http.post(App.route("/api/forms/entries"), {
 
-            "form": angular.copy($scope.form)
+            "form": angular.copy($scope.form),
+            "sort": {"created":-1}
 
         }, {responseType:"json"}).success(function(data){
 

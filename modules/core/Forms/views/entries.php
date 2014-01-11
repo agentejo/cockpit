@@ -7,7 +7,7 @@
 <div data-ng-controller="entries" data-form='{{ json_encode($form) }}'>
 
     <nav class="uk-navbar uk-margin-bottom" data-ng-show="entries && entries.length">
-        <span class="uk-navbar-brand"><a href="@route("/forms")">@lang('forms')</a> / {{ $form['name'] }}</span>
+        <span class="uk-navbar-brand"><a href="@route("/forms")">@lang('Forms')</a> / {{ $form['name'] }}</span>
         <ul class="uk-navbar-nav">
             <li><a href="@route('/forms/form/'.$form["_id"])" title="@lang('Edit form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a></li>
         </ul>
