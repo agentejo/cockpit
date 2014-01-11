@@ -29,37 +29,28 @@
                         <tr>
                             <th width="10">&nbsp;</th>
                             <th>
-                                @lang('Fields')
+                                @lang('Form data')
                             </th>
-                            <th width="15%">@lang('Created')</th>
-                            <th width="10%">&nbsp;</th>
+                            <th width="20%">@lang('Created')</th>
+                            <th width="5%">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr data-ng-repeat="entry in entries">
                             <td><i class="uk-icon-envelope"></i></td>
                             <td>
-                                <div class="uk-grid uk-grid-preserve uk-text-small" data-ng-repeat="field in fields">
+                                <div class="uk-grid uk-grid-preserve uk-text-small" data-ng-repeat="(key, value) in entry.data">
                                     <div class="uk-width-medium-1-5">
-                                        <strong>@@ field.name @@</strong>
+                                        <strong>@@ key @@</strong>
                                     </div>
                                     <div class="uk-width-medium-4-5">
-                                        @@ entry[field.name] @@
+                                        @@ value @@
                                     </div>
                                 </div>
                             </td>
-                            <td>@@ entry.modified | fmtdate:'d M, Y' @@</td>
+                            <td>@@ entry.created | fmtdate:'d M, Y H:m' @@</td>
                             <td class="uk-text-right">
-                                <div data-uk-dropdown>
-
-                                    <i class="uk-icon-bars"></i>
-
-                                    <div class="uk-dropdown uk-dropdown-flip uk-text-left">
-                                        <ul class="uk-nav uk-nav-dropdown">
-                                            <li><a href="#" data-ng-click="remove($index, entry._id)"><i class="uk-icon-trash-o"></i> @lang('Delete entry')</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                <a href="#" data-ng-click="remove($index, entry._id)" title="@lang('Delete entry')"><i class="uk-icon-trash-o"></i></a>
                             </td>
                         </tr>
                     </tbody>

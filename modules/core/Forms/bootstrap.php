@@ -8,7 +8,7 @@ $app->bind("/api/forms/submit/:form", function($params) use($app){
 
     // Security check
 
-    if($formhash = $app->param("__hash", false)) {
+    if($formhash = $app->param("__csrf", false)) {
 
         if($formhash != $app->hash($form)) {
             return false;
@@ -26,15 +26,7 @@ $app->bind("/api/forms/submit/:form", function($params) use($app){
 
     if($formdata = $app->param("form", false)) {
 
-        if(isset($frm["entry"]) && $frm["entry"]) {
-
-            $collection = "form".$frm["_id"];
-            $app->data->forms->{$collection}->insert($formdata);
-        }
-
-        if(isset($frm["email"]) && !empty($frm["email"])) {
-
-            if(isset($formdata["_id"])) unset($formdata["_id"]);
+        if(isset($frm["email"]) && filter_var($frm["email"], FILTER_VALIDATE_EMAIL)) {
 
             $body = array();
 
@@ -44,6 +36,13 @@ $app->bind("/api/forms/submit/:form", function($params) use($app){
             }
 
             $app("mailer")->mail($frm["email"], $app->param("__mailsubject", "New form data for: ".$form), implode("\n<br>", $body));
+        }
+
+        if(isset($frm["entry"]) && $frm["entry"]) {
+
+            $collection = "form".$frm["_id"];
+            $entry      = ["data" => $formdata, "created"=>time()];
+            $app->data->forms->{$collection}->insert($entry);
         }
 
         return json_encode($formdata);
@@ -61,7 +60,7 @@ $this->module("forms")->extend(array(
         $options = array_merge(array(
             "id"    => uniqid("form"),
             "class" => "",
-            "hash"  => $app->hash($name)
+            "csrf"  => $app->hash($name)
         ), $options);
 
         echo $app->render("forms:views/api/form.php", compact('name', 'options'));

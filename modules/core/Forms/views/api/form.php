@@ -37,7 +37,7 @@
                             successmessage.show();
                         } else {
                             alert('Form submission was successfull.');
-                            form.reset();
+                            form[0].reset();
                         }
                     }
 
@@ -66,7 +66,7 @@
 </script>
 
 <form id="<?php echo $options["id"];?>" name="<?php echo $name;?>" class="<?php echo $options["class"];?>" method="post" onsubmit="return false;">
-<input type="hidden" name="__hash" value="<?php echo $options["hash"];?>">
+<input type="hidden" name="__csrf" value="<?php echo $options["csrf"];?>">
 <?php if(isset($options["mailsubject"])): ?>
 <input type="hidden" name="__mailsubject" value="<?php echo $options["mailsubject"];?>">
 <?php endif; ?>
