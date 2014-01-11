@@ -8,6 +8,9 @@ class Settings extends \Cockpit\Controller {
     public function info() {
 
         $info                  = [];
+
+        $info["app"]           = json_decode($this->app->helper("fs")->read("#root:package.json"), true);
+
         $info['system']        = php_uname();
         $info['phpversion']    = phpversion();
         $info['sapi_name']     = php_sapi_name();

@@ -41,7 +41,31 @@ class Filesystem extends \Lime\Helper {
         return $lst;
     }
 
+    public function read() {
 
+        $args = func_get_args();
+
+        if(!count($args)) {
+            return false;
+        }
+
+        $args[0] = $this->app->path($args[0]);
+
+        return call_user_func_array('file_get_contents', $args);
+    }
+
+    public function write() {
+
+        $args = func_get_args();
+
+        if(!count($args)) {
+            return false;
+        }
+
+        $args[0] = $this->app->path($args[0]);
+
+        return call_user_func_array('file_get_contents', $args);
+    }
 
     public function mkdir($path, $mode = 0777) {
 

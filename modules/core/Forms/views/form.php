@@ -1,0 +1,69 @@
+{{ $app->assets(['forms:assets/forms.js','forms:assets/js/form.js']) }}
+{{ $app->assets(['assets:vendor/uikit/addons/css/sortable.min.css','assets:vendor/uikit/addons/js/sortable.min.js']) }}
+
+<div data-ng-controller="form" data-id="{{ $id }}">
+
+    <h1><a href="@route("/forms")">@lang('Forms')</a> / @lang('Form')</h1>
+
+
+    <form class="uk-form" data-ng-submit="save()" data-ng-show="form">
+
+        <div class="uk-grid" data-uk-grid-margin>
+
+            <div class="uk-width-medium-1-2">
+
+                <div class="app-panel">
+                    
+                    <div class="uk-form-row">
+                        <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="form.name"  pattern="[a-zA-Z0-9]+" required>
+                    </div>
+
+                    <div class="uk-form-row">
+                        <label class="uk-text-small">Email</label>
+                        <input class="uk-width-1-1 uk-form-large" type="email" placeholder="@lang('Email form data to this adress')" data-ng-model="form.email">
+                    
+                        <div class="uk-alert" data-ng-show="form.email">
+                            @lang('Leave the email field empty if you don\'t want to recieve any form data via email.')
+                        </div>
+                    </div>
+
+                    <div class="uk-form-row">
+                        <input type="checkbox" data-ng-model="form.entry"> @lang('Save form data')
+                    </div>
+
+                    <div class="uk-form-row">
+                        <button type="submit" class="uk-button uk-button-primary uk-button-large">@lang('Save Form')</button>
+                        <a href="@route('/forms')">@lang('Cancel')</a>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="uk-width-medium-1-2">
+
+                <div class="uk-margin" ng-show="form.name">
+                    <strong>@lang('Form snippet example'):</strong>
+<pre><code><strong>&lt;?php form('@@form.name@@'); ?&gt;</strong>
+    &lt;p&gt;
+        &lt;label&gt;Name&lt;/label&gt;
+        &lt;input type="text" name="form[name]"/&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+        &lt;label&gt;Email&lt;/label&gt;
+        &lt;input type="email" name="form[email]"/&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+        &lt;label&gt;Message&lt;/label&gt;
+        &lt;textarea name="form[message]"&gt;&lt;/textarea&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+        &lt;button type="submit"&gt;Send&lt;/button&gt;
+    &lt;/p&gt;
+&lt;/form&gt;</code></pre>
+
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>

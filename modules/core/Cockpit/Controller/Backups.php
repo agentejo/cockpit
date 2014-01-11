@@ -8,7 +8,7 @@ class Backups extends \Cockpit\Controller {
 
         $backups = [];
 
-        foreach ($this->app->helper("filesystem")->ls('*.zip', 'backups:') as $file) {
+        foreach ($this->app->helper("fs")->ls('*.zip', 'backups:') as $file) {
 
             if(!$file->isFile()) continue;
             if($file->getExtension()!='zip') continue;

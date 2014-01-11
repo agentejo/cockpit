@@ -6,8 +6,8 @@
     @assets($app['app.assets.base'], 'app.base', 'cache:assets', 0)
 </head>
 <body>
-    <div class="app-wrapper uk-text-center">
-        <h1>404</h1>
+    <div class="app-wrapper uk-text-center uk-animation-slide-bottom" style="margin-top:100px;">
+        <h1><strong><i class="uk-icon-times"></i> 404</strong></h1>
 
         <p class="uk-text-large">Uuuups, Page not found.</p>
     </div>

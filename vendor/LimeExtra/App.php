@@ -10,7 +10,7 @@ class App extends \Lime\App {
         $settings["helpers"]  = array_merge(array(
             "assets" => "Lime\\Helper\\Assets",
             "cache"  => "Lime\\Helper\\Cache",
-            "filesystem"  => "Lime\\Helper\\Filesystem",
+            "fs"     => "Lime\\Helper\\Filesystem",
             "image"  => "Lime\\Helper\\Image",
             "i18n"   => "Lime\\Helper\\I18n",
             "utils"  => "Lime\\Helper\\Utils",
