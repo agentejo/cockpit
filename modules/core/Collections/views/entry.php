@@ -16,7 +16,12 @@
     textarea { min-height: 150px; }
 </style>
 
-<div data-ng-controller="entry" data-collection='{{ json_encode($collection) }}' data-entry='{{ json_encode($entry) }}'>
+<script>
+ var COLLECTION = {{ json_encode($collection) }},
+     COLLECTION_ENTRY = {{ json_encode($entry) }};
+</script>
+
+<div data-ng-controller="entry">
 
     <h1>
         <a href="@route("/collections")">@lang('Collections')</a> / 

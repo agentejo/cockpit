@@ -2,9 +2,8 @@
 
     App.module.controller("entry", function($scope, $rootScope, $http){
         
-        var controller = $("[data-ng-controller='entry']"),
-            collection = controller.data("collection"),
-            entry      = controller.data("entry") || {};
+        var collection = COLLECTION,
+            entry      = COLLECTION_ENTRY || {};
 
         $scope.collection = collection;
         $scope.entry      = entry;
