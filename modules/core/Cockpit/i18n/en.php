@@ -42,8 +42,6 @@ return [
 
     // Login
     'Authenticate Please!' => '',
-    'Welcome back!' => '',
-    'Please login by using your auth credentials.' => '',
     'Authenticate' => '',
     'Login failed' => '',
 

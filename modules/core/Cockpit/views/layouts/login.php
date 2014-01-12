@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-base="@base('/')" data-route="@route('/')">
+<html class="uk-height-1-1" lang="en" data-base="@base('/')" data-route="@route('/')">
 <head>
     <meta charset="UTF-8">
     <title>@lang('Authenticate Please!')</title>
@@ -40,12 +40,9 @@
     <div>
         <div class="uk-animation-fade app-login-box">
             <div class="app-login-box-container">
-                <h1>@lang('Welcome back!')</h1>
-
-                <p class="uk-text-muted">
-                    @lang('Please login by using your auth credentials.')
+                <p class="uk-text-center uk-margin-large-bottom">
+                    <img src="@base('/assets/images/cockpit.png')" width="50" height="50" alt="logo">
                 </p>
-
                 <form class="uk-form" method="post" action="@route('/auth/check')">
 
                     <div class="uk-form-row">

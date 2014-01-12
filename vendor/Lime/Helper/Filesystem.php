@@ -84,7 +84,7 @@ class Filesystem extends \Lime\Helper {
     }
 
 
-    public static function delete($path) {
+    public function delete($path) {
 
         $path = $this->app->path($path);
 
@@ -104,7 +104,7 @@ class Filesystem extends \Lime\Helper {
     }
 
 
-    public static function rename($path, $newpath, $overwrite = true) {
+    public function rename($path, $newpath, $overwrite = true) {
 
         $path = $this->app->path($path);
 
@@ -123,6 +123,25 @@ class Filesystem extends \Lime\Helper {
         }
 
         return true;
+    }
+
+    public function getDirSize($dir) {
+
+        $size = 0;
+
+        if($path = $this->app->path($dir)) {
+
+            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
+
+            foreach ($files as $file) {
+                
+                if(!$file->isFile() || $file->isLink()) continue;
+
+                $size += $file->getSize();
+            }
+        }
+
+        return $size;
     }
 
 }
