@@ -5,6 +5,9 @@
         $scope.acl    = angular.copy(ACL_DATA);
         $scope.active = "admin";
 
+        if(location.hash && $scope.acl[location.hash.replace("#", "")]) {
+            $scope.active = location.hash.replace("#", "");
+        }
 
         $scope.setActive = function(group){
             $scope.active = group;
@@ -24,6 +27,8 @@
 
                         App.notify(App.i18n.get("Group removed!"));
 
+                        location.hash = "";
+
                         $timeout(function(){
                             location.reload();
                         }, 500);
@@ -41,6 +46,8 @@
                 $http.post(App.route("/accounts/addOrEditGroup"), {"name": name, "oldname":oldname}).success(function(data){
 
                     App.notify(App.i18n.get("Group saved!"));
+
+                    location.hash = name;
 
                     $timeout(function(){
                         location.reload();
