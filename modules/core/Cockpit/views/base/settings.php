@@ -2,8 +2,13 @@
 <h1>@lang('Settings')</h1>
 
 <div class="app-panel">
-    <h4 class="uk-text-center">@lang('System')</h4>
+    
+    <div class="uk-text-left">
+        <span class="uk-badge app-badge">@lang('System')</span>
+    </div>
+
     <hr>
+    
     <div class="uk-grid" uk-grid-margin uk-grid-match>
         <div class="uk-width-medium-1-4">
             <div>
