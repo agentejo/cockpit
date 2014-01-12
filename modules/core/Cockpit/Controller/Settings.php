@@ -50,4 +50,31 @@ class Settings extends \Cockpit\Controller {
         return false;
     }
 
+    public function clearcache() {
+
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->app->path("cache:")), \RecursiveIteratorIterator::SELF_FIRST);
+
+        foreach ($files as $file) {
+            
+            if(!$file->isFile()) continue;
+            if(preg_match('/(.gitkeep|index\.html)$/', $file)) continue;
+
+            @unlink($file->getRealPath());
+        }
+
+        return json_encode(["size"=>$this->app->helper("utils")->formatSize($this->app->helper("fs")->getDirSize("cache:"))]);
+    }
+    
+    public function vacuumdata() {
+
+        foreach ($this->app->helper("fs")->ls('*.sqlite', 'data:') as $file) {
+            $db = new \PDO("sqlite:".$file->getRealPath());
+            @$db->query("VACUUM");
+        }
+
+
+        return json_encode(["size"=>$this->app->helper("utils")->formatSize($this->app->helper("fs")->getDirSize("data:"))]);
+    }
+
+
 }

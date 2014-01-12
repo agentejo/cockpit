@@ -18,13 +18,31 @@
                     </tr>
                     <tr>
                         <td width="30%">Cache size</td>
-                        <td>{{ $info['sizeCache'] }}</td>
+                        <td><a id="clearcache" href="#clearcache" title="Click to clear cache" data-uk-tooltip>{{ $info['sizeCache']=='n/a' ? '0 KB':$info['sizeCache'] }}</a></td>
                     </tr>
                     <tr>
                         <td width="30%">Data size</td>
-                        <td>{{ $info['sizeData'] }}</td>
+                        <td><a id="vacuumdata" href="#vacuumdata" title="Click to optimize data" data-uk-tooltip>{{ $info['sizeData']=='n/a' ? '0 KB':$info['sizeData'] }}</a></td>
                     </tr>
             </table>
+
+            <script>
+
+                $("#clearcache, #vacuumdata").on("click", function(e){
+          
+                    e.preventDefault();
+
+                    var ele = $(this).hide();
+
+                    App.request('/settings/'+this.id, {}, function(data){
+                        App.notify('Done.', 'info');
+
+                        ele.text(data.size=="n/a" ? '0 KB':data.size).show();
+                    }, "json");
+
+                });
+            </script>
+
 
 
             <strong>Mailer</strong>
