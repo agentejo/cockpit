@@ -32,12 +32,16 @@
           
                     e.preventDefault();
 
-                    var ele = $(this).hide();
+                    var progress = $('<i class="uk-icon-spinner uk-icon-spin"></i>'),
+                        ele = $(this).hide().after(progress);
 
                     App.request('/settings/'+this.id, {}, function(data){
                         App.notify('Done.', 'info');
 
-                        ele.text(data.size=="n/a" ? '0 KB':data.size).show();
+                        setTimeout(function(){
+                            ele.text(data.size=="n/a" ? '0 KB':data.size).show();
+                            progress.remove();
+                        }, 500);
                     }, "json");
 
                 });
