@@ -26,12 +26,13 @@ if(!function_exists("collection")) {
 if(COCKPIT_ADMIN) {
 
 
-    // bind controllers
-    $app->bindClass("Collections\\Controller\\Collections", "collections");
-    $app->bindClass("Collections\\Controller\\Api", "api/collections");
-
-
     $app->on("admin.init", function() use($app){
+
+        if(!$app->module("auth")->hasaccess("Collections","manage")) return;
+
+        // bind controllers
+        $app->bindClass("Collections\\Controller\\Collections", "collections");
+        $app->bindClass("Collections\\Controller\\Api", "api/collections");
 
         $app("admin")->menu("top", [
             "url"    => $app->routeUrl("/collections"),
@@ -43,11 +44,16 @@ if(COCKPIT_ADMIN) {
 
     $app->on("admin.dashboard", function() use($app){
 
+        if(!$app->module("auth")->hasaccess("Collections","manage")) return;
+
         $title       = $app("i18n")->get("Collections");
         $badge       = $app->data->common->collections->count();
         $collections = $app->data->common->collections->find()->limit(3)->sort(["created"=>-1])->toArray();
 
         echo $app->view("collections:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'collections'));
     });
+
+    // acl
+    $app("acl")->addResource("Collections", ['manage']);
 
 }

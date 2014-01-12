@@ -78,6 +78,18 @@
                 @endforeach
             </select>
         </div>
+
+        @if($app["user"]["group"]=="admin" AND @$account["_id"]!=$app["user"]["_id"])
+        <div class="uk-form-row">
+            <label class="uk-text-small">@lang('Group')</label>
+            <select class="uk-width-1-1 uk-form-large" data-ng-model="account.group">
+                @foreach($groups as $group)
+                <option value="{{ $group }}">{{ $group }}</option>
+                @endforeach
+            </select>
+        </div>
+        @endif
+
     </div>
 </div>
 <script>
@@ -104,6 +116,4 @@
         };
 
     });
-
-
 </script>

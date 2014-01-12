@@ -18,6 +18,8 @@
                 <a href="@route('/accounts/index')">@lang('Accounts')</a>
             </div>
         </div>
+
+        @if($app["user"]["group"]=="admin")
         <div class="uk-width-medium-1-4">
             <div>
                 <i class="uk-icon-code-fork"></i>
@@ -26,6 +28,9 @@
                 <a href="@route('/settings/addons')">@lang('Addons')</a>
             </div>
         </div>
+        @endif
+
+        @if($app->module("auth")->hasaccess("Cockpit","backups"))
         <div class="uk-width-medium-1-4">
             <div>
                 <i class="uk-icon-archive"></i>
@@ -34,6 +39,9 @@
                 <a href="@route('/backups')">@lang('Backups')</a>
             </div>
         </div>
+        @endif
+
+        @if($app["user"]["group"]=="admin")
         <div class="uk-width-medium-1-4">
             <div>
                 <i class="uk-icon-info-circle"></i>
@@ -42,6 +50,7 @@
                 <a href="@route('/settings/info')">@lang('Info')</a>
             </div>
         </div>
+        @endif
     </div>
 </div>
 

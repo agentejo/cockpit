@@ -8,12 +8,14 @@ class App extends \Lime\App {
     public function __construct ($settings = array()) {
 
         $settings["helpers"]  = array_merge(array(
-            "assets" => "Lime\\Helper\\Assets",
-            "cache"  => "Lime\\Helper\\Cache",
-            "fs"     => "Lime\\Helper\\Filesystem",
-            "image"  => "Lime\\Helper\\Image",
-            "i18n"   => "Lime\\Helper\\I18n",
-            "utils"  => "Lime\\Helper\\Utils",
+            "acl"     => "Lime\\Helper\\SimpleAcl",
+            "assets"  => "Lime\\Helper\\Assets",
+            "cache"   => "Lime\\Helper\\Cache",
+            "fs"      => "Lime\\Helper\\Filesystem",
+            "image"   => "Lime\\Helper\\Image",
+            "i18n"    => "Lime\\Helper\\I18n",
+            "utils"   => "Lime\\Helper\\Utils",
+            "coockie" => "Lime\\Helper\\Coockie",
         ), isset($settings["helpers"]) ? $settings["helpers"] : array());
 
         parent::__construct($settings);

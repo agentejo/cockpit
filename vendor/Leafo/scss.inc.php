@@ -1751,9 +1751,9 @@ class scssc {
 			$s = $h = 0;
 		} else {
 			if ($l < 0.5)
-				$s = $d / (2 * $l);
+				$s = $d / (2 * $l);     // $s = $d / ($min + $max)
 			else
-				$s = $d / (2 - 2 * $l);
+				$s = $d / (2 - 2 * $l); // $s = $d / (2 - $min - $max)
 
 			if ($r == $max)
 				$h = 60 * ($g - $b) / $d;

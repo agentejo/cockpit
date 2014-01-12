@@ -85,16 +85,6 @@ if (!function_exists('thumbnail')) {
 
 if(COCKPIT_ADMIN) {
 
-    // bind controllers
-    foreach (array('Mediamanager') as $controller) {
-        $app->bindClass("Mediamanager\\Controller\\{$controller}", strtolower($controller));
-    }
-
-    // thumbnail api
-    $app->bind("/media/thumbnail/*", function($params) use($app){
-        $options = $app->params("options", []);
-        return $app->module("mediamanager")->thumbnail($params[":splat"], $options);
-    });
 
     $app->on("app.layout.header", function() use($app){
     ?>
@@ -104,6 +94,17 @@ if(COCKPIT_ADMIN) {
 
 
     $app->on("admin.init", function() use($app){
+        
+        // bind controller
+        $app->bindClass("Mediamanager\\Controller\\Mediamanager", "Mediamanager");
+
+        // thumbnail api
+        $app->bind("/media/thumbnail/*", function($params) use($app){
+            $options = $app->params("options", []);
+            return $app->module("mediamanager")->thumbnail($params[":splat"], $options);
+        });
+        
+        if(!$app->module("auth")->hasaccess("Mediamanager","manage")) return;
 
         $app("admin")->menu("top", [
             "url"    => $app->routeUrl("/mediamanager"),
@@ -113,4 +114,6 @@ if(COCKPIT_ADMIN) {
         ], 1);
     });
 
+    // acl
+    $app("acl")->addResource("Mediamanager", ['manage']);
 }

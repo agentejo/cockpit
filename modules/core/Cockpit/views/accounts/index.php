@@ -6,6 +6,7 @@
 
     <nav class="uk-navbar uk-margin-large-bottom">
         <span class="uk-navbar-brand"><a href="@route('/settingspage')">@lang('Settings')</a> / @lang('Accounts')</span>
+        @if($app["user"]["group"]=="admin")
         <div class="uk-navbar-content">
             <form class="uk-form uk-margin-remove uk-display-inline-block">
                 <div class="uk-form-icon">
@@ -16,7 +17,9 @@
         </div>
         <ul class="uk-navbar-nav">
             <li><a href="@route('/accounts/create')" title="@lang('Create account')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-circle"></i></a></li>
+            <li><a href="@route('/accounts/groups')" title="@lang('Manage account groups and permissions')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-group"></i></a></li>
         </ul>
+        @endif
     </nav>
 
 

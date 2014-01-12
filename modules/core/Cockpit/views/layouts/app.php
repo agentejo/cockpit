@@ -37,7 +37,9 @@
                             <li class="uk-nav-header uk-text-truncate">@lang('General')</li>
                             
                             <li><a href="@route('/settingspage')"><i class="uk-icon-cog icon-spacer"></i> @lang('Settings')</a></li>
+                            @if($app["user"]["group"]=="admin")
                             <li><a href="@route('/settings/addons')"><i class="uk-icon-code-fork icon-spacer"></i> @lang('Addons')</a></li>
+                            @endif
                             @trigger("navbar")
                             <li class="uk-nav-divider"></li>
                             <li><a href="@route('/auth/logout')"><i class="uk-icon-power-off icon-spacer"></i> @lang('Logout')</a></li>

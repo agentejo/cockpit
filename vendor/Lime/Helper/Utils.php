@@ -79,4 +79,41 @@ class Utils extends \Lime\Helper {
 
         return $tolower ? strtolower($string):$string;
     }
+
+    /**
+     * resolves complicated dependencies to determine what order something can run in
+     *
+     * start with an array like:
+     * array(
+     *     'a' => array('b', 'c'),
+     *     'b' => array(),
+     *     'c' => array('b')
+     * )
+     *
+     * a depends on b and c, c depends on b, and b depends on nobody
+     * in this case we would return array('b', 'c', 'a')
+     *
+     * @param array $data
+     * @return array
+     */
+    public function resolveDependencies(array $data) {
+        $new_data = array();
+        $original_count = count($data);
+        while (count($new_data) < $original_count) {
+            foreach ($data as $name => $dependencies) {
+                if (!count($dependencies)) {
+                    $new_data[] = $name;
+                    unset($data[$name]);
+                    continue;
+                }
+
+                foreach ($dependencies as $key => $dependency) {
+                    if (in_array($dependency, $new_data)) {
+                        unset($data[$name][$key]);
+                    }
+                }
+            }
+        }
+        return $new_data;
+    }
 }

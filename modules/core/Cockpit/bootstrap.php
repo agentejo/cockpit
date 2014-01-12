@@ -115,4 +115,9 @@ if (COCKPIT_ADMIN) {
 
         return 'if(i18n) { i18n.register('.(count($data) ? json_encode($data):'{}').'); }';
     });
+
+    // acl
+
+    // acl
+    $app("acl")->addResource("Cockpit", ['backups']);
 }
