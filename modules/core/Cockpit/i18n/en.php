@@ -60,6 +60,11 @@ return [
     'Delete account' => '',
     'Account saved!' => '',
 
+    'Groups' => '',
+    'Group' => '',
+    'Manage account groups and permissions' => '',
+    'Add group' => '',
+
     // Addons 
     'Addons' => '',
     'No additional addons installed.' => '',
