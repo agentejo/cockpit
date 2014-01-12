@@ -70,6 +70,7 @@ class Settings extends \Cockpit\Controller {
         foreach ($this->app->helper("fs")->ls('*.sqlite', 'data:') as $file) {
             $db = new \PDO("sqlite:".$file->getRealPath());
             @$db->query("VACUUM");
+            @$db->exec("VACUUM");
         }
 
 

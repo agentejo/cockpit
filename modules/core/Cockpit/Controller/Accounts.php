@@ -112,8 +112,23 @@ class Accounts extends \Cockpit\Controller {
             if($name!="admin") {
                 $groups = $this->app->memory->get("cockpit.acl.groups", []);
                 
+                
                 if($oldname = $this->app->param("oldname", false)) {
-                    if(isset($groups[$oldname])) unset($groups[$oldname]);
+                    if(isset($groups[$oldname])) {
+                        
+                        $rights = $this->app->memory->get("cockpit.acl.rights", []);
+
+                        if(isset($rights[$oldname])) {
+                            $rights[$name] = $rights[$oldname];
+                            unset($rights[$oldname]);
+                            $this->app->memory->set("cockpit.acl.rights", $rights);
+                        }
+
+                        $this->data->cockpit->accounts->update(["group"=>$oldname], ["group"=>$name]);
+                        
+                        unset($groups[$oldname]);
+                    }
+
                 }
 
                 $groups[$name] = false;
