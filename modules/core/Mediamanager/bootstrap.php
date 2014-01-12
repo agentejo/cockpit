@@ -96,14 +96,14 @@ if(COCKPIT_ADMIN) {
     $app->on("admin.init", function() use($app){
         
         // bind controller
-        $app->bindClass("Mediamanager\\Controller\\Mediamanager", "Mediamanager");
+        $app->bindClass("Mediamanager\\Controller\\Mediamanager", "mediamanager");
 
         // thumbnail api
         $app->bind("/media/thumbnail/*", function($params) use($app){
             $options = $app->params("options", []);
             return $app->module("mediamanager")->thumbnail($params[":splat"], $options);
         });
-        
+
         if(!$app->module("auth")->hasaccess("Mediamanager","manage")) return;
 
         $app("admin")->menu("top", [

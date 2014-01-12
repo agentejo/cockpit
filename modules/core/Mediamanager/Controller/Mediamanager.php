@@ -7,7 +7,10 @@ class Mediamanager extends \Cockpit\Controller {
 	protected $root;
 
 	public function index(){
-		return $this->render("mediamanager:views/index.php");
+		
+        if(!$this->app->module("auth")->hasaccess("Mediamanager","manage")) return false;
+
+        return $this->render("mediamanager:views/index.php");
 	}
 
 
