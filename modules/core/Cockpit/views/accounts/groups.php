@@ -6,6 +6,8 @@
     }
     .group-actions {
         position: absolute;
+        min-width: 60px;
+        text-align: right;
         top: 5px;
         right: 5px;
         font-size: 12px;
