@@ -3,15 +3,23 @@
 <style>
     .group-list li {
         position: relative;
+        overflow: hidden;
     }
     .group-actions {
         position: absolute;
+        display:none;
         min-width: 60px;
         text-align: right;
         top: 5px;
-        right: 5px;
+        right: 10px;
         font-size: 12px;
     }
+
+    .group-list li.uk-active a {
+        color: #fff;
+    }
+
+    .group-list li.uk-active .group-actions { display:block; }
 </style>
 
 
@@ -27,11 +35,11 @@
 
     <div class="uk-grid">
         <div class="uk-width-1-5">
-            <ul class="uk-nav group-list">
-                <li class="uk-nav-header">@lang('Groups')</li>
+            <ul class="uk-nav uk-nav-side group-list">
+                <li class="uk-nav-header"><i class="uk-icon-group"></i> @lang('Groups')</li>
                 <li data-ng-repeat="(group,data) in acl" data-ng-class="active==group ? 'uk-active':''">
-                    <a href="#@@ group @@" data-ng-click="setActive(group)"><i class="uk-icon-group"></i> @@ group @@</a>
-                    <ul class="uk-subnav group-actions" data-ng-if="group!='admin'">
+                    <a href="#@@ group @@" data-ng-click="setActive(group)">@@ group @@</a>
+                    <ul class="uk-subnav group-actions uk-animation-slide-right" data-ng-if="group!='admin'">
                         <li><a href="#" data-ng-click="addOrEditGroup(group)"><i class="uk-icon-pencil"></i></a></li>
                         <li><a href="#" data-ng-click="addOrEditGroup(group, true)"><i class="uk-icon-trash-o"></i></a></li>
                     </ul>
