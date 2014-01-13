@@ -79,6 +79,7 @@ return [
     'Delete collection' => '',
     'You don\'t have any collections created.' => '',
     'Save Collection' => '',
+    'It seems you don\'t have any entries created.' => '',
     'Add entry' => '',
     'Edit entry' => '',
     'Delete entry' => '',
