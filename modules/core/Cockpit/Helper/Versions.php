@@ -5,31 +5,50 @@ namespace Cockpit\Helper;
 class Versions extends \Lime\Helper {
 
     protected $storage;
+    public $maxVersions = 15;
 
     public function initialize(){
 
-        $this->storage = \RedisLite(sprintf("%s/cockpit.versions.sqlite", $this->app->path('data:')));
+        $this->storage = new \RedisLite(sprintf("%s/cockpit.versions.sqlite", $this->app->path('data:')));
     }
 
 
-    public function store($path, $data, $meta=[]) {
+    public function add($path, $data, $meta=[]) {
         
-       return $this->storage->hset($path, uniqid(time()), ["data"=>$data, "meta"=>$meta, "time"=>time()]);
+        $versions = $this->storage->hkeys($path);
+        $count    = count($versions);
+
+        if($count) {
+          $prev = $this->storage->hget($path, $versions[$count-1]);
+
+          if(json_encode($prev["data"]) === json_encode($data)) return;
+        }
+
+        if($count == $this->maxVersions) {
+          $this->storage->hdel($path, $versions[0]);
+        }
+
+        return $this->storage->hset($path, uniqid(time()), ["data"=>$data, "meta"=>$meta, "time"=>time()]);
     }
 
     public function get($path, $uid = null) {
        
-       if($uid) {
+      if($uid) {
             return $this->storage->hget($path, $uid);
-       } else {
+      } else {
             return $this->storage->hgetall($path);
-       }    
+      }    
 
        return $this->storage->hset($path, uniqid(time()), ["data"=>$data, "meta"=>$meta, "time"=>time()]);
     }
 
-    protected function remove($path, $uid) {
-        
+    protected function remove($path, $uid = null) {
+      
+      if($uid) {
         return $this->storage->hdel($path, $uid);
+      } else {
+        return $this->storage->del($path);
+      }   
+        
     }
 }

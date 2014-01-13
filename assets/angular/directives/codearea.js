@@ -71,6 +71,10 @@
                     }, true);
                   }
 
+                  if(elm.css("height")) {
+                    codeMirror.setSize("100%", elm.css("height"));
+                  }
+
                   codeMirror.on("change", onChange(opts.onChange));
 
                   for (var i = 0, n = events.length, aEvent; i < n; ++i) {

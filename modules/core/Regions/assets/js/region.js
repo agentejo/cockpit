@@ -5,14 +5,53 @@
         var id       = $("[data-ng-controller='region']").data("id"),
             template = $("#region-template");
 
+        $scope.mode       = "tpl";
+        $scope.manageform = false;
+        $scope.versions   = [];
+
+
+        $scope.loadVersions = function() {
+
+            if(!$scope.region["_id"]) {
+                return;
+            }
+
+            $http.post(App.route("/api/regions/getVersions"), {"id":$scope.region["_id"]}).success(function(data){
+
+                if(data) {
+                    $scope.versions = data;
+                }
+
+            }).error(App.module.callbacks.error.http);
+        };
+
+        $scope.clearVersions = function() {
+
+            if(!$scope.region["_id"]) {
+                return;
+            }
+
+            $http.post(App.route("/api/regions/clearVersions"), {"id":$scope.region["_id"]}).success(function(data){
+                
+                $scope.versions = [];
+            
+            }).error(App.module.callbacks.error.http);
+        };
+
+
         if(id) {
 
             $http.post(App.route("/api/regions/findOne"), {filter: {"_id":id}}, {responseType:"json"}).success(function(data){
 
                 if(data && Object.keys(data).length) {
+                    
                     $scope.region = data;
 
-                    if($scope.region.fields.length) $scope.mode = "form";
+                    if($scope.region.fields.length) {
+                        $scope.mode = "form";
+                    }
+
+                    $scope.loadVersions();
                 }
 
             }).error(App.module.callbacks.error.http);
@@ -25,9 +64,6 @@
                 tpl: ""
             };
         }
-
-        $scope.mode = "tpl";
-        $scope.manageform = false;
 
         $scope.addfield = function(){
 
@@ -60,11 +96,13 @@
 
             var region = angular.copy($scope.region);
 
-            $http.post(App.route("/api/regions/save"), {"region": region}).success(function(data){
+            $http.post(App.route("/api/regions/save"), {"region": region, "createversion": true}).success(function(data){
 
                 if(data && Object.keys(data).length) {
                     $scope.region = data;
                     App.notify(App.i18n.get("Region saved!"), "success");
+
+                    $scope.loadVersions();
                 }
 
             }).error(App.module.callbacks.error.http);

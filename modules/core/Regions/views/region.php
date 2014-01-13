@@ -29,7 +29,7 @@
 
             <div class="uk-grid">
 
-                <div class="uk-width-medium-1-1">
+                <div class="uk-width-medium-4-5">
 
                     <div class="app-panel">
 
@@ -127,10 +127,9 @@
 
                               </div>
                               <div class="uk-width-1-5">
-                                  <button type="button" class="uk-button uk-button-large uk-width-1-1" data-ng-click="(manageform = !manageform)">
-                                      <i class="uk-icon-cog"></i>
-                                      <span ng-show="!manageform">@lang('Manage form')</span>
-                                      <span ng-show="manageform">@lang('Done')</span>
+                                  <button type="button" class="uk-button uk-button-large uk-width-1-1" data-ng-class="manageform ? 'uk-button-success':'uk-button-primary'" data-ng-click="(manageform = !manageform)" title="@lang('Manage form')">
+                                      <span ng-show="!manageform"><i class="uk-icon-cog"></i></span>
+                                      <span ng-show="manageform"><i class="uk-icon-check"></i></span>
                                   </button>
                               </div>
                             </div>
@@ -175,6 +174,19 @@
                             <button type="submit" class="uk-button uk-button-primary uk-button-large">@lang('Save Region')</button>
                             <a href="@route('/regions')">@lang('Cancel')</a>
                         </div>
+                    </div>
+                </div>
+
+                <div class="uk-width-medium-1-5" data-ng-show="versions.length">
+                    <div class="uk-panel uk-panel-box">
+                        <h3 class="uk-panel-title"><i class="uk-icon-clock-o"></i> @lang('Versions')</h3>
+                        <ul class="uk-nav uk-nav-side">
+                          <li data-ng-repeat="version in versions">
+                            <a href="">@@ version.time | fmtdate:'d M, Y H:i:s' @@</a>
+                          </li>
+                        </ul>
+                        <br>
+                        <button type="button" class="uk-button uk-button-danger uk-width-1-1" data-ng-click="clearVersions()"><i class="uk-icon-trash-o"></i></button>
                     </div>
                 </div>
           </div>

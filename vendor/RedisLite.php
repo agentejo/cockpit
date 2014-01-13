@@ -296,7 +296,7 @@ class RedisLite {
      * @param  mixed $default
      * @return mixed
      */
-    public function hget($key, $field, $default) {
+    public function hget($key, $field, $default=null) {
 
         $set = $this->get($key, array());
 
