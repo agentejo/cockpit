@@ -56,12 +56,12 @@ if (COCKPIT_ADMIN) {
             $app("acl")->addGroup($group, $isadmin);
         }
 
-        foreach ($app->memory->get("cockpit.acl.rights", []) as $group => &$resources) {
-            
+        foreach ($app->memory->get("cockpit.acl.rights", []) as $group => $resources) {
+
             if(!$app("acl")->hasGroup($group)) continue;
 
-            foreach ($resources as $resource => &$actions) {
-                foreach ($actions as $action => &$value) {
+            foreach ($resources as $resource => $actions) {
+                foreach ($actions as $action => $value) {
                     if ($value) $app("acl")->allow($group, $resource, $action);
                 }
             }
