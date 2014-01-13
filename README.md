@@ -61,6 +61,11 @@ Loop over collection data:
     <?php endforeach; ?>
 
 
+### Documentation
+
+Please visit http://getcockpit.com/docs - any contributions are welcome: https://github.com/aheinze/cockpit-docs
+
+
 ### Language files
 
 Please visit and contribute to https://github.com/aheinze/cockpit-i18n

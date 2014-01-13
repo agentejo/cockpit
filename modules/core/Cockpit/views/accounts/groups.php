@@ -31,10 +31,10 @@
     var ACL_DATA = {{ json_encode($acl) }};
 </script>
 
-<div data-ng-controller="groups">
+<div class="app-panel" data-ng-controller="groups">
 
-    <div class="uk-grid">
-        <div class="uk-width-1-5">
+    <div class="uk-grid uk-grid-divider" data-uk-grid-margin>
+        <div class="uk-width-medium-1-5">
             <ul class="uk-nav uk-nav-side group-list">
                 <li class="uk-nav-header"><i class="uk-icon-group"></i> @lang('Groups')</li>
                 <li data-ng-repeat="(group,data) in acl" data-ng-class="active==group ? 'uk-active':''">
@@ -46,34 +46,32 @@
                 </li>
             </ul>
             <hr>
-            <button class="uk-button uk-button-success uk-width-1-1" data-ng-click="addOrEditGroup()" title="Add group" data-uk-tooltip><i class="uk-icon-plus"></i></button>
+            <button class="uk-button uk-button-success" data-ng-click="addOrEditGroup()" title="Add group" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus"></i></button>
+            <button class="uk-button uk-button-primary" data-ng-click="save()">@lang('Save')</button>
         </div>
-        <div class="uk-width-4-5">
-            
-            <div class="app-panel">            
+        <div class="uk-width-medium-4-5">   
 
-                <h2><strong>@@ active @@</strong></h2>
-                <hr>
-
-                <div class="uk-margin" data-ng-repeat="(resource, actions) in acl[active]">
-                    
-                    <strong><i class="uk-icon-cog"></i> @@ resource @@</strong>
-                    
-                    <table class="uk-table">
-                        <tbody>
-                            <tr data-ng-repeat="(key, value) in actions">
-                                <td data-ng-class="value ? '':'uk-text-muted'" width="80%">@@ key @@</td>
-                                <td align="right"><input type="checkbox" data-ng-disabled="active=='admin'" data-ng-model="acl[active][resource][key]"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
+            <div class="uk-margin" data-ng-repeat="(resource, actions) in acl[active]">
+                
+                <div class="uk-grid uk-grid-divider">
+                    <div class="uk-width-medium-1-3 uk-text-small">
+                        <strong><i class="uk-icon-cog"></i> @@ resource @@</strong>
+                    </div>
+                    <div class="uk-width-medium-2-3">
+                        <table class="uk-table uk-table-hover uk-text-small">
+                            <tbody>
+                                <tr data-ng-repeat="(key, value) in actions">
+                                    <td data-ng-class="value ? '':'uk-text-muted'" width="80%">@@ key @@</td>
+                                    <td align="right"><input type="checkbox" data-ng-disabled="active=='admin'" data-ng-model="acl[active][resource][key]"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 
-                <hr>
-                <button class="uk-button uk-button-large uk-button-primary" data-ng-click="save()">@lang('Save')</button>
-
             </div>
+            
+
         </div>
     </div>
 

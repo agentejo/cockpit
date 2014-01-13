@@ -13,9 +13,9 @@ $this->module("auth")->authenticate = function($data) use($app) {
     if (!$data["password"]) return false;
 
     $user = $app->data->cockpit->accounts->findOne([
-            "user"     => $data["user"],
-            "password" => $app->hash($data["password"]),
-            "active"   => 1
+        "user"     => $data["user"],
+        "password" => $app->hash($data["password"]),
+        "active"   => 1
     ]);
 
     if(count($user)) {
