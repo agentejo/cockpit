@@ -1,8 +1,11 @@
 # Changelog
 
+### 0.7.1 (Jan 13, 2014)
+
+    # Fixed PHP 5.4 rference error
 
 ### 0.7.0 (Jan 13, 2014)
-    
+
     + Clean cache + database from settings/info
     + Added (simple) ACL functionality
     # Fixed collections entry bug
