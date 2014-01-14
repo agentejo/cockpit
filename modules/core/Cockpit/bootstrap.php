@@ -66,8 +66,10 @@ if (COCKPIT_ADMIN) {
         'cockpit:assets/js/bootstrap.js',
     ];
 
+    // helpers
     $app->helpers["admin"]    = 'Cockpit\\Helper\\Admin';
     $app->helpers["versions"] = 'Cockpit\\Helper\\Versions';
+    $app->helpers["backup"]   = 'Cockpit\\Helper\\Backup';
 
     $app->bind("/", function() use($app){
         return $app->invoke("Cockpit\\Controller\\Base", "dashboard");

@@ -25,40 +25,15 @@ class Backups extends \Cockpit\Controller {
 
     public function create() {
 
-        $zip        = new \ZipArchive();
         $timestamp  = time();
         $filename   = $timestamp.'.zip';
         $rootfolder = $this->app->path("site:");
 
-        if (!$zip->open($this->app->path("backups:")."/{$filename}", \ZIPARCHIVE::CREATE)) {
-            return false;
-        }
+        $this->app->helper("backup")->backup($rootfolder, $this->app->path("backups:")."/{$filename}", function($file) {
+            return preg_match('/cache/', $file) && !preg_match('/index\.html/', $file) || preg_match('/backups/', $file) && !preg_match('/index\.html/', $file);
+        });
 
-        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($rootfolder), \RecursiveIteratorIterator::SELF_FIRST);
-
-        foreach ($files as $file) {
-
-            $file = str_replace('\\', '/', $file);
-
-            // Ignore "." and ".." folders
-            if( in_array(substr($file, strrpos($file, '/')+1), array('.', '..')) ) continue;
-            if(preg_match('/\.git/', $file)) continue;
-            if(preg_match('/\.DS_Store/', $file)) continue;
-            if(preg_match('/cache/', $file) && !preg_match('/index\.html/', $file)) continue;
-            if(preg_match('/backups/', $file) && !preg_match('/index\.html/', $file)) continue;
-
-            $file = realpath($file);
-
-            if (is_dir($file) === true) {
-                $zip->addEmptyDir(str_replace($rootfolder, '', $file . '/'));
-            }else if (is_file($file) === true){
-                $zip->addFromString(str_replace($rootfolder, '', $file), file_get_contents($file));
-            }
-        }
-
-        $zip->close();
-
-        return json_encode(["timestamp" => $timestamp, "size" => $this->app->helper("utils")->formatSize(filesize($this->app->path("backups:/{$filename}")))]);
+        return json_encode(["timestamp" => $timestamp, "size" => $this->app->helper("utils")->formatSize(filesize($this->app->path("backups:{$filename}")))]);
     }
 
     public function remove() {
