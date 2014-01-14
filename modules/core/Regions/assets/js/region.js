@@ -31,11 +31,11 @@
                 return;
             }
 
-            $http.post(App.route("/api/regions/clearVersions"), {"id":$scope.region["_id"]}).success(function(data){
-                
-                $scope.versions = [];
-            
-            }).error(App.module.callbacks.error.http);
+            if(confirm(App.i18n.get("Are you sure?"))) {
+                $http.post(App.route("/api/regions/clearVersions"), {"id":$scope.region["_id"]}).success(function(data){
+                    $scope.versions = [];
+                }).error(App.module.callbacks.error.http);
+            }
         };
 
 
@@ -44,7 +44,7 @@
             $http.post(App.route("/api/regions/findOne"), {filter: {"_id":id}}, {responseType:"json"}).success(function(data){
 
                 if(data && Object.keys(data).length) {
-                    
+
                     $scope.region = data;
 
                     if($scope.region.fields.length) {

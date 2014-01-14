@@ -14,7 +14,7 @@ class Versions extends \Lime\Helper {
 
 
     public function add($path, $data, $meta=[]) {
-        
+
         $versions = $this->storage->hkeys($path);
         $count    = count($versions);
 
@@ -32,23 +32,17 @@ class Versions extends \Lime\Helper {
     }
 
     public function get($path, $uid = null) {
-       
+
       if($uid) {
             return $this->storage->hget($path, $uid);
       } else {
             return $this->storage->hgetall($path);
-      }    
-
-       return $this->storage->hset($path, uniqid(time()), ["data"=>$data, "meta"=>$meta, "time"=>time()]);
+      }
     }
 
-    protected function remove($path, $uid = null) {
-      
-      if($uid) {
-        return $this->storage->hdel($path, $uid);
-      } else {
-        return $this->storage->del($path);
-      }   
-        
+    public function remove($path, $uid = null) {
+
+      return $uid ? $this->storage->hdel($path, $uid) : $this->storage->del($path);
+
     }
 }

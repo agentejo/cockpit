@@ -42,10 +42,10 @@ class Api extends \Cockpit\Controller {
             if(!isset($region["_id"])){
                 $region["created"] = $region["modified"];
             } else {
-                
+
                 if($this->param("createversion", null) && isset($region["fields"], $region["tpl"])) {
                     $id = $region["_id"];
-                    $this->app->helper("versions")->add("regions:{$id}", ["fields"=>$region["fields"], "tpl"=>$region["tpl"]]);
+                    $this->app->helper("versions")->add("regions:{$id}", $region);
                 }
             }
 
@@ -86,10 +86,9 @@ class Api extends \Cockpit\Controller {
     public function clearVersions() {
 
         if($id = $this->param("id", false)) {
-            $this->app->helper("versions")->remove("regions:{$id}");
+            return '{"success":'.$this->app->helper("versions")->remove("regions:{$id}").'}';
         }
 
-        return '{"success":true}';
-
+        return '{"success":false}';
     }
 }
