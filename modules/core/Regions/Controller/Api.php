@@ -91,4 +91,21 @@ class Api extends \Cockpit\Controller {
 
         return '{"success":false}';
     }
+
+
+    public function restoreVersion() {
+
+        $versionId = $this->param("versionId", false);
+        $docId     = $this->param("docId", false);
+
+        if($versionId && $docId) {
+
+            if($versiondata = $this->app->helper("versions")->get("regions:{$docId}", $versionId)) {
+                $this->app->data->common->regions->save($versiondata["data"]);
+                return '{"success":true}';
+            }
+        }
+
+        return false;
+    }
 }
