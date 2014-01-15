@@ -166,7 +166,7 @@
 
                             <div class="uk-margin" ng-show="region.name">
                                 <strong>@lang('Embed region snippet'):</strong>
-                                <pre><code>&lt;?php region('@@region.name@@'); ?&gt;</code></pre>
+                                <pre><code>&lt;?php <strong>region('@@region.name@@')</strong> ?&gt;</code></pre>
                             </div>
                         </div>
 
@@ -178,17 +178,30 @@
                 </div>
 
                 <div class="uk-width-medium-1-5" data-ng-show="versions.length">
-                    <div class="uk-panel uk-panel-box">
-                        <h3 class="uk-panel-title"><i class="uk-icon-clock-o"></i> @lang('Versions')</h3>
-                        <ul class="uk-nav uk-nav-side">
-                          <li data-ng-repeat="version in versions">
-                            <a href="#v-@@ version.uid @@" data-ng-click="restoreVersion(version.uid)">@@ version.time | fmtdate:'d M, Y H:i:s' @@</a>
-                          </li>
-                        </ul>
-                        <br>
-                        <button type="button" class="uk-button uk-button-danger uk-width-1-1" data-ng-click="clearVersions()" title="@lang('Clear version history')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-trash-o"></i></button>
-                    </div>
+
+                    <a href="#region-versions" data-uk-offcanvas><i class="uk-icon-clock-o"></i> Versions <span class="uk-badge">@@ versions.length @@</span></a>
+
                 </div>
           </div>
     </form>
+
+    <div id="region-versions" class="uk-offcanvas">
+        <div class="uk-offcanvas-bar">
+          <div class="uk-panel">
+              <h3 class="uk-panel-title">@lang('Versions')</h3>
+              <ul class="uk-nav uk-nav-offcanvas">
+                <li data-ng-repeat="version in versions">
+                  <a href="#v-@@ version.uid @@" data-ng-click="restoreVersion(version.uid)" title="@lang('Restore this version')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-clock-o"></i> @@ version.time | fmtdate:'d M, Y H:i:s' @@</a>
+                </li>
+              </ul>
+              <br>
+
+              <div class="uk-button-group uk-width-1-1">
+                <button type="button" class="uk-button uk-button-large uk-button-danger uk-width-1-2" data-ng-click="clearVersions()" title="@lang('Clear version history')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-trash-o"></i></button>
+                <button type="button" class="uk-button uk-button-large uk-button-primary uk-width-1-2" onclick="$.UIkit.offcanvas.offcanvas.hide()" title="@lang('Close versions')" data-uk-tooltip="{pos:'bottom'}">@lang('Cancel')</button>
+              </div>
+          </div>
+        </div>
+    </div>
+
 </div>

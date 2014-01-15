@@ -1,5 +1,5 @@
 {{ $app->assets(['collections:assets/collections.js','collections:assets/js/collection.js']) }}
-{{ $app->assets(['assets:vendor/uikit/addons/css/sortable.min.css','assets:vendor/uikit/addons/js/sortable.min.js']) }}
+{{ $app->assets(['assets:vendor/uikit/addons/css/sortable.almost-flat.min.css','assets:vendor/uikit/addons/js/sortable.min.js']) }}
 
 <div data-ng-controller="collection" data-id="{{ $id }}">
 
