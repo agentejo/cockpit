@@ -40,7 +40,8 @@ $account = [
     "email"    => "test@test.de",
     "active"   => 1,
     "group"    => "admin",
-    "password" => $app->hash("admin")
+    "password" => $app->hash("admin"),
+    "i18n"     => "en"
 ];
 
 $app->data->cockpit->accounts->insert($account);
