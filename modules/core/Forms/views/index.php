@@ -1,9 +1,5 @@
 {{ $app->assets(['forms:assets/forms.js','forms:assets/js/index.js']) }}
 
-<style>
-    .app-panel-box { min-height: 175px; }
-</style>
-
 <div data-ng-controller="forms">
 
     <nav class="uk-navbar uk-margin-large-bottom">
@@ -24,7 +20,7 @@
     <div class="uk-grid" data-uk-grid-margin data-uk-grid-match>
         <div class="uk-width-1-1 uk-width-medium-1-3 uk-width-large-1-4" data-ng-repeat="form in forms" data-ng-show="matchName(form.name)">
 
-            <div class="app-panel app-panel-box uk-visible-hover">
+            <div class="app-panel app-panel-box">
 
                 <strong>@@ form.name @@</strong>
 
@@ -32,13 +28,12 @@
                     <span class="uk-badge app-badge" title="Last update">@@ form.modified |fmtdate:'d M, Y H:i' @@</span>
                 </div>
 
-                <div class="uk-margin uk-hidden uk-animation-fade">
-                    <span class="uk-button-group">
-                        <a class="uk-button uk-button-small" href="@route('/forms/entries')/@@ form._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a>
-                        <a class="uk-button uk-button-small" href="@route('/forms/form')/@@ form._id @@" title="@lang('Edit form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
-                        <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, form)" href="#" title="@lang('Delete form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
-                    </span>
-                </div>
+
+                <span class="uk-button-group">
+                    <a class="uk-button uk-button-small" href="@route('/forms/entries')/@@ form._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a>
+                    <a class="uk-button uk-button-small" href="@route('/forms/form')/@@ form._id @@" title="@lang('Edit form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
+                    <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, form)" href="#" title="@lang('Delete form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                </span>
             </div>
         </div>
     </div>

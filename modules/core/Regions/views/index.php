@@ -1,9 +1,5 @@
 {{ $app->assets(['regions:assets/regions.js','regions:assets/js/index.js']) }}
 
-<style>
-    .app-panel-box { min-height: 175px; }
-</style>
-
 <div data-ng-controller="regions">
 
     <nav class="uk-navbar uk-margin-large-bottom">
@@ -24,7 +20,7 @@
     <div class="uk-grid" data-uk-grid-margin data-uk-grid-match>
         <div class="uk-width-1-1 uk-width-medium-1-3 uk-width-large-1-4" data-ng-repeat="region in regions" data-ng-show="matchName(region.name)">
 
-            <div class="app-panel app-panel-box uk-visible-hover">
+            <div class="app-panel app-panel-box">
 
                 <strong>@@ region.name @@</strong>
 
@@ -32,12 +28,11 @@
                     <span class="uk-badge app-badge" title="Last update">@@ region.modified |fmtdate:'d M, Y H:i' @@</span>
                 </div>
 
-                <div class="uk-margin uk-hidden uk-animation-fade">
-                    <span class="uk-button-group">
-                        <a class="uk-button uk-button-small" href="@route('/regions/region')/@@ region._id @@" title="@lang('Edit region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
-                        <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
-                    </span>
-                </div>
+
+                <span class="uk-button-group">
+                    <a class="uk-button uk-button-small" href="@route('/regions/region')/@@ region._id @@" title="@lang('Edit region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
+                    <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                </span>
             </div>
         </div>
     </div>
