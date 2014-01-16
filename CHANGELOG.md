@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.7.5 (Jan 16, 2014)
+
+    + Added (simple) version history with rollback for regions and collection entries
+
 ### 0.7.1 (Jan 13, 2014)
 
     # Fixed PHP 5.4 rference error
