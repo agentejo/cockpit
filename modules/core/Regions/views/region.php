@@ -28,7 +28,7 @@
           <a href="@route("/regions")">@lang('Regions')</a> / @lang('Entry')
         </span>
         <div class="uk-navbar-content">
-            <a href="#region-versions" data-uk-offcanvas data-ng-show="versions.length"><i class="uk-icon-clock-o"></i> Versions <span class="uk-badge">@@ versions.length @@</span></a>
+            <a href="#region-versions" data-uk-offcanvas data-ng-show="versions.length"><i class="uk-icon-clock-o"></i> @lang('Versions') <span class="uk-badge">@@ versions.length @@</span></a>
         </div>
     </nav>
 

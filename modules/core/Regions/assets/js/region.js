@@ -34,6 +34,7 @@
             if(confirm(App.i18n.get("Are you sure?"))) {
                 $http.post(App.route("/api/regions/clearVersions"), {"id":$scope.region["_id"]}).success(function(data){
                     $scope.versions = [];
+                    App.notify(App.i18n.get("Version history cleared!"), "success");
                 }).error(App.module.callbacks.error.http);
             }
         };

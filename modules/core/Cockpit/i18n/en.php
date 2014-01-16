@@ -156,6 +156,15 @@ return [
     'Region removed' => '',
     'Region saved!' => '',
 
+    //Versions
+    'Versions' => '',
+    'Version' => '',
+    'Restore this version' => '',
+    'Clear version history' => '',
+    'Close versions' => '',
+    'Restoring version...' => '',
+    'Version history cleared!' => '',
+
     // Backups
     'Backups' => '',
     'You don\'t have any backups created.' => '',
