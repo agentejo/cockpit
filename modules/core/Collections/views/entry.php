@@ -27,7 +27,12 @@
         <div class="uk-offcanvas-bar">
           <div class="uk-panel">
               <h3 class="uk-panel-title">@lang('Versions')</h3>
-              <ul class="uk-nav uk-nav-offcanvas">
+              
+              <p class="uk-text-muted" data-ng-show="!versions.length">
+                @lang('Empty')
+              </p>
+
+              <ul class="uk-nav uk-nav-offcanvas" data-ng-show="versions.length">
                 <li data-ng-repeat="version in versions">
                   <a href="#v-@@ version.uid @@" data-ng-click="restoreVersion(version.uid)" title="@lang('Restore this version')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-clock-o"></i> @@ version.time | fmtdate:'d M, Y H:i:s' @@</a>
                 </li>
