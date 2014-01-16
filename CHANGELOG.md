@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.7.5 (Jan 16, 2014)
+### 0.7.2 (Jan 16, 2014)
 
     + Added (simple) version history with rollback for regions and collection entries
 
