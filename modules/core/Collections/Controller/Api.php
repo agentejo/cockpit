@@ -105,10 +105,14 @@ class Api extends \Cockpit\Controller {
         $collection = $this->param("collection", null);
         $entryId    = $this->param("entryId", null);
 
+
         if($collection && $entryId) {
+
+            $colid = $collection["_id"];
 
             $col = "collection".$collection["_id"];
             $this->app->data->collections->{$col}->remove(["_id" => $entryId]);
+            $this->app->helper("versions")->remove("coentry:{$colid}-{$entryId}");
         }
 
         return ($collection && $entryId) ? '{"success":true}' : '{"success":false}';
@@ -128,6 +132,14 @@ class Api extends \Cockpit\Controller {
 
             if(!isset($entry["_id"])){
                 $entry["created"] = $entry["modified"];
+            } else {
+
+                if($this->param("createversion", null)) {
+                    $id    = $entry["_id"];
+                    $colid = $collection["_id"];
+
+                    $this->app->helper("versions")->add("coentry:{$colid}-{$id}", $entry);
+                }
             }
 
             $this->app->data->collections->{$col}->save($entry);
@@ -135,5 +147,59 @@ class Api extends \Cockpit\Controller {
 
         return $entry ? json_encode($entry) : '{}';
     }
+
+    // Versions
+
+    public function getVersions() {
+
+        $return = [];
+        $id     = $this->param("id", false);
+        $colid  = $this->param("colId", false);
+
+        if($id && $colid) {
+
+            $versions = $this->app->helper("versions")->get("coentry:{$colid}-{$id}");
+
+            foreach ($versions as $uid => $data) {
+                $return[] = ["time"=>$data["time"], "uid"=>$uid];
+            }
+        }
+
+        return json_encode(array_reverse($return));
+
+    }
+
+
+    public function clearVersions() {
+
+        $id     = $this->param("id", false);
+        $colid  = $this->param("colId", false);
+
+        if($id && $colid) {
+            return '{"success":'.$this->app->helper("versions")->remove("coentry:{$colid}-{$id}").'}';
+        }
+
+        return '{"success":false}';
+    }
+
+
+    public function restoreVersion() {
+
+        $versionId = $this->param("versionId", false);
+        $docId     = $this->param("docId", false);
+        $colId     = $this->param("colId", false);
+
+        if($versionId && $docId && $colId) {
+
+            if($versiondata = $this->app->helper("versions")->get("coentry:{$colId}-{$docId}", $versionId)) {
+                $col = "collection".$colId;
+                $this->app->data->collections->{$col}->save($versiondata["data"]);
+                return '{"success":true}';
+            }
+        }
+
+        return false;
+    }
+
 
 }

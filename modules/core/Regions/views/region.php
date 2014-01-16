@@ -23,7 +23,15 @@
 
 <div data-ng-controller="region" data-id="{{ $id }}">
 
-    <h1><a href="@route("/regions")">@lang('Regions')</a> / @lang('Entry')</h1>
+    <nav class="uk-navbar uk-margin-large-bottom">
+        <span class="uk-navbar-brand">
+          <a href="@route("/regions")">@lang('Regions')</a> / @lang('Entry')
+        </span>
+        <div class="uk-navbar-content">
+            <a href="#region-versions" data-uk-offcanvas data-ng-show="versions.length"><i class="uk-icon-clock-o"></i> Versions <span class="uk-badge">@@ versions.length @@</span></a>
+        </div>
+    </nav>
+
 
     <form class="uk-form" data-ng-submit="save()" data-ng-show="region">
 
@@ -177,10 +185,9 @@
                     </div>
                 </div>
 
-                <div class="uk-width-medium-1-5" data-ng-show="versions.length">
+                <div class="uk-width-medium-1-5">
 
-                    <a href="#region-versions" data-uk-offcanvas><i class="uk-icon-clock-o"></i> Versions <span class="uk-badge">@@ versions.length @@</span></a>
-
+                    
                 </div>
           </div>
     </form>

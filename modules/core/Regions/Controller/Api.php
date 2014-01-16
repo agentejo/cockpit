@@ -61,6 +61,7 @@ class Api extends \Cockpit\Controller {
 
         if($region) {
             $this->app->data->common->regions->remove(["_id" => $region["_id"]]);
+            $this->app->helper("versions")->remove("regions:".$region["_id"]);
         }
 
         return $region ? '{"success":true}' : '{"success":false}';

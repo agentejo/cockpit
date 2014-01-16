@@ -23,11 +23,36 @@
 
 <div data-ng-controller="entry">
 
-    <h1>
-        <a href="@route("/collections")">@lang('Collections')</a> / 
-        <a href="@route("/collections/entries")/@@ collection._id @@">@@ collection.name @@</a> / 
-        @lang('Entry')
-    </h1>
+    <div id="entry-versions" class="uk-offcanvas">
+        <div class="uk-offcanvas-bar">
+          <div class="uk-panel">
+              <h3 class="uk-panel-title">@lang('Versions')</h3>
+              <ul class="uk-nav uk-nav-offcanvas">
+                <li data-ng-repeat="version in versions">
+                  <a href="#v-@@ version.uid @@" data-ng-click="restoreVersion(version.uid)" title="@lang('Restore this version')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-clock-o"></i> @@ version.time | fmtdate:'d M, Y H:i:s' @@</a>
+                </li>
+              </ul>
+              <br>
+
+              <div class="uk-button-group uk-width-1-1">
+                <button type="button" class="uk-button uk-button-large uk-button-danger uk-width-1-2" data-ng-click="clearVersions()" title="@lang('Clear version history')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-trash-o"></i></button>
+                <button type="button" class="uk-button uk-button-large uk-button-primary uk-width-1-2" onclick="$.UIkit.offcanvas.offcanvas.hide()" title="@lang('Close versions')" data-uk-tooltip="{pos:'bottom'}">@lang('Cancel')</button>
+              </div>
+          </div>
+        </div>
+    </div>
+
+
+    <nav class="uk-navbar uk-margin-large-bottom">
+        <span class="uk-navbar-brand">
+          <a href="@route("/collections")">@lang('Collections')</a> / 
+          <a href="@route("/collections/entries")/@@ collection._id @@">@@ collection.name @@</a> / 
+          @lang('Entry')
+        </span>
+        <div class="uk-navbar-content">
+            <a href="#entry-versions" data-uk-offcanvas data-ng-show="versions.length"><i class="uk-icon-clock-o"></i> Versions <span class="uk-badge">@@ versions.length @@</span></a>
+        </div>
+    </nav>
 
     <form class="uk-form" data-ng-submit="save()" data-ng-show="collection">
 
@@ -90,7 +115,5 @@
         </div>
 
     </form>
-
-    @@ entry @@
 
 </div>

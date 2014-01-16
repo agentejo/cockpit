@@ -22,6 +22,8 @@ $this->module("auth")->authenticate = function($data) use($app) {
 
         $user = array_merge($data, (array)$user);
 
+        unset($user["password"]);
+
         return $user;
     }
 
