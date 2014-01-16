@@ -139,6 +139,23 @@
             }, 100);
         });
 
+        // after sorting list
+        $(function(){
+
+            var list = $("#manage-fields-list").on("sortable-change", function(){
+                var fields = [];
+
+                list.children().each(function(){
+                    fields.push(angular.copy($(this).scope().field));
+                });
+
+                $scope.$apply(function(){
+                    $scope.region.fields = fields;
+                });
+            });
+
+        });
+
     });
 
 })(jQuery);

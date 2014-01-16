@@ -1,5 +1,7 @@
 {{ $app->assets(['regions:assets/regions.js','regions:assets/js/region.js']) }}
 
+{{ $app->assets(['assets:vendor/uikit/addons/css/sortable.almost-flat.min.css','assets:vendor/uikit/addons/js/sortable.min.js']) }}
+
 {{ $app->assets(['mediamanager:assets/pathpicker.directive.js']) }}
 
 {{ $app->assets(['assets:vendor/codemirror/lib/codemirror.js','assets:vendor/codemirror/lib/codemirror.css','assets:vendor/codemirror/theme/monokai.css']) }}
@@ -27,7 +29,7 @@
         <div class="uk-offcanvas-bar">
           <div class="uk-panel">
               <h3 class="uk-panel-title">@lang('Versions')</h3>
-              
+
               <p class="uk-text-muted" data-ng-show="!versions.length">
                 @lang('Empty')
               </p>
@@ -89,33 +91,35 @@
 
                                   <div ng-show="manageform">
 
-                                     <ul class="uk-list uk-form">
-                                         <li class="uk-margin-bottom" data-ng-repeat="field in region.fields">
+                                    <ul id="manage-fields-list" class="uk-sortable" data-uk-sortable="{maxDepth:1}">
+                                         <li data-ng-repeat="field in region.fields">
+                                            <div class="uk-sortable-item uk-sortable-item-table">
+                                               <div class="uk-sortable-handle"></div>
+                                               <input type="text" data-ng-model="field.name" placeholder="Field name" pattern="[a-zA-Z0-9]+" required>
+                                               <select data-ng-model="field.type" title="Field type" data-uk-tooltip>
+                                                   <option value="text">Text</option>
+                                                   <option value="select">Select</option>
+                                                   <option value="boolean">Boolean</option>
+                                                   <option value="html">Html</option>
+                                                   <option value="wysiwyg">Html (WYSIWYG)</option>
+                                                   <option value="code">Code</option>
+                                                   <option value="date">Date</option>
+                                                   <option value="time">Time</option>
+                                                   <option value="media">Media</option>
+                                               </select>
 
-                                             <input type="text" data-ng-model="field.name" placeholder="Field name" pattern="[a-zA-Z0-9]+" required>
-                                             <select data-ng-model="field.type" title="Field type" data-uk-tooltip>
-                                                 <option value="text">Text</option>
-                                                 <option value="select">Select</option>
-                                                 <option value="boolean">Boolean</option>
-                                                 <option value="html">Html</option>
-                                                 <option value="wysiwyg">Html (WYSIWYG)</option>
-                                                 <option value="code">Code</option>
-                                                 <option value="date">Date</option>
-                                                 <option value="time">Time</option>
-                                                 <option value="media">Media</option>
-                                             </select>
+                                               <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="options....">
 
-                                             <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="options....">
+                                               <select data-ng-if="field.type=='code'" data-ng-model="field.syntax" title="Code syntax" data-uk-tooltip>
+                                                   <option value="text">Text</option>
+                                                   <option value="css">CSS</option>
+                                                   <option value="htmlmixed">Html</option>
+                                                   <option value="javascript">Javascript</option>
+                                                   <option value="markdown">Markdown</option>
+                                               </select>
 
-                                             <select data-ng-if="field.type=='code'" data-ng-model="field.syntax" title="Code syntax" data-uk-tooltip>
-                                                 <option value="text">Text</option>
-                                                 <option value="css">CSS</option>
-                                                 <option value="htmlmixed">Html</option>
-                                                 <option value="javascript">Javascript</option>
-                                                 <option value="markdown">Markdown</option>
-                                             </select>
-
-                                             <a data-ng-click="remove(field)" class="uk-close"></a>
+                                               <a data-ng-click="remove(field)" class="uk-close"></a>
+                                            </div>
                                          </li>
                                      </ul>
 
@@ -211,7 +215,7 @@
 
                 <div class="uk-width-medium-1-5">
 
-                    
+
                 </div>
           </div>
     </form>
