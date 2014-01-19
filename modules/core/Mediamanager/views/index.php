@@ -71,8 +71,8 @@
             </div>
 
             <div class="uk-navbar-content">
-                <span class="uk-alert uk-alert-warning" data-ng-show="dir && (dir.folders.length && viewfilter=='files')"><span class="uk-icon-bolt"></span> @lang('Folders hidden via filter'): @@ dir.folders.length @@</span>
-                <span class="uk-alert uk-alert-warning" data-ng-show="dir && (dir.files.length && viewfilter=='folders')"><span class="uk-icon-bolt"></span> @lang('Files hidden via filter'): @@ dir.files.length @@</span>
+                <span class="uk-alert uk-alert-warning" data-ng-show="dir && (dir.folders.length && viewfilter=='files')"><span class="uk-icon-bolt"></span> @lang('Folders hidden via filter'): <strong>@@ dir.folders.length @@</strong></span>
+                <span class="uk-alert uk-alert-warning" data-ng-show="dir && (dir.files.length && viewfilter=='folders')"><span class="uk-icon-bolt"></span> @lang('Files hidden via filter'): <strong>@@ dir.files.length @@</strong></span>
             </div>
             <div class="uk-navbar-flip">
                 <div class="uk-navbar-content uk-form">
