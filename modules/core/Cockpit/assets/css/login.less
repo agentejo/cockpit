@@ -11,17 +11,29 @@ body {
      width: 350px;
      max-width: 100%;
      margin: 10% auto 100px auto;
+
+    & > div {
+        margin: 20px;
+        border-radius: 3px;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.33);
+        background: rgba(255, 255, 255, 1);
+        padding: 30px;
+    }
 }
 
-.app-login-box > div {
-    margin: 20px;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.33);
-    background: rgba(255, 255, 255, 1);
-    padding: 30px;
-}
+.app-login-logo {
+    position: relative;
 
-.app-login-box h1 {
-    font-size: 20px;
-    font-weight: bold;
+    .uk-icon-spinner {
+        position: absolute;
+        display: block;
+        text-align: text-center;
+        top: 50%;
+        width: 100%;
+        visibility: hidden;
+    }
+}
+.app-loading .app-login-logo {
+    img { visibility: hidden; }
+    .uk-icon-spinner { visibility: visible; }
 }

@@ -17,19 +17,26 @@
                 form      = $("form").on("submit", function(e){
                                 e.preventDefault();
 
+                                loginbox.addClass("app-loading");
+
                                 $.post(form.attr("action"), form.serialize(), function(data){
 
-                                    if(data && data.success) {
-                                        location.href = $("html").data("route");
-                                    }else{
+                                    setTimeout(function(){
 
-                                        container.removeClass("uk-animation-shake");
+                                        if(data && data.success) {
+                                            location.href = $("html").data("route");
+                                        }else{
 
-                                        setTimeout(function(){
-                                            container.addClass("uk-animation-shake");
-                                            $.UIkit.notify("@lang('Login failed')", 'danger');
-                                        }, 50);
-                                    }
+                                            loginbox.removeClass("app-loading");
+                                            container.removeClass("uk-animation-shake");
+
+                                            setTimeout(function(){
+                                                container.addClass("uk-animation-shake");
+                                                $.UIkit.notify("@lang('Login failed')", 'danger');
+                                            }, 50);
+                                        }
+
+                                    }, 450);
 
                                 }, 'json');
                             });
@@ -40,7 +47,8 @@
     <div>
         <div class="uk-animation-fade app-login-box">
             <div class="app-login-box-container">
-                <p class="uk-text-center uk-margin-large-bottom">
+                <p class="uk-text-center uk-margin-large-bottom app-login-logo" style="position:relative;">
+                    <i class="uk-icon-spinner uk-icon-spin"></i>
                     <img src="@base('/assets/images/cockpit.png')" width="50" height="50" alt="logo">
                 </p>
                 <form class="uk-form" method="post" action="@route('/auth/check')">

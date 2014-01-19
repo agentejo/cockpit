@@ -210,14 +210,10 @@ class App implements \ArrayAccess {
 
 
         // check for php://input and merge with $_REQUEST
-
         if(
-            
             (isset($_SERVER["CONTENT_TYPE"]) && stripos($_SERVER["CONTENT_TYPE"],'application/json')!==false) ||
             (isset($_SERVER["HTTP_CONTENT_TYPE"]) && stripos($_SERVER["HTTP_CONTENT_TYPE"],'application/json')!==false) // PHP build in Webserver !?
-
         ) {
-            
             if($json = json_decode(@file_get_contents('php://input'), true)) {
                 $_REQUEST = array_merge($_REQUEST, $json);
             }
@@ -249,51 +245,6 @@ class App implements \ArrayAccess {
 
             return $object;
         };
-    }
-
-    /**
-    * Run Application
-    * @param  String $route Route to parse
-    * @return void
-    */
-    public function run() {
-
-        $self = $this;
-
-        register_shutdown_function(function() use($self){
-
-            if($self->isExit()){
-                return;
-            }
-
-            $error = error_get_last();
-
-            if ($error && in_array($error['type'], array(E_ERROR,E_CORE_ERROR,E_COMPILE_ERROR,E_USER_ERROR))){
-
-                ob_end_clean();
-
-                $self->response->status = "500";
-                $self->response->body   = $self["debug"] ? json_encode($error):'Internal Error.';
-
-            } elseif (!$self->response->body) {
-                $self->response->status = "404";
-                $self->response->body   = "Path not found.";
-            }
-
-            $self->trigger("after");
-
-            echo $self->response->flush();
-
-            $self->trigger("shutdown");
-        });
-
-        $this->response = new Response();
-
-        $this->trigger("before");
-
-        $this->response->body = $this->dispatch($this["route"]);
-
-        if ($this->response->gzip && !ob_start("ob_gzhandler")) ob_start();
     }
 
     /**
@@ -803,20 +754,6 @@ class App implements \ArrayAccess {
     }
 
     /**
-    * Invoke Class as controller
-    * @param  String $class
-    * @param  String $action
-    * @param  Array  $params
-    * @return Misc
-    */
-    public function invoke($class, $action="index", $params=array()) {
-
-        $controller = new $class($this);
-
-        return method_exists($controller, $action) ? call_user_func_array(array($controller,$action), $params):false;
-    }
-
-    /**
     * Bind request to route
     * @param  String  $path
     * @param  Closure  $callback
@@ -832,6 +769,51 @@ class App implements \ArrayAccess {
         }
 
         $this->routes[$path] = $callback;
+    }
+
+    /**
+    * Run Application
+    * @param  String $route Route to parse
+    * @return void
+    */
+    public function run() {
+
+        $self = $this;
+
+        register_shutdown_function(function() use($self){
+
+            if($self->isExit()){
+                return;
+            }
+
+            $error = error_get_last();
+
+            if ($error && in_array($error['type'], array(E_ERROR,E_CORE_ERROR,E_COMPILE_ERROR,E_USER_ERROR))){
+
+                ob_end_clean();
+
+                $self->response->status = "500";
+                $self->response->body   = $self["debug"] ? json_encode($error):'Internal Error.';
+
+            } elseif (!$self->response->body) {
+                $self->response->status = "404";
+                $self->response->body   = "Path not found.";
+            }
+
+            $self->trigger("after");
+
+            echo $self->response->flush();
+
+            $self->trigger("shutdown");
+        });
+
+        $this->response = new Response();
+
+        $this->trigger("before");
+
+        $this->response->body = $this->dispatch($this["route"]);
+
+        if ($this->response->gzip && !ob_start("ob_gzhandler")) ob_start();
     }
 
     /**
@@ -917,23 +899,38 @@ class App implements \ArrayAccess {
     * @param  array  $params
     * @return String
     */
-        protected function render_route($route, $params = array()) {
+    protected function render_route($route, $params = array()) {
 
-            $output = false;
+        $output = false;
 
-            if(isset($this->routes[$route])) {
+        if(isset($this->routes[$route])) {
 
-                if(is_callable($this->routes[$route])){
-                    $ret = call_user_func($this->routes[$route], $params);
-                }
-
-                    if( !is_null($ret) ){
-                        return $ret;
-                    }
+            if(is_callable($this->routes[$route])){
+                $ret = call_user_func($this->routes[$route], $params);
             }
 
-            return $output;
+            if( !is_null($ret) ){
+                return $ret;
+            }
         }
+
+        return $output;
+    }
+
+
+    /**
+    * Invoke Class as controller
+    * @param  String $class
+    * @param  String $action
+    * @param  Array  $params
+    * @return Misc
+    */
+    public function invoke($class, $action="index", $params=array()) {
+
+        $controller = new $class($this);
+
+        return method_exists($controller, $action) ? call_user_func_array(array($controller,$action), $params):false;
+    }
 
     /**
     * Request helper function
@@ -944,7 +941,11 @@ class App implements \ArrayAccess {
 
         switch(strtolower($type)){
             case 'ajax':
-            return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
+            return (
+                (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'))       ||
+                (isset($_SERVER["CONTENT_TYPE"]) && stripos($_SERVER["CONTENT_TYPE"],'application/json')!==false)           ||
+                (isset($_SERVER["HTTP_CONTENT_TYPE"]) && stripos($_SERVER["HTTP_CONTENT_TYPE"],'application/json')!==false)
+            );
             break;
 
             case 'mobile':
@@ -1154,7 +1155,6 @@ class Response {
 
     }
 
-
     public function flush() {
 
         if (!headers_sent($filename, $linenum)) {
@@ -1176,7 +1176,7 @@ class Response {
                 header($h);
             }
 
-            echo $this->body;
+            echo is_array($this->body) ? json_encode($this->body) : $this->body;
         }
     }
 }
