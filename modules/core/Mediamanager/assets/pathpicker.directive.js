@@ -146,7 +146,7 @@
         });
     }
 
-    App.module.directive("mediaPathPicker", function(){
+    App.module.directive("mediaPathPicker", function($timeout){
 
         return {
             require: '?ngModel',
@@ -188,10 +188,16 @@
 
                     });
 
-                    if (angular.isDefined(ngModel)) {
-                        ngModel.$render = function () {
-                            setPath(ngModel.$viewValue);
-                        };
+                    if (ngModel) {
+                        
+                        $timeout(function(){
+                            
+                            ngModel.$render = function () {
+                                setPath(ngModel.$viewValue);
+                            };
+
+                            ngModel.$render();
+                        }, 0);
                     }
 
                 };
