@@ -67,7 +67,7 @@ if(COCKPIT_ADMIN) {
             "label"  => '<i class="uk-icon-th-large"></i>',
             "title"  => $app("i18n")->get("Regions"),
             "active" => (strpos($app["route"], '/regions') === 0)
-        ], 1);
+        ], 5);
     });
 
     $app->on("admin.dashboard", function() use($app){

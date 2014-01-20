@@ -39,7 +39,7 @@ if(COCKPIT_ADMIN) {
             "label"  => '<i class="uk-icon-list"></i>',
             "title"  => $app("i18n")->get("Collections"),
             "active" => (strpos($app["route"], '/collections') === 0)
-        ], 1);
+        ], 5);
     });
 
     $app->on("admin.dashboard", function() use($app){

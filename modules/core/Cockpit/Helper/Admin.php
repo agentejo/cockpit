@@ -6,7 +6,7 @@ class Admin extends \Lime\Helper {
 
     public function initialize(){
 
-        
+
     }
 
     public function menu($key, $def = null, $prio = 5){
@@ -16,7 +16,7 @@ class Admin extends \Lime\Helper {
             $lst->insert(array_merge([
                 "url"   => "",
                 "label" => "",
-                "title" => "",
+                "title" => ""
             ], $def), (int)$prio);
         }
 

@@ -26,7 +26,6 @@ $this->module("mediamanager")->thumbnail = function($image, $width, $height, $op
         return $url;
     }
 
-
     if($base64) {
 
         try {
@@ -94,7 +93,7 @@ if(COCKPIT_ADMIN) {
 
 
     $app->on("admin.init", function() use($app){
-        
+
         // bind controller
         $app->bindClass("Mediamanager\\Controller\\Mediamanager", "mediamanager");
 
@@ -111,7 +110,7 @@ if(COCKPIT_ADMIN) {
             "label"  => '<i class="uk-icon-cloud"></i>',
             "title"  => "Mediamanager",
             "active" => (strpos($app["route"], '/mediamanager') === 0)
-        ], 1);
+        ], 0);
     });
 
     // acl

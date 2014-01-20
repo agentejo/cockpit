@@ -3,7 +3,7 @@
 /*
  * Lime.
  *
- * Copyright (c) 2013 Artur Heinze
+ * Copyright (c) 2014 Artur Heinze
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -376,7 +376,7 @@ class App implements \ArrayAccess {
         case 1:
             $file  = $args[0];
 
-            if(file_exists($file)) {
+            if($this->isAbsolutePath($file) && file_exists($file)) {
                 return $file;
             }
 
@@ -1093,6 +1093,15 @@ class App implements \ArrayAccess {
         }
 
         return $this->helpers[$helper];
+    }
+
+    public function isAbsolutePath($file) {
+
+        if ($file[0] == '/' || $file[0] == '\\' || (strlen($file) > 3 && ctype_alpha($file[0]) && $file[1] == ':' && ($file[2] == '\\' || $file[2] == '/')) || null !== parse_url($file, PHP_URL_SCHEME)) {
+            return true;
+        }
+
+        return false;
     }
 
     // accces to services

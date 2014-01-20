@@ -35,7 +35,7 @@ $this->module("auth")->hasaccess = function($resource, $action) use($app) {
 
     $user = $app("session")->read("app.auth");
 
-    return isset($user["group"]) ? $app("acl")->hasaccess($user["group"], $resource, $action) : true;
+    return isset($user["group"]) ? ($user["group"]=='admin' || $app("acl")->hasaccess($user["group"], $resource, $action)) : true;
 };
 
 

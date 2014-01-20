@@ -17,7 +17,7 @@ $app->bind("/api/forms/submit/:form", function($params) use($app){
     } else {
         return false;
     }
-    
+
     $frm = $app->data->common->forms->findOne(["name"=>$form]);
 
     if(!$frm) {
@@ -91,7 +91,7 @@ if(COCKPIT_ADMIN) {
             "label"  => '<i class="uk-icon-inbox"></i>',
             "title"  => $app("i18n")->get("Forms"),
             "active" => (strpos($app["route"], '/forms') === 0)
-        ], 1);
+        ], 5);
     });
 
     $app->on("admin.dashboard", function() use($app){
