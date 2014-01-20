@@ -9,7 +9,7 @@
                         </div>',
             $this    = this;
 
-        this.type    = type;
+        this.type    = type || '*';
         this.modal   = $(modal);
         this.dirview = this.modal.find('.dir-view');
         this.caption = this.modal.find('.caption');
@@ -24,7 +24,7 @@
 
             $this.mediapath = 'site:'+data.path;
 
-            $this.btnOk.attr("disabled", !matchName($this.type, data.path));
+            $this.btnOk.prop("disabled", !matchName($this.type, data.name));
 
         });
 
@@ -96,11 +96,11 @@
                     $this.dirview.html('');
 
                     $.each(data.folders, function(index, folder){
-                       $this.dirview.append($('<li class="uk-width-1-4 uk-float-left"><i class="uk-icon-folder-close"></i><br>'+folder.name+'</li>').data(folder));
+                       $this.dirview.append($('<li class="uk-width-1-4 uk-float-left"><i class="uk-icon-folder"></i><br>'+folder.name+'</li>').data(folder));
                     });
 
                     $.each(data.files, function(index, file){
-                       $this.dirview.append($('<li class="uk-width-1-4 uk-float-left"><i class="uk-icon-file-alt"></i><br>'+file.name+'</li>').data(file));
+                       $this.dirview.append($('<li class="uk-width-1-4 uk-float-left"><i class="uk-icon-file-o"></i><br>'+file.name+'</li>').data(file));
                     });
 
                     $this.caption.html('');
@@ -167,10 +167,16 @@
                     $element.after($tpl);
 
                     function setPath(path) {
-                        $prv.html(path ? '<div class="uk-trunkate" title="'+path+'">'+path+'</div>':'<div class="uk-alert">No path selected</div>');
+
+                        if(!path) {
+                           return $prv.html('');
+                        }
+
 
                         if(path && path.match(/\.(jpg|jpeg|png|gif)/i)) {
-                            //$prv.append('<div class="uk-margin"><img class="auto-size" src="'+path.replace('media:', window.MEDIA_BASE_URL)+'"></div>');
+                            $prv.html('<div class="uk-margin" title="'+path+'"><img class="auto-size" src="'+path.replace('site:', window.COCKPIT_SITE_BASE_URL)+'"></div>');
+                        } else {
+                            $prv.html(path ? '<div class="uk-trunkate" title="'+path+'">'+path+'</div>':'<div class="uk-alert">No path selected</div>'); 
                         }
                     }
 

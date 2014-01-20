@@ -87,7 +87,7 @@ if(COCKPIT_ADMIN) {
 
     $app->on("app.layout.header", function() use($app){
     ?>
-        <script>window.COCKPIT_UPLOADS_BASE_URL = '<?=$app->pathToUrl("site:");?>';</script>
+        <script>window.COCKPIT_SITE_BASE_URL = '<?=$app->pathToUrl("site:");?>';</script>
     <?php
     });
 
