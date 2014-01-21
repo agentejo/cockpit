@@ -44,7 +44,10 @@
                                         <div class="uk-text-center" style="background: #fff url(@@ imgurl(image) @@) 50% 50% no-repeat;background-size:contain;height:140px;">
                                             
                                             <div class="images-list-actions uk-hidden">
-                                                <button type="button" class="uk-button uk-button-danger" data-ng-click="removeImage($index)"><i class="uk-icon-trash-o"></i></button>
+                                                <div class="uk-button-group">
+                                                    <button type="button" class="uk-button uk-button-small uk-button-primary"><i class="uk-icon-pencil"></i></button>
+                                                    <button type="button" class="uk-button uk-button-small uk-button-danger" data-ng-click="removeImage($index)"><i class="uk-icon-trash-o"></i></button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

@@ -1,5 +1,23 @@
 <?php
 
+// API
+
+
+$this->module("galleries")->gallery = function($name) use($app) {
+
+    $gallery = $app->data->common->galleries->findOne(["name"=>$name]);
+
+    return $gallery ? $gallery : null;
+};
+
+
+if(!function_exists("gallery")) {
+    function gallery($name, $params = []) {
+        return cockpit("galleries")->gallery($name);
+    }
+}
+
+
 // ADMIN
 
 if(COCKPIT_ADMIN) {
