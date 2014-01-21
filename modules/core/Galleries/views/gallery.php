@@ -39,10 +39,13 @@
                         <div class="uk-form-row">
 
                             <div id="images-list" class="uk-grid" data-uk-grid-match="{target:'.uk-thumbnail'}">
-                                <div class="uk-width-medium-1-3 uk-grid-margin" data-ng-repeat="image in gallery.images" draggable="true">
-                                    <div class="uk-thumbnail uk-width-1-1 uk-text-center">
-                                        <div class="uk-text-center" style="background: #fff url(@@ imgurl(image) @@) 50% 50% no-repeat;background-size:contain;height:275px;">
-                                            <button type="button" class="uk-button uk-button-danger" data-ng-click="removeImage($index)"><i class="uk-icon-trash-o"></i></button>
+                                <div class="uk-width-1-2 uk-width-medium-1-5 uk-grid-margin" data-ng-repeat="image in gallery.images" draggable="true">
+                                    <div class="uk-thumbnail uk-width-1-1 uk-text-center uk-visible-hover">
+                                        <div class="uk-text-center" style="background: #fff url(@@ imgurl(image) @@) 50% 50% no-repeat;background-size:contain;height:140px;">
+                                            
+                                            <div class="images-list-actions uk-hidden">
+                                                <button type="button" class="uk-button uk-button-danger" data-ng-click="removeImage($index)"><i class="uk-icon-trash-o"></i></button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -82,8 +85,20 @@
     }
 
     #images-list .sortable-over {
-           opacity: .25;
-        }
+        opacity: .25;
+    }
+
+    #images-list .uk-thumbnail {
+        position: relative;
+    }
+
+    .images-list-actions {
+        position: absolute;
+        width: 100%;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
 
 
 </style>
