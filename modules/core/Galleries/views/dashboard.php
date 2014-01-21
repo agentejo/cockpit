@@ -7,6 +7,17 @@
     @endforeach
 </ul>
 
-@endif
-
 <a class="uk-button uk-button-success uk-button-small" href="@route('/galleries/gallery')" title="@lang('Add gallery')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
+
+@else
+
+<div class="uk-text-center">
+    <h2><i class="uk-icon-picture-o"></i></h2>
+    <p class="uk-text-muted">
+        @lang('You don\'t have any galleries created.')
+    </p>
+
+    <a href="@route('/galleries/gallery')" class="uk-button uk-button-success">@lang('Create a gallery')</a>
+</div>
+
+@endif

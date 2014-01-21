@@ -7,6 +7,17 @@
     @endforeach
 </ul>
 
-@endif
-
 <a class="uk-button uk-button-success uk-button-small" href="@route('/regions/region')" title="@lang('Add region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
+
+@else
+
+<div class="uk-text-center">
+    <h2><i class="uk-icon-th-large"></i></h2>
+    <p class="uk-text-muted">
+        @lang('You don\'t have any regions created.')
+    </p>
+
+    <a href="@route('/regions/region')" class="uk-button uk-button-success">@lang('Create a region')</a>
+</div>
+
+@endif
