@@ -132,19 +132,7 @@
         }
     });
 
-    if(window.tinymce) {
-
-        tinymce.PluginManager.add('pathpicker', function(editor) {
-
-            tinymce.activeEditor.settings.file_browser_callback = tinypicker;
-            
-            function tinypicker (id, value, type, win) {
-                
-            }
-
-            return false;
-        });
-    }
+    window.PathPicker = Picker;
 
     App.module.directive("mediaPathPicker", function($timeout){
 
@@ -176,7 +164,7 @@
                         if(path && path.match(/\.(jpg|jpeg|png|gif)/i)) {
                             $prv.html('<div class="uk-margin" title="'+path+'"><img class="auto-size" src="'+path.replace('site:', window.COCKPIT_SITE_BASE_URL)+'"></div>');
                         } else {
-                            $prv.html(path ? '<div class="uk-trunkate" title="'+path+'">'+path+'</div>':'<div class="uk-alert">No path selected</div>'); 
+                            $prv.html(path ? '<div class="uk-trunkate" title="'+path+'">'+path+'</div>':'<div class="uk-alert">No path selected</div>');
                         }
                     }
 
@@ -195,9 +183,9 @@
                     });
 
                     if (ngModel) {
-                        
+
                         $timeout(function(){
-                            
+
                             ngModel.$render = function () {
                                 setPath(ngModel.$viewValue);
                             };
