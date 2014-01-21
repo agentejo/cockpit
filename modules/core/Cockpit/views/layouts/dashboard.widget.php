@@ -8,6 +8,7 @@
                 <span class="uk-float-right uk-badge">{{ $badge }}</span>
             @endif
         </div>
+        <hr>
         @endif
 
         {{ $content_for_layout }}
