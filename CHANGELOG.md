@@ -3,6 +3,7 @@
 ### WIP
     
     # Fixed media picker
+    + Added gallery add-on
 
 ### 0.7.2 (Jan 16, 2014)
 
