@@ -2,8 +2,8 @@
 
     App.module.controller("gallery", function($scope, $rootScope, $http){
 
-        var id = $("[data-ng-controller='gallery']").data("id");
-
+        var id     = $("[data-ng-controller='gallery']").data("id"),
+            dialog = new $.UIkit.modal.Modal("#meta-dialog");
 
         if(id) {
 
@@ -19,9 +19,12 @@
 
             $scope.gallery = {
                 name: "",
+                fields:[{"name":"caption","type":"html"}, {"name":"url","type":"url"}],
                 images: []
             };
         }
+
+        $scope.metaimage = {};
 
         $scope.save = function() {
 
@@ -84,6 +87,11 @@
 
         $scope.imgurl = function(image) {
             return image.path.replace('site:', window.COCKPIT_SITE_BASE_URL);
+        };
+
+        $scope.showMeta = function(index){
+            $scope.metaimage = $scope.gallery.images[index];
+            dialog.show();
         };
 
         var imglist = $("#images-list");

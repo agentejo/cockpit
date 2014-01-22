@@ -23,7 +23,6 @@
         </ul>
     </nav>
 
-
     <form class="uk-form" data-ng-submit="save()" data-ng-show="gallery">
 
             <div class="uk-grid">
@@ -42,10 +41,10 @@
                                 <div class="uk-width-1-2 uk-width-medium-1-5 uk-grid-margin" data-ng-repeat="image in gallery.images" draggable="true">
                                     <div class="uk-thumbnail uk-width-1-1 uk-text-center uk-visible-hover">
                                         <div class="uk-text-center" style="background: #fff url(@@ imgurl(image) @@) 50% 50% no-repeat;background-size:contain;height:140px;">
-                                            
+
                                             <div class="images-list-actions uk-hidden">
                                                 <div class="uk-button-group">
-                                                    <button type="button" class="uk-button uk-button-small uk-button-primary"><i class="uk-icon-pencil"></i></button>
+                                                    <button type="button" class="uk-button uk-button-small uk-button-primary" data-ng-click="showMeta($index)"><i class="uk-icon-pencil"></i></button>
                                                     <button type="button" class="uk-button uk-button-small uk-button-danger" data-ng-click="removeImage($index)"><i class="uk-icon-trash-o"></i></button>
                                                 </div>
                                             </div>
@@ -69,6 +68,48 @@
             </div>
     </form>
 
+
+    <div id="meta-dialog" class="uk-modal">
+        <div class="uk-modal-dialog">
+            <a class="uk-modal-close uk-close"></a>
+            <h3>@lang('Meta')</h3>
+
+            <div class="uk-form uk-margin">
+                <div class="uk-form-row" data-ng-repeat="field in gallery.fields" data-ng-switch="field.type">
+
+                    <label class="uk-text-small">@@ field.name | uppercase @@</label>
+
+                    <div data-ng-switch-when="html">
+                        <textarea class="uk-width-1-1 uk-form-large" data-ng-model="metaimage.data[field.name]"></textarea>
+                    </div>
+
+                    <div data-ng-switch-when="code">
+                        <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-model="metaimage.data[field.name]"></textarea>
+                    </div>
+
+                    <div data-ng-switch-when="wysiwyg">
+                        <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-model="metaimage.data[field.name]"></textarea>
+                    </div>
+
+                    <div data-ng-switch-when="select">
+                        <select class="uk-width-1-1 uk-form-large" data-ng-model="metaimage.data[field.name]" data-ng-init="fieldindex=$index">
+                            <option value="@@ option @@" data-ng-repeat="option in (field.options || [])" data-ng-selected="(metaimage.data[field.name]==option)">@@ option @@</option>
+                        </select>
+                    </div>
+
+                    <div data-ng-switch-when="media">
+                        <input type="text" media-path-picker data-ng-model="metaimage.data[field.name]">
+                    </div>
+
+                    <div data-ng-switch-default>
+                        <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="metaimage.data[field.name]">
+                    </div>
+                </div>
+            </div>
+
+            <button class="uk-button uk-modal-close">@lang('Close')</button>
+        </div>
+    </div>
 
 </div>
 

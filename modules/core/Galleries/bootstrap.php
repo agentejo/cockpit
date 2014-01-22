@@ -7,12 +7,12 @@ $this->module("galleries")->gallery = function($name) use($app) {
 
     $gallery = $app->data->common->galleries->findOne(["name"=>$name]);
 
-    return $gallery ? $gallery : null;
+    return $gallery ? $gallery["images"] : null;
 };
 
 
 if(!function_exists("gallery")) {
-    function gallery($name, $params = []) {
+    function gallery($name) {
         return cockpit("galleries")->gallery($name);
     }
 }
