@@ -30,6 +30,12 @@
 
             var gallery = angular.copy($scope.gallery);
 
+            gallery.images.forEach(function(image){
+                gallery.fields.forEach(function(field){
+                    if(!image.data[field.name]) image.data[field.name] = "";
+                });
+            });
+
             $http.post(App.route("/api/galleries/save"), {"gallery": gallery}).success(function(data){
 
                 if(data && Object.keys(data).length) {

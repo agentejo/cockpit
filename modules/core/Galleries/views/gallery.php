@@ -80,29 +80,29 @@
                     <label class="uk-text-small">@@ field.name | uppercase @@</label>
 
                     <div data-ng-switch-when="html">
-                        <textarea class="uk-width-1-1 uk-form-large" data-ng-model="metaimage.data[field.name]"></textarea>
+                        <textarea class="uk-width-1-1 uk-form-large" data-ng-model="$parent.metaimage.data[field.name]"></textarea>
                     </div>
 
                     <div data-ng-switch-when="code">
-                        <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-model="metaimage.data[field.name]"></textarea>
+                        <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-model="$parent.metaimage.data[field.name]"></textarea>
                     </div>
 
                     <div data-ng-switch-when="wysiwyg">
-                        <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-model="metaimage.data[field.name]"></textarea>
+                        <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-model="$parent.metaimage.data[field.name]"></textarea>
                     </div>
 
                     <div data-ng-switch-when="select">
-                        <select class="uk-width-1-1 uk-form-large" data-ng-model="metaimage.data[field.name]" data-ng-init="fieldindex=$index">
-                            <option value="@@ option @@" data-ng-repeat="option in (field.options || [])" data-ng-selected="(metaimage.data[field.name]==option)">@@ option @@</option>
+                        <select class="uk-width-1-1 uk-form-large" data-ng-model="$parent.metaimage.data[field.name]" data-ng-init="fieldindex=$index">
+                            <option value="@@ option @@" data-ng-repeat="option in (field.options || [])" data-ng-selected="($parent.metaimage.data[field.name]==option)">@@ option @@</option>
                         </select>
                     </div>
 
                     <div data-ng-switch-when="media">
-                        <input type="text" media-path-picker data-ng-model="metaimage.data[field.name]">
+                        <input type="text" media-path-picker data-ng-model="$parent.metaimage.data[field.name]">
                     </div>
 
                     <div data-ng-switch-default>
-                        <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="metaimage.data[field.name]">
+                        <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="$parent.metaimage.data[field.name]">
                     </div>
                 </div>
             </div>
