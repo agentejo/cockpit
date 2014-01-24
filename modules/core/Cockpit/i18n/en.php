@@ -15,7 +15,7 @@ return [
         ]
     ],
 
-/*   
+/*
 
     // Common
     'Dashboard' => '',
@@ -65,7 +65,7 @@ return [
     'Manage account groups and permissions' => '',
     'Add group' => '',
 
-    // Addons 
+    // Addons
     'Addons' => '',
     'No additional addons installed.' => '',
 
@@ -156,7 +156,7 @@ return [
     'Region removed' => '',
     'Region saved!' => '',
 
-    //Versions
+    // Versions
     'Versions' => '',
     'Version' => '',
     'Restore this version' => '',
@@ -177,7 +177,6 @@ return [
     'Backup deleted' => '',
 
     // Forms
-
     'Forms' => '',
     'Form' => '',
     'Add form' => '',
@@ -193,6 +192,23 @@ return [
     'It is important to prefix the form fields with <strong>form[...]</strong>.' => '',
     'It seems you don\'t have any form entries.' => '',
     'Form data' => '',
+
+    // Galleries
+
+    'Galleries' => '',
+    'Gallery' => '',
+    'You don\'t have any galleries created.' => '',
+    'Add gallerie' => '',
+    'Create a gallery' => '',
+    'Edit gallery' => '',
+    'Delete gallery' => '',
+    'Gallery saved!' => '',
+    'Select single image' => '',
+    'Import images from folder' => '',
+    'Import images from folder' => '',
+    'No images.' => '',
+    'Save gallery' => '',
+    '%s image(s) imported' => '',
 
 */
 ];
