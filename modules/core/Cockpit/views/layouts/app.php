@@ -23,7 +23,7 @@
                 <li class="uk-parent" data-uk-dropdown>
                     <a href="@route('/dashboard')"><i class="uk-icon-bars"></i><strong class="uk-hidden-small"> &nbsp;{{ $app['app.name'] }}</strong></a>
                     <div class="uk-dropdown uk-dropdown-navbar">
-                        <ul class="uk-nav uk-nav-navbar">
+                        <ul class="uk-nav uk-nav-navbar uk-nav-parent-icon">
                             <li>
                                 <a href="@route('/accounts/account')" class="uk-clearfix">
                                     <img class="uk-rounded uk-float-left uk-margin-right" src="http://www.gravatar.com/avatar/{{ md5($app['user']['email']) }}?d=mm&s=40" width="40" height="40" alt="avatar">
@@ -33,9 +33,9 @@
                             </li>
                             <li class="uk-nav-divider"></li>
                             <li><a href="@route('/dashboard')"><i class="uk-icon-dashboard icon-spacer"></i> @lang('Dashboard')</a></li>
-                            
+
                             <li class="uk-nav-header uk-text-truncate">@lang('General')</li>
-                            
+
                             <li><a href="@route('/settingspage')"><i class="uk-icon-cog icon-spacer"></i> @lang('Settings')</a></li>
                             @if($app["user"]["group"]=="admin")
                             <li><a href="@route('/settings/addons')"><i class="uk-icon-code-fork icon-spacer"></i> @lang('Addons')</a></li>

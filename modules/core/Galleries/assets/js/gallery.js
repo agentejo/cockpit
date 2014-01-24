@@ -53,21 +53,29 @@
                 if(String(path).match(/\.(jpg|png|gif)$/i)){
                     $scope.$apply(function(){
                         $scope.gallery.images.push({"path":path, data:{}});
+                        App.notify(App.i18n.get("%s image(s) imported", 1));
                     });
                 } else {
 
                     $.post(App.route('/mediamanager/api'), {"cmd":"ls", "path": String(path).replace("site:", "")}, function(data){
+
+                        var count = 0;
 
                         if (data && data.files && data.files.length) {
 
                             data.files.forEach(function(file) {
                                 if(file.name.match(/\.(jpg|png|gif)$/i)) {
                                     $scope.gallery.images.push({"path":"site:"+file.path, data:{}});
+
+                                    count = count + 1;
                                 }
                             });
 
                             $scope.$apply();
+
                         }
+
+                        App.notify(App.i18n.get("%s image(s) imported", count));
 
                     }, "json");
                 }
@@ -80,6 +88,7 @@
             new PathPicker(function(path){
                 $scope.$apply(function(){
                     $scope.gallery.images.push({"path":path, data:{}});
+                    App.notify(App.i18n.get("%s image(s) imported", 1));
                 });
             }, "*.(jpg|png|gif)");
         };

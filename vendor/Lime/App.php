@@ -459,19 +459,14 @@ class App implements \ArrayAccess {
     * Bind an event to closure
     * @param  String  $event
     * @param  Closure $callback
-    * @param  String  $identifier
+    * @param  Integer $priority
     * @return void
     */
-    public function on($event,$callback,$identifier=null){
+    public function on($event,$callback, $priority = 0){
 
         if(!isset($this->events[$event])) $this->events[$event] = array();
 
-        if(!is_null($identifier)){
-            $this->events[$event][$identifier] = $callback;
-        }else{
-            $this->events[$event][] = $callback;
-        }
-
+        $this->events[$event][] = array("fn" => $callback, "prio" => $priority);
     }
 
     /**
@@ -486,10 +481,24 @@ class App implements \ArrayAccess {
             return $this;
         }
 
-        foreach($this->events[$event] as $id => $action){
-            if(is_callable($action)){
-                call_user_func_array($action, $params);
+        if(!count($this->events[$event])){
+            return $this;
+        }
+
+        $queue = new \SplPriorityQueue();
+
+        foreach($this->events[$event] as $index => $action){
+            $queue->insert($index, $action["prio"]);
+        }
+
+        $queue->top();
+
+        while($queue->valid()){
+            $index = $queue->current();
+            if(is_callable($this->events[$event][$index]["fn"])){
+                call_user_func_array($this->events[$event][$index]["fn"], $params);
             }
+            $queue->next();
         }
 
         return $this;

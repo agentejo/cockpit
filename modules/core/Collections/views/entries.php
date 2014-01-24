@@ -53,11 +53,9 @@
                             <td>@@ entry.modified | fmtdate:'d M, Y' @@</td>
                             <td class="uk-text-right">
                                 <div data-uk-dropdown>
-
                                     <i class="uk-icon-bars"></i>
-
                                     <div class="uk-dropdown uk-dropdown-flip uk-text-left">
-                                        <ul class="uk-nav uk-nav-dropdown">
+                                        <ul class="uk-nav uk-nav-dropdown uk-nav-parent-icon">
                                             <li><a href="@route('/collections/entry/'.$collection["_id"])/@@ entry._id @@"><i class="uk-icon-pencil"></i> @lang('Edit entry')</a></li>
                                             <li><a href="#" data-ng-click="remove($index, entry._id)"><i class="uk-icon-trash-o"></i> @lang('Delete entry')</li>
                                         </ul>
@@ -70,6 +68,6 @@
             </div>
         </div>
         <div class="uk-width-medium-1-5 uk-hidden-small">
-            
+
         </div>
 </div>

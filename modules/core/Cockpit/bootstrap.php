@@ -92,12 +92,11 @@ if (COCKPIT_ADMIN) {
     $app->bindClass("Cockpit\\Controller\\Accounts", "accounts");
     $app->bindClass("Cockpit\\Controller\\Backups", "backups");
 
+    // dashboard widget
     $app->on("admin.dashboard", function() use($app){
-
         $title = $app("i18n")->get("Today");
-
         echo $app->view("cockpit:views/dashboard/datetime.php with cockpit:views/layouts/dashboard.widget.php", compact('title'));
-    });
+    }, 5);
 
     $app['admin.menu.top']      = new \PriorityQueue();
     $app['admin.menu.dropdown'] = new \PriorityQueue();

@@ -11,7 +11,7 @@
     }
     .mosaic .masonary-column-indicator { width: 25%;}
     .mosaic .app-dashboard-widget { width: 25%; }
-    .mosaic .app-dashboard-widget .app-panel { min-height: 275px; }
+    .mosaic .app-dashboard-widget .app-panel { min-height: 300px; }
 
     @media(max-width:960px) {
         .masonary-column-indicator { width: 50%; }
