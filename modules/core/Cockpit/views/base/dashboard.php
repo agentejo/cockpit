@@ -1,4 +1,4 @@
-{{ $app->assets(['assets:vendor/masonry.js', 'assets:vendor/Chart.min.js']) }}
+{{ $app->assets(['assets:vendor/masonry.js']) }}
 
 <div class="mosaic">
     @trigger('admin.dashboard')

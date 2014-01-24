@@ -42,7 +42,7 @@ class Accounts extends \Cockpit\Controller {
     public function create() {
 
         $uid     = null;
-        $account = ["user"=>"", "email"=>"", "active"=>1, "group"=>"", "i18n"=>$this->app->helper("i18n")->locale];
+        $account = ["user"=>"", "email"=>"", "active"=>1, "group"=>"admin", "i18n"=>$this->app->helper("i18n")->locale];
 
         $languages = $this->getLanguages();
         $groups    = $this->getGroups();

@@ -23,16 +23,16 @@
                 <a><i class="uk-icon-star"></i>&nbsp; @lang('Bookmarks')</a>
                 <div class="uk-dropdown uk-dropdown-navbar">
 
-                    <ul id="mmbookmarks" class="uk-nav uk-nav-navbar">
+                    <ul id="mmbookmarks" class="uk-nav uk-nav-navbar uk-nav-parent-icon">
 
                         <li class="uk-nav-header" ng-if="bookmarks.folders.length">@lang('Folders')</li>
                         <li ng-repeat="folder in bookmarks.folders" ng-if="bookmarks.folders.length">
-                            <a data-idx="@@ $index @@" data-group="folders" href="#@@ folder.path @@" ng-click="updatepath(folder.path)" draggable="true">@@ folder.name @@</a>
+                            <a data-idx="@@ $index @@" data-group="folders" href="#@@ folder.path @@" ng-click="updatepath(folder.path)" draggable="true"><i class="uk-icon-folder-o"></i> @@ folder.name @@</a>
                         </li>
 
                         <li class="uk-nav-header" ng-if="bookmarks.files.length">@lang('Files')</li>
                         <li ng-repeat="file in bookmarks.files" ng-if="bookmarks.files.length">
-                            <a data-idx="@@ $index @@" data-group="files" ng-click="open(file)" draggable="true">@@ file.name @@</a>
+                            <a data-idx="@@ $index @@" data-group="files" ng-click="open(file)" draggable="true"><i class="uk-icon-file-o"></i> @@ file.name @@</a>
                         </li>
 
                         <li ng-show="(!bookmarks.folders.length && !bookmarks.files.length)">
@@ -145,7 +145,7 @@
                            <i class="uk-icon-bars"></i>
                            <div class="uk-dropdown uk-dropdown-flip uk-text-left">
                                <ul class="uk-nav uk-nav-dropdown uk-nav-parent-icon">
-                                   <li class="uk-nav-header uk-text-truncate">@@ folder.name @@</li>
+                                   <li class="uk-nav-header uk-text-truncate"><i class="uk-icon-folder-o"></i> @@ folder.name @@</li>
                                    <li><a ng-click="addBookmark(folder)" title="@lang('Bookmark folder')"><i class="uk-icon-star"></i> @lang('Bookmark folder')</a></li>
                                    <li><a ng-click="action('rename', folder)" title="@lang('Rename folder')"><i class="uk-icon-text-width"></i> @lang('Rename folder')</a></li>
                                    <li><a ng-click="action('remove', folder)" title="@lang('Delete folder')"><i class="uk-icon-minus-circle"></i> @lang('Delete folder')</a></li>
@@ -165,7 +165,7 @@
                            <i class="uk-icon-bars"></i>
                            <div class="uk-dropdown uk-dropdown-flip uk-text-left">
                                <ul class="uk-nav uk-nav-dropdown uk-nav-parent-icon">
-                                   <li class="uk-nav-header uk-text-truncate">@@ file.name @@</li>
+                                   <li class="uk-nav-header uk-text-truncate"><i class="uk-icon-file-o"></i> @@ file.name @@</li>
                                    <li><a ng-click="addBookmark(file)" title="@lang('Bookmark file')"><i class="uk-icon-star"></i> @lang('Bookmark file')</a></li>
                                    <li><a ng-click="action('rename', file)" title="@lang('Rename file')"><i class="uk-icon-text-width"></i> @lang('Rename file')</a></li>
                                    <li><a ng-click="action('download', file)" title="@lang('Download file')"><i class="uk-icon-paperclip"></i> @lang('Download file')</a></li>

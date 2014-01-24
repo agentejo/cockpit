@@ -41,7 +41,7 @@ block.list = replace(block.list)
 block._tag = '(?!(?:'
   + 'a|em|strong|small|s|cite|q|dfn|abbr|data|time|code'
   + '|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo'
-  + '|span|br|wbr|ins|del|img)\\b)\\w+(?!:/|@)\\b';
+  + '|span|br|wbr|ins|del|img)\\b)\\w+(?!:/|[^\\w\\s@]*@)\\b';
 
 block.html = replace(block.html)
   ('comment', /<!--[\s\S]*?-->/)
@@ -515,6 +515,7 @@ function InlineLexer(links, options) {
   this.links = links;
   this.rules = inline.normal;
   this.renderer = this.options.renderer || new Renderer;
+  this.renderer.options = this.options;
 
   if (!this.links) {
     throw new
@@ -735,13 +736,13 @@ InlineLexer.prototype.mangle = function(text) {
  * Renderer
  */
 
-function Renderer() {}
+function Renderer(options) {
+  this.options = options || {};
+}
 
-Renderer.prototype.code = function(code, lang, escaped, options) {
-  options = options || {};
-
-  if (options.highlight) {
-    var out = options.highlight(code, lang);
+Renderer.prototype.code = function(code, lang, escaped) {
+  if (this.options.highlight) {
+    var out = this.options.highlight(code, lang);
     if (out != null && out !== code) {
       escaped = true;
       code = out;
@@ -755,10 +756,10 @@ Renderer.prototype.code = function(code, lang, escaped, options) {
   }
 
   return '<pre><code class="'
-    + options.langPrefix
-    + lang
+    + this.options.langPrefix
+    + escape(lang, true)
     + '">'
-    + (escaped ? code : escape(code))
+    + (escaped ? code : escape(code, true))
     + '\n</code></pre>\n';
 };
 
@@ -770,11 +771,11 @@ Renderer.prototype.html = function(html) {
   return html;
 };
 
-Renderer.prototype.heading = function(text, level, raw, options) {
+Renderer.prototype.heading = function(text, level, raw) {
   return '<h'
     + level
     + ' id="'
-    + options.headerPrefix
+    + this.options.headerPrefix
     + raw.toLowerCase().replace(/[^\w]+/g, '-')
     + '">'
     + text
@@ -845,6 +846,18 @@ Renderer.prototype.del = function(text) {
 };
 
 Renderer.prototype.link = function(href, title, text) {
+  if (this.options.sanitize) {
+    try {
+      var prot = decodeURIComponent(unescape(href))
+        .replace(/[^\w:]/g, '')
+        .toLowerCase();
+    } catch (e) {
+      return '';
+    }
+    if (prot.indexOf('javascript:') === 0) {
+      return '';
+    }
+  }
   var out = '<a href="' + href + '"';
   if (title) {
     out += ' title="' + title + '"';
@@ -872,6 +885,7 @@ function Parser(options) {
   this.options = options || marked.defaults;
   this.options.renderer = this.options.renderer || new Renderer;
   this.renderer = this.options.renderer;
+  this.renderer.options = this.options;
 }
 
 /**
@@ -945,15 +959,12 @@ Parser.prototype.tok = function() {
       return this.renderer.heading(
         this.inline.output(this.token.text),
         this.token.depth,
-        this.token.text,
-        this.options
-      );
+        this.token.text);
     }
     case 'code': {
       return this.renderer.code(this.token.text,
         this.token.lang,
-        this.token.escaped,
-        this.options);
+        this.token.escaped);
     }
     case 'table': {
       var header = ''
@@ -1055,6 +1066,19 @@ function escape(html, encode) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+function unescape(html) {
+  return html.replace(/&([#\w]+);/g, function(_, n) {
+    n = n.toLowerCase();
+    if (n === 'colon') return ':';
+    if (n.charAt(0) === '#') {
+      return n.charAt(1) === 'x'
+        ? String.fromCharCode(parseInt(n.substring(2), 16))
+        : String.fromCharCode(+n.substring(1));
+    }
+    return '';
+  });
 }
 
 function replace(regex, opt) {
