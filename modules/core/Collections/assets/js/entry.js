@@ -9,6 +9,13 @@
         $scope.entry      = entry;
         $scope.versions   = [];
 
+        // init entry with default values
+        if(!entry["_id"] && collection.fields && collection.fields.length) {
+            collection.fields.forEach(function(field){
+                if(field["default"]) entry[field.name] = field["default"];
+            });
+        }
+
         $scope.loadVersions = function() {
 
             if(!$scope.entry["_id"]) {
