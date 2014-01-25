@@ -51,7 +51,9 @@
 
     <nav class="uk-navbar uk-margin-large-bottom">
         <span class="uk-navbar-brand">
-          <a href="@route("/regions")">@lang('Regions')</a> / @lang('Entry')
+          <a href="@route("/regions")">@lang('Regions')</a> / 
+          <span class="uk-text-muted" ng-show="!region.name">@lang('Entry')</span>
+          <span ng-show="region.name">@@ region.name @@</span>
         </span>
         <div class="uk-navbar-content">
             <a href="#region-versions" data-uk-offcanvas data-ng-show="versions.length"><i class="uk-icon-clock-o"></i> @lang('Versions') <span class="uk-badge">@@ versions.length @@</span></a>

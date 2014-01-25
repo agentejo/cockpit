@@ -3,7 +3,11 @@
 
 <div data-ng-controller="form" data-id="{{ $id }}">
 
-    <h1><a href="@route("/forms")">@lang('Forms')</a> / @lang('Form')</h1>
+    <h1>
+        <a href="@route("/forms")">@lang('Forms')</a> / 
+        <span class="uk-text-muted" ng-show="!form.name">@lang('Form')</span>
+        <span ng-show="form.name">@@ form.name @@</span>
+    </h1>
 
 
     <form class="uk-form" data-ng-submit="save()" data-ng-show="form">

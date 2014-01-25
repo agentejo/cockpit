@@ -1,9 +1,13 @@
 {{ $app->assets(['collections:assets/collections.js','collections:assets/js/collection.js']) }}
 {{ $app->assets(['assets:vendor/uikit/addons/css/sortable.almost-flat.min.css','assets:vendor/uikit/addons/js/sortable.min.js']) }}
 
-<div data-ng-controller="collection" data-id="{{ $id }}">
+<div data-ng-controller="collection" data-id="{{ $id }}" ng-cloak>
 
-    <h1><a href="@route("/collections")">@lang('Collections')</a> / @lang('Collection')</h1>
+    <h1>
+        <a href="@route("/collections")">@lang('Collections')</a> / 
+        <span class="uk-text-muted" ng-show="!collection.name">@lang('Collection')</span>
+        <span ng-show="collection.name">@@ collection.name @@</span>
+    </h1>
 
 
     <form class="uk-form" data-ng-submit="save()" data-ng-show="collection">

@@ -3,11 +3,13 @@
 {{ $app->assets(['galleries:assets/galleries.js','galleries:assets/js/gallery.js']) }}
 {{ $app->assets(['mediamanager:assets/pathpicker.directive.js']) }}
 
-<div data-ng-controller="gallery" data-id="{{ $id }}">
+<div data-ng-controller="gallery" data-id="{{ $id }}" ng-cloak>
 
     <nav class="uk-navbar uk-margin-large-bottom">
         <span class="uk-navbar-brand">
-          <a href="@route("/galleries")">@lang('Galleries')</a> / @lang('Gallery')
+            <a href="@route("/galleries")">@lang('Galleries')</a> /  
+            <span class="uk-text-muted" ng-show="!gallery.name">@lang('Gallery')</span>
+            <span ng-show="gallery.name">@@ gallery.name @@</span>
         </span>
         <ul class="uk-navbar-nav">
             <li data-uk-dropdown>
