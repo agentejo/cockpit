@@ -31,7 +31,7 @@
     var ACL_DATA = {{ json_encode($acl) }};
 </script>
 
-<div class="app-panel" data-ng-controller="groups">
+<div class="app-panel" data-ng-controller="groups" ng-cloak>
 
     <div class="uk-grid uk-grid-divider" data-uk-grid-margin>
         <div class="uk-width-medium-1-5">

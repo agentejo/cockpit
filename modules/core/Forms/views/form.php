@@ -44,8 +44,8 @@
                 <div class="uk-margin" ng-show="form.name">
                     <strong>@lang('Form snippet example'):</strong>
 
-                    <div class="uk-alert uk-alert-warning">
-                        <i class="uk-icon-exclamation-triangle"></i> 
+                    <div class="uk-alert uk-alert-info">
+                        <i class="uk-icon-exclamation-circle"></i> 
                         @lang('It is important to prefix the form fields with <strong>form[...]</strong>.')
                     </div>
 

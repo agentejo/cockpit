@@ -4,7 +4,7 @@
     <a href="@route('/settingspage')">@lang('Settings')</a> / <a href="@route('/accounts/index')">@lang('Accounts')</a> / @lang('Account')
 </h1>
 
-<div class="uk-grid" data-ng-controller="account" data-uk-margin>
+<div class="uk-grid" data-ng-controller="account" data-uk-margin ng-cloak>
 
     <div class="uk-width-medium-2-4">
 

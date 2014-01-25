@@ -1,5 +1,5 @@
 
-<div data-ng-controller="accounts">
+<div data-ng-controller="accounts" ng-cloak>
 
     <nav class="uk-navbar uk-margin-large-bottom">
         <span class="uk-navbar-brand"><a href="@route('/settingspage')">@lang('Settings')</a> / @lang('Accounts')</span>
