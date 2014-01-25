@@ -13,8 +13,10 @@
 {{ $app->assets(['assets:vendor/loadie/jquery.loadie.js', 'assets:vendor/loadie/loadie.css']) }}
 {{ $app->assets(['mediamanager:assets/js/index.js']) }}
 
+{{ $app->assets(['assets:angular/directives/mediapreview.js']) }}
 
-<div class="app-wrapper" data-ng-controller="mediamanager">
+
+<div class="app-wrapper" data-ng-controller="mediamanager" ng-cloak>
 
     <div class="uk-navbar">
         <span class="uk-navbar-brand">@lang('Mediamanager')</span>
@@ -94,7 +96,7 @@
                 <div>
                     <div class="mm-type">
                         <i class="uk-icon-folder-o"></i>
-                        <div>
+                        <div class="mm-actions">
                             <ul class="uk-subnav uk-subnav-line">
                                 <li><a ng-click="addBookmark(folder)" title="@lang('Bookmark folder')"><i class="uk-icon-star"></i></a></li>
                                 <li><a ng-click="action('rename', folder)" title="@lang('Rename folder')"><i class="uk-icon-text-width"></i></a></li>
@@ -108,8 +110,8 @@
             <li class="uk-width-medium-1-5 uk-width-1-1 uk-float-left" ng-repeat="file in dir.files" data-ng-hide="(viewfilter=='folders' || !matchName(file.name))">
                 <div>
                     <div class="mm-type">
-                        <i class="uk-icon-file-o"></i>
-                        <div>
+                        <i class="uk-icon-file-o" media-preview="@@ file.url @@"></i>
+                        <div class="mm-actions">
                             <ul class="uk-subnav uk-subnav-line">
                                 <li><a ng-click="addBookmark(file)" title="@lang('Bookmark file')"><i class="uk-icon-star"></i></a></li>
                                 <li><a ng-click="action('rename', file)" title="@lang('Rename file')"><i class="uk-icon-text-width"></i></a></li>
@@ -156,7 +158,7 @@
                 </tr>
 
                 <tr ng-repeat="file in dir.files" data-type="folder" data-ng-hide="(viewfilter=='folders' || !matchName(file.name))">
-                   <td><i class="uk-icon-file-o"></i></td>
+                   <td><i class="uk-icon-file-o" media-preview="@@ file.url @@"></i></td>
                    <td><div class="uk-text-truncate" title="@@ file.name @@"><a ng-click="open(file)">@@ file.name @@</a></div></td>
                    <td class="uk-text-right">@@ file.size @@</td>
                    <td class="uk-text-right">@@ file.lastmodified @@</td>
@@ -233,13 +235,14 @@
         position: relative;
         text-align: center;
         padding: 15px;
+        height: 70px;
     }
 
     .media-dir .mm-type > i {
         font-size: 40px;
     }
 
-    .media-dir .mm-type > div {
+    .media-dir .mm-type .mm-actions {
         display: none;
         position: absolute;
         top: 45%;
@@ -247,11 +250,11 @@
         right: 0;
     }
 
-    .media-dir .mm-type:hover > div {
+    .media-dir .mm-type:hover .mm-actions {
         display: block;
     }
 
-    .media-dir .mm-type > div > ul {
+    .media-dir .mm-type .mm-actions > ul {
         display: inline-block;
         background: #eee;
         background: rgba(0,0,0,0.75);
@@ -259,9 +262,10 @@
         border-radius: 3px;
     }
 
-    .media-dir .mm-type > div a {
+    .media-dir .mm-type .mm-actions a {
         color: #fff;
         cursor: pointer;
+        font-size: 11px;
     }
 
     table.uk-table .uk-subnav {
@@ -294,6 +298,23 @@
     }
 
     .mm-actions { cursor: pointer; }
+
+    .media-url-preview {
+        background-repeat:no-repeat;
+        background-position: 50% 50%;
+        background-size:contain;
+    }
+
+    .media-dir .media-url-preview {
+        height: 35px;
+        width: 35px;
+        display: inline-block;
+    }
+
+    .media-table .media-url-preview {
+        height: 14px;
+        width: 14px;
+    }
 
 
     /* editor */
