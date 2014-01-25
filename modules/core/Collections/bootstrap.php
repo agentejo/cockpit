@@ -40,6 +40,20 @@ if(COCKPIT_ADMIN) {
             "title"  => $app("i18n")->get("Collections"),
             "active" => (strpos($app["route"], '/collections') === 0)
         ], 5);
+
+        // handle global search request
+        $app->on("cockpit.globalsearch", function($search, $list) use($app){
+            
+            foreach ($app->data->common->collections->find()->toArray() as $c) {
+                if(stripos($c["name"], $search)!==false){
+                    $list[] = [
+                        "title" => '<i class="uk-icon-list"></i> '.$c["name"], 
+                        "url"   => $app->routeUrl('/collections/collection/'.$c["_id"])
+                    ];
+                }
+            }
+        });
+
     });
 
     $app->on("admin.dashboard", function() use($app){

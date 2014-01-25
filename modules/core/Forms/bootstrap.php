@@ -92,6 +92,19 @@ if(COCKPIT_ADMIN) {
             "title"  => $app("i18n")->get("Forms"),
             "active" => (strpos($app["route"], '/forms') === 0)
         ], 5);
+
+        // handle global search request
+        $app->on("cockpit.globalsearch", function($search, $list) use($app){
+            
+            foreach ($app->data->common->forms->find()->toArray() as $f) {
+                if(stripos($f["name"], $search)!==false){
+                    $list[] = [
+                        "title" => '<i class="uk-icon-inbox"></i> '.$f["name"], 
+                        "url"   => $app->routeUrl('/forms/form/'.$f["_id"])
+                    ];
+                }
+            }
+        });
     });
 
     $app->on("admin.dashboard", function() use($app){

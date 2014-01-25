@@ -68,6 +68,19 @@ if(COCKPIT_ADMIN) {
             "title"  => $app("i18n")->get("Regions"),
             "active" => (strpos($app["route"], '/regions') === 0)
         ], 5);
+
+        // handle global search request
+        $app->on("cockpit.globalsearch", function($search, $list) use($app){
+            
+            foreach ($app->data->common->regions->find()->toArray() as $r) {
+                if(stripos($r["name"], $search)!==false){
+                    $list[] = [
+                        "title" => '<i class="uk-icon-th-large"></i> '.$r["name"], 
+                        "url"   => $app->routeUrl('/regions/region/'.$r["_id"])
+                    ];
+                }
+            }
+        });
     });
 
     $app->on("admin.dashboard", function() use($app){

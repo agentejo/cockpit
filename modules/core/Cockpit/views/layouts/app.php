@@ -48,6 +48,13 @@
                 </li>
             </ul>
 
+            <div class="uk-navbar-content uk-hidden-small">
+                <form id="frmCockpitSearch" class="uk-search" data-uk-search="{source:'@route('/cockpit-globsearch')', msgMoreResults:false}">
+                    <input class="uk-search-field" type="search" placeholder="search..." autocomplete="off">
+                    <button class="uk-search-close" type="reset"></button>
+                </form>
+            </div>
+
             <div class="uk-navbar-flip">
 
                 <ul class="uk-navbar-nav">

@@ -36,6 +36,19 @@ if(COCKPIT_ADMIN) {
             "title"  => $app("i18n")->get("Galleries"),
             "active" => (strpos($app["route"], '/galleries') === 0)
         ], 5);
+
+        // handle global search request
+        $app->on("cockpit.globalsearch", function($search, $list) use($app){
+            
+            foreach ($app->data->common->galleries->find()->toArray() as $g) {
+                if(stripos($g["name"], $search)!==false){
+                    $list[] = [
+                        "title" => '<i class="uk-icon-picture-o"></i> '.$g["name"], 
+                        "url"   => $app->routeUrl('/galleries/gallery/'.$g["_id"])
+                    ];
+                }
+            }
+        });
     });
 
     $app->on("admin.dashboard", function() use($app){

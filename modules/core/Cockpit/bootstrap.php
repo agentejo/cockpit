@@ -92,6 +92,20 @@ if (COCKPIT_ADMIN) {
     $app->bindClass("Cockpit\\Controller\\Accounts", "accounts");
     $app->bindClass("Cockpit\\Controller\\Backups", "backups");
 
+
+    //global search
+    $app->bind("/cockpit-globsearch", function() use($app){
+        
+        $query = $app->param("search", false);
+        $list  = new \ArrayObject([]);
+
+        if($query) {
+            $app->trigger("cockpit.globalsearch", [$query, $list]);
+        }
+
+        return json_encode(["results"=>$list->getArrayCopy()]);
+    });
+
     // dashboard widget
     $app->on("admin.dashboard", function() use($app){
         $title = $app("i18n")->get("Today");
