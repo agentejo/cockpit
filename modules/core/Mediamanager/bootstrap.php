@@ -111,6 +111,34 @@ if(COCKPIT_ADMIN) {
             "title"  => "Mediamanager",
             "active" => (strpos($app["route"], '/mediamanager') === 0)
         ], 0);
+
+
+        // handle global search request
+        $app->on("cockpit.globalsearch", function($search, $list) use($app){
+            
+            $user = $app("session")->read("app.auth");
+
+            $bookmarks = $app->memory->get("mediamanager.bookmarks.".$user["_id"], ["folders"=>[], "files"=>[]]);
+
+            foreach ($bookmarks["folders"] as $f) {
+                if(stripos($f["name"], $search)!==false){
+                    $list[] = [
+                        "title" => '<i class="uk-icon-folder-o"></i> '.$f["name"], 
+                        "url"   => $app->routeUrl('/mediamanager#'.$f["path"])
+                    ];
+                }
+            }
+
+            foreach ($bookmarks["files"] as $f) {
+                if(stripos($f["name"], $search)!==false){
+                    $list[] = [
+                        "title" => '<i class="uk-icon-file-o"></i> '.$f["name"], 
+                        "url"   => $app->routeUrl('/mediamanager#'.dirname($f["path"]))
+                    ];
+                }
+            }
+        });
+
     });
 
     // acl
