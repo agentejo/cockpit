@@ -1,5 +1,11 @@
 # Changelog
 
+### WIP
+
+    ^ Language file template
+    ^ Assets updated
+    + Image previews in mediamanager
+
 ### 0.7.3 (Jan 22, 2014)
     
     # Fixed media picker
