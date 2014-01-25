@@ -3,12 +3,18 @@
     
     $doc.on("app-init", function(){
         
-        var frmCockpitSearch = $("#frmCockpitSearch"),
-            txtSearch        = frmCockpitSearch.find('.uk-search-field');
+
+        //auto-focus in-app search
+        var txtSearch = $("#frmCockpitSearch").find('.uk-search-field');
 
         $doc.on("keydown", function(e) {
 
-            if (e.target.tagName && e.target.tagName.toLowerCase()=='body') {
+            //ctrl-c, ctrl-v etc.
+            if(e.ctrlKey || e.altKey || e.metaKey) {
+                return;
+            }
+
+            if (e.target.tagName && e.target.tagName.toLowerCase()=='body' && (e.keyCode>=65 && e.keyCode<=90)) {
                 txtSearch.focus();
             }
         });

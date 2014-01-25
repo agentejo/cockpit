@@ -40,6 +40,11 @@ return [
     'System' => '',
     'Are you sure?' => '',
 
+    // Search
+    'Search...'=> '',
+    'Search Results'=> '',
+    'No results found'=> '',
+
     // Login
     'Authenticate Please!' => '',
     'Authenticate' => '',
