@@ -1,6 +1,6 @@
 # Changelog
 
-### WIP
+### 0.7.4 (Jan 25, 2014)
 
     ^ Language file template
     ^ Assets updated
