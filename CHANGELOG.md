@@ -1,5 +1,10 @@
 # Changelog
 
+### WIP
+    
+    + Added global in-app search for region, forms, collections, galleries and mediamanger bookmarks
+    # Fixed default values for collection entries
+
 ### 0.7.4 (Jan 25, 2014)
 
     ^ Language file template
