@@ -21,7 +21,7 @@
                     styleActiveLine: true,
                     matchBrackets: true,
                     mode: 'text',
-                    theme: 'monokai'
+                    theme: 'pastel-on-dark'
                 }, scope.$eval(attrs.codearea));
 
 

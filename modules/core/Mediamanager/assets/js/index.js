@@ -18,7 +18,7 @@
                                lineNumbers: true,
                                styleActiveLine: true,
                                matchBrackets: true,
-                               theme: 'monokai'
+                               theme: 'pastel-on-dark'
                            });
 
             this.filename = this.element.find(".filename");

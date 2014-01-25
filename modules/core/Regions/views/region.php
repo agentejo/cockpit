@@ -4,7 +4,7 @@
 
 {{ $app->assets(['mediamanager:assets/pathpicker.directive.js']) }}
 
-{{ $app->assets(['assets:vendor/codemirror/lib/codemirror.js','assets:vendor/codemirror/lib/codemirror.css','assets:vendor/codemirror/theme/monokai.css']) }}
+{{ $app->assets(['assets:vendor/codemirror/lib/codemirror.js','assets:vendor/codemirror/lib/codemirror.css','assets:vendor/codemirror/theme/pastel-on-dark.css']) }}
 
 {{ $app->assets(['assets:vendor/codemirror/mode/xml/xml.js']) }}
 {{ $app->assets(['assets:vendor/codemirror/mode/htmlmixed/htmlmixed.js']) }}
