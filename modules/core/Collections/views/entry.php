@@ -1,7 +1,5 @@
 {{ $app->assets(['collections:assets/collections.js','collections:assets/js/entry.js']) }}
 
-{{ $app->assets(['mediamanager:assets/pathpicker.directive.js']) }}
-
 {{ $app->assets(['assets:vendor/codemirror/lib/codemirror.js','assets:vendor/codemirror/lib/codemirror.css','assets:vendor/codemirror/theme/pastel-on-dark.css']) }}
 {{ $app->assets(['assets:vendor/codemirror/mode/xml/xml.js']) }}
 {{ $app->assets(['assets:vendor/codemirror/mode/htmlmixed/htmlmixed.js']) }}
@@ -11,6 +9,8 @@
 {{ $app->assets(['assets:vendor/tinymce/tinymce.min.js']) }}
 {{ $app->assets(['assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js']) }}
 {{ $app->assets(['assets:angular/directives/wysiwyg.js']) }}
+
+{{ $app->assets(['mediamanager:assets/pathpicker.directive.js']) }}
 
 <style>
     textarea { min-height: 150px; }
@@ -27,7 +27,7 @@
         <div class="uk-offcanvas-bar">
           <div class="uk-panel">
               <h3 class="uk-panel-title">@lang('Versions')</h3>
-              
+
               <p class="uk-text-muted" data-ng-show="!versions.length">
                 @lang('Empty')
               </p>
@@ -50,8 +50,8 @@
 
     <nav class="uk-navbar uk-margin-large-bottom">
         <span class="uk-navbar-brand">
-          <a href="@route("/collections")">@lang('Collections')</a> / 
-          <a href="@route("/collections/entries")/@@ collection._id @@">@@ collection.name @@</a> / 
+          <a href="@route("/collections")">@lang('Collections')</a> /
+          <a href="@route("/collections/entries")/@@ collection._id @@">@@ collection.name @@</a> /
           @lang('Entry')
         </span>
         <div class="uk-navbar-content">
