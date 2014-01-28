@@ -200,6 +200,39 @@
 
     });
 
+
+    if(window.tinymce) {
+        tinymce.PluginManager.add('mediapath', function(editor) {
+
+            var picker = function(){
+                new Picker(function(path){
+
+                    var content = '';
+
+                    if(!path) {
+                       return;
+                    }
+
+                    if(path && path.match(/\.(jpg|jpeg|png|gif)/i)) {
+                        content = '<img class="auto-size" src="'+path.replace('site:', window.COCKPIT_SITE_BASE_URL)+'">';
+                    } else {
+                        content = path;
+                    }
+                    editor.insertContent(content);
+                }, "*");
+            };
+
+            editor.addMenuItem('mediapath', {
+                icon: false,
+                text: 'Insert media',
+                onclick: picker,
+                context: 'insert',
+                prependToContext: true
+            });
+
+        });
+    }
+
     function matchName(pattern, path) {
 
         var parsedPattern = '^' + pattern.replace(/\//g, '\\/').
