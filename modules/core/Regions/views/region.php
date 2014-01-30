@@ -156,6 +156,10 @@
                                               <input type="text" media-path-picker data-ng-model="region.fields[$index].value">
                                           </div>
 
+                                          <div data-ng-switch-when="boolean">
+                                              <input type="checkbox" data-ng-model="region.fields[$index].value">
+                                          </div>
+
                                           <div data-ng-switch-default>
                                               <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="region.fields[$index].value">
                                           </div>

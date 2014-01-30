@@ -1,7 +1,7 @@
 (function($){
 
     App.module.controller("entry", function($scope, $rootScope, $http){
-        
+
         var collection = COLLECTION,
             entry      = COLLECTION_ENTRY || {};
 
@@ -65,7 +65,7 @@
         };
 
         $scope.save = function(){
-            
+
             var entry = angular.copy($scope.entry);
 
             $http.post(App.route("/api/collections/saveentry"), {"collection": collection, "entry":entry, "createversion": true}).success(function(data){
@@ -85,7 +85,7 @@
             var fields = [];
 
             if(area=="main") {
-                
+
                 fields = $scope.collection.fields.filter(function(field){
 
                     return (['text','html', 'markdown','code','wysiwyg'].indexOf(field.type) > -1);
@@ -95,7 +95,7 @@
 
             if(area=="side"){
                 fields = $scope.collection.fields.filter(function(field){
-                    return ['select','date','time','media'].indexOf(field.type) > -1;
+                    return ['select','date','time','media', 'boolean'].indexOf(field.type) > -1;
                 });
             }
 
