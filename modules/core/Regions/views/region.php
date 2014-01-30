@@ -2,8 +2,6 @@
 
 {{ $app->assets(['assets:vendor/uikit/addons/css/sortable.almost-flat.min.css','assets:vendor/uikit/addons/js/sortable.min.js']) }}
 
-{{ $app->assets(['mediamanager:assets/pathpicker.directive.js']) }}
-
 {{ $app->assets(['assets:vendor/codemirror/lib/codemirror.js','assets:vendor/codemirror/lib/codemirror.css','assets:vendor/codemirror/theme/pastel-on-dark.css']) }}
 
 {{ $app->assets(['assets:vendor/codemirror/mode/xml/xml.js']) }}
@@ -21,6 +19,8 @@
 {{ $app->assets(['assets:vendor/tinymce/tinymce.min.js']) }}
 {{ $app->assets(['assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js']) }}
 {{ $app->assets(['assets:angular/directives/wysiwyg.js']) }}
+
+{{ $app->assets(['mediamanager:assets/pathpicker.directive.js']) }}
 
 
 <div data-ng-controller="region" data-id="{{ $id }}">
@@ -51,7 +51,7 @@
 
     <nav class="uk-navbar uk-margin-large-bottom">
         <span class="uk-navbar-brand">
-          <a href="@route("/regions")">@lang('Regions')</a> / 
+          <a href="@route("/regions")">@lang('Regions')</a> /
           <span class="uk-text-muted" ng-show="!region.name">@lang('Entry')</span>
           <span ng-show="region.name">@@ region.name @@</span>
         </span>
@@ -154,6 +154,10 @@
 
                                           <div data-ng-switch-when="media">
                                               <input type="text" media-path-picker data-ng-model="region.fields[$index].value">
+                                          </div>
+
+                                          <div data-ng-switch-when="boolean">
+                                              <input type="checkbox" data-ng-model="region.fields[$index].value">
                                           </div>
 
                                           <div data-ng-switch-default>

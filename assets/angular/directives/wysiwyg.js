@@ -12,17 +12,16 @@
                      "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
                      "save table contextmenu directionality emoticons template paste textcolor"
             ],
-            height: 350,
-            toolbar_items_size: 'small'
+            height: 350
           };
-      
+
       return {
-        
+
         require: 'ngModel',
         restrict: 'A',
 
         link: function (scope, elm, attrs, ngModel) {
-          
+
           var expression, options, tinyInstance,
               updateView = function () {
                 ngModel.$setViewValue(elm.val());
@@ -74,9 +73,13 @@
             mode: 'exact',
             elements: attrs.id
           };
-          
+
           // extend options with initial defaultConfig and options from directive attribute value
           angular.extend(options, defaultConfig, expression);
+
+          if(defaultConfig.plugins && defaultConfig.plugins.length && tinymce.PluginManager.lookup["mediapath"]) {
+            defaultConfig.plugins[0] = "mediapath "+defaultConfig.plugins[0];
+          }
 
           setTimeout(function () {
             tinymce.init(options);
