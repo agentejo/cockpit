@@ -25,7 +25,7 @@ if(COCKPIT_ADMIN) {
 
     $app->on("admin.init", function() use($app){
 
-        if(!$app->module("auth")->hasaccess("galleries", "manage")) return;
+        if(!$app->module("auth")->hasaccess("Galleries", "manage")) return;
 
         $app->bindClass("Galleries\\Controller\\Galleries", "galleries");
         $app->bindClass("Galleries\\Controller\\Api", "api/galleries");
@@ -39,11 +39,11 @@ if(COCKPIT_ADMIN) {
 
         // handle global search request
         $app->on("cockpit.globalsearch", function($search, $list) use($app){
-            
+
             foreach ($app->data->common->galleries->find()->toArray() as $g) {
                 if(stripos($g["name"], $search)!==false){
                     $list[] = [
-                        "title" => '<i class="uk-icon-picture-o"></i> '.$g["name"], 
+                        "title" => '<i class="uk-icon-picture-o"></i> '.$g["name"],
                         "url"   => $app->routeUrl('/galleries/gallery/'.$g["_id"])
                     ];
                 }
@@ -53,7 +53,7 @@ if(COCKPIT_ADMIN) {
 
     $app->on("admin.dashboard", function() use($app){
 
-        if(!$app->module("auth")->hasaccess("galleries","manage")) return;
+        if(!$app->module("auth")->hasaccess("Galleries","manage")) return;
 
         $title   = $app("i18n")->get("Galleries");
         $badge   = $app->data->common->galleries->count();
