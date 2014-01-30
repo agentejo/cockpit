@@ -6,7 +6,7 @@
 
 <div data-ng-controller="entries" data-form='{{ json_encode($form) }}'>
 
-    <nav class="uk-navbar uk-margin-bottom" data-ng-show="entries && entries.length">
+    <nav class="uk-navbar uk-margin-bottom">
         <span class="uk-navbar-brand"><a href="@route("/forms")">@lang('Forms')</a> / {{ $form['name'] }}</span>
         <ul class="uk-navbar-nav">
             <li><a href="@route('/forms/form/'.$form["_id"])" title="@lang('Edit form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a></li>
@@ -14,7 +14,7 @@
     </nav>
 
     <div class="app-panel uk-margin uk-text-center" data-ng-show="entries && !entries.length">
-        <h2>{{ $form['name'] }}</h2>
+        <h2><i class="uk-icon-inbox"></i></h2>
         <p class="uk-text-large">
             @lang('It seems you don\'t have any form entries.')
         </p>
