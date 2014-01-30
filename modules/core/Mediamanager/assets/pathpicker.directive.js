@@ -160,9 +160,12 @@
                            return $prv.html('');
                         }
 
-
-                        if(path && path.match(/\.(jpg|jpeg|png|gif)/i)) {
+                        if(path && path.match(/\.(jpg|jpeg|png|gif)$/i)) {
                             $prv.html('<div class="uk-margin" title="'+path+'"><img class="auto-size" src="'+path.replace('site:', window.COCKPIT_SITE_BASE_URL)+'"></div>');
+
+                        } else if(path && path.match(/\.(mp4|ogv|wmv|webm|mpeg|avi)$/i)) {
+                            $prv.html('<div class="uk-margin" title="'+path+'"><video class="auto-size" src="'+path.replace('site:', window.COCKPIT_SITE_BASE_URL)+'"></video></div>');
+
                         } else {
                             $prv.html(path ? '<div class="uk-trunkate" title="'+path+'">'+path+'</div>':'<div class="uk-alert">No path selected</div>');
                         }
@@ -215,6 +218,10 @@
 
                     if(path && path.match(/\.(jpg|jpeg|png|gif)/i)) {
                         content = '<img class="auto-size" src="'+path.replace('site:', window.COCKPIT_SITE_BASE_URL)+'">';
+
+                    } else if(path && path.match(/\.(mp4|ogv|wmv|webm|mpeg|avi)$/i)) {
+                        content = '<video class="auto-size" src="'+path.replace('site:', window.COCKPIT_SITE_BASE_URL)+'"></video>';
+
                     } else {
                         content = path;
                     }
