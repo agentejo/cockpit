@@ -1018,6 +1018,9 @@ class App implements \ArrayAccess {
     * @return String
     */
     public function getClientLang() {
+        if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            return 'en';
+        }
         return strtolower(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2));
     }
 
