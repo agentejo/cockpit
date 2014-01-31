@@ -635,7 +635,7 @@ class App implements \ArrayAccess {
     * @param  String $href
     * @return String
     */
-    public function style($href) {
+    public function style($href, $version=false) {
 
         $list = array();
 
@@ -644,7 +644,7 @@ class App implements \ArrayAccess {
         foreach((array)$href as $style) {
 
             $ispath = strpos($style, ':') !== false && !preg_match('#^(|http\:|https\:)//#', $style);
-            $list[] = '<link href="'.($ispath ? $this->pathToUrl($style):$style).'" type="text/css" rel="stylesheet">';
+            $list[] = '<link href="'.($ispath ? $this->pathToUrl($style):$style).($version ? "?ver={$version}":"").'" type="text/css" rel="stylesheet">';
         }
 
         return implode("\n", $list);
@@ -655,30 +655,30 @@ class App implements \ArrayAccess {
     * @param  String $src
     * @return String
     */
-    public function script($src){
+    public function script($src, $version=false){
 
         $list = array();
 
         foreach((array)$src as $script) {
             $ispath = strpos($script, ':') !== false && !preg_match('#^(|http\:|https\:)//#', $script);
-            $list[] = '<script src="'.($ispath ? $this->pathToUrl($script):$script).'" type="text/javascript"></script>';
+            $list[] = '<script src="'.($ispath ? $this->pathToUrl($script):$script).($version ? "?ver={$version}":"").'" type="text/javascript"></script>';
         }
 
         return implode("\n", $list);
     }
 
-    public function assets($src){
+    public function assets($src, $version=false){
 
         $list = array();
 
         foreach((array)$src as $script) {
 
             if(@substr($script, -3) == ".js") {
-                $list[] = $this->script($script);
+                $list[] = $this->script($script, $version);
             }
 
             if(@substr($script, -4) == ".css") {
-                $list[] = $this->style($script);
+                $list[] = $this->style($script, $version);
             }
         }
 

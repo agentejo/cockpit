@@ -1,4 +1,4 @@
-{{ $app->assets(['forms:assets/forms.js','forms:assets/js/entries.js']) }}
+{{ $app->assets(['forms:assets/forms.js','forms:assets/js/entries.js'], $app['cockpit/version']) }}
 
 <style>
     td .uk-grid+.uk-grid { margin-top: 5px; }
@@ -58,6 +58,6 @@
             </div>
         </div>
         <div class="uk-width-medium-1-5 uk-hidden-small">
-            
+
         </div>
 </div>

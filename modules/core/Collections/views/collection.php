@@ -1,10 +1,10 @@
-{{ $app->assets(['collections:assets/collections.js','collections:assets/js/collection.js']) }}
-{{ $app->assets(['assets:vendor/uikit/addons/css/sortable.almost-flat.min.css','assets:vendor/uikit/addons/js/sortable.min.js']) }}
+{{ $app->assets(['collections:assets/collections.js','collections:assets/js/collection.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/addons/css/sortable.almost-flat.min.css','assets:vendor/uikit/addons/js/sortable.min.js'], $app['cockpit/version']) }}
 
 <div data-ng-controller="collection" data-id="{{ $id }}" ng-cloak>
 
     <h1>
-        <a href="@route("/collections")">@lang('Collections')</a> / 
+        <a href="@route("/collections")">@lang('Collections')</a> /
         <span class="uk-text-muted" ng-show="!collection.name">@lang('Collection')</span>
         <span ng-show="collection.name">@@ collection.name @@</span>
     </h1>

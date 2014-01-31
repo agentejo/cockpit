@@ -1,26 +1,26 @@
-{{ $app->assets(['regions:assets/regions.js','regions:assets/js/region.js']) }}
+{{ $app->assets(['regions:assets/regions.js','regions:assets/js/region.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/uikit/addons/css/sortable.almost-flat.min.css','assets:vendor/uikit/addons/js/sortable.min.js']) }}
+{{ $app->assets(['assets:vendor/uikit/addons/css/sortable.almost-flat.min.css','assets:vendor/uikit/addons/js/sortable.min.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/codemirror/lib/codemirror.js','assets:vendor/codemirror/lib/codemirror.css','assets:vendor/codemirror/theme/pastel-on-dark.css']) }}
+{{ $app->assets(['assets:vendor/codemirror/lib/codemirror.js','assets:vendor/codemirror/lib/codemirror.css','assets:vendor/codemirror/theme/pastel-on-dark.css'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/codemirror/mode/xml/xml.js']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/htmlmixed/htmlmixed.js']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/javascript/javascript.js']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/css/css.js']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/clike/clike.js']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/php/php.js']) }}
+{{ $app->assets(['assets:vendor/codemirror/mode/xml/xml.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/mode/htmlmixed/htmlmixed.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/mode/javascript/javascript.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/mode/css/css.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/mode/clike/clike.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/mode/php/php.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/codemirror/addon/edit/matchbrackets.js']) }}
-{{ $app->assets(['assets:vendor/codemirror/addon/selection/active-line.js']) }}
+{{ $app->assets(['assets:vendor/codemirror/addon/edit/matchbrackets.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/addon/selection/active-line.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:angular/directives/codearea.js']) }}
+{{ $app->assets(['assets:angular/directives/codearea.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/tinymce/tinymce.min.js']) }}
-{{ $app->assets(['assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js']) }}
-{{ $app->assets(['assets:angular/directives/wysiwyg.js']) }}
+{{ $app->assets(['assets:vendor/tinymce/tinymce.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:angular/directives/wysiwyg.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['mediamanager:assets/pathpicker.directive.js']) }}
+{{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
 
 
 <div data-ng-controller="region" data-id="{{ $id }}">

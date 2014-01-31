@@ -1,19 +1,19 @@
-{{ $app->assets(['assets:vendor/codemirror/lib/codemirror.js','assets:vendor/codemirror/lib/codemirror.css','assets:vendor/codemirror/theme/pastel-on-dark.css']) }}
+{{ $app->assets(['assets:vendor/codemirror/lib/codemirror.js','assets:vendor/codemirror/lib/codemirror.css','assets:vendor/codemirror/theme/pastel-on-dark.css'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/codemirror/mode/xml/xml.js']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/htmlmixed/htmlmixed.js']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/javascript/javascript.js']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/css/css.js']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/clike/clike.js']) }}
+{{ $app->assets(['assets:vendor/codemirror/mode/xml/xml.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/mode/htmlmixed/htmlmixed.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/mode/javascript/javascript.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/mode/css/css.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/mode/clike/clike.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/codemirror/addon/edit/matchbrackets.js']) }}
-{{ $app->assets(['assets:vendor/codemirror/addon/selection/active-line.js']) }}
+{{ $app->assets(['assets:vendor/codemirror/addon/edit/matchbrackets.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/addon/selection/active-line.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/ajaxupload.js']) }}
-{{ $app->assets(['assets:vendor/loadie/jquery.loadie.js', 'assets:vendor/loadie/loadie.css']) }}
-{{ $app->assets(['mediamanager:assets/js/index.js']) }}
+{{ $app->assets(['assets:vendor/ajaxupload.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/loadie/jquery.loadie.js', 'assets:vendor/loadie/loadie.css'], $app['cockpit/version']) }}
+{{ $app->assets(['mediamanager:assets/js/index.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:angular/directives/mediapreview.js']) }}
+{{ $app->assets(['assets:angular/directives/mediapreview.js'], $app['cockpit/version']) }}
 
 
 <div class="app-wrapper" data-ng-controller="mediamanager" ng-cloak>

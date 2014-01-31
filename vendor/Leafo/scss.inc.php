@@ -1738,32 +1738,30 @@ class scssc {
 	}
 
 	public function toHSL($red, $green, $blue) {
-		$r = $red / 255;
-		$g = $green / 255;
-		$b = $blue / 255;
+		$min = min($red, $green, $blue);
+		$max = max($red, $green, $blue);
 
-		$min = min($r, $g, $b);
-		$max = max($r, $g, $b);
-		$d = $max - $min;
-		$l = ($min + $max) / 2;
+		$l = $min + $max;
 
 		if ($min == $max) {
 			$s = $h = 0;
 		} else {
-			if ($l < 0.5)
-				$s = $d / (2 * $l);     // $s = $d / ($min + $max)
-			else
-				$s = $d / (2 - 2 * $l); // $s = $d / (2 - $min - $max)
+		        $d = $max - $min;
 
-			if ($r == $max)
-				$h = 60 * ($g - $b) / $d;
-			elseif ($g == $max)
-				$h = 60 * ($b - $r) / $d + 120;
-			elseif ($b == $max)
-				$h = 60 * ($r - $g) / $d + 240;
+			if ($l < 255)
+				$s = $d / $l;
+			else
+				$s = $d / (510 - $l);
+
+			if ($red == $max)
+				$h = 60 * ($green - $blue) / $d;
+			elseif ($green == $max)
+				$h = 60 * ($blue - $red) / $d + 120;
+			elseif ($blue == $max)
+				$h = 60 * ($red - $green) / $d + 240;
 		}
 
-		return array('hsl', fmod($h, 360), $s * 100, $l * 100);
+		return array('hsl', fmod($h, 360), $s * 100, $l / 5.1);
 	}
 
 	public function hueToRGB($m1, $m2, $h) {

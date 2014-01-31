@@ -1,4 +1,4 @@
-{{ $app->assets(['collections:assets/collections.js','collections:assets/js/entries.js']) }}
+{{ $app->assets(['collections:assets/collections.js','collections:assets/js/entries.js'], $app['cockpit/version']) }}
 
 <style>
     td .uk-grid+.uk-grid { margin-top: 5px; }

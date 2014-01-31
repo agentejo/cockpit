@@ -59,6 +59,8 @@ if (!function_exists('url_to')) {
 
 if (COCKPIT_ADMIN) {
 
+    $app["cockpit"] = json_decode($app->helper("fs")->read("#root:package.json"), true);
+
     $app['app.assets.backend'] = [
         'cockpit:assets/js/app.js',
         'cockpit:assets/js/app.module.js',
@@ -95,7 +97,7 @@ if (COCKPIT_ADMIN) {
 
     //global search
     $app->bind("/cockpit-globsearch", function() use($app){
-        
+
         $query = $app->param("search", false);
         $list  = new \ArrayObject([]);
 
