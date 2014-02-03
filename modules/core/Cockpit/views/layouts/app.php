@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <link rel="icon" href="@base("/assets/images/favicon.ico")" type="image/x-icon">
 
-    @assets($app['app.assets.base'], 'app.base', 'cache:assets', 30)
-    @assets($app['app.assets.backend'], 'app.backend', 'cache:assets', 30)
+    @assets($app['app.assets.base'], 'app.base', 'cache:assets', 30, $app['cockpit/version'])
+    @assets($app['app.assets.backend'], 'app.backend', 'cache:assets', 30, $app['cockpit/version'])
 
     @trigger('app.layout.header')
 
-    {{ $app->assets(["assets:angular/cockpit.js"]) }}
+    {{ $app->assets(["assets:angular/cockpit.js"], $app['cockpit/version']) }}
 </head>
 <body>
 

@@ -1,10 +1,10 @@
-{{ $app->assets(['forms:assets/forms.js','forms:assets/js/form.js']) }}
-{{ $app->assets(['assets:vendor/uikit/addons/css/sortable.min.css','assets:vendor/uikit/addons/js/sortable.min.js']) }}
+{{ $app->assets(['forms:assets/forms.js','forms:assets/js/form.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/addons/css/sortable.min.css','assets:vendor/uikit/addons/js/sortable.min.js'], $app['cockpit/version']) }}
 
 <div data-ng-controller="form" data-id="{{ $id }}">
 
     <h1>
-        <a href="@route("/forms")">@lang('Forms')</a> / 
+        <a href="@route("/forms")">@lang('Forms')</a> /
         <span class="uk-text-muted" ng-show="!form.name">@lang('Form')</span>
         <span ng-show="form.name">@@ form.name @@</span>
     </h1>
@@ -17,7 +17,7 @@
             <div class="uk-width-medium-1-2">
 
                 <div class="app-panel">
-                    
+
                     <div class="uk-form-row">
                         <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="form.name"  pattern="[a-zA-Z0-9]+" required>
                     </div>
@@ -25,7 +25,7 @@
                     <div class="uk-form-row">
                         <label class="uk-text-small">Email</label>
                         <input class="uk-width-1-1 uk-form-large" type="email" placeholder="@lang('Email form data to this adress')" data-ng-model="form.email">
-                    
+
                         <div class="uk-alert">
                             @lang('Leave the field empty if you don\'t want to recieve any form data via email.')
                         </div>
@@ -49,7 +49,7 @@
                     <strong>@lang('Form snippet example'):</strong>
 
                     <div class="uk-alert uk-alert-info">
-                        <i class="uk-icon-exclamation-circle"></i> 
+                        <i class="uk-icon-exclamation-circle"></i>
                         @lang('It is important to prefix the form fields with <strong>form[...]</strong>.')
                     </div>
 

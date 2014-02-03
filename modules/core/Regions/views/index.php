@@ -1,4 +1,4 @@
-{{ $app->assets(['regions:assets/regions.js','regions:assets/js/index.js']) }}
+{{ $app->assets(['regions:assets/regions.js','regions:assets/js/index.js'], $app['cockpit/version']) }}
 
 <div data-ng-controller="regions">
 

@@ -1,9 +1,10 @@
 # Changelog
 
-### WIP
+### 0.8.0 (Jan 30, 2014)
     
     + Added global in-app search for region, forms, collections, galleries and mediamanger bookmarks
     # Fixed default values for collection entries
+    # Fixed boolean field type (collections, regions) @davidgenetic
 
 ### 0.7.4 (Jan 25, 2014)
 

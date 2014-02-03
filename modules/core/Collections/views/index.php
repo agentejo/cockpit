@@ -1,4 +1,4 @@
-{{ $app->assets(['collections:assets/collections.js','collections:assets/js/index.js']) }}
+{{ $app->assets(['collections:assets/collections.js','collections:assets/js/index.js'], $app['cockpit/version']) }}
 
 
 <div data-ng-controller="collections">
