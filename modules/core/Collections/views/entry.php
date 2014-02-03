@@ -68,10 +68,10 @@
 
                     <div class="uk-form-row" data-ng-repeat="field in fieldsInArea('main')" data-ng-switch="field.type">
 
-                        <label class="uk-text-small">@@ field.name | uppercase @@</label>
+                        <label class="uk-text-small">@@ field.name | uppercase @@ <span class="uk-form-required" ng-show="field.required">*</span></label>
 
                         <div data-ng-switch-when="html">
-                            <textarea class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]"></textarea>
+                            <textarea class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]" ng-required="field.required"></textarea>
                         </div>
 
                         <div data-ng-switch-when="code">
@@ -83,7 +83,7 @@
                         </div>
 
                         <div data-ng-switch-default>
-                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="entry[field.name]">
+                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="entry[field.name]" ng-required="field.required">
                         </div>
                     </div>
 
@@ -101,7 +101,7 @@
                         <label class="uk-text-small">@@ field.name | uppercase @@</label>
 
                         <div data-ng-switch-when="select">
-                            <select class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]">
+                            <select class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]" ng-required="field.required">
                                 <option value="@@ option @@" data-ng-repeat="option in (field.options || [])" data-ng-selected="(entry[field.name]==option)">@@ option @@</option>
                             </select>
                         </div>
@@ -115,7 +115,7 @@
                         </div>
 
                         <div data-ng-switch-default>
-                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="entry[field.name]">
+                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="entry[field.name]" ng-required="field.required">
                         </div>
                     </div>
 

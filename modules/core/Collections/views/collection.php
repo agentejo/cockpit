@@ -4,7 +4,7 @@
 <div data-ng-controller="collection" data-id="{{ $id }}" ng-cloak>
 
     <h1>
-        <a href="@route("/collections")">@lang('Collections')</a> / 
+        <a href="@route("/collections")">@lang('Collections')</a> /
         <span class="uk-text-muted" ng-show="!collection.name">@lang('Collection')</span>
         <span ng-show="collection.name">@@ collection.name @@</span>
     </h1>
@@ -62,6 +62,8 @@
                                 </select>
 
                                 <input type="text" data-ng-model="field.default" placeholder="default value...">
+
+                                <input type="checkbox" data-ng-model="field.required" /> <label>Required</label>
 
                                 <a data-ng-click="remove(field)" class="uk-close"></a>
                             </li>
