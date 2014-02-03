@@ -1,4 +1,4 @@
-{{ $app->assets(['forms:assets/forms.js','forms:assets/js/index.js']) }}
+{{ $app->assets(['forms:assets/forms.js','forms:assets/js/index.js'], $app['cockpit/version']) }}
 
 <div data-ng-controller="forms">
 

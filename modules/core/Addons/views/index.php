@@ -1,4 +1,4 @@
-{{ $app->assets(['addons:assets/addons.js','addons:assets/js/index.js']) }}
+{{ $app->assets(['addons:assets/addons.js','addons:assets/js/index.js'], $app['cockpit/version']) }}
 
 
 <h1><a href="@route('/settingspage')">@lang('Settings')</a> / @lang('Addons')</h1>

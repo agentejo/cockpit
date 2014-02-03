@@ -566,9 +566,11 @@ class PHPMailer
     {
         $this->exceptions = ($exceptions == true);
         //Make sure our autoloader is loaded
-        if (version_compare(PHP_VERSION, '5.1.2', '>=') and
-            !spl_autoload_functions() || !in_array('PHPMailerAutoload', spl_autoload_functions())) {
-            require 'PHPMailerAutoload.php';
+        if (version_compare(PHP_VERSION, '5.1.2', '>=')) {
+            $al = spl_autoload_functions();
+            if ($al === false or !in_array('PHPMailerAutoload', $al)) {
+                require 'PHPMailerAutoload.php';
+            }
         }
     }
 
@@ -1183,7 +1185,7 @@ class PHPMailer
             throw new phpmailerException($this->ErrorInfo, self::STOP_CRITICAL);
         }
 
-        // Attempt to send attach all recipients
+        // Attempt to send to all recipients
         foreach ($this->to as $to) {
             if (!$this->smtp->recipient($to[0])) {
                 $bad_rcpt[] = $to[0];
@@ -1212,7 +1214,8 @@ class PHPMailer
             $this->doCallback($isSent, '', '', $bcc[0], $this->Subject, $body, $this->From);
         }
 
-        if (!$this->smtp->data($header . $body)) {
+        //Only send the DATA command if we have viable recipients
+        if ((count($this->all_recipients) > count($bad_rcpt)) and !$this->smtp->data($header . $body)) {
             throw new phpmailerException($this->lang('data_not_accepted'), self::STOP_CRITICAL);
         }
         if ($this->SMTPKeepAlive == true) {
@@ -1377,8 +1380,14 @@ class PHPMailer
         //Overwrite language-specific strings.
         //This way we'll never have missing translations - no more "language string failed to load"!
         $l = true;
+        $lang_file = $lang_path . 'phpmailer.lang-' . $langcode . '.php';
         if ($langcode != 'en') { //There is no English translation file
-            $l = @include $lang_path . 'phpmailer.lang-' . $langcode . '.php';
+            //Make sure language file path is readable
+            if (!is_readable($lang_file)) {
+                $l = false;
+            } else {
+                $l = include $lang_file;
+            }
         }
         $this->language = $PHPMAILER_LANG;
         return ($l == true); //Returns false if language not found
@@ -2361,7 +2370,7 @@ class PHPMailer
     public function encodeQP($string, $line_max = 76)
     {
         if (function_exists('quoted_printable_encode')) { //Use native function if it's available (>= PHP5.3)
-            return quoted_printable_encode($string);
+            return $this->fixEOL(quoted_printable_encode($string));
         }
         //Fall back to a pure PHP implementation
         $string = str_replace(
@@ -2370,7 +2379,7 @@ class PHPMailer
             rawurlencode($string)
         );
         $string = preg_replace('/[^\r\n]{' . ($line_max - 3) . '}[^=\r\n]{2}/', "$0=\r\n", $string);
-        return $string;
+        return $this->fixEOL($string);
     }
 
     /**
@@ -2716,14 +2725,14 @@ class PHPMailer
      */
     protected function serverHostname()
     {
+        $result = 'localhost.localdomain';
         if (!empty($this->Hostname)) {
             $result = $this->Hostname;
-        } elseif (isset($_SERVER['SERVER_NAME'])) {
+        } elseif (isset($_SERVER) and array_key_exists('SERVER_NAME', $_SERVER) and !empty($_SERVER['SERVER_NAME'])) {
             $result = $_SERVER['SERVER_NAME'];
-        } else {
-            $result = 'localhost.localdomain';
+        } elseif (gethostname() !== false) {
+            $result = gethostname();
         }
-
         return $result;
     }
 
@@ -2841,12 +2850,13 @@ class PHPMailer
             }
         }
         $this->isHTML(true);
-        if (empty($this->AltBody)) {
-            $this->AltBody = 'To view this email message, open it in a program that understands HTML!' . "\n\n";
-        }
         //Convert all message body line breaks to CRLF, makes quoted-printable encoding work much better
         $this->Body = $this->normalizeBreaks($message);
         $this->AltBody = $this->normalizeBreaks($this->html2text($message, $advanced));
+        if (empty($this->AltBody)) {
+            $this->AltBody = 'To view this email message, open it in a program that understands HTML!' .
+                self::CRLF . self::CRLF;
+        }
         return $this->Body;
     }
 

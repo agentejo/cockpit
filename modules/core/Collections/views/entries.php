@@ -1,4 +1,4 @@
-{{ $app->assets(['collections:assets/collections.js','collections:assets/js/entries.js']) }}
+{{ $app->assets(['collections:assets/collections.js','collections:assets/js/entries.js'], $app['cockpit/version']) }}
 
 <style>
     td .uk-grid+.uk-grid { margin-top: 5px; }
@@ -6,7 +6,7 @@
 
 <div data-ng-controller="entries" data-collection='{{ json_encode($collection) }}'>
 
-    <nav class="uk-navbar uk-margin-bottom" data-ng-show="entries && entries.length">
+    <nav class="uk-navbar uk-margin-bottom">
         <span class="uk-navbar-brand"><a href="@route("/collections")">@lang('Collections')</a> / {{ $collection['name'] }}</span>
         <ul class="uk-navbar-nav">
             <li><a href="@route('/collections/collection/'.$collection["_id"])" title="@lang('Edit collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a></li>
@@ -15,7 +15,7 @@
     </nav>
 
     <div class="app-panel uk-margin uk-text-center" data-ng-show="entries && !entries.length">
-        <h2>{{ $collection['name'] }}</h2>
+        <h2><i class="uk-icon-list"></i></h2>
         <p class="uk-text-large">
             @lang('It seems you don\'t have any entries created.')
         </p>

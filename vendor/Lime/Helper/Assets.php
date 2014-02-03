@@ -9,13 +9,13 @@ class Assets extends \Lime\Helper {
     * @param  String $name
     * @return String
     */
-    public function style($assets, $name, $path="", $cache=0) {
+    public function style($assets, $name, $path="", $cache=0, $version=false) {
 
         $path = $this->path($path);
 
         if(!$path) return null;
 
-        $href = rtrim($this->pathToUrl($path), '/')."/{$name}.css";
+        $href = rtrim($this->pathToUrl($path), '/')."/{$name}.css".($version ? "?ver={$version}":"");
         $path.= "/{$name}.css";
         $tag  = '<link href="'.$href.'" type="text/css" rel="stylesheet" />'."\n";
 
@@ -33,13 +33,13 @@ class Assets extends \Lime\Helper {
     * @param  String $name
     * @return String
     */
-    public function script($assets, $name, $path="", $cache=0){
+    public function script($assets, $name, $path="", $cache=0, $version=false){
 
         $path = $this->path($path);
 
         if(!$path) return null;
 
-        $src  = rtrim($this->pathToUrl($path), '/')."/{$name}.js";
+        $src  = rtrim($this->pathToUrl($path), '/')."/{$name}.js".($version ? "?ver={$version}":"");
         $path.= "/{$name}.js";
         $tag  = '<script src="'.$src.'" type="text/javascript"></script>'."\n";
 
@@ -52,9 +52,9 @@ class Assets extends \Lime\Helper {
         return $tag;
     }
 
-    public function style_and_script($assets, $name, $path="", $cache=0) {
-        echo $this->script($assets, $name, $path, $cache);
-        echo $this->style($assets, $name, $path, $cache);
+    public function style_and_script($assets, $name, $path="", $cache=0, $version=false) {
+        echo $this->script($assets, $name, $path, $cache, $version);
+        echo $this->style($assets, $name, $path, $cache, $version);
     }
 
 
