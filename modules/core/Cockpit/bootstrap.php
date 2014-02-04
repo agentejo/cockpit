@@ -61,16 +61,12 @@ if (COCKPIT_ADMIN) {
 
     $app["cockpit"] = json_decode($app->helper("fs")->read("#root:package.json"), true);
 
-    $assets = [
+    $assets = array_merge([
         'cockpit:assets/js/app.js',
         'cockpit:assets/js/app.module.js',
         'cockpit:assets/css/app.less',
         'cockpit:assets/js/bootstrap.js',
-    ];
-
-    if($app->path('custom:backend.css')) {
-        $assets[] = 'custom:backend.css';
-    }
+    ], $app->retrieve('app.config/app.assets.backend', []));
 
     $app['app.assets.backend'] = $assets;
 

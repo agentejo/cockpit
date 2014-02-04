@@ -18,7 +18,12 @@ function cockpit($module = null) {
     if(!$app) {
 
         $config = include(__DIR__.'/config.php');
-        $app    = new LimeExtra\App($config);
+
+        if(file_exists(__DIR__.'/custom/config.php')) {
+            $config = array_merge($config, include(__DIR__.'/custom/config.php'));
+        }
+
+        $app = new LimeExtra\App($config);
 
         $app["app.config"] = $config;
 
