@@ -13,3 +13,4 @@
 /storage/cache/thumbs/*.gif
 /storage/data/*.sqlite
 /storage/uploads/*
+/custom/*
