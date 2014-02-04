@@ -61,7 +61,7 @@ if (COCKPIT_ADMIN) {
 
     $app["cockpit"] = json_decode($app->helper("fs")->read("#root:package.json"), true);
 
-    $app['app.assets.backend'] = [
+    $assets = [
         'cockpit:assets/js/app.js',
         'cockpit:assets/js/app.module.js',
         'cockpit:assets/css/app.less',
@@ -69,8 +69,10 @@ if (COCKPIT_ADMIN) {
     ];
 
     if($app->path('custom:backend.css')) {
-        $app['app.assets.backend'][] = 'custom:backend.css';
+        $assets[] = 'custom:backend.css';
     }
+
+    $app['app.assets.backend'] = $assets;
 
     // helpers
     $app->helpers["admin"]    = 'Cockpit\\Helper\\Admin';
