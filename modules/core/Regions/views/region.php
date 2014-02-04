@@ -135,11 +135,11 @@
                                           <label class="uk-text-small">@@ field.name | uppercase @@</label>
 
                                           <div data-ng-switch-when="html">
-                                              <textarea class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value"></textarea>
+                                              <textarea class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value" style="height: 300px !important;"></textarea>
                                           </div>
 
                                           <div data-ng-switch-when="code">
-                                              <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value"></textarea>
+                                              <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value" style="height:300px !important;"></textarea>
                                           </div>
 
                                           <div data-ng-switch-when="wysiwyg">
