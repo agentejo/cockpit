@@ -70,6 +70,10 @@ Please visit http://getcockpit.com/docs - any contributions are welcome: https:/
 
 Please visit and contribute to https://github.com/aheinze/cockpit-i18n
 
+### Support
+
+Google group: [CockpitCMS](https://groups.google.com/d/forum/cockpitcms)
+
 
 ### Copyright and license
 

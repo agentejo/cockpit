@@ -50,9 +50,9 @@ function cockpit($module = null) {
         });
 
         // mailer service
-        $app->service("mailer", function() use($app){
+        $app->service("mailer", function() use($app, $config){
 
-            $options   = $app->retrieve("app.config/mailer", []);
+            $options   = isset($config['mailer']) ? $config['mailer']:[];
             $mailer    = new \Mailer(isset($options["transport"]) ? $options["transport"]:"mail", $options);
 
             return $mailer;
