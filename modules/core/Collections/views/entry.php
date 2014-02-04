@@ -75,7 +75,7 @@
                         </div>
 
                         <div data-ng-switch-when="code">
-                            <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]"></textarea>
+                            <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]" style="height:350px !important;"></textarea>
                         </div>
 
                         <div data-ng-switch-when="wysiwyg">
