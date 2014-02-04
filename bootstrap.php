@@ -29,6 +29,7 @@ function cockpit($module = null) {
         $app->path('cache'   , __DIR__.'/storage/cache');
         $app->path('modules' , __DIR__.'/modules');
         $app->path('assets'  , __DIR__.'/assets');
+        $app->path('custom'  , __DIR__.'/custom');
         $app->path('site'    , dirname(__DIR__));
 
         // nosql storage

@@ -68,6 +68,10 @@ if (COCKPIT_ADMIN) {
         'cockpit:assets/js/bootstrap.js',
     ];
 
+    if($app->path('custom:backend.css')) {
+        $app['app.assets.backend'][] = 'custom:backend.css';
+    }
+
     // helpers
     $app->helpers["admin"]    = 'Cockpit\\Helper\\Admin';
     $app->helpers["versions"] = 'Cockpit\\Helper\\Versions';

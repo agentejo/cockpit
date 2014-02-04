@@ -157,11 +157,18 @@ class Parsedown
 
             # ~
 
-            $deindented_line = ltrim($line);
+            $indentation = 0;
+
+            while(isset($line[$indentation]) and $line[$indentation] === ' ')
+            {
+                $indentation++;
+            }
+
+            $outdented_line = $indentation > 0 ? ltrim($line) : $line;
 
             # blank
 
-            if ($deindented_line === '')
+            if ($outdented_line === '')
             {
                 $block['interrupted'] = true;
 
@@ -187,50 +194,38 @@ class Parsedown
 
                 case 'li':
 
-                    if (preg_match('/^([ ]{0,3})(\d+[.]|[*+-])[ ](.*)/', $line, $matches))
+                    if ($block['indentation'] === $indentation and preg_match('/^'.$block['marker'].'[ ]+(.*)/', $outdented_line, $matches))
                     {
-                        if ($block['indentation'] !== $matches[1])
-                        {
-                            $block['lines'] []= $line;
-                        }
-                        else
-                        {
-                            unset($block['last']);
+                        unset($block['last']);
 
-                            $blocks []= $block;
+                        $blocks []= $block;
 
-                            unset($block['first']);
+                        $block['last'] = true;
+                        $block['lines'] = array($matches[1]);
 
-                            $block['last'] = true;
-
-                            $block['lines'] = array(
-                                preg_replace('/^[ ]{0,4}/', '', $matches[3]),
-                            );
-                        }
+                        unset($block['first']);
+                        unset($block['interrupted']);
 
                         continue 2;
                     }
 
-                    if (isset($block['interrupted']))
+                    if ( ! isset($block['interrupted']))
                     {
-                        if ($line[0] === ' ')
-                        {
-                            $block['lines'] []= '';
-
-                            $line = preg_replace('/^[ ]{0,4}/', '', $line);
-
-                            $block['lines'] []= $line;
-
-                            unset($block['interrupted']);
-
-                            continue 2;
-                        }
-                    }
-                    else
-                    {
-                        $line = preg_replace('/^[ ]{0,4}/', '', $line);
+                        $line = preg_replace('/^[ ]{0,'.$block['baseline'].'}/', '', $line);
 
                         $block['lines'] []= $line;
+
+                        continue 2;
+                    }
+                    elseif ($line[0] === ' ')
+                    {
+                        $block['lines'] []= '';
+
+                        $line = preg_replace('/^[ ]{0,'.$block['baseline'].'}/', '', $line);
+
+                        $block['lines'] []= $line;
+
+                        unset($block['interrupted']);
 
                         continue 2;
                     }
@@ -246,7 +241,7 @@ class Parsedown
 
                     # code
 
-                    if (isset($line[3]) and $line[3] === ' ' and $line[2] === ' ' and $line[1] === ' ')
+                    if ($indentation >= 4)
                     {
                         $code_line = substr($line, 4);
 
@@ -335,15 +330,15 @@ class Parsedown
 
             # indentation insensitive types
 
-            switch ($deindented_line[0])
+            switch ($outdented_line[0])
             {
                 case '<':
 
-                    $position = strpos($deindented_line, '>');
+                    $position = strpos($outdented_line, '>');
 
                     if ($position > 1)
                     {
-                        $substring = substr($deindented_line, 1, $position - 1);
+                        $substring = substr($outdented_line, 1, $position - 1);
 
                         $substring = chop($substring);
 
@@ -381,7 +376,7 @@ class Parsedown
                         {
                             $block = array(
                                 'type' => 'self-closing tag',
-                                'text' => $deindented_line,
+                                'text' => $outdented_line,
                             );
 
                             unset($is_self_closing);
@@ -391,13 +386,13 @@ class Parsedown
 
                         $block = array(
                             'type' => 'markup',
-                            'text' => $deindented_line,
+                            'text' => $outdented_line,
                             'start' => '<'.$name.'>',
                             'end' => '</'.$name.'>',
                             'depth' => 0,
                         );
 
-                        if (strpos($deindented_line, $block['end']))
+                        if (strpos($outdented_line, $block['end']))
                         {
                             $block['closed'] = true;
                         }
@@ -411,7 +406,7 @@ class Parsedown
 
                     # quote
 
-                    if (preg_match('/^>[ ]?(.*)/', $deindented_line, $matches))
+                    if (preg_match('/^>[ ]?(.*)/', $outdented_line, $matches))
                     {
                         $blocks []= $block;
 
@@ -431,7 +426,7 @@ class Parsedown
 
                     # reference
 
-                    if (preg_match('/^\[(.+?)\]:[ ]*(.+?)(?:[ ]+[\'"](.+?)[\'"])?[ ]*$/', $deindented_line, $matches))
+                    if (preg_match('/^\[(.+?)\]:[ ]*(.+?)(?:[ ]+[\'"](.+?)[\'"])?[ ]*$/', $outdented_line, $matches))
                     {
                         $label = strtolower($matches[1]);
 
@@ -454,7 +449,7 @@ class Parsedown
 
                     # fenced code block
 
-                    if (preg_match('/^([`]{3,}|[~]{3,})[ ]*(\S+)?[ ]*$/', $deindented_line, $matches))
+                    if (preg_match('/^([`]{3,}|[~]{3,})[ ]*(\S+)?[ ]*$/', $outdented_line, $matches))
                     {
                         $blocks []= $block;
 
@@ -481,7 +476,7 @@ class Parsedown
 
                     # hr
 
-                    if (preg_match('/^([-*_])([ ]{0,2}\1){2,}[ ]*$/', $deindented_line))
+                    if (preg_match('/^([-*_])([ ]{0,2}\1){2,}[ ]*$/', $outdented_line))
                     {
                         $blocks []= $block;
 
@@ -494,41 +489,48 @@ class Parsedown
 
                     # li
 
-                    if (preg_match('/^([ ]*)[*+-][ ](.*)/', $line, $matches))
+                    if (preg_match('/^([*+-][ ]+)(.*)/', $outdented_line, $matches))
                     {
                         $blocks []= $block;
 
+                        $baseline = $indentation + strlen($matches[1]);
+
                         $block = array(
                             'type' => 'li',
-                            'ordered' => false,
-                            'indentation' => $matches[1],
+                            'indentation' => $indentation,
+                            'baseline' => $baseline,
+                            'marker' => '[*+-]',
                             'first' => true,
                             'last' => true,
-                            'lines' => array(
-                                preg_replace('/^[ ]{0,4}/', '', $matches[2]),
-                            ),
+                            'lines' => array(),
                         );
+
+                        $block['lines'] []= preg_replace('/^[ ]{0,4}/', '', $matches[2]);
 
                         continue 2;
                     }
             }
 
-            # list item
+            # li
 
-            if ($deindented_line[0] <= '9' and $deindented_line[0] >= '0' and preg_match('/^([ ]*)\d+[.][ ](.*)/', $line, $matches))
+            if ($outdented_line[0] <= '9' and preg_match('/^(\d+[.][ ]+)(.*)/', $outdented_line, $matches))
             {
                 $blocks []= $block;
 
+                $baseline = $indentation + strlen($matches[1]);
+
                 $block = array(
                     'type' => 'li',
-                    'ordered' => true,
-                    'indentation' => $matches[1],
+                    'indentation' => $indentation,
+                    'baseline' => $baseline,
+                    'marker' => '\d+[.]',
                     'first' => true,
                     'last' => true,
-                    'lines' => array(
-                        preg_replace('/^[ ]{0,4}/', '', $matches[2]),
-                    ),
+                    'ordered' => true,
+                    'lines' => array(),
                 );
+
+                $block['lines'] []= preg_replace('/^[ ]{0,4}/', '', $matches[2]);
 
                 continue;
             }
@@ -654,7 +656,7 @@ class Parsedown
 
                     if (isset($block['first']))
                     {
-                        $type = $block['ordered'] ? 'ol' : 'ul';
+                        $type = isset($block['ordered']) ? 'ol' : 'ul';
 
                         $markup .= '<'.$type.'>'."\n";
                     }
@@ -670,7 +672,7 @@ class Parsedown
 
                     if (isset($block['last']))
                     {
-                        $type = $block['ordered'] ? 'ol' : 'ul';
+                        $type = isset($block['ordered']) ? 'ol' : 'ul';
 
                         $markup .= '</'.$type.'>'."\n";
                     }
@@ -885,33 +887,17 @@ class Parsedown
 
                     if ($text[1] === $closest_marker and preg_match(self::$strong_regex[$closest_marker], $text, $matches))
                     {
+                        $markers[] = $closest_marker;
                         $matches[1] = $this->parse_span_elements($matches[1], $markers);
 
                         $markup .= '<strong>'.$matches[1].'</strong>';
                     }
                     elseif (preg_match(self::$em_regex[$closest_marker], $text, $matches))
                     {
+                        $markers[] = $closest_marker;
                         $matches[1] = $this->parse_span_elements($matches[1], $markers);
 
                         $markup .= '<em>'.$matches[1].'</em>';
-                    }
-                    elseif ($text[1] === $closest_marker and preg_match(self::$strong_em_regex[$closest_marker], $text, $matches))
-                    {
-                        $matches[2] = $this->parse_span_elements($matches[2], $markers);
-
-                        $matches[1] and $matches[1] = $this->parse_span_elements($matches[1], $markers);
-                        $matches[3] and $matches[3] = $this->parse_span_elements($matches[3], $markers);
-
-                        $markup .= '<strong>'.$matches[1].'<em>'.$matches[2].'</em>'.$matches[3].'</strong>';
-                    }
-                    elseif (preg_match(self::$em_strong_regex[$closest_marker], $text, $matches))
-                    {
-                        $matches[2] = $this->parse_span_elements($matches[2], $markers);
-
-                        $matches[1] and $matches[1] = $this->parse_span_elements($matches[1], $markers);
-                        $matches[3] and $matches[3] = $this->parse_span_elements($matches[3], $markers);
-
-                        $markup .= '<em>'.$matches[1].'<strong>'.$matches[2].'</strong>'.$matches[3].'</em>';
                     }
 
                     if (isset($matches) and $matches)
@@ -1068,23 +1054,13 @@ class Parsedown
     # Read-only
 
     private static $strong_regex = array(
-        '*' => '/^[*]{2}([^*]+?)[*]{2}(?![*])/s',
-        '_' => '/^__([^_]+?)__(?!_)/us',
+        '*' => '/^[*]{2}((?:[^*]|[*][^*]*[*])+?)[*]{2}(?![*])/s',
+        '_' => '/^__((?:[^_]|_[^_]*_)+?)__(?!_)/us',
     );
 
     private static $em_regex = array(
-        '*' => '/^[*]([^*]+?)[*](?![*])/s',
-        '_' => '/^_([^_]+?)[_](?![_])\b/us',
-    );
-
-    private static $strong_em_regex = array(
-        '*' => '/^[*]{2}(.*?)[*](.+?)[*](.*?)[*]{2}/s',
-        '_' => '/^__(.*?)_(.+?)_(.*?)__/us',
-    );
-
-    private static $em_strong_regex = array(
-        '*' => '/^[*](.*?)[*]{2}(.+?)[*]{2}(.*?)[*]/s',
-        '_' => '/^_(.*?)__(.+?)__(.*?)_/us',
+        '*' => '/^[*]((?:[^*]|[*][*][^*]+?[*][*])+?)[*](?![*])/s',
+        '_' => '/^_((?:[^_]|__[^_]*__)+?)_(?!_)\b/us',
     );
 
     private static $special_characters = array(
