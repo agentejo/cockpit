@@ -116,7 +116,7 @@ if(COCKPIT_ADMIN) {
         // handle global search request
         $app->on("cockpit.globalsearch", function($search, $list) use($app){
             
-            $user = $app("session")->read("app.auth");
+            $user = $app->module("auth")->getUser();
 
             $bookmarks = $app->memory->get("mediamanager.bookmarks.".$user["_id"], ["folders"=>[], "files"=>[]]);
 

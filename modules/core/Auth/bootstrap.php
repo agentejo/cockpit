@@ -1,42 +1,56 @@
 <?php
 
+// API
 
-$this->module("auth")->authenticate = function($data) use($app) {
+$this->module("auth")->extend([
 
-    $data = array_merge([
-        "user"     => "",
-        "email"    => "",
-        "group"    => "",
-        "password" => ""
-    ], $data);
+    "authenticate" => function($data) use($app) {
 
-    if (!$data["password"]) return false;
+        $data = array_merge([
+            "user"     => "",
+            "email"    => "",
+            "group"    => "",
+            "password" => ""
+        ], $data);
 
-    $user = $app->data->cockpit->accounts->findOne([
-        "user"     => $data["user"],
-        "password" => $app->hash($data["password"]),
-        "active"   => 1
-    ]);
+        if (!$data["password"]) return false;
 
-    if(count($user)) {
+        $user = $app->data->cockpit->accounts->findOne([
+            "user"     => $data["user"],
+            "password" => $app->hash($data["password"]),
+            "active"   => 1
+        ]);
 
-        $user = array_merge($data, (array)$user);
+        if(count($user)) {
 
-        unset($user["password"]);
+            $user = array_merge($data, (array)$user);
 
-        return $user;
+            unset($user["password"]);
+
+            return $user;
+        }
+
+        return false;
+    },
+
+    "setUser" => function($user) use($app) {
+        $app("session")->write('app.auth', $user);
+    },
+
+    "getUser" => function() use($app) {
+        return $app("session")->read('app.auth', null);
+    },
+
+    "logout" => function() use($app) {
+        $app("session")->delete('app.auth');
+    },
+
+    "hasaccess" => function($resource, $action) use($app) {
+        $user = $app("session")->read("app.auth");
+        return isset($user["group"]) ? ($user["group"]=='admin' || $app("acl")->hasaccess($user["group"], $resource, $action)) : true;
     }
 
-    return false;
-};
-
-
-$this->module("auth")->hasaccess = function($resource, $action) use($app) {
-
-    $user = $app("session")->read("app.auth");
-
-    return isset($user["group"]) ? ($user["group"]=='admin' || $app("acl")->hasaccess($user["group"], $resource, $action)) : true;
-};
+]);
 
 
 if (COCKPIT_ADMIN) {

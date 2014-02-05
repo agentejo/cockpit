@@ -1,5 +1,14 @@
 <?php
 
+// API
+
+$this->module("restservice")->extend([
+
+    'jslib' => function($token=null) use($app) {
+        echo $app->script($app->routeUrl('/rest/api.js'.($token ? '?token='.$token:'')));
+    }
+]);
+
 
 $app->on("before", function() use($app) {
 
@@ -39,4 +48,11 @@ $app->on("before", function() use($app) {
         return false;
     });
 
+});
+
+$app->bind("/rest/api.js", function() use($app){
+
+    $token = $app->param("token", "");
+
+    return $app->view('restservice:views/cockpit.js', compact('token'));
 });

@@ -65,8 +65,13 @@ class Accounts extends \Cockpit\Controller {
 
             $this->data->cockpit->accounts->save($data);
 
+            if(isset($data["password"])) {
+                unset($data["password"]);
+            }
+
             if($data["_id"] == $this->user["_id"]) {
-                $this->app->helper("session")->write('app.auth', $data);
+                
+                $this->module("auth")->setUser($data);
             }
 
             return json_encode($data);
