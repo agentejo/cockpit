@@ -17,13 +17,15 @@ $app['app.assets.base'] = [
 
 // API
 
-$this->module("cockpit")->assets = function($assets, $key=null, $cache=0, $cache_folder=null) use($app) {
+$this->module("cockpit")->extend([
+    "assets" => function($assets, $key=null, $cache=0, $cache_folder=null) use($app) {
 
-    $key          = $key ? $key : md5(serialize($assets));
-    $cache_folder = $cache_folder ? $cache_folder : $app->path("cache:assets");
+        $key          = $key ? $key : md5(serialize($assets));
+        $cache_folder = $cache_folder ? $cache_folder : $app->path("cache:assets");
 
-    $app("assets")->style_and_script($assets, $key, $cache_folder, $cache);
-};
+        $app("assets")->style_and_script($assets, $key, $cache_folder, $cache);
+    }
+]);
 
 if (!function_exists('assets')) {
 
@@ -130,6 +132,8 @@ if (COCKPIT_ADMIN) {
     $app("i18n")->load("cockpit:i18n/{$locale}.php", $locale);
 
     $app->bind("/i18n.js", function() use($app, $locale){
+
+        $app->response->mime = "js";
 
         $data = $app("i18n")->data($locale);
 

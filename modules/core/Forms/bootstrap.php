@@ -53,7 +53,7 @@ $app->bind("/api/forms/submit/:form", function($params) use($app){
 
 });
 
-$this->module("forms")->extend(array(
+$this->module("forms")->extend([
 
     "form" => function($name, $options) use($app) {
 
@@ -65,7 +65,7 @@ $this->module("forms")->extend(array(
 
         echo $app->view("forms:views/api/form.php", compact('name', 'options'));
     }
-));
+]);
 
 
 if (!function_exists('form')) {
@@ -95,11 +95,11 @@ if(COCKPIT_ADMIN) {
 
         // handle global search request
         $app->on("cockpit.globalsearch", function($search, $list) use($app){
-            
+
             foreach ($app->data->common->forms->find()->toArray() as $f) {
                 if(stripos($f["name"], $search)!==false){
                     $list[] = [
-                        "title" => '<i class="uk-icon-inbox"></i> '.$f["name"], 
+                        "title" => '<i class="uk-icon-inbox"></i> '.$f["name"],
                         "url"   => $app->routeUrl('/forms/form/'.$f["_id"])
                     ];
                 }

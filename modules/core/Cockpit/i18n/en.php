@@ -102,7 +102,6 @@ return [
     'Entry saved!' => '',
 
     // Mediamanager
-
     'Mediamanager' => '',
     'Bookmarks' => '',
     'Folders' => '',

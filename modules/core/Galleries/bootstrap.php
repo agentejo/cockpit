@@ -2,13 +2,15 @@
 
 // API
 
+$this->module("galleries")->extend([
 
-$this->module("galleries")->gallery = function($name) use($app) {
+    "gallery" => function($name) use($app) {
 
-    $gallery = $app->data->common->galleries->findOne(["name"=>$name]);
+        $gallery = $app->data->common->galleries->findOne(["name"=>$name]);
 
-    return $gallery ? $gallery["images"] : null;
-};
+        return $gallery ? $gallery["images"] : null;
+    }
+]);
 
 
 if(!function_exists("gallery")) {
@@ -16,6 +18,12 @@ if(!function_exists("gallery")) {
         return cockpit("galleries")->gallery($name);
     }
 }
+
+
+//rest
+$app->on("cockpit.rest.init", function($routes) {
+    $routes["galleries"] = 'Galleries\\Controller\\RestApi';
+});
 
 
 // ADMIN
@@ -39,11 +47,11 @@ if(COCKPIT_ADMIN) {
 
         // handle global search request
         $app->on("cockpit.globalsearch", function($search, $list) use($app){
-            
+
             foreach ($app->data->common->galleries->find()->toArray() as $g) {
                 if(stripos($g["name"], $search)!==false){
                     $list[] = [
-                        "title" => '<i class="uk-icon-picture-o"></i> '.$g["name"], 
+                        "title" => '<i class="uk-icon-picture-o"></i> '.$g["name"],
                         "url"   => $app->routeUrl('/galleries/gallery/'.$g["_id"])
                     ];
                 }

@@ -2,24 +2,32 @@
 
 // API
 
-$this->module("collections")->collection = function($name) use($app) {
+$this->module("collections")->extend([
 
-    $entriesdb  = null;
-    $collection = $app->data->common->collections->findOne(["name"=>$name]);
+    "collection" => function($name) use($app) {
 
-    if($collection) {
-        $collection = "collection".$collection["_id"];
-        $entriesdb  = $app->data->collections->{$collection};
+        $entriesdb  = null;
+        $collection = $app->data->common->collections->findOne(["name"=>$name]);
+
+        if($collection) {
+            $collection = "collection".$collection["_id"];
+            $entriesdb  = $app->data->collections->{$collection};
+        }
+
+        return $entriesdb;
     }
-
-    return $entriesdb;
-};
+]);
 
 if(!function_exists("collection")) {
     function collection($name) {
         return cockpit("collections")->collection($name);
     }
 }
+
+//rest
+$app->on("cockpit.rest.init", function($routes) {
+    $routes["collections"] = 'Collections\\Controller\\RestApi';
+});
 
 // ADMIN
 
@@ -43,11 +51,11 @@ if(COCKPIT_ADMIN) {
 
         // handle global search request
         $app->on("cockpit.globalsearch", function($search, $list) use($app){
-            
+
             foreach ($app->data->common->collections->find()->toArray() as $c) {
                 if(stripos($c["name"], $search)!==false){
                     $list[] = [
-                        "title" => '<i class="uk-icon-list"></i> '.$c["name"], 
+                        "title" => '<i class="uk-icon-list"></i> '.$c["name"],
                         "url"   => $app->routeUrl('/collections/collection/'.$c["_id"])
                     ];
                 }
