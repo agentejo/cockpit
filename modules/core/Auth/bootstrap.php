@@ -34,19 +34,19 @@ $this->module("auth")->extend([
     },
 
     "setUser" => function($user) use($app) {
-        $app("session")->write('app.auth', $user);
+        $app("session")->write('cockpit.app.auth', $user);
     },
 
     "getUser" => function() use($app) {
-        return $app("session")->read('app.auth', null);
+        return $app("session")->read('cockpit.app.auth', null);
     },
 
     "logout" => function() use($app) {
-        $app("session")->delete('app.auth');
+        $app("session")->delete('cockpit.app.auth');
     },
 
     "hasaccess" => function($resource, $action) use($app) {
-        $user = $app("session")->read("app.auth");
+        $user = $app("session")->read("cockpit.app.auth");
         return isset($user["group"]) ? ($user["group"]=='admin' || $app("acl")->hasaccess($user["group"], $resource, $action)) : true;
     }
 
