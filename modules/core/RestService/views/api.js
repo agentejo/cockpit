@@ -4,7 +4,7 @@
         token  : '{{ $token }}',
         apiurl : '@route('/rest/api')',
         request: function(route, params, callback, type){
-            return $.post.([this.apiurl, route, '?token='+this.token].join(''), params, callback, type);
+            return $.post([this.apiurl, route, '?token='+this.token].join(''), params, callback, type);
         }
     };
 
