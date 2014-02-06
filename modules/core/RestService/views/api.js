@@ -1,6 +1,6 @@
 (function(g,d){
 
-    var CockpitApi = {
+    var Cockpit = {
         token  : '{{ $token }}',
         apiurl : '@route('/rest/api')',
         request: function(route, params, type){
@@ -69,9 +69,9 @@
 
     // AMD support
     if (typeof define === 'function' && define.amd) {
-        define(function () { return CockpitApi; });
+        define(function () { return Cockpit; });
     }
 
-    g.CockpitApi = CockpitApi;
+    g.Cockpit = Cockpit;
 
 })(window, document);

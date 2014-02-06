@@ -4,14 +4,20 @@
 
 $this->module("restservice")->extend([
 
-    'jslib' => function() use($app) {
+    'js_lib' => function() use($app) {
 
         $token = $app->memory->get("cockpit.api.token", '');
 
-        echo $app->script($app->routeUrl("/rest/api.js?token={$token}"));
+        return $app->script($app->routeUrl("/rest/api.js?token={$token}"));
     }
 ]);
 
+
+if(!function_exists("cockpit_js_lib")) {
+    function cockpit_js_lib() {
+        echo cockpit("restservice")->js_lib();
+    }
+}
 
 $app->on("before", function() use($app) {
 
