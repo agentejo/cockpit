@@ -91,10 +91,6 @@ if (COCKPIT_ADMIN) {
 
     $app->bindClass("Cockpit\\Controller\\Settings", "settings");
 
-    $app->bind("/profile/:id", function($params) use($app){
-        return $app->invoke("Cockpit\\Controller\\Base", "profile");
-    });
-
     $app->bindClass("Cockpit\\Controller\\Accounts", "accounts");
     $app->bindClass("Cockpit\\Controller\\Backups", "backups");
 
@@ -123,24 +119,25 @@ if (COCKPIT_ADMIN) {
 
     // load i18n definition
 
-    if($user = $app->module("auth")->getUser()) {
-        $app("i18n")->locale = isset($user['i18n']) ? $user['i18n'] : $app("i18n")->locale;
-    }
+    $app->on("admin.init", function() use($app){
+        
+        if($user = $app->module("auth")->getUser()) {
+            $app("i18n")->locale = isset($user['i18n']) ? $user['i18n'] : $app("i18n")->locale;
+        }
 
-    $locale = $app("i18n")->locale;
+        $locale = $app("i18n")->locale;
 
-    $app("i18n")->load("cockpit:i18n/{$locale}.php", $locale);
+        $app("i18n")->load("cockpit:i18n/{$locale}.php", $locale);
 
-    $app->bind("/i18n.js", function() use($app, $locale){
+        $app->bind("/i18n.js", function() use($app, $locale){
 
-        $app->response->mime = "js";
+            $app->response->mime = "js";
 
-        $data = $app("i18n")->data($locale);
+            $data = $app("i18n")->data($locale);
 
-        return 'if(i18n) { i18n.register('.(count($data) ? json_encode($data):'{}').'); }';
-    });
-
-    // acl
+            return 'if(i18n) { i18n.register('.(count($data) ? json_encode($data):'{}').'); }';
+        });
+    }, 1000);
 
     // acl
     $app("acl")->addResource("Cockpit", ['backups']);
