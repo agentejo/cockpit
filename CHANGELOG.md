@@ -1,8 +1,8 @@
 # Changelog
 
-### WIP
+### 0.9.0 (Feb 07, 2014)
 
-    + REST api
+    + REST api (+ js lib)
 
 ### 0.8.1 (Feb 04, 2014)
 
