@@ -56,17 +56,14 @@ $this->module("auth")->extend([
 if (COCKPIT_ADMIN) {
 
     // register controller
-    $app->bindClass("Auth\\Controller\\Auth", 'auth');
 
-    $app->on('auth.authenticate', function() use($app) {
-        $app->reroute('/auth/login');
-    });
+    $app->bindClass("Auth\\Controller\\Auth", 'auth');
 
     // init acl
 
     $app("acl")->addGroup("admin", true);
 
-    if($user = $app("session")->read("app.auth")) {
+    if($user = $app->module("auth")->getUser()) {
 
         foreach ($app->memory->get("cockpit.acl.groups", []) as $group => $isadmin) {
             $app("acl")->addGroup($group, $isadmin);
@@ -74,7 +71,7 @@ if (COCKPIT_ADMIN) {
 
         foreach ($app->memory->get("cockpit.acl.rights", []) as $group => $resources) {
 
-            if(!$app("acl")->hasGroup($group)) continue;
+            if (!$app("acl")->hasGroup($group)) continue;
 
             foreach ($resources as $resource => $actions) {
                 foreach ($actions as $action => $value) {

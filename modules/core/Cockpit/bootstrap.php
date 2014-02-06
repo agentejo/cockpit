@@ -121,7 +121,7 @@ if (COCKPIT_ADMIN) {
 
     // load i18n definition
 
-    if($user = $app("session")->read("app.auth")) {
+    if($user = $app->module("auth")->getUser()) {
         $app("i18n")->locale = isset($user['i18n']) ? $user['i18n'] : $app("i18n")->locale;
     }
 
