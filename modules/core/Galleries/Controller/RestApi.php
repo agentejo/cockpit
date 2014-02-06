@@ -12,7 +12,7 @@ class RestApi extends \LimeExtra\Controller {
 
         $content = $this->module("galleries")->gallery($name);
 
-        return is_null($content) ? false:$content;
+        return json_encode(is_null($content) ? false:$content);
     }
 
 }

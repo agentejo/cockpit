@@ -34,10 +34,9 @@ class RestApi extends \LimeExtra\Controller {
             if($skip)  $docs->sort($skip);
 
             $entries = $docs->toArray();
-
         }
 
-        return $entries;
+        return json_encode($entries);
     }
 
 }
