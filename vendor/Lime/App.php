@@ -1052,7 +1052,7 @@ class App implements \ArrayAccess {
     }
 
     /**
-     * [encode description]
+     * RC4 encryption
      * @param  [type]  $data          [description]
      * @param  [type]  $pwd           [description]
      * @param  boolean $base64encoded [description]
@@ -1090,7 +1090,7 @@ class App implements \ArrayAccess {
     }
 
     /**
-     * [decode description]
+     * Decode RC4 encrypted text 
      * @param  [type] $data [description]
      * @param  [type] $pwd  [description]
      * @return [type]       [description]
@@ -1240,14 +1240,23 @@ class Helper extends AppAware { }
 
 class Session extends Helper {
 
+    protected $initialized = false;
+    public $name;
+
     public function init($sessionname=null){
 
-        if(strlen(session_id())) {
-            session_destroy();
+        if($this->initialized) return;
+
+        if(!strlen(session_id())) {
+            $this->name = $sessionname ? $sessionname : $this->app["session.name"];
+
+            session_name($this->name);
+            session_start();
+        } else {
+            $this->name = session_name();
         }
 
-        session_name($sessionname ? $sessionname : $this->app["session.name"]);
-        session_start();
+        $this->initialized = true;
     }
 
     public function write($key, $value){

@@ -25,6 +25,10 @@ class Controller extends \Lime\AppAware {
         return $this->app->view($view, $params);
     }
 
+    protected function module($module) {
+        return $this->app->module($module);
+    }
+
     protected function stop() {
         $this->app->stop();
     }

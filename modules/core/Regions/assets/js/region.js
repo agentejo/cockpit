@@ -131,12 +131,15 @@
         $scope.$watch("mode", function(val){
 
             setTimeout(function(){
+                refreshcodeareas();
+            }, 50);
+        });
 
-                if(val=="tpl" && template.data("codearea")) {
-                    template.data("codearea").refresh();
-                }
+        $scope.$watch("manageform", function(val){
 
-            }, 100);
+            setTimeout(function(){
+                refreshcodeareas();
+            }, 50);
         });
 
         // after sorting list
@@ -155,6 +158,13 @@
             });
 
         });
+
+        function refreshcodeareas() {
+            $("textarea[codearea]").each(function(){
+                var data = $(this).data();
+                if(data["codearea"]) data.codearea.refresh();
+            });
+        }
 
     });
 

@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.8.1 (Feb 04, 2014)
+
+    + custom folder
+    # Fixed codearea fields height
+    ^ Updated assets + vendor libs
+
 ### 0.8.0 (Jan 30, 2014)
     
     + Added global in-app search for region, forms, collections, galleries and mediamanger bookmarks

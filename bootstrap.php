@@ -18,7 +18,12 @@ function cockpit($module = null) {
     if(!$app) {
 
         $config = include(__DIR__.'/config.php');
-        $app    = new LimeExtra\App($config);
+
+        if(file_exists(__DIR__.'/custom/config.php')) {
+            $config = array_merge($config, include(__DIR__.'/custom/config.php'));
+        }
+
+        $app = new LimeExtra\App($config);
 
         $app["app.config"] = $config;
 
@@ -29,6 +34,7 @@ function cockpit($module = null) {
         $app->path('cache'   , __DIR__.'/storage/cache');
         $app->path('modules' , __DIR__.'/modules');
         $app->path('assets'  , __DIR__.'/assets');
+        $app->path('custom'  , __DIR__.'/custom');
         $app->path('site'    , dirname(__DIR__));
 
         // nosql storage
@@ -44,9 +50,9 @@ function cockpit($module = null) {
         });
 
         // mailer service
-        $app->service("mailer", function() use($app){
+        $app->service("mailer", function() use($app, $config){
 
-            $options   = $app->retrieve("app.config/mailer", []);
+            $options   = isset($config['mailer']) ? $config['mailer']:[];
             $mailer    = new \Mailer(isset($options["transport"]) ? $options["transport"]:"mail", $options);
 
             return $mailer;

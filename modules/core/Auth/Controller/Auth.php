@@ -10,10 +10,10 @@ class Auth extends \LimeExtra\Controller {
 
         if($data = $this->param('auth')) {
 
-            $user = $this->app->module('auth')->authenticate($data);
+            $user = $this->module('auth')->authenticate($data);
 
             if($user) {
-                $this("session")->write('app.auth', $user);
+                $this->module("auth")->setUser($user);
             }
 
             if($this->req_is('ajax')) {
@@ -39,7 +39,7 @@ class Auth extends \LimeExtra\Controller {
 
     public function logout() {
 
-        $this("session")->delete('app.auth');
+        $this->module('auth')->logout();
 
         if($this->req_is('ajax')) {
             return '{"logout":1}';
