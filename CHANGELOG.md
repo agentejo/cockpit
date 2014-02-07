@@ -1,5 +1,9 @@
 # Changelog
 
+### WIP
+
+    - Removed jQuery dependency for form addon
+
 ### 0.9.0 (Feb 07, 2014)
 
     + REST api (+ js lib)
