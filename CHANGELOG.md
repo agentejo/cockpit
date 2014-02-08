@@ -2,6 +2,7 @@
 
 ### WIP
 
+    + Added caching of Lexy based views when possible (tmp folder must be writable) 
     - Removed jQuery dependency for form addon
 
 ### 0.9.0 (Feb 07, 2014)
