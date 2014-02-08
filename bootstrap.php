@@ -27,11 +27,12 @@ function cockpit($module = null) {
 
         $app["app.config"] = $config;
 
-        $app->path('#root' , __DIR__);
+        $app->path('#root'   , __DIR__);
         $app->path('storage' , __DIR__.'/storage');
         $app->path('backups' , __DIR__.'/storage/backups');
         $app->path('data'    , __DIR__.'/storage/data');
         $app->path('cache'   , __DIR__.'/storage/cache');
+        $app->path('tmp'     , __DIR__.'/storage/cache/tmp');
         $app->path('modules' , __DIR__.'/modules');
         $app->path('assets'  , __DIR__.'/assets');
         $app->path('custom'  , __DIR__.'/custom');

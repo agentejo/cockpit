@@ -93,7 +93,18 @@ class App extends \Lime\App {
             $layout = $from;
         };
 
-        $output = $renderer->file($template, $slots);
+        if(!file_exists($template)) {
+            return "Couldn't resolve {$template}.";
+        }
+
+        $cachedfile = $this->get_cached_view($template);
+
+        if($cachedfile) {
+            $output = $this->render($cachedfile, $slots);
+        } else {
+            $output = $renderer->file($template, $slots);
+        }
+
 
         if ($layout) {
 
@@ -101,9 +112,19 @@ class App extends \Lime\App {
                 $layout = $file;
             }
 
+            if(!file_exists($layout)) {
+                return "Couldn't resolve {$layout}.";
+            }
+
             $slots["content_for_layout"] = $output;
 
-            $output = $renderer->file($layout, $slots);
+            $cachedfile = $this->get_cached_view($layout);
+
+            if($cachedfile) {
+                $output = $this->render($cachedfile, $slots);
+            } else {
+                $output = $renderer->file($layout, $slots);
+            }
         }
 
         return $output;
@@ -135,5 +156,52 @@ class App extends \Lime\App {
         }
 
         return $renderer;
+    }
+
+    protected function get_cached_view($template) {
+
+        $cachefile   = md5($template).'.view.php';
+        $cachefolder = $this->path("tmp:");
+
+        if (!$cachefolder) {
+            return false;
+        }
+
+        $cachedfile  = $this->path("tmp:{$cachefile}");
+
+        if(!$cachedfile) {
+            $cachedfile = $this->cache_template($template);
+        }
+
+        if($cachedfile) {
+
+            $mtime = filemtime($template);
+
+            if(filemtime($cachedfile)!=$mtime) {
+                $cachedfile = $this->cache_template($template, $mtime);
+            }
+
+            return $cachedfile;
+        }
+
+        return false;
+    }
+
+    protected function cache_template($file, $filemtime = null) {
+
+        if(!$filemtime){
+            $filemtime = filemtime($file);
+        }
+
+        $cachefile = md5($file).'.view.php';
+
+        if(file_put_contents($this->path("tmp:").$cachefile, $this->renderer()->parse(file_get_contents($file), false, $file))){
+            $cachedfile = $this->path("tmp:{$cachefile}");
+            touch($cachedfile,  $filemtime);
+
+            return $cachedfile;
+        }
+
+        return false;
     }
 }
