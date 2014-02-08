@@ -77,9 +77,12 @@ class App extends \Lime\App {
     public function view($template, $slots = array()) {
 
         $renderer     = $this->renderer();
+        $olayout      = $this->layout;
 
         $slots["app"] = $this;
-        $layout       = $this->layout;
+        $layout       = $olayout;
+
+        $this->layout = false;
 
         if (strpos($template, ' with ') !== false ) {
             list($template, $layout) = explode(' with ', $template, 2);
@@ -126,6 +129,8 @@ class App extends \Lime\App {
                 $output = $renderer->file($layout, $slots);
             }
         }
+
+        $this->layout = $olayout;
 
         return $output;
     }
