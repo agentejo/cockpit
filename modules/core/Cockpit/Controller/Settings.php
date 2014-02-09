@@ -7,9 +7,10 @@ class Settings extends \Cockpit\Controller {
 
     public function general() {
 
-        $token = $this->app->memory->get("cockpit.api.token", '');
+        $registry = json_encode((object)$this->app->memory->get("cockpit.api.registry", []));
+        $token    = $this->app->memory->get("cockpit.api.token", '');
 
-        return $this->render('cockpit:views/settings/general.php', compact('token'));
+        return $this->render('cockpit:views/settings/general.php', compact('token', 'registry'));
     }
 
     public function info() {
@@ -89,6 +90,20 @@ class Settings extends \Cockpit\Controller {
         if ($token = $this->param("token", false)) {
 
             $this->app->memory->set("cockpit.api.token", $token);
+
+            return ["success"=>true];
+        }
+
+        return false;
+    }
+
+    public function saveRegistry() {
+
+        $registry = $this->param("registry", false);
+
+        if ($registry !== false) {
+
+            $this->app->memory->set("cockpit.api.registry", (object)$registry);
 
             return ["success"=>true];
         }

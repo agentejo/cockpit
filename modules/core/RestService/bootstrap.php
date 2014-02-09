@@ -68,9 +68,10 @@ $app->on("before", function() use($app) {
 
 $app->bind("/rest/api.js", function() use($app){
 
-    $token = $app->param("token", "");
+    $token    = $app->param("token", "");
+    $registry = json_encode((object)$app->memory->get("cockpit.api.registry", []));
 
     $app->response->mime = "js";
 
-    return $app->view('restservice:views/api.js', compact('token'));
+    return $app->view('restservice:views/api.js', compact('token', 'registry'));
 });

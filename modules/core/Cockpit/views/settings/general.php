@@ -5,7 +5,8 @@
 
     <div class="uk-width-medium-1-4">
         <ul class="uk-nav uk-nav-side" data-uk-switcher="{connect:'#settings-general'}">
-            <li><a href="#SYSTEM">Api</a></li>
+            <li><a href="#SYSTEM">@lang('API')</a></li>
+            <li><a href="#REGISTRY">@lang('Registry')</a></li>
         </ul>
     </div>
 
@@ -13,7 +14,7 @@
         <div class="app-panel">
             <div id="settings-general" class="uk-switcher">
                 <div>
-                    <span class="uk-badge app-badge">API</span>
+                    <span class="uk-badge app-badge">@lang('API')</span>
                     <hr>
 
                     <div class="uk-text-small">Token:</div>
@@ -23,6 +24,44 @@
                     </div>
 
                     <button class="uk-button uk-button-large uk-button-primary" ng-click="generateToken()">@lang('Generate api token')</button>
+                </div>
+                <div>
+                    <span class="uk-badge app-badge">Registry</span>
+                    <hr>
+
+                    <p class="uk-text-muted">
+                        @lang('The registry is just a global key/value storage you can reuse as global options for your app or site.')
+                    </p>
+
+
+                    <div class="uk-alert" ng-show="emptyRegistry()">
+                        @lang('The registry is empty.')
+                    </div>
+
+                    <div class="uk-margin" ng-show="!emptyRegistry()">
+                        <h3>@lang('Entries')</h3>
+
+                        <table class="uk-table">
+                            <tbody>
+                                <tr class="uk-form" ng-repeat="(key, value) in registry">
+                                    <td>
+                                        <i class="uk-icon-flag"></i>
+                                        @@ key @@
+                                    </td>
+                                    <td class="uk-width-3-4">
+                                        <textarea class="uk-width-1-1" placeholder="key value..." ng-model="registry[key]"></textarea>
+                                    </td>
+                                    <td width="20">
+                                        <a href="#" class="uk-text-danger" ng-click="removeRegistryKey(key)"><i class="uk-icon-trash-o"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <button ng-show="!emptyRegistry()" class="uk-button uk-button-large uk-button-success" type="button" ng-click="saveRegistry()">@lang('Save')</button>
+                    <button class="uk-button uk-button-large uk-button-primary" type="button" ng-click="addRegistryKey()"><i class="uk-icon-plus-circle"></i> @lang('Entry')</button>
+
                 </div>
             </div>
         </div>
@@ -34,10 +73,44 @@
 <script>
     App.module.controller("general-settings", function($scope, $rootScope, $http){
 
-        $scope.token = '{{ $token }}';
+        $scope.token    = '{{ $token }}';
+        $scope.registry = {{ $registry }};
+
+        $scope.addRegistryKey = function(){
+            
+            var key = prompt("Key name");
+
+            if(!key) return;
+
+            if($scope.registry[key]) {
+                alert('"'+key+'" already exists!');
+                return;
+            }
+
+            $scope.registry[key] = "";
+        };
+
+        $scope.removeRegistryKey = function(key){
+            
+            if(confirm("@lang('Are you sure?')")) {
+                delete $scope.registry[key];
+                $scope.saveRegistry();
+            }
+        };
+
+        $scope.saveRegistry = function(){
+
+            $http.post(App.route("/settings/saveRegistry"), {"registry": angular.copy($scope.registry)}).success(function(data){
+                App.notify("@lang('Registry updated!')", "success");
+            }).error(App.module.callbacks.error.http);
+        };
+
+        $scope.emptyRegistry = function(){
+            return !Object.keys($scope.registry).length;
+        };
 
         $scope.generateToken = function(){
-            $scope.token = buildToken();
+            $scope.token = buildToken(64);
 
             $http.post(App.route("/settings/saveToken"), {"token": $scope.token}).success(function(data){
                 App.notify("@lang('New api token saved!')", "success");

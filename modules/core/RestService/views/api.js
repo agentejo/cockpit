@@ -63,7 +63,8 @@
             xhr.send(typeof(params)=='object' ? JSON.stringify(params):params);
 
             return ret;
-        }
+        },
+        registry: {{ $registry }}
     };
 
 
