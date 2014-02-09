@@ -6,6 +6,8 @@ date_default_timezone_set('UTC');
 
 require(__DIR__.'/bootstrap.php');
 
+$cockpit = cockpit();
+
 $cockpit->on("after", function() use($cockpit) {
 
     switch ($cockpit->response->status) {
