@@ -61,7 +61,20 @@
                     
                     <button ng-show="!emptyRegistry()" class="uk-button uk-button-large uk-button-success" type="button" ng-click="saveRegistry()">@lang('Save')</button>
                     <button class="uk-button uk-button-large uk-button-primary" type="button" ng-click="addRegistryKey()"><i class="uk-icon-plus-circle"></i> @lang('Entry')</button>
+                    
+                    <hr>
 
+                    <div class="uk-margin">
+                        <p>
+                            <strong>Access the registry values:</strong>
+                        </p>
+
+                        <span class="uk-badge">PHP</span>
+                        <pre><code>&lt;?php $value = <strong>get_registry</strong>('keyname', [default]); ?&gt;</code></pre>
+
+                        <span class="uk-badge">Javascript</span>
+                        <pre><code>var value = Cockpit.registry.<strong>keyname</strong> || default; <span class="uk-text-muted">// with Cockpit.js API</span></code></pre>
+                    </div>
                 </div>
             </div>
         </div>
