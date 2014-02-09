@@ -70,3 +70,5 @@ function cockpit($module = null) {
 
     return $module ? $app->module($module) : $app;
 }
+
+$cockpit = cockpit();
