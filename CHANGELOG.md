@@ -1,7 +1,7 @@
 # Changelog
 
 ### WIP
-
+    + Added global registry (key/value) storage
     + Added caching of Lexy based views when possible (tmp folder must be writable) 
     - Removed jQuery dependency for form addon
 

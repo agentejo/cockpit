@@ -24,6 +24,9 @@ $this->module("cockpit")->extend([
         $cache_folder = $cache_folder ? $cache_folder : $app->path("cache:assets");
 
         $app("assets")->style_and_script($assets, $key, $cache_folder, $cache);
+    },
+    "get_registry" => function($key, $default=null) use($app) {
+        return $app->memory->hget("cockpit.api.registry", $key, $default);
     }
 ]);
 
@@ -31,6 +34,13 @@ if (!function_exists('assets')) {
 
     function assets($assets, $key=null, $cache=0, $cache_folder=null) {
         cockpit("cockpit")->assets($assets, $key, $cache, $cache_folder);
+    }
+}
+
+if (!function_exists('get_registry')) {
+
+    function get_registry($key, $default=null) {
+        cockpit("cockpit")->get_registry($key, $default);
     }
 }
 
