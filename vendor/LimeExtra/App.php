@@ -4,7 +4,9 @@ namespace LimeExtra;
 
 class App extends \Lime\App {
 
-    public $viewvars = array();
+    public $viewvars         = array();
+
+    protected $view_renderer = null;
 
     public function __construct ($settings = array()) {
 
@@ -143,13 +145,12 @@ class App extends \Lime\App {
 
     public function renderer() {
 
-        static $renderer;
+        if (!$this->view_renderer)  {
 
-        if (!$renderer)  {
-            $renderer = new \Lexy();
+            $this->view_renderer = new \Lexy();
 
             //register app helper functions
-            $renderer->extend(function($content){
+            $this->view_renderer->extend(function($content){
 
                 $content = preg_replace('/(\s*)@base\((.+?)\)/'   , '$1<?php $app->base($2); ?>', $content);
                 $content = preg_replace('/(\s*)@route\((.+?)\)/'  , '$1<?php $app->route($2); ?>', $content);
@@ -167,7 +168,7 @@ class App extends \Lime\App {
             });
         }
 
-        return $renderer;
+        return $this->view_renderer;
     }
 
     protected function get_cached_view($template) {
