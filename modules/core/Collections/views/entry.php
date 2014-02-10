@@ -59,7 +59,7 @@
         </div>
     </nav>
 
-    <form class="uk-form" data-ng-submit="save()" data-ng-show="collection">
+    <form class="uk-form" data-ng-submit="save()" data-ng-show="collection" novalidate>
 
         <div class="uk-grid" data-uk-grid-margin>
 
@@ -68,10 +68,11 @@
 
                     <div class="uk-form-row" data-ng-repeat="field in fieldsInArea('main')" data-ng-switch="field.type">
 
-                        <label class="uk-text-small">@@ field.name | uppercase @@ <span class="uk-form-required" ng-show="field.required">*</span></label>
+                        <label class="uk-text-small">@@ field.name | uppercase @@ <span class="uk-field-required" ng-show="field.required">*</span></label>
+                        <div class="uk-text-small uk-field-error-message" data-ng-if="field.error">@@ field.error @@</div>
 
                         <div data-ng-switch-when="html">
-                            <textarea class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]" ng-required="field.required"></textarea>
+                            <textarea class="uk-width-1-1 uk-form-large" data-ng-class="{'uk-field-error':field.error}" data-ng-model="entry[field.name]" ng-required="field.required"></textarea>
                         </div>
 
                         <div data-ng-switch-when="code">
@@ -83,7 +84,7 @@
                         </div>
 
                         <div data-ng-switch-default>
-                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="entry[field.name]" ng-required="field.required">
+                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-field-error':field.error}" data-ng-model="entry[field.name]" ng-required="field.required">
                         </div>
                     </div>
 
@@ -98,10 +99,11 @@
             <div class="uk-width-medium-1-4">
                     <div class="uk-form-row" data-ng-repeat="field in fieldsInArea('side')" data-ng-switch="field.type">
 
-                        <label class="uk-text-small">@@ field.name | uppercase @@</label>
+                        <label class="uk-text-small">@@ field.name | uppercase @@ <span class="uk-field-required" ng-show="field.required">*</span></label>
+                        <div class="uk-text-small uk-field-error-message" data-ng-if="field.error">@@ field.error @@</div>
 
                         <div data-ng-switch-when="select">
-                            <select class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]" ng-required="field.required">
+                            <select class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]" data-ng-class="{'uk-field-error':field.error}" ng-required="field.required">
                                 <option value="@@ option @@" data-ng-repeat="option in (field.options || [])" data-ng-selected="(entry[field.name]==option)">@@ option @@</option>
                             </select>
                         </div>
@@ -115,7 +117,7 @@
                         </div>
 
                         <div data-ng-switch-default>
-                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="entry[field.name]" ng-required="field.required">
+                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="entry[field.name]">
                         </div>
                     </div>
 
