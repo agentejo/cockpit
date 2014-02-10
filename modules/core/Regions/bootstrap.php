@@ -36,7 +36,7 @@ $this->module("regions")->extend([
 // extend lexy parser
 $app->renderer()->extend(function($content){
 
-    $content = preg_replace('/(\s*)@region\((.+?)\)/', '$1<?php cockpit("regions")->render($2); ?>', $content);
+    $content = preg_replace('/(\s*)@region\((.+?)\)/', '$1<?php echo cockpit("regions")->render($2); ?>', $content);
 
     return $content;
 });
