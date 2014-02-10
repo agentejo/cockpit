@@ -21,7 +21,10 @@ class App extends \Lime\App {
 
         parent::__construct($settings);
 
-        $this->viewvars["app"] = $this;
+        $this->viewvars["app"]        = $this;
+        $this->viewvars["base_url"]   = $this["base_url"];
+        $this->viewvars["base_route"] = $this["base_route"];
+        $this->viewvars["docs_root"]  = $this["docs_root"];
 
         $this["modules"] = new \ArrayObject(array());
 
