@@ -4,6 +4,7 @@ namespace LimeExtra;
 
 class App extends \Lime\App {
 
+    public $viewvars = array();
 
     public function __construct ($settings = array()) {
 
@@ -19,6 +20,8 @@ class App extends \Lime\App {
         ), isset($settings["helpers"]) ? $settings["helpers"] : array());
 
         parent::__construct($settings);
+
+        $this->viewvars["app"] = $this;
 
         $this["modules"] = new \ArrayObject(array());
 
@@ -79,7 +82,7 @@ class App extends \Lime\App {
         $renderer     = $this->renderer();
         $olayout      = $this->layout;
 
-        $slots["app"] = $this;
+        $slots         = array_merge($this->viewvars, $slots);
         $layout       = $olayout;
 
         $this->layout = false;
