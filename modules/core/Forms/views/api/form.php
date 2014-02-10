@@ -1,69 +1,127 @@
 <script>
     
-    (function($){
+    setTimeout(function(){
 
-        if(!$) return;
+        var form       = document.getElementById("{{ $options['id'] }}"), 
+            msgsuccess = form.getElementsByClassName("form-message-success").item(0), 
+            msgfail    = form.getElementsByClassName("form-message-fail").item(0),
+            bind       = function(ele, evt, fn) {
+                if (!ele.addEventListener) {
+                    ele.attachEvent("on"+evt, fn);
+                } else {
+                    ele.addEventListener(evt, fn, false);
+                }
+            },
+            success = function(){
+                if(msgsuccess) {
+                    msgsuccess.style.display = 'block';
+                } else {
+                    alert("@lang('Form submission was successfull.')");
+                }
+            },
+            fail = function(){
+                if(msgfail) {
+                    msgfail.style.display = 'block';
+                } else {
+                    alert("@lang('Form submission failed.')");
+                }
+            };
 
-        var formid = "{{ $options["id"] }}";
+        bind(form, "submit", function(e){
+            
+            e.preventDefault();
 
-        $(function($){
+            if(msgsuccess) msgsuccess.style.display = "none";
+            if(msgfail) msgfail.style.display = "none";
 
-            var form       = $("#"+formid), 
-                msgsuccess = form.find(".form-message-success").hide(), 
-                msgfail    = form.find(".form-message-fail").hide();
+            var data = serialize(form),
+                xhr  = new XMLHttpRequest();
 
-            form.on("submit", function(){
+            xhr.onload = function(){
                 
-                msgsuccess.hide();
-                msgfail.hide();
+                this.responseText;
 
-                var data   = form.serialize(),
-                    inputs = form.find(":input").attr("disabled", true);
+                if (this.status == 200) {
 
-                form.trigger("form-submit", [form]);
-
-                $.post("@route('/api/forms/submit/'.$name)", data, function(response){
-                    
-                    form.trigger("form-after-post", [form, response]);
-
-                    if(response=='false') {
-                        
-                        if(msgfail.length) {
-                            msgfail.show();
-                        } else {
-                            alert("@lang('Form submission failed.')");
-                        }
+                    if(this.responseText=='false') {
+                        fail();
                     } else {
-                        
-                        if(msgsuccess.length) {
-                            msgsuccess.show();
-                        } else {
-                            alert("@lang('Form submission was successfull.')");
-                            form[0].reset();
-                        }
+                        success();
+                        form.reset();
                     }
 
-                    inputs.attr("disabled", false);
+                } else {
+                    fail();
+                }
+            };
 
-                }).fail(function(){
-
-                    form.trigger("form-fail", [form]);
-
-                    if(msgfail.length) {
-                        msgfail.show();
-                    } else {
-                        alert("@lang('Form submission failed.')");
-                    }
-
-                    inputs.attr("disabled", false); 
-                });
-
-                return false;
-            })
-
+            xhr.open('POST', "@route('/api/forms/submit/'.$name)", true);
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.send(data);
         });
 
-    })(window.jQuery || undefined);
+        function serialize(form) {
+            if (!form || form.nodeName !== "FORM") {
+                return;
+            }
+            var i, j, q = [];
+            for (i = form.elements.length - 1; i >= 0; i = i - 1) {
+                if (form.elements[i].name === "") {
+                    continue;
+                }
+                switch (form.elements[i].nodeName) {
+                case 'INPUT':
+                    switch (form.elements[i].type) {
+                    case 'text':
+                    case 'hidden':
+                    case 'password':
+                    case 'button':
+                    case 'reset':
+                    case 'submit':
+                        q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                        break;
+                    case 'checkbox':
+                    case 'radio':
+                        if (form.elements[i].checked) {
+                            q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                        }                       
+                        break;
+                    case 'file':
+                        break;
+                    }
+                    break;           
+                case 'TEXTAREA':
+                    q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                    break;
+                case 'SELECT':
+                    switch (form.elements[i].type) {
+                    case 'select-one':
+                        q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                        break;
+                    case 'select-multiple':
+                        for (j = form.elements[i].options.length - 1; j >= 0; j = j - 1) {
+                            if (form.elements[i].options[j].selected) {
+                                q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].options[j].value));
+                            }
+                        }
+                        break;
+                    }
+                    break;
+                case 'BUTTON':
+                    switch (form.elements[i].type) {
+                    case 'reset':
+                    case 'submit':
+                    case 'button':
+                        q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
+                        break;
+                    }
+                    break;
+                }
+            }
+            return q.join("&");
+        }
+
+    }, 100);
 
 </script>
 

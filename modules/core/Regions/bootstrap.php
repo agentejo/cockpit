@@ -2,38 +2,41 @@
 
 // API
 
-$this->module("regions")->render = function($name, $params = []) use($app) {
+$this->module("regions")->extend([
 
-    $region = $app->data->common->regions->findOne(["name"=>$name]);
+    "render" => function($name, $params = []) use($app) {
 
-    if(!$region) {
-        return null;
-    }
+        $region = $app->data->common->regions->findOne(["name"=>$name]);
 
-    $renderer = $app->renderer();
-    $fields   = [];
-
-    if(isset($region["fields"]) && count($region["fields"])) {
-        foreach ($region["fields"] as &$field) {
-            $fields[$field["name"]] = $field["value"];
+        if(!$region) {
+            return null;
         }
+
+        $renderer = $app->renderer();
+        $fields   = [];
+
+        if(isset($region["fields"]) && count($region["fields"])) {
+            foreach ($region["fields"] as &$field) {
+                $fields[$field["name"]] = $field["value"];
+            }
+        }
+
+        $fields = array_merge($fields, $params);
+
+        $app->trigger("region_before_render", [$name, $region["tpl"], $fields]);
+
+        $output = $renderer->execute($region["tpl"], $fields);
+
+        $app->trigger("region_after_render", [$name, $output]);
+
+        return $output;
     }
-
-    $fields = array_merge($fields, $params);
-
-    $app->trigger("region_before_render", [$name, $region["tpl"], $fields]);
-
-    $output = $renderer->execute($region["tpl"], $fields);
-
-    $app->trigger("region_after_render", [$name, $output]);
-
-    return $output;
-};
+]);
 
 // extend lexy parser
 $app->renderer()->extend(function($content){
 
-    $content = preg_replace('/(\s*)@region\((.+?)\)/', '$1<?php cockpit("regions")->render($2); ?>', $content);
+    $content = preg_replace('/(\s*)@region\((.+?)\)/', '$1<?php echo cockpit("regions")->render($2); ?>', $content);
 
     return $content;
 });
@@ -49,6 +52,11 @@ if(!function_exists("get_region")) {
         return cockpit("regions")->render($name, $params);
     }
 }
+
+//rest
+$app->on("cockpit.rest.init", function($routes) {
+    $routes["regions"] = 'Regions\\Controller\\RestApi';
+});
 
 // ADMIN
 
@@ -71,11 +79,11 @@ if(COCKPIT_ADMIN) {
 
         // handle global search request
         $app->on("cockpit.globalsearch", function($search, $list) use($app){
-            
+
             foreach ($app->data->common->regions->find()->toArray() as $r) {
                 if(stripos($r["name"], $search)!==false){
                     $list[] = [
-                        "title" => '<i class="uk-icon-th-large"></i> '.$r["name"], 
+                        "title" => '<i class="uk-icon-th-large"></i> '.$r["name"],
                         "url"   => $app->routeUrl('/regions/region/'.$r["_id"])
                     ];
                 }

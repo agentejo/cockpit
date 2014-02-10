@@ -2,16 +2,23 @@
 
 namespace Cockpit;
 
-class Controller extends \LimeExtra\Controller\Auth {
+class Controller extends \LimeExtra\Controller {
 
     protected $layout = 'cockpit:views/layouts/app.php';
     protected $user;
 
     public function __construct($app) {
 
+        $user = $app->module("auth")->getUser();
+
+        if(!$user){
+            $app->reroute('/auth/login');
+            $app->stop();
+        }
+
         parent::__construct($app);
 
-        $this->user   = $app["user"] = $this->module("auth")->getUser();
+        $this->user   = $app["user"] = $user;
         $this->data   = $app->data;
         $this->memory = $app->memory;
 

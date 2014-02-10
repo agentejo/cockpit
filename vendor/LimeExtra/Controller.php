@@ -25,6 +25,10 @@ class Controller extends \Lime\AppAware {
         return $this->app->view($view, $params);
     }
 
+    protected function param($key, $default=null) {
+        return $this->app->param($key, $default);
+    }
+
     protected function module($module) {
         return $this->app->module($module);
     }

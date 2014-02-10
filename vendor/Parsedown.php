@@ -426,18 +426,72 @@ class Parsedown
 
                     # reference
 
-                    if (preg_match('/^\[(.+?)\]:[ ]*(.+?)(?:[ ]+[\'"](.+?)[\'"])?[ ]*$/', $outdented_line, $matches))
+                    $position = strpos($outdented_line, ']:');
+
+                    if ($position)
                     {
-                        $label = strtolower($matches[1]);
+                        $reference = array();
 
-                        $this->reference_map[$label] = array(
-                            '»' => trim($matches[2], '<>'),
-                        );
+                        $label = substr($outdented_line, 1, $position - 1);
+                        $label = strtolower($label);
 
-                        if (isset($matches[3]))
+                        $substring = substr($outdented_line, $position + 2);
+                        $substring = trim($substring);
+
+                        if ($substring === '')
                         {
-                            $this->reference_map[$label]['#'] = $matches[3];
+                            break;
                         }
+
+                        if ($substring[0] === '<')
+                        {
+                            $position = strpos($substring, '>');
+
+                            if ($position === false)
+                            {
+                                break;
+                            }
+
+                            $reference['»'] = substr($substring, 1, $position - 1);
+
+                            $substring = substr($substring, $position + 1);
+                        }
+                        else
+                        {
+                            $position = strpos($substring, ' ');
+
+                            if ($position === false)
+                            {
+                                $reference['»'] = $substring;
+
+                                $substring = false;
+                            }
+                            else
+                            {
+                                $reference['»'] = substr($substring, 0, $position);
+
+                                $substring = substr($substring, $position + 1);
+                            }
+                        }
+
+                        if ($substring !== false)
+                        {
+                            if ($substring[0] !== '"' and $substring[0] !== "'" and $substring[0] !== '(')
+                            {
+                                break;
+                            }
+
+                            $last_char = substr($substring, -1);
+
+                            if ($last_char !== '"' and $last_char !== "'" and $last_char !== ')')
+                            {
+                                break;
+                            }
+
+                            $reference['#'] = substr($substring, 1, -1);
+                        }
+
+                        $this->reference_map[$label] = $reference;
 
                         continue 2;
                     }
@@ -974,7 +1028,7 @@ class Parsedown
 
                 case '`':
 
-                    if (preg_match('/^(`+)(.+?)\1(?!`)/', $text, $matches))
+                    if (preg_match('/^(`+)[ ]*(.+?)[ ]*\1(?!`)/', $text, $matches))
                     {
                         $element_text = $matches[2];
                         $element_text = htmlspecialchars($element_text, ENT_NOQUOTES, 'UTF-8');
@@ -994,7 +1048,7 @@ class Parsedown
 
                 case 'http':
 
-                    if (preg_match('/^https?:[\/]{2}[^\s]+\b/ui', $text, $matches))
+                    if (preg_match('/^https?:[\/]{2}[^\s]+\b\/*/ui', $text, $matches))
                     {
                         $element_url = $matches[0];
                         $element_url = str_replace('&', '&amp;', $element_url);

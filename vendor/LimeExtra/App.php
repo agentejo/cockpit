@@ -4,6 +4,9 @@ namespace LimeExtra;
 
 class App extends \Lime\App {
 
+    public $viewvars         = array();
+
+    protected $view_renderer = null;
 
     public function __construct ($settings = array()) {
 
@@ -19,6 +22,11 @@ class App extends \Lime\App {
         ), isset($settings["helpers"]) ? $settings["helpers"] : array());
 
         parent::__construct($settings);
+
+        $this->viewvars["app"]        = $this;
+        $this->viewvars["base_url"]   = $this["base_url"];
+        $this->viewvars["base_route"] = $this["base_route"];
+        $this->viewvars["docs_root"]  = $this["docs_root"];
 
         $this["modules"] = new \ArrayObject(array());
 
@@ -77,9 +85,12 @@ class App extends \Lime\App {
     public function view($template, $slots = array()) {
 
         $renderer     = $this->renderer();
+        $olayout      = $this->layout;
 
-        $slots["app"] = $this;
-        $layout       = $this->layout;
+        $slots         = array_merge($this->viewvars, $slots);
+        $layout       = $olayout;
+
+        $this->layout = false;
 
         if (strpos($template, ' with ') !== false ) {
             list($template, $layout) = explode(' with ', $template, 2);
@@ -93,7 +104,18 @@ class App extends \Lime\App {
             $layout = $from;
         };
 
-        $output = $renderer->file($template, $slots);
+        if(!file_exists($template)) {
+            return "Couldn't resolve {$template}.";
+        }
+
+        $cachedfile = $this->get_cached_view($template);
+
+        if($cachedfile) {
+            $output = $this->render($cachedfile, $slots);
+        } else {
+            $output = $renderer->file($template, $slots);
+        }
+
 
         if ($layout) {
 
@@ -101,39 +123,98 @@ class App extends \Lime\App {
                 $layout = $file;
             }
 
+            if(!file_exists($layout)) {
+                return "Couldn't resolve {$layout}.";
+            }
+
             $slots["content_for_layout"] = $output;
 
-            $output = $renderer->file($layout, $slots);
+            $cachedfile = $this->get_cached_view($layout);
+
+            if($cachedfile) {
+                $output = $this->render($cachedfile, $slots);
+            } else {
+                $output = $renderer->file($layout, $slots);
+            }
         }
+
+        $this->layout = $olayout;
 
         return $output;
     }
 
     public function renderer() {
 
-        static $renderer;
+        if (!$this->view_renderer)  {
 
-        if (!$renderer)  {
-            $renderer = new \Lexy();
+            $this->view_renderer = new \Lexy();
 
             //register app helper functions
-            $renderer->extend(function($content){
+            $this->view_renderer->extend(function($content){
 
                 $content = preg_replace('/(\s*)@base\((.+?)\)/'   , '$1<?php $app->base($2); ?>', $content);
                 $content = preg_replace('/(\s*)@route\((.+?)\)/'  , '$1<?php $app->route($2); ?>', $content);
                 $content = preg_replace('/(\s*)@assets\((.+?)\)/' , '$1<?php $app("assets")->style_and_script($2); ?>', $content);
+                $content = preg_replace('/(\s*)@scripts\((.+?)\)/', '$1<?php echo $app->assets($2); ?>', $content);
                 $content = preg_replace('/(\s*)@render\((.+?)\)/' , '$1<?php echo $app->view($2); ?>', $content);
                 $content = preg_replace('/(\s*)@trigger\((.+?)\)/', '$1<?php $app->trigger($2); ?>', $content);
                 $content = preg_replace('/(\s*)@lang\((.+?)\)/'   , '$1<?php echo $app("i18n")->get($2); ?>', $content);
 
                 $content = preg_replace('/(\s*)@start\((.+?)\)/'   , '$1<?php $app->start($2); ?>', $content);
-                $content = preg_replace('/(\s*)@end\((.+?)\)/'   , '$1<?php $app->end($2); ?>', $content);
+                $content = preg_replace('/(\s*)@end\((.+?)\)/'     , '$1<?php $app->end($2); ?>', $content);
                 $content = preg_replace('/(\s*)@block\((.+?)\)/'   , '$1<?php $app->block($2); ?>', $content);
 
                 return $content;
             });
         }
 
-        return $renderer;
+        return $this->view_renderer;
+    }
+
+    protected function get_cached_view($template) {
+
+        $cachefile   = md5($template).'.view.php';
+        $cachefolder = $this->path("tmp:");
+
+        if (!$cachefolder) {
+            return false;
+        }
+
+        $cachedfile  = $this->path("tmp:{$cachefile}");
+
+        if(!$cachedfile) {
+            $cachedfile = $this->cache_template($template);
+        }
+
+        if($cachedfile) {
+
+            $mtime = filemtime($template);
+
+            if(filemtime($cachedfile)!=$mtime) {
+                $cachedfile = $this->cache_template($template, $mtime);
+            }
+
+            return $cachedfile;
+        }
+
+        return false;
+    }
+
+    protected function cache_template($file, $filemtime = null) {
+
+        if(!$filemtime){
+            $filemtime = filemtime($file);
+        }
+
+        $cachefile = md5($file).'.view.php';
+
+        if(file_put_contents($this->path("tmp:").$cachefile, $this->renderer()->parse(file_get_contents($file), false, $file))){
+            $cachedfile = $this->path("tmp:{$cachefile}");
+            touch($cachedfile,  $filemtime);
+
+            return $cachedfile;
+        }
+
+        return false;
     }
 }

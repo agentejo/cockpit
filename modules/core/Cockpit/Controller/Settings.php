@@ -5,6 +5,14 @@ namespace Cockpit\Controller;
 class Settings extends \Cockpit\Controller {
 
 
+    public function general() {
+
+        $registry = json_encode((object)$this->app->memory->get("cockpit.api.registry", []));
+        $token    = $this->app->memory->get("cockpit.api.token", '');
+
+        return $this->render('cockpit:views/settings/general.php', compact('token', 'registry'));
+    }
+
     public function info() {
 
         $info                  = [];
@@ -55,7 +63,7 @@ class Settings extends \Cockpit\Controller {
         $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->app->path("cache:")), \RecursiveIteratorIterator::SELF_FIRST);
 
         foreach ($files as $file) {
-            
+
             if(!$file->isFile()) continue;
             if(preg_match('/(.gitkeep|index\.html)$/', $file)) continue;
 
@@ -64,7 +72,7 @@ class Settings extends \Cockpit\Controller {
 
         return json_encode(["size"=>$this->app->helper("utils")->formatSize($this->app->helper("fs")->getDirSize("cache:"))]);
     }
-    
+
     public function vacuumdata() {
 
         foreach ($this->app->helper("fs")->ls('*.sqlite', 'data:') as $file) {
@@ -77,5 +85,29 @@ class Settings extends \Cockpit\Controller {
         return json_encode(["size"=>$this->app->helper("utils")->formatSize($this->app->helper("fs")->getDirSize("data:"))]);
     }
 
+    public function saveToken() {
 
+        if ($token = $this->param("token", false)) {
+
+            $this->app->memory->set("cockpit.api.token", $token);
+
+            return ["success"=>true];
+        }
+
+        return false;
+    }
+
+    public function saveRegistry() {
+
+        $registry = $this->param("registry", false);
+
+        if ($registry !== false) {
+
+            $this->app->memory->set("cockpit.api.registry", (object)$registry);
+
+            return ["success"=>true];
+        }
+
+        return false;
+    }
 }

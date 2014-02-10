@@ -4,26 +4,42 @@
 
 $this->module("restservice")->extend([
 
-    'jslib' => function($token=null) use($app) {
-        echo $app->script($app->routeUrl('/rest/api.js'.($token ? '?token='.$token:'')));
+    'js_lib' => function() use($app) {
+
+        $token = $app->memory->get("cockpit.api.token", '');
+
+        return $app->script($app->routeUrl("/rest/api.js?token={$token}"));
     }
 ]);
 
+
+if(!function_exists("cockpit_js_lib")) {
+    function cockpit_js_lib() {
+        echo cockpit("restservice")->js_lib();
+    }
+}
 
 $app->on("before", function() use($app) {
 
     $routes = new \ArrayObject([]);
 
     /*
-        $routes['{:resource}'] = string (classname) | callable 
+        $routes['{:resource}'] = string (classname) | callable
 
     */
 
-    $app->trigger("cockpit.rest.init", [$routes])->bind("/rest/api/*", function($params) use($routes){
-        $path = $params[":splat"][0];
+    $app->trigger("cockpit.rest.init", [$routes])->bind("/rest/api/*", function($params) use($routes, $app){
+
+        $token = $app->param("token", "n/a");
+        $path  = $params[":splat"][0];
 
         if(!$params[":splat"][0]) {
             return false;
+        }
+
+        if($token !== $app->memory->get("cockpit.api.token", false)) {
+            $app->response->status = 401;
+            return ["error" => "access denied"];
         }
 
         $parts      = explode('/', $params[":splat"][0], 2);
@@ -52,7 +68,10 @@ $app->on("before", function() use($app) {
 
 $app->bind("/rest/api.js", function() use($app){
 
-    $token = $app->param("token", "");
+    $token    = $app->param("token", "");
+    $registry = json_encode((object)$app->memory->get("cockpit.api.registry", []));
 
-    return $app->view('restservice:views/cockpit.js', compact('token'));
+    $app->response->mime = "js";
+
+    return $app->view('restservice:views/api.js', compact('token', 'registry'));
 });

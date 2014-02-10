@@ -34,19 +34,19 @@ $this->module("auth")->extend([
     },
 
     "setUser" => function($user) use($app) {
-        $app("session")->write('app.auth', $user);
+        $app("session")->write('cockpit.app.auth', $user);
     },
 
     "getUser" => function() use($app) {
-        return $app("session")->read('app.auth', null);
+        return $app("session")->read('cockpit.app.auth', null);
     },
 
     "logout" => function() use($app) {
-        $app("session")->delete('app.auth');
+        $app("session")->delete('cockpit.app.auth');
     },
 
     "hasaccess" => function($resource, $action) use($app) {
-        $user = $app("session")->read("app.auth");
+        $user = $app("session")->read("cockpit.app.auth");
         return isset($user["group"]) ? ($user["group"]=='admin' || $app("acl")->hasaccess($user["group"], $resource, $action)) : true;
     }
 
@@ -56,17 +56,14 @@ $this->module("auth")->extend([
 if (COCKPIT_ADMIN) {
 
     // register controller
-    $app->bindClass("Auth\\Controller\\Auth", 'auth');
 
-    $app->on('auth.authenticate', function() use($app) {
-        $app->reroute('/auth/login');
-    });
+    $app->bindClass("Auth\\Controller\\Auth", 'auth');
 
     // init acl
 
     $app("acl")->addGroup("admin", true);
 
-    if($user = $app("session")->read("app.auth")) {
+    if($user = $app->module("auth")->getUser()) {
 
         foreach ($app->memory->get("cockpit.acl.groups", []) as $group => $isadmin) {
             $app("acl")->addGroup($group, $isadmin);
@@ -74,7 +71,7 @@ if (COCKPIT_ADMIN) {
 
         foreach ($app->memory->get("cockpit.acl.rights", []) as $group => $resources) {
 
-            if(!$app("acl")->hasGroup($group)) continue;
+            if (!$app("acl")->hasGroup($group)) continue;
 
             foreach ($resources as $resource => $actions) {
                 foreach ($actions as $action => $value) {

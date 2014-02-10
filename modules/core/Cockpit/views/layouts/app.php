@@ -7,7 +7,7 @@
     <link rel="icon" href="@base("/assets/images/favicon.ico")" type="image/x-icon">
 
     @assets($app['app.assets.base'], 'app.base', 'cache:assets', 30, $app['cockpit/version'])
-    @assets($app['app.assets.backend'], 'app.backend', 'cache:assets', 30, $app['cockpit/version'])
+    @assets($app['app.assets.backend'], 'app.backend', 'cache:assets', 3600, $app['cockpit/version'])
 
     @trigger('app.layout.header')
 

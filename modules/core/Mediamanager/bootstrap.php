@@ -3,57 +3,60 @@
 
 // API
 
-$this->module("mediamanager")->thumbnail = function($image, $width, $height, $options=array()) use($app) {
+$this->module("mediamanager")->extend([
 
-    $options = array_merge(array(
-        "rebuild"     => false,
-        "cachefolder" => "cache:thumbs",
-        "quality"     => 100,
-        "base64"      => false
-    ), $options);
+    "thumbnail" => function($image, $width, $height, $options=array()) use($app) {
 
-    extract($options);
+        $options = array_merge(array(
+            "rebuild"     => false,
+            "cachefolder" => "cache:thumbs",
+            "quality"     => 100,
+            "base64"      => false
+        ), $options);
 
-    $path  = $app->path($image);
-    $ext   = pathinfo($path, PATHINFO_EXTENSION);
-    $url   = "data:image/gif;base64,R0lGODlhAQABAJEAAAAAAP///////wAAACH5BAEHAAIALAAAAAABAAEAAAICVAEAOw=="; // transparent 1px gif
+        extract($options);
 
-    if(!file_exists($path) || is_dir($path)) {
-        return $url;
-    }
+        $path  = $app->path($image);
+        $ext   = pathinfo($path, PATHINFO_EXTENSION);
+        $url   = "data:image/gif;base64,R0lGODlhAQABAJEAAAAAAP///////wAAACH5BAEHAAIALAAAAAABAAEAAAICVAEAOw=="; // transparent 1px gif
 
-    if(!in_array(strtolower($ext), array('png','jpg','jpeg','gif'))) {
-        return $url;
-    }
-
-    if($base64) {
-
-        try {
-            $data = $app("image")->take($path)->thumbnail($width, $height)->base64data(null, $quality);
-        } catch(Exception $e) {
+        if(!file_exists($path) || is_dir($path)) {
             return $url;
         }
 
-        $url = $data;
+        if(!in_array(strtolower($ext), array('png','jpg','jpeg','gif'))) {
+            return $url;
+        }
 
-    } else {
+        if($base64) {
 
-        $filetime = filemtime($path);
-        $savepath = $app->path($cachefolder)."/".md5($path)."_{$width}x{$height}_{$quality}_{$filetime}.{$ext}";
-
-        if($rebuild || !file_exists($savepath)) {
             try {
-                $app("image")->take($path)->thumbnail($width, $height)->save($savepath, $quality);
+                $data = $app("image")->take($path)->thumbnail($width, $height)->base64data(null, $quality);
             } catch(Exception $e) {
                 return $url;
             }
+
+            $url = $data;
+
+        } else {
+
+            $filetime = filemtime($path);
+            $savepath = $app->path($cachefolder)."/".md5($path)."_{$width}x{$height}_{$quality}_{$filetime}.{$ext}";
+
+            if($rebuild || !file_exists($savepath)) {
+                try {
+                    $app("image")->take($path)->thumbnail($width, $height)->save($savepath, $quality);
+                } catch(Exception $e) {
+                    return $url;
+                }
+            }
+
+            $url = $app->pathToUrl($savepath);
         }
 
-        $url = $app->pathToUrl($savepath);
+        return $url;
     }
-
-    return $url;
-};
+]);
 
 // extend lexy parser
 $app->renderer()->extend(function($content){
@@ -115,7 +118,7 @@ if(COCKPIT_ADMIN) {
 
         // handle global search request
         $app->on("cockpit.globalsearch", function($search, $list) use($app){
-            
+
             $user = $app->module("auth")->getUser();
 
             $bookmarks = $app->memory->get("mediamanager.bookmarks.".$user["_id"], ["folders"=>[], "files"=>[]]);
@@ -123,7 +126,7 @@ if(COCKPIT_ADMIN) {
             foreach ($bookmarks["folders"] as $f) {
                 if(stripos($f["name"], $search)!==false){
                     $list[] = [
-                        "title" => '<i class="uk-icon-folder-o"></i> '.$f["name"], 
+                        "title" => '<i class="uk-icon-folder-o"></i> '.$f["name"],
                         "url"   => $app->routeUrl('/mediamanager#'.$f["path"])
                     ];
                 }
@@ -132,7 +135,7 @@ if(COCKPIT_ADMIN) {
             foreach ($bookmarks["files"] as $f) {
                 if(stripos($f["name"], $search)!==false){
                     $list[] = [
-                        "title" => '<i class="uk-icon-file-o"></i> '.$f["name"], 
+                        "title" => '<i class="uk-icon-file-o"></i> '.$f["name"],
                         "url"   => $app->routeUrl('/mediamanager#'.dirname($f["path"]))
                     ];
                 }

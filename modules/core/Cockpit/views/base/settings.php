@@ -2,15 +2,27 @@
 <h1>@lang('Settings')</h1>
 
 <div class="app-panel">
-    
+
     <div class="uk-text-left">
         <span class="uk-badge app-badge">@lang('System')</span>
     </div>
 
     <hr>
-    
+
     <div class="uk-grid" uk-grid-margin uk-grid-match>
-        <div class="uk-width-medium-1-4">
+
+        @if($app["user"]["group"]=="admin")
+        <div class="uk-width-medium-1-5 uk-margin-bottom">
+            <div>
+                <i class="uk-icon-cogs"></i>
+            </div>
+            <div class="uk-text-truncate">
+                <a href="@route('/settings/general')">@lang('General')</a>
+            </div>
+        </div>
+        @endif
+
+        <div class="uk-width-medium-1-5 uk-margin-bottom">
             <div>
                 <i class="uk-icon-group"></i>
             </div>
@@ -20,7 +32,7 @@
         </div>
 
         @if($app["user"]["group"]=="admin")
-        <div class="uk-width-medium-1-4">
+        <div class="uk-width-medium-1-5 uk-margin-bottom">
             <div>
                 <i class="uk-icon-code-fork"></i>
             </div>
@@ -31,7 +43,7 @@
         @endif
 
         @if($app->module("auth")->hasaccess("Cockpit","backups"))
-        <div class="uk-width-medium-1-4">
+        <div class="uk-width-medium-1-5 uk-margin-bottom">
             <div>
                 <i class="uk-icon-archive"></i>
             </div>
@@ -42,7 +54,7 @@
         @endif
 
         @if($app["user"]["group"]=="admin")
-        <div class="uk-width-medium-1-4">
+        <div class="uk-width-medium-1-5 uk-margin-bottom">
             <div>
                 <i class="uk-icon-info-circle"></i>
             </div>

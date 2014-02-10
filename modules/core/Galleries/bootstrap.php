@@ -2,13 +2,15 @@
 
 // API
 
+$this->module("galleries")->extend([
 
-$this->module("galleries")->gallery = function($name) use($app) {
+    "gallery" => function($name) use($app) {
 
-    $gallery = $app->data->common->galleries->findOne(["name"=>$name]);
+        $gallery = $app->data->common->galleries->findOne(["name"=>$name]);
 
-    return $gallery ? $gallery["images"] : null;
-};
+        return $gallery ? $gallery["images"] : null;
+    }
+]);
 
 
 if(!function_exists("gallery")) {
@@ -16,6 +18,12 @@ if(!function_exists("gallery")) {
         return cockpit("galleries")->gallery($name);
     }
 }
+
+
+//rest
+$app->on("cockpit.rest.init", function($routes) {
+    $routes["galleries"] = 'Galleries\\Controller\\RestApi';
+});
 
 
 // ADMIN

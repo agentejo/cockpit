@@ -17,18 +17,30 @@ $app['app.assets.base'] = [
 
 // API
 
-$this->module("cockpit")->assets = function($assets, $key=null, $cache=0, $cache_folder=null) use($app) {
+$this->module("cockpit")->extend([
+    "assets" => function($assets, $key=null, $cache=0, $cache_folder=null) use($app) {
 
-    $key          = $key ? $key : md5(serialize($assets));
-    $cache_folder = $cache_folder ? $cache_folder : $app->path("cache:assets");
+        $key          = $key ? $key : md5(serialize($assets));
+        $cache_folder = $cache_folder ? $cache_folder : $app->path("cache:assets");
 
-    $app("assets")->style_and_script($assets, $key, $cache_folder, $cache);
-};
+        $app("assets")->style_and_script($assets, $key, $cache_folder, $cache);
+    },
+    "get_registry" => function($key, $default=null) use($app) {
+        return $app->memory->hget("cockpit.api.registry", $key, $default);
+    }
+]);
 
 if (!function_exists('assets')) {
 
     function assets($assets, $key=null, $cache=0, $cache_folder=null) {
         cockpit("cockpit")->assets($assets, $key, $cache, $cache_folder);
+    }
+}
+
+if (!function_exists('get_registry')) {
+
+    function get_registry($key, $default=null) {
+        cockpit("cockpit")->get_registry($key, $default);
     }
 }
 
@@ -89,10 +101,6 @@ if (COCKPIT_ADMIN) {
 
     $app->bindClass("Cockpit\\Controller\\Settings", "settings");
 
-    $app->bind("/profile/:id", function($params) use($app){
-        return $app->invoke("Cockpit\\Controller\\Base", "profile");
-    });
-
     $app->bindClass("Cockpit\\Controller\\Accounts", "accounts");
     $app->bindClass("Cockpit\\Controller\\Backups", "backups");
 
@@ -121,7 +129,7 @@ if (COCKPIT_ADMIN) {
 
     // load i18n definition
 
-    if($user = $app("session")->read("app.auth")) {
+    if($user = $app("session")->read('cockpit.app.auth', null)) {
         $app("i18n")->locale = isset($user['i18n']) ? $user['i18n'] : $app("i18n")->locale;
     }
 
@@ -131,12 +139,13 @@ if (COCKPIT_ADMIN) {
 
     $app->bind("/i18n.js", function() use($app, $locale){
 
+        $app->response->mime = "js";
+
         $data = $app("i18n")->data($locale);
 
         return 'if(i18n) { i18n.register('.(count($data) ? json_encode($data):'{}').'); }';
     });
 
-    // acl
 
     // acl
     $app("acl")->addResource("Cockpit", ['backups']);

@@ -110,7 +110,7 @@ class Lexy {
      * @param  boolean $sandbox [description]
      * @return [type]           [description]
      */
-    public function parse($text, $sandbox=true, $srcinfo=null) {
+    public function parse($text, $sandbox=false, $srcinfo=null) {
 
         $this->srcinfo = $srcinfo;
 
@@ -123,7 +123,7 @@ class Lexy {
      * @param  boolean $sandbox [description]
      * @return [type]           [description]
      */
-    protected function compile($text, $sandbox=true){
+    protected function compile($text, $sandbox=false){
 
         // disable php in sandbox mode
         if ($sandbox) {
