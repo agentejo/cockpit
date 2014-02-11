@@ -270,7 +270,7 @@ class App implements \ArrayAccess {
     */
     public function baseUrl($path) {
 
-        return $this->registry["base_url"].'/'.ltrim($path, '/');
+        return strpos($path, ':')===false ? $this->registry["base_url"].'/'.ltrim($path, '/') : $this->pathToUrl($path);
     }
 
     public function base($path) {
@@ -1090,7 +1090,7 @@ class App implements \ArrayAccess {
     }
 
     /**
-     * Decode RC4 encrypted text 
+     * Decode RC4 encrypted text
      * @param  [type] $data [description]
      * @param  [type] $pwd  [description]
      * @return [type]       [description]
