@@ -59,7 +59,7 @@
         </div>
     </nav>
 
-    <form class="uk-form" data-ng-submit="save()" data-ng-show="collection" novalidate>
+    <form class="uk-form" data-ng-submit="save()" data-ng-show="collection">
 
         <div class="uk-grid" data-uk-grid-margin>
 
@@ -72,19 +72,19 @@
                         <div class="uk-text-small uk-field-error-message" data-ng-if="field.error">@@ field.error @@</div>
 
                         <div data-ng-switch-when="html">
-                            <textarea class="uk-width-1-1 uk-form-large" data-ng-class="{'uk-field-error':field.error}" data-ng-model="entry[field.name]" ng-required="field.required"></textarea>
+                            <textarea class="uk-width-1-1 uk-form-large" data-ng-class="{'uk-field-error':field.error}" data-ng-model="entry[field.name]"></textarea>
                         </div>
 
                         <div data-ng-switch-when="code">
-                            <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]" style="height:350px !important;"></textarea>
+                            <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-class="{'uk-field-error':field.error}" data-ng-model="entry[field.name]" style="height:350px !important;"></textarea>
                         </div>
 
                         <div data-ng-switch-when="wysiwyg">
-                            <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]"></textarea>
+                            <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-class="{'uk-field-error':field.error}" data-ng-model="entry[field.name]"></textarea>
                         </div>
 
                         <div data-ng-switch-default>
-                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-field-error':field.error}" data-ng-model="entry[field.name]" ng-required="field.required">
+                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-field-error':field.error}" data-ng-model="entry[field.name]">
                         </div>
                     </div>
 
@@ -103,13 +103,13 @@
                         <div class="uk-text-small uk-field-error-message" data-ng-if="field.error">@@ field.error @@</div>
 
                         <div data-ng-switch-when="select">
-                            <select class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]" data-ng-class="{'uk-field-error':field.error}" ng-required="field.required">
+                            <select class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]" data-ng-class="{'uk-field-error':field.error}">
                                 <option value="@@ option @@" data-ng-repeat="option in (field.options || [])" data-ng-selected="(entry[field.name]==option)">@@ option @@</option>
                             </select>
                         </div>
 
                         <div data-ng-switch-when="media">
-                            <input type="text" media-path-picker data-ng-model="entry[field.name]">
+                            <input type="text" media-path-picker data-ng-class="{'uk-field-error':field.error}" data-ng-model="entry[field.name]">
                         </div>
 
                         <div data-ng-switch-when="boolean">
@@ -117,7 +117,7 @@
                         </div>
 
                         <div data-ng-switch-default>
-                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="entry[field.name]">
+                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-field-error':field.error}" data-ng-model="entry[field.name]">
                         </div>
                     </div>
 

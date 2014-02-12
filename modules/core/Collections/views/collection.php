@@ -63,7 +63,7 @@
 
                                 <input type="text" data-ng-model="field.default" placeholder="default value...">
 
-                                <span data-ng-if="field.type=='text' || field.type=='html' || field.type=='select'">
+                                <span>
                                     <input type="checkbox" data-ng-model="field.required" />
                                     <label>Required</label>
                                 </span>

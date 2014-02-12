@@ -68,18 +68,18 @@
 
             var entry = angular.copy($scope.entry);
 
-            $scope.validateForm(entry);
+            if ($scope.validateForm(entry)) {
+                $http.post(App.route("/api/collections/saveentry"), {"collection": collection, "entry":entry, "createversion": true}).success(function(data){
 
-            $http.post(App.route("/api/collections/saveentry"), {"collection": collection, "entry":entry, "createversion": true}).success(function(data){
+                    if(data && Object.keys(data).length) {
+                        $scope.entry = data;
+                        App.notify(App.i18n.get("Entry saved!"));
 
-                if(data && Object.keys(data).length) {
-                    $scope.entry = data;
-                    App.notify(App.i18n.get("Entry saved!"));
+                        $scope.loadVersions();
+                    }
 
-                    $scope.loadVersions();
-                }
-
-            }).error(App.module.callbacks.error.http);
+                }).error(App.module.callbacks.error.http);
+            }
         };
 
         $scope.validateForm = function(entry){
