@@ -192,9 +192,13 @@ class Api extends \Cockpit\Controller {
         if($versionId && $docId && $colId) {
 
             if($versiondata = $this->app->helper("versions")->get("coentry:{$colId}-{$docId}", $versionId)) {
+                
                 $col = "collection".$colId;
-                $this->app->data->collections->{$col}->save($versiondata["data"]);
-                return '{"success":true}';
+
+                if ($entry = $this->app->data->collections->{$col}->findOne(["_id" => $docId])) {
+                    $this->app->data->collections->{$col}->save($versiondata["data"]);
+                    return '{"success":true}';
+                }
             }
         }
 

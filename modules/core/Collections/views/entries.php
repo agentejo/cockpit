@@ -41,14 +41,16 @@
                         <tr data-ng-repeat="entry in entries">
                             <td><i class="uk-icon-ellipsis-h"></i></td>
                             <td>
-                                <div class="uk-grid uk-grid-preserve uk-text-small" data-ng-repeat="field in fields">
-                                    <div class="uk-width-medium-1-5">
-                                        <strong>@@ field.name @@</strong>
+                                <a class="uk-link-muted" href="@route('/collections/entry/'.$collection["_id"])/@@ entry._id @@">
+                                    <div class="uk-grid uk-grid-preserve uk-text-small" data-ng-repeat="field in fields">
+                                        <div class="uk-width-medium-1-5">
+                                            <strong>@@ field.name @@</strong>
+                                        </div>
+                                        <div class="uk-width-medium-4-5">
+                                            @@ entry[field.name] @@
+                                        </div>
                                     </div>
-                                    <div class="uk-width-medium-4-5">
-                                        @@ entry[field.name] @@
-                                    </div>
-                                </div>
+                                </a>
                             </td>
                             <td>@@ entry.modified | fmtdate:'d M, Y' @@</td>
                             <td class="uk-text-right">

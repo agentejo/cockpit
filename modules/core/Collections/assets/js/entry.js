@@ -59,7 +59,7 @@
                     setTimeout(function(){
                         msg.close();
                         location.href = App.route("/collections/entry/"+$scope.collection["_id"]+'/'+$scope.entry["_id"]);
-                    }, 1500);
+                    }, 1000);
                 }).error(App.module.callbacks.error.http);
             }
         };
