@@ -11,7 +11,7 @@ class Api extends \Cockpit\Controller {
         $sort   = $this->param("sort", null);
         $skip   = $this->param("skip", null);
 
-        $docs = $this->app->data->common->galleries->find($filter);
+        $docs = $this->getCollection("common/galleries")->find($filter);
 
         if($limit) $docs->limit($limit);
         if($sort)  $docs->sort($sort);
@@ -25,7 +25,7 @@ class Api extends \Cockpit\Controller {
     public function findOne(){
 
         $filter = $this->param("filter", null);
-        $doc    = $this->app->data->common->galleries->findOne($filter);
+        $doc    = $this->getCollection("common/galleries")->findOne($filter);
 
         return $doc ? json_encode($doc) : '{}';
     }
@@ -43,7 +43,7 @@ class Api extends \Cockpit\Controller {
                 $gallery["created"] = $gallery["modified"];
             }
 
-            $this->app->data->common->galleries->save($gallery);
+            $this->getCollection("common/galleries")->save($gallery);
         }
 
         return $gallery ? json_encode($gallery) : '{}';
@@ -54,7 +54,7 @@ class Api extends \Cockpit\Controller {
         $gallery = $this->param("gallery", null);
 
         if($gallery) {
-            $this->app->data->common->galleries->remove(["_id" => $gallery["_id"]]);
+            $this->getCollection("common/galleries")->remove(["_id" => $gallery["_id"]]);
         }
 
         return $gallery ? '{"success":true}' : '{"success":false}';

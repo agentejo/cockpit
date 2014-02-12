@@ -10,7 +10,7 @@ class RestApi extends \LimeExtra\Controller {
             return false;
         }
 
-        $collection = $this->app->data->common->collections->findOne(["name"=>$collection]);
+        $collection = $this->getCollection("common/collections")->findOne(["name"=>$collection]);
 
         if(!$collection) {
             return false;
@@ -20,14 +20,12 @@ class RestApi extends \LimeExtra\Controller {
 
         if($collection) {
 
-            $col = "collection".$collection["_id"];
-
             $filter = $this->param("filter", null);
             $limit  = $this->param("limit", null);
             $sort   = $this->param("sort", null);
             $skip   = $this->param("skip", null);
 
-            $docs = $this->app->data->collections->{$col}->find($filter);
+            $docs = $this->app->module("collections")->collectionById($collection["_id"])->find($filter);
 
             if($limit) $docs->limit($limit);
             if($sort)  $docs->sort($sort);

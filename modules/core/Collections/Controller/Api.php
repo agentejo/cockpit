@@ -12,7 +12,7 @@ class Api extends \Cockpit\Controller {
         $sort   = $this->param("sort", null);
         $skip   = $this->param("skip", null);
 
-        $docs = $this->app->data->common->collections->find($filter);
+        $docs = $this->getCollection("common/collections")->find($filter);
 
         if($limit) $docs->limit($limit);
         if($sort)  $docs->sort($sort);
@@ -22,8 +22,7 @@ class Api extends \Cockpit\Controller {
 
         if(count($docs) && $this->param("extended", false)){
             foreach ($docs as &$doc) {
-                $col = "collection".$doc["_id"];
-                $doc["count"] = $this->app->data->collections->{$col}->count();
+                $doc["count"] = $this->app->module("collections")->collectionById($doc["_id"])->count();
             }
         }
 
@@ -33,7 +32,7 @@ class Api extends \Cockpit\Controller {
     public function findOne(){
 
         $filter = $this->param("filter", null);
-        $doc    = $this->app->data->common->collections->findOne($filter);
+        $doc    = $this->getCollection("common/collections")->findOne($filter);
 
         return $doc ? json_encode($doc) : '{}';
     }
@@ -52,7 +51,7 @@ class Api extends \Cockpit\Controller {
                 $collection["created"] = $collection["modified"];
             }
 
-            $this->app->data->common->collections->save($collection);
+            $this->getCollection("common/collections")->save($collection);
         }
 
         return $collection ? json_encode($collection) : '{}';
@@ -66,7 +65,7 @@ class Api extends \Cockpit\Controller {
             $col = "collection".$collection["_id"];
 
             $this->app->data->collections->dropCollection($col);
-            $this->app->data->common->collections->remove(["_id" => $collection["_id"]]);
+            $this->getCollection("common/collections")->remove(["_id" => $collection["_id"]]);
         }
 
         return $collection ? '{"success":true}' : '{"success":false}';
@@ -80,14 +79,12 @@ class Api extends \Cockpit\Controller {
 
         if($collection) {
 
-            $col = "collection".$collection["_id"];
-
             $filter = $this->param("filter", null);
             $limit  = $this->param("limit", null);
             $sort   = $this->param("sort", null);
             $skip   = $this->param("skip", null);
 
-            $docs = $this->app->data->collections->{$col}->find($filter);
+            $docs = $this->app->module("collections")->collectionById($collection["_id"])->find($filter);
 
             if($limit) $docs->limit($limit);
             if($sort)  $docs->sort($sort);
@@ -110,8 +107,7 @@ class Api extends \Cockpit\Controller {
 
             $colid = $collection["_id"];
 
-            $col = "collection".$collection["_id"];
-            $this->app->data->collections->{$col}->remove(["_id" => $entryId]);
+            $this->app->module("collections")->collectionById($collection["_id"])->remove(["_id" => $entryId]);
             $this->app->helper("versions")->remove("coentry:{$colid}-{$entryId}");
         }
 
@@ -124,8 +120,6 @@ class Api extends \Cockpit\Controller {
         $entry      = $this->param("entry", null);
 
         if($collection && $entry) {
-
-            $col = "collection".$collection["_id"];
 
             $entry["modified"] = time();
             $entry["_uid"]     = @$this->user["_id"];
@@ -142,7 +136,7 @@ class Api extends \Cockpit\Controller {
                 }
             }
 
-            $this->app->data->collections->{$col}->save($entry);
+            $this->app->module("collections")->collectionById($collection["_id"])->save($entry);
         }
 
         return $entry ? json_encode($entry) : '{}';
@@ -195,8 +189,8 @@ class Api extends \Cockpit\Controller {
                 
                 $col = "collection".$colId;
 
-                if ($entry = $this->app->data->collections->{$col}->findOne(["_id" => $docId])) {
-                    $this->app->data->collections->{$col}->save($versiondata["data"]);
+                if ($entry = $this->getCollection("collections/{$col}")->findOne(["_id" => $docId])) {
+                    $this->getCollection("collections/{$col}")->save($versiondata["data"]);
                     return '{"success":true}';
                 }
             }

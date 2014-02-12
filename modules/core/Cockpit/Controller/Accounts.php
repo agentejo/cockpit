@@ -7,7 +7,7 @@ class Accounts extends \Cockpit\Controller {
     public function index() {
 
         $current  = $this->user["_id"];
-        $accounts = $this->data->cockpit->accounts->find($this->user["group"]=="admin" ? null:["_id"=>$current])->sort(["user" => 1])->toArray();
+        $accounts = $this->getCollection("cockpit/accounts")->find($this->user["group"]=="admin" ? null:["_id"=>$current])->sort(["user" => 1])->toArray();
 
         foreach ($accounts as &$account) {
             $account["md5email"] = md5(@$account["email"]);
@@ -23,7 +23,7 @@ class Accounts extends \Cockpit\Controller {
             $uid = $this->user["_id"];
         }
 
-        $account = $this->data->cockpit->accounts->findOne([
+        $account = $this->getCollection("cockpit/accounts")->findOne([
             "_id" => $uid
         ]);
 
@@ -63,7 +63,7 @@ class Accounts extends \Cockpit\Controller {
                 }
             }
 
-            $this->data->cockpit->accounts->save($data);
+            $this->getCollection("cockpit/accounts")->save($data);
 
             if(isset($data["password"])) {
                 unset($data["password"]);
@@ -88,7 +88,7 @@ class Accounts extends \Cockpit\Controller {
             // user can't delete himself
             if($data["_id"] != $this->user["_id"]) {
 
-                $this->data->cockpit->accounts->remove(["_id" => $data["_id"]]);
+                $this->getCollection("cockpit/accounts")->remove(["_id" => $data["_id"]]);
 
                 return '{"success":true}';
             }
@@ -129,7 +129,7 @@ class Accounts extends \Cockpit\Controller {
                             $this->app->memory->set("cockpit.acl.rights", $rights);
                         }
 
-                        $this->data->cockpit->accounts->update(["group"=>$oldname], ["group"=>$name]);
+                        $this->getCollection("cockpit/accounts")->update(["group"=>$oldname], ["group"=>$name]);
                         
                         unset($groups[$oldname]);
                     }
@@ -158,7 +158,7 @@ class Accounts extends \Cockpit\Controller {
                 
                 if(isset($groups[$name])) {
                     unset($groups[$name]);
-                    $this->data->cockpit->accounts->update(["group"=>""], ["group"=>$name]);
+                    $this->getCollection("cockpit/accounts")->update(["group"=>""], ["group"=>$name]);
                 }
 
                 $this->app->memory->set("cockpit.acl.groups", $groups);

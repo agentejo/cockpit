@@ -171,6 +171,16 @@ class App extends \Lime\App {
         return $this->view_renderer;
     }
 
+
+    public function getCollection($name, $db = "common"){
+
+        if(strpos($name, '/') !== false) {
+            list($db, $name) = explode('/', $name, 2);
+        }
+
+        return $this->data->{$db}->{$name};
+    }
+
     protected function get_cached_view($template) {
 
         $cachefile   = md5($template).'.view.php';

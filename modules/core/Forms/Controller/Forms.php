@@ -15,14 +15,13 @@ class Forms extends \Cockpit\Controller {
 
     public function entries($id) {
 
-        $form = $this->app->data->common->forms->findOne(["_id" => $id]);
+        $form = $this->getCollection("common/forms")->findOne(["_id" => $id]);
 
         if(!$form) {
             return false;
         }
 
-        $col   = "form".$form["_id"];
-        $count = $this->app->data->forms->{$col}->count();
+        $count = $this->app->module("forms")->collectionById($form["_id"])->count();
 
         $form["count"] = $count;
 

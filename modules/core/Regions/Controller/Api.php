@@ -11,7 +11,7 @@ class Api extends \Cockpit\Controller {
         $sort   = $this->param("sort", null);
         $skip   = $this->param("skip", null);
 
-        $docs = $this->app->data->common->regions->find($filter);
+        $docs = $this->getCollection("common/regions")->find($filter);
 
         if($limit) $docs->limit($limit);
         if($sort)  $docs->sort($sort);
@@ -25,7 +25,7 @@ class Api extends \Cockpit\Controller {
     public function findOne(){
 
         $filter = $this->param("filter", null);
-        $doc    = $this->app->data->common->regions->findOne($filter);
+        $doc    = $this->getCollection("common/regions")->findOne($filter);
 
         return $doc ? json_encode($doc) : '{}';
     }
@@ -49,7 +49,7 @@ class Api extends \Cockpit\Controller {
                 }
             }
 
-            $this->app->data->common->regions->save($region);
+            $this->getCollection("common/regions")->save($region);
         }
 
         return $region ? json_encode($region) : '{}';
@@ -60,7 +60,7 @@ class Api extends \Cockpit\Controller {
         $region = $this->param("region", null);
 
         if($region) {
-            $this->app->data->common->regions->remove(["_id" => $region["_id"]]);
+            $this->getCollection("common/regions")->remove(["_id" => $region["_id"]]);
             $this->app->helper("versions")->remove("regions:".$region["_id"]);
         }
 
@@ -102,7 +102,7 @@ class Api extends \Cockpit\Controller {
         if($versionId && $docId) {
 
             if($versiondata = $this->app->helper("versions")->get("regions:{$docId}", $versionId)) {
-                $this->app->data->common->regions->save($versiondata["data"]);
+                $this->getCollection("common/regions")->save($versiondata["data"]);
                 return '{"success":true}';
             }
         }

@@ -17,14 +17,13 @@ class Collections extends \Cockpit\Controller {
 
     public function entries($id) {
 
-        $collection = $this->app->data->common->collections->findOne(["_id" => $id]);
+        $collection = $this->getCollection("common/collections")->findOne(["_id" => $id]);
 
         if(!$collection) {
             return false;
         }
 
-        $col   = "collection".$collection["_id"];
-        $count = $this->app->data->collections->{$col}->count();
+        $count = $this->app->module("collections")->collectionById($collection["_id"])->count();
 
         $collection["count"] = $count;
 
@@ -33,7 +32,7 @@ class Collections extends \Cockpit\Controller {
 
     public function entry($collectionId, $entryId=null) {
 
-        $collection = $this->app->data->common->collections->findOne(["_id" => $collectionId]);
+        $collection = $this->getCollection("common/collections")->findOne(["_id" => $collectionId]);
         $entry      = null;
 
         if(!$collection) {
@@ -41,8 +40,8 @@ class Collections extends \Cockpit\Controller {
         }
 
         if($entryId) {
-            $col   = "collection".$collection["_id"];
-            $entry = $this->app->data->collections->{$col}->findOne(["_id" => $entryId]);
+
+            $entry = $this->app->module("collections")->collectionById($collection["_id"])->findOne(["_id" => $entryId]);
 
             if(!$entry) {
                 return false;
