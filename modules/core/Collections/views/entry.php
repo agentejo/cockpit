@@ -68,7 +68,7 @@
 
                     <div class="uk-form-row" data-ng-repeat="field in fieldsInArea('main')" data-ng-switch="field.type">
 
-                        <label class="uk-text-small">@@ field.name | uppercase @@ <span class="uk-field-required" ng-show="field.required">*</span></label>
+                        <label class="uk-text-small">@@ field.name | uppercase @@ <span ng-show="field.required">*</span></label>
                         <div class="uk-text-small uk-text-danger uk-float-right uk-animation-slide-top" data-ng-if="field.error">@@ field.error @@</div>
 
                         <div data-ng-switch-when="html">
@@ -99,7 +99,7 @@
             <div class="uk-width-medium-1-4">
                     <div class="uk-form-row" data-ng-repeat="field in fieldsInArea('side')" data-ng-switch="field.type">
 
-                        <label class="uk-text-small">@@ field.name | uppercase @@ <span class="uk-field-required" ng-show="field.required">*</span></label>
+                        <label class="uk-text-small">@@ field.name | uppercase @@ <span ng-show="field.required">*</span></label>
                         <div class="uk-text-small uk-text-danger uk-float-right uk-animation-slide-top" data-ng-if="field.error">@@ field.error @@</div>
 
                         <div data-ng-switch-when="select">
