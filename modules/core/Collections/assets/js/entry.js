@@ -88,7 +88,7 @@
             $scope.collection.fields.forEach(function(field){
                 delete field.error;
                 if (field.required && (entry[field.name] === undefined || entry[field.name] === '')) {
-                    field.error = 'This field is required.';
+                    field.error = App.i18n.get('This field is required.');
                     valid = false;
                 }
             });

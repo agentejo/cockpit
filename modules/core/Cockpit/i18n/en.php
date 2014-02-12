@@ -88,6 +88,7 @@ return [
     'Add entry' => '',
     'Edit entry' => '',
     'Delete entry' => '',
+    'This field is required.' => '',
     'It seems you don\'t have any fields created.' => '',
     'Goto entries' => '',
     'Fields on entries list page' => '',
