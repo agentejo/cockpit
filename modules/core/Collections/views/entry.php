@@ -68,22 +68,23 @@
 
                     <div class="uk-form-row" data-ng-repeat="field in fieldsInArea('main')" data-ng-switch="field.type">
 
-                        <label class="uk-text-small">@@ field.name | uppercase @@</label>
+                        <label class="uk-text-small">@@ field.name | uppercase @@ <span class="uk-field-required" ng-show="field.required">*</span></label>
+                        <div class="uk-text-small uk-field-error-message" data-ng-if="field.error">@@ field.error @@</div>
 
                         <div data-ng-switch-when="html">
-                            <textarea class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]"></textarea>
+                            <textarea class="uk-width-1-1 uk-form-large" data-ng-class="{'uk-field-error':field.error}" data-ng-model="entry[field.name]"></textarea>
                         </div>
 
                         <div data-ng-switch-when="code">
-                            <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]" style="height:350px !important;"></textarea>
+                            <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-class="{'uk-field-error':field.error}" data-ng-model="entry[field.name]" style="height:350px !important;"></textarea>
                         </div>
 
                         <div data-ng-switch-when="wysiwyg">
-                            <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]"></textarea>
+                            <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-class="{'uk-field-error':field.error}" data-ng-model="entry[field.name]"></textarea>
                         </div>
 
                         <div data-ng-switch-default>
-                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="entry[field.name]">
+                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-field-error':field.error}" data-ng-model="entry[field.name]">
                         </div>
                     </div>
 
@@ -98,16 +99,17 @@
             <div class="uk-width-medium-1-4">
                     <div class="uk-form-row" data-ng-repeat="field in fieldsInArea('side')" data-ng-switch="field.type">
 
-                        <label class="uk-text-small">@@ field.name | uppercase @@</label>
+                        <label class="uk-text-small">@@ field.name | uppercase @@ <span class="uk-field-required" ng-show="field.required">*</span></label>
+                        <div class="uk-text-small uk-field-error-message" data-ng-if="field.error">@@ field.error @@</div>
 
                         <div data-ng-switch-when="select">
-                            <select class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]">
+                            <select class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]" data-ng-class="{'uk-field-error':field.error}">
                                 <option value="@@ option @@" data-ng-repeat="option in (field.options || [])" data-ng-selected="(entry[field.name]==option)">@@ option @@</option>
                             </select>
                         </div>
 
                         <div data-ng-switch-when="media">
-                            <input type="text" media-path-picker data-ng-model="entry[field.name]">
+                            <input type="text" media-path-picker data-ng-class="{'uk-field-error':field.error}" data-ng-model="entry[field.name]">
                         </div>
 
                         <div data-ng-switch-when="boolean">
@@ -115,7 +117,7 @@
                         </div>
 
                         <div data-ng-switch-default>
-                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="entry[field.name]">
+                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-field-error':field.error}" data-ng-model="entry[field.name]">
                         </div>
                     </div>
 

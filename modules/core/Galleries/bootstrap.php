@@ -33,7 +33,7 @@ if(COCKPIT_ADMIN) {
 
     $app->on("admin.init", function() use($app){
 
-        if(!$app->module("auth")->hasaccess("galleries", "manage")) return;
+        if(!$app->module("auth")->hasaccess("Galleries", "manage")) return;
 
         $app->bindClass("Galleries\\Controller\\Galleries", "galleries");
         $app->bindClass("Galleries\\Controller\\Api", "api/galleries");
@@ -61,7 +61,7 @@ if(COCKPIT_ADMIN) {
 
     $app->on("admin.dashboard", function() use($app){
 
-        if(!$app->module("auth")->hasaccess("galleries","manage")) return;
+        if(!$app->module("auth")->hasaccess("Galleries","manage")) return;
 
         $title   = $app("i18n")->get("Galleries");
         $badge   = $app->data->common->galleries->count();

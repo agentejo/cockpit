@@ -68,16 +68,32 @@
 
             var entry = angular.copy($scope.entry);
 
-            $http.post(App.route("/api/collections/saveentry"), {"collection": collection, "entry":entry, "createversion": true}).success(function(data){
+            if ($scope.validateForm(entry)) {
+                $http.post(App.route("/api/collections/saveentry"), {"collection": collection, "entry":entry, "createversion": true}).success(function(data){
 
-                if(data && Object.keys(data).length) {
-                    $scope.entry = data;
-                    App.notify(App.i18n.get("Entry saved!"));
+                    if(data && Object.keys(data).length) {
+                        $scope.entry = data;
+                        App.notify(App.i18n.get("Entry saved!"));
 
-                    $scope.loadVersions();
+                        $scope.loadVersions();
+                    }
+
+                }).error(App.module.callbacks.error.http);
+            }
+        };
+
+        $scope.validateForm = function(entry){
+            var valid = true;
+
+            $scope.collection.fields.forEach(function(field){
+                delete field.error;
+                if (field.required && (entry[field.name] === undefined || entry[field.name] === '')) {
+                    field.error = 'This field is required.';
+                    valid = false;
                 }
+            });
 
-            }).error(App.module.callbacks.error.http);
+            return valid;
         };
 
         $scope.fieldsInArea = function(area) {

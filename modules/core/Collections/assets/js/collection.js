@@ -1,7 +1,7 @@
 (function($){
 
     App.module.controller("collection", function($scope, $rootScope, $http){
-        
+
         var id = $("[data-ng-controller='collection']").data("id");
 
 
@@ -16,7 +16,7 @@
             }).error(App.module.callbacks.error.http);
 
         } else {
-            
+
             $scope.collection = {
                 name: "",
                 fields: [],
@@ -26,7 +26,7 @@
         }
 
         $scope.addfield = function(){
-            
+
             if(!$scope.collection.fields) {
                 $scope.collection.fields = [];
             }
@@ -34,7 +34,8 @@
             $scope.collection.fields.push({
                 "name": "",
                 "type": "text",
-                "lst": false
+                "lst": false,
+                "required": false
             });
         };
 
@@ -49,7 +50,7 @@
         };
 
         $scope.save = function() {
-            
+
             var collection = angular.copy($scope.collection);
 
             $http.post(App.route("/api/collections/save"), {"collection": collection}).success(function(data){
