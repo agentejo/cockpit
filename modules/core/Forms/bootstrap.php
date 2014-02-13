@@ -115,9 +115,11 @@ if(COCKPIT_ADMIN) {
         $badge       = $app->data->common->forms->count();
         $forms = $app->data->common->forms->find()->limit(3)->sort(["created"=>-1])->toArray();
 
-        echo $app->view("forms:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'forms'));
+        $control = $app->module("auth")->hasaccess("Forms","control");
+
+        echo $app->view("forms:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'forms', 'control'));
     });
 
     // acl
-    $app("acl")->addResource("Forms", ['manage']);
+    $app("acl")->addResource("Forms", ['manage', 'control']);
 }

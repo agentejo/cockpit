@@ -6,8 +6,9 @@
     <li><a href="@route('/forms/entries/'.$form['_id'])">{{ $form["name"] }}</a></li>
     @endforeach
 </ul>
-
+@if($control)
 <a class="uk-button uk-button-success uk-button-small" href="@route('/forms/form')" title="@lang('Add form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
+@endif
 
 @else
 
@@ -16,8 +17,9 @@
     <p class="uk-text-muted">
         @lang('You don\'t have any forms created.')
     </p>
-
+    @if($control)
     <a href="@route('/forms/form')" class="uk-button uk-button-success">@lang('Create a form')</a>
+    @endif
 </div>
 
 @endif

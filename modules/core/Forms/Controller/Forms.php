@@ -5,7 +5,8 @@ namespace Forms\Controller;
 class Forms extends \Cockpit\Controller {
 
 	public function index(){
-        return $this->render("forms:views/index.php");
+        $control = $this->app->module("auth")->hasaccess("Forms","control");
+        return $this->render("forms:views/index.php", compact('control'));
     }
 
     public function form($id = null) {
@@ -26,6 +27,8 @@ class Forms extends \Cockpit\Controller {
 
         $form["count"] = $count;
 
-        return $this->render("forms:views/entries.php", compact('id', 'form', 'count'));
+        $control = $this->app->module("auth")->hasaccess("Forms","control");
+
+        return $this->render("forms:views/entries.php", compact('id', 'form', 'count', 'control'));
     }
 }

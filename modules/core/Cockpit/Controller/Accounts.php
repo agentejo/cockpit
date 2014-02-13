@@ -70,7 +70,7 @@ class Accounts extends \Cockpit\Controller {
             }
 
             if($data["_id"] == $this->user["_id"]) {
-                
+
                 $this->module("auth")->setUser($data);
             }
 
@@ -113,14 +113,14 @@ class Accounts extends \Cockpit\Controller {
         if($this->user["group"]!="admin") return false;
 
         if($name = $this->app->param("name", false)) {
-            
+
             if($name!="admin") {
                 $groups = $this->app->memory->get("cockpit.acl.groups", []);
-                
-                
+
+
                 if($oldname = $this->app->param("oldname", false)) {
                     if(isset($groups[$oldname])) {
-                        
+
                         $rights = $this->app->memory->get("cockpit.acl.rights", []);
 
                         if(isset($rights[$oldname])) {
@@ -130,7 +130,7 @@ class Accounts extends \Cockpit\Controller {
                         }
 
                         $this->data->cockpit->accounts->update(["group"=>$oldname], ["group"=>$name]);
-                        
+
                         unset($groups[$oldname]);
                     }
 
@@ -152,10 +152,10 @@ class Accounts extends \Cockpit\Controller {
         if($this->user["group"]!="admin") return false;
 
         if($name = $this->app->param("name", false)) {
-            
+
             if($name!="admin") {
                 $groups = $this->app->memory->get("cockpit.acl.groups", []);
-                
+
                 if(isset($groups[$name])) {
                     unset($groups[$name]);
                     $this->data->cockpit->accounts->update(["group"=>""], ["group"=>$name]);
@@ -214,7 +214,7 @@ class Accounts extends \Cockpit\Controller {
         $acl = [];
 
         foreach ($this->app->helper("acl")->getGroups() as $group => $isadmin) {
-            
+
             $acl[$group] = [];
 
             foreach ($this->app->helper("acl")->getResources() as $resource => $actions) {

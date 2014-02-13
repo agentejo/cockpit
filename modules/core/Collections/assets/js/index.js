@@ -26,6 +26,9 @@
         };
 
         $scope.filter = "";
+        $scope.acl = {
+            create: true
+        };
 
         $scope.matchName = function(name) {
 
