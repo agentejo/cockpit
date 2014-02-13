@@ -15,14 +15,10 @@ return [
     "i18n"              => "en",
     "docs_root"         => $docsroot,
 
-    "database"          => [
-        "server"  => "mongolite://".(__DIR__.'/storage/data'), "options" => ["db" => "common"]
-    ],
+    "database"          => [ "server"  => "mongolite://".(__DIR__.'/storage/data'), "options" => ["db" => "cockpitdb"] ],
 
     /* use mongodb as db storage
-    "database"          => [
-        "server"  => "mongodb://localhost:27017", "options" => ["db" => "cockpitdb"]
-    ],
+    "database"          => [ "server"  => "mongodb://localhost:27017", "options" => ["db" => "cockpitdb"] ],
     */
 
     "mailer"            => [
