@@ -12,9 +12,11 @@
                 </div>
             </form>
         </div>
+        @hasaccess?("Regions", 'create.regions')
         <ul class="uk-navbar-nav">
             <li><a href="@route('/regions/region')" title="@lang('Add region')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-circle"></i></a></li>
         </ul>
+        @end
     </nav>
 
     <div class="uk-grid" data-uk-grid-margin data-uk-grid-match>
@@ -31,7 +33,9 @@
 
                 <span class="uk-button-group">
                     <a class="uk-button uk-button-small" href="@route('/regions/region')/@@ region._id @@" title="@lang('Edit region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
+                    @hasaccess?("Regions", 'create.regions')
                     <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                    @end
                 </span>
             </div>
         </div>
@@ -43,8 +47,10 @@
         <p class="uk-text-large">
             @lang('You don\'t have any regions created.')
         </p>
-
+        
+        @hasaccess?("Regions", 'create.regions')
         <a href="@route('/regions/region')" class="uk-button uk-button-success uk-button-large">@lang('Create a region')</a>
+        @end
     </div>
 
 </div>

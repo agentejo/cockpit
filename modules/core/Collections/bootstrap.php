@@ -44,7 +44,7 @@ if(COCKPIT_ADMIN) {
 
     $app->on("admin.init", function() use($app){
 
-        if(!$app->module("auth")->hasaccess("Collections","manage")) return;
+        if(!$app->module("auth")->hasaccess("Collections", ['manage.collections', 'manage.entries'])) return;
 
         // bind controllers
         $app->bindClass("Collections\\Controller\\Collections", "collections");
@@ -74,7 +74,7 @@ if(COCKPIT_ADMIN) {
 
     $app->on("admin.dashboard", function() use($app){
 
-        if(!$app->module("auth")->hasaccess("Collections","manage")) return;
+        if(!$app->module("auth")->hasaccess("Collections", ['manage.collections', 'manage.entries'])) return;
 
         $title       = $app("i18n")->get("Collections");
         $badge       = $app->db->getCollection("common/collections")->count();
@@ -84,6 +84,6 @@ if(COCKPIT_ADMIN) {
     });
 
     // acl
-    $app("acl")->addResource("Collections", ['manage']);
+    $app("acl")->addResource("Collections", ['manage.collections', 'manage.entries']);
 
 }

@@ -65,7 +65,7 @@ if(COCKPIT_ADMIN) {
 
     $app->on("admin.init", function() use($app){
 
-        if(!$app->module("auth")->hasaccess("Regions","manage")) return;
+        if(!$app->module("auth")->hasaccess("Regions", ['create.regions', 'edit.regions'])) return;
 
         $app->bindClass("Regions\\Controller\\Regions", "regions");
         $app->bindClass("Regions\\Controller\\Api", "api/regions");
@@ -93,7 +93,7 @@ if(COCKPIT_ADMIN) {
 
     $app->on("admin.dashboard", function() use($app){
 
-        if(!$app->module("auth")->hasaccess("Regions","manage")) return;
+        if(!$app->module("auth")->hasaccess("Regions", ['create.regions', 'edit.regions'])) return;
 
         $title   = $app("i18n")->get("Regions");
         $badge   = $app->db->getCollection("common/regions")->count();
@@ -104,6 +104,6 @@ if(COCKPIT_ADMIN) {
 
 
     // acl
-    $app("acl")->addResource("Regions", ['manage']);
+    $app("acl")->addResource("Regions", ['create.regions', 'edit.regions']);
 
 }

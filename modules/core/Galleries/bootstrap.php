@@ -33,7 +33,7 @@ if(COCKPIT_ADMIN) {
 
     $app->on("admin.init", function() use($app){
 
-        if(!$app->module("auth")->hasaccess("Galleries", "manage")) return;
+        if(!$app->module("auth")->hasaccess("Galleries", ['create.gallery', 'edit.gallery'])) return;
 
         $app->bindClass("Galleries\\Controller\\Galleries", "galleries");
         $app->bindClass("Galleries\\Controller\\Api", "api/galleries");
@@ -61,7 +61,7 @@ if(COCKPIT_ADMIN) {
 
     $app->on("admin.dashboard", function() use($app){
 
-        if(!$app->module("auth")->hasaccess("Galleries","manage")) return;
+        if(!$app->module("auth")->hasaccess("Galleries", ['create.gallery', 'edit.gallery'])) return;
 
         $title     = $app("i18n")->get("Galleries");
         $badge     = $app->db->getCollection("common/galleries")->count();
@@ -72,5 +72,5 @@ if(COCKPIT_ADMIN) {
 
 
     // acl
-    $app("acl")->addResource("Galleries", ['manage']);
+    $app("acl")->addResource("Galleries", ['create.gallery', 'edit.gallery']);
 }

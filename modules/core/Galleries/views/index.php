@@ -12,9 +12,11 @@
                 </div>
             </form>
         </div>
+        @hasaccess?("Galleries", 'create.gallery')
         <ul class="uk-navbar-nav">
             <li><a href="@route('/galleries/gallery')" title="@lang('Add gallerie')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-circle"></i></a></li>
         </ul>
+        @end
     </nav>
 
     <div class="uk-grid" data-uk-grid-margin data-uk-grid-match>
@@ -31,7 +33,9 @@
 
                 <span class="uk-button-group">
                     <a class="uk-button uk-button-small" href="@route('/galleries/gallery')/@@ gallery._id @@" title="@lang('Edit gallery')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
+                    @hasaccess?("Galleries", 'create.gallery')
                     <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, gallery)" href="#" title="@lang('Delete gallery')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                    @end
                 </span>
             </div>
         </div>
@@ -43,8 +47,9 @@
         <p class="uk-text-large">
             @lang('You don\'t have any galleries created.')
         </p>
-
+        @hasaccess?("Galleries", 'create.gallery')
         <a href="@route('/galleries/gallery')" class="uk-button uk-button-success uk-button-large">@lang('Create a gallery')</a>
+        @end
     </div>
 
 </div>

@@ -88,7 +88,7 @@ if(COCKPIT_ADMIN) {
 
     $app->on("admin.init", function() use($app){
 
-        if(!$app->module("auth")->hasaccess("Forms","manage")) return;
+        if(!$app->module("auth")->hasaccess("Forms", ['manage.forms', 'manage.entries'])) return;
 
         $app->bindClass("Forms\\Controller\\Forms", "forms");
         $app->bindClass("Forms\\Controller\\Api", "api/forms");
@@ -116,7 +116,7 @@ if(COCKPIT_ADMIN) {
 
     $app->on("admin.dashboard", function() use($app){
 
-        if(!$app->module("auth")->hasaccess("Forms","manage")) return;
+        if(!$app->module("auth")->hasaccess("Forms", ['manage.forms', 'manage.entries'])) return;
 
         $title = $app("i18n")->get("Forms");
         $badge = $app->db->getCollection("common/forms")->count();
@@ -126,5 +126,5 @@ if(COCKPIT_ADMIN) {
     });
 
     // acl
-    $app("acl")->addResource("Forms", ['manage']);
+    $app("acl")->addResource("Forms", ['manage.forms', 'manage.entries']);
 }

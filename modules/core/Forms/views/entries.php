@@ -8,9 +8,11 @@
 
     <nav class="uk-navbar uk-margin-bottom">
         <span class="uk-navbar-brand"><a href="@route("/forms")">@lang('Forms')</a> / {{ $form['name'] }}</span>
+        @hasaccess?("Forms", 'manage.forms')
         <ul class="uk-navbar-nav">
             <li><a href="@route('/forms/form/'.$form["_id"])" title="@lang('Edit form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a></li>
         </ul>
+        @end
     </nav>
 
     <div class="app-panel uk-margin uk-text-center" data-ng-show="entries && !entries.length">
