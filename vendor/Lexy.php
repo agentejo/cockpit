@@ -300,8 +300,9 @@ class Lexy {
     protected function compile_default_structures($value) {
 
 
-        $value = preg_replace('/(?(R)\((?:[^\(\)]|(?R))*\)|(?<!\w)(\s*)@(if|elseif|foreach|for|while)(\s*(?R)+))/', '$1<?php $2$3: ?>', $value);
-        $value = preg_replace('/(\s*)@(endif|endforeach|endfor|endwhile)(\s*)/', '$1<?php $2; ?>$3', $value);
+        $value = preg_replace('/(?(R)\((?:[^\(\)]|(?R))*\)|(?<!\w)(\s*)@(if|elseif|foreach|for|while)(\s*(?R)+))/', '$1<?php $2$3 { ?>', $value);
+        $value = preg_replace('/(\s*)@(endif|endforeach|endfor|endwhile)(\s*)/', '$1<?php } ?>$3', $value);
+        $value = preg_replace('/(\s*)@(end)(\s*)/', '$1<?php } ?>$3', $value);
 
         return $value;
     }
@@ -313,7 +314,7 @@ class Lexy {
      * @return string
      */
     protected function compile_else($value) {
-        return preg_replace('/(\s*)@(else)(\s*)/', '$1<?php $2: ?>$3', $value);
+        return preg_replace('/(\s*)@(else)(\s*)/', '$1<?php }else{ ?>$3', $value);
     }
 
     /**

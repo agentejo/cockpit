@@ -62,28 +62,24 @@ class SimpleAcl {
 
   }
 
+  public function hasaccess($groups, $resource, $actions){
 
-  public function hasaccess($group, $resource, $action){
+    $groups  = (array) $groups;
+    $actions = (array) $actions;
 
     if(!isset($this->resources[$resource])){
         return false;
     }
 
-    if(is_array($group)){
-        foreach($group as $g){
+    foreach($groups as $g){
 
-            if(!isset($this->groups[$g])) continue;
+        if(!isset($this->groups[$g])) continue;
+        if($this->groups[$g]==true) return true; // isSuperAdmin
 
-            if($this->groups[$g]==true || isset($this->rights[$g][$resource][$action])) {
-                return true;
-            }
-        }
-    }else{
-
-        if(!isset($this->groups[$group])) return false;
-
-        if($this->groups[$group]==true || isset($this->rights[$group][$resource][$action])) {
-            return true;
+        foreach($actions as $action){
+          if(isset($this->rights[$g][$resource][$action])) {
+              return true;
+          }
         }
     }
 

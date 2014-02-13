@@ -46,14 +46,30 @@ $this->module("auth")->extend([
     },
 
     "hasaccess" => function($resource, $action) use($app) {
+        
         $user = $app("session")->read("cockpit.app.auth");
-        return isset($user["group"]) ? ($user["group"]=='admin' || $app("acl")->hasaccess($user["group"], $resource, $action)) : true;
+
+        if(isset($user["group"])) {
+            
+            if($user["group"]=='admin') return true;
+            if($app("acl")->hasaccess($user["group"], $resource, $action)) return true;
+        }
+
+        return false;
     }
 
 ]);
 
 
 if (COCKPIT_ADMIN) {
+
+    // extend lexy parser
+    $app->renderer()->extend(function($content){
+
+        $content = preg_replace('/(\s*)@hasaccess\?\((.+?)\)/', '$1<?php if($app->module("auth")->hasaccess($2)) { ?>', $content);
+
+        return $content;
+    });
 
     // register controller
 
