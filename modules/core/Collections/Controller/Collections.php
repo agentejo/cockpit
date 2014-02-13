@@ -6,11 +6,11 @@ class Collections extends \Cockpit\Controller {
 
 
 	public function index() {
-		return $this->render("collections:views/index.php");
+        $control = $this->app->module("auth")->hasaccess("Collections","control");
+		return $this->render("collections:views/index.php", compact('control'));
 	}
 
     public function collection($id = null) {
-
         return $this->render("collections:views/collection.php", compact('id'));
     }
 
@@ -27,7 +27,9 @@ class Collections extends \Cockpit\Controller {
 
         $collection["count"] = $count;
 
-        return $this->render("collections:views/entries.php", compact('id', 'collection', 'count'));
+        $control = $this->app->module("auth")->hasaccess("Collections","control");
+
+        return $this->render("collections:views/entries.php", compact('id', 'collection', 'count', 'control'));
     }
 
     public function entry($collectionId, $entryId=null) {

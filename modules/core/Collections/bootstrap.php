@@ -80,10 +80,12 @@ if(COCKPIT_ADMIN) {
         $badge       = $app->db->getCollection("common/collections")->count();
         $collections = $app->db->find("common/collections", ["limit"=> 3, "sort"=>["created"=>-1] ]);
 
-        echo $app->view("collections:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'collections'));
+        $control = $app->module("auth")->hasaccess("Collections","control");
+
+        echo $app->view("collections:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'collections', 'control'));
     });
 
     // acl
-    $app("acl")->addResource("Collections", ['manage']);
+    $app("acl")->addResource("Collections", ['manage', 'control']);
 
 }

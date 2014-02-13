@@ -13,7 +13,9 @@
             </form>
         </div>
         <ul class="uk-navbar-nav">
+            @if($control)
             <li><a href="@route('/regions/region')" title="@lang('Add region')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-circle"></i></a></li>
+            @endif
         </ul>
     </nav>
 
@@ -31,7 +33,9 @@
 
                 <span class="uk-button-group">
                     <a class="uk-button uk-button-small" href="@route('/regions/region')/@@ region._id @@" title="@lang('Edit region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
+                    @if($control)
                     <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                    @endif
                 </span>
             </div>
         </div>
@@ -44,7 +48,9 @@
             @lang('You don\'t have any regions created.')
         </p>
 
+        @if($control)
         <a href="@route('/regions/region')" class="uk-button uk-button-success uk-button-large">@lang('Create a region')</a>
+        @endif
     </div>
 
 </div>

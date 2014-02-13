@@ -67,10 +67,12 @@ if(COCKPIT_ADMIN) {
         $badge     = $app->db->getCollection("common/galleries")->count();
         $galleries = $app->db->find("common/galleries", ["limit"=> 3, "sort"=>["created"=>-1] ]);
 
-        echo $app->view("galleries:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'galleries'));
+        $control = $app->module("auth")->hasaccess("Galleries","control");
+
+        echo $app->view("galleries:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'galleries', 'control'));
     });
 
 
     // acl
-    $app("acl")->addResource("Galleries", ['manage']);
+    $app("acl")->addResource("Galleries", ['manage', 'control']);
 }
