@@ -7,7 +7,9 @@
     @endforeach
 </ul>
 
+@if($control)
 <a class="uk-button uk-button-success uk-button-small" href="@route('/collections/collection')" title="@lang('Add collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
+@endif
 
 @else
 
@@ -17,7 +19,9 @@
         @lang('You don\'t have any collections created.')
     </p>
 
+    @if($control)
     <a href="@route('/collections/collection')" class="uk-button uk-button-success">@lang('Create a collection')</a>
+    @endif
 </div>
 
 @endif

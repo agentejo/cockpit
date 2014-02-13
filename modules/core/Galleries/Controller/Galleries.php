@@ -6,7 +6,8 @@ class Galleries extends \Cockpit\Controller {
 
 
     public function index() {
-        return $this->render("galleries:views/index.php");
+        $control = $this->app->module("auth")->hasaccess("Galleries","control");
+        return $this->render("galleries:views/index.php", compact('control'));
     }
 
 

@@ -13,7 +13,9 @@
             </form>
         </div>
         <ul class="uk-navbar-nav">
+            @if($control)
             <li><a href="@route('/forms/form')" title="@lang('Add form')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-circle"></i></a></li>
+            @endif
         </ul>
     </nav>
 
@@ -31,8 +33,10 @@
 
                 <span class="uk-button-group">
                     <a class="uk-button uk-button-small" href="@route('/forms/entries')/@@ form._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a>
+                    @if($control)
                     <a class="uk-button uk-button-small" href="@route('/forms/form')/@@ form._id @@" title="@lang('Edit form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
                     <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, form)" href="#" title="@lang('Delete form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                    @endif
                 </span>
             </div>
         </div>
@@ -45,7 +49,9 @@
             @lang('You don\'t have any forms created.')
         </p>
 
+        @if($control)
         <a href="@route('/forms/form')" class="uk-button uk-button-success uk-button-large">@lang('Create a form')</a>
+        @endif
     </div>
 
 </div>

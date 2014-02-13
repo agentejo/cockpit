@@ -7,7 +7,9 @@
     @endforeach
 </ul>
 
+@if($control)
 <a class="uk-button uk-button-success uk-button-small" href="@route('/regions/region')" title="@lang('Add region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
+@endif
 
 @else
 
@@ -17,7 +19,9 @@
         @lang('You don\'t have any regions created.')
     </p>
 
+    @if($control)
     <a href="@route('/regions/region')" class="uk-button uk-button-success">@lang('Create a region')</a>
+    @endif
 </div>
 
 @endif

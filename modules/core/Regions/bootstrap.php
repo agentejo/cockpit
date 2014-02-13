@@ -99,11 +99,13 @@ if(COCKPIT_ADMIN) {
         $badge   = $app->db->getCollection("common/regions")->count();
         $regions = $app->db->find("common/regions", ["limit"=> 3, "sort"=>["created"=>-1] ]);
 
-        echo $app->view("regions:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'regions'));
+        $control = $app->module("auth")->hasaccess("Regions","control");
+
+        echo $app->view("regions:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'regions', 'control'));
     });
 
 
     // acl
-    $app("acl")->addResource("Regions", ['manage']);
+    $app("acl")->addResource("Regions", ['manage', 'control']);
 
 }

@@ -6,7 +6,8 @@ class Regions extends \Cockpit\Controller {
 
 
 	public function index(){
-		return $this->render("regions:views/index.php");
+    $control = $this->app->module("auth")->hasaccess("Regions","control");
+		return $this->render("regions:views/index.php", compact('control'));
 	}
 
 
