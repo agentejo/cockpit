@@ -6,7 +6,7 @@ class Base extends \Cockpit\Controller {
 
     public function dashboard() {
 
-        $stream = array();
+        $stream = [];
 
         return $this->render('cockpit:views/base/dashboard.php', compact('stream'));
     }

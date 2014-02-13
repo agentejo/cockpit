@@ -15,7 +15,7 @@ $this->module("auth")->extend([
 
         if (!$data["password"]) return false;
 
-        $user = $app->getCollection("cockpit/accounts")->findOne([
+        $user = $app->db->findOne("cockpit/accounts", [
             "user"     => $data["user"],
             "password" => $app->hash($data["password"]),
             "active"   => 1

@@ -19,7 +19,7 @@ class Controller extends \LimeExtra\Controller {
         parent::__construct($app);
 
         $this->user   = $app["user"] = $user;
-        $this->data   = $app->data;
+        $this->db     = $app->db;
         $this->memory = $app->memory;
 
         $controller = strtolower(str_replace('\\', '.', get_class($this)));

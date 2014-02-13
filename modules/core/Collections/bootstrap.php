@@ -7,21 +7,21 @@ $this->module("collections")->extend([
     "collection" => function($name) use($app) {
 
         $entriesdb  = null;
-        $collection = $app->getCollection("common/collections")->findOne(["name"=>$name]);
+        $collection = $app->db->findOne("common/collections", ["name"=>$name]);
 
         if($collection) {
             $collection = "collection".$collection["_id"];
-            $entriesdb  = $app->getCollection("collections/{$collection}");
+            $entriesdb  = $app->db->getCollection("collections/{$collection}");
         }
 
         return $entriesdb;
     },
 
     "collectionById" => function($colid) use($app) {
-        
+
         $collection = "collection{$colid}";
 
-        return $app->getCollection("collections/{$collection}");
+        return $app->db->getCollection("collections/{$collection}");
 
     }
 ]);
@@ -60,7 +60,7 @@ if(COCKPIT_ADMIN) {
         // handle global search request
         $app->on("cockpit.globalsearch", function($search, $list) use($app){
 
-            foreach ($app->getCollection("common/collections")->find()->toArray() as $c) {
+            foreach ($app->db->find("common/collections") as $c) {
                 if(stripos($c["name"], $search)!==false){
                     $list[] = [
                         "title" => '<i class="uk-icon-list"></i> '.$c["name"],
@@ -77,8 +77,8 @@ if(COCKPIT_ADMIN) {
         if(!$app->module("auth")->hasaccess("Collections","manage")) return;
 
         $title       = $app("i18n")->get("Collections");
-        $badge       = $app->getCollection("common/collections")->count();
-        $collections = $app->getCollection("common/collections")->find()->limit(3)->sort(["created"=>-1])->toArray();
+        $badge       = $app->db->getCollection("common/collections")->count();
+        $collections = $app->db->find("common/collections", ["limit"=> 3, "sort"=>["created"=>-1] ]);
 
         echo $app->view("collections:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'collections'));
     });

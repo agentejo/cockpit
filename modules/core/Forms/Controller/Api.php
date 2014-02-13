@@ -7,18 +7,14 @@ class Api extends \Cockpit\Controller {
 
     public function find(){
 
-        $filter = $this->param("filter", null);
-        $limit  = $this->param("limit", null);
-        $sort   = $this->param("sort", null);
-        $skip   = $this->param("skip", null);
+        $options = [];
 
-        $docs = $this->getCollection("common/forms")->find($filter);
+        if($filter = $this->param("filter", null)) $options["filter"] = $filter;
+        if($limit  = $this->param("limit", null))  $options["limit"] = $limit;
+        if($sort   = $this->param("sort", null))   $options["sort"] = $sort;
+        if($skip   = $this->param("skip", null))   $options["skip"] = $skip;
 
-        if($limit) $docs->limit($limit);
-        if($sort)  $docs->sort($sort);
-        if($skip)  $docs->sort($skip);
-
-        $docs = $docs->toArray();
+        $docs = $this->app->db->find("common/forms", $options);
 
         if(count($docs) && $this->param("extended", false)){
             foreach ($docs as &$doc) {
@@ -31,8 +27,7 @@ class Api extends \Cockpit\Controller {
 
     public function findOne(){
 
-        $filter = $this->param("filter", null);
-        $doc    = $this->getCollection("common/forms")->findOne($filter);
+        $doc = $this->app->db->findOne("common/forms", $this->param("filter", []));
 
         return $doc ? json_encode($doc) : '{}';
     }
@@ -51,7 +46,7 @@ class Api extends \Cockpit\Controller {
                 $form["created"] = $form["modified"];
             }
 
-            $this->getCollection("common/forms")->save($form);
+            $this->app->db->save("common/forms", $form);
         }
 
         return $form ? json_encode($form) : '{}';
@@ -64,8 +59,8 @@ class Api extends \Cockpit\Controller {
         if($form) {
             $frm = "form".$form["_id"];
 
-            $this->app->data->forms->dropcollection($frm);
-            $this->getCollection("common/forms")->remove(["_id" => $form["_id"]]);
+            $this->app->db->dropCollection("forms/{$frm}");
+            $this->app->db->remove("common/forms", ["_id" => $form["_id"]]);
         }
 
         return $form ? '{"success":true}' : '{"success":false}';
@@ -79,19 +74,15 @@ class Api extends \Cockpit\Controller {
 
         if($form) {
 
-            $filter = $this->param("filter", null);
-            $limit  = $this->param("limit", null);
-            $sort   = $this->param("sort", null);
-            $skip   = $this->param("skip", null);
+            $frm     = "form".$form["_id"];
+            $options = [];
 
-            $docs = $this->app->module("forms")->collectionById($form["_id"])->find($filter);
+            if($filter = $this->param("filter", null)) $options["filter"] = $filter;
+            if($limit  = $this->param("limit", null))  $options["limit"] = $limit;
+            if($sort   = $this->param("sort", null))   $options["sort"] = $sort;
+            if($skip   = $this->param("skip", null))   $options["skip"] = $skip;
 
-            if($limit) $docs->limit($limit);
-            if($sort)  $docs->sort($sort);
-            if($skip)  $docs->sort($skip);
-
-            $entries = $docs->toArray();
-
+            $entries = $this->app->db->find("forms/{$frm}", $options);
         }
 
         return json_encode($entries);
@@ -104,7 +95,9 @@ class Api extends \Cockpit\Controller {
 
         if($form && $entryId) {
 
-            $this->app->module("forms")->collectionById($form["_id"])->remove(["_id" => $entryId]);
+            $frm = "form".$form["_id"];
+
+            $this->app->db->remove("forms/{$frm}", ["_id" => $entryId]);
         }
 
         return ($form && $entryId) ? '{"success":true}' : '{"success":false}';
@@ -117,6 +110,8 @@ class Api extends \Cockpit\Controller {
 
         if($form && $entry) {
 
+            $frm = "form".$form["_id"];
+
             $entry["modified"] = time();
             $entry["_uid"]     = @$this->user["_id"];
 
@@ -124,7 +119,7 @@ class Api extends \Cockpit\Controller {
                 $entry["created"] = $entry["modified"];
             }
 
-            $this->app->module("forms")->collectionById($form["_id"])->save($entry);
+            $this->app->db->save("forms/{$frm}", $entry);
         }
 
         return $entry ? json_encode($entry) : '{}';

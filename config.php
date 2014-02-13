@@ -1,6 +1,5 @@
 <?php
 
-
 // make sure that $_SERVER['DOCUMENT_ROOT'] exists and is set correctly
 $docsroot   = str_replace(DIRECTORY_SEPARATOR, '/', isset($_SERVER['DOCUMENT_ROOT']) ? (is_link($_SERVER['DOCUMENT_ROOT']) ? readlink($_SERVER['DOCUMENT_ROOT']) : $_SERVER['DOCUMENT_ROOT']) : dirname(__DIR__));
 $servername = isset($_SERVER["SERVER_NAME"])   ? $_SERVER["SERVER_NAME"] : 'localhost';
@@ -15,7 +14,11 @@ return [
 
     "i18n"              => "en",
     "docs_root"         => $docsroot,
-    "addons_repository" => "https://raw.github.com/aheinze/cockpit-modules/master/modules.json",
+
+    "database"          => [
+        "server"  => "mongolite://".(__DIR__.'/storage/data'),
+        "options" => ["db" => "common"]
+    ],
 
     "mailer"            => [
         "from"      => "info@{$servername}",

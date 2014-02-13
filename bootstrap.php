@@ -39,8 +39,8 @@ function cockpit($module = null) {
         $app->path('site'    , dirname(__DIR__));
 
         // nosql storage
-        $app->service('data', function() use($app) {
-            $client = new MongoLite\Client($app->path('data:'));
+        $app->service('db', function() use($config) {
+            $client = new MongoHybrid\Client($config["database"]["server"], $config["database"]["options"]);
             return $client;
         });
 

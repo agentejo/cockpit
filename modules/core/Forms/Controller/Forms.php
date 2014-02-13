@@ -15,7 +15,7 @@ class Forms extends \Cockpit\Controller {
 
     public function entries($id) {
 
-        $form = $this->getCollection("common/forms")->findOne(["_id" => $id]);
+        $form = $this->app->db->findOne("common/forms", ["_id" => $id]);
 
         if(!$form) {
             return false;

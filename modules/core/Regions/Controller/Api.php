@@ -6,26 +6,21 @@ class Api extends \Cockpit\Controller {
 
     public function find(){
 
-        $filter = $this->param("filter", null);
-        $limit  = $this->param("limit", null);
-        $sort   = $this->param("sort", null);
-        $skip   = $this->param("skip", null);
+        $options = [];
 
-        $docs = $this->getCollection("common/regions")->find($filter);
+        if($filter = $this->param("filter", null)) $options["filter"] = $filter;
+        if($limit  = $this->param("limit", null))  $options["limit"] = $limit;
+        if($sort   = $this->param("sort", null))   $options["sort"] = $sort;
+        if($skip   = $this->param("skip", null))   $options["skip"] = $skip;
 
-        if($limit) $docs->limit($limit);
-        if($sort)  $docs->sort($sort);
-        if($skip)  $docs->sort($skip);
-
-        $docs = $docs->toArray();
+        $docs = $this->app->db->find("common/regions", $options);
 
         return json_encode($docs);
     }
 
     public function findOne(){
 
-        $filter = $this->param("filter", null);
-        $doc    = $this->getCollection("common/regions")->findOne($filter);
+        $doc = $this->app->db->findOne("common/regions", $this->param("filter", []));
 
         return $doc ? json_encode($doc) : '{}';
     }
@@ -49,7 +44,7 @@ class Api extends \Cockpit\Controller {
                 }
             }
 
-            $this->getCollection("common/regions")->save($region);
+            $this->app->db->save("common/regions", $region);
         }
 
         return $region ? json_encode($region) : '{}';
@@ -60,7 +55,7 @@ class Api extends \Cockpit\Controller {
         $region = $this->param("region", null);
 
         if($region) {
-            $this->getCollection("common/regions")->remove(["_id" => $region["_id"]]);
+            $this->app->db->remove("common/regions", ["_id" => $region["_id"]]);
             $this->app->helper("versions")->remove("regions:".$region["_id"]);
         }
 
@@ -102,7 +97,7 @@ class Api extends \Cockpit\Controller {
         if($versionId && $docId) {
 
             if($versiondata = $this->app->helper("versions")->get("regions:{$docId}", $versionId)) {
-                $this->getCollection("common/regions")->save($versiondata["data"]);
+                $this->app->db->save("common/regions", $versiondata["data"]);
                 return '{"success":true}';
             }
         }

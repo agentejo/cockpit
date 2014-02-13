@@ -18,7 +18,7 @@ $app->bind("/api/forms/submit/:form", function($params) use($app){
         return false;
     }
 
-    $frm = $app->getCollection("common/forms")->findOne(["name"=>$form]);
+    $frm = $app->db->findOne("common/forms", ["name"=>$form]);
 
     if(!$frm) {
         return false;
@@ -42,7 +42,7 @@ $app->bind("/api/forms/submit/:form", function($params) use($app){
 
             $collection = "form".$frm["_id"];
             $entry      = ["data" => $formdata, "created"=>time()];
-            $app->getCollection("forms/{$collection}")->insert($entry);
+            $app->db->insert("forms/{$collection}", $entry);
         }
 
         return json_encode($formdata);
@@ -67,10 +67,10 @@ $this->module("forms")->extend([
     },
 
     "collectionById" => function($formId) use($app) {
-        
+
         $entrydb = "form{$formId}";
-        
-        return $app->getCollection("forms/{$entrydb}");
+
+        return $app->db->getCollection("forms/{$entrydb}");
     }
 ]);
 
@@ -103,7 +103,7 @@ if(COCKPIT_ADMIN) {
         // handle global search request
         $app->on("cockpit.globalsearch", function($search, $list) use($app){
 
-            foreach ($app->getCollection("common/forms")->find()->toArray() as $f) {
+            foreach ($app->db->find("common/forms") as $f) {
                 if(stripos($f["name"], $search)!==false){
                     $list[] = [
                         "title" => '<i class="uk-icon-inbox"></i> '.$f["name"],
@@ -119,8 +119,8 @@ if(COCKPIT_ADMIN) {
         if(!$app->module("auth")->hasaccess("Forms","manage")) return;
 
         $title = $app("i18n")->get("Forms");
-        $badge = $app->getCollection("common/forms")->count();
-        $forms = $app->getCollection("common/forms")->find()->limit(3)->sort(["created"=>-1])->toArray();
+        $badge = $app->db->getCollection("common/forms")->count();
+        $forms = $app->db->find("common/forms", ["limit"=> 3, "sort"=>["created"=>-1] ]);
 
         echo $app->view("forms:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'forms'));
     });

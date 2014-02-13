@@ -6,7 +6,7 @@ $this->module("galleries")->extend([
 
     "gallery" => function($name) use($app) {
 
-        $gallery = $app->getCollection("common/galleries")->findOne(["name"=>$name]);
+        $gallery = $app->db->findOne("common/galleries", ["name"=>$name]);
 
         return $gallery ? $gallery["images"] : null;
     }
@@ -48,7 +48,7 @@ if(COCKPIT_ADMIN) {
         // handle global search request
         $app->on("cockpit.globalsearch", function($search, $list) use($app){
 
-            foreach ($app->getCollection("common/galleries")->find()->toArray() as $g) {
+            foreach ($app->db->find("common/galleries") as $g) {
                 if(stripos($g["name"], $search)!==false){
                     $list[] = [
                         "title" => '<i class="uk-icon-picture-o"></i> '.$g["name"],
@@ -64,8 +64,8 @@ if(COCKPIT_ADMIN) {
         if(!$app->module("auth")->hasaccess("Galleries","manage")) return;
 
         $title     = $app("i18n")->get("Galleries");
-        $badge     = $app->getCollection("common/galleries")->count();
-        $galleries = $app->getCollection("common/galleries")->find()->limit(3)->sort(["created"=>-1])->toArray();
+        $badge     = $app->db->getCollection("common/galleries")->count();
+        $galleries = $app->db->find("common/galleries", ["limit"=> 3, "sort"=>["created"=>-1] ]);
 
         echo $app->view("galleries:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'galleries'));
     });

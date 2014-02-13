@@ -7,7 +7,10 @@ class Accounts extends \Cockpit\Controller {
     public function index() {
 
         $current  = $this->user["_id"];
-        $accounts = $this->getCollection("cockpit/accounts")->find($this->user["group"]=="admin" ? null:["_id"=>$current])->sort(["user" => 1])->toArray();
+        $accounts = $this->app->db->find("cockpit/accounts", [
+            "filter" => $this->user["group"]=="admin" ? null:["_id"=>$current],
+            "sort"   => ["user" => 1]
+        ]);
 
         foreach ($accounts as &$account) {
             $account["md5email"] = md5(@$account["email"]);
@@ -23,9 +26,7 @@ class Accounts extends \Cockpit\Controller {
             $uid = $this->user["_id"];
         }
 
-        $account = $this->getCollection("cockpit/accounts")->findOne([
-            "_id" => $uid
-        ]);
+        $account = $this->app->db->findOne("cockpit/accounts", ["_id" => $uid]);
 
         if(!$account) {
             return false;
@@ -63,14 +64,14 @@ class Accounts extends \Cockpit\Controller {
                 }
             }
 
-            $this->getCollection("cockpit/accounts")->save($data);
+            $this->app->db->save("cockpit/accounts", $data);
 
             if(isset($data["password"])) {
                 unset($data["password"]);
             }
 
             if($data["_id"] == $this->user["_id"]) {
-                
+
                 $this->module("auth")->setUser($data);
             }
 
@@ -88,7 +89,7 @@ class Accounts extends \Cockpit\Controller {
             // user can't delete himself
             if($data["_id"] != $this->user["_id"]) {
 
-                $this->getCollection("cockpit/accounts")->remove(["_id" => $data["_id"]]);
+                $this->app->db->remove("cockpit/accounts", ["_id" => $data["_id"]]);
 
                 return '{"success":true}';
             }
@@ -113,14 +114,14 @@ class Accounts extends \Cockpit\Controller {
         if($this->user["group"]!="admin") return false;
 
         if($name = $this->app->param("name", false)) {
-            
+
             if($name!="admin") {
                 $groups = $this->app->memory->get("cockpit.acl.groups", []);
-                
-                
+
+
                 if($oldname = $this->app->param("oldname", false)) {
                     if(isset($groups[$oldname])) {
-                        
+
                         $rights = $this->app->memory->get("cockpit.acl.rights", []);
 
                         if(isset($rights[$oldname])) {
@@ -129,8 +130,8 @@ class Accounts extends \Cockpit\Controller {
                             $this->app->memory->set("cockpit.acl.rights", $rights);
                         }
 
-                        $this->getCollection("cockpit/accounts")->update(["group"=>$oldname], ["group"=>$name]);
-                        
+                        $this->app->db->update("cockpit/accounts", ["group"=>$oldname], ["group"=>$name]);
+
                         unset($groups[$oldname]);
                     }
 
@@ -152,13 +153,13 @@ class Accounts extends \Cockpit\Controller {
         if($this->user["group"]!="admin") return false;
 
         if($name = $this->app->param("name", false)) {
-            
+
             if($name!="admin") {
                 $groups = $this->app->memory->get("cockpit.acl.groups", []);
-                
+
                 if(isset($groups[$name])) {
                     unset($groups[$name]);
-                    $this->getCollection("cockpit/accounts")->update(["group"=>""], ["group"=>$name]);
+                    $this->app->db->update("cockpit/accounts", ["group"=>""], ["group"=>$name]);
                 }
 
                 $this->app->memory->set("cockpit.acl.groups", $groups);
@@ -214,7 +215,7 @@ class Accounts extends \Cockpit\Controller {
         $acl = [];
 
         foreach ($this->app->helper("acl")->getGroups() as $group => $isadmin) {
-            
+
             $acl[$group] = [];
 
             foreach ($this->app->helper("acl")->getResources() as $resource => $actions) {

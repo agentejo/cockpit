@@ -7,18 +7,14 @@ class Api extends \Cockpit\Controller {
 
     public function find(){
 
-        $filter = $this->param("filter", null);
-        $limit  = $this->param("limit", null);
-        $sort   = $this->param("sort", null);
-        $skip   = $this->param("skip", null);
+        $options = [];
 
-        $docs = $this->getCollection("common/collections")->find($filter);
+        if($filter = $this->param("filter", null)) $options["filter"] = $filter;
+        if($limit  = $this->param("limit", null))  $options["limit"] = $limit;
+        if($sort   = $this->param("sort", null))   $options["sort"] = $sort;
+        if($skip   = $this->param("skip", null))   $options["skip"] = $skip;
 
-        if($limit) $docs->limit($limit);
-        if($sort)  $docs->sort($sort);
-        if($skip)  $docs->sort($skip);
-
-        $docs = $docs->toArray();
+        $docs = $this->app->db->find("common/collections", $options);
 
         if(count($docs) && $this->param("extended", false)){
             foreach ($docs as &$doc) {
@@ -31,8 +27,7 @@ class Api extends \Cockpit\Controller {
 
     public function findOne(){
 
-        $filter = $this->param("filter", null);
-        $doc    = $this->getCollection("common/collections")->findOne($filter);
+        $doc = $this->app->db->findOne("common/collections", $this->param("filter", []));
 
         return $doc ? json_encode($doc) : '{}';
     }
@@ -51,7 +46,7 @@ class Api extends \Cockpit\Controller {
                 $collection["created"] = $collection["modified"];
             }
 
-            $this->getCollection("common/collections")->save($collection);
+            $this->app->db->save("common/collections", $collection);
         }
 
         return $collection ? json_encode($collection) : '{}';
@@ -64,8 +59,8 @@ class Api extends \Cockpit\Controller {
         if($collection) {
             $col = "collection".$collection["_id"];
 
-            $this->app->data->collections->dropCollection($col);
-            $this->getCollection("common/collections")->remove(["_id" => $collection["_id"]]);
+            $this->app->db->dropCollection("collections/{$col}");
+            $this->app->db->remove("common/collections", ["_id" => $collection["_id"]]);
         }
 
         return $collection ? '{"success":true}' : '{"success":false}';
@@ -79,19 +74,15 @@ class Api extends \Cockpit\Controller {
 
         if($collection) {
 
-            $filter = $this->param("filter", null);
-            $limit  = $this->param("limit", null);
-            $sort   = $this->param("sort", null);
-            $skip   = $this->param("skip", null);
+            $col     = "collection".$collection["_id"];
+            $options = [];
 
-            $docs = $this->app->module("collections")->collectionById($collection["_id"])->find($filter);
+            if($filter = $this->param("filter", null)) $options["filter"] = $filter;
+            if($limit  = $this->param("limit", null))  $options["limit"] = $limit;
+            if($sort   = $this->param("sort", null))   $options["sort"] = $sort;
+            if($skip   = $this->param("skip", null))   $options["skip"] = $skip;
 
-            if($limit) $docs->limit($limit);
-            if($sort)  $docs->sort($sort);
-            if($skip)  $docs->sort($skip);
-
-            $entries = $docs->toArray();
-
+            $entries = $this->app->db->find("collections/{$col}", $options);
         }
 
         return json_encode($entries);
@@ -106,8 +97,10 @@ class Api extends \Cockpit\Controller {
         if($collection && $entryId) {
 
             $colid = $collection["_id"];
+            $col   = "collection".$collection["_id"];
 
-            $this->app->module("collections")->collectionById($collection["_id"])->remove(["_id" => $entryId]);
+            $this->app->db->remove("collections/{$col}", ["_id" => $entryId]);
+
             $this->app->helper("versions")->remove("coentry:{$colid}-{$entryId}");
         }
 
@@ -124,6 +117,8 @@ class Api extends \Cockpit\Controller {
             $entry["modified"] = time();
             $entry["_uid"]     = @$this->user["_id"];
 
+            $col = "collection".$collection["_id"];
+
             if(!isset($entry["_id"])){
                 $entry["created"] = $entry["modified"];
             } else {
@@ -136,7 +131,7 @@ class Api extends \Cockpit\Controller {
                 }
             }
 
-            $this->app->module("collections")->collectionById($collection["_id"])->save($entry);
+            $this->app->db->save("collections/{$col}", $entry);
         }
 
         return $entry ? json_encode($entry) : '{}';
@@ -186,11 +181,11 @@ class Api extends \Cockpit\Controller {
         if($versionId && $docId && $colId) {
 
             if($versiondata = $this->app->helper("versions")->get("coentry:{$colId}-{$docId}", $versionId)) {
-                
+
                 $col = "collection".$colId;
 
-                if ($entry = $this->getCollection("collections/{$col}")->findOne(["_id" => $docId])) {
-                    $this->getCollection("collections/{$col}")->save($versiondata["data"]);
+                if ($entry = $this->app->db->findOne("collections/{$col}", ["_id" => $docId])) {
+                    $this->app->db->save("collections/{$col}", $versiondata["data"]);
                     return '{"success":true}';
                 }
             }

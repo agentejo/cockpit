@@ -10,28 +10,25 @@ class RestApi extends \LimeExtra\Controller {
             return false;
         }
 
-        $collection = $this->getCollection("common/collections")->findOne(["name"=>$collection]);
+        $collection = $this->app->db->findOne("common/collections", ["name"=>$collection]);
 
         if(!$collection) {
             return false;
         }
 
-        $entries    = [];
+        $entries = [];
 
         if($collection) {
 
-            $filter = $this->param("filter", null);
-            $limit  = $this->param("limit", null);
-            $sort   = $this->param("sort", null);
-            $skip   = $this->param("skip", null);
+            $col     = "collection".$collection["_id"];
+            $options = [];
 
-            $docs = $this->app->module("collections")->collectionById($collection["_id"])->find($filter);
+            if($filter = $this->param("filter", null)) $options["filter"] = $filter;
+            if($limit  = $this->param("limit", null))  $options["limit"] = $limit;
+            if($sort   = $this->param("sort", null))   $options["sort"] = $sort;
+            if($skip   = $this->param("skip", null))   $options["skip"] = $skip;
 
-            if($limit) $docs->limit($limit);
-            if($sort)  $docs->sort($sort);
-            if($skip)  $docs->sort($skip);
-
-            $entries = $docs->toArray();
+            $entries = $this->app->db->find("collections/{$col}", $options);
         }
 
         return json_encode($entries);

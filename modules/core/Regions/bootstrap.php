@@ -6,7 +6,7 @@ $this->module("regions")->extend([
 
     "render" => function($name, $params = []) use($app) {
 
-        $region = $app->getCollection("common/regions")->findOne(["name"=>$name]);
+        $region = $app->db->findOne("common/regions", ["name"=>$name]);
 
         if(!$region) {
             return null;
@@ -80,7 +80,7 @@ if(COCKPIT_ADMIN) {
         // handle global search request
         $app->on("cockpit.globalsearch", function($search, $list) use($app){
 
-            foreach ($app->getCollection("common/regions")->find()->toArray() as $r) {
+            foreach ($app->db->find("common/regions") as $r) {
                 if(stripos($r["name"], $search)!==false){
                     $list[] = [
                         "title" => '<i class="uk-icon-th-large"></i> '.$r["name"],
@@ -96,9 +96,9 @@ if(COCKPIT_ADMIN) {
         if(!$app->module("auth")->hasaccess("Regions","manage")) return;
 
         $title   = $app("i18n")->get("Regions");
-        $badge   = $app->getCollection("common/regions")->count();
-        $regions = $app->getCollection("common/regions")->find()->limit(3)->sort(["created"=>-1])->toArray();
-        
+        $badge   = $app->db->getCollection("common/regions")->count();
+        $regions = $app->db->find("common/regions", ["limit"=> 3, "sort"=>["created"=>-1] ]);
+
         echo $app->view("regions:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'regions'));
     });
 

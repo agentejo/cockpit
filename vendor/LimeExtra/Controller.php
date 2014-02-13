@@ -36,9 +36,4 @@ class Controller extends \Lime\AppAware {
     protected function stop() {
         $this->app->stop();
     }
-
-    protected function getCollection($name){
-
-        return $this->app->getCollection($name);
-    }
 }
