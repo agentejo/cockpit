@@ -16,9 +16,14 @@ return [
     "docs_root"         => $docsroot,
 
     "database"          => [
-        "server"  => "mongolite://".(__DIR__.'/storage/data'),
-        "options" => ["db" => "common"]
+        "server"  => "mongolite://".(__DIR__.'/storage/data'), "options" => ["db" => "common"]
     ],
+
+    /* use mongodb as db storage
+    "database"          => [
+        "server"  => "mongodb://localhost:27017", "options" => ["db" => "cockpitdb"]
+    ],
+    */
 
     "mailer"            => [
         "from"      => "info@{$servername}",
