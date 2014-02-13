@@ -44,7 +44,6 @@ $account = [
     "i18n"     => "en"
 ];
 
-$app->getCollection("cockpit/accounts")->insert($account);
-
+$app->db->insert("cockpit/accounts", $account);
 
 include(__DIR__."/success.php");
