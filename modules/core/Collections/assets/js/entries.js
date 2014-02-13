@@ -2,9 +2,10 @@
 
     App.module.controller("entries", function($scope, $rootScope, $http){
 
-        $scope.collection = $("[data-ng-controller='entries']").data("collection");
+        $scope.collection = COLLECTION || {};
+        $scope.fields = [];
 
-        $scope.fields     = $scope.collection.fields.filter(function(field){
+        $scope.fields = (COLLECTION.fields.length ? COLLECTION.fields : [COLLECTION.fields]).filter(function(field){
             return field.lst;
         });
 

@@ -9,8 +9,9 @@ class Mongo {
 
     public function __construct($server, $options=[]) {
 
+
         $this->client  = new \MongoClient($server, $options);
-        $this->db      = $this->client->selecDB($options["db"]);
+        $this->db      = $this->client->selectDB($options["db"]);
         $this->options = $options;
     }
 
@@ -49,7 +50,7 @@ class Mongo {
 
     public function find($collection, $options = []){
 
-        $filter = isset($options["filter"]) ? $options["filter"] : null;
+        $filter = isset($options["filter"]) ? $options["filter"] : [];
         $limit  = isset($options["limit"]) ? $options["limit"] : null;
         $sort   = isset($options["sort"]) ? $options["sort"] : null;
         $skip   = isset($options["skip"]) ? $options["skip"] : null;
@@ -65,7 +66,7 @@ class Mongo {
         if($sort)  $cursor->sort($sort);
         if($skip)  $cursor->sort($skip);
 
-        $docs = iterator_to_array($cursor);
+        $docs = array_values(iterator_to_array($cursor));
 
         foreach ($docs as &$doc) {
             if(isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
@@ -78,9 +79,13 @@ class Mongo {
 
         if(isset($doc["_id"]) && is_string($doc["_id"])) $doc["_id"] = new \MongoId($doc["_id"]);
 
-        $return = $this->getCollection($collection)->insert($doc);
+        $ref = $doc;
 
-        $doc["_id"] = (string) $doc["_id"];
+        $return = $this->getCollection($collection)->insert($ref);
+
+        if(isset($ref["_id"])) $ref["_id"] = (string) $ref["_id"];
+
+        $doc = $ref;
 
         return $return;
     }
@@ -89,9 +94,13 @@ class Mongo {
 
         if(isset($data["_id"]) && is_string($data["_id"])) $data["_id"] = new \MongoId($data["_id"]);
 
-        $return = $this->getCollection($collection)->save($data);
+        $ref = $data;
 
-        $data["_id"] = (string) $data["_id"];
+        $return = $this->getCollection($collection)->save($ref);
+
+        if(isset($ref["_id"])) $ref["_id"] = (string) $ref["_id"];
+
+        $data = $ref;
 
         return $return;
     }

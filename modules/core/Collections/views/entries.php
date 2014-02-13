@@ -4,7 +4,14 @@
     td .uk-grid+.uk-grid { margin-top: 5px; }
 </style>
 
-<div data-ng-controller="entries" data-collection='{{ json_encode($collection) }}'>
+<script>
+
+    var COLLECTION = {{ json_encode($collection) }};
+
+</script>
+
+
+<div data-ng-controller="entries">
 
     <nav class="uk-navbar uk-margin-bottom">
         <span class="uk-navbar-brand"><a href="@route("/collections")">@lang('Collections')</a> / {{ $collection['name'] }}</span>
