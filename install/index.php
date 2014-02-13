@@ -30,7 +30,7 @@ require(__DIR__.'/../bootstrap.php');
 
 $app = cockpit();
 
-if($app->getCollection("cockpit/accounts")->count()) {
+if($app->db->getCollection("cockpit/accounts")->count()) {
     header('Location: ../index.php');
     exit;
 }
