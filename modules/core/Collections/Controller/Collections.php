@@ -11,6 +11,10 @@ class Collections extends \Cockpit\Controller {
 
     public function collection($id = null) {
 
+        if(!$this->app->module("auth")->hasaccess("Collections", 'manage.collections')) {
+            return false;
+        }
+
         return $this->render("collections:views/collection.php", compact('id'));
     }
 

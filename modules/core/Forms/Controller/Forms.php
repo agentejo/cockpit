@@ -10,6 +10,10 @@ class Forms extends \Cockpit\Controller {
 
     public function form($id = null) {
 
+        if(!$this->app->module("auth")->hasaccess("Forms", 'manage.forms')) {
+            return false;
+        }
+
         return $this->render("forms:views/form.php", compact('id'));
     }
 

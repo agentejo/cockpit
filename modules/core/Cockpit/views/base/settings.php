@@ -42,7 +42,7 @@
         </div>
         @endif
 
-        @if($app->module("auth")->hasaccess("Cockpit","backups"))
+        @if($app->module("auth")->hasaccess("Cockpit", "manage.backups"))
         <div class="uk-width-medium-1-5 uk-margin-bottom">
             <div>
                 <i class="uk-icon-archive"></i>

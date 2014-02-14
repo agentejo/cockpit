@@ -158,5 +158,5 @@ if (COCKPIT_ADMIN) {
 
 
     // acl
-    $app("acl")->addResource("Cockpit", ['backups']);
+    $app("acl")->addResource("Cockpit", ['manage.backups']);
 }
