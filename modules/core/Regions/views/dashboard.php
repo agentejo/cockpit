@@ -7,9 +7,14 @@
         @endforeach
     </ul>
 
-    @hasaccess?("Regions", 'create.regions')
-    <a class="uk-button uk-button-success uk-button-small" href="@route('/regions/region')" title="@lang('Add region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
-    @end
+    <div>
+        <span class="uk-button-group">
+            @hasaccess?("Regions", 'create.regions')
+            <a class="uk-button uk-button-success uk-button-small" href="@route('/regions/region')" title="@lang('Add region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
+            @end
+            <a class="uk-button app-button-secondary uk-button-small" href="@route('/regions')" title="@lang('Show all regions')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-list"></i></a>
+        </span>
+    </div>
 
 @else
 
@@ -18,7 +23,7 @@
         <p class="uk-text-muted">
             @lang('You don\'t have any regions created.')
         </p>
-        
+
         @hasaccess?("Regions", 'create.regions')
         <a href="@route('/regions/region')" class="uk-button uk-button-success">@lang('Create a region')</a>
         @end
