@@ -1,7 +1,7 @@
 (function($){
 
     App.module.controller("groups", function($scope, $rootScope, $http, $timeout){
-        
+
         $scope.acl    = angular.copy(ACL_DATA);
         $scope.active = "admin";
 
@@ -21,8 +21,8 @@
 
             if(remove) {
 
-                if(confirm(App.i18n.get("Are you sure?"))) {
-                    
+                App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
+
                     $http.post(App.route("/accounts/deleteGroup"), {"name": oldname}).success(function(data){
 
                         App.notify(App.i18n.get("Group removed!"));
@@ -34,7 +34,7 @@
                         }, 500);
 
                     }).error(App.module.callbacks.error.http);
-                }
+                });
                 return;
             }
 

@@ -72,7 +72,7 @@
 
 <script>
 
-    App.module.controller("backups", function($scope, $rootScope, $http){
+    App.module.controller("backups", function($scope, $rootScope, $http, $timeout){
 
         $scope.backups = {{ json_encode($backups) }};
 
@@ -99,7 +99,7 @@
         $scope.remove = function(index, backup){
 
 
-            if(confirm(App.i18n.get("Are you sure?"))) {
+            App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
 
                 $http.post(App.route("/backups/remove"), {
 
@@ -107,12 +107,13 @@
 
                 }, {responseType:"json"}).success(function(data){
 
-                    $scope.backups.splice(index, 1);
-
-                    App.notify(App.i18n.get("Backup deleted"), "success");
+                    $timeout(function(){
+                        $scope.backups.splice(index, 1);
+                        App.notify(App.i18n.get("Backup deleted"), "success");
+                    }, 0);
 
                 }).error(App.module.callbacks.error.http);
-            }
+            });
         };
 
     });

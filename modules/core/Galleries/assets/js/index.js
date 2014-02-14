@@ -1,6 +1,6 @@
 (function($){
 
-    App.module.controller("galleries", function($scope, $rootScope, $http){
+    App.module.controller("galleries", function($scope, $rootScope, $http, $timeout){
 
         $http.post(App.route("/api/galleries/find"), {}).success(function(data){
 
@@ -10,20 +10,16 @@
 
         $scope.remove = function(index, gallery){
 
-            if(confirm(App.i18n.get("Are you sure?"))) {
+            App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
 
-                $http.post(App.route("/api/galleries/remove"), {
+                $http.post(App.route("/api/galleries/remove"), { "gallery": angular.copy(gallery) }, {responseType:"json"}).success(function(data){
 
-                    "gallery": angular.copy(gallery)
-
-                }, {responseType:"json"}).success(function(data){
-
-                    $scope.galleries.splice(index, 1);
-
-                    App.notify(App.i18n.get("Gallery removed"), "success");
-
+                    $timeout(function(){
+                        $scope.galleries.splice(index, 1);
+                        App.notify(App.i18n.get("Gallery removed"), "success");
+                    }, 0);
                 }).error(App.module.callbacks.error.http);
-            }
+            });
         };
 
         $scope.filter = "";

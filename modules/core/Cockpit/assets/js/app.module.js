@@ -3,14 +3,14 @@
     var module = angular.module('app', []);
 
     module.config(function($sceProvider) {
-      
+
       // Completely disable SCE
       $sceProvider.enabled(false);
 
     });
 
     module.run(function($rootScope, $http){
-        
+
         $rootScope.app = {
             "notifications": []
         };
@@ -134,10 +134,10 @@
 
                     elm.on("click", function(e){
                         e.preventDefault();
- 
-                        if(confirm(msg)) {
+
+                        App.Ui.confirm(msg, function() {
                             location.href = elm.attr("href");
-                        }
+                        });
                     });
                 }
             }
@@ -159,7 +159,7 @@
     // helpers
 
     function i18n_date(format, input) {
-        
+
         var d = date(format, input);
 
         if(App.i18n.key("@meta") && App.i18n.key("@meta").date) {

@@ -1,7 +1,7 @@
 (function($){
 
     var Editor = {
-        
+
         init: function($scope) {
 
             if (this.element) {
@@ -45,7 +45,7 @@
             // key mappings
 
             this.code.addKeyMap({
-                'Ctrl-S': function(){ Editor.save(); }, 
+                'Ctrl-S': function(){ Editor.save(); },
                 'Cmd-S': function(){ Editor.save(); },
                 'Esc': function(){ Editor.close(); }
             });
@@ -64,7 +64,7 @@
         },
 
         save: function(){
-            
+
             if(!this.file) {
                 return;
             }
@@ -78,7 +78,7 @@
         },
 
         show: function(file, content){
-            
+
             var ext  = file.name.split('.').pop().toLowerCase(),
                 mode = "text";
 
@@ -107,13 +107,13 @@
             // autoload modes
             if(mode!='text') {
                 App.assets.require(['/assets/vendor/codemirror/mode/%N/%N.js'.replace(/%N/g, mode)], function(){
-                    
+
                     switch(mode) {
                         case "php":
                             Editor.code.setOption("mode", "application/x-httpd-php");
                             break;
                         default:
-                          Editor.code.setOption("mode", mode);  
+                          Editor.code.setOption("mode", mode);
                     }
                 });
             }
@@ -140,7 +140,7 @@
 
 
 
-    App.module.controller("mediamanager", function($scope, $rootScope, $http){
+    App.module.controller("mediamanager", function($scope, $rootScope, $http, $timeout){
 
             var currentpath = location.hash ? location.hash.replace("#", ''):"/",
                 apiurl      = App.route('/mediamanager/api'),
@@ -166,15 +166,17 @@
 
                     case "remove":
 
-                        if(confirm(App.i18n.get("Are you sure?"))) {
+                        App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
 
-                            requestapi({"cmd":"removefiles", "paths": [item.path]});
+                            $timeout(function(){
+                                requestapi({"cmd":"removefiles", "paths": [item.path]});
 
-                            var index = $scope.dir[item.is_file ? "files":"folders"].indexOf(item);
-                            $scope.dir[item.is_file ? "files":"folders"].splice(index, 1);
+                                var index = $scope.dir[item.is_file ? "files":"folders"].indexOf(item);
+                                $scope.dir[item.is_file ? "files":"folders"].splice(index, 1);
 
-                            App.notify("File(s) deleted", "success");
-                        }
+                                App.notify("File(s) deleted", "success");
+                            }, 0);
+                        });
                         break;
 
                     case "rename":
@@ -238,12 +240,12 @@
                         imgpreview.show();
                         break;
                     case "text":
-                        
+
                         requestapi({"cmd":"readfile", "path": file.path}, function(content){
                             Editor.show(file, content);
                         }, "text");
 
-                        
+
                         break;
                     default:
                         App.notify("Sorry, this file type is not supported.");
@@ -268,7 +270,7 @@
             };
 
             $scope.addBookmark = function(item) {
-                
+
                 var bookmark = {"name": item.name, "path": item.path},
                     cat      = item.is_dir ? "folders":"files";
 
@@ -362,15 +364,14 @@
                     cat = ele.data("group"),
                     idx = ele.data("idx");
 
-                if(!confirm(App.i18n.get("Do you really want to remove %s ?", $scope.bookmarks[cat][idx].name))) {
-                    return;
-                }
+                App.Ui.confirm(App.i18n.get("Do you really want to remove %s ?", $scope.bookmarks[cat][idx].name), function() {
 
-                $scope.$apply(function(){
-                    $scope.bookmarks[cat].splice(idx, 1);
-                    $http.post(App.route("/mediamanager/savebookmarks"), {"bookmarks": angular.copy($scope.bookmarks)}).success(function(data){
-                        //App.notify("Bookmarks updated.", "success");
-                    }).error(App.module.callbacks.error.http);
+                    $timeout(function(){
+                        $scope.bookmarks[cat].splice(idx, 1);
+                        $http.post(App.route("/mediamanager/savebookmarks"), {"bookmarks": angular.copy($scope.bookmarks)}).success(function(data){
+                            //App.notify("Bookmarks updated.", "success");
+                        }).error(App.module.callbacks.error.http);
+                    }, 0);
                 });
             });
 

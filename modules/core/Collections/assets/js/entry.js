@@ -1,6 +1,6 @@
 (function($){
 
-    App.module.controller("entry", function($scope, $rootScope, $http){
+    App.module.controller("entry", function($scope, $rootScope, $http, $timeout){
 
         var collection = COLLECTION,
             entry      = COLLECTION_ENTRY || {};
@@ -37,12 +37,15 @@
                 return;
             }
 
-            if(confirm(App.i18n.get("Are you sure?"))) {
+            App.Ui.confirm(App.i18n.get("Are you sure?"), function(){
+
                 $http.post(App.route("/api/collections/clearVersions"), {"id":$scope.entry["_id"], "colId":$scope.collection["_id"]}).success(function(data){
-                    $scope.versions = [];
-                    App.notify(App.i18n.get("Version history cleared!"), "success");
+                    $timeout(function(){
+                        $scope.versions = [];
+                        App.notify(App.i18n.get("Version history cleared!"), "success");
+                    }, 0);
                 }).error(App.module.callbacks.error.http);
-            }
+            });
         };
 
         $scope.restoreVersion = function(versionId) {
@@ -53,7 +56,7 @@
 
             var msg = $.UIkit.notify(['<i class="uk-icon-spinner uk-icon-spin"></i>', App.i18n.get("Restoring version...")].join(" "), {timeout:0});
 
-            if(confirm(App.i18n.get("Are you sure?"))) {
+            App.Ui.confirm(App.i18n.get("Are you sure?"), function(){
                 $http.post(App.route("/api/collections/restoreVersion"), {"docId":$scope.entry["_id"], "colId":$scope.collection["_id"],"versionId":versionId}).success(function(data){
 
                     setTimeout(function(){
@@ -61,7 +64,7 @@
                         location.href = App.route("/collections/entry/"+$scope.collection["_id"]+'/'+$scope.entry["_id"]);
                     }, 1000);
                 }).error(App.module.callbacks.error.http);
-            }
+            });
         };
 
         $scope.save = function(){

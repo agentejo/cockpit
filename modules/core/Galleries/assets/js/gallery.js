@@ -1,6 +1,6 @@
 (function($){
 
-    App.module.controller("gallery", function($scope, $rootScope, $http){
+    App.module.controller("gallery", function($scope, $rootScope, $http, $timeout){
 
         var id     = $("[data-ng-controller='gallery']").data("id"),
             dialog = new $.UIkit.modal.Modal("#meta-dialog");
@@ -95,9 +95,11 @@
 
         $scope.removeImage = function(index) {
 
-            if(confirm(App.i18n.get("Are you sure?"))){
-                $scope.gallery.images.splice(index, 1);
-            }
+            App.Ui.confirm(App.i18n.get("Are you sure?"), function(){
+                $timeout(function(){
+                    $scope.gallery.images.splice(index, 1);
+                },0);
+            });
         };
 
         $scope.imgurl = function(image) {

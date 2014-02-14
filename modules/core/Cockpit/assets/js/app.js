@@ -33,6 +33,18 @@
 
                 unblock: function(){
 
+                },
+
+                dialog: function(content, options) {
+                    $.UIkit.modal.dialog(content, options);
+                },
+
+                alert: function(content, options) {
+                    $.UIkit.modal.alert(content, options);
+                },
+
+                confirm: function(content, onconfirm, options){
+                    $.UIkit.modal.confirm(content, onconfirm, options);
                 }
             }
         };

@@ -1,6 +1,6 @@
 (function($){
 
-    App.module.controller("region", function($scope, $rootScope, $http){
+    App.module.controller("region", function($scope, $rootScope, $http, $timeout){
 
         var id       = $("[data-ng-controller='region']").data("id"),
             template = $("#region-template");
@@ -31,12 +31,14 @@
                 return;
             }
 
-            if(confirm(App.i18n.get("Are you sure?"))) {
+            App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
                 $http.post(App.route("/api/regions/clearVersions"), {"id":$scope.region["_id"]}).success(function(data){
-                    $scope.versions = [];
-                    App.notify(App.i18n.get("Version history cleared!"), "success");
+                    $timeout(function(){
+                        $scope.versions = [];
+                        App.notify(App.i18n.get("Version history cleared!"), "success");
+                    }, 0);
                 }).error(App.module.callbacks.error.http);
-            }
+            })
         };
 
         $scope.restoreVersion = function(versionId) {
@@ -47,7 +49,7 @@
 
             var msg = $.UIkit.notify(['<i class="uk-icon-spinner uk-icon-spin"></i>', App.i18n.get("Restoring version...")].join(" "), {timeout:0});
 
-            if(confirm(App.i18n.get("Are you sure?"))) {
+            App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
                 $http.post(App.route("/api/regions/restoreVersion"), {"docId":$scope.region["_id"], "versionId":versionId}).success(function(data){
 
                     setTimeout(function(){
@@ -55,7 +57,7 @@
                         location.href = App.route("/regions/region/"+$scope.region["_id"]);
                     }, 1500);
                 }).error(App.module.callbacks.error.http);
-            }
+            });
         };
 
 

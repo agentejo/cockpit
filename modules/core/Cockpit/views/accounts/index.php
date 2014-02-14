@@ -46,7 +46,7 @@
 
 <script>
 
-    App.module.controller("accounts", function($scope, $rootScope, $http){
+    App.module.controller("accounts", function($scope, $rootScope, $http, $timeout){
 
         $scope.accounts = {{ json_encode($accounts) }};
         $scope.current  = {{ json_encode($current) }};
@@ -63,7 +63,7 @@
                 return;
             }
 
-            if(confirm("Are you sure?")) {
+            App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
 
                 $http.post(App.route("/accounts/remove"), {
 
@@ -71,12 +71,13 @@
 
                 }, {responseType:"json"}).success(function(data){
 
-                    $scope.accounts.splice(index, 1);
-
-                    App.notify("Account removed", "success");
+                    $timeout(function(){
+                        $scope.accounts.splice(index, 1);
+                        App.notify("Account removed", "success");
+                    }, 0);
 
                 }).error(App.module.callbacks.error.http);
-            }
+            });
         };
 
 

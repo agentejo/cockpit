@@ -1,6 +1,6 @@
 (function($){
 
-    App.module.controller("collections", function($scope, $rootScope, $http){
+    App.module.controller("collections", function($scope, $rootScope, $http, $timeout){
 
         $http.post(App.route("/api/collections/find"), {extended:true}).success(function(data){
 
@@ -9,20 +9,16 @@
         }).error(App.module.callbacks.error.http);
 
         $scope.remove = function(index, collection){
-            if(confirm(App.i18n.get("Are you sure?"))) {
+            App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
 
-                $http.post(App.route("/api/collections/remove"), {
+                $http.post(App.route("/api/collections/remove"), { "collection": angular.copy(collection) }, {responseType:"json"}).success(function(data){
 
-                    "collection": angular.copy(collection)
-
-                }, {responseType:"json"}).success(function(data){
-
-                    $scope.collections.splice(index, 1);
-
-                    App.notify(App.i18n.get("Collection removed"), "success");
-
+                    $timeout(function(){
+                        $scope.collections.splice(index, 1);
+                        App.notify(App.i18n.get("Collection removed"), "success");
+                    }, 0);
                 }).error(App.module.callbacks.error.http);
-            }
+            });
         };
 
         $scope.filter = "";

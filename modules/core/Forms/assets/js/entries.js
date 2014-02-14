@@ -1,6 +1,6 @@
 (function($){
 
-    App.module.controller("entries", function($scope, $rootScope, $http){
+    App.module.controller("entries", function($scope, $rootScope, $http, $timeout){
 
         $scope.form = $("[data-ng-controller='entries']").data("form");
 
@@ -16,7 +16,8 @@
         }).error(App.module.callbacks.error.http);
 
         $scope.remove = function(index, entryId){
-            if(confirm(App.i18n.get("Are you sure?"))) {
+
+            App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
 
                 $http.post(App.route("/api/forms/removeentry"), {
 
@@ -25,13 +26,14 @@
 
                 }, {responseType:"json"}).success(function(data){
 
-                    $scope.entries.splice(index, 1);
-                    $scope.form.count -= 1;
-
-                    App.notify(App.i18n.get("Entry removed"), "success");
+                    $timeout(function(){
+                        $scope.entries.splice(index, 1);
+                        $scope.form.count -= 1;
+                        App.notify(App.i18n.get("Entry removed"), "success");
+                    }, 0);
 
                 }).error(App.module.callbacks.error.http);
-            }
+            });
         };
 
     });

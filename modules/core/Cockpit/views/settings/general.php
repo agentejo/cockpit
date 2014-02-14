@@ -58,10 +58,10 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
                     <button ng-show="!emptyRegistry()" class="uk-button uk-button-large uk-button-success" type="button" ng-click="saveRegistry()">@lang('Save')</button>
                     <button class="uk-button uk-button-large uk-button-primary" type="button" ng-click="addRegistryKey()"><i class="uk-icon-plus-circle"></i> @lang('Entry')</button>
-                    
+
                     <hr>
 
                     <div class="uk-margin">
@@ -84,19 +84,19 @@
 
 
 <script>
-    App.module.controller("general-settings", function($scope, $rootScope, $http){
+    App.module.controller("general-settings", function($scope, $rootScope, $http, $timeout){
 
         $scope.token    = '{{ $token }}';
         $scope.registry = {{ $registry }};
 
         $scope.addRegistryKey = function(){
-            
+
             var key = prompt("Key name");
 
             if(!key) return;
 
             if($scope.registry[key]) {
-                alert('"'+key+'" already exists!');
+                App.Ui.alert('"'+key+'" already exists!');
                 return;
             }
 
@@ -104,11 +104,13 @@
         };
 
         $scope.removeRegistryKey = function(key){
-            
-            if(confirm("@lang('Are you sure?')")) {
-                delete $scope.registry[key];
-                $scope.saveRegistry();
-            }
+
+            App.Ui.confirm("@lang('Are you sure?')", function() {
+                $timeout(function(){
+                    delete $scope.registry[key];
+                    $scope.saveRegistry();
+                }, 0);
+            })
         };
 
         $scope.saveRegistry = function(){

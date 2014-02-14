@@ -1,6 +1,6 @@
 (function($){
 
-    App.module.controller("forms", function($scope, $rootScope, $http){
+    App.module.controller("forms", function($scope, $rootScope, $http, $timeout){
 
         $http.post(App.route("/api/forms/find"), {}).success(function(data){
 
@@ -10,20 +10,16 @@
 
         $scope.remove = function(index, form){
 
-            if(confirm(App.i18n.get("Are you sure?"))) {
+            App.Ui.confirm(App.i18n.get("Are you sure?"), function(){
 
-                $http.post(App.route("/api/forms/remove"), {
+                $http.post(App.route("/api/forms/remove"), { "form": angular.copy(form) }, {responseType:"json"}).success(function(data){
 
-                    "form": angular.copy(form)
-
-                }, {responseType:"json"}).success(function(data){
-
-                    $scope.forms.splice(index, 1);
-
-                    App.notify(App.i18n.get("Form removed"), "success");
-
+                    $timeout(function(){
+                        $scope.forms.splice(index, 1);
+                        App.notify(App.i18n.get("Form removed"), "success");
+                    }, 0);
                 }).error(App.module.callbacks.error.http);
-            }
+            });
         };
 
         $scope.filter = "";
