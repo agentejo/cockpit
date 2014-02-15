@@ -82,8 +82,10 @@
                 </div>
                 <div class="uk-form">
                     <div class="uk-form-row">
-                        <label>Media root path</label>
-                        <input type="text" placeholder="/" class="uk-width-1-1" data-ng-model="groupsettings[active]['media.path']"> <span class="uk-text-muted uk-text-small">Relative to site root</span>
+                        <label>
+                            Media root path
+                        </label>
+                        <input type="text" placeholder="/" class="uk-width-1-1" data-ng-model="groupsettings[active]['media.path']" title="Relative to {{ $app->pathToUrl("site:") }}" data-uk-tooltip>
                     </div>
                 </div>
             </div>
