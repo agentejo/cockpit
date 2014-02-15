@@ -1,5 +1,11 @@
 # Changelog
 
+### WIP
+    
+    + set media root path for each acl group
+    + experimental mongodb support as main storage
+    + required field option in collections @davidgenetic
+
 ### 0.9.1 (Feb 09, 2014)
 
     + Added global registry (key/value) storage
