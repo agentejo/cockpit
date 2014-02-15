@@ -1,5 +1,9 @@
 (function(module, $){
 
+    var site_base  = COCKPIT_SITE_BASE_URL.replace(/^\/+|\/+$/g, ""),
+        media_base = COCKPIT_MEDIA_BASE_URL.replace(/^\/+|\/+$/g, ""),
+        site2media = media_base.replace(site_base, "").replace(/^\/+|\/+$/g, "");
+
     var Picker = function(onselect, type) {
 
         var modal    = '<div class="media-path-picker" style="width:600px;"> \
@@ -22,7 +26,7 @@
 
             $this.dirview.children().removeClass("active").filter(this).addClass("active");
 
-            $this.mediapath = 'site:'+data.path;
+            $this.mediapath = 'site:'+[site2media, data.path].join('/').replace(/^\/+|\/+$/g, "");
 
             $this.btnOk.prop("disabled", !matchName($this.type, data.name));
 
@@ -108,7 +112,7 @@
                     var parts   = path.split('/'),
                         tmppath = [];
 
-                    $this.caption.append('<span data-path="/"><strong>site:</strong></span>');
+                    $this.caption.append('<span data-path="/"><strong>media:</strong></span>');
 
                     for(var i=0;i<parts.length;i++){
 
@@ -148,7 +152,7 @@
 
                     $element = $(elm);
 
-                    var $tpl = $('<div><div class="uk-margin" data-preview=""></div><button class="uk-button uk-button-small uk-button-primary" type="button"><i class="uk-icon-code-fork"></i> Pick Media path</button></div>'),
+                    var $tpl = $('<div><div class="uk-margin" data-preview=""></div><button class="uk-button uk-button-small app-button-secondary" type="button"><i class="uk-icon-code-fork"></i> Pick Media path</button></div>'),
                         $btn = $tpl.find('button'),
                         $prv = $tpl.find('[data-preview]');
 

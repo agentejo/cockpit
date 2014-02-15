@@ -89,9 +89,15 @@ if(COCKPIT_ADMIN) {
 
 
     $app->on("app.layout.header", function() use($app){
-    ?>
-        <script>window.COCKPIT_SITE_BASE_URL = '<?=$app->pathToUrl("site:");?>';</script>
-    <?php
+        
+        $mediapath = trim($app->module("auth")->get_group_setting("media.path", '/'), '/');
+
+        ?>
+            <script>
+                window.COCKPIT_SITE_BASE_URL  = '<?=$app->pathToUrl("site:");?>';
+                window.COCKPIT_MEDIA_BASE_URL = '<?=rtrim($app->pathToUrl("site:{$mediapath}"), '/');?>';
+            </script>
+        <?php
     });
 
 

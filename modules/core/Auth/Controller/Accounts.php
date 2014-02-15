@@ -1,6 +1,6 @@
 <?php
 
-namespace Cockpit\Controller;
+namespace Auth\Controller;
 
 class Accounts extends \Cockpit\Controller {
 
@@ -16,7 +16,7 @@ class Accounts extends \Cockpit\Controller {
             $account["md5email"] = md5(@$account["email"]);
         }
 
-        return $this->render('cockpit:views/accounts/index.php', compact('accounts', 'current'));
+        return $this->render('auth:views/accounts/index.php', compact('accounts', 'current'));
     }
 
 
@@ -37,7 +37,7 @@ class Accounts extends \Cockpit\Controller {
         $languages = $this->getLanguages();
         $groups    = $this->getGroups();
 
-        return $this->render('cockpit:views/accounts/account.php', compact('account', 'uid', 'languages', 'groups'));
+        return $this->render('auth:views/accounts/account.php', compact('account', 'uid', 'languages', 'groups'));
     }
 
     public function create() {
@@ -48,7 +48,7 @@ class Accounts extends \Cockpit\Controller {
         $languages = $this->getLanguages();
         $groups    = $this->getGroups();
 
-        return $this->render('cockpit:views/accounts/account.php', compact('account', 'uid', 'languages', 'groups'));
+        return $this->render('auth:views/accounts/account.php', compact('account', 'uid', 'languages', 'groups'));
     }
 
     public function save() {
@@ -102,10 +102,9 @@ class Accounts extends \Cockpit\Controller {
 
         if($this->user["group"]!="admin") return false;
 
-
         $acl = $this->getAcl();
 
-        return $this->render('cockpit:views/accounts/groups.php', compact('acl'));
+        return $this->render('auth:views/accounts/groups.php', compact('acl'));
     }
 
 
@@ -120,7 +119,8 @@ class Accounts extends \Cockpit\Controller {
 
 
                 if($oldname = $this->app->param("oldname", false)) {
-                    if(isset($groups[$oldname])) {
+
+                    if(isset($groups[$oldname]) && $oldname!="admin") {
 
                         $rights = $this->app->memory->get("cockpit.acl.rights", []);
 
@@ -177,6 +177,10 @@ class Accounts extends \Cockpit\Controller {
 
         if($acl = $this->app->param("acl", false)) {
             $this->app->memory->set("cockpit.acl.rights", $acl);
+        }
+
+        if($settings = $this->app->param("aclSettings", false)) {
+            $this->app->memory->set("cockpit.acl.groups.settings", $settings);
         }
 
         return '{"success":true}';
