@@ -18,6 +18,7 @@ $app['app.assets.base'] = [
 // API
 
 $this->module("cockpit")->extend([
+    
     "assets" => function($assets, $key=null, $cache=0, $cache_folder=null) use($app) {
 
         $key          = $key ? $key : md5(serialize($assets));
@@ -25,6 +26,12 @@ $this->module("cockpit")->extend([
 
         $app("assets")->style_and_script($assets, $key, $cache_folder, $cache);
     },
+
+    "markdown" => function($content) use($app) {
+
+        return \Parsedown::instance()->parse($content);
+    },
+
     "get_registry" => function($key, $default=null) use($app) {
         return $app->memory->hget("cockpit.api.registry", $key, $default);
     }
@@ -43,11 +50,6 @@ if (!function_exists('get_registry')) {
         cockpit("cockpit")->get_registry($key, $default);
     }
 }
-
-$this->module("cockpit")->markdown = function($content) use($app) {
-
-    return \Parsedown::instance()->parse($content);
-};
 
 if (!function_exists('markdown')) {
 
