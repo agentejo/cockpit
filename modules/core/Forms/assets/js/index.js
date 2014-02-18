@@ -2,6 +2,9 @@
 
     App.module.controller("forms", function($scope, $rootScope, $http, $timeout){
 
+        $scope.mode = 'list';
+        
+
         $http.post(App.route("/api/forms/find"), {}).success(function(data){
 
             $scope.forms = data;

@@ -2,6 +2,9 @@
 
     App.module.controller("galleries", function($scope, $rootScope, $http, $timeout){
 
+        $scope.mode = 'list';
+
+
         $http.post(App.route("/api/galleries/find"), {}).success(function(data){
 
             $scope.galleries = data;

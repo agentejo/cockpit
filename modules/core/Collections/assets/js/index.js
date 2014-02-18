@@ -2,6 +2,8 @@
 
     App.module.controller("collections", function($scope, $rootScope, $http, $timeout){
 
+        $scope.mode = 'list';
+
         $http.post(App.route("/api/collections/find"), {extended:true}).success(function(data){
 
             $scope.collections = data;

@@ -2,6 +2,8 @@
 
     App.module.controller("regions", function($scope, $rootScope, $http, $timeout){
 
+        $scope.mode = 'list';
+
         $http.post(App.route("/api/regions/find"), {}).success(function(data){
 
             $scope.regions = data;

@@ -17,9 +17,17 @@
             <li><a href="@route('/galleries/gallery')" title="@lang('Add gallerie')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-circle"></i></a></li>
         </ul>
         @end
+        <div class="uk-navbar-flip">
+            <div class="uk-navbar-content">
+                <div class="uk-button-group">
+                    <button class="uk-button" data-ng-class="mode=='list' ? 'uk-button-primary':''" data-ng-click="(mode='list')" title="@lang('List mode')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-th"></i></button>
+                    <button class="uk-button" data-ng-class="mode=='table' ? 'uk-button-primary':''" data-ng-click="(mode='table')" title="@lang('Table mode')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-list-alt"></i></button>
+                </div>
+            </div>
+        </div>
     </nav>
 
-    <div class="uk-grid" data-uk-grid-margin data-uk-grid-match>
+    <div class="uk-grid" data-uk-grid-margin data-uk-grid-match data-ng-if="galleries && galleries.length && mode=='list'">
         <div class="uk-width-1-1 uk-width-medium-1-3 uk-width-large-1-4" data-ng-repeat="gallery in galleries" data-ng-show="matchName(gallery.name)">
 
             <div class="app-panel app-panel-box">
@@ -41,6 +49,28 @@
         </div>
     </div>
 
+    <div class="app-panel" data-ng-if="galleries && galleries.length && mode=='table'">
+        <table class="uk-table">
+            <thead>
+                <tr>
+                    <th>@lang('Gallery')</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="gallery in galleries" data-ng-show="matchName(gallery.name)">
+                    <td>
+                        <a href="@route('/galleries/gallery')/@@ gallery._id @@">@@ gallery.name @@</a>
+                    </td>
+                    <td align="right">
+                        @hasaccess?("Galleries", 'create.gallery')
+                        <a class="uk-text-danger" data-ng-click="remove($index, gallery)" href="#" title="@lang('Delete gallery')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                        @end
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <div class="uk-text-center app-panel" data-ng-show="galleries && !galleries.length">
         <h2><i class="uk-icon-picture-o"></i></h2>
