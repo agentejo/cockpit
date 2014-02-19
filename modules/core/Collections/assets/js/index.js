@@ -2,7 +2,7 @@
 
     App.module.controller("collections", function($scope, $rootScope, $http, $timeout){
 
-        $scope.mode = 'list';
+        $scope.mode = App.storage.get("cockpit.view.listmode", 'list');
 
         $http.post(App.route("/api/collections/find"), {extended:true}).success(function(data){
 
@@ -28,6 +28,12 @@
         $scope.matchName = function(name) {
 
             return (name.indexOf($scope.filter) !== -1);
+        };
+
+        $scope.setListMode = function(mode) {
+            $scope.mode = mode;
+
+            App.storage.set("cockpit.view.listmode", mode);
         };
     });
 

@@ -20,8 +20,8 @@
         <div class="uk-navbar-flip">
             <div class="uk-navbar-content">
                 <div class="uk-button-group">
-                    <button class="uk-button" data-ng-class="mode=='list' ? 'uk-button-primary':''" data-ng-click="(mode='list')" title="@lang('List mode')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-th"></i></button>
-                    <button class="uk-button" data-ng-class="mode=='table' ? 'uk-button-primary':''" data-ng-click="(mode='table')" title="@lang('Table mode')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-list-alt"></i></button>
+                    <button class="uk-button" data-ng-class="mode=='list' ? 'uk-button-primary':''" data-ng-click="setListMode('list')" title="@lang('List mode')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-th"></i></button>
+                    <button class="uk-button" data-ng-class="mode=='table' ? 'uk-button-primary':''" data-ng-click="setListMode('table')" title="@lang('Table mode')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-list-alt"></i></button>
                 </div>
             </div>
         </div>
@@ -50,7 +50,7 @@
     </div>
 
     <div class="app-panel" data-ng-if="regions && regions.length && mode=='table'">
-        <table class="uk-table">
+        <table class="uk-table uk-table-striped">
             <thead>
                 <tr>
                     <th>@lang('Region')</th>
@@ -78,7 +78,7 @@
         <p class="uk-text-large">
             @lang('You don\'t have any regions created.')
         </p>
-        
+
         @hasaccess?("Regions", 'create.regions')
         <a href="@route('/regions/region')" class="uk-button uk-button-success uk-button-large">@lang('Create a region')</a>
         @end

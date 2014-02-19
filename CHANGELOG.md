@@ -1,15 +1,16 @@
 # Changelog
 
 ### WIP
-    
+
     + set media root path for each acl group
+    + table view modes for regions, collections, galleries and forms
     + experimental mongodb support as main storage
     + required field option in collections @davidgenetic
 
 ### 0.9.1 (Feb 09, 2014)
 
     + Added global registry (key/value) storage
-    + Added caching of Lexy based views when possible (tmp folder must be writable) 
+    + Added caching of Lexy based views when possible (tmp folder must be writable)
     - Removed jQuery dependency for form addon
 
 ### 0.9.0 (Feb 07, 2014)
