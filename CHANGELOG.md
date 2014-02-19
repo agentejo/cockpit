@@ -1,6 +1,6 @@
 # Changelog
 
-### WIP
+### 0.9.2 (Feb 19, 2014)
 
     + set media root path for each acl group
     + table view modes for regions, collections, galleries and forms
