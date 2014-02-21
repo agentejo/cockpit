@@ -1,13 +1,6 @@
 @if(count($galleries))
 
-    <span class="uk-text-small uk-text-uppercase uk-text-muted">@lang('Latest')</span>
-    <ul class="uk-list uk-list-space">
-        @foreach($galleries as $gallery)
-        <li><a href="@route('/galleries/gallery/'.$gallery['_id'])">{{ $gallery["name"] }}</a></li>
-        @endforeach
-    </ul>
-
-    <div>
+    <div class="uk-margin-bottom">
         <span class="uk-button-group">
             @hasaccess?("Galleries", 'create.gallery')
             <a class="uk-button uk-button-success uk-button-small" href="@route('/galleries/gallery')" title="@lang('Add gallery')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
@@ -15,6 +8,13 @@
             <a class="uk-button app-button-secondary uk-button-small" href="@route('/galleries')" title="@lang('Show all galleries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-list"></i></a>
         </span>
     </div>
+
+    <span class="uk-text-small uk-text-uppercase uk-text-muted">@lang('Latest')</span>
+    <ul class="uk-list uk-list-space">
+        @foreach($galleries as $gallery)
+        <li><a href="@route('/galleries/gallery/'.$gallery['_id'])"><i class="uk-icon-map-marker"></i> {{ $gallery["name"] }}</a></li>
+        @endforeach
+    </ul>
 @else
 
     <div class="uk-text-center">

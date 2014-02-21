@@ -55,7 +55,7 @@ $app->bind("/api/forms/submit/:form", function($params) use($app){
 
 $this->module("forms")->extend([
 
-    "form" => function($name, $options) use($app) {
+    "form" => function($name, $options = []) use($app) {
 
         $options = array_merge(array(
             "id"    => uniqid("form"),
@@ -77,8 +77,8 @@ $this->module("forms")->extend([
 
 if (!function_exists('form')) {
 
-    function form($name, $options=array()) {
-        echo cockpit("forms")->form($name, $options);
+    function form($name, $options = []) {
+        cockpit("forms")->form($name, $options);
     }
 }
 

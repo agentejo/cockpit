@@ -1,4 +1,4 @@
-@mainbgcolor: #EDECE4;
+@mainbgcolor: #f6f6f6;
 @marginxl: 30px;
 
 *, *:before, *:after {
@@ -13,12 +13,15 @@
 .uk-margin-large-top { margin-top: @marginxl; }
 .uk-margin-large-bottom { margin-bottom: @marginxl; }
 
+.uk-modal { background: rgba(245, 245, 245, 0.8); }
+.uk-modal-dialog { border: 1px solid #e5e5e5; }
+
 .uk-nav-parent-icon [class^='uk-icon-'] {
   display: inline-block;
   min-width: 20px;
 }
 
-.uk-button, .uk-alert, .uk-badge, .uk-panel-box, .uk-tooltip, .uk-dropdown, .uk-thumbnail, .uk-modal-dialog {
+pre, .uk-button, .uk-alert, .uk-badge, .uk-panel-box, .uk-tooltip, .uk-dropdown, .uk-thumbnail, .uk-modal-dialog {
     border-radius: 3px;
 }
 
@@ -33,6 +36,8 @@
    font-weight: bold;
    color: #000;
 }
+
+.uk-table-hover tbody tr:hover { background: #ffffe6; }
 
 .uk-button-group {
     .uk-button {
@@ -97,7 +102,12 @@
     }
 }
 
-.uk-notify-message { font-size: 14px; }
+.uk-notify-message {
+  font-size: 14px;
+  padding: 10px;
+  line-height: 20px;
+  border-radius: 3px;
+}
 
 .uk-offcanvas-bar:after {
     content: "";
@@ -266,3 +276,5 @@ a {
         text-decoration: none;
     }
 }
+
+pre { background: #f1f1f1; }

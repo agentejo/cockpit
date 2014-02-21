@@ -17,13 +17,13 @@
 }
 
 .app-button-secondary {
-  background-color: #444;
-  color: #ffffff;
+  background-color: #fff;
+  color: #000;
+  box-shadow: 0 0 1px rgba(0,0,0,0.3) inset;
 }
 
-.app-button-secondary:hover, .app-button-secondary:focus {
-  background-color: #666;
-  color: #ffffff;
+.app-button-secondary:hover, .app-button-secondary:focus, .app-button-secondary:active {
+  background-color: #f7f7f7;
   background-image: none;
 }
 
@@ -33,14 +33,31 @@
     left: 0;
     right: 0;
     background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    border-bottom: 1px #ddd solid;
     z-index: 5;
 
-    .uk-nav-search>li.uk-active>a, .uk-nav-navbar>li>a:hover, .uk-nav-navbar>li>a:focus {
+    .uk-navbar-nav > li > a {
+        height: 60px;
+        line-height: 60px;
+
+        &:active { background: #eee; }
+    }
+
+    .uk-navbar-nav > li.uk-active > a {
+        color: #5BA4EB;
+        background: #fafafa;
+        border-bottom: 3px #5BA4EB solid;
+    }
+
+    .uk-navbar-content, .uk-navbar-brand, .uk-navbar-toggle {
+        height: 60px;
+    }
+
+    .uk-nav-search > li.uk-active > a, .uk-nav-navbar > li > a:hover, .uk-nav-navbar > li > a:focus {
         background: #222;
     }
 
-    .uk-dropdown-search { margin-top: 15px; }
+    .uk-dropdown-search { margin-top: 20px; }
 
     .uk-dropdown ul li a:hover { color: #fff; }
 }
@@ -70,12 +87,12 @@
 }
 
 .app-main {
-    margin-top: 80px;
+    margin-top: 100px;
     padding-bottom: 30px;
 }
 
 .app-panel-box {
-    background: #fbfbf9;
+    background: #fafafa;
     padding: 20px;
     border-radius: 3px;
 }
@@ -84,10 +101,9 @@
     background: #fff;
     padding: 30px;
     border-radius: 3px;
+    border: 1px solid #eaeaea;
 
-    hr {
-        border-top: 1px dotted #ccc;
-    }
+    hr { border-top: 1px dotted #ccc; }
 
     & > .app-panel-box.docked {
         margin-top: -30px;
@@ -101,6 +117,10 @@
     .app-panel-invert {
         background: #222;
         * { color: #fff; }
+    }
+
+    .uk-table-striped tbody tr:nth-of-type(odd) {
+        background: #fafafa;
     }
 }
 

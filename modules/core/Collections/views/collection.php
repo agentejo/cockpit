@@ -18,7 +18,7 @@
                 <div class="app-panel">
 
                     <div class="uk-form-row">
-                        <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="collection.name"  pattern="[a-zA-Z0-9]+" required>
+                        <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="collection.name" required>
                     </div>
 
                     <div class="uk-form-row uk-margin uk-text-center" data-ng-show="!collection.fields || !collection.fields.length">

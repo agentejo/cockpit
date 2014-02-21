@@ -12,7 +12,18 @@
 {{ $app->assets(['assets:vendor/codemirror/mode/php/php.js'], $app['cockpit/version']) }}
 
 {{ $app->assets(['assets:vendor/codemirror/addon/edit/matchbrackets.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/codemirror/addon/selection/active-line.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/addon/edit/closetag.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/addon/fold/xml-fold.js'], $app['cockpit/version']) }}
+
+{{ $app->assets(['assets:vendor/codemirror/addon/hint/show-hint.js', 'assets:vendor/codemirror/addon/hint/show-hint.css'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/addon/hint/xml-hint.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/addon/hint/html-hint.js'], $app['cockpit/version']) }}
+
+<script>
+  CodeMirror.commands.htmlautocomplete = function(cm) {
+    CodeMirror.showHint(cm, CodeMirror.hint.html);
+  };
+</script>
 
 {{ $app->assets(['assets:angular/directives/codearea.js'], $app['cockpit/version']) }}
 
@@ -70,7 +81,7 @@
                     <div class="app-panel">
 
                         <div class="uk-form-row">
-                            <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="region.name"  pattern="[a-zA-Z0-9]+" required>
+                            <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="region.name" required>
                         </div>
 
                         <ul class="uk-tab uk-tab-flip uk-margin" style="margin:25px 0;">
@@ -204,7 +215,7 @@
                             </div>
 
 
-                            <textarea id="region-template" codearea="{mode:'application/x-httpd-php'}" class="uk-width-1-1 uk-form-large" style="height:450px !important;" placeholder="Region code" data-ng-model="region.tpl"  pattern="[a-zA-Z0-9]+"></textarea>
+                            <textarea id="region-template" codearea="{mode:'application/x-httpd-php', autoCloseTags: true, extraKeys: {'Ctrl-Space': 'htmlautocomplete'}}" class="uk-width-1-1 uk-form-large" style="height:450px !important;" placeholder="Region code" data-ng-model="region.tpl"  pattern="[a-zA-Z0-9]+"></textarea>
 
                             <div class="uk-margin" ng-show="region.name">
                                 <strong>@lang('Embed region snippet'):</strong>

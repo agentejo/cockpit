@@ -27,7 +27,7 @@
         </div>
     </nav>
 
-    <div class="uk-grid" data-uk-grid-margin data-uk-grid-match data-ng-if="forms && forms.length && mode=='list'">
+    <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="forms && forms.length && mode=='list'">
         <div class="uk-width-1-1 uk-width-medium-1-3 uk-width-large-1-4" data-ng-repeat="form in forms" data-ng-show="matchName(form.name)">
 
             <div class="app-panel app-panel-box">

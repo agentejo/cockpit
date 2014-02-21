@@ -19,7 +19,7 @@
                 <div class="app-panel">
 
                     <div class="uk-form-row">
-                        <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="form.name"  pattern="[a-zA-Z0-9]+" required>
+                        <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="form.name" required>
                     </div>
 
                     <div class="uk-form-row">
@@ -48,12 +48,6 @@
                 <div class="uk-margin" ng-show="form.name">
                     <strong>@lang('Form snippet example'):</strong>
 
-                    <div class="uk-alert uk-alert-info">
-                        <i class="uk-icon-exclamation-circle"></i>
-                        @lang('It is important to prefix the form fields with <strong>form[...]</strong>.')
-                    </div>
-
-
 <pre><code><strong>&lt;?php form('@@form.name@@'); ?&gt;</strong>
     &lt;p&gt;
         &lt;label&gt;Name&lt;/label&gt;
@@ -67,6 +61,11 @@
         &lt;button type="submit"&gt;Send&lt;/button&gt;
     &lt;/p&gt;
 &lt;/form&gt;</code></pre>
+
+<div class="uk-alert uk-alert-info">
+    <i class="uk-icon-exclamation-circle"></i>
+    @lang('It is important to prefix the form fields with <strong>form[...]</strong>.')
+</div>
 
                 </div>
             </div>

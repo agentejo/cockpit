@@ -39,7 +39,7 @@
                                 ele = $(this).hide().after(progress);
 
                             App.request('/settings/'+this.id, {}, function(data){
-                                App.notify('Done.', 'info');
+                                App.notify('Done.');
 
                                 setTimeout(function(){
                                     ele.text(data.size=="n/a" ? '0 KB':data.size).show();
