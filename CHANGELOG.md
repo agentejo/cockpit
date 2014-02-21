@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.9.3 (Feb 21, 2014)
+
+    ^ minor fixes
+    ^ vendor assets updated
+
+
 ### 0.9.2 (Feb 19, 2014)
 
     + set media root path for each acl group
