@@ -496,7 +496,9 @@ class App implements \ArrayAccess {
         while($queue->valid()){
             $index = $queue->current();
             if(is_callable($this->events[$event][$index]["fn"])){
-                call_user_func_array($this->events[$event][$index]["fn"], $params);
+                if(call_user_func_array($this->events[$event][$index]["fn"], $params) === false) {
+                    break; // stop Propagation
+                }
             }
             $queue->next();
         }
