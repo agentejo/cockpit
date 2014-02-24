@@ -17,7 +17,7 @@
             <li><a href="@route('/regions/region')" title="@lang('Add region')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-circle"></i></a></li>
         </ul>
         @end
-        <div class="uk-navbar-flip">
+        <div class="uk-navbar-flip" data-ng-if="regions && regions.length">
             <div class="uk-navbar-content">
                 <div class="uk-button-group">
                     <button class="uk-button" data-ng-class="mode=='list' ? 'uk-button-primary':''" data-ng-click="setListMode('list')" title="@lang('List mode')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-th"></i></button>
