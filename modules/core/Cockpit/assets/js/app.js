@@ -7,6 +7,7 @@
             "base_route" : html.data("route"),
             "base_url"   : html.data("base"),
             "modules"    : [],
+            "_events"    : {},
 
             base: function(url) {
                 return this.base_url+url.replace(/^\//g, '');
@@ -45,6 +46,38 @@
 
                 confirm: function(content, onconfirm, options){
                     $.UIkit.modal.confirm(content, onconfirm, options);
+                }
+            },
+
+            on: function(name, fn){
+                if(!this._events[name]) this._events[name] = [];
+
+                this._events[name].push(fn);
+            },
+
+            off: function(name, fn){
+                if(!this._events[name]) return;
+
+                if (!fn) {
+                   this._events[name] = [];
+                } else {
+
+                    for(var i=0; i < this._events[name].length; i++) {
+                        if(this._events[name][i]===fn) {
+                            this._events[name].splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+            },
+
+            trigger: function(name, params) {
+                if(!this._events[name]) return;
+
+                var event = {"name":name, "params": params};
+
+                for(var i=0; i < this._events[name].length; i++) {
+                    this._events[name][i].apply(App, [event]);
                 }
             }
         };
