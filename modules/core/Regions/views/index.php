@@ -1,3 +1,4 @@
+{{ $app->assets(['assets:vendor/nativesortable.js'], $app['cockpit/version']) }}
 {{ $app->assets(['regions:assets/regions.js','regions:assets/js/index.js'], $app['cockpit/version']) }}
 
 <div data-ng-controller="regions">
@@ -27,61 +28,133 @@
         </div>
     </nav>
 
-    <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="regions && regions.length && mode=='list'">
-        <div class="uk-width-1-1 uk-width-medium-1-3 uk-width-large-1-4" data-ng-repeat="region in regions" data-ng-show="matchName(region.name)">
+    <div class="uk-grid">
 
-            <div class="app-panel app-panel-box">
+        <div class="uk-width-medium-4-5">
+        
+            <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="regions && regions.length && mode=='list'">
+                <div class="uk-width-1-1 uk-width-medium-1-3 uk-width-large-1-4" data-ng-repeat="region in regions" data-ng-show="matchName(region.name)">
 
-                <strong>@@ region.name @@</strong>
+                    <div class="app-panel app-panel-box">
 
-                <div class="uk-margin">
-                    <span class="uk-badge app-badge" title="Last update">@@ region.modified |fmtdate:'d M, Y H:i' @@</span>
+                        <strong>@@ region.name @@</strong>
+
+                        <div class="uk-margin">
+                            <span class="uk-badge app-badge" title="Last update">@@ region.modified |fmtdate:'d M, Y H:i' @@</span>
+                        </div>
+
+
+                        <span class="uk-button-group">
+                            <a class="uk-button uk-button-small" href="@route('/regions/region')/@@ region._id @@" title="@lang('Edit region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
+                            @hasaccess?("Regions", 'create.regions')
+                            <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                            @end
+                        </span>
+                    </div>
                 </div>
+            </div>
+
+            <div class="app-panel" data-ng-if="regions && regions.length && mode=='table'">
+                <table class="uk-table uk-table-striped">
+                    <thead>
+                        <tr>
+                            <th>@lang('Region')</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="region in regions" data-ng-show="matchName(region.name)">
+                            <td>
+                                <a href="@route('/regions/region')/@@ region._id @@">@@ region.name @@</a>
+                            </td>
+                            <td align="right">
+                                @hasaccess?("Regions", 'create.regions')
+                                <a class="uk-text-danger" data-ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                                @end
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
 
-                <span class="uk-button-group">
-                    <a class="uk-button uk-button-small" href="@route('/regions/region')/@@ region._id @@" title="@lang('Edit region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
-                    @hasaccess?("Regions", 'create.regions')
-                    <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
-                    @end
-                </span>
+            <div class="uk-text-center app-panel" data-ng-show="regions && !regions.length">
+                <h2><i class="uk-icon-th-large"></i></h2>
+                <p class="uk-text-large">
+                    @lang('You don\'t have any regions created.')
+                </p>
+
+                @hasaccess?("Regions", 'create.regions')
+                <a href="@route('/regions/region')" class="uk-button uk-button-success uk-button-large">@lang('Create a region')</a>
+                @end
+            </div>
+
+        </div>
+        <div class="uk-width-medium-1-5">
+            <div class="uk-panel uk-panel-box">
+                <ul class="uk-nav uk-nav-side">
+                    <li class="uk-nav-header">@lang("Region groups")</li>
+                    <li ng-class="activegroup=='-all' ? 'uk-active':''" ng-click="(activegroup='-all')"><a>@lang("Show all regions")</a></li>
+                    <li class="uk-nav-divider" ng-show="groups.length"></li>
+                </ul>
+
+                <ul id="groups-list" class="uk-nav uk-nav-side uk-animation-fade" ng-show="groups.length">
+                    <li ng-repeat="group in groups" ng-class="$parent.activegroup==group ? 'uk-active':''" ng-click="($parent.activegroup=group)" draggable="true">
+                        <a>@@ group @@</a>
+                        @hasaccess?("Regions", 'create.regions')
+                        <ul class="uk-subnav group-actions uk-animation-slide-right" data-ng-if="group!='admin'">
+                            <li><a href="#" ng-click="editGroup(group, $index)"><i class="uk-icon-pencil"></i></a></li>
+                            <li><a href="#" ng-click="removeGroup($index)"><i class="uk-icon-trash-o"></i></a></li>
+                        </ul>
+                        @end
+                    </li>
+                </ul>
+                
+                @hasaccess?("Regions", 'create.regions')
+                <div class="uk-margin-top">
+                    <button class="uk-button" title="@lang("Create new group")" data-uk-tooltip="{pos:'right'}" ng-click="addGroup()"><i class="uk-icon-plus-circle"></i></button>
+                </div>
+                @end
             </div>
         </div>
     </div>
-
-    <div class="app-panel" data-ng-if="regions && regions.length && mode=='table'">
-        <table class="uk-table uk-table-striped">
-            <thead>
-                <tr>
-                    <th>@lang('Region')</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr data-ng-repeat="region in regions" data-ng-show="matchName(region.name)">
-                    <td>
-                        <a href="@route('/regions/region')/@@ region._id @@">@@ region.name @@</a>
-                    </td>
-                    <td align="right">
-                        @hasaccess?("Regions", 'create.regions')
-                        <a class="uk-text-danger" data-ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
-                        @end
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-
-    <div class="uk-text-center app-panel" data-ng-show="regions && !regions.length">
-        <h2><i class="uk-icon-th-large"></i></h2>
-        <p class="uk-text-large">
-            @lang('You don\'t have any regions created.')
-        </p>
-
-        @hasaccess?("Regions", 'create.regions')
-        <a href="@route('/regions/region')" class="uk-button uk-button-success uk-button-large">@lang('Create a region')</a>
-        @end
-    </div>
-
 </div>
+
+<style>
+
+    #groups-list > li {
+        transform: scale(1.0);
+        -webkit-transition: -webkit-transform 0.2s ease-out;
+        transition: transform 0.2s ease-out;
+    }
+
+    #groups-list .sortable-dragging {
+        opacity: .25;
+        -webkit-transform: scale(0.8);
+        transform: scale(0.8);
+    }
+
+    #groups-list .sortable-over {
+        opacity: .25;
+    }
+
+    #groups-list li {
+        position: relative;
+        overflow: hidden;
+    }
+    .group-actions {
+        position: absolute;
+        display:none;
+        min-width: 60px;
+        text-align: right;
+        top: 5px;
+        right: 10px;
+    }
+    
+    .group-actions a { font-size: 11px; }
+
+    #groups-list li.uk-active .group-actions { display:block; }
+    #groups-list li.uk-active a { color: #fff; }
+
+
+</style>

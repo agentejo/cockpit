@@ -104,4 +104,23 @@ class Api extends \Cockpit\Controller {
 
         return false;
     }
+
+    public function updateGroups() {
+        
+        if($groups = $this->param("groups", false)) {
+
+            $this->app->memory->set("cockpit.regions.groups", $groups);
+
+            return '{"success":true}';
+        }
+
+        return false;
+    }
+
+    public function getGroups() {
+        
+        $groups = $this->app->memory->get("cockpit.regions.groups", []);
+
+        return json_encode($groups);
+    }
 }
