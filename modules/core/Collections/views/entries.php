@@ -38,7 +38,7 @@
                 <table class="uk-table uk-table-striped">
                     <thead>
                         <tr>
-                            <th width="10">&nbsp;</th>
+                            <th width="10"><input class="js-all" type="checkbox"></th>
                             <th>
                                 @lang('Fields')
                             </th>
@@ -48,7 +48,7 @@
                     </thead>
                     <tbody>
                         <tr data-ng-repeat="entry in entries">
-                            <td><i class="uk-icon-ellipsis-h"></i></td>
+                            <td><input class="js-select" type="checkbox" data-id="@@ entry._id @@"></td>
                             <td>
                                 <a class="uk-link-muted" href="@route('/collections/entry/'.$collection["_id"])/@@ entry._id @@">
                                     <div class="uk-grid uk-grid-preserve uk-text-small" data-ng-repeat="field in fields">
@@ -68,7 +68,7 @@
                                     <div class="uk-dropdown uk-dropdown-flip uk-text-left">
                                         <ul class="uk-nav uk-nav-dropdown uk-nav-parent-icon">
                                             <li><a href="@route('/collections/entry/'.$collection["_id"])/@@ entry._id @@"><i class="uk-icon-pencil"></i> @lang('Edit entry')</a></li>
-                                            <li><a href="#" data-ng-click="remove($index, entry._id)"><i class="uk-icon-trash-o"></i> @lang('Delete entry')</li>
+                                            <li><a href="#" data-ng-click="remove($index, entry._id)"><i class="uk-icon-trash-o"></i> @lang('Delete entry')</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -76,6 +76,11 @@
                         </tr>
                     </tbody>
                 </table>
+
+                <div class="uk-margin-top">
+                    <button class="uk-button uk-button-danger" data-ng-click="removeSelected()" data-ng-show="selected.length"><i class="uk-icon-trash-o"></i> @lang('Delete entries')</button>
+                </div>
+
             </div>
         </div>
         <div class="uk-width-medium-1-5 uk-hidden-small">
