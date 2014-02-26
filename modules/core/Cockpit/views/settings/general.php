@@ -125,10 +125,10 @@
         };
 
         $scope.generateToken = function(){
-            $scope.token = buildToken(64);
+            $scope.token = buildToken(95);
 
             $http.post(App.route("/settings/saveToken"), {"token": $scope.token}).success(function(data){
-                App.notify("@lang('New api token saved!')", "success");
+                App.notify("@lang('New api token created!')", "success");
             }).error(App.module.callbacks.error.http);
         };
 

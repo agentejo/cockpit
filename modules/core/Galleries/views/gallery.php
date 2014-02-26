@@ -16,8 +16,9 @@
                 <a title="@lang('Add images to gallery')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-circle"></i></a>
                 <div class="uk-dropdown uk-dropdown-navbar">
                     <ul class="uk-nav uk-nav-navbar">
-                        <li><a href="#" ng-click="selectImage()">@lang('Select single image')</a></li>
-                        <li><a href="#" ng-click="importFromFolder()">@lang('Import images from folder')</a></li>
+                        <li class="uk-nav-header">@lang("Import")</li>
+                        <li><a href="#" ng-click="selectImage()"><i class="uk-icon-reply"></i> @lang('Single image')</a></li>
+                        <li><a href="#" ng-click="importFromFolder()"><i class="uk-icon-reply-all"></i> @lang('Images from folder')</a></li>
                     </ul>
                 </div>
             </li>
@@ -55,9 +56,13 @@
                                 </div>
                             </div>
 
-                            <div class="uk-alert" data-ng-show="!gallery.images.length">
-                                @lang('No images.')
+                            <div class="uk-text-center uk-margin-large-top uk-margin-large-bottom" data-ng-show="gallery && !gallery.images.length">
+                                <h2><i class="uk-icon-th"></i></h2>
+                                <p class="uk-text-large">
+                                    @lang('You don\'t have any images in this gallery.')
+                                </p>
                             </div>
+
                         </div>
 
 

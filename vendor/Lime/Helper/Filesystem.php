@@ -67,7 +67,7 @@ class Filesystem extends \Lime\Helper {
         return call_user_func_array('file_get_contents', $args);
     }
 
-    public function mkdir($path, $mode = 0777) {
+    public function mkdir($path, $mode = 0755) {
 
         if (strpos($path, ':') !== false) {
             list($namespace, $additional) = explode(":", $path, 2);
@@ -103,6 +103,38 @@ class Filesystem extends \Lime\Helper {
         }
     }
 
+    public function copy($path, $dest) {
+
+        $path = $this->app->path($path);
+        $dest = $this->app->path($dest);
+
+        if(is_dir($path)) {
+
+            @mkdir($dest);
+
+            $items = scandir($path);
+
+            if(sizeof($items) > 0) {
+                foreach($items as $file) {
+
+                    if($file == "." || $file == "..") continue;
+
+                    if(is_dir("{$path}/{$file}")) {
+                        $this->copy("{$path}/{$file}", "{$dest}/{$file}");
+                    } else {
+                        copy("{$path}/{$file}", "{$dest}/{$file}");
+                    }
+                }
+            }
+
+            return true;
+
+        } elseif(is_file($path)) {
+            return copy($path, $dest);
+        }
+
+        return false;
+    }
 
     public function rename($path, $newpath, $overwrite = true) {
 
@@ -134,7 +166,7 @@ class Filesystem extends \Lime\Helper {
             $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
 
             foreach ($files as $file) {
-                
+
                 if(!$file->isFile() || $file->isLink()) continue;
 
                 $size += $file->getSize();
