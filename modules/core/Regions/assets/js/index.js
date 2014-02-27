@@ -84,6 +84,8 @@
 
             App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
 
+                $http.post(App.route("/api/regions/update"), {"criteria":{"group":$scope.groups[index]}, "data":{"group":""}});
+
                 $scope.$apply(function(){
                     $scope.groups.splice(index, 1);
                     $scope.activegroup = '-all';
@@ -107,9 +109,7 @@
                     if(region.group === oldname) region.group = name;
                 });
 
-                $http.post(App.route("/api/regions/update"), {"criteria":{"group":oldname}, "data":{"group":name}}).success(function(regions){
-
-                }).error(App.module.callbacks.error.http);
+                $http.post(App.route("/api/regions/update"), {"criteria":{"group":oldname}, "data":{"group":name}});
 
                 $scope.updateGroups();
             }
