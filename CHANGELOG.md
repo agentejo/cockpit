@@ -1,5 +1,12 @@
 # Changelog
 
+### 0.9.4  (Feb 27, 2014)
+    
+    + grouping for regions and galleries
+    + batch remove for collection and form entries
+    ^ minor updates
+
+
 ### 0.9.3 (Feb 21, 2014)
 
     ^ minor fixes

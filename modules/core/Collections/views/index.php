@@ -5,7 +5,7 @@
 
     <nav class="uk-navbar uk-margin-large-bottom">
         <span class="uk-navbar-brand">@lang('Collections')</span>
-        <div class="uk-navbar-content">
+        <div class="uk-navbar-content" data-ng-show="collections && collections.length">
             <form class="uk-form uk-margin-remove uk-display-inline-block">
                 <div class="uk-form-icon">
                     <i class="uk-icon-filter"></i>
