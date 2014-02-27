@@ -91,7 +91,8 @@
             $scope.region = {
                 name: "",
                 fields: [],
-                tpl: ""
+                tpl: "",
+                group: ""
             };
         }
 
