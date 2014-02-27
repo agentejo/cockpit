@@ -225,7 +225,7 @@ class UtilArrayQuery {
                         $d .= '["'.$key.'"]';
                     }
 
-                    $fn[] = is_array($value) ? "\\MongoLite\\UtilArrayQuery::check({$d}, ".var_export($value, true).")": "({$d}==".(is_string($value) ? "'{$value}'": $value).")";
+                    $fn[] = is_array($value) ? "\\MongoLite\\UtilArrayQuery::check((isset({$d}) ? {$d} : null), ".var_export($value, true).")": "(isset({$d}) && {$d}==".(is_string($value) ? "'{$value}'": $value).")";
             }
         }
 
@@ -234,6 +234,9 @@ class UtilArrayQuery {
 
 
     public static function check($value, $condition) {
+
+        if(is_null($value)) return false;
+
         $keys  = array_keys($condition);
         $func  = $keys[0];
 
@@ -312,7 +315,7 @@ class UtilArrayQuery {
                 break;
 
             default :
-                throw new ErrorException("Condition not valid ... Use \$fn for custom operations");
+                throw new \ErrorException("Condition not valid ... Use {$func} for custom operations");
                 break;
         }
 
