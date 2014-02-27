@@ -14,10 +14,11 @@ Manage content like collections and regions which you can reuse anywhere on your
 
 * PHP >= 5.4
 * PDO + SQLite
+* GD extension
 
 make also sure that 
     
-    $_SERVER['DOCUMENT_ROOT'] 
+    $_SERVER['DOCUMENT_ROOT'] + $_SERVER["PATH_INFO"]
 
 exists and is set correctly
 
