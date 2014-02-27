@@ -45,6 +45,10 @@
             return (name && name.indexOf($scope.filter) !== -1);
         };
 
+        $scope.inGroup = function(group) {
+            return ($scope.activegroup=='-all' || $scope.activegroup==group);
+        };
+
         $scope.setListMode = function(mode) {
             $scope.mode = mode;
 
@@ -52,7 +56,7 @@
         };
 
         $scope.addGroup = function() {
-            
+
             var name = prompt("Group name");
 
             if(name && $scope.groups.indexOf(name)==-1) {
@@ -82,6 +86,7 @@
 
                 $scope.$apply(function(){
                     $scope.groups.splice(index, 1);
+                    $scope.activegroup = '-all';
                     $scope.updateGroups();
                 });
             });
@@ -92,7 +97,20 @@
             var name = prompt("Group name", $scope.groups[index]);
 
             if(name && $scope.groups.indexOf(name)==-1) {
+
+                var oldname = $scope.groups[index];
+
                 $scope.groups[index] = name;
+                $scope.activegroup   = name;
+
+                $scope.regions.forEach(function(region){
+                    if(region.group === oldname) region.group = name;
+                });
+
+                $http.post(App.route("/api/regions/update"), {"criteria":{"group":oldname}, "data":{"group":name}}).success(function(regions){
+
+                }).error(App.module.callbacks.error.http);
+
                 $scope.updateGroups();
             }
         };
@@ -101,6 +119,8 @@
         var grouplist = $("#groups-list");
 
         grouplist.on("dragend", "[draggable]",function(){
+
+            if($scope.groups.length==1) return;
 
             var groups = [];
 

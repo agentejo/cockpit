@@ -50,6 +50,18 @@ class Api extends \Cockpit\Controller {
         return $region ? json_encode($region) : '{}';
     }
 
+    public function update(){
+
+        $criteria = $this->param("criteria", false);
+        $data     = $this->param("data", false);
+
+        if($criteria && $data) {
+            $this->app->db->update("common/regions", $criteria, $data);
+        }
+
+        return '{"success":true}';
+    }
+
     public function remove(){
 
         $region = $this->param("region", null);
@@ -106,8 +118,10 @@ class Api extends \Cockpit\Controller {
     }
 
     public function updateGroups() {
-        
-        if($groups = $this->param("groups", false)) {
+
+        $groups = $this->param("groups", false);
+
+        if($groups !== false) {
 
             $this->app->memory->set("cockpit.regions.groups", $groups);
 
@@ -118,7 +132,7 @@ class Api extends \Cockpit\Controller {
     }
 
     public function getGroups() {
-        
+
         $groups = $this->app->memory->get("cockpit.regions.groups", []);
 
         return json_encode($groups);

@@ -31,9 +31,13 @@
     <div class="uk-grid">
 
         <div class="uk-width-medium-4-5">
-        
+
+            <div data-ng-if="regions && regions.length" class="uk-margin-bottom">
+                <span class="uk-badge app-badge">@@ (activegroup=='-all' ? '@lang("All regions")' : activegroup) @@</span>
+            </div>
+
             <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="regions && regions.length && mode=='list'">
-                <div class="uk-width-1-1 uk-width-medium-1-3 uk-width-large-1-4" data-ng-repeat="region in regions" data-ng-show="matchName(region.name)">
+                <div class="uk-width-1-1 uk-width-medium-1-3 uk-width-large-1-4" data-ng-repeat="region in regions" data-ng-show="matchName(region.name) && inGroup(region.group)">
 
                     <div class="app-panel app-panel-box">
 
@@ -42,7 +46,6 @@
                         <div class="uk-margin">
                             <span class="uk-badge app-badge" title="Last update">@@ region.modified |fmtdate:'d M, Y H:i' @@</span>
                         </div>
-
 
                         <span class="uk-button-group">
                             <a class="uk-button uk-button-small" href="@route('/regions/region')/@@ region._id @@" title="@lang('Edit region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
@@ -63,7 +66,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr data-ng-repeat="region in regions" data-ng-show="matchName(region.name)">
+                        <tr data-ng-repeat="region in regions" data-ng-show="matchName(region.name) && inGroup(region.group)">
                             <td>
                                 <a href="@route('/regions/region')/@@ region._id @@">@@ region.name @@</a>
                             </td>
@@ -109,7 +112,7 @@
                         @end
                     </li>
                 </ul>
-                
+
                 @hasaccess?("Regions", 'create.regions')
                 <div class="uk-margin-top">
                     <button class="uk-button" title="@lang("Create new group")" data-uk-tooltip="{pos:'right'}" ng-click="addGroup()"><i class="uk-icon-plus-circle"></i></button>
@@ -150,7 +153,7 @@
         top: 5px;
         right: 10px;
     }
-    
+
     .group-actions a { font-size: 11px; }
 
     #groups-list li.uk-active .group-actions { display:block; }

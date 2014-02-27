@@ -8,6 +8,14 @@
         $scope.mode       = "tpl";
         $scope.manageform = false;
         $scope.versions   = [];
+        $scope.groups     = [];
+
+        // get groups
+        $http.post(App.route("/api/regions/getGroups"), {}).success(function(groups){
+
+            $scope.groups = groups;
+
+        }).error(App.module.callbacks.error.http);
 
 
         $scope.loadVersions = function() {
