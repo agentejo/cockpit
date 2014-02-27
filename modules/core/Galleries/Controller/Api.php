@@ -45,6 +45,18 @@ class Api extends \Cockpit\Controller {
         return $gallery ? json_encode($gallery) : '{}';
     }
 
+    public function update(){
+
+        $criteria = $this->param("criteria", false);
+        $data     = $this->param("data", false);
+
+        if($criteria && $data) {
+            $this->app->db->update("common/galleries", $criteria, $data);
+        }
+
+        return '{"success":true}';
+    }
+
     public function remove(){
 
         $gallery = $this->param("gallery", null);
@@ -54,5 +66,26 @@ class Api extends \Cockpit\Controller {
         }
 
         return $gallery ? '{"success":true}' : '{"success":false}';
+    }
+
+    public function updateGroups() {
+
+        $groups = $this->param("groups", false);
+
+        if($groups !== false) {
+
+            $this->app->memory->set("cockpit.galleries.groups", $groups);
+
+            return '{"success":true}';
+        }
+
+        return false;
+    }
+
+    public function getGroups() {
+
+        $groups = $this->app->memory->get("cockpit.galleries.groups", []);
+
+        return json_encode($groups);
     }
 }

@@ -32,23 +32,27 @@
 
         <div class="uk-width-medium-1-4">
             <div class="uk-panel">
-                <ul class="uk-nav uk-nav-side">
-                    <li class="uk-nav-header">@lang("Region groups")</li>
+                <ul class="uk-nav uk-nav-side uk-nav-plain" ng-show="groups.length">
+                    <li class="uk-nav-header">@lang("Groups")</li>
                     <li ng-class="activegroup=='-all' ? 'uk-active':''" ng-click="(activegroup='-all')"><a>@lang("All regions")</a></li>
                     <li class="uk-nav-divider" ng-show="groups.length"></li>
                 </ul>
 
                 <ul id="groups-list" class="uk-nav uk-nav-side uk-animation-fade" ng-show="groups.length">
                     <li ng-repeat="group in groups" ng-class="$parent.activegroup==group ? 'uk-active':''" ng-click="($parent.activegroup=group)" draggable="true">
-                        <a>@@ group @@</a>
+                        <a><i class="uk-icon-sitemap"></i> @@ group @@</a>
                         @hasaccess?("Regions", 'create.regions')
-                        <ul class="uk-subnav group-actions uk-animation-slide-right" data-ng-if="group!='admin'">
+                        <ul class="uk-subnav group-actions uk-animation-slide-right">
                             <li><a href="#" ng-click="editGroup(group, $index)"><i class="uk-icon-pencil"></i></a></li>
                             <li><a href="#" ng-click="removeGroup($index)"><i class="uk-icon-trash-o"></i></a></li>
                         </ul>
                         @end
                     </li>
                 </ul>
+
+                <div class="uk-text-muted" ng-show="!groups.length">
+                    @lang('Create groups to organize your regions.')
+                </div>
 
                 @hasaccess?("Regions", 'create.regions')
                 <div class="uk-margin-top">
@@ -59,7 +63,7 @@
         </div>
         <div class="uk-width-medium-3-4">
 
-            <div data-ng-if="regions && regions.length" class="uk-margin-bottom">
+            <div class="uk-margin-bottom">
                 <span class="uk-badge app-badge">@@ (activegroup=='-all' ? '@lang("All regions")' : activegroup) @@</span>
             </div>
 

@@ -5,6 +5,9 @@
         var id     = $("[data-ng-controller='gallery']").data("id"),
             dialog = new $.UIkit.modal.Modal("#meta-dialog");
 
+        $scope.groups    = [];
+        $scope.metaimage = {};
+
         if(id) {
 
             $http.post(App.route("/api/galleries/findOne"), {filter: {"_id":id}}, {responseType:"json"}).success(function(data){
@@ -20,11 +23,17 @@
             $scope.gallery = {
                 name: "",
                 fields:[{"name":"caption","type":"html"}, {"name":"url","type":"url"}],
-                images: []
+                images: [],
+                group: ""
             };
         }
 
-        $scope.metaimage = {};
+        // get groups
+        $http.post(App.route("/api/galleries/getGroups"), {}).success(function(groups){
+
+            $scope.groups = groups;
+
+        }).error(App.module.callbacks.error.http);
 
         $scope.save = function() {
 
