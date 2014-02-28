@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.9.5  (Mar 01, 2014)
+    
+    ^ dashboard reworked
+    ^ more code cleanup
+
 ### 0.9.4  (Feb 27, 2014)
     
     + grouping for regions and galleries
