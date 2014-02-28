@@ -114,7 +114,7 @@ if(COCKPIT_ADMIN) {
         });
     });
 
-    $app->on("admin.dashboard", function() use($app){
+    $app->on("admin.dashboard.aside", function() use($app){
 
         if(!$app->module("auth")->hasaccess("Forms", ['manage.forms', 'manage.entries'])) return;
 

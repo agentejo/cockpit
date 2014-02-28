@@ -1,36 +1,47 @@
-
 <?php 
     
     $i18ndata = $app("i18n")->data($app("i18n")->locale);
     $weekdays = isset($i18ndata["@meta"]["date"]["shortdays"]) ? $i18ndata["@meta"]["date"]["shortdays"] : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+    $uid = uniqid('weekdays');
 ?>
 
-<div id="date-widget-weekdays" class="uk-text-small uk-text-muted uk-margin uk-text-uppercase date-widget-weekdays">
-    <span data-day="1">{{ $weekdays[0] }}</span>
-    <span data-day="2">{{ $weekdays[1] }}</span>
-    <span data-day="3">{{ $weekdays[2] }}</span>
-    <span data-day="4">{{ $weekdays[3] }}</span>
-    <span data-day="5">{{ $weekdays[4] }}</span>
-    <span data-day="6">{{ $weekdays[5] }}</span>
-    <span data-day="0">{{ $weekdays[6] }}</span>
-</div>
+<div class="uk-grid uk-grid-divider">
 
-<div>
-    <span app-clock="d. M Y"></span>
-</div>
+    <div class="uk-width-medium-2-3">
+        <div id="{{ $uid }}" class="uk-text-small uk-text-muted uk-margin uk-text-uppercase date-widget-weekdays">
+            <span data-day="1">{{ $weekdays[0] }}</span>
+            <span data-day="2">{{ $weekdays[1] }}</span>
+            <span data-day="3">{{ $weekdays[2] }}</span>
+            <span data-day="4">{{ $weekdays[3] }}</span>
+            <span data-day="5">{{ $weekdays[4] }}</span>
+            <span data-day="6">{{ $weekdays[5] }}</span>
+            <span data-day="0">{{ $weekdays[6] }}</span>
+        </div>
 
-<div style="font-size:35px;margin-top:20px;margin-bottom:20px;">
-    <strong app-clock="h:i A"></strong>
-</div>
+        <div class="uk-text-small">
+            <span app-clock="d. M Y"></span>
+        </div>
 
-<hr>
+        <div style="font-size:35px;margin-top:20px;margin-bottom:20px;">
+            <i class="uk-icon-clock-o"></i> <strong app-clock="h:i A"></strong>
+        </div>
+    </div>
+    <div class="uk-width-medium-1-3 uk-hidden-small uk-text-center">
 
-<div class="date-widget-account">
-    <a class="uk-display-block" href="@route('/accounts/account')" class="uk-clearfix" title="@lang('Edit account settings')" data-uk-tooltip="{pos:'bottom-left', offset:10}">
-        <img class="uk-rounded uk-float-left uk-margin-right" src="http://www.gravatar.com/avatar/{{ md5($app['user']['email']) }}?d=mm&s=35" width="35" height="35" alt="avatar">
-        <div class="uk-text-truncate"><strong>{{ $app["user"]["user"] }}</strong></div>
-        <div class="uk-text-small uk-text-muted uk-text-truncate">{{ (isset($app["user"]["email"]) ? $app["user"]["email"] : 'no email') }}</div>
-    </a>
+        <div class="date-widget-account">
+            <a class="uk-display-block" href="@route('/accounts/account')" class="uk-clearfix" title="@lang('Edit account settings')" data-uk-tooltip="{pos:'bottom', offset:10}">
+                <div class="uk-margin-bottom">
+                    <div class="uk-thumbnail uk-rounded">
+                        <img src="http://www.gravatar.com/avatar/{{ md5($app['user']['email']) }}?d=mm&s=65" width="65" height="65" alt="avatar">
+                    </div>
+                </div>
+                <div class="uk-text-truncate"><strong>{{ $app["user"]["user"] }}</strong></div>
+                <div class="uk-text-small uk-text-muted uk-text-truncate">{{ (isset($app["user"]["email"]) ? $app["user"]["email"] : 'no email') }}</div>
+            </a>
+        </div>
+
+    </div>
 </div>
 
 <style type="text/css">
@@ -43,12 +54,24 @@
         font-weight: bold;
     }
     .date-widget-account { 
-        opacity: 0.3; 
-        transition: opacity 0.2s ease-in-out;
+        opacity: 0.8;
+
+        filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
+        filter: gray; /* IE6-9 */
+        filter: grayscale(100%); 
+        -webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
+
+        transition: all 0.2s ease-in-out;
     }
-    .date-widget-account:hover { opacity: 1; }
+
+    .date-widget-account:hover { 
+        opacity: 1; 
+        -webkit-filter: grayscale(0);
+        filter: grayscale(0);
+        filter: none;
+    }
 </style>
 
 <script>
-    $("#date-widget-weekdays").find('span[data-day="'+(new Date().getDay())+'"]').addClass('active');
+    $("#{{ $uid }}").find('span[data-day="'+(new Date().getDay())+'"]').addClass('active');
 </script>

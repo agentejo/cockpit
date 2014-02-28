@@ -91,7 +91,7 @@ if(COCKPIT_ADMIN) {
         });
     });
 
-    $app->on("admin.dashboard", function() use($app){
+    $app->on("admin.dashboard.aside", function() use($app){
 
         if(!$app->module("auth")->hasaccess("Regions", ['create.regions', 'edit.regions'])) return;
 

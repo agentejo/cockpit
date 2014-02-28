@@ -129,7 +129,7 @@ if (COCKPIT_ADMIN) {
     });
 
     // dashboard widget
-    $app->on("admin.dashboard", function() use($app){
+    $app->on("admin.dashboard.main", function() use($app){
         $title = $app("i18n")->get("Today");
         echo $app->view("cockpit:views/dashboard/datetime.php with cockpit:views/layouts/dashboard.widget.php", compact('title'));
     }, 5);
