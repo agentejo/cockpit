@@ -25,7 +25,7 @@
                 <a><i class="uk-icon-star"></i>&nbsp; @lang('Bookmarks')</a>
                 <div class="uk-dropdown uk-dropdown-navbar">
 
-                    <ul id="mmbookmarks" class="uk-nav uk-nav-navbar uk-nav-parent-icon">
+                    <ul id="mmbookmarks" class="uk-nav uk-nav-navbar uk-nav-parent-icon" ng-show="(bookmarks.folders.length || bookmarks.files.length)">
 
                         <li class="uk-nav-header" ng-if="bookmarks.folders.length">@lang('Folders')</li>
                         <li ng-repeat="folder in bookmarks.folders" ng-if="bookmarks.folders.length">
@@ -37,10 +37,12 @@
                             <a data-idx="@@ $index @@" data-group="files" ng-click="open(file)" draggable="true"><i class="uk-icon-file-o"></i> @@ file.name @@</a>
                         </li>
 
-                        <li ng-show="(!bookmarks.folders.length && !bookmarks.files.length)">
-                            <a>@lang('You have nothing bookmarked.')</a>
-                        </li>
+
                     </ul>
+
+                    <div class="uk-text-muted" ng-show="(!bookmarks.folders.length && !bookmarks.files.length)">
+                        @lang('You have nothing bookmarked.')
+                    </div>
                 </div>
             </li>
             <li><a href="" ng-click="action('createfolder')"><i class="uk-icon-plus-circle"></i>&nbsp; @lang('Folder')</a></li>

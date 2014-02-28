@@ -18,7 +18,7 @@ $app['app.assets.base'] = [
 // API
 
 $this->module("cockpit")->extend([
-    
+
     "assets" => function($assets, $key=null, $cache=0, $cache_folder=null) use($app) {
 
         $key          = $key ? $key : md5(serialize($assets));
@@ -98,6 +98,7 @@ if (COCKPIT_ADMIN) {
     $app->helpers["admin"]    = 'Cockpit\\Helper\\Admin';
     $app->helpers["versions"] = 'Cockpit\\Helper\\Versions';
     $app->helpers["backup"]   = 'Cockpit\\Helper\\Backup';
+    $app->helpers["history"]  = 'Cockpit\\Helper\\HistoryLogger';
 
     $app->bind("/", function() use($app){
         return $app->invoke("Cockpit\\Controller\\Base", "dashboard");
