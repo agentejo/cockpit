@@ -24,7 +24,7 @@
         </p>
 
         @hasaccess?("Galleries", 'create.gallery')
-        <a href="@route('/galleries/gallery')" class="uk-button uk-button-success">@lang('Create a gallery')</a>
+        <a href="@route('/galleries/gallery')" class="uk-button uk-button-success" title="@lang('Create a gallery')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
         @end
     </div>
 

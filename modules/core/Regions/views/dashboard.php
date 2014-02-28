@@ -25,7 +25,7 @@
         </p>
 
         @hasaccess?("Regions", 'create.regions')
-        <a href="@route('/regions/region')" class="uk-button uk-button-success">@lang('Create a region')</a>
+        <a href="@route('/regions/region')" class="uk-button uk-button-success" title="@lang('Create a region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
         @end
     </div>
 

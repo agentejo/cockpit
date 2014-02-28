@@ -23,8 +23,8 @@
             <span app-clock="d. M Y"></span>
         </div>
 
-        <div style="font-size:35px;margin-top:20px;margin-bottom:20px;">
-            <i class="uk-icon-clock-o"></i> <strong app-clock="h:i A"></strong>
+        <div class="date-widget-clock">
+            <i class="uk-icon-clock-o"></i> <span app-clock="h:i A"></span>
         </div>
     </div>
     <div class="uk-width-medium-1-3 uk-hidden-small uk-text-center">
@@ -33,10 +33,10 @@
             <a class="uk-display-block" href="@route('/accounts/account')" class="uk-clearfix" title="@lang('Edit account settings')" data-uk-tooltip="{pos:'bottom', offset:10}">
                 <div class="uk-margin-bottom">
                     <div class="uk-thumbnail uk-rounded">
-                        <img src="http://www.gravatar.com/avatar/{{ md5($app['user']['email']) }}?d=mm&s=65" width="65" height="65" alt="avatar">
+                        <img src="http://www.gravatar.com/avatar/{{ md5($app['user']['email']) }}?d=mm&s=55" width="55" height="55" alt="avatar">
                     </div>
                 </div>
-                <div class="uk-text-truncate"><strong>{{ $app["user"]["user"] }}</strong></div>
+                <div class="uk-text-truncate"><strong>{{ $app["user"]["name"] ? $app["user"]["name"] : $app["user"]["user"] }}</strong></div>
                 <div class="uk-text-small uk-text-muted uk-text-truncate">{{ (isset($app["user"]["email"]) ? $app["user"]["email"] : 'no email') }}</div>
             </a>
         </div>
@@ -53,6 +53,11 @@
         color: #000;
         font-weight: bold;
     }
+    .date-widget-clock {
+        font-size: 30px;
+        margin-top:20px;
+        font-weight: bold;
+    }
     .date-widget-account { 
         opacity: 0.8;
 
@@ -63,7 +68,6 @@
 
         transition: all 0.2s ease-in-out;
     }
-
     .date-widget-account:hover { 
         opacity: 1; 
         -webkit-filter: grayscale(0);

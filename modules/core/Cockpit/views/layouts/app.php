@@ -27,7 +27,7 @@
                             <li>
                                 <a href="@route('/accounts/account')" class="uk-clearfix">
                                     <img class="uk-rounded uk-float-left uk-margin-right" src="http://www.gravatar.com/avatar/{{ md5($app['user']['email']) }}?d=mm&s=40" width="40" height="40" alt="avatar">
-                                    <div class="uk-text-truncate"><strong>{{ $app["user"]["user"] }}</strong></div>
+                                    <div class="uk-text-truncate"><strong>{{ $app["user"]["name"] ? $app["user"]["name"] : $app["user"]["user"] }}</strong></div>
                                     <div class="uk-text-small uk-text-muted uk-text-truncate">{{ (isset($app["user"]["email"]) ? $app["user"]["email"] : 'no email') }}</div>
                                 </a>
                             </li>

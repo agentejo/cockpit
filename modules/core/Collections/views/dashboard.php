@@ -25,7 +25,7 @@
             @lang('You don\'t have any collections created.')
         </p>
         @hasaccess?("Collections", 'manage.collections')
-        <a href="@route('/collections/collection')" class="uk-button uk-button-success">@lang('Create a collection')</a>
+        <a href="@route('/collections/collection')" class="uk-button uk-button-success" title="@lang('Create a collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
         @end
     </div>
 

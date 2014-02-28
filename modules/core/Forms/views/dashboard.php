@@ -25,7 +25,7 @@
         </p>
 
         @hasaccess?("Forms", 'manage.forms')
-        <a href="@route('/forms/form')" class="uk-button uk-button-success">@lang('Create a form')</a>
+        <a href="@route('/forms/form')" class="uk-button uk-button-success" title="@lang('Create a form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
         @end
     </div>
 
