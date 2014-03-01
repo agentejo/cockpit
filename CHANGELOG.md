@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.9.6  (Mar 01, 2014)
+    
+    + Activity logger added
+    # Fixed import images from folder (gallery addon)
+
 ### 0.9.5  (Mar 01, 2014)
     
     ^ dashboard reworked
