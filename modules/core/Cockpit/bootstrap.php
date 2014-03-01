@@ -128,12 +128,17 @@ if (COCKPIT_ADMIN) {
         return json_encode(["results"=>$list->getArrayCopy()]);
     });
 
-    // dashboard widget
+    // dashboard widgets
     $app->on("admin.dashboard.main", function() use($app){
         $title = $app("i18n")->get("Today");
         echo $app->view("cockpit:views/dashboard/datetime.php with cockpit:views/layouts/dashboard.widget.php", compact('title'));
+    }, 100);
+
+    $app->on("admin.dashboard.main", function() use($app){
+        echo $app->view("cockpit:views/dashboard/history.php", ['history' => $app("history")->load()]);
     }, 5);
 
+    // init admin menus
     $app['admin.menu.top']      = new \PriorityQueue();
     $app['admin.menu.dropdown'] = new \PriorityQueue();
 

@@ -75,12 +75,13 @@ class Settings extends \Cockpit\Controller {
 
     public function vacuumdata() {
 
+        $this->helper("history")->clear();
+
         foreach ($this->app->helper("fs")->ls('*.sqlite', 'data:') as $file) {
             $db = new \PDO("sqlite:".$file->getRealPath());
             @$db->query("VACUUM");
             @$db->exec("VACUUM");
         }
-
 
         return json_encode(["size"=>$this->app->helper("utils")->formatSize($this->app->helper("fs")->getDirSize("data:"))]);
     }

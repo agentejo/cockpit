@@ -33,6 +33,10 @@ class Controller extends \Lime\AppAware {
         return $this->app->module($module);
     }
 
+    protected function helper($name) {
+        return $this->app->helper($name);
+    }
+
     protected function stop() {
         $this->app->stop();
     }

@@ -13,7 +13,7 @@ class HistoryLogger extends \Lime\Helper {
             "order" => ["time" => -1]
         ], $options);
 
-        $config[];
+        $config = [];
 
         $config["limit"]   = $options["limit"];
         $config["order"]   = $options["order"];
@@ -29,16 +29,19 @@ class HistoryLogger extends \Lime\Helper {
         return $this->app->db->remove("cockpit/history", $before ? ["time" => ['$lte'=>$before]] : []);
     }
 
-    public function log($opts) {
+    public function log($entry) {
 
         $entry = array_merge([
-            "message" => "",
-            "params"  => [],
-            "url"     => false,
-            "meta"    => [],
-            "time"    => time(),
-            "uid"     => $this->app->module("auth")->getUser()
-        ], $opts);
+            "msg"    => "",
+            "args"   => [],
+            "url"    => false,
+            "meta"   => [],
+            "mod"    => "",
+            "type"   => "info",
+            "acl"    => "*",
+            "uid"    => $this->app->module("auth")->getUser(),
+            "time"   => time(),
+        ], $entry);
 
         $this->app->db->insert("cockpit/history", $entry);
     }
