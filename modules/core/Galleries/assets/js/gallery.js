@@ -2,8 +2,11 @@
 
     App.module.controller("gallery", function($scope, $rootScope, $http, $timeout){
 
-        var id     = $("[data-ng-controller='gallery']").data("id"),
-            dialog = new $.UIkit.modal.Modal("#meta-dialog");
+        var id         = $("[data-ng-controller='gallery']").data("id"),
+            dialog     = new $.UIkit.modal.Modal("#meta-dialog"),
+            site_base  = COCKPIT_SITE_BASE_URL.replace(/^\/+|\/+$/g, ""),
+            media_base = COCKPIT_MEDIA_BASE_URL.replace(/^\/+|\/+$/g, ""),
+            site2media = media_base.replace(site_base, "").replace(/^\/+|\/+$/g, "");
 
         $scope.groups    = [];
         $scope.metaimage = {};
@@ -66,15 +69,16 @@
                     });
                 } else {
 
-                    $.post(App.route('/mediamanager/api'), {"cmd":"ls", "path": String(path).replace("site:", "")}, function(data){
+                    $.post(App.route('/mediamanager/api'), {"cmd":"ls", "path": String(path).replace("site:"+site2media, "")}, function(data){
 
                         var count = 0;
 
                         if (data && data.files && data.files.length) {
 
                             data.files.forEach(function(file) {
+
                                 if(file.name.match(/\.(jpg|png|gif)$/i)) {
-                                    $scope.gallery.images.push({"path":"site:"+file.path, data:{}});
+                                    $scope.gallery.images.push({"path":"site:"+site2media+'/'+file.path, data:{}});
 
                                     count = count + 1;
                                 }
