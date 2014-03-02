@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.9.7  (Mar 02, 2014)
+    
+    # Fixed login after first install
+
 ### 0.9.6  (Mar 01, 2014)
     
     + Activity logger added
