@@ -37,6 +37,7 @@ if($app->db->getCollection("cockpit/accounts")->count()) {
 
 $account = [
     "user"     => "admin",
+    "name"     => "",
     "email"    => "test@test.de",
     "active"   => 1,
     "group"    => "admin",

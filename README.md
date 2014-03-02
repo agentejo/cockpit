@@ -1,9 +1,7 @@
 # Cockpit
 
-![Cockpit](http://getcockpit.com/assets/images/teaser.png)
-
 The CMS for developers. Add content management functionality to any site - plug &amp; play CMS.
-Manage content like collections and regions which you can reuse anywhere on your website.
+Manage content like collections, regions, forms and galleries which you can reuse anywhere on your website.
 
 
 * Homepage: [http://getcockpit.com](http://getcockpit.com)
