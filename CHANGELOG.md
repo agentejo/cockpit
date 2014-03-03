@@ -1,5 +1,10 @@
 # Changelog
 
+### WIP
+    
+    ^ assets cleanup
+
+
 ### 0.9.7  (Mar 02, 2014)
     
     # Fixed login after first install
