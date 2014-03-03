@@ -42,13 +42,25 @@
 
                 deferCodeMirror = function () {
 
+                  switch(opts.mode) {
+                      case 'js':
+                      case 'json':
+                          opts.mode = 'javascript';
+                          break;
+                      case 'md':
+                          opts.mode = 'markdown';
+                          break;
+                      case 'php':
+                          opts.mode = 'application/x-httpd-php';
+                          break;
+                  }
+
                   codeMirror = CodeMirror.fromTextArea(elm[0], opts);
 
                   if(elm.data) {
                     elm.data("codearea", codeMirror);
                   }
 
-                  // autoload modes
                   codeMirror.setOption("mode", opts.mode);
                   codeMirror.setOption("theme", opts.theme);
 
