@@ -1,13 +1,4 @@
-{{ $app->assets(['assets:vendor/codemirror/lib/codemirror.js','assets:vendor/codemirror/lib/codemirror.css','assets:vendor/codemirror/theme/pastel-on-dark.css'], $app['cockpit/version']) }}
-
-{{ $app->assets(['assets:vendor/codemirror/mode/xml/xml.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/htmlmixed/htmlmixed.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/javascript/javascript.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/css/css.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/clike/clike.js'], $app['cockpit/version']) }}
-
-{{ $app->assets(['assets:vendor/codemirror/addon/edit/matchbrackets.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/codemirror/addon/selection/active-line.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/codemirror.js','assets:vendor/codemirror/codemirror.css','assets:vendor/codemirror/pastel-on-dark.css'], $app['cockpit/version']) }}
 
 {{ $app->assets(['assets:vendor/ajaxupload.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:vendor/loadie/jquery.loadie.js', 'assets:vendor/loadie/loadie.css'], $app['cockpit/version']) }}

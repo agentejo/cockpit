@@ -104,20 +104,15 @@
                     break;
             }
 
-            // autoload modes
-            if(mode!='text') {
-                App.assets.require(['/assets/vendor/codemirror/mode/%N/%N.js'.replace(/%N/g, mode)], function(){
 
-                    switch(mode) {
-                        case "php":
-                            Editor.code.setOption("mode", "application/x-httpd-php");
-                            break;
-                        default:
-                          Editor.code.setOption("mode", mode);
-                    }
-                });
+            switch(mode) {
+                case "php":
+                    Editor.code.setOption("mode", "application/x-httpd-php");
+                    break;
+                default:
+                  Editor.code.setOption("mode", mode);
             }
-
+     
             this.filename.text(file.name);
 
             this.code.setValue(content);

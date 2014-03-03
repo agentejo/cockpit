@@ -1,5 +1,5 @@
 {{ $app->assets(['forms:assets/forms.js','forms:assets/js/form.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/uikit/addons/css/sortable.min.css','assets:vendor/uikit/addons/js/sortable.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/addons/sortable/sortable.min.css','assets:vendor/uikit/addons/sortable/sortable.min.js'], $app['cockpit/version']) }}
 
 <div data-ng-controller="form" data-id="{{ $id }}">
 

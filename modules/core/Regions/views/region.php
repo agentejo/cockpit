@@ -1,23 +1,8 @@
 {{ $app->assets(['regions:assets/regions.js','regions:assets/js/region.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/uikit/addons/css/sortable.almost-flat.min.css','assets:vendor/uikit/addons/js/sortable.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/addons/sortable/sortable.almost-flat.min.css','assets:vendor/uikit/addons/sortable/sortable.min.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/codemirror/lib/codemirror.js','assets:vendor/codemirror/lib/codemirror.css','assets:vendor/codemirror/theme/pastel-on-dark.css'], $app['cockpit/version']) }}
-
-{{ $app->assets(['assets:vendor/codemirror/mode/xml/xml.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/htmlmixed/htmlmixed.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/javascript/javascript.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/css/css.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/clike/clike.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/codemirror/mode/php/php.js'], $app['cockpit/version']) }}
-
-{{ $app->assets(['assets:vendor/codemirror/addon/edit/matchbrackets.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/codemirror/addon/edit/closetag.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/codemirror/addon/fold/xml-fold.js'], $app['cockpit/version']) }}
-
-{{ $app->assets(['assets:vendor/codemirror/addon/hint/show-hint.js', 'assets:vendor/codemirror/addon/hint/show-hint.css'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/codemirror/addon/hint/xml-hint.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/codemirror/addon/hint/html-hint.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/codemirror/codemirror.js','assets:vendor/codemirror/codemirror.css','assets:vendor/codemirror/pastel-on-dark.css'], $app['cockpit/version']) }}
 
 <script>
   CodeMirror.commands.htmlautocomplete = function(cm) {
@@ -214,8 +199,7 @@
                               </div>
                             </div>
 
-
-                            <textarea id="region-template" codearea="{mode:'application/x-httpd-php', autoCloseTags: true, extraKeys: {'Ctrl-Space': 'htmlautocomplete'}}" class="uk-width-1-1 uk-form-large" style="height:450px !important;" placeholder="Region code" data-ng-model="region.tpl"  pattern="[a-zA-Z0-9]+"></textarea>
+                            <textarea id="region-template" codearea="{mode:'application/x-httpd-php', autoCloseTags: true}" class="uk-width-1-1 uk-form-large" style="height:450px !important;" placeholder="Region code" data-ng-model="region.tpl"  pattern="[a-zA-Z0-9]+"></textarea>
 
                             <div class="uk-margin" ng-show="region.name">
                                 <strong>@lang('Embed region snippet'):</strong>

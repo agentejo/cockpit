@@ -13,7 +13,7 @@
                 var opts, onChange, deferCodeMirror, codeMirror;
 
                 if (elm[0].type !== 'textarea') {
-                  throw new Error('uiCodemirror3 can only be applied to a textarea element');
+                  throw new Error('Codemirror can only be applied to a textarea element');
                 }
 
                 opts = angular.extend({
@@ -49,17 +49,8 @@
                   }
 
                   // autoload modes
-                  if(opts.mode && opts.mode!='text' && opts.mode.indexOf('/')==-1) {
-                    App.assets.require(['/assets/vendor/codemirror/mode/%N/%N.js'.replace(/%N/g, opts.mode)], function(){
-                        codeMirror.setOption("mode", opts.mode);
-                    });
-                  }
-
-                  if(opts.theme) {
-                    App.assets.require(['/assets/vendor/codemirror/theme/%N.css'.replace(/%N/g, opts.theme)], function(){
-                        codeMirror.setOption("theme", opts.theme);
-                    });
-                  }
+                  codeMirror.setOption("mode", opts.mode);
+                  codeMirror.setOption("theme", opts.theme);
 
                   if (angular.isDefined(scope[attrs.codearea])) {
                     scope.$watch(attrs.codearea, function (newValues) {
