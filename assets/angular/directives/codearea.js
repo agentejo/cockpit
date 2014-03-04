@@ -1,5 +1,24 @@
 (function($){
 
+    function autocomplete(cm) {
+        var doc = cm.getDoc(), POS = doc.getCursor(), mode = CodeMirror.innerMode(cm.getMode(), cm.getTokenAt(POS).state).mode.name;
+
+        if (mode == 'xml') { //html depends on xml
+
+            var cur = cm.getCursor(), token = cm.getTokenAt(cur);
+
+            if(token.string.charAt(0) == "<" || token.type == "attribute") {
+              CodeMirror.showHint(cm, CodeMirror.hint.html);
+            }
+        } else if (mode == 'javascript') {
+            CodeMirror.showHint(cm, CodeMirror.hint.javascript);
+        } else if (mode == 'css' || mode == 'less') {
+            CodeMirror.showHint(cm, CodeMirror.hint.css);
+        } else {
+            //CodeMirror.showHint(cm, CodeMirror.hint.anyword);
+        }
+    };
+
     angular.module('cockpit.directives').directive("codearea", function($timeout){
 
         var events = ["cursorActivity", "viewportChange", "gutterClick", "focus", "blur", "scroll", "update"];
@@ -63,6 +82,10 @@
 
                   codeMirror.setOption("mode", opts.mode);
                   codeMirror.setOption("theme", opts.theme);
+
+                  codeMirror.on("inputRead", $.UIkit.Utils.debounce(function(){
+                    autocomplete(codeMirror);
+                  }, 200));
 
                   if (angular.isDefined(scope[attrs.codearea])) {
                     scope.$watch(attrs.codearea, function (newValues) {
