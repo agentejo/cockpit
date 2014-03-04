@@ -8,14 +8,14 @@
             var cur = cm.getCursor(), token = cm.getTokenAt(cur);
 
             if(token.string.charAt(0) == "<" || token.type == "attribute") {
-              CodeMirror.showHint(cm, CodeMirror.hint.html);
+              CodeMirror.showHint(cm, CodeMirror.hint.html, {completeSingle:false});
             }
         } else if (mode == 'javascript') {
-            CodeMirror.showHint(cm, CodeMirror.hint.javascript);
+            CodeMirror.showHint(cm, CodeMirror.hint.javascript, {completeSingle:false});
         } else if (mode == 'css' || mode == 'less') {
-            CodeMirror.showHint(cm, CodeMirror.hint.css);
+            CodeMirror.showHint(cm, CodeMirror.hint.css, {completeSingle:false});
         } else {
-            //CodeMirror.showHint(cm, CodeMirror.hint.anyword);
+            CodeMirror.showHint(cm, CodeMirror.hint.anyword, {completeSingle:false});
         }
     };
 
