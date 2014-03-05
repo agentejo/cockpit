@@ -4,6 +4,7 @@
     
     ^ assets cleanup
     + autocomplete feature for code fields
+    + markdown field added
 
 
 ### 0.9.7  (Mar 02, 2014)

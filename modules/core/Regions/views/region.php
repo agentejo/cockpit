@@ -18,6 +18,10 @@
 
 {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
 
+{{ $app->assets(['assets:vendor/uikit/addons/markdownarea/markdownarea.almost-flat.min.css','assets:vendor/uikit/addons/markdownarea/markdownarea.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/marked.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:angular/directives/markdownarea.js'], $app['cockpit/version']) }}
+
 
 <div data-ng-controller="region" data-id="{{ $id }}">
 
@@ -101,6 +105,7 @@
                                                    <option value="html">Html</option>
                                                    <option value="wysiwyg">Html (WYSIWYG)</option>
                                                    <option value="code">Code</option>
+                                                   <option value="markdown">Markdown</option>
                                                    <option value="date">Date</option>
                                                    <option value="time">Time</option>
                                                    <option value="media">Media</option>
@@ -136,6 +141,10 @@
 
                                           <div data-ng-switch-when="code">
                                               <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value" style="height:300px !important;"></textarea>
+                                          </div>
+
+                                          <div data-ng-switch-when="markdown">
+                                              <markdown data-ng-model="region.fields[$index].value"></markdown>
                                           </div>
 
                                           <div data-ng-switch-when="wysiwyg">

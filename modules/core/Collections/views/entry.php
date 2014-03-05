@@ -5,7 +5,13 @@
 
 {{ $app->assets(['assets:vendor/tinymce/tinymce.min.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js'], $app['cockpit/version']) }}
+
+{{ $app->assets(['assets:vendor/uikit/addons/markdownarea/markdownarea.almost-flat.min.css','assets:vendor/uikit/addons/markdownarea/markdownarea.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/marked.js'], $app['cockpit/version']) }}
+
+
 {{ $app->assets(['assets:angular/directives/wysiwyg.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:angular/directives/markdownarea.js'], $app['cockpit/version']) }}
 
 {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
 
@@ -78,6 +84,10 @@
 
                         <div data-ng-switch-when="wysiwyg">
                             <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[field.name]"></textarea>
+                        </div>
+
+                        <div data-ng-switch-when="markdown">
+                            <markdown data-ng-model="entry[field.name]"></markdown>
                         </div>
 
                         <div data-ng-switch-default>
