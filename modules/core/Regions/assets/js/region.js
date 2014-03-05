@@ -55,9 +55,11 @@
                 return;
             }
 
-            var msg = $.UIkit.notify(['<i class="uk-icon-spinner uk-icon-spin"></i>', App.i18n.get("Restoring version...")].join(" "), {timeout:0});
 
             App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
+
+                var msg = $.UIkit.notify(['<i class="uk-icon-spinner uk-icon-spin"></i>', App.i18n.get("Restoring version...")].join(" "), {timeout:0});
+
                 $http.post(App.route("/api/regions/restoreVersion"), {"docId":$scope.region["_id"], "versionId":versionId}).success(function(data){
 
                     setTimeout(function(){
