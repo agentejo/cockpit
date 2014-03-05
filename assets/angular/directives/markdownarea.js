@@ -3,7 +3,8 @@
  */
 
 (function($){
-  
+
+
     function autocomplete(cm) {
         var doc = cm.getDoc(), 
             cur = cm.getCursor(),
@@ -23,6 +24,37 @@
             } 
         }
     };
+
+
+    $.UIkit.markdownarea.addPlugin('images', /(?:\{<(.*?)>\})?!(?:\[([^\n\]]*)\])(?:\(([^\n\]]*)\))?$/gim, function (marker) {
+
+        var replacement = [
+            '<div id="'+marker.uid+'" class="uk-overlay uk-markdownarea-imgplugin">',
+                '<img src="'+marker.found[3]+'" alt="">',
+                '<div class="uk-overlay-area">',
+                    '<div class="uk-overlay-area-content">',
+                        '<div>'+(marker.found[2] || 'Image')+'</div>',
+                        '<div class="uk-button-group uk-margin-top">',
+                            '<button class="uk-button uk-button-primary js-config" type="button" title="Pick image"><i class="uk-icon-hand-o-up"></i></button>',
+                            '<button class="uk-button uk-button-danger js-remove" type="button" title="Remove image"><i class="uk-icon-trash-o"></i></button>',
+                        '</div>',
+                    '</div>',
+                '</div>',
+            '</div>'
+        ].join("");
+
+        marker.area.preview.on('click', '#' + marker.uid + ' .js-config', function () {
+            new PathPicker(function(path){
+                marker.replace('![' + marker.found[2] + '](' + path.replace('site:', COCKPIT_SITE_BASE_URL) + ')');
+            }, "*.(jpg|png|gif)");
+        });
+
+        marker.area.preview.on('click', '#' + marker.uid + ' .js-remove', function () {
+            marker.replace('');
+        });
+
+        return replacement;
+    });
 
 
     angular.module('cockpit.directives').directive("markdown", function($timeout){
