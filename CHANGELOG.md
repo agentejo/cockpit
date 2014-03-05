@@ -1,11 +1,11 @@
 # Changelog
 
-### WIP
+### 0.9.8  (Mar 06, 2014)
     
     ^ assets cleanup
     + autocomplete feature for code fields
     + markdown field added
-
+    # Fixed get_registry api call
 
 ### 0.9.7  (Mar 02, 2014)
     
