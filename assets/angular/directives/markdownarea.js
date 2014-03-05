@@ -25,7 +25,7 @@
         }
     };
 
-
+    /*
     $.UIkit.markdownarea.addPlugin('images', /(?:\{<(.*?)>\})?!(?:\[([^\n\]]*)\])(?:\(([^\n\]]*)\))?$/gim, function (marker) {
 
         var replacement = [
@@ -55,6 +55,7 @@
 
         return replacement;
     });
+    */
 
 
     angular.module('cockpit.directives').directive("markdown", function($timeout){
