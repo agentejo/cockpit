@@ -1,15 +1,19 @@
 (function($){
 
     function autocomplete(cm) {
-        var doc = cm.getDoc(), POS = doc.getCursor(), mode = CodeMirror.innerMode(cm.getMode(), cm.getTokenAt(POS).state).mode.name;
+        var doc = cm.getDoc(), 
+            cur = cm.getCursor(),
+            toc = cm.getTokenAt(cur), 
+            mode = CodeMirror.innerMode(cm.getMode(), toc.state).mode.name;
+
+        if(!toc.string.trim()) return;
 
         if (mode == 'xml') { //html depends on xml
 
-            var cur = cm.getCursor(), token = cm.getTokenAt(cur);
-
-            if(token.string.charAt(0) == "<" || token.type == "attribute") {
-              CodeMirror.showHint(cm, CodeMirror.hint.html, {completeSingle:false});
+            if(toc.string.charAt(0) == "<" || toc.type == "attribute") {
+                CodeMirror.showHint(cm, CodeMirror.hint.html, {completeSingle:false});
             }
+
         } else if (mode == 'javascript') {
             CodeMirror.showHint(cm, CodeMirror.hint.javascript, {completeSingle:false});
         } else if (mode == 'css' || mode == 'less') {
