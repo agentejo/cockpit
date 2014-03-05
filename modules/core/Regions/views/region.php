@@ -84,8 +84,15 @@
                                 <h3>@lang('Region fields')</h3>
                             </div>
 
+                            <div class="uk-margin-bottom">
+                              <button type="button" class="uk-button" data-ng-class="manageform ? 'uk-button-success':'uk-button-primary'" data-ng-click="(manageform = !manageform)" title="@lang('Manage form')">
+                                  <span ng-show="!manageform"><i class="uk-icon-cog"></i></span>
+                                  <span ng-show="manageform"><i class="uk-icon-check"></i></span>
+                              </button>
+                            </div>
+
                             <div class="uk-grid">
-                              <div class="uk-width-4-5">
+                              <div class="uk-width-1-1">
 
                                   <div class="uk-alert" ng-show="region && !region.fields.length">
                                     @lang('This region has no fields yet.')
@@ -172,12 +179,6 @@
                                   </div>
 
 
-                              </div>
-                              <div class="uk-width-1-5">
-                                  <button type="button" class="uk-button uk-button-large uk-width-1-1" data-ng-class="manageform ? 'uk-button-success':'uk-button-primary'" data-ng-click="(manageform = !manageform)" title="@lang('Manage form')">
-                                      <span ng-show="!manageform"><i class="uk-icon-cog"></i></span>
-                                      <span ng-show="manageform"><i class="uk-icon-check"></i></span>
-                                  </button>
                               </div>
                             </div>
 
