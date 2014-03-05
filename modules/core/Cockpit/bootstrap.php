@@ -33,6 +33,7 @@ $this->module("cockpit")->extend([
     },
 
     "get_registry" => function($key, $default=null) use($app) {
+        
         return $app->memory->hget("cockpit.api.registry", $key, $default);
     }
 ]);
@@ -47,7 +48,7 @@ if (!function_exists('assets')) {
 if (!function_exists('get_registry')) {
 
     function get_registry($key, $default=null) {
-        cockpit("cockpit")->get_registry($key, $default);
+        return cockpit("cockpit")->get_registry($key, $default);
     }
 }
 

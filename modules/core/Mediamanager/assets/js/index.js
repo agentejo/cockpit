@@ -138,6 +138,7 @@
             this.filename.text(file.name);
 
             this.code.setValue(content);
+            this.code.getDoc().clearHistory();
 
             this.element.show();
             this.resize();
