@@ -6,9 +6,9 @@
 
 
     function autocomplete(cm) {
-        var doc = cm.getDoc(), 
+        var doc = cm.getDoc(),
             cur = cm.getCursor(),
-            toc = cm.getTokenAt(cur), 
+            toc = cm.getTokenAt(cur),
             mode = CodeMirror.innerMode(cm.getMode(), toc.state).mode.name;
 
         if(!toc.string.trim()) return;
@@ -20,12 +20,11 @@
             }
         } else {
             if(toc.string.charAt(0) != "<") {
-              CodeMirror.showHint(cm, CodeMirror.hint.anyword, {completeSingle:false});  
-            } 
+              CodeMirror.showHint(cm, CodeMirror.hint.anyword, {completeSingle:false});
+            }
         }
     };
 
-    /*
     $.UIkit.markdownarea.addPlugin('images', /(?:\{<(.*?)>\})?!(?:\[([^\n\]]*)\])(?:\(([^\n\]]*)\))?$/gim, function (marker) {
 
         var replacement = [
@@ -55,8 +54,6 @@
 
         return replacement;
     });
-    */
-
 
     angular.module('cockpit.directives').directive("markdown", function($timeout){
 
@@ -76,24 +73,26 @@
 
           elm.after(txt).hide();
 
-
           ngModel.$render = function() {
-            
-            txt.val(ngModel.$viewValue || '')
+
+            txt.val(ngModel.$viewValue || '');
 
             if(!markdown) {
               markdown = new $.UIkit.markdownarea(txt, options);
 
               setTimeout(function(){
-                  txt.on("markdownarea-update", function(){
-                    ngModel.$setViewValue(txt.val());
-                    if (!scope.$root.$$phase) {
-                      scope.$apply();
-                    }
-                  });
 
                   markdown.editor.on("inputRead", $.UIkit.Utils.debounce(function(){
                     autocomplete(markdown.editor);
+                  }, 100));
+
+                  markdown.editor.on("change", $.UIkit.Utils.debounce(function(){
+
+                    ngModel.$setViewValue(markdown.editor.getValue());
+
+                    if (!scope.$root.$$phase) {
+                      scope.$apply();
+                    }
                   }, 100));
 
                   markdown.fit();
