@@ -1,7 +1,6 @@
 // ajax uploads
 (function($){
 
-
 	$.support.ajaxupload = (function() {
 
 		function supportFileAPI() {
@@ -35,11 +34,12 @@
 			return;
 		}
 
+		var complete = settings.complete;
+
 		if(settings.single){
 
 			var count    = files.length,
-				uploaded = 0,
-				complete = settings.complete;
+				uploaded = 0;
 
 				settings.complete = function(response, xhr){
 					uploaded = uploaded+1;
@@ -47,13 +47,18 @@
 					if(uploaded<count){
 						upload([files[uploaded]], settings);
 					}else{
-						settings.allcomplete();
+						settings.allcomplete(response, xhr);
 					}
 				};
 
 				upload([files[0]], settings);
 
 		} else {
+
+			settings.complete = function(response, xhr){
+				complete(response, xhr);
+				settings.allcomplete(response, xhr);
+			};
 
 			upload(files, settings);
 		}
@@ -64,7 +69,7 @@
 			var formData = new FormData(),
 				xhr      = new XMLHttpRequest();
 
-			if(settings.before(settings)===false){
+			if(settings.before(settings, files)===false){
 				return;
 			}
 
@@ -125,7 +130,7 @@
 	$.xhrupload.defaults = {
 		"action": '',
 		"progressui": false,
-		"single": false,
+		"single": true,
 		"method": 'POST',
 		"params": {},
 
@@ -244,5 +249,11 @@
 			});
 		});
 	};
+
+	if (typeof define == "function" && define.amd) { // AMD
+	    define(function(){
+	        return $.xhrupload;
+	    });
+	}
 
 })(jQuery);
