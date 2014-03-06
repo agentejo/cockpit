@@ -31,7 +31,7 @@
     <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="collections && collections.length && mode=='list'">
         <div class="uk-width-1-1 uk-width-medium-1-3 uk-width-large-1-4" data-ng-repeat="collection in collections" data-ng-show="matchName(collection.name)">
 
-            <div class="app-panel app-panel-box">
+            <div class="app-panel">
 
                 <strong>@@ collection.name @@</strong>
 
@@ -39,14 +39,16 @@
                     <span class="uk-badge app-badge">@@ collection.count @@ @lang('Entries')</span>
                 </div>
 
-                <span class="uk-button-group">
-                    <a class="uk-button uk-button-small" href="@route('/collections/entries')/@@ collection._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a>
-                    <a class="uk-button uk-button-small" href="@route('/collections/entry')/@@ collection._id @@" title="@lang('Create new entry')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
-                    @hasaccess?("Collections", 'manage.collections')
-                    <a class="uk-button uk-button-small" href="@route('/collections/collection')/@@ collection._id @@" title="@lang('Edit collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
-                    <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, collection)" href="#" title="@lang('Delete collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
-                    @end
-                </span>
+                <div class="app-panel-box docked-bottom">
+                    <span class="uk-button-group">
+                        <a class="uk-button uk-button-primary uk-button-small" href="@route('/collections/entries')/@@ collection._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a>
+                        <a class="uk-button uk-button-small" href="@route('/collections/entry')/@@ collection._id @@" title="@lang('Create new entry')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
+                        @hasaccess?("Collections", 'manage.collections')
+                        <a class="uk-button uk-button-small" href="@route('/collections/collection')/@@ collection._id @@" title="@lang('Edit collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
+                        <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, collection)" href="#" title="@lang('Delete collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                        @end
+                    </span>
+                </div>
             </div>
         </div>
     </div>

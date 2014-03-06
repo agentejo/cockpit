@@ -70,20 +70,22 @@
             <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="regions && regions.length && mode=='list'">
                 <div class="uk-width-1-1 uk-width-medium-1-3" data-ng-repeat="region in regions" data-ng-show="matchName(region.name) && inGroup(region.group)">
 
-                    <div class="app-panel app-panel-box">
+                    <div class="app-panel">
 
                         <strong>@@ region.name @@</strong>
 
                         <div class="uk-margin">
                             <span class="uk-badge app-badge" title="Last update">@@ region.modified |fmtdate:'d M, Y H:i' @@</span>
                         </div>
-
-                        <span class="uk-button-group">
-                            <a class="uk-button uk-button-small" href="@route('/regions/region')/@@ region._id @@" title="@lang('Edit region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
-                            @hasaccess?("Regions", 'create.regions')
-                            <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
-                            @end
-                        </span>
+                        
+                        <div class="app-panel-box docked-bottom">
+                            <span class="uk-button-group">
+                                <a class="uk-button uk-button-primary uk-button-small" href="@route('/regions/region')/@@ region._id @@" title="@lang('Edit region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
+                                @hasaccess?("Regions", 'create.regions')
+                                <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                                @end
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>

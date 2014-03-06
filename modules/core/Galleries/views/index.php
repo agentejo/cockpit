@@ -70,7 +70,7 @@
             <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="galleries && galleries.length && mode=='list'">
                 <div class="uk-width-1-1 uk-width-medium-1-3" data-ng-repeat="gallery in galleries" data-ng-show="matchName(gallery.name) && inGroup(gallery.group)">
 
-                    <div class="app-panel app-panel-box">
+                    <div class="app-panel">
 
                         <strong>@@ gallery.name @@</strong>
 
@@ -78,13 +78,14 @@
                             <span class="uk-badge app-badge" title="Last update">@@ gallery.modified |fmtdate:'d M, Y H:i' @@</span>
                         </div>
 
-
-                        <span class="uk-button-group">
-                            <a class="uk-button uk-button-small" href="@route('/galleries/gallery')/@@ gallery._id @@" title="@lang('Edit gallery')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
-                            @hasaccess?("Galleries", 'create.gallery')
-                            <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, gallery)" href="#" title="@lang('Delete gallery')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
-                            @end
-                        </span>
+                        <div class="app-panel-box docked-bottom">
+                            <span class="uk-button-group">
+                                <a class="uk-button uk-button-primary uk-button-small" href="@route('/galleries/gallery')/@@ gallery._id @@" title="@lang('Edit gallery')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
+                                @hasaccess?("Galleries", 'create.gallery')
+                                <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, gallery)" href="#" title="@lang('Delete gallery')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                                @end
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>

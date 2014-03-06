@@ -30,7 +30,7 @@
     <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="forms && forms.length && mode=='list'">
         <div class="uk-width-1-1 uk-width-medium-1-3 uk-width-large-1-4" data-ng-repeat="form in forms" data-ng-show="matchName(form.name)">
 
-            <div class="app-panel app-panel-box">
+            <div class="app-panel">
 
                 <strong>@@ form.name @@</strong>
 
@@ -38,14 +38,15 @@
                     <span class="uk-badge app-badge" title="Last update">@@ form.modified |fmtdate:'d M, Y H:i' @@</span>
                 </div>
 
-
-                <span class="uk-button-group">
-                    <a class="uk-button uk-button-small" href="@route('/forms/entries')/@@ form._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a>
-                    @hasaccess?("Forms", 'manage.forms')
-                    <a class="uk-button uk-button-small" href="@route('/forms/form')/@@ form._id @@" title="@lang('Edit form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
-                    <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, form)" href="#" title="@lang('Delete form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
-                    @end
-                </span>
+                <div class="app-panel-box docked-bottom">
+                    <span class="uk-button-group">
+                        <a class="uk-button uk-button-primary uk-button-small" href="@route('/forms/entries')/@@ form._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a>
+                        @hasaccess?("Forms", 'manage.forms')
+                        <a class="uk-button uk-button-small" href="@route('/forms/form')/@@ form._id @@" title="@lang('Edit form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
+                        <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, form)" href="#" title="@lang('Delete form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                        @end
+                    </span>
+                </div>
             </div>
         </div>
     </div>

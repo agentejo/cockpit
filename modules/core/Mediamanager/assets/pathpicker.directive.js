@@ -4,22 +4,63 @@
         media_base = COCKPIT_MEDIA_BASE_URL.replace(/^\/+|\/+$/g, ""),
         site2media = media_base.replace(site_base, "").replace(/^\/+|\/+$/g, "");
 
+
     var Picker = function(onselect, type) {
 
-        var modal    = '<div class="media-path-picker" style="width:600px;"> \
-                          <div class="caption">&nbsp;</div> \
-                          <ul class="dir-view uk-list uk-clearfix" style="height:250px;overflow-y:scroll;"></ul>     \
-                          <div class="uk-text-center"><button class="media-select uk-button uk-button-primary" type="button">Select</button></div> \
-                        </div>',
-            $this    = this;
+        var $this    = this;
+
+        var modal = $([
+            '<div class="uk-modal media-path-picker">',
+                '<div class="uk-modal-dialog uk-modal-dialog-large">',
+                    '<button type="button" class="uk-modal-close uk-close"></button>',
+                    '<h4>Mediapicker</h4>',
+                    '<div><i class="uk-icon-home"></i> <span class="caption"></span></div>',
+                    '<div class="uk-modal-scrollable-box uk-margin-top">',
+                        '<ul class="dir-view uk-grid uk-grid-width-1-4 uk-clearfix"></ul>',
+                    '</div>',
+                    '<div class="uk-modal-buttons"><button class="media-select uk-button uk-button-primary" type="button">Select</button> <button class="uk-button uk-modal-close" type="button">Cancel</button></div>',
+                '</div>',
+            '</div>'
+        ].join('')).appendTo('body');
+
+
+        App.assets.require(['assets/vendor/ajaxupload.js'], function(){
+
+            var uploadsettings = {
+                    "action": App.route('/mediamanager/api'),
+                    "single": true,
+                    "params": {"cmd":"upload"},
+                    "before": function(o) {
+                        o.params["path"] = $this.currentpath;
+                    },
+                    "loadstart": function(){
+
+                    },
+                    "progress": function(percent){
+                        $this.caption.html('<span>'+Math.ceil(percent)+"%</span>");
+                    },
+                    "allcomplete": function(){
+                        $this.loadPath($this.currentpath);
+                    },
+                    "complete": function(res){
+
+                    }
+                };
+
+            modal.uploadOnDrag(uploadsettings);
+        });
+
+
+        var picker = new $.UIkit.modal.Modal(modal);
+
 
         this.type    = type || '*';
-        this.modal   = $(modal);
-        this.dirview = this.modal.find('.dir-view');
-        this.caption = this.modal.find('.caption');
-        this.btnOk   = this.modal.find('button.media-select').attr("disabled", true);
+        this.modal   = modal;
+        this.dirview = modal.find('.dir-view');
+        this.caption = modal.find('.caption');
+        this.btnOk   = modal.find('button.media-select').attr("disabled", true);
 
-        $.UIkit.modalbox(this.modal);
+        picker.show();
 
         this.dirview.on("click", "li", function(){
             var data = $(this).data();
@@ -47,38 +88,10 @@
 
         this.btnOk.on("click", function(){
             if($this.mediapath) onselect($this.mediapath);
-            $.UIkit.modalbox.close();
+            picker.hide();
         });
 
         this.loadPath('/');
-
-
-        App.assets.require(['assets/vendor/ajaxupload.js'], function(){
-
-
-            var uploadsettings = {
-                    "action": App.route('/mediamanager/api'),
-                    "single": true,
-                    "params": {"cmd":"upload"},
-                    "before": function(o) {
-                        o.params["path"] = $this.currentpath;
-                    },
-                    "loadstart": function(){
-
-                    },
-                    "progress": function(percent){
-                        $this.caption.html('<span>'+Math.ceil(percent)+"%</span>");
-                    },
-                    "allcomplete": function(){
-                        $this.loadPath($this.currentpath);
-                    },
-                    "complete": function(res){
-
-                    }
-                };
-
-            $this.modal.uploadOnDrag(uploadsettings);
-        });
 
 
     };
@@ -100,11 +113,11 @@
                     $this.dirview.html('');
 
                     $.each(data.folders, function(index, folder){
-                       $this.dirview.append($('<li class="uk-width-1-4 uk-float-left"><i class="uk-icon-folder"></i><br>'+folder.name+'</li>').data(folder));
+                       $this.dirview.append($('<li class="uk-grid-margin"><div class="app-panel"><i class="uk-icon-folder"></i><div class="uk-margin-small-top uk-text-truncate">'+folder.name+'</div></div></li>').data(folder));
                     });
 
                     $.each(data.files, function(index, file){
-                       $this.dirview.append($('<li class="uk-width-1-4 uk-float-left"><i class="uk-icon-file-o"></i><br>'+file.name+'</li>').data(file));
+                       $this.dirview.append($('<li class="uk-grid-margin"><div class="app-panel"><i class="uk-icon-file-o"></i><div class="uk-margin-small-top uk-text-truncate">'+file.name+'</div></div></li>').data(file));
                     });
 
                     $this.caption.html('');
@@ -121,9 +134,9 @@
                         tmppath.push(parts[i]);
 
                         if(i<parts.length-1) {
-                            $this.caption.append('<span data-path="'+tmppath.join("/")+'">'+parts[i]+'</span>');
+                            $this.caption.append('<span data-path="'+tmppath.join("/")+'"><i class="uk-icon-folder-o"></i> '+parts[i]+'</span>');
                         } else {
-                            $this.caption.append('<span class="soft">'+parts[i]+'</span>');
+                            $this.caption.append('<span class="uk-text-muted"><i class="uk-icon-folder-o"></i> '+parts[i]+'</span>');
                         }
                     }
 
@@ -255,19 +268,5 @@
 
         return (path.match(new RegExp(parsedPattern)) !== null);
     }
-
-    $("head").append('<style> \
-        .media-path-picker .dir-view { \
-            padding-top: 20px; \
-            min-height: 40px; \
-        } \
-        .media-path-picker .dir-view li {cursor:pointer;text-align:center;border-radius:3px;padding:10px;-moz-user-select:none;-webkit-user-select:none;user-select:none;} \
-        .media-path-picker .dir-view li:hover {background: #fcfef0;} \
-        .media-path-picker .dir-view li.active {color: #fff;background:#222;} \
-        .media-path-picker .caption [data-path] {cursor:pointer;} \
-        .media-path-picker .caption [data-path]:first-child { margin-right: 5px; vertical-align: top; } \
-        .media-path-picker .caption [data-path]:not(:first-child):after { content: "/"; display: inline-block; margin: 0 5px; vertical-align: top; } \
-        .media-path-picker .media-select[disabled] { opacity:0; } \
-    </style>');
 
 })(App.module, jQuery);

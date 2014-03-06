@@ -1,5 +1,4 @@
 <style>
-    .app-dashboard-widget .app-panel > .app-panel-box.docked { padding: 20px 30px; }
 
     .dashboard-aside {
         -webkit-column-count: 2;
