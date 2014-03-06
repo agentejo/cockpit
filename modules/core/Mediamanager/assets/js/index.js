@@ -1,9 +1,9 @@
 (function($){
 
     function autocomplete(cm) {
-        var doc = cm.getDoc(), 
+        var doc = cm.getDoc(),
             cur = cm.getCursor(),
-            toc = cm.getTokenAt(cur), 
+            toc = cm.getTokenAt(cur),
             mode = CodeMirror.innerMode(cm.getMode(), toc.state).mode.name;
 
         if(!toc.string.trim()) return;
@@ -41,6 +41,8 @@
                                lineNumbers: true,
                                styleActiveLine: true,
                                matchBrackets: true,
+                               autoCloseBrackets: true,
+                               autoCloseTags: true,
                                mode: 'text',
                                theme: 'pastel-on-dark'
                            });
