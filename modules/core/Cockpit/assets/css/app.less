@@ -1,5 +1,36 @@
 @import url(base.less);
 
+
+/* ========================================================================
+   Addon: Placeholder
+ ========================================================================== */
+.uk-placeholder {
+  margin-bottom: 15px;
+  padding: 20px;
+  border: 1px dashed #dddddd;
+  background: #fafafa;
+  color: #444444;
+}
+/*
+ * Add margin if adjacent element
+ */
+* + .uk-placeholder {
+  margin-top: 15px;
+}
+/*
+ * Remove margin from the last-child
+ */
+.uk-placeholder > :last-child {
+  margin-bottom: 0;
+}
+/* Modifier: `uk-placeholder-large`
+ ========================================================================== */
+.uk-placeholder-large {
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+
+
 /* Codemirror */
 .CodeMirror {
     border: 4px rgba(0,0,0,0.3) solid;
@@ -79,12 +110,6 @@
 
 .CodeMirror-dialog button {
   font-size: 70%;
-}
-
-.uk-markdownarea-preview .uk-overlay {
-    display:block;
-    min-height: 150px;
-    background: #f5f5f5;
 }
 
 .app-main .mce-tinymce {

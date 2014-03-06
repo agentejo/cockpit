@@ -27,12 +27,24 @@
 
     $.UIkit.markdownarea.addPlugin('images', /(?:\{<(.*?)>\})?!(?:\[([^\n\]]*)\])(?:\(([^\n\]]*)\))?$/gim, function (marker) {
 
+        var img;
+
+        if (marker.found[3] && 'http://'!==marker.found[3].trim()) {
+          img = '<img src="'+marker.found[3]+'" alt="">';
+        } else {
+          img = [
+            '<div class="uk-placeholder uk-placeholder-large uk-text-center uk-vertical-align">',
+              '<div class="uk-vertical-align-middle"><i class="uk-icon-picture-o"></i></div>',
+            '</div>'
+          ].join("");
+        }
+
         var replacement = [
-            '<div id="'+marker.uid+'" class="uk-overlay uk-markdownarea-imgplugin">',
-                '<img src="'+marker.found[3]+'" alt="">',
+            '<div id="'+marker.uid+'" class="uk-overlay uk-display-block">',
+                img,
                 '<div class="uk-overlay-area">',
                     '<div class="uk-overlay-area-content">',
-                        '<div>'+(marker.found[2] || 'Image')+'</div>',
+                        '<div><span class="uk-badge">'+(marker.found[2] || 'Image')+'</span></div>',
                         '<div class="uk-button-group uk-margin-top">',
                             '<button class="uk-button uk-button-primary js-config" type="button" title="Pick image"><i class="uk-icon-hand-o-up"></i></button>',
                             '<button class="uk-button uk-button-danger js-remove" type="button" title="Remove image"><i class="uk-icon-trash-o"></i></button>',
