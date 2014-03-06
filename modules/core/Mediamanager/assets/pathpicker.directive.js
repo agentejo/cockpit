@@ -7,18 +7,18 @@
 
     var Picker = function(onselect, type) {
 
-        var $this    = this;
+        var $this = this;
 
         var modal = $([
             '<div class="uk-modal media-path-picker">',
                 '<div class="uk-modal-dialog uk-modal-dialog-large">',
                     '<button type="button" class="uk-modal-close uk-close"></button>',
                     '<h4>Mediapicker</h4>',
-                    '<div><i class="uk-icon-home"></i> <span class="caption"></span></div>',
+                    '<div class="caption">&nbsp;</div>',
                     '<div class="uk-modal-scrollable-box uk-margin-top">',
-                        '<ul class="dir-view uk-grid uk-grid-width-1-4 uk-clearfix"></ul>',
+                        '<ul class="dir-view uk-grid uk-grid-width-1-5 uk-grid-small uk-clearfix"></ul>',
                     '</div>',
-                    '<div class="uk-modal-buttons"><button class="media-select uk-button uk-button-primary" type="button">Select</button> <button class="uk-button uk-modal-close" type="button">Cancel</button></div>',
+                    '<div class="uk-modal-buttons"><button class="media-select uk-button uk-button-large uk-button-primary" type="button">Select</button> <button class="uk-button uk-button-large uk-modal-close" type="button">Cancel</button></div>',
                 '</div>',
             '</div>'
         ].join('')).appendTo('body');
@@ -125,7 +125,7 @@
                     var parts   = path.split('/'),
                         tmppath = [];
 
-                    $this.caption.append('<span data-path="/"><strong>media:</strong></span>');
+                    $this.caption.append('<span data-path="/"><i class="uk-icon-home"></i> <strong>media:</strong></span>');
 
                     for(var i=0;i<parts.length;i++){
 

@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.9.9  (Mar 06, 2014)
+    
+    ^ more assets cleanup
+    ^ mediapicker reworked
+
 ### 0.9.8  (Mar 06, 2014)
     
     ^ assets cleanup
