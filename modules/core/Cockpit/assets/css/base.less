@@ -13,7 +13,7 @@
 .uk-margin-large-top { margin-top: @marginxl; }
 .uk-margin-large-bottom { margin-bottom: @marginxl; }
 
-.uk-modal { background: rgba(245, 245, 245, 0.8); }
+.uk-modal, .uk-offcanvas { background: rgba(245, 245, 245, 0.8); }
 .uk-modal-dialog { border: 1px solid #e5e5e5; }
 
 .uk-nav-parent-icon [class^='uk-icon-'] {
@@ -109,29 +109,29 @@ pre, .uk-button, .uk-alert, .uk-badge, .uk-panel-box, .uk-tooltip, .uk-dropdown,
   border-radius: 3px;
 }
 
-.uk-offcanvas-bar:after {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    width: 1px;
-    background: rgba(0,0,0,0.6);
-    box-shadow: 0 0 5px 2px rgba(0,0,0,0.6);
+.uk-offcanvas-bar {
+  background: #fff;
+  box-shadow: 0 0 30px #ccc;
 }
 
-.uk-offcanvas-bar-flip:after {
-    right: auto;
-    left: 0;
-    width: 1px;
-    background: rgba(0,0,0,0.6);
-    box-shadow: 0 0 5px 2px rgba(0,0,0,0.6);
+.uk-nav-offcanvas {  border-bottom: 1px dotted #eee; }
+.uk-offcanvas .uk-panel-title {
+  font-size: 16px;
+  line-height: 20px;
 }
 
-.uk-nav-offcanvas {
-    border-bottom: 1px solid rgba(0,0,0,0.3);
-    box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+.uk-offcanvas-bar,
+.uk-nav-offcanvas > li > a,
+.uk-offcanvas .uk-panel-title { color: #666; }
+
+.uk-nav-offcanvas > li > a { padding: 10px 0; }
+
+.uk-nav-offcanvas > .uk-open > a,
+html:not(.uk-touch) .uk-nav-offcanvas > li > a:hover,
+html:not(.uk-touch) .uk-nav-offcanvas > li > a:focus {
+  background: none;
+  color: #333;
+  outline: 0;
 }
 
 /* Sub-object: `uk-nav-sub` */

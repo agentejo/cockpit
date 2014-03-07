@@ -1,19 +1,23 @@
 <style>
 
+    .app-dashboard-widget {
+        margin-bottom: 15px;
+    }
+
     .dashboard-aside {
         -webkit-column-count: 2;
-        -webkit-column-gap: 10px;
+        -webkit-column-gap: 15px;
         -moz-column-count: 2;
-        -moz-column-gap: 10px;
+        -moz-column-gap: 15px;
         column-count: 2;
-        column-gap: 10px;
+        column-gap: 15px;
     }
 
     .dashboard-aside > div {
         -webkit-column-break-inside: avoid;
         -moz-column-break-inside: avoid;
         column-break-inside: avoid;
-        margin: 0 2px 10px;
+        margin: 0 2px 15px;
     }
 
     @media all and (max-width: 960px) {
