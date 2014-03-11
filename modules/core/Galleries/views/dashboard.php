@@ -12,7 +12,20 @@
     <span class="uk-text-small uk-text-uppercase uk-text-muted">@lang('Latest')</span>
     <ul class="uk-list uk-list-space">
         @foreach($galleries as $gallery)
-        <li><a href="@route('/galleries/gallery/'.$gallery['_id'])"><i class="uk-icon-map-marker"></i> {{ $gallery["name"] }}</a></li>
+        <li>
+            <a href="@route('/galleries/gallery/'.$gallery['_id'])">
+                <i class="uk-icon-map-marker"></i> {{ $gallery["name"] }}
+                @if(count($gallery["images"]))
+                <div class="uk-margin-small-top">
+                    @foreach(array_slice($gallery["images"], 0, 6) as $image)
+                    <div class="uk-thumbnail uk-rounded uk-thumb-small">
+                        <img src="@thumbnail_url($image['path'], 25, 25)" width="25" height="25" title="{{ $image['path'] }}">
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+            </a>
+        </li>
         @endforeach
     </ul>
 @else

@@ -76,6 +76,12 @@
         }
     });
 
+    module.filter('base64', function() {
+        return function(input) {
+            return btoa(input);
+        }
+    });
+
     module.directive('appInplaceEdit', function() {
       return {
         restrict: 'A',

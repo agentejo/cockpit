@@ -250,8 +250,13 @@ class App implements \ArrayAccess {
     /**
     * stop application (exit)
     */
-    public function stop(){
+    public function stop($data = false){
         $this->exit = true;
+
+        if($data!==false) {
+            echo $data;
+        }
+
         exit;
     }
 

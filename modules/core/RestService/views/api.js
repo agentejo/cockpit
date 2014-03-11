@@ -70,7 +70,7 @@
 
     // AMD support
     if (typeof define === 'function' && define.amd) {
-        define(function () { return Cockpit; });
+        define(function() { return Cockpit; });
     }
 
     g.Cockpit = Cockpit;

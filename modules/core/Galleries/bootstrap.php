@@ -28,7 +28,7 @@ $app->on("cockpit.rest.init", function($routes) {
 
 // ADMIN
 
-if(COCKPIT_ADMIN) {
+if(COCKPIT_ADMIN && !COCKPIT_REST) {
 
 
     $app->on("admin.init", function() use($app){

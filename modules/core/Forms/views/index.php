@@ -32,7 +32,7 @@
 
             <div class="app-panel">
 
-                <strong>@@ form.name @@</strong>
+                <a class="uk-link-muted" href="@route('/forms/entries')/@@ form._id @@"><strong>@@ form.name @@</strong></a>
 
                 <div class="uk-margin">
                     <span class="uk-badge app-badge" title="Last update">@@ form.modified |fmtdate:'d M, Y H:i' @@</span>

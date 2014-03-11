@@ -41,7 +41,7 @@
             <li class="media-upload-button">
                 <a><i class="uk-icon-upload"></i>&nbsp; </a>
                 <form id="frmMediaUpload" action="">
-                    <input type="file" name="files[]" onchange="jQuery(this.form).trigger('submit')">
+                    <input type="file" name="files[]" onchange="jQuery(this.form).trigger('submit')" multiple="true">
                 </form>
             </li>
         </ul>

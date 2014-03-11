@@ -84,8 +84,13 @@ if (!function_exists('thumbnail')) {
     }
 }
 
+//rest
+$app->on("cockpit.rest.init", function($routes) {
+    $routes["mediamanager"] = 'Mediamanager\\Controller\\RestApi';
+});
 
-if(COCKPIT_ADMIN) {
+
+if(COCKPIT_ADMIN && !COCKPIT_REST) {
 
 
     $app->on("app.layout.header", function() use($app){

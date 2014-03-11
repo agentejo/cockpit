@@ -72,7 +72,7 @@
 
                     <div class="app-panel">
 
-                        <strong>@@ region.name @@</strong>
+                        <a class="uk-link-muted" href="@route('/regions/region')/@@ region._id @@"><strong>@@ region.name @@</strong></a>
 
                         <div class="uk-margin">
                             <span class="uk-badge app-badge" title="Last update">@@ region.modified |fmtdate:'d M, Y H:i' @@</span>

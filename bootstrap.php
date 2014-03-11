@@ -1,14 +1,18 @@
 <?php
 
-if(!defined('COCKPIT_ADMIN')) {
-    define('COCKPIT_ADMIN', 0);
-}
-
 // autoload from vendor (PSR-0)
 spl_autoload_register(function($class){
     $class_path = __DIR__.'/vendor/'.str_replace('\\', '/', $class).'.php';
     if(file_exists($class_path)) include_once($class_path);
 });
+
+if(!defined('COCKPIT_ADMIN')) {
+    define('COCKPIT_ADMIN', 0);
+}
+
+if(!defined('COCKPIT_REST')) {
+    define('COCKPIT_REST', COCKPIT_ADMIN && strpos(@$_SERVER["PATH_INFO"], '/rest/api')===0 ? 1:0);
+}
 
 
 function cockpit($module = null) {

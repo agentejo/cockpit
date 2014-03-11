@@ -72,10 +72,16 @@
 
                     <div class="app-panel">
 
-                        <strong>@@ gallery.name @@</strong>
+                        <a class="uk-link-muted" href="@route('/galleries/gallery')/@@ gallery._id @@"><strong>@@ gallery.name @@</strong></a>
 
                         <div class="uk-margin">
                             <span class="uk-badge app-badge" title="Last update">@@ gallery.modified |fmtdate:'d M, Y H:i' @@</span>
+                        </div>
+
+                        <div style="min-height:30px;">
+                            <div class="uk-thumbnail uk-rounded uk-thumb-small uk-margin-small-right" data-ng-repeat="image in gallery.images" ng-if="$index < 6">
+                                <img ng-src="@route('/mediamanager/thumbnail')/@@ image.path|base64 @@/20/20" width="20" height="20" title="@@ image.path @@">
+                            </div>
                         </div>
 
                         <div class="app-panel-box docked-bottom">
@@ -96,12 +102,18 @@
                         <tr>
                             <th>@lang('Gallery')</th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr data-ng-repeat="gallery in galleries" data-ng-show="matchName(gallery.name) && inGroup(gallery.group)">
                             <td>
                                 <a href="@route('/galleries/gallery')/@@ gallery._id @@">@@ gallery.name @@</a>
+                            </td>
+                            <td>
+                                <div class="uk-thumbnail uk-rounded uk-thumb-small uk-margin-small-right" data-ng-repeat="image in gallery.images" ng-if="$index < 6">
+                                    <img ng-src="@route('/mediamanager/thumbnail')/@@ image.path|base64 @@/20/20" width="20" height="20" title="@@ image.path @@">
+                                </div>
                             </td>
                             <td align="right">
                                 @hasaccess?("Galleries", 'create.gallery')

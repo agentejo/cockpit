@@ -33,7 +33,7 @@
 
             <div class="app-panel">
 
-                <strong>@@ collection.name @@</strong>
+                <a class="uk-link-muted" href="@route('/collections/entries')/@@ collection._id @@"><strong>@@ collection.name @@</strong></a>
 
                 <div class="uk-margin">
                     <span class="uk-badge app-badge">@@ collection.count @@ @lang('Entries')</span>

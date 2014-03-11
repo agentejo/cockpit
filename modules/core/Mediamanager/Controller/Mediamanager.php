@@ -13,6 +13,25 @@ class Mediamanager extends \Cockpit\Controller {
         return $this->render("mediamanager:views/index.php");
 	}
 
+    public function thumbnail($image, $width = 50, $height = 50) {
+
+        $image  = base64_decode($image);
+        $imgurl = $this->app->module("mediamanager")->thumbnail($image, $width, $height);
+        $fail   = (strpos($imgurl, 'data:')===0);
+        $type   = 'gif';
+        $data   = base64_decode('R0lGODlhAQABAJEAAAAAAP///////wAAACH5BAEHAAIALAAAAAABAAEAAAICVAEAOw=='); // empty 1x1 gif
+
+        if(!$fail) {
+
+            $info = pathinfo($imgurl);
+            $type = $info['extension'];
+            $data = file_get_contents($this->app['docs_root'].$imgurl);
+        }
+
+        header("Content-type: image/{$type}");
+        $this->app->stop($data);
+    }
+
 
     public function api() {
 

@@ -84,7 +84,7 @@ if (!function_exists('form')) {
 
 // ADMIN
 
-if(COCKPIT_ADMIN) {
+if(COCKPIT_ADMIN && !COCKPIT_REST) {
 
     $app->on("admin.init", function() use($app){
 

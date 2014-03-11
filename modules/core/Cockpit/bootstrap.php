@@ -80,7 +80,7 @@ $app->renderer()->extend(function($content){
 
 // Admin
 
-if (COCKPIT_ADMIN) {
+if (COCKPIT_ADMIN && !COCKPIT_REST) {
 
     $app["cockpit"] = json_decode($app->helper("fs")->read("#root:package.json"), true);
 
