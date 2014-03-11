@@ -238,9 +238,9 @@
         text-align: center;
     }
     
-    .mm-actions { margin: 10px 0 0 0; }
+    ul .mm-actions { margin: 10px 0 0 0; }
 
-    .mm-actions > li > a { color: #ccc; }
+    ul .mm-actions > li > a { color: #ccc; }
 
     .media-upload-button {
         position: relative;
