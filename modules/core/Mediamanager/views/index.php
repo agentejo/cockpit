@@ -175,7 +175,7 @@
         </table>
 
         <div class="uk-margin uk-text-center" data-ng-show="dir && (!dir.folders.length && !dir.files.length)">
-            <h2><i class="uk-icon-folder-o-open-o"></i></h2>
+            <h2><i class="uk-icon-folder-open-o"></i></h2>
             <p class="uk-text-large">
                 @lang('This folder is empty.')
             </p>
