@@ -1,5 +1,13 @@
 # Changelog
 
+
+### 0.9.10  (Mar 12, 2014)
+    
+    ^ more assets cleanup + update
+    ^ media manager list view updated
+    + manage meta fields for each gallery
+    # media manager empty folder fixed
+
 ### 0.9.9  (Mar 06, 2014)
     
     ^ more assets cleanup
