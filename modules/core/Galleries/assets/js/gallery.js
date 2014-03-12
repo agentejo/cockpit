@@ -25,7 +25,7 @@
 
             $scope.gallery = {
                 name: "",
-                fields:[{"name":"caption","type":"html"}, {"name":"url","type":"url"}],
+                fields:[{"name":"caption","type":"html"}, {"name":"url","type":"text"}],
                 images: [],
                 group: ""
             };
@@ -37,6 +37,10 @@
             $scope.groups = groups;
 
         }).error(App.module.callbacks.error.http);
+
+
+        $scope.managefields = false;
+
 
         $scope.save = function() {
 
@@ -124,6 +128,29 @@
             dialog.show();
         };
 
+        $scope.addfield = function(){
+
+            if(!$scope.gallery.fields) {
+                $scope.gallery.fields = [];
+            }
+
+            $scope.gallery.fields.push({
+                "name"  : "",
+                "type"  : "text",
+                "value" : ""
+            });
+        };
+
+        $scope.removefield = function(field) {
+
+            var index = $scope.gallery.fields.indexOf(field);
+
+            if(index > -1) {
+                $scope.gallery.fields.splice(index, 1);
+            }
+
+        };
+
         var imglist = $("#images-list");
 
         imglist.on("dragend", "[draggable]",function(){
@@ -140,6 +167,22 @@
         });
 
         nativesortable(imglist[0]);
+
+
+        // after sorting list
+
+        var list = $("#manage-fields-list").on("sortable-change", function(){
+            var fields = [];
+
+            list.children().each(function(){
+                fields.push(angular.copy($(this).scope().field));
+            });
+
+            $scope.$apply(function(){
+                $scope.gallery.fields = fields;
+            });
+        });
+
     });
 
 })(jQuery);

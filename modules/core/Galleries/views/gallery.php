@@ -1,5 +1,7 @@
 {{ $app->assets(['assets:vendor/nativesortable.js'], $app['cockpit/version']) }}
 
+{{ $app->assets(['assets:vendor/uikit/addons/sortable/sortable.almost-flat.min.css','assets:vendor/uikit/addons/sortable/sortable.min.js'], $app['cockpit/version']) }}
+
 {{ $app->assets(['galleries:assets/galleries.js','galleries:assets/js/gallery.js'], $app['cockpit/version']) }}
 {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
 
@@ -40,46 +42,99 @@
 
                         <div class="uk-form-row">
 
-                            <div id="images-list" class="uk-grid" data-uk-grid-match="{target:'.uk-thumbnail'}">
-                                <div class="uk-width-1-2 uk-width-medium-1-5 uk-grid-margin" data-ng-repeat="image in gallery.images" draggable="true">
-                                    <div class="uk-thumbnail uk-width-1-1 uk-text-center uk-visible-hover">
-                                        <div class="uk-text-center" style="background: #fff url(@@ imgurl(image) @@) 50% 50% no-repeat;background-size:contain;height:140px;">
+                            <div data-ng-show="!managefields">
 
-                                            <div class="images-list-actions uk-hidden">
-                                                <div class="uk-button-group">
-                                                    <button type="button" class="uk-button uk-button-small uk-button-primary" data-ng-click="showMeta($index)"><i class="uk-icon-pencil"></i></button>
-                                                    <button type="button" class="uk-button uk-button-small uk-button-danger" data-ng-click="removeImage($index)"><i class="uk-icon-trash-o"></i></button>
+                                <div id="images-list" class="uk-grid" data-uk-grid-match="{target:'.uk-thumbnail'}">
+                                    <div class="uk-width-1-2 uk-width-medium-1-5 uk-grid-margin" data-ng-repeat="image in gallery.images" draggable="true">
+                                        <div class="uk-thumbnail uk-width-1-1 uk-text-center uk-visible-hover">
+                                            <div class="uk-text-center" style="background: #fff url(@@ imgurl(image) @@) 50% 50% no-repeat;background-size:contain;height:140px;">
+
+                                                <div class="images-list-actions uk-hidden">
+                                                    <div class="uk-button-group">
+                                                        <button type="button" class="uk-button uk-button-small uk-button-primary" data-ng-click="showMeta($index)"><i class="uk-icon-pencil"></i></button>
+                                                        <button type="button" class="uk-button uk-button-small uk-button-danger" data-ng-click="removeImage($index)"><i class="uk-icon-trash-o"></i></button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+
+                                <div class="uk-text-center uk-margin-large-top uk-margin-large-bottom" data-ng-show="gallery && !gallery.images.length">
+                                    <h2><i class="uk-icon-th"></i></h2>
+                                    <p class="uk-text-large">
+                                        @lang('You don\'t have any images in this gallery.')
+                                    </p>
+                                </div>
+
                             </div>
 
-                            <div class="uk-text-center uk-margin-large-top uk-margin-large-bottom" data-ng-show="gallery && !gallery.images.length">
-                                <h2><i class="uk-icon-th"></i></h2>
-                                <p class="uk-text-large">
-                                    @lang('You don\'t have any images in this gallery.')
-                                </p>
+                            <div data-ng-show="managefields">
+
+                                <ul id="manage-fields-list" class="uk-sortable" data-uk-sortable="{maxDepth:1}">
+                                     <li data-ng-repeat="field in gallery.fields">
+                                        <div class="uk-sortable-item uk-sortable-item-table">
+                                           <div class="uk-sortable-handle"></div>
+                                           <input type="text" data-ng-model="field.name" placeholder="Field name" pattern="[a-zA-Z0-9]+" required>
+                                           <select data-ng-model="field.type" title="Field type" data-uk-tooltip>
+                                               <option value="text">Text</option>
+                                               <option value="html">Html</option>
+                                               <option value="select">Select</option>
+                                               <option value="boolean">Boolean</option>
+                                               <option value="media">Media</option>
+                                           </select>
+
+                                           <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="options....">
+
+                                           <a data-ng-click="removefield(field)" class="uk-close"></a>
+                                        </div>
+                                     </li>
+                                </ul>
+
+                                <button data-ng-click="addfield()" type="button" class="uk-button uk-button-success"><i class="uk-icon-plus-circle" title="@lang('Add field')"></i></button>
                             </div>
 
                         </div>
 
 
                         <div class="uk-form-row">
-                            <button type="submit" class="uk-button uk-button-primary uk-button-large">@lang('Save gallery')</button>
+                            <button type="submit" class="uk-button uk-button-primary uk-button-large">@lang('Save gallery')</button> &nbsp; 
                             <a href="@route('/galleries')">@lang('Cancel')</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="uk-width-medium-1-5">
+                    
+                    <div class="uk-form-row">
+                        <strong>@lang("Group")</strong>
+                        <select class="uk-width-1-1 uk-margin-small-top" data-ng-model="region.group">
+                            <option value="">- @lang("No group") -</option>
+                            <option ng-repeat="group in groups" value="@@ group @@">@@ group @@</option>
+                        </select>
+                    </div>
+                    
+                    <div class="uk-form-row">
+                        <strong>@lang("Meta fields")</strong>
+                        
+                        <div class="uk-margin-small-top">
+                            <ul class="uk-list uk-list-line uk-text-muted" ng-show="gallery.fields.length">
+                                 <li data-ng-repeat="field in gallery.fields">
+                                    <i class="uk-icon-chain"></i> @@ field.name @@
+                                 </li>
+                            </ul>
 
-                    <strong>@lang("Group")</strong>
-                    <select class="uk-width-1-1" data-ng-model="region.group">
-                        <option value="">- @lang("No group") -</option>
-                        <option ng-repeat="group in groups" value="@@ group @@">@@ group @@</option>
-                    </select>
+                            <p class="uk-text-muted" ng-show="!gallery.fields.length">
+                                @lang('No meta fields defined.')
+                            </p>
+                        </div>
+
+                        <button type="button" class="uk-button" data-ng-class="managefields ? 'uk-button-success':'uk-button-primary'" data-ng-click="(managefields = !managefields)" title="@lang('Manage meta fields')">
+                            <span ng-show="!managefields"><i class="uk-icon-cog"></i></span>
+                            <span ng-show="managefields"><i class="uk-icon-check"></i></span>
+                        </button>
+                    </div>
                 </div>
             </div>
     </form>
@@ -99,14 +154,6 @@
                         <textarea class="uk-width-1-1 uk-form-large" data-ng-model="$parent.metaimage.data[field.name]"></textarea>
                     </div>
 
-                    <div data-ng-switch-when="code">
-                        <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-model="$parent.metaimage.data[field.name]"></textarea>
-                    </div>
-
-                    <div data-ng-switch-when="wysiwyg">
-                        <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-model="$parent.metaimage.data[field.name]"></textarea>
-                    </div>
-
                     <div data-ng-switch-when="select">
                         <select class="uk-width-1-1 uk-form-large" data-ng-model="$parent.metaimage.data[field.name]" data-ng-init="fieldindex=$index">
                             <option value="@@ option @@" data-ng-repeat="option in (field.options || [])" data-ng-selected="($parent.metaimage.data[field.name]==option)">@@ option @@</option>
@@ -115,6 +162,10 @@
 
                     <div data-ng-switch-when="media">
                         <input type="text" media-path-picker data-ng-model="$parent.metaimage.data[field.name]">
+                    </div>
+
+                    <div data-ng-switch-when="boolean">
+                        <input type="checkbox" data-ng-model="$parent.metaimage.data[field.name]">
                     </div>
 
                     <div data-ng-switch-default>

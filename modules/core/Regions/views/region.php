@@ -4,12 +4,6 @@
 
 {{ $app->assets(['assets:vendor/codemirror/codemirror.js','assets:vendor/codemirror/codemirror.css','assets:vendor/codemirror/pastel-on-dark.css'], $app['cockpit/version']) }}
 
-<script>
-  CodeMirror.commands.htmlautocomplete = function(cm) {
-    CodeMirror.showHint(cm, CodeMirror.hint.html);
-  };
-</script>
-
 {{ $app->assets(['assets:angular/directives/codearea.js'], $app['cockpit/version']) }}
 
 {{ $app->assets(['assets:vendor/tinymce/tinymce.min.js'], $app['cockpit/version']) }}
