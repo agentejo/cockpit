@@ -1,6 +1,5 @@
 <?php
 
-
 $sqlitesupport = false;
 
 try {
@@ -11,8 +10,8 @@ try {
 } catch (Exception $e) { }
 
 $checks = array(
-    "Php version >= 5.4.0"                       => (version_compare(PHP_VERSION, '5.4.0') >= 0),
-    "PDO extension loaded with Sqlite support" => $sqlitesupport,
+    "Php version >= 5.4.0"                             => (version_compare(PHP_VERSION, '5.4.0') >= 0),
+    "PDO extension loaded with Sqlite support"         => $sqlitesupport,
     'Data  folder is writable: /storage/data'          => is_writable(__DIR__.'/../storage/data'),
     'Cache folder is writable: /storage/cache'         => is_writable(__DIR__.'/../storage/cache'),
     'Cache folder is writable: /storage/cache/assets'  => is_writable(__DIR__.'/../storage/cache/assets'),

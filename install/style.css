@@ -6,12 +6,15 @@ body {
     padding-top: 100px;
     background: #eee;
 }
+
+h1 { font-size: 30px; }
+
 #logo {
     margin-bottom: 40px;
     text-align:center;
 }
 .install-page {
-    width: 800px;
+    width: 450px;
     max-width: 95%;
     margin: 0 auto;
     background: #fff;

@@ -11,23 +11,24 @@
 </head>
 <body>
 
-    <div id="logo">
-        <img src="../assets/images/cockpit.png" width="60" height="60" alt="logo">
-    </div>
-
     <div class="install-page app-panel uk-animation-fade">
+
+        <div id="logo">
+            <img src="../assets/images/cockpit.png" width="60" height="60" alt="logo">
+        </div>
 
         <div class="uk-container uk-container-center">
 
             <h1 class="uk-margin">Installation failed</h1>
 
             <div class="uk-panel">
+                Failed:
                 <div class="uk-alert uk-alert-danger">
                     <?php echo @$info;?>
                 </div>
             </div>
 
-            <div class="uk-margin">
+            <div class="uk-margin-top">
                 <a href="?<?php echo time();?>" class="uk-button uk-button-large uk-button-primary">Retry installation</a>
             </div>
         </div>

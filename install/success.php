@@ -11,11 +11,11 @@
 </head>
 <body>
 
-    <div id="logo">
-        <img src="../assets/images/cockpit.png" width="60" height="60" alt="logo">
-    </div>
-
     <div class="install-page app-panel uk-animation-fade">
+
+        <div id="logo">
+            <img src="../assets/images/cockpit.png" width="60" height="60" alt="logo">
+        </div>
 
         <div class="uk-container uk-container-center">
 
@@ -27,11 +27,16 @@
                     admin / admin
                 </p>
                 <div class="uk-alert uk-alert-warning">
-                    Please change the login information after your first login for security reasons.
+                    <p class="uk-text-large uk-text-center">
+                        <i class="uk-icon-warning"></i>
+                    </p>
+                    <p>
+                        Please change the login information after your first login for security reasons.
+                    </p>
                 </div>
             </div>
 
-            <div class="uk-margin">
+            <div class="uk-margin-top">
                 <a href="../" class="uk-button uk-button-large uk-button-primary">Start using Cockpit</a>
             </div>
         </div>
