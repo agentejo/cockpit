@@ -28,7 +28,7 @@
 
 <script>
     var ACL_DATA           = {{ json_encode($acl) }},
-        ACL_GROUP_SETTINGS = {{ json_encode($app["acl.groups.settings"]) }};
+        ACL_GROUP_SETTINGS = {{ json_encode($app["cockpit.acl.groups.settings"]) }};
 </script>
 
 <div class="app-panel" data-ng-controller="groups" ng-cloak>

@@ -63,7 +63,7 @@ $this->module("auth")->extend([
         if($user = $app("session")->read("cockpit.app.auth", null)) {
             if(isset($user["group"])) {
                 
-                $settings = $app["acl.groups.settings"];
+                $settings = $app["cockpit.acl.groups.settings"];
 
                 return isset($settings[$user["group"]][$setting]) ? $settings[$user["group"]][$setting] : $default;
             }
@@ -91,7 +91,7 @@ if (COCKPIT_ADMIN) {
 
     // init acl
 
-    $app["acl.groups.settings"] = $app->memory->get("cockpit.acl.groups.settings", new \ArrayObject([]));
+    $app["cockpit.acl.groups.settings"] = $app->memory->get("cockpit.acl.groups.settings", new \ArrayObject([]));
 
     $app("acl")->addGroup("admin", true);
 
