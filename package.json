@@ -1,4 +1,5 @@
 {
     "name": "Cockpit",
-    "version": "0.9.10"
+    "version": "0.9.10",
+    "check_url": "https://raw.github.com/aheinze/cockpit/master/package.json"  
 }

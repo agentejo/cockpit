@@ -6,25 +6,28 @@
 <div data-ng-controller="addons">
 
 
-    @if(count($addons))
+    <table class="uk-table" ng-show="addons.length">
+        <tbody>
+            @foreach($addons as $addon)
+            <tr>
+                <td>{{ $addon["name"] }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 
-        <table class="uk-table">
-            <tbody>
-                @foreach($addons as $addon)
-                <tr>
-                    <td>{{ $addon }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
 
-    @else
+    <div class="uk-alert" ng-show="!addons.length">
+        @lang('No additional addons installed.')
+    </div>
 
-        <div class="uk-alert">
-            @lang('No additional addons installed.')
-        </div>
-
-    @endif
 
 
 </div>
+
+
+<script>
+
+    window.ADDONS = {{ json_encode($addons) }};
+
+</script>
