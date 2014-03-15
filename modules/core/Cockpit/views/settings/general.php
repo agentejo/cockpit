@@ -17,7 +17,7 @@
                     <span class="uk-badge app-badge">@lang('API')</span>
                     <hr>
 
-                    <div class="uk-text-small">Token:</div>
+                    <div class="uk-text-small">@lang('Token'):</div>
                     <div class="uk-text-large uk-margin">
                         <strong ng-if="!token" class="uk-text-muted">@lang('You have no api token generated yet.')</strong>
                         <strong ng-if="token">@@ token @@</strong>
@@ -26,7 +26,7 @@
                     <button class="uk-button uk-button-large uk-button-primary" ng-click="generateToken()">@lang('Generate api token')</button>
                 </div>
                 <div>
-                    <span class="uk-badge app-badge">Registry</span>
+                    <span class="uk-badge app-badge">@lang('Registry')</span>
                     <hr>
 
                     <p class="uk-text-muted">
@@ -66,7 +66,7 @@
 
                     <div class="uk-margin">
                         <p>
-                            <strong>Access the registry values:</strong>
+                            <strong>@lang('Access the registry values'):</strong>
                         </p>
 
                         <span class="uk-badge">PHP</span>

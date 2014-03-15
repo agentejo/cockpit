@@ -56,7 +56,7 @@
 
                 @hasaccess?("Galleries", 'create.gallery')
                 <div class="uk-margin-top">
-                    <button class="uk-button uk-button-success" title="@lang("Create new group")" data-uk-tooltip="{pos:'right'}" ng-click="addGroup()"><i class="uk-icon-plus-circle"></i></button>
+                    <button class="uk-button uk-button-success" title="@lang('Create new group')" data-uk-tooltip="{pos:'right'}" ng-click="addGroup()"><i class="uk-icon-plus-circle"></i></button>
                 </div>
                 @end
             </div>

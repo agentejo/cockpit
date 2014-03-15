@@ -46,7 +46,7 @@
                 </li>
             </ul>
             <hr>
-            <button class="uk-button uk-button-success" data-ng-click="addOrEditGroup()" title="Add group" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus"></i></button>
+            <button class="uk-button uk-button-success" data-ng-click="addOrEditGroup()" title="@lang('Add group')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus"></i></button>
             <button class="uk-button uk-button-primary" data-ng-click="save()">@lang('Save')</button>
         </div>
         <div class="uk-width-medium-4-5">   
@@ -83,9 +83,9 @@
                 <div class="uk-form">
                     <div class="uk-form-row">
                         <label>
-                            Media root path
+                            @lang('Media root path')
                         </label>
-                        <input type="text" placeholder="/" class="uk-width-1-1" data-ng-model="groupsettings[active]['media.path']" title="Relative to {{ $app->pathToUrl("site:") }}" data-uk-tooltip>
+                        <input type="text" placeholder="/" class="uk-width-1-1" data-ng-model="groupsettings[active]['media.path']" title="@lang('Relative to') {{ $app->pathToUrl("site:") }}" data-uk-tooltip>
                     </div>
                 </div>
             </div>

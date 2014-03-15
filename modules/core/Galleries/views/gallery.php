@@ -77,7 +77,7 @@
                                         <div class="uk-sortable-item uk-sortable-item-table">
                                            <div class="uk-sortable-handle"></div>
                                            <input type="text" data-ng-model="field.name" placeholder="Field name" pattern="[a-zA-Z0-9]+" required>
-                                           <select data-ng-model="field.type" title="Field type" data-uk-tooltip>
+                                           <select data-ng-model="field.type" title="@lang('Field type')" data-uk-tooltip>
                                                <option value="text">Text</option>
                                                <option value="html">Html</option>
                                                <option value="select">Select</option>
@@ -85,7 +85,7 @@
                                                <option value="media">Media</option>
                                            </select>
 
-                                           <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="options....">
+                                           <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="@lang('options...')">
 
                                            <a data-ng-click="removefield(field)" class="uk-close"></a>
                                         </div>

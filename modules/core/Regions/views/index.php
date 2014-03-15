@@ -56,7 +56,7 @@
 
                 @hasaccess?("Regions", 'create.regions')
                 <div class="uk-margin-top">
-                    <button class="uk-button uk-button-success" title="@lang("Create new group")" data-uk-tooltip="{pos:'right'}" ng-click="addGroup()"><i class="uk-icon-plus-circle"></i></button>
+                    <button class="uk-button uk-button-success" title="@lang('Create new group')" data-uk-tooltip="{pos:'right'}" ng-click="addGroup()"><i class="uk-icon-plus-circle"></i></button>
                 </div>
                 @end
             </div>
@@ -64,7 +64,7 @@
         <div class="uk-width-medium-3-4">
 
             <div class="uk-margin-bottom">
-                <span class="uk-badge app-badge">@@ (activegroup=='-all' ? '@lang("All regions")' : activegroup) @@</span>
+                <span class="uk-badge app-badge">@@ (activegroup=='-all' ? "@lang('All regions')" : activegroup) @@</span>
             </div>
 
             <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="regions && regions.length && mode=='list'">
