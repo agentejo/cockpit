@@ -50,7 +50,7 @@
 
             <div class="uk-navbar-content uk-hidden-small">
                 <form id="frmCockpitSearch" class="uk-search" data-uk-search="{source:'@route('/cockpit-globsearch')', msgMoreResults:false, msgResultsHeader: '@lang('Search Results')', msgNoResults: '@lang('No results found')'}" onsubmit="return false;">
-                    <input class="uk-search-field" type="search" placeholder="Search..." autocomplete="off">
+                    <input class="uk-search-field" type="search" placeholder="@lang('Search...')" autocomplete="off">
                     <button class="uk-search-close" type="reset"></button>
                 </form>
             </div>

@@ -38,8 +38,8 @@
                             <li class="uk-margin-bottom" data-ng-repeat="field in collection.fields">
 
 
-                                <input type="text" data-ng-model="field.name" placeholder="Field name" pattern="[a-zA-Z0-9]+" required>
-                                <select data-ng-model="field.type" title="Field type" data-uk-tooltip>
+                                <input type="text" data-ng-model="field.name" placeholder="@lang('Field name')" pattern="[a-zA-Z0-9]+" required>
+                                <select data-ng-model="field.type" title="@lang('Field type')" data-uk-tooltip>
                                     <option value="text">Text</option>
                                     <option value="select">Select</option>
                                     <option value="boolean">Boolean</option>
@@ -52,9 +52,9 @@
                                     <option value="media">Media</option>
                                 </select>
 
-                                <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="options...." title="@lang('Separate different options by comma')" data-uk-tooltip>
+                                <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="@lang('options...')" title="@lang('Separate different options by comma')" data-uk-tooltip>
 
-                                <select data-ng-if="field.type=='code'" data-ng-model="field.syntax" title="Code syntax" data-uk-tooltip>
+                                <select data-ng-if="field.type=='code'" data-ng-model="field.syntax" title="@lang('Code syntax')" data-uk-tooltip>
                                     <option value="text">Text</option>
                                     <option value="css">CSS</option>
                                     <option value="htmlmixed">Html</option>
@@ -62,11 +62,11 @@
                                     <option value="markdown">Markdown</option>
                                 </select>
 
-                                <input type="text" data-ng-model="field.default" placeholder="default value...">
+                                <input type="text" data-ng-model="field.default" placeholder="@lang('default value...')">
 
                                 <span>
                                     <input type="checkbox" data-ng-model="field.required" />
-                                    <label>Required</label>
+                                    <label>@lang('Required')</label>
                                 </span>
 
                                 <a data-ng-click="remove(field)" class="uk-close"></a>

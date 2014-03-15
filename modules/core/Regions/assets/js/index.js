@@ -57,7 +57,7 @@
 
         $scope.addGroup = function() {
 
-            var name = prompt("Group name");
+            var name = prompt(App.i18n.get('Group name'));
 
             if(name && $scope.groups.indexOf(name)==-1) {
                 $scope.groups.push(name);
@@ -96,7 +96,7 @@
 
         $scope.editGroup = function(group, index){
 
-            var name = prompt("Group name", $scope.groups[index]);
+            var name = prompt(App.i18n.get('Group name'), $scope.groups[index]);
 
             if(name && $scope.groups.indexOf(name)==-1) {
 

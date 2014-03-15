@@ -48,7 +48,7 @@
             }
 
 
-            var name = prompt("Please enter a groupname:", oldname ? oldname:"");
+            var name = prompt(App.i18n.get("Please enter a groupname") + ":", oldname ? oldname:"");
 
             if($.trim(name)) {
 

@@ -225,7 +225,7 @@
 
                     case "createfile":
 
-                        var name = prompt("Please enter a filename:", "");
+                        var name = prompt(App.i18n.get('Please enter a filename:'), "");
 
                         if($.trim(name)) {
                             requestapi({"cmd":"createfile", "path": currentpath, "name":name}, function(){

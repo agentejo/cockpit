@@ -122,7 +122,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
         $app("admin")->menu("top", [
             "url"    => $app->routeUrl("/mediamanager"),
             "label"  => '<i class="uk-icon-cloud"></i>',
-            "title"  => "Mediamanager",
+            "title"  => $app("i18n")->get("Mediamanager"),
             "active" => (strpos($app["route"], '/mediamanager') === 0)
         ], 0);
 

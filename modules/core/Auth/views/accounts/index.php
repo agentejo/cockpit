@@ -54,12 +54,12 @@
         $scope.remove = function(index, account){
 
             if(account._id == $scope.current) {
-                App.notify("You can't delete yourself!", "danger");
+                App.notify(App.i18n.get("You can't delete yourself!"), "danger");
                 return;
             }
 
             if(account.group && account.group == "admin") {
-                App.notify("You can't delete admin accounts!", "danger");
+                App.notify(App.i18n.get("You can't delete admin accounts!"), "danger");
                 return;
             }
 
@@ -73,7 +73,7 @@
 
                     $timeout(function(){
                         $scope.accounts.splice(index, 1);
-                        App.notify("Account removed", "success");
+                        App.notify(App.i18n.get("Account removed"), "success");
                     }, 0);
 
                 }).error(App.module.callbacks.error.http);

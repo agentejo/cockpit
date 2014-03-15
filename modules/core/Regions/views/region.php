@@ -98,8 +98,8 @@
                                          <li data-ng-repeat="field in region.fields">
                                             <div class="uk-sortable-item uk-sortable-item-table">
                                                <div class="uk-sortable-handle"></div>
-                                               <input type="text" data-ng-model="field.name" placeholder="Field name" pattern="[a-zA-Z0-9]+" required>
-                                               <select data-ng-model="field.type" title="Field type" data-uk-tooltip>
+                                               <input type="text" data-ng-model="field.name" placeholder="@lang('Field name')" pattern="[a-zA-Z0-9]+" required>
+                                               <select data-ng-model="field.type" title="@lang('Field type')" data-uk-tooltip>
                                                    <option value="text">Text</option>
                                                    <option value="select">Select</option>
                                                    <option value="boolean">Boolean</option>
@@ -112,9 +112,9 @@
                                                    <option value="media">Media</option>
                                                </select>
 
-                                               <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="options....">
+                                               <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="@lang('options...')">
 
-                                               <select data-ng-if="field.type=='code'" data-ng-model="field.syntax" title="Code syntax" data-uk-tooltip>
+                                               <select data-ng-if="field.type=='code'" data-ng-model="field.syntax" title="@lang('Code syntax')" data-uk-tooltip>
                                                    <option value="text">Text</option>
                                                    <option value="css">CSS</option>
                                                    <option value="htmlmixed">Html</option>
