@@ -34,31 +34,34 @@ exists and is set correctly
 
 Embedding Cockpit is really easy. Just include the following snippet anywhere you want to use Cockpit:
 
-    <?php
-
-        // make cockpit api available
-        require('path2cockpit/bootstrap.php');
+```php
+// make cockpit api available
+require('path2cockpit/bootstrap.php');
+```
 
 **Regions**
 
 Render regions api:
 
-    <div><?php region("address") ?></div>
-    <div><?=get_region("address") ?></div>
+```php
+<div><?php region("address") ?></div>
+<div><?=get_region("address") ?></div>
+```
 
 **Collections**
 
 Loop over collection data:
 
-    <?php foreach(collection("posts")->find(["active"=>1]) as $post): ?>
-        <div class="post">
-            <h3><?=$post["title"];?></h3>
-            <p>
-                <?=$post["content"];?>
-            </p>
-        </div>
-    <?php endforeach; ?>
-
+```php
+<?php foreach(collection("posts")->find(["active"=>1]) as $post): ?>
+    <div class="post">
+        <h3><?=$post["title"];?></h3>
+        <p>
+            <?=$post["content"];?>
+        </p>
+    </div>
+<?php endforeach; ?>
+```
 
 ### Documentation
 
