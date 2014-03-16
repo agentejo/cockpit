@@ -23,7 +23,7 @@ exists and is set correctly
 
 ### Installation
 
-1. Download Cockpit and put the cockpit folder in the root of your web project
+1. Download Cockpit and put the cockpit folder in the root of your web project or via composer <code>composer create-project aheinze/cockpit cockpit --stability="dev"</code>
 2. Make sure that the __/cockpit/storage__ folder and all its subfolders are writable
 3. Go to __/cockpit/install__ via Browser
 4. You're ready to use Cockpit :-)
