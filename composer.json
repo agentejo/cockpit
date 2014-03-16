@@ -13,10 +13,16 @@
     "keywords": ["cms", "api", "nosql"],
     "license" : "MIT",
 
+    "minimum-stability": "dev",
+
+    "require": {
+        "php": ">=5.4.0"
+    },
+
     "autoload": {
         "files": ["bootstrap.php"]
     },
-    
+
     "archive": {
         "exclude": [
             "/storage/cache/*.css", 
