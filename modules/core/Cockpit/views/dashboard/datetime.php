@@ -60,19 +60,10 @@
     }
     .date-widget-account { 
         opacity: 0.8;
-
-        filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
-        filter: gray; /* IE6-9 */
-        filter: grayscale(100%); 
-        -webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
-
         transition: all 0.2s ease-in-out;
     }
     .date-widget-account:hover { 
-        opacity: 1; 
-        -webkit-filter: grayscale(0);
-        filter: grayscale(0);
-        filter: none;
+        opacity: 1;
     }
 </style>
 
