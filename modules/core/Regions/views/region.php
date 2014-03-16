@@ -1,6 +1,9 @@
 {{ $app->assets(['regions:assets/regions.js','regions:assets/js/region.js'], $app['cockpit/version']) }}
 
 {{ $app->assets(['assets:vendor/uikit/addons/sortable/sortable.almost-flat.min.css','assets:vendor/uikit/addons/sortable/sortable.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/addons/timepicker/timepicker.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/addons/datepicker/datepicker.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/addons/datepicker/datepicker.almost-flat.min.css'], $app['cockpit/version']) }}
 
 {{ $app->assets(['assets:vendor/codemirror/codemirror.js','assets:vendor/codemirror/codemirror.css','assets:vendor/codemirror/pastel-on-dark.css'], $app['cockpit/version']) }}
 
@@ -164,6 +167,14 @@
 
                                           <div data-ng-switch-when="boolean">
                                               <input type="checkbox" data-ng-model="region.fields[$index].value">
+                                          </div>
+
+                                          <div data-ng-switch-when="date">
+                                              <input class="uk-width-1-1 uk-form-large" type="text" data-uk-datepicker="{format:'YYYY-MM-DD'}" data-ng-model="region.fields[$index].value">
+                                          </div>
+
+                                          <div data-ng-switch-when="time">
+                                              <input class="uk-width-1-1 uk-form-large" type="text" data-uk-timepicker data-ng-model="region.fields[$index].value">
                                           </div>
 
                                           <div data-ng-switch-default>

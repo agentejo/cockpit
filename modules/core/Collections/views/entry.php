@@ -1,5 +1,9 @@
 {{ $app->assets(['collections:assets/collections.js','collections:assets/js/entry.js'], $app['cockpit/version']) }}
 
+{{ $app->assets(['assets:vendor/uikit/addons/timepicker/timepicker.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/addons/datepicker/datepicker.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/addons/datepicker/datepicker.almost-flat.min.css'], $app['cockpit/version']) }}
+
 {{ $app->assets(['assets:vendor/codemirror/codemirror.js','assets:vendor/codemirror/codemirror.css','assets:vendor/codemirror/pastel-on-dark.css'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:angular/directives/codearea.js'], $app['cockpit/version']) }}
 
@@ -121,6 +125,14 @@
 
                         <div data-ng-switch-when="boolean">
                             <input type="checkbox" data-ng-model="entry[field.name]">
+                        </div>
+
+                        <div data-ng-switch-when="date">
+                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-uk-datepicker="{format:'YYYY-MM-DD'}" data-ng-model="entry[field.name]">
+                        </div>
+
+                        <div data-ng-switch-when="time">
+                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-uk-timepicker data-ng-model="entry[field.name]">
                         </div>
 
                         <div data-ng-switch-default>

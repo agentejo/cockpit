@@ -161,8 +161,10 @@
 
     .group-actions a { font-size: 11px; }
 
-    #groups-list li.uk-active .group-actions { display:block; }
-    #groups-list li.uk-active a { color: #fff; }
-
+    #groups-list li.uk-active .group-actions,
+    #groups-list li:hover .group-actions { display:block; }
+    #groups-list li:hover .group-actions a { color: #666; }
+    #groups-list li.uk-active a,
+    #groups-list li.uk-active .group-actions a { color: #fff; }
 
 </style>
