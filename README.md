@@ -4,6 +4,9 @@ The CMS for developers. Add content management functionality to any site - plug 
 Manage content like collections, regions, forms and galleries which you can reuse anywhere on your website.
 
 
+![Cockpit](http://getcockpit.com/lib/assets/images/teaser.png)
+
+
 * Homepage: [http://getcockpit.com](http://getcockpit.com)
 * Twitter: [@getcockpit](http://twitter.com/getcockpit)
 
