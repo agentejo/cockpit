@@ -646,8 +646,6 @@ class App implements \ArrayAccess {
 
         $list = array();
 
-        http://localhost/_IDEAS/cockpit/collections
-
         foreach((array)$href as $style) {
 
             $ispath = strpos($style, ':') !== false && !preg_match('#^(|http\:|https\:)//#', $style);
