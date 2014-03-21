@@ -1,9 +1,9 @@
 <script>
-    
+
     setTimeout(function(){
 
-        var form       = document.getElementById("{{ $options['id'] }}"), 
-            msgsuccess = form.getElementsByClassName("form-message-success").item(0), 
+        var form       = document.getElementById("{{ $options['id'] }}"),
+            msgsuccess = form.getElementsByClassName("form-message-success").item(0),
             msgfail    = form.getElementsByClassName("form-message-fail").item(0),
             bind       = function(ele, evt, fn) {
                 if (!ele.addEventListener) {
@@ -28,7 +28,7 @@
             };
 
         bind(form, "submit", function(e){
-            
+
             e.preventDefault();
 
             if(msgsuccess) msgsuccess.style.display = "none";
@@ -38,7 +38,7 @@
                 xhr  = new XMLHttpRequest();
 
             xhr.onload = function(){
-                
+
                 this.responseText;
 
                 if (this.status == 200) {
@@ -72,8 +72,20 @@
                 switch (form.elements[i].nodeName) {
                 case 'INPUT':
                     switch (form.elements[i].type) {
-                    case 'text':
+                    case 'color':
+                    case 'date':
+                    case 'datetime':
+                    case 'datetime-local':
                     case 'email':
+                    case 'month':
+                    case 'number':
+                    case 'range':
+                    case 'search':
+                    case 'tel':
+                    case 'text':
+                    case 'time':
+                    case 'url':
+                    case 'week':
                     case 'hidden':
                     case 'password':
                     case 'button':
@@ -85,12 +97,12 @@
                     case 'radio':
                         if (form.elements[i].checked) {
                             q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
-                        }                       
+                        }
                         break;
                     case 'file':
                         break;
                     }
-                    break;           
+                    break;
                 case 'TEXTAREA':
                     q.push(form.elements[i].name + "=" + encodeURIComponent(form.elements[i].value));
                     break;
