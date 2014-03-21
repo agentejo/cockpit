@@ -117,7 +117,7 @@
                     });
 
                     $.each(data.files, function(index, file){
-                       $this.dirview.append($('<li class="uk-grid-margin"><div class="app-panel"><i class="uk-icon-file-o"></i><div class="uk-margin-small-top uk-text-truncate">'+file.name+'</div></div></li>').data(file));
+                       $this.dirview.append($('<li class="uk-grid-margin"><div class="app-panel"><i class="uk-icon-file-o" data-file="'+file.url+'"></i><div class="uk-margin-small-top uk-text-truncate">'+file.name+'</div></div></li>').data(file));
                     });
 
                     $this.caption.html('');
@@ -144,6 +144,18 @@
 
                 $this.mediapath = false;
                 $this.btnOk.attr("disabled", true);
+
+                setTimeout(function(){
+                    $this.dirview.find('[data-file]').each(function(){
+                        var element = $(this);
+
+                        if(element.data("file").match(/\.(jpg|jpeg|png|gif|svg)$/i)) {
+                            var $r = $('<div class="media-url-preview" style="background-image:url('+element.data("file")+');margin:0 auto;"></div>');
+
+                            element.replaceWith($r.css({width:element.width(),height:element.height()}));
+                        }
+                    })
+                }, 0);
 
             }, "json");
         }

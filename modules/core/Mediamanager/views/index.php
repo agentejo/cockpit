@@ -60,7 +60,7 @@
 
             <div class="uk-navbar-content">
                 <div class="uk-button-group">
-                    <button class="uk-button" data-ng-class="mode=='table' ? 'uk-button-primary':''" data-ng-click="(mode='table')" title="@lang('Table mode')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-list-alt"></i></button>
+                    <button class="uk-button" data-ng-class="mode=='table' ? 'uk-button-primary':''" data-ng-click="(mode='table')" title="@lang('Table mode')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-th-list"></i></button>
                     <button class="uk-button" data-ng-class="mode=='list' ? 'uk-button-primary':''" data-ng-click="(mode='list')" title="@lang('List mode')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-th"></i></button>
                 </div>
             </div>
@@ -104,7 +104,7 @@
                 <div class="app-panel">
                     <div class="mm-type mm-type-file">
                         <i class="uk-icon-file-o" media-preview="@@ file.url @@"></i>
-                        
+
                     </div>
                     <div class="app-panel-box docked-bottom uk-text-center">
                         <div class="uk-text-truncate mm-caption" title="@@ file.name @@"><a ng-click="open(file)">@@ file.name @@</a></div>
@@ -214,7 +214,7 @@
         cursor: pointer;
     }
 
-    
+
     .mm-type {
         position: relative;
         text-align: center;
@@ -237,7 +237,7 @@
     .mm-caption {
         text-align: center;
     }
-    
+
     ul .mm-actions { margin: 10px 0 0 0; }
 
     ul .mm-actions > li > a { color: #ccc; }
@@ -263,12 +263,6 @@
     }
 
     .mm-actions { cursor: pointer; }
-
-    .media-url-preview {
-        background-repeat:no-repeat;
-        background-position: 50% 50%;
-        background-size:contain;
-    }
 
     .media-dir .media-url-preview {
         height: 35px;
