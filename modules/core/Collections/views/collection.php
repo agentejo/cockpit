@@ -9,7 +9,6 @@
         <span ng-show="collection.name">@@ collection.name @@</span>
     </h1>
 
-
     <form class="uk-form" data-ng-submit="save()" data-ng-show="collection">
 
         <div class="uk-grid">
@@ -111,9 +110,9 @@
                         @lang('Order entries on list page'):
                     </p>
                     <select class="uk-width-1-1 uk-margin-bottom" data-ng-model="collection.sortfield">
+                        <option value="@@ field.name @@" data-ng-repeat="field in collection.fields">@@ field.name @@</option>
                         <option value="created">@lang('created')</option>
                         <option value="modified">@lang('modified')</option>
-                        <option value="@@ field.name @@" data-ng-repeat="field in collection.fields">@@ field.name @@</option>
                     </select>
                     <select class="uk-width-1-1" data-ng-model="collection.sortorder">
                         <option value="-1">@lang('descending')</option>
