@@ -99,25 +99,25 @@
 
 
                         <div class="uk-form-row">
-                            <button type="submit" class="uk-button uk-button-primary uk-button-large">@lang('Save gallery')</button> &nbsp; 
+                            <button type="submit" class="uk-button uk-button-primary uk-button-large">@lang('Save gallery')</button> &nbsp;
                             <a href="@route('/galleries')">@lang('Cancel')</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="uk-width-medium-1-5">
-                    
+
                     <div class="uk-form-row">
                         <strong>@lang("Group")</strong>
                         <select class="uk-width-1-1 uk-margin-small-top" data-ng-model="gallery.group">
-                            <option value="">- @lang("No group") -</option>
                             <option ng-repeat="group in groups" value="@@ group @@">@@ group @@</option>
+                            <option value="">- @lang("No group") -</option>
                         </select>
                     </div>
-                    
+
                     <div class="uk-form-row">
                         <strong>@lang("Meta fields")</strong>
-                        
+
                         <div class="uk-margin-small-top">
                             <ul class="uk-list uk-list-line uk-text-muted" ng-show="gallery.fields.length">
                                  <li data-ng-repeat="field in gallery.fields">

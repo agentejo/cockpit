@@ -233,8 +233,8 @@
 
                     <strong>@lang("Group")</strong>
                     <select class="uk-width-1-1" data-ng-model="region.group">
-                        <option value="">- @lang("No group") -</option>
                         <option ng-repeat="group in groups" value="@@ group @@">@@ group @@</option>
+                        <option value="">- @lang("No group") -</option>
                     </select>
                 </div>
           </div>
