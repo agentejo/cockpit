@@ -1,41 +1,53 @@
 # Changelog
 
 
+### 0.9.11  (Mar 22, 2014)
+
+    + image gallery field for collections
+    + composer support added (install cockpit via composer)
+    ^ assets update
+    ^ image previews in media picker
+    ^ added functionality for date picker + time picker fields
+    ^ language file updated + i18n improved @StevenDevooght
+    # MongoLite boolean query fix @StevenDevooght
+    # missing html5 input input types (form add-on / serialize)
+
+
 ### 0.9.10  (Mar 12, 2014)
-    
+
     ^ more assets cleanup + update
     ^ media manager list view updated
     + manage meta fields for each gallery
     # media manager empty folder fixed
 
 ### 0.9.9  (Mar 06, 2014)
-    
+
     ^ more assets cleanup
     ^ mediapicker reworked
 
 ### 0.9.8  (Mar 06, 2014)
-    
+
     ^ assets cleanup
     + autocomplete feature for code fields
     + markdown field added
     # Fixed get_registry api call
 
 ### 0.9.7  (Mar 02, 2014)
-    
+
     # Fixed login after first install
 
 ### 0.9.6  (Mar 01, 2014)
-    
+
     + Activity logger added
     # Fixed import images from folder (gallery addon)
 
 ### 0.9.5  (Mar 01, 2014)
-    
+
     ^ dashboard reworked
     ^ more code cleanup
 
 ### 0.9.4  (Feb 27, 2014)
-    
+
     + grouping for regions and galleries
     + batch remove for collection and form entries
     ^ minor updates
