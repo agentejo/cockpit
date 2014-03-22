@@ -16,6 +16,7 @@
 
 {{ $app->assets(['assets:angular/directives/wysiwyg.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:angular/directives/markdownarea.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:angular/directives/gallery.js'], $app['cockpit/version']) }}
 
 {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
 
@@ -92,6 +93,10 @@
 
                         <div data-ng-switch-when="markdown">
                             <markdown data-ng-model="entry[field.name]"></markdown>
+                        </div>
+
+                        <div data-ng-switch-when="gallery">
+                            <gallery data-ng-model="entry[field.name]"></gallery>
                         </div>
 
                         <div data-ng-switch-default>

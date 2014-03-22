@@ -225,7 +225,7 @@ class UtilArrayQuery {
                         $d .= '["'.$key.'"]';
                     }
 
-                    $fn[] = is_array($value) ? "\\MongoLite\\UtilArrayQuery::check((isset({$d}) ? {$d} : null), ".var_export($value, true).")": "(isset({$d}) && {$d}==".(is_string($value) ? "'{$value}'": $value).")";
+                    $fn[] = is_array($value) ? "\\MongoLite\\UtilArrayQuery::check((isset({$d}) ? {$d} : null), ".var_export($value, true).")": "(isset({$d}) && {$d}==".(is_string($value) ? "'{$value}'": var_export($value, true)).")";
             }
         }
 
