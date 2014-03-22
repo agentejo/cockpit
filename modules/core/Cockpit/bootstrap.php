@@ -31,7 +31,7 @@ $this->module("cockpit")->extend([
     },
 
     "get_registry" => function($key, $default=null) use($app) {
-        
+
         return $app->memory->hget("cockpit.api.registry", $key, $default);
     }
 ]);

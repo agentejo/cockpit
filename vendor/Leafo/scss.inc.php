@@ -1679,10 +1679,10 @@ class scssc {
 		case "keyword":
 			$name = $value[1];
 			if (isset(self::$cssColors[$name])) {
-				@list($r, $g, $b, $a) = explode(',', self::$cssColors[$name]);
-				return isset($a)
-					? array('color', (int) $r, (int) $g, (int) $b, (int) $a)
-					: array('color', (int) $r, (int) $g, (int) $b);
+				$rgba = explode(',', self::$cssColors[$name]);
+				return isset($rgba[3])
+					? array('color', (int) $rgba[0], (int) $rgba[1], (int) $rgba[2], (int) $rgba[3])
+					: array('color', (int) $rgba[0], (int) $rgba[1], (int) $rgba[2]);
 			}
 			return null;
 		}

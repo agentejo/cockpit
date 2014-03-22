@@ -5,7 +5,7 @@
 
     + image gallery field for collections
     + composer support added (install cockpit via composer)
-    ^ assets update
+    ^ assets + vendors updated
     ^ image previews in media picker
     ^ added functionality for date picker + time picker fields
     ^ language file updated + i18n improved @StevenDevooght
