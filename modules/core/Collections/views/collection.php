@@ -50,6 +50,7 @@
                                     <option value="time">Time</option>
                                     <option value="media">Media</option>
                                     <option value="gallery">Gallery</option>
+                                    <option value="tags">Tags</option>
                                 </select>
 
                                 <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="@lang('options...')" title="@lang('Separate different options by comma')" data-uk-tooltip>

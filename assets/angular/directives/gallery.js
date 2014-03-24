@@ -76,7 +76,7 @@
                         index = $container.children().index(item);
 
                     images.splice(index, 1);
-                    item.fadeOut(function(){ remove(); });
+                    item.fadeOut(function(){ item.remove(); });
 
                     updateSope();
                 });

@@ -12,6 +12,8 @@
 {{ $app->assets(['assets:vendor/tinymce/tinymce.min.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:angular/directives/wysiwyg.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:angular/directives/gallery.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:angular/directives/tags.js'], $app['cockpit/version']) }}
 
 {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
 
@@ -113,6 +115,8 @@
                                                    <option value="date">Date</option>
                                                    <option value="time">Time</option>
                                                    <option value="media">Media</option>
+                                                   <option value="gallery">Gallery</option>
+                                                   <option value="tags">Tags</option>
                                                </select>
 
                                                <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="@lang('options...')">
@@ -175,6 +179,14 @@
 
                                           <div data-ng-switch-when="time">
                                               <input class="uk-width-1-1 uk-form-large" type="text" data-uk-timepicker data-ng-model="region.fields[$index].value">
+                                          </div>
+
+                                          <div data-ng-switch-when="gallery">
+                                              <gallery data-ng-model="region.fields[$index].value"></gallery>
+                                          </div>
+
+                                          <div data-ng-switch-when="tags">
+                                              <tags data-ng-model="region.fields[$index].value"></tags>
                                           </div>
 
                                           <div data-ng-switch-default>

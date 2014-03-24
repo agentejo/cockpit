@@ -17,6 +17,7 @@
 {{ $app->assets(['assets:angular/directives/wysiwyg.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:angular/directives/markdownarea.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:angular/directives/gallery.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:angular/directives/tags.js'], $app['cockpit/version']) }}
 
 {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
 
@@ -138,6 +139,10 @@
 
                         <div data-ng-switch-when="time">
                             <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-uk-timepicker data-ng-model="entry[field.name]">
+                        </div>
+
+                        <div data-ng-switch-when="tags">
+                            <tags data-ng-model="entry[field.name]"></tags>
                         </div>
 
                         <div data-ng-switch-default>

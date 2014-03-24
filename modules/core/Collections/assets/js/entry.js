@@ -116,7 +116,7 @@
 
             if(area=="side"){
                 fields = $scope.collection.fields.filter(function(field){
-                    return ['select','date','time','media', 'boolean'].indexOf(field.type) > -1;
+                    return ['select','date','time','media','boolean','tags'].indexOf(field.type) > -1;
                 });
             }
 
