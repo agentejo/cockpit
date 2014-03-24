@@ -187,6 +187,7 @@
 
 <div id="mm-image-preview" class="uk-modal">
     <div class="uk-modal-dialog">
+        <a class="uk-modal-close uk-close"></a>
         <div class="modal-content uk-text-center"></div>
     </div>
 </div>
