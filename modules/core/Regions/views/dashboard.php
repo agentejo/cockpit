@@ -5,7 +5,7 @@
             @hasaccess?("Regions", 'create.regions')
             <a class="uk-button uk-button-success uk-button-small" href="@route('/regions/region')" title="@lang('Add region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
             @end
-            <a class="uk-button app-button-secondary uk-button-small" href="@route('/regions')" title="@lang('Show all regions')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-list"></i></a>
+            <a class="uk-button app-button-secondary uk-button-small" href="@route('/regions')" title="@lang('Show all regions')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-ellipsis-h"></i></a>
         </span>
     </div>
 

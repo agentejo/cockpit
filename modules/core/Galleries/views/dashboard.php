@@ -5,7 +5,7 @@
             @hasaccess?("Galleries", 'create.gallery')
             <a class="uk-button uk-button-success uk-button-small" href="@route('/galleries/gallery')" title="@lang('Add gallery')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
             @end
-            <a class="uk-button app-button-secondary uk-button-small" href="@route('/galleries')" title="@lang('Show all galleries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-list"></i></a>
+            <a class="uk-button app-button-secondary uk-button-small" href="@route('/galleries')" title="@lang('Show all galleries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-ellipsis-h"></i></a>
         </span>
     </div>
 
