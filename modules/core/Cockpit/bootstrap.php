@@ -6,10 +6,11 @@ $app['app.assets.base'] = [
     'assets:vendor/angular.js',
     'assets:vendor/storage.js',
     'assets:vendor/i18n.js',
+
+    // UIkit
+    'cockpit:assets/css/uikit.cockpit.min.css',
     'assets:vendor/uikit/js/uikit.min.js',
-    'assets:vendor/uikit/css/uikit.min.css',
-    'assets:vendor/uikit/addons/notify/notify.min.js',
-    'assets:vendor/uikit/addons/notify/notify.almost-flat.min.css'
+    'assets:vendor/uikit/js/addons/notify.min.js'
 ];
 
 
@@ -85,9 +86,10 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
     $app["cockpit"] = json_decode($app->helper("fs")->read("#root:package.json"), true);
 
     $assets = array_merge([
+        'assets:vendor/uikit/js/addons/autocomplete.min.js',
+        'assets:vendor/uikit/js/addons/search.min.js',
         'cockpit:assets/js/app.js',
         'cockpit:assets/js/app.module.js',
-        'cockpit:assets/css/app.less',
         'cockpit:assets/js/bootstrap.js',
     ], $app->retrieve('app.config/app.assets.backend', []));
 
