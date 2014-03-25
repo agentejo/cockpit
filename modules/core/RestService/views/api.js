@@ -3,8 +3,11 @@
     var Cockpit = {
         token  : '{{ $token }}',
         apiurl : '@route('/rest/api')',
+        pathToUrl: function(path) {
+            return String(path).replace("site:", "{{ $app->pathToUrl('site:') }}");
+        },
         request: function(route, params, type){
-            
+
             type   = type || 'auto';
             params = params || {};
 
@@ -33,7 +36,7 @@
                 };
 
             xhr.onload = function(){
-                
+
                 ret._r   = this.responseText;
                 ret._req = this;
 

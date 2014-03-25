@@ -29,12 +29,17 @@
             $input.on("keydown", function(e) {
 
                 if (e.which && e.which == 13) {
-                    tags.push($input.val());
+
+                    var tag = $input.val().trim();
+
+                    if(tags.indexOf(tag) === -1 ) {
+                        tags.push(tag);
+                        updateSope();
+                        renderTags();
+                    }
 
                     e.preventDefault();
                     $input.val("");
-                    updateSope();
-                    renderTags();
                 }
 
             });
