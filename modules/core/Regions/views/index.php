@@ -40,7 +40,7 @@
 
                 <ul id="groups-list" class="uk-nav uk-nav-side uk-animation-fade" ng-show="groups.length">
                     <li ng-repeat="group in groups" ng-class="$parent.activegroup==group ? 'uk-active':''" ng-click="($parent.activegroup=group)" draggable="true">
-                        <a><i class="uk-icon-bars"></i> @@ group @@</a>
+                        <a><i class="uk-icon-bars" style="cursor:move;"></i> @@ group @@</a>
                         @hasaccess?("Regions", 'create.regions')
                         <ul class="uk-subnav group-actions uk-animation-slide-right">
                             <li><a href="#" ng-click="editGroup(group, $index)"><i class="uk-icon-pencil"></i></a></li>
