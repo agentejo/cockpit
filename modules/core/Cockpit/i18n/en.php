@@ -143,6 +143,7 @@ return [
     'Folder' => '',
     'Files' => '',
     'File' => '',
+    'Upload files' => '',
     'You have nothing bookmarked.' => '',
     'Table mode' => '',
     'List mode' => '',
@@ -162,6 +163,7 @@ return [
     'Size' => '',
     'Last modified' => '',
     'This folder is empty.' => '',
+    'File(s) uploaded.' => '',
     'Save file' => '',
     'Close file' => '',
     'Do you really want to remove %s ?' => '',
@@ -239,7 +241,6 @@ return [
     'Form data' => '',
 
     // Galleries
-
     'Galleries' => '',
     'Gallery' => '',
     'You don\'t have any galleries created.' => '',

@@ -1,7 +1,9 @@
 {{ $app->assets(['assets:vendor/codemirror/codemirror.js','assets:vendor/codemirror/codemirror.css','assets:vendor/codemirror/pastel-on-dark.css'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/ajaxupload.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:vendor/loadie/jquery.loadie.js', 'assets:vendor/loadie/loadie.css'], $app['cockpit/version']) }}
+
+{{ $app->assets(['assets:vendor/uikit/js/addons/upload.min.js']) }}
+
 {{ $app->assets(['mediamanager:assets/js/index.js'], $app['cockpit/version']) }}
 
 {{ $app->assets(['assets:angular/directives/mediapreview.js'], $app['cockpit/version']) }}
@@ -38,13 +40,16 @@
             </li>
             <li><a href="" ng-click="action('createfolder')"><i class="uk-icon-plus-circle"></i>&nbsp; @lang('Folder')</a></li>
             <li><a href="" ng-click="action('createfile')"><i class="uk-icon-plus-circle"></i>&nbsp; @lang('File')</a></li>
-            <li class="media-upload-button">
-                <a><i class="uk-icon-upload"></i>&nbsp; </a>
-                <form id="frmMediaUpload" action="">
-                    <input type="file" name="files[]" onchange="jQuery(this.form).trigger('submit')" multiple="true">
-                </form>
-            </li>
         </ul>
+
+        <div class="uk-navbar-flip">
+            <div class="uk-navbar-content">
+                <button class="uk-button uk-form-file" data-uk-tooltip title="@lang('Upload files')">
+                    <input id="js-upload-select" type="file" multiple="true" title="">
+                    <i class="uk-icon-upload"></i>
+                </button>
+            </div>
+        </div>
     </div>
     <br>
     <div class="app-panel">
@@ -215,7 +220,6 @@
         cursor: pointer;
     }
 
-
     .mm-type {
         position: relative;
         text-align: center;
@@ -242,22 +246,6 @@
     ul .mm-actions { margin: 10px 0 0 0; }
 
     ul .mm-actions > li > a { color: #ccc; }
-
-    .media-upload-button {
-        position: relative;
-        overflow: hidden;
-        cursor: pointer;
-    }
-    .media-upload-button form {
-        opacity: 0;
-        position: absolute;
-        padding: 0;
-        margin: 0;
-        top:0;
-        left:0;
-        font-size: 500px;
-    }
-    .media-upload-button * { cursor: pointer; }
 
     .media-dir .uk-icon-folder-o, .media-table .uk-icon-folder-o {
         color: #999;

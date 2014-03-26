@@ -24,7 +24,7 @@
         ].join('')).appendTo('body');
 
 
-        App.assets.require(['assets/vendor/ajaxupload.js'], function(){
+        App.assets.require($.UIkit.Utils.xhrupload ? [] : ['assets/vendor/uikit/js/addons/upload.min.js'], function(){
 
             var uploadsettings = {
                     "action": App.route('/mediamanager/api'),
@@ -41,13 +41,29 @@
                     },
                     "allcomplete": function(){
                         $this.loadPath($this.currentpath);
-                    },
-                    "complete": function(res){
-
                     }
                 };
 
-            modal.uploadOnDrag(uploadsettings);
+            modal.on("drop", function(e){
+
+                if (e.dataTransfer && e.dataTransfer.files) {
+
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    $.UIkit.Utils.xhrupload(e.dataTransfer.files, uploadsettings);
+                }
+
+            }).on("dragenter", function(e){
+                    e.stopPropagation();
+                    e.preventDefault();
+            }).on("dragover", function(e){
+                    e.stopPropagation();
+                    e.preventDefault();
+            }).on("dragleave", function(e){
+                    e.stopPropagation();
+                    e.preventDefault();
+            });
         });
 
 

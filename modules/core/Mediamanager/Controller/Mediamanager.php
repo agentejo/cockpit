@@ -7,7 +7,7 @@ class Mediamanager extends \Cockpit\Controller {
 	protected $root;
 
 	public function index(){
-		
+
         if(!$this->app->module("auth")->hasaccess("Mediamanager","manage")) return false;
 
         return $this->render("mediamanager:views/index.php");
@@ -89,10 +89,11 @@ class Mediamanager extends \Cockpit\Controller {
 
     protected function upload() {
 
-        $files      = isset($_FILES['files']) ? $_FILES['files'] : array();
+        $files      = isset($_FILES['files']) ? $_FILES['files'] : [];
         $path       = $this->param('path', false);
         $targetpath = $this->root.'/'.trim($path, '/');
-        $uploaded   = array();
+        $uploaded   = [];
+
 
         if (isset($files['name']) && $path && file_exists($targetpath)) {
             for ($i = 0; $i < count($files['name']); $i++) {

@@ -351,30 +351,55 @@
 
             loadPath(currentpath);
 
+
+            // upload
+
             var progessbar     = $('body').loadie(),
                 uploadsettings = {
-                    "action": apiurl,
-                    "single": true,
-                    "params": {"cmd":"upload"},
-                    "before": function(o) {
-                        o.params["path"] = currentpath;
+
+                    action: apiurl,
+                    params: {"cmd":"upload"},
+                    before: function(options) {
+                        options.params.path = currentpath;
                     },
-                    "loadstart": function(){
+                    loadstart: function() {
 
                     },
-                    "progress": function(percent){
-                        progessbar.loadie(percent/100);
+                    progress: function(percent) {
+                        progessbar.loadie(Math.ceil(percent)/100);
                     },
-                    "allcomplete": function(){
+                    allcomplete: function(response) {
+
+                        App.notify(App.i18n.get("File(s) uploaded."), "success");
+
                         loadPath(currentpath);
-                    },
-                    "complete": function(res){
-
                     }
-                };
+            };
 
-            $("body").uploadOnDrag(uploadsettings);
-            $("#frmMediaUpload").ajaxform(uploadsettings);
+            var uploadselect = new $.UIkit.upload.select($('#js-upload-select'), uploadsettings);
+
+            $("body").on("drop", function(e){
+
+                if (e.dataTransfer && e.dataTransfer.files) {
+
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    $.UIkit.Utils.xhrupload(e.dataTransfer.files, uploadsettings);
+                }
+
+            }).on("dragenter", function(e){
+                    e.stopPropagation();
+                    e.preventDefault();
+            }).on("dragover", function(e){
+                    e.stopPropagation();
+                    e.preventDefault();
+            }).on("dragleave", function(e){
+                    e.stopPropagation();
+                    e.preventDefault();
+            });
+
+            // bookmarks
 
             $("#mmbookmarks").on("dragend", "a[draggable]", function(e){
                 e.stopPropagation();
