@@ -1,8 +1,7 @@
 {{ $app->assets(['collections:assets/collections.js','collections:assets/js/entry.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/uikit/addons/timepicker/timepicker.min.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/uikit/addons/datepicker/datepicker.min.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/uikit/addons/datepicker/datepicker.almost-flat.min.css'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/js/addons/timepicker.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/js/addons/datepicker.min.js'], $app['cockpit/version']) }}
 
 {{ $app->assets(['assets:vendor/codemirror/codemirror.js','assets:vendor/codemirror/codemirror.css','assets:vendor/codemirror/pastel-on-dark.css'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:angular/directives/codearea.js'], $app['cockpit/version']) }}
@@ -10,7 +9,7 @@
 {{ $app->assets(['assets:vendor/tinymce/tinymce.min.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/uikit/addons/markdownarea/markdownarea.almost-flat.min.css','assets:vendor/uikit/addons/markdownarea/markdownarea.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/js/addons/markdownarea.min.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:vendor/marked.js'], $app['cockpit/version']) }}
 
 
