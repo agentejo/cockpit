@@ -5,7 +5,6 @@
     <title>Cockpit installation</title>
     <link rel="icon" href="../assets/images/favicon.ico" type="image/x-icon">
     <script src="../assets/vendor/jquery.js"></script>
-    <link rel="stylesheet" href="../assets/vendor/uikit/css/uikit.min.css">
     <script src="../assets/vendor/uikit/js/uikit.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>

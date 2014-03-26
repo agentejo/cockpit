@@ -7,7 +7,7 @@
 {{ $app->assets(['assets:angular/directives/mediapreview.js'], $app['cockpit/version']) }}
 
 
-<div class="app-wrapper" data-ng-controller="mediamanager" ng-cloak>
+<div data-ng-controller="mediamanager" ng-cloak>
 
     <div class="uk-navbar">
         <span class="uk-navbar-brand">@lang('Mediamanager')</span>
