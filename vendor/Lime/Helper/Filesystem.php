@@ -71,7 +71,7 @@ class Filesystem extends \Lime\Helper {
 
         if (strpos($path, ':') !== false) {
             list($namespace, $additional) = explode(":", $path, 2);
-            $dir = $this->app->path("{$namspace}:").$additional;
+            $dir = $this->app->path("{$namespace}:").$additional;
         } else {
             $dir = $path;
         }
@@ -95,7 +95,7 @@ class Filesystem extends \Lime\Helper {
             }
         } elseif (is_dir($path)) {
             foreach (new \FilesystemIterator($path) as $item) {
-                $this->delete($item);
+                $this->delete($item->getRealPath());
             }
             if (!@rmdir($path)) {
                 throw new \Exception("Unable to delete directory: {$path}.");

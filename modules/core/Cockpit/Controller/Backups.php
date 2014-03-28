@@ -25,6 +25,8 @@ class Backups extends \Cockpit\Controller {
 
     public function create() {
 
+        set_time_limit(0);
+
         $timestamp  = time();
         $filename   = $timestamp.'.zip';
         $rootfolder = $this->app->path("site:");

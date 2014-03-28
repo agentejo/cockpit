@@ -46,11 +46,11 @@ $this->module("auth")->extend([
     },
 
     "hasaccess" => function($resource, $action) use($app) {
-        
+
         $user = $app("session")->read("cockpit.app.auth");
 
         if(isset($user["group"])) {
-            
+
             if($user["group"]=='admin') return true;
             if($app("acl")->hasaccess($user["group"], $resource, $action)) return true;
         }
@@ -58,11 +58,11 @@ $this->module("auth")->extend([
         return false;
     },
 
-    "get_group_setting" => function($setting, $default = null) use($app) {
+    "getGroupSetting" => function($setting, $default = null) use($app) {
 
         if($user = $app("session")->read("cockpit.app.auth", null)) {
             if(isset($user["group"])) {
-                
+
                 $settings = $app["cockpit.acl.groups.settings"];
 
                 return isset($settings[$user["group"]][$setting]) ? $settings[$user["group"]][$setting] : $default;

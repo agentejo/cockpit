@@ -36,7 +36,7 @@ class Mediamanager extends \Cockpit\Controller {
     public function api() {
 
         $cmd       = $this->param("cmd", false);
-        $mediapath = trim($this->module("auth")->get_group_setting("media.path", '/'), '/');
+        $mediapath = trim($this->module("auth")->getGroupSetting("media.path", '/'), '/');
 
         $this->root = rtrim($this->app->path("site:{$mediapath}"), '/');
 

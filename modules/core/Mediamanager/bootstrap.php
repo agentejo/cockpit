@@ -94,8 +94,8 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
 
 
     $app->on("app.layout.header", function() use($app){
-        
-        $mediapath = trim($app->module("auth")->get_group_setting("media.path", '/'), '/');
+
+        $mediapath = trim($app->module("auth")->getGroupSetting("media.path", '/'), '/');
 
         ?>
             <script>
