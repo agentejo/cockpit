@@ -9,7 +9,7 @@ class HistoryLogger extends \Lime\Helper {
         $options = array_merge([
             "from"  => false,
             "to"    => false,
-            "limit" => 20,
+            "limit" => 10,
             "order" => ["time" => -1]
         ], $options);
 

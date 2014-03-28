@@ -24,7 +24,7 @@ class Auth extends \LimeExtra\Controller {
             ]);
 
             if($this->req_is('ajax')) {
-                return $user ? '{"success":1}' : '{"success":0}';
+                return $user ? json_encode(["success" => true, "user" => $user, "avatar"=> md5($user["email"])]) : '{"success":0}';
             } else {
                 $this->reroute('/');
             }

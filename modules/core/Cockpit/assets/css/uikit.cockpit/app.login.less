@@ -1,0 +1,31 @@
+.app-login-box {
+     margin-top: 10%;
+     width: 350px;
+     max-width: 100%;
+     margin: 10% auto 100px auto;
+
+    & > div {
+        margin: 20px;
+        border-radius: 3px;
+        box-shadow: 0 1px 2px rgba(114, 121, 135, 0.25), 0 8px 14px rgba(114, 121, 135, 0.2);
+        background: rgba(255, 255, 255, 1);
+        padding: 30px;
+    }
+}
+
+.app-login-logo {
+    position: relative;
+
+    .uk-icon-spinner {
+        position: absolute;
+        display: block;
+        text-align: text-center;
+        top: 50%;
+        width: 100%;
+        visibility: hidden;
+    }
+}
+.app-loading .app-login-logo {
+    img { visibility: hidden; }
+    .uk-icon-spinner { visibility: visible; }
+}
