@@ -76,13 +76,29 @@ class Api extends \Cockpit\Controller {
                 // override
                 case 3:
 
+                    $success = false;
+
                     if ($folder = $this->app->path("tmp:{$version}")) {
 
+                        $distroot = false;
 
+                        // find cockpit root
+                        foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folder)) as $file) {
+                            if($file->getFilename() == 'package.json') {
+                                $distroot = dirname($file->getRealPath());
+                                break;
+                            }
+                        }
+
+                        if ($distroot) {
+                            $this->app->helper("fs")->copy($distroot, '#root:');
+                        }
+
+                        $success = $distroot ? true : false;
 
                     }
 
-                    return '{"success": true}';
+                    return json_encode(["success" => $success]);
 
                     break;
 

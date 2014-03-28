@@ -34,7 +34,7 @@
                 @lang('You\'re running the latest version.')
             </p>
             <p>
-                <button class="uk-button uk-button-primary" ng-click="installCurrent()">@lang('Re-Install')</button>
+                <button class="uk-button uk-button-large uk-button-primary" ng-click="installCurrent()"><i class="uk-icon-refresh"></i> &nbsp; @lang('Re-Install')</button>
             </p>
         </div>
 
@@ -47,7 +47,7 @@
                 @lang('A newer version exists.')
             </p>
             <p>
-                <button class="uk-button uk-button-primary" ng-click="installCurrent()">@lang('Update')</button>
+                <button class="uk-button uk-button-large uk-button-primary" ng-click="installCurrent()"><i class="uk-icon-magic"></i> &nbsp; @lang('Update now')</button>
             </p>
         </div>
 
