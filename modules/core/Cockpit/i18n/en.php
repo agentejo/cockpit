@@ -55,6 +55,7 @@ return [
     'Authenticate Please!' => '',
     'Authenticate' => '',
     'Login failed' => '',
+    'Welcome back!' => '',
 
     // Accounts
     'Account'  => '',

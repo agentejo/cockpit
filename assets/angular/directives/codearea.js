@@ -43,6 +43,7 @@
                     lineNumbers: true,
                     styleActiveLine: true,
                     matchBrackets: true,
+                    matchTags: true,
                     autoCloseBrackets: true,
                     autoCloseTags: true,
                     mode: 'text',
