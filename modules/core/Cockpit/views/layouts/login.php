@@ -42,7 +42,7 @@
                                                     location.href = $("html").data("route");
                                                 }, 500);
 
-                                            }, 250);
+                                            }, 550);
 
                                         }else{
 
@@ -86,11 +86,11 @@
                         <button class="uk-button uk-button-large uk-button-primary uk-width-1-1">@lang('Authenticate')</button>
                     </div>
                 </form>
-                <div id="profile" class="uk-text-center uk-hidden">
+                <div id="profile" class="uk-text-center uk-animation-fade uk-hidden">
                     <p>
                         <div class="uk-thumbnail uk-rounded"><img alt="avatar" width="60" height="60" style="width:60px;height:60px;"></div>
                     </p>
-                    <span class="uk-text-large"></span>
+                    <p class="uk-text-large"><strong>@lang('Welcome back!')</strong></p>
                 </div>
             </div>
         </div>
