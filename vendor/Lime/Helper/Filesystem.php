@@ -64,7 +64,7 @@ class Filesystem extends \Lime\Helper {
 
         $args[0] = $this->app->path($args[0]);
 
-        return call_user_func_array('file_get_contents', $args);
+        return call_user_func_array('file_put_contents', $args);
     }
 
     public function mkdir($path, $mode = 0755) {

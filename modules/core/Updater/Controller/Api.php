@@ -91,7 +91,7 @@ class Api extends \Cockpit\Controller {
                         }
 
                         if ($distroot) {
-                            $this->app->helper("fs")->copy($distroot, '#root:');
+                            $this->app->helper("fs")->copy($distroot, $this->app->path('#root:'));
                         }
 
                         $success = $distroot ? true : false;
