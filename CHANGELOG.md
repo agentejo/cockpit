@@ -1,6 +1,15 @@
 # Changelog
 
 
+### 0.9.12  (Apr 03, 2014)
+
+    + Added tags field
+    + Added entries pagination (load more)
+    + Replaced Less parser lib to support less 1.7.0
+    + Added pathToUrl to Cockpit.js
+    ^ Updated vendor + assets libs
+    # Fixed entries sorting
+
 ### 0.9.11  (Mar 22, 2014)
 
     + image gallery field for collections
@@ -11,7 +20,6 @@
     ^ language file updated + i18n improved @StevenDevooght
     # MongoLite boolean query fix @StevenDevooght
     # missing html5 input input types (form add-on / serialize)
-
 
 ### 0.9.10  (Mar 12, 2014)
 
