@@ -9,16 +9,6 @@
             return field.lst;
         });
 
-        $http.post(App.route("/api/collections/entries"), {
-
-            "collection": angular.copy($scope.collection)
-
-        }, {responseType:"json"}).success(function(data){
-
-            if(data) $scope.entries = data;
-
-        }).error(App.module.callbacks.error.http);
-
         $scope.remove = function(index, entryId){
             App.Ui.confirm(App.i18n.get("Are you sure?"), function(){
 
@@ -37,6 +27,37 @@
                     }, 0);
                 }).error(App.module.callbacks.error.http);
             });
+        };
+
+        $scope.loadmore = function() {
+
+            var limit = 25;
+
+            $http.post(App.route("/api/collections/entries"), {
+
+                "collection": angular.copy($scope.collection),
+                "limit": limit,
+                "skip": $scope.entries ? $scope.entries.length : 0
+
+            }, {responseType:"json"}).success(function(data){
+
+                if(data && data.length) {
+
+                    if(!$scope.entries) {
+                        $scope.entries = [];
+                    }
+
+                    if(data.length < limit) {
+                        $scope.nomore = true;
+                    }
+
+                    $scope.entries = $scope.entries.concat(data);
+
+                } else {
+                    $scope.nomore = true;
+                }
+
+            }).error(App.module.callbacks.error.http);
         };
 
         // batch actions
@@ -92,6 +113,8 @@
             cbAll.prop("checked", false);
             updateSelected();
         });
+
+        $scope.loadmore();
     });
 
 })(jQuery);

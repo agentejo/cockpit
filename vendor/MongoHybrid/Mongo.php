@@ -64,7 +64,7 @@ class Mongo {
 
         if($limit) $cursor->limit($limit);
         if($sort)  $cursor->sort($sort);
-        if($skip)  $cursor->sort($skip);
+        if($skip)  $cursor->skip($skip);
 
         $docs = array_values(iterator_to_array($cursor));
 

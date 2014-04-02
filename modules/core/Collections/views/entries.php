@@ -78,6 +78,7 @@
                 </table>
 
                 <div class="uk-margin-top">
+                    <button class="uk-button uk-button-primary" data-ng-click="loadmore()" data-ng-show="entries && !nomore">@lang('Load more...')</button>
                     <button class="uk-button uk-button-danger" data-ng-click="removeSelected()" data-ng-show="selected.length"><i class="uk-icon-trash-o"></i> @lang('Delete entries')</button>
                 </div>
 

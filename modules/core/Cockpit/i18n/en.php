@@ -136,6 +136,7 @@ return [
     'Collection saved!' => '',
     'Entry removed' => '',
     'Entry saved!' => '',
+    'Load more...' => '',
 
     // Mediamanager
     'Mediamanager' => '',

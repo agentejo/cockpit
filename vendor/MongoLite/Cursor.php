@@ -21,7 +21,7 @@ class Cursor implements \Iterator{
      * @var Collection object
      */
     protected $collection;
-    
+
     /**
      * @var string|null
      */
@@ -44,9 +44,9 @@ class Cursor implements \Iterator{
 
     /**
      * Constructor
-     * 
+     *
      * @param object $collection
-     * @param mixed $criteria  
+     * @param mixed $criteria
      */
     public function __construct($collection, $criteria) {
         $this->collection = $collection;
@@ -55,26 +55,26 @@ class Cursor implements \Iterator{
 
     /**
      * Documents count
-     * 
+     *
      * @return integer
      */
     public function count() {
-        
+
         if (!$this->criteria) {
-            
+
             $stmt = $this->collection->database->connection->query("SELECT COUNT(*) AS C FROM ".$this->collection->name);
 
         } else {
 
             $sql = array('SELECT COUNT(*) AS C FROM '.$this->collection->name);
-            
+
             $sql[] = 'WHERE document_criteria("'.$this->criteria.'", document)';
 
             if ($this->limit) {
                 $sql[] = 'LIMIT '.$this->limit;
             }
 
-            $stmt = $this->collection->database->connection->query(implode(" ", $sql));    
+            $stmt = $this->collection->database->connection->query(implode(" ", $sql));
         }
 
         $res  = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -84,7 +84,7 @@ class Cursor implements \Iterator{
 
     /**
      * Set limit
-     * 
+     *
      * @param  mixed $limit
      * @return object       Cursor
      */
@@ -97,12 +97,12 @@ class Cursor implements \Iterator{
 
     /**
      * Set sort
-     * 
+     *
      * @param  mixed $sorts
      * @return object       Cursor
      */
     public function sort($sorts) {
-        
+
         $this->sort = $sorts;
 
         return $this;
@@ -110,12 +110,12 @@ class Cursor implements \Iterator{
 
     /**
      * Set skip
-     * 
+     *
      * @param  mixed $skip
      * @return object       Cursor
      */
     public function skip($skip) {
-        
+
         $this->skip = $skip;
 
         return $this;
@@ -123,12 +123,12 @@ class Cursor implements \Iterator{
 
     /**
      * Loop through result set
-     * 
+     *
      * @param  mixed $callable
      * @return object
      */
     public function each($callable) {
-        
+
         foreach ($this->rewind() as $document) {
             $callable($document);
         }
@@ -138,7 +138,7 @@ class Cursor implements \Iterator{
 
     /**
      * Get documents matching criteria
-     * 
+     *
      * @return array
      */
     public function toArray() {
@@ -148,7 +148,7 @@ class Cursor implements \Iterator{
 
     /**
      * Get documents matching criteria
-     * 
+     *
      * @return array
      */
     protected function getData() {
@@ -156,12 +156,12 @@ class Cursor implements \Iterator{
         $sql = array('SELECT document FROM '.$this->collection->name);
 
         if ($this->criteria) {
-            
+
             $sql[] = 'WHERE document_criteria("'.$this->criteria.'", document)';
         }
 
         if ($this->sort) {
-            
+
             $orders = array();
 
             foreach ($this->sort as $field => $direction) {
@@ -194,7 +194,7 @@ class Cursor implements \Iterator{
      * Iterator implementation
      */
     public function rewind() {
-        
+
         if($this->position!==false) {
             $this->position = 0;
         }
@@ -214,7 +214,7 @@ class Cursor implements \Iterator{
     }
 
     public function valid() {
-        
+
         if($this->position===false) {
             $this->data     = $this->getData();
             $this->position = 0;

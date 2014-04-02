@@ -45,7 +45,7 @@ class MongoLite {
 
         if($limit) $cursor->limit($limit);
         if($sort)  $cursor->sort($sort);
-        if($skip)  $cursor->sort($skip);
+        if($skip)  $cursor->skip($skip);
 
         return $cursor->toArray();
     }
