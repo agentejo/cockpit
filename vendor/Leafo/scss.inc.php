@@ -318,35 +318,40 @@ class scssc {
 
 	protected function compileMedia($media) {
 		$this->pushEnv($media);
-		$parentScope = $this->mediaParent($this->scope);
 
-		$this->scope = $this->makeOutputBlock("media", array(
-			$this->compileMediaQuery($this->multiplyMedia($this->env)))
-		);
+		$mediaQuery = $this->compileMediaQuery($this->multiplyMedia($this->env));
 
-		$parentScope->children[] = $this->scope;
+		if (!empty($mediaQuery)) {
 
-		// top level properties in a media cause it to be wrapped
-		$needsWrap = false;
-		foreach ($media->children as $child) {
-			$type = $child[0];
-			if ($type !== 'block' && $type !== 'media' && $type !== 'directive') {
-				$needsWrap = true;
-				break;
+			$this->scope = $this->makeOutputBlock("media", array($mediaQuery));
+
+			$parentScope = $this->mediaParent($this->scope);
+
+			$parentScope->children[] = $this->scope;
+
+			// top level properties in a media cause it to be wrapped
+			$needsWrap = false;
+			foreach ($media->children as $child) {
+				$type = $child[0];
+				if ($type !== 'block' && $type !== 'media' && $type !== 'directive') {
+					$needsWrap = true;
+					break;
+				}
 			}
+
+			if ($needsWrap) {
+				$wrapped = (object)array(
+					"selectors" => array(),
+					"children" => $media->children
+				);
+				$media->children = array(array("block", $wrapped));
+			}
+
+			$this->compileChildren($media->children, $this->scope);
+
+			$this->scope = $this->scope->parent;
 		}
 
-		if ($needsWrap) {
-			$wrapped = (object)array(
-				"selectors" => array(),
-				"children" => $media->children
-			);
-			$media->children = array(array("block", $wrapped));
-		}
-
-		$this->compileChildren($media->children, $this->scope);
-
-		$this->scope = $this->scope->parent;
 		$this->popEnv();
 	}
 
@@ -500,11 +505,19 @@ class scssc {
 		$out = "@media";
 		$first = true;
 		foreach ($queryList as $query){
+			$type = null;
 			$parts = array();
 			foreach ($query as $q) {
 				switch ($q[0]) {
 					case "mediaType":
-						$parts[] = implode(" ", array_map(array($this, "compileValue"), array_slice($q, 1)));
+						if ($type) {
+							$type = $this->mergeMediaTypes($type, array_map(array($this, "compileValue"), array_slice($q, 1)));
+							if (empty($type)) { // merge failed
+								return null;
+							}
+						} else {
+							$type = array_map(array($this, "compileValue"), array_slice($q, 1));
+						}
 						break;
 					case "mediaExp":
 						if (isset($q[2])) {
@@ -514,6 +527,9 @@ class scssc {
 						}
 						break;
 				}
+			}
+			if ($type) {
+				array_unshift($parts, implode(' ', array_filter($type)));
 			}
 			if (!empty($parts)) {
 				if ($first) {
@@ -526,6 +542,50 @@ class scssc {
 			}
 		}
 		return $out;
+	}
+
+	protected function mergeMediaTypes($type1, $type2) {
+		if (empty($type1)) {
+			return $type2;
+		}
+		if (empty($type2)) {
+			return $type1;
+		}
+		$m1 = '';
+		$t1 = '';
+		if (count($type1) > 1) {
+			$m1= strtolower($type1[0]);
+			$t1= strtolower($type1[1]);
+		} else {
+			$t1 = strtolower($type1[0]);
+		}
+		$m2 = '';
+		$t2 = '';
+		if (count($type2) > 1) {
+			$m2 = strtolower($type2[0]);
+			$t2 = strtolower($type2[1]);
+		} else {
+			$t2 = strtolower($type2[0]);
+		}
+		if (($m1 == 'not') ^ ($m2 == 'not')) {
+			if ($t1 == $t2) {
+				return null;
+			}
+			return array(
+				$m1 == 'not' ? $m2 : $m1,
+				$m1 == 'not' ? $t2 : $t1
+			);
+		} elseif ($m1 == 'not' && $m2 == 'not') {
+			# CSS has no way of representing "neither screen nor print"
+			if ($t1 != $t2) {
+				return null;
+			}
+			return array('not', $t1);
+		} elseif ($t1 != $t2) {
+			return null;
+		} else { // t1 == t2, neither m1 nor m2 are "not"
+			return array(empty($m1)? $m2 : $m1, $t1);
+		}
 	}
 
 	// returns true if the value was something that could be imported
