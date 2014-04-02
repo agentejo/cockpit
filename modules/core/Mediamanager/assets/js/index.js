@@ -114,11 +114,14 @@
 
             switch(ext) {
                 case 'css':
-                case 'less':
                 case 'sql':
                 case 'xml':
                 case 'markdown':
                     mode = ext;
+                    break;
+                case 'less':
+                case 'scss':
+                    mode = 'css';
                     break;
                 case 'js':
                 case 'json':

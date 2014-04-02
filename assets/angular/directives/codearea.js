@@ -79,6 +79,10 @@
                       case 'php':
                           opts.mode = 'application/x-httpd-php';
                           break;
+                      case 'less':
+                      case 'scss':
+                          mode = 'css';
+                          break;
                   }
 
                   codeMirror = CodeMirror.fromTextArea(elm[0], opts);
