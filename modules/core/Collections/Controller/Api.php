@@ -77,6 +77,11 @@ class Api extends \Cockpit\Controller {
             $col     = "collection".$collection["_id"];
             $options = [];
 
+            if($collection["sortfield"] && $collection["sortorder"]) {
+                $options["sort"] = [];
+                $options["sort"][$collection["sortfield"]] = $collection["sortorder"];
+            }
+
             if($filter = $this->param("filter", null)) $options["filter"] = $filter;
             if($limit  = $this->param("limit", null))  $options["limit"] = $limit;
             if($sort   = $this->param("sort", null))   $options["sort"] = $sort;
