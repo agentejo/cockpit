@@ -117,7 +117,7 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
     $app->bindClass("Cockpit\\Controller\\Backups", "backups");
 
     //global search
-    $app->bind("/cockpit-globsearch", function() use($app){
+    $app->bind("/cockpit-globalsearch", function() use($app){
 
         $query = $app->param("search", false);
         $list  = new \ArrayObject([]);

@@ -68,6 +68,7 @@
 
                             setTimeout(function(){
                                 info.close();
+                                location.href = App.route("/");
                             }, 300);
 
                         }).error(App.module.callbacks.error.http);
