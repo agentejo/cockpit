@@ -238,9 +238,14 @@ class UtilArrayQuery {
         if(is_null($value)) return false;
 
         $keys  = array_keys($condition);
-        $func  = $keys[0];
 
-        return self::evaluate($func, $value, $condition[$func]);
+        foreach ($keys as &$key) {
+            if(!self::evaluate($key, $value, $condition[$key])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static function evaluate($func, $a, $b) {
