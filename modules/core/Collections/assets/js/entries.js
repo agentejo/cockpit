@@ -41,20 +41,24 @@
 
             }, {responseType:"json"}).success(function(data){
 
-                if(data && data.length) {
+                if(data) {
 
                     if(!$scope.entries) {
                         $scope.entries = [];
                     }
 
-                    if(data.length < limit) {
-                        $scope.nomore = true;
+                    if(data.length) {
+
+                        if(data.length < limit) {
+                            $scope.nomore = true;
+                        }
+
+                        $scope.entries = $scope.entries.concat(data);
+
+                    } else {
+                       $scope.nomore = true;
                     }
 
-                    $scope.entries = $scope.entries.concat(data);
-
-                } else {
-                    $scope.nomore = true;
                 }
 
             }).error(App.module.callbacks.error.http);
