@@ -21,9 +21,18 @@
             @end
             <li><a href="@route('/collections/entry/'.$collection["_id"])" title="@lang('Add entry')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a></li>
         </ul>
+        <div class="uk-navbar-content" data-ng-show="collection && collection.count">
+            <form class="uk-form uk-margin-remove uk-display-inline-block" method="get" action="?nc={{ time() }}">
+                <div class="uk-form-icon">
+                    <i class="uk-icon-filter"></i>
+                    <input type="text" placeholder="@lang('Filter entries...')" name="filter" value="{{ $app->param('filter', '') }}"> &nbsp;
+                    <a class="uk-text-small" href="@route('/collections/entries/'.$collection['_id'])" data-ng-show="filter"><i class="uk-icon-times"></i> @lang('Reset filter')</a>
+                </div>
+            </form>
+        </div>
     </nav>
 
-    <div class="app-panel uk-margin uk-text-center" data-ng-show="entries && !entries.length">
+    <div class="app-panel uk-margin uk-text-center" data-ng-show="entries && !filter && !entries.length">
         <h2><i class="uk-icon-list"></i></h2>
         <p class="uk-text-large">
             @lang('It seems you don\'t have any entries created.')
@@ -31,9 +40,16 @@
         <a href="@route('/collections/entry/'.$collection["_id"])" class="uk-button uk-button-success uk-button-large">@lang('Add entry')</a>
     </div>
 
+    <div class="app-panel uk-margin uk-text-center" data-ng-show="entries && filter && !entries.length">
+        <h2><i class="uk-icon-search"></i></h2>
+        <p class="uk-text-large">
+            @lang('No entries found.')
+        </p>
+    </div>
+
     <div class="uk-grid" data-uk-grid-margin data-ng-show="entries && entries.length">
 
-        <div class="uk-width-medium-4-5">
+        <div class="uk-width-1-1">
             <div class="app-panel">
                 <table class="uk-table uk-table-striped">
                     <thead>
@@ -83,8 +99,5 @@
                 </div>
 
             </div>
-        </div>
-        <div class="uk-width-medium-1-5 uk-hidden-small">
-
         </div>
 </div>

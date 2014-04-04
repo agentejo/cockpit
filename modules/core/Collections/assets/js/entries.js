@@ -4,6 +4,7 @@
 
         $scope.collection = COLLECTION || {};
         $scope.fields = [];
+        $scope.filter = $('input[name="filter"]').val();
 
         $scope.fields = (COLLECTION.fields.length ? COLLECTION.fields : [COLLECTION.fields]).filter(function(field){
             return field.lst;
@@ -31,12 +32,32 @@
 
         $scope.loadmore = function() {
 
-            var limit = 25;
+            var limit  = 25, filter = false;
+
+            if($scope.filter) {
+
+                var criteria = {};
+
+                COLLECTION.fields.forEach(function(field){
+                    switch(field.type) {
+                        case 'text':
+                        case 'code':
+                        case 'html':
+                        case 'markdown':
+                        case 'wysiwyg':
+                            criteria[field.name] = {'$regex':$scope.filter};
+                            break;
+                    }
+                });
+
+                if(Object.keys(criteria).length) filter = {'$or':criteria};
+            }
 
             $http.post(App.route("/api/collections/entries"), {
 
                 "collection": angular.copy($scope.collection),
                 "limit": limit,
+                "filter": JSON.stringify(filter),
                 "skip": $scope.entries ? $scope.entries.length : 0
 
             }, {responseType:"json"}).success(function(data){
