@@ -57,7 +57,7 @@
 
             <div class="uk-navbar-flip">
 
-                <ul class="uk-navbar-nav">
+                <ul class="uk-navbar-nav app-top-navbar-links">
                     @foreach($app("admin")->menu('top') as $item)
                     <li class="{{ (isset($item["active"]) && $item["active"]) ? 'uk-active':'' }}">
                         <a href="{{ $item["url"] }}" title="{{ $item["title"] }}" data-uk-tooltip>{{ $item["label"] }}</a>
