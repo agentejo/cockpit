@@ -18,7 +18,7 @@
                 <div class="app-panel">
 
                     <div class="uk-form-row">
-                        <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="form.name" required>
+                        <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="form.name" pattern="[a-zA-Z0-9\s]+" required>
                     </div>
 
                     <div class="uk-form-row">
