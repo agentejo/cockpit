@@ -110,11 +110,7 @@
                     <p>
                         @lang('Order entries on list page'):
                     </p>
-                    <select class="uk-width-1-1 uk-margin-bottom" data-ng-model="collection.sortfield">
-                        <option value="@@ field.name @@" data-ng-repeat="field in collection.fields">@@ field.name @@</option>
-                        <option value="created">@lang('created')</option>
-                        <option value="modified">@lang('modified')</option>
-                    </select>
+                    <select class="uk-width-1-1 uk-margin-bottom" data-ng-model="collection.sortfield" ng-options="f.name as f.name for f in getSortFields()"></select>
                     <select class="uk-width-1-1" data-ng-model="collection.sortorder">
                         <option value="-1">@lang('descending')</option>
                         <option value="1">@lang('ascending')</option>

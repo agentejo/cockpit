@@ -4,7 +4,6 @@
 
         var id = $("[data-ng-controller='collection']").data("id");
 
-
         if(id) {
 
             $http.post(App.route("/api/collections/findOne"), {filter: {"_id":id}}, {responseType:"json"}).success(function(data){
@@ -62,6 +61,11 @@
 
             }).error(App.module.callbacks.error.http);
         };
+
+        $scope.getSortFields = function() {
+
+            return [{'name':'created'}, {'name':'modified'}].concat($scope.collection && $scope.collection.fields ? angular.copy($scope.collection.fields):[]);
+        }
 
         // after sorting list
         $(function(){
