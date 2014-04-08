@@ -5,7 +5,12 @@
 
 $this->module("mediamanager")->extend([
 
-    "thumbnail" => function($image, $width, $height, $options=array()) use($app) {
+    "thumbnail" => function($image, $width = null, $height = null, $options=array()) use($app) {
+
+        if($width && is_array($height)) {
+            $options = $height;
+            $height  = $width;
+        }
 
         $options = array_merge(array(
             "rebuild"     => false,
@@ -26,6 +31,14 @@ $this->module("mediamanager")->extend([
 
         if(!in_array(strtolower($ext), array('png','jpg','jpeg','gif'))) {
             return $url;
+        }
+
+        if(!is_numeric($height)) {
+            $height = $width;
+        }
+
+        if(is_null($width) && is_null($height)) {
+            return $app->pathToUrl($path);
         }
 
         if($base64) {
@@ -69,14 +82,14 @@ $app->renderer()->extend(function($content){
 
 if (!function_exists('thumbnail_url')) {
 
-    function thumbnail_url($image, $width, $height, $options=array()) {
+    function thumbnail_url($image, $width = null, $height = null, $options=array()) {
         return cockpit("mediamanager")->thumbnail($image, $width, $height, $options);
     }
 }
 
 if (!function_exists('thumbnail')) {
 
-    function thumbnail($image, $width, $height, $options=array()) {
+    function thumbnail($image, $width = null, $height = null, $options=array()) {
 
         $url = cockpit("mediamanager")->thumbnail($image, $width, $height, $options=array());
 
