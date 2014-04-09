@@ -14,7 +14,15 @@
                 '<div class="uk-modal-dialog uk-modal-dialog-large">',
                     '<button type="button" class="uk-modal-close uk-close"></button>',
                     '<h4>Mediapicker</h4>',
-                    '<div class="caption">&nbsp;</div>',
+                    '<div class="uk-clearfix">',
+                    '<div class="caption uk-float-left">&nbsp;</div>',
+                    '<div class="uk-float-right">',
+                        '<button class="uk-button uk-form-file" data-uk-tooltip title="'+App.i18n.get('Upload files')+'">',
+                            '<input class="js-upload-select" type="file" multiple="true" title="">',
+                            '<i class="uk-icon-plus"></i>',
+                        '</button>',
+                    '</div>',
+                    '</div>',
                     '<div class="uk-overflow-container uk-margin-top">',
                         '<ul class="dir-view uk-grid uk-grid-width-1-5 uk-grid-small uk-clearfix"></ul>',
                     '</div>',
@@ -43,6 +51,8 @@
                         $this.loadPath($this.currentpath);
                     }
                 };
+
+            var uploadselect = new $.UIkit.upload.select(modal.find('input.js-upload-select'), uploadsettings);
 
             modal.on("drop", function(e){
 
@@ -202,7 +212,7 @@
                     function setPath(path) {
 
                         if(!path) {
-                           return $prv.html('');
+                           return $prv.html('<span class="uk-text-muted uk-text-small"><i class="uk-icon-info-circle"></i> '+App.i18n.get('Nothing selected')+'</span>');
                         }
 
                         if(path && path.match(/\.(jpg|jpeg|png|gif)$/i)) {

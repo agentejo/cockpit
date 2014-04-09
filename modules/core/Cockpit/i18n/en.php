@@ -180,6 +180,7 @@ return [
     'Do you really want to remove %s ?' => '',
     'Please enter a name:' => '',
     'Please enter a filename:' => '',
+    'Nothing selected' => '',
 
     // Regions
     'Regions' => '',
