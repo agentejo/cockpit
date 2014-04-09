@@ -1,5 +1,5 @@
 /**
- * Binds a UIkit markdownarea widget to <markdown> elements.
+ * Binds a UIkit htmleditor widget to <htmleditor> elements.
  */
 
 (function($){
@@ -40,7 +40,7 @@
         }
     };
 
-    $.UIkit.markdownarea.addPlugin('htmlimages', /<img(.+?)>/gim, function(marker) {
+    $.UIkit.htmleditor.addPlugin('htmlimages', /<img(.+?)>/gim, function(marker) {
 
         var img, attrs = {"src":"", "alt":""};
 
@@ -61,20 +61,24 @@
 
         var replacement = template({"img":img, "uid":marker.uid, "alt": (attrs.alt || 'Image') });
 
-        marker.area.preview.on('click', '#' + marker.uid + ' .js-config', function () {
+        marker.editor.preview.on('click', '#' + marker.uid + ' .js-config', function () {
             new PathPicker(function(path){
                 marker.replace('<img src="'+path.replace('site:', COCKPIT_SITE_BASE_URL)+'" alt="'+attrs.alt+'">');
             }, "*.(jpg|png|gif)");
         });
 
-        marker.area.preview.on('click', '#' + marker.uid + ' .js-remove', function () {
+        marker.editor.preview.on('click', '#' + marker.uid + ' .js-remove', function () {
             marker.replace('');
         });
 
         return replacement;
     });
 
-    $.UIkit.markdownarea.addPlugin('images', /(?:\{<(.*?)>\})?!(?:\[([^\n\]]*)\])(?:\(([^\n\]]*)\))?$/gim, function (marker) {
+    $.UIkit.htmleditor.addPlugin('images', /(?:\{<(.*?)>\})?!(?:\[([^\n\]]*)\])(?:\(([^\n\]]*)\))?$/gim, function (marker) {
+
+        if(marker.editor.editor.options.mode != "gfm") {
+          return marker.found[0];
+        }
 
         var img;
 
@@ -90,20 +94,20 @@
 
         var replacement = template({"img":img, "uid":marker.uid, "alt": (marker.found[2] || 'Image') });
 
-        marker.area.preview.on('click', '#' + marker.uid + ' .js-config', function () {
+        marker.editor.preview.on('click', '#' + marker.uid + ' .js-config', function () {
             new PathPicker(function(path){
                 marker.replace('![' + marker.found[2] + '](' + path.replace('site:', COCKPIT_SITE_BASE_URL) + ')');
             }, "*.(jpg|png|gif)");
         });
 
-        marker.area.preview.on('click', '#' + marker.uid + ' .js-remove', function () {
+        marker.editor.preview.on('click', '#' + marker.uid + ' .js-remove', function () {
             marker.replace('');
         });
 
         return replacement;
     });
 
-    angular.module('cockpit.directives').directive("markdown", function($timeout){
+    angular.module('cockpit.directives').directive("htmleditor", function($timeout){
 
       return {
 
@@ -112,11 +116,10 @@
 
         link: function (scope, elm, attrs, ngModel) {
 
-          var txt = $('<textarea placeholder="Markdown code..." class="js-markdownarea" style="display:none;"></textarea>'), markdown, options;
+          var txt = $('<textarea class="js-htmleditor" style="display:none;"></textarea>'), htmleditor, options;
 
-          options = $.extend({}, $.UIkit.markdownarea.defaults);
+          options = $.extend({}, scope.$eval(attrs.options));
 
-          options.codemirror.autoCloseTags = true;
           options.maxsplitsize = 300;
 
           elm.after(txt).hide();
@@ -125,25 +128,25 @@
 
             txt.val(ngModel.$viewValue || '');
 
-            if(!markdown) {
-              markdown = new $.UIkit.markdownarea(txt, options);
+            if(!htmleditor) {
+              htmleditor = new $.UIkit.htmleditor(txt, options);
 
               setTimeout(function(){
 
-                  markdown.editor.on("inputRead", $.UIkit.Utils.debounce(function(){
-                    autocomplete(markdown.editor);
+                  htmleditor.editor.on("inputRead", $.UIkit.Utils.debounce(function(){
+                    autocomplete(htmleditor.editor);
                   }, 100));
 
-                  markdown.editor.on("change", $.UIkit.Utils.debounce(function(){
+                  htmleditor.editor.on("change", $.UIkit.Utils.debounce(function(){
 
-                    ngModel.$setViewValue(markdown.editor.getValue());
+                    ngModel.$setViewValue(htmleditor.editor.getValue());
 
                     if (!scope.$root.$$phase) {
                       scope.$apply();
                     }
                   }, 100));
 
-                  markdown.fit();
+                  htmleditor.fit();
 
               }, 50);
 

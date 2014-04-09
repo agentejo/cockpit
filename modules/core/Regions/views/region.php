@@ -16,9 +16,9 @@
 
 {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/uikit/js/addons/markdownarea.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/js/addons/htmleditor.min.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:vendor/marked.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:angular/directives/markdownarea.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:angular/directives/htmleditor.js'], $app['cockpit/version']) }}
 
 
 <div data-ng-controller="region" data-id="{{ $id }}">
@@ -147,7 +147,7 @@
                                           <label class="uk-text-small">@@ field.name | uppercase @@</label>
 
                                           <div data-ng-switch-when="html">
-                                              <textarea class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value" style="height: 300px !important;"></textarea>
+                                              <htmleditor data-ng-model="region.fields[$index].value"></htmleditor>
                                           </div>
 
                                           <div data-ng-switch-when="code">
@@ -155,7 +155,7 @@
                                           </div>
 
                                           <div data-ng-switch-when="markdown">
-                                              <markdown data-ng-model="region.fields[$index].value"></markdown>
+                                              <htmleditor data-ng-model="region.fields[$index].value" options="{markdown:true}"></htmleditor>
                                           </div>
 
                                           <div data-ng-switch-when="wysiwyg">

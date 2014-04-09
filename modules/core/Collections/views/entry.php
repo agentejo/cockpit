@@ -9,12 +9,12 @@
 {{ $app->assets(['assets:vendor/tinymce/tinymce.min.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/uikit/js/addons/markdownarea.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/js/addons/htmleditor.min.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:vendor/marked.js'], $app['cockpit/version']) }}
 
 
 {{ $app->assets(['assets:angular/directives/wysiwyg.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:angular/directives/markdownarea.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:angular/directives/htmleditor.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:angular/directives/gallery.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:angular/directives/tags.js'], $app['cockpit/version']) }}
 
@@ -84,7 +84,7 @@
                         <div class="uk-text-small uk-text-danger uk-float-right uk-animation-slide-top" data-ng-if="field.error">@@ field.error @@</div>
 
                         <div data-ng-switch-when="html">
-                            <textarea class="uk-width-1-1 uk-form-large" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[field.name]"></textarea>
+                            <htmleditor data-ng-model="entry[field.name]"></htmleditor>
                         </div>
 
                         <div data-ng-switch-when="code">
@@ -96,7 +96,7 @@
                         </div>
 
                         <div data-ng-switch-when="markdown">
-                            <markdown data-ng-model="entry[field.name]"></markdown>
+                            <htmleditor data-ng-model="entry[field.name]" options="{markdown:true}"></htmleditor>
                         </div>
 
                         <div data-ng-switch-when="gallery">
