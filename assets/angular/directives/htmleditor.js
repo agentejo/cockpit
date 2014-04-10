@@ -74,7 +74,7 @@
         return replacement;
     });
 
-    $.UIkit.htmleditor.addPlugin('images', /(?:\{<(.*?)>\})?!(?:\[([^\n\]]*)\])(?:\(([^\n\]]*)\))?$/gim, function (marker) {
+    $.UIkit.htmleditor.addPlugin('markdownimages', /(?:\{<(.*?)>\})?!(?:\[([^\n\]]*)\])(?:\(([^\n\]]*)\))?$/gim, function (marker) {
 
         if(marker.editor.editor.options.mode != "gfm") {
           return marker.found[0];
@@ -86,7 +86,7 @@
           img = '<img src="'+marker.found[3]+'" alt="">';
         } else {
           img = [
-            '<div class="uk-placeholder uk-placeholder-large uk-text-center uk-vertical-align">',
+            '<div class="uk-placeholder uk-placeholder-large uk-text-center uk-vertical-align" style="margin:0;">',
               '<div class="uk-vertical-align-middle"><i class="uk-icon-picture-o"></i></div>',
             '</div>'
           ].join("");
@@ -118,7 +118,7 @@
 
           var txt = $('<textarea class="js-htmleditor" style="display:none;"></textarea>'), htmleditor, options;
 
-          options = $.extend({}, scope.$eval(attrs.options));
+          options = $.extend({plugins:['htmlimages', 'markdownimages']}, scope.$eval(attrs.options));
 
           options.maxsplitsize = 300;
 
