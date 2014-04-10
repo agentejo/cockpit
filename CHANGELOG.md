@@ -1,5 +1,13 @@
 # Changelog
 
+### 0.9.13  (Apr 10, 2014)
+
+    ^ Autofit topnav to screensize
+    ^ Assets updated
+    ^ Updated Html field
+    ^ UX improvements
+    # Fixed form mailer @davidgenetic
+    # Fixed saving sortfield (collections)
 
 ### 0.9.12  (Apr 03, 2014)
 
