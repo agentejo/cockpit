@@ -35,7 +35,7 @@ $app->bind("/api/forms/submit/:form", function($params) use($app){
                 $body[] = (is_string($value) ? $value:json_encode($value))."\n<br>";
             }
 
-            $app("mailer")->mail($frm["email"], $app->param("__mailsubject", "New form data for: ".$form), implode("\n<br>", $body));
+            $app->mailer->mail($frm["email"], $app->param("__mailsubject", "New form data for: ".$form), implode("\n<br>", $body));
         }
 
         if(isset($frm["entry"]) && $frm["entry"]) {
