@@ -10,13 +10,13 @@ class HistoryLogger extends \Lime\Helper {
             "from"  => false,
             "to"    => false,
             "limit" => 10,
-            "order" => ["time" => -1]
+            "sort"  => ["time" => -1]
         ], $options);
 
         $config = [];
 
-        $config["limit"]   = $options["limit"];
-        $config["order"]   = $options["order"];
+        $config["limit"] = $options["limit"];
+        $config["sort"]  = $options["sort"] ;
 
         if($options["from"]) $config["filter"]["time"] = ['$gte' => $options["from"]];
         if($options["to"])   $config["filter"]["time"] = ['$lte' => $options["to"]];
