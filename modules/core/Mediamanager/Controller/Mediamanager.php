@@ -135,7 +135,7 @@ class Mediamanager extends \Cockpit\Controller {
 
     protected function removefiles() {
 
-        $paths = $this->param('paths', array());
+        $paths = (array)$this->param('paths', array());
 
         foreach ($paths as $path) {
 

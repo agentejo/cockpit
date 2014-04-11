@@ -3,7 +3,8 @@
 
     App.module.controller("mediamanager", function($scope, $rootScope, $http, $timeout){
 
-            var currentpath = location.hash ? location.hash.replace("#", ''):"/",
+            var container   = $('[data-ng-controller="mediamanager"]'),
+                currentpath = location.hash ? location.hash.replace("#", ''):"/",
                 apiurl      = App.route('/mediamanager/api'),
 
                 imgpreview  = new $.UIkit.modal.Modal("#mm-image-preview"),
@@ -18,6 +19,7 @@
 
             $scope.mode       = 'table';
             $scope.dirlist    = false;
+            $scope.selected   = {};
 
             $scope.updatepath = function(path) {
                 loadPath(path);
@@ -32,7 +34,7 @@
                         App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
 
                             $timeout(function(){
-                                requestapi({"cmd":"removefiles", "paths": [item.path]});
+                                requestapi({"cmd":"removefiles", "paths": item.path});
 
                                 var index = $scope.dir[item.is_file ? "files":"folders"].indexOf(item);
                                 $scope.dir[item.is_file ? "files":"folders"].splice(index, 1);
@@ -166,6 +168,8 @@
                     currentpath = path;
 
                     $scope.breadcrumbs = [];
+                    $scope.selected    = {};
+                    $scope.selectAll   = false;
 
                     if(currentpath!='/'){
                         var parts   = currentpath.split('/'),
@@ -307,6 +311,54 @@
                     }, 0);
                 });
             });
+
+            // batch delete
+
+            $scope.selectAll       = false;
+
+            $scope.selectAllToggle = function() {
+                $scope.dir.files.forEach(function(file){
+                    $scope.selected[file.path] = $scope.selectAll;
+                });
+                $scope.dir.folders.forEach(function(folder){
+                    $scope.selected[folder.path] = $scope.selectAll;
+                });
+            };
+
+            $scope.deleteSelected  = function() {
+
+                var paths = getSelectedPaths();
+
+                if (paths.length) {
+
+                    App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
+
+                        requestapi({"cmd":"removefiles", "paths": paths}, function(){
+
+                            loadPath(currentpath);
+                            App.notify("File(s) deleted", "success");
+                        });
+                    });
+                }
+            };
+
+            $scope.hasSelected = function() {
+                return getSelectedPaths().length;
+            };
+
+            function getSelectedPaths() {
+
+                var paths = [];
+
+                Object.keys($scope.selected).forEach(function(path){
+                    if($scope.selected[path]===true) {
+                        paths.push(path);
+                    }
+                });
+
+                return paths;
+            }
+
 
             App.assets.require(['modules/core/Mediamanager/assets/Editor.js'], function(){
                 MMEditor.init($scope);

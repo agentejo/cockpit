@@ -73,10 +73,11 @@
         <div class="uk-navbar uk-margin-large-bottom">
 
             <div class="uk-navbar-content">
-                <div class="uk-button-group">
+                <div class="uk-button-group uk-margin-right">
                     <button class="uk-button" data-ng-class="mode=='table' ? 'uk-button-primary':''" data-ng-click="(mode='table')" title="@lang('Table mode')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-th-list"></i></button>
                     <button class="uk-button" data-ng-class="mode=='list' ? 'uk-button-primary':''" data-ng-click="(mode='list')" title="@lang('List mode')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-th"></i></button>
                 </div>
+                <button class="uk-button uk-button-danger" ng-click="deleteSelected()" ng-show="hasSelected()"><i class="uk-icon-trash-o"></i></button>
             </div>
 
             <div class="uk-navbar-content">
@@ -137,6 +138,7 @@
         <table class="uk-table uk-table-hover media-table" data-ng-show="mode=='table' && dir && (dir.folders.length || dir.files.length)">
             <thead>
                 <tr>
+                    <th width="20" ng-click="selectAllToggle()"><input type="checkbox" ng-model="selectAll"></th>
                     <th width="20"></th>
                     <th>@lang('Name')</th>
                     <th class="uk-text-right" width="100">@lang('Size')</th>
@@ -146,6 +148,7 @@
             </thead>
             <tbody>
                 <tr ng-repeat="folder in dir.folders" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
+                   <td><input type="checkbox" class="js-select" ng-model="selected[folder.path]"></td>
                    <td><i class="uk-icon-folder-o"></i></td>
                    <td><div class="uk-text-truncate" title="@@ folder.name @@"><a href="#@@ folder.path @@" ng-click="updatepath(folder.path)">@@ folder.name @@</a></div></td>
                    <td>&nbsp;</td>
@@ -165,7 +168,8 @@
                    </td>
                 </tr>
 
-                <tr ng-repeat="file in dir.files" data-type="folder" data-ng-hide="(viewfilter=='folders' || !matchName(file.name))">
+                <tr ng-repeat="file in dir.files" data-type="file" data-ng-hide="(viewfilter=='folders' || !matchName(file.name))">
+                   <td><input type="checkbox" ng-model="selected[file.path]"></td>
                    <td><i class="uk-icon-file-o" media-preview="@@ file.url @@"></i></td>
                    <td><div class="uk-text-truncate" title="@@ file.name @@"><a ng-click="open(file)">@@ file.name @@</a></div></td>
                    <td class="uk-text-right">@@ file.size @@</td>
@@ -196,7 +200,6 @@
         </div>
 
     </div>
-
 </div>
 
 <div id="mm-image-preview" class="uk-modal">
