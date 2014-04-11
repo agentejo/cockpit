@@ -1,7 +1,7 @@
 {{ $app->assets(['assets:vendor/nativesortable.js'], $app['cockpit/version']) }}
 {{ $app->assets(['galleries:assets/galleries.js','galleries:assets/js/index.js'], $app['cockpit/version']) }}
 
-<div data-ng-controller="galleries">
+<div data-ng-controller="galleries" ng-cloak>
 
     <nav class="uk-navbar uk-margin-large-bottom">
         <span class="uk-navbar-brand">@lang('Galleries')</span>

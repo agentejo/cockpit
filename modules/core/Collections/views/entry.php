@@ -29,7 +29,7 @@
      COLLECTION_ENTRY = {{ json_encode($entry) }};
 </script>
 
-<div data-ng-controller="entry">
+<div data-ng-controller="entry" ng-cloak>
 
     <div id="entry-versions" class="uk-offcanvas">
         <div class="uk-offcanvas-bar">

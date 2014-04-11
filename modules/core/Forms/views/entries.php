@@ -4,7 +4,7 @@
     td .uk-grid+.uk-grid { margin-top: 5px; }
 </style>
 
-<div data-ng-controller="entries" data-form='{{ json_encode($form) }}'>
+<div data-ng-controller="entries" data-form='{{ json_encode($form) }}' ng-cloak>
 
     <nav class="uk-navbar uk-margin-bottom">
         <span class="uk-navbar-brand"><a href="@route("/forms")">@lang('Forms')</a> / {{ $form['name'] }}</span>

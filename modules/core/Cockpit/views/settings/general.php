@@ -1,7 +1,7 @@
 
 <h1><a href="@route('/settingspage')">@lang('Settings')</a> / @lang('General')</h1>
 
-<div class="uk-grid" data-uk-grid-margin data-ng-controller="general-settings">
+<div class="uk-grid" data-uk-grid-margin data-ng-controller="general-settings" ng-cloak>
 
     <div class="uk-width-medium-1-4">
         <ul class="uk-nav uk-nav-side" data-uk-switcher="{connect:'#settings-general'}">

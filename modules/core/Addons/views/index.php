@@ -3,10 +3,10 @@
 
 <h1><a href="@route('/settingspage')">@lang('Settings')</a> / @lang('Addons')</h1>
 
-<div data-ng-controller="addons">
-    
+<div data-ng-controller="addons" ng-cloak>
+
     <div class="uk-grid">
-        
+
         <div class="uk-width-3-4">
 
             <div class="app-panel">
@@ -33,8 +33,8 @@
         </div>
 
         <div class="uk-width-1-4">
-            
-            
+
+
 
         </div>
 

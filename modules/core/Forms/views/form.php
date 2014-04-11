@@ -1,6 +1,6 @@
 {{ $app->assets(['forms:assets/forms.js','forms:assets/js/form.js'], $app['cockpit/version']) }}
 
-<div data-ng-controller="form" data-id="{{ $id }}">
+<div data-ng-controller="form" data-id="{{ $id }}" ng-cloak>
 
     <h1>
         <a href="@route("/forms")">@lang('Forms')</a> /

@@ -2,7 +2,7 @@
 
 <h1><a href="@route('/settingspage')">@lang('Settings')</a> / @lang('Update')</h1>
 
-<div class="app-panel" data-ng-controller="updater">
+<div class="app-panel" data-ng-controller="updater" ng-cloak>
 
     <div class="uk-text-center" ng-show="loading">
 

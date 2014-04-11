@@ -1,6 +1,6 @@
 {{ $app->assets(['forms:assets/forms.js','forms:assets/js/index.js'], $app['cockpit/version']) }}
 
-<div data-ng-controller="forms">
+<div data-ng-controller="forms" ng-cloak>
 
     <nav class="uk-navbar uk-margin-large-bottom">
         <span class="uk-navbar-brand">@lang('Forms')</span>

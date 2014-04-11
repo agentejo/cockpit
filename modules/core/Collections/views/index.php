@@ -1,7 +1,7 @@
 {{ $app->assets(['collections:assets/collections.js','collections:assets/js/index.js'], $app['cockpit/version']) }}
 
 
-<div data-ng-controller="collections">
+<div data-ng-controller="collections" ng-cloak>
 
     <nav class="uk-navbar uk-margin-large-bottom">
         <span class="uk-navbar-brand">@lang('Collections')</span>

@@ -11,7 +11,7 @@
 </script>
 
 
-<div data-ng-controller="entries">
+<div data-ng-controller="entries" ng-cloak>
 
     <nav class="uk-navbar uk-margin-bottom">
         <span class="uk-navbar-brand"><a href="@route("/collections")">@lang('Collections')</a> / {{ $collection['name'] }}</span>
