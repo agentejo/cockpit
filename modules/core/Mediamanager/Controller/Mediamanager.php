@@ -233,6 +233,38 @@ class Mediamanager extends \Cockpit\Controller {
         $this->app->stop();
     }
 
+    protected function getdirlist() {
+
+        $list = [];
+        $toignore = [
+            '\.svn', '_svn', 'cvs', '_darcs', '\.arch-params', '\.monotone', '\.bzr', '\.git', '\.hg', '\.ds_store', '\.thumb'
+        ];
+
+        $toignore = '/('.implode('|',$toignore).')/i';
+
+        foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->root)) as $file) {
+
+            //if($file->isDot()) continue;
+
+            $filename = $file->getFilename();
+
+            if($filename[0]=='.' || preg_match($toignore, $file->getPathname())) continue;
+
+            $list[] = [
+                "is_file" => !$file->isDir(),
+                "is_dir" => $file->isDir(),
+                "is_writable" => is_writable($file->getPathname()),
+                "name" => $filename,
+                "path" => trim(str_replace(['\\', $this->root], ['/',''], $file->getPathname()), '/'),
+                "url"  => $this->app->pathToUrl($file->getPathname()),
+                "size" => $file->isDir() ? "" : $this->app->helper("utils")->formatSize($file->getSize()),
+                "lastmodified" => $file->isDir() ? "" : date("d.m.y H:m", $file->getMTime()),
+            ];
+        }
+
+        return json_encode($list);
+    }
+
     public function savebookmarks() {
 
         if($bookmarks = $this->param('bookmarks', false)) {

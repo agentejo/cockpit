@@ -178,6 +178,14 @@
             $scope.namefilter = '';
 
             $scope.mode       = 'table';
+            $scope.dirlist    = false;
+
+            // load dirlist
+            $timeout(function(){
+                requestapi({"cmd":"getdirlist"}, function(list){
+                    $scope.dirlist = list || false;
+                });
+            }, 0);
 
             $scope.updatepath = function(path) {
                 loadPath(path);
