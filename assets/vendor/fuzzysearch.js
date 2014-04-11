@@ -63,7 +63,7 @@
             if (base === string) {
                 score *= 2;
             } else if (base) {
-                score += exports.score(base, query);
+                score += this.score(base, query);
             }
 
             segmentCount = slashCount + 1;

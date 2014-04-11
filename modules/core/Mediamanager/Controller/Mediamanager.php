@@ -233,32 +233,34 @@ class Mediamanager extends \Cockpit\Controller {
         $this->app->stop();
     }
 
-    protected function getdirlist() {
+    protected function getfilelist() {
 
         $list = [];
         $toignore = [
-            '\.svn', '_svn', 'cvs', '_darcs', '\.arch-params', '\.monotone', '\.bzr', '\.git', '\.hg', '\.ds_store', '\.thumb'
+            '\.svn', '_svn', 'cvs', '_darcs', '\.arch-params', '\.monotone', '\.bzr', '\.git', '\.hg', '\.ds_store', '\.thumb', '\/cache'
         ];
 
         $toignore = '/('.implode('|',$toignore).')/i';
 
         foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->root)) as $file) {
 
-            //if($file->isDot()) continue;
+            if($file->isDir()) continue;
 
             $filename = $file->getFilename();
 
             if($filename[0]=='.' || preg_match($toignore, $file->getPathname())) continue;
 
+            $path = trim(str_replace(['\\', $this->root], ['/',''], $file->getPathname()), '/');
+
             $list[] = [
-                "is_file" => !$file->isDir(),
-                "is_dir" => $file->isDir(),
+                "is_file" => true,
+                "is_dir" => false,
                 "is_writable" => is_writable($file->getPathname()),
                 "name" => $filename,
-                "path" => trim(str_replace(['\\', $this->root], ['/',''], $file->getPathname()), '/'),
+                "path" => $path,
+                "dir" => dirname($path),
+                "is_writable" => is_writable($file->getPathname()),
                 "url"  => $this->app->pathToUrl($file->getPathname()),
-                "size" => $file->isDir() ? "" : $this->app->helper("utils")->formatSize($file->getSize()),
-                "lastmodified" => $file->isDir() ? "" : date("d.m.y H:m", $file->getMTime()),
             ];
         }
 

@@ -3,6 +3,7 @@
 {{ $app->assets(['assets:vendor/loadie/jquery.loadie.js', 'assets:vendor/loadie/loadie.css'], $app['cockpit/version']) }}
 
 {{ $app->assets(['assets:vendor/uikit/js/addons/upload.min.js']) }}
+{{ $app->assets(['assets:vendor/fuzzysearch.js']) }}
 
 {{ $app->assets(['mediamanager:assets/js/index.js'], $app['cockpit/version']) }}
 
@@ -43,6 +44,14 @@
         </ul>
 
         <div class="uk-navbar-flip">
+
+            <div class="uk-navbar-content">
+                <div id="dirsearch" class="uk-autocomplete uk-form" ng-show="dirlist">
+                    <input type="text" placeholder="@lang('Goto file...')">
+                    <div class="uk-dropdown uk-dropdown-flip"></div>
+                </div>
+            </div>
+
             <div class="uk-navbar-content">
                 <button class="uk-button uk-form-file" data-uk-tooltip title="@lang('Upload files')">
                     <input id="js-upload-select" type="file" multiple="true" title="">
@@ -264,6 +273,11 @@
         width: 14px;
     }
 
+    /* dirsearch */
+
+    #dirsearch .uk-dropdown {
+        width: 400px;
+    }
 
     /* editor */
 
