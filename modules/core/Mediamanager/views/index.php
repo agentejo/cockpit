@@ -102,6 +102,7 @@
         <ul class="uk-grid uk-grid-small" data-ng-show="mode=='list' && dir && (dir.folders.length || dir.files.length)">
             <li class="uk-grid-margin uk-width-medium-1-5 uk-width-1-1" ng-repeat="folder in dir.folders" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
                 <div class="app-panel">
+                    <span class="js-select"><input type="checkbox" ng-model="selected[folder.path]"></span>
                     <div class="mm-type mm-type-folder">
                         <i class="uk-icon-folder-o"></i>
                     </div>
@@ -117,9 +118,9 @@
             </li>
             <li class="uk-grid-margin uk-width-medium-1-5 uk-width-1-1" ng-repeat="file in dir.files" data-ng-hide="(viewfilter=='folders' || !matchName(file.name))">
                 <div class="app-panel">
+                    <span class="js-select"><input type="checkbox" ng-model="selected[file.path]"> </span>
                     <div class="mm-type mm-type-file">
                         <i class="uk-icon-file-o" media-preview="@@ file.url @@"></i>
-
                     </div>
                     <div class="app-panel-box docked-bottom uk-text-center">
                         <div class="uk-text-truncate mm-caption" title="@@ file.name @@"><a ng-click="open(file)">@@ file.name @@</a></div>
@@ -148,7 +149,7 @@
             </thead>
             <tbody>
                 <tr ng-repeat="folder in dir.folders" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
-                   <td><input type="checkbox" class="js-select" ng-model="selected[folder.path]"></td>
+                   <td><input type="checkbox" ng-model="selected[folder.path]"></td>
                    <td><i class="uk-icon-folder-o"></i></td>
                    <td><div class="uk-text-truncate" title="@@ folder.name @@"><a href="#@@ folder.path @@" ng-click="updatepath(folder.path)">@@ folder.name @@</a></div></td>
                    <td>&nbsp;</td>
@@ -228,8 +229,18 @@
 
 <style>
 
+    ul .app-panel {
+        position: relative;
+    }
+
     .app-panel a {
         cursor: pointer;
+    }
+
+    .app-panel .js-select {
+        position: absolute;
+        top: 10px;
+        right: 10px;
     }
 
     .mm-type {
