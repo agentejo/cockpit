@@ -15,6 +15,24 @@ if(!defined('COCKPIT_REST')) {
 }
 
 
+// nginx path_info fix >:-/
+
+if (COCKPIT_ADMIN) {
+
+    if (!isset($_SERVER['PATH_INFO']) || (isset($_SERVER['PATH_INFO']) && !$_SERVER['PATH_INFO'])) {
+
+        if(strpos($_SERVER['REQUEST_URI'], $_SERVER['PHP_SELF'])===0) {
+
+            $parts = explode($_SERVER['PHP_SELF'], preg_replace('/\?(.*)/', '', $_SERVER['REQUEST_URI']), 2);
+
+            if(isset($parts[1]) && strlen($parts[1])) {
+                $_SERVER['PATH_INFO'] = @$parts[1];
+            }
+        }
+    }
+}
+
+
 function cockpit($module = null) {
 
     static $app;
