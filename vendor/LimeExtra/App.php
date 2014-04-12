@@ -10,7 +10,7 @@ class App extends \Lime\App {
 
     public function __construct ($settings = array()) {
 
-        $settings["helpers"]  = array_merge(array(
+        $settings["helpers"]  = array_merge([
             "acl"     => "Lime\\Helper\\SimpleAcl",
             "assets"  => "Lime\\Helper\\Assets",
             "cache"   => "Lime\\Helper\\Cache",
@@ -19,7 +19,7 @@ class App extends \Lime\App {
             "i18n"    => "Lime\\Helper\\I18n",
             "utils"   => "Lime\\Helper\\Utils",
             "coockie" => "Lime\\Helper\\Coockie",
-        ), isset($settings["helpers"]) ? $settings["helpers"] : array());
+        ], isset($settings["helpers"]) ? $settings["helpers"] : array());
 
         parent::__construct($settings);
 
@@ -28,44 +28,56 @@ class App extends \Lime\App {
         $this->viewvars["base_route"] = $this["base_route"];
         $this->viewvars["docs_root"]  = $this["docs_root"];
 
-        $this["modules"] = new \ArrayObject(array());
+        $this->registry["modules"] = new \ArrayObject(array());
 
         $this("session")->init();
     }
 
-    public function loadModules($dir) {
+    public function registerModule($name, $dir) {
 
-        $modules = array();
+        $name = strtolower($name);
 
-        if(file_exists($dir)){
+        if (!isset($this->registry["modules"][$name])) {
 
-            // load modules
-            foreach (new \DirectoryIterator($dir) as $module) {
+            $this->path($name, $dir);
+            $this->registry["modules"][$name] = new Module($this);
+            $this->registry["modules"][$name]->_dir = $dir;
 
-                if($module->isFile() || $module->isDot()) continue;
-
-                $m = strtolower($module);
-
-                $this->path($m, $module->getPathname());
-                $this["modules"][$m] = new Module($this);
-
-                $this->bootModule($module->getPathname()."/bootstrap.php", $this["modules"][$m]);
-
-                $modules[] = $module->getBasename();
-            }
-
-            $this["autoload"]->append($dir);
-
-        }else{
-            $modules = false;
+            $this->bootModule("{$dir}/bootstrap.php", $this->registry["modules"][$name]);
         }
 
+        return $this->registry["modules"][$name];
+    }
+
+    public function loadModules($dirs) {
+
+        $modules = [];
+        $dirs    = (array)$dirs;
+
+        foreach ($dirs as &$dir) {
+
+            if (file_exists($dir)){
+
+                // load modules
+                foreach (new \DirectoryIterator($dir) as $module) {
+
+                    if($module->isFile() || $module->isDot()) continue;
+
+                    $this->registerModule($module->getBasename(), $module->getPathname());
+
+                    $modules[] = strtolower($module);
+                }
+
+                $this["autoload"]->append($dir);
+
+            }
+        }
 
         return $modules;
     }
 
     public function module($name) {
-        return $this["modules"]->offsetExists($name) && $this["modules"][$name] ? $this["modules"][$name] : null;
+        return $this->registry["modules"]->offsetExists($name) && $this->registry["modules"][$name] ? $this->registry["modules"][$name] : null;
     }
 
     protected function bootModule($bootfile, $module) {
@@ -104,13 +116,13 @@ class App extends \Lime\App {
             $layout = $from;
         };
 
-        if(!file_exists($template)) {
+        if (!file_exists($template)) {
             return "Couldn't resolve {$template}.";
         }
 
         $cachedfile = $this->get_cached_view($template);
 
-        if($cachedfile) {
+        if ($cachedfile) {
             $output = $this->render($cachedfile, $slots);
         } else {
             $output = $renderer->file($template, $slots);
@@ -181,11 +193,11 @@ class App extends \Lime\App {
 
         $cachedfile  = $this->path("tmp:{$cachefile}");
 
-        if(!$cachedfile) {
+        if (!$cachedfile) {
             $cachedfile = $this->cache_template($template);
         }
 
-        if($cachedfile) {
+        if ($cachedfile) {
 
             $mtime = filemtime($template);
 
@@ -201,13 +213,13 @@ class App extends \Lime\App {
 
     protected function cache_template($file, $filemtime = null) {
 
-        if(!$filemtime){
+        if (!$filemtime){
             $filemtime = filemtime($file);
         }
 
         $cachefile = md5($file).'.view.php';
 
-        if(file_put_contents($this->path("tmp:").$cachefile, $this->renderer()->parse(file_get_contents($file), false, $file))){
+        if (file_put_contents($this->path("tmp:").$cachefile, $this->renderer()->parse(file_get_contents($file), false, $file))){
             $cachedfile = $this->path("tmp:{$cachefile}");
             touch($cachedfile,  $filemtime);
 

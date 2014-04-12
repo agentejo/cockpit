@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <link rel="icon" href="@base("/assets/images/favicon.ico")" type="image/x-icon">
 
-    @assets($app['app.assets.base'], 'app.base'.$app['cockpit/version'], 'cache:assets', 30, $app['cockpit/version'])
+    @assets($app['app.assets.base'], 'app.base'.$app['cockpit/version'], 'cache:assets', 60, $app['cockpit/version'])
     @assets($app['app.assets.backend'], 'app.backend'.$app['cockpit/version'], 'cache:assets', 360, $app['cockpit/version'])
 
     @trigger('app.layout.header')

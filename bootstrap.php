@@ -68,8 +68,12 @@ function cockpit($module = null) {
 
         // i18n
         $app("i18n")->locale = isset($config["i18n"]) ? $config["i18n"]:"en";
-        $app->loadModules(__DIR__.'/modules/core');
-        $app->loadModules(__DIR__.'/modules/addons');
+
+        // load modules
+        $app->loadModules([
+            __DIR__.'/modules/core',  # core
+            __DIR__.'/modules/addons' # addons
+        ]);
     }
 
     return $module ? $app->module($module) : $app;

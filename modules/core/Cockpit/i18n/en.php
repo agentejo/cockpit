@@ -181,7 +181,7 @@ return [
     'Please enter a name:' => '',
     'Please enter a filename:' => '',
     'Nothing selected' => '',
-    'Goto file...' => '',
+    'Find files...' => '',
 
     // Regions
     'Regions' => '',

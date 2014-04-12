@@ -46,8 +46,8 @@
         <div class="uk-navbar-flip">
 
             <div class="uk-navbar-content">
-                <div id="dirsearch" class="uk-autocomplete uk-form" ng-show="dirlist">
-                    <input type="text" placeholder="@lang('Goto file...')">
+                <div id="dirsearch" class="uk-autocomplete uk-search" ng-show="dirlist">
+                    <input class="uk-search-field" type="text" placeholder="..." data-uk-tooltip title="@lang('Find files...')">
                     <div class="uk-dropdown uk-dropdown-flip"></div>
                 </div>
             </div>
