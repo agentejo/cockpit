@@ -24,9 +24,9 @@ if (COCKPIT_ADMIN && !isset($_SERVER['PATH_INFO'])) {
 
     if(strpos($_URI, $_SELF)===0) {
 
-        $_PATH = substr($_URI, 0, strlen($_SELF));
+        $_PATH = substr($_URI, strlen($_SELF));
 
-        if(strlen($_PATH) && $_PATH[0] == '/') {
+        if ($_PATH && $_PATH[0] == '/') {
             $_SERVER['PATH_INFO'] = $_PATH;
         }
     }
