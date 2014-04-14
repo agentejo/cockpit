@@ -88,6 +88,7 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
     $assets = array_merge([
         'assets:vendor/uikit/js/addons/autocomplete.min.js',
         'assets:vendor/uikit/js/addons/search.min.js',
+        'assets:vendor/uikit/js/addons/form-select.min.js',
         'cockpit:assets/js/app.js',
         'cockpit:assets/js/app.module.js',
         'cockpit:assets/js/bootstrap.js',
