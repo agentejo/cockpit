@@ -246,11 +246,20 @@
 
                 <div class="uk-width-medium-1-5">
 
-                    <strong>@lang("Group")</strong>
-                    <select class="uk-width-1-1" data-ng-model="region.group">
-                        <option ng-repeat="group in groups" value="@@ group @@">@@ group @@</option>
-                        <option value="">- @lang("No group") -</option>
-                    </select>
+                    <div class="uk-form-row">
+                        <label><strong>@lang("Group")</strong></label>
+                        <div class="uk-form-controls uk-margin-small-top">
+                            <div class="uk-form-select uk-button uk-button-large" data-uk-form-select>
+                                <i class="uk-icon-sitemap uk-margin-small-right"></i>
+                                <span></span>
+                                <select class="uk-width-1-1" data-ng-model="region.group">
+                                    <option ng-repeat="group in groups" value="@@ group @@">@@ group @@</option>
+                                    <option value="">- @lang("No group") -</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
           </div>
     </form>
