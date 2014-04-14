@@ -203,9 +203,10 @@
 
                     $element = $(elm);
 
-                    var $tpl = $('<div><div class="uk-margin" data-preview=""></div><button class="uk-button uk-button-small app-button-secondary" type="button"><i class="uk-icon-code-fork"></i> Pick Media path</button></div>'),
-                        $btn = $tpl.find('button'),
-                        $prv = $tpl.find('[data-preview]');
+                    var $tpl   = $('<div><div class="uk-margin" data-preview=""></div><button class="uk-button uk-button-small app-button-secondary js-select" type="button"><i class="uk-icon-code-fork"></i> Pick Media path</button> <button class="uk-button uk-button-small app-button-secondary uk-hidden js-clear" type="button"><i class="uk-icon-trash-o"></i></button></div>'),
+                        $btn   = $tpl.find('.js-select'),
+                        $prv   = $tpl.find('[data-preview]'),
+                        $clear = $tpl.find('.js-clear');
 
                     $element.after($tpl);
 
@@ -232,11 +233,27 @@
 
                             setPath(path);
 
+                            if (path) {
+                                $clear.removeClass('uk-hidden');
+                            }
+
                             if (angular.isDefined(ngModel)) {
                                 ngModel.$setViewValue(path);
                                 if (!scope.$$phase) scope.$apply();
                             }
                         }, $element.attr("media-path-picker") || "*");
+
+                    });
+
+                    $clear.on("click", function(){
+
+                        setPath(false);
+                        $clear.addClass('uk-hidden');
+
+                        if (angular.isDefined(ngModel)) {
+                            ngModel.$setViewValue('');
+                            if (!scope.$$phase) scope.$apply();
+                        }
 
                     });
 
@@ -246,6 +263,10 @@
 
                             ngModel.$render = function () {
                                 setPath(ngModel.$viewValue);
+
+                                if (ngModel.$viewValue) {
+                                    $clear.removeClass('uk-hidden');
+                                }
                             };
 
                             ngModel.$render();
