@@ -6,30 +6,12 @@ spl_autoload_register(function($class){
     if(file_exists($class_path)) include_once($class_path);
 });
 
-if(!defined('COCKPIT_ADMIN')) {
+if (!defined('COCKPIT_ADMIN')) {
     define('COCKPIT_ADMIN', 0);
 }
 
-if(!defined('COCKPIT_REST')) {
-    define('COCKPIT_REST', COCKPIT_ADMIN && strpos(@$_SERVER["PATH_INFO"], '/rest/api')===0 ? 1:0);
-}
-
-
-// nginx path_info fix >:-/
-
-if (COCKPIT_ADMIN && !isset($_SERVER['PATH_INFO'])) {
-
-    $_URI  = preg_replace('/\?(.*)/', '', $_SERVER['REQUEST_URI']);
-    $_SELF = $_SERVER['PHP_SELF'];
-
-    if(strpos($_URI, $_SELF)===0) {
-
-        $_PATH = substr($_URI, strlen($_SELF));
-
-        if ($_PATH && $_PATH[0] == '/') {
-            $_SERVER['PATH_INFO'] = $_PATH;
-        }
-    }
+if (!defined('COCKPIT_REST')) {
+    define('COCKPIT_REST', COCKPIT_ADMIN && isset($_SERVER["PATH_INFO"]) && strpos($_SERVER["PATH_INFO"], '/rest/api')===0 ? 1:0);
 }
 
 

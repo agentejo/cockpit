@@ -171,7 +171,7 @@
                     $scope.selected    = {};
                     $scope.selectAll   = false;
 
-                    if(currentpath!='/'){
+                    if(currentpath && currentpath != '/' && currentpath != '.'){
                         var parts   = currentpath.split('/'),
                             tmppath = [],
                             crumbs  = [];
