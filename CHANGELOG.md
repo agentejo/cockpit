@@ -1,5 +1,15 @@
 # Changelog
 
+### 0.9.14  (Apr 16, 2014)
+
+    + Added batch delete (media manager)
+    + Added fuzzy search for any file in the media folder (media manager)
+    + Added define allowed file pattern for media field
+    ^ Clear/Empty media field after selection #79
+    # Fixed :splat routes
+    # Fixed nginx compatibility
+
+
 ### 0.9.13  (Apr 10, 2014)
 
     ^ Autofit topnav to screensize
