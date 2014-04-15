@@ -31,7 +31,7 @@ class RestApi extends \LimeExtra\Controller {
             $entries = $this->app->db->find("collections/{$col}", $options);
         }
 
-        return json_encode($entries);
+        return json_encode($entries->toArray());
     }
 
 }

@@ -65,7 +65,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
 
         $title     = $app("i18n")->get("Galleries");
         $badge     = $app->db->getCollection("common/galleries")->count();
-        $galleries = $app->db->find("common/galleries", ["limit"=> 3, "sort"=>["created"=>-1] ]);
+        $galleries = $app->db->find("common/galleries", ["limit"=> 3, "sort"=>["created"=>-1] ])->toArray();
 
         echo $app->view("galleries:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'galleries'));
     });

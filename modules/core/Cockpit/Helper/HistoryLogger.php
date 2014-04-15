@@ -21,7 +21,7 @@ class HistoryLogger extends \Lime\Helper {
         if($options["from"]) $config["filter"]["time"] = ['$gte' => $options["from"]];
         if($options["to"])   $config["filter"]["time"] = ['$lte' => $options["to"]];
 
-        return $this->app->db->find("cockpit/history", $config);
+        return $this->app->db->find("cockpit/history", $config)->toArray();
     }
 
     public function clear($before = false) {

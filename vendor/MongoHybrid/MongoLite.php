@@ -47,7 +47,10 @@ class MongoLite {
         if($sort)  $cursor->sort($sort);
         if($skip)  $cursor->skip($skip);
 
-        return $cursor->toArray();
+        $docs      = $cursor->toArray();
+        $resultSet = new ResultSet($this, $docs);
+
+        return $resultSet;
     }
 
     public function insert($collection, &$doc) {

@@ -15,7 +15,7 @@ class Api extends \Cockpit\Controller {
 
         $docs = $this->app->db->find("common/regions", $options);
 
-        return json_encode($docs);
+        return json_encode($docs->toArray());
     }
 
     public function findOne(){

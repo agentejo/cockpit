@@ -120,7 +120,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
 
         $title = $app("i18n")->get("Forms");
         $badge = $app->db->getCollection("common/forms")->count();
-        $forms = $app->db->find("common/forms", ["limit"=> 3, "sort"=>["created"=>-1] ]);
+        $forms = $app->db->find("common/forms", ["limit"=> 3, "sort"=>["created"=>-1] ])->toArray();
 
         echo $app->view("forms:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'forms'));
     });

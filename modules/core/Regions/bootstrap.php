@@ -97,7 +97,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
 
         $title   = $app("i18n")->get("Regions");
         $badge   = $app->db->getCollection("common/regions")->count();
-        $regions = $app->db->find("common/regions", ["limit"=> 3, "sort"=>["created"=>-1] ]);
+        $regions = $app->db->find("common/regions", ["limit"=> 3, "sort"=>["created"=>-1] ])->toArray();
 
         echo $app->view("regions:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'regions'));
     });

@@ -10,7 +10,7 @@ class Accounts extends \Cockpit\Controller {
         $accounts = $this->app->db->find("cockpit/accounts", [
             "filter" => $this->user["group"]=="admin" ? null:["_id"=>$current],
             "sort"   => ["user" => 1]
-        ]);
+        ])->toArray();
 
         foreach ($accounts as &$account) {
             $account["md5email"] = md5(@$account["email"]);

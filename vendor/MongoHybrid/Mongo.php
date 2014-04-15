@@ -72,7 +72,9 @@ class Mongo {
             if(isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
         }
 
-        return $docs;
+        $resultSet = new ResultSet($this, $docs);
+
+        return $resultSet;
     }
 
     public function insert($collection, &$doc) {

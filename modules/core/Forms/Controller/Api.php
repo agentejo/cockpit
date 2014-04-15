@@ -22,7 +22,7 @@ class Api extends \Cockpit\Controller {
             }
         }
 
-        return json_encode($docs);
+        return json_encode($docs->toArray());
     }
 
     public function findOne(){
@@ -85,7 +85,7 @@ class Api extends \Cockpit\Controller {
             $entries = $this->app->db->find("forms/{$frm}", $options);
         }
 
-        return json_encode($entries);
+        return json_encode($entries->toArray());
     }
 
     public function removeentry(){
