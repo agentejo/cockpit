@@ -123,6 +123,7 @@
                                                </select>
 
                                                <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="@lang('options...')">
+                                               <input type="text" data-ng-if="field.type=='media'" data-ng-model="field.allowed" placeholder="*.*" title="@lang('Allowed media types')" data-uk-tooltip>
 
                                                <select data-ng-if="field.type=='code'" data-ng-model="field.syntax" title="@lang('Code syntax')" data-uk-tooltip>
                                                    <option value="text">Text</option>
@@ -169,7 +170,7 @@
                                           </div>
 
                                           <div data-ng-switch-when="media">
-                                              <input type="text" media-path-picker data-ng-model="region.fields[$index].value">
+                                              <input type="text" media-path-picker="@@ field.allowed || '*' @@" data-ng-model="region.fields[$index].value">
                                           </div>
 
                                           <div data-ng-switch-when="boolean">

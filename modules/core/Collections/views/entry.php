@@ -129,7 +129,7 @@
                         </div>
 
                         <div data-ng-switch-when="media">
-                            <input type="text" media-path-picker data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[field.name]">
+                            <input type="text" media-path-picker="@@ field.allowed || '*' @@" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[field.name]">
                         </div>
 
                         <div data-ng-switch-when="boolean">

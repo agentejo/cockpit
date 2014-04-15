@@ -86,6 +86,7 @@
                                            </select>
 
                                            <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="@lang('options...')">
+                                           <input type="text" data-ng-if="field.type=='media'" data-ng-model="field.allowed" placeholder="*.*" title="@lang('Allowed media types')" data-uk-tooltip>
 
                                            <a data-ng-click="removefield(field)" class="uk-close"></a>
                                         </div>
@@ -167,7 +168,7 @@
                     </div>
 
                     <div data-ng-switch-when="media">
-                        <input type="text" media-path-picker data-ng-model="$parent.metaimage.data[field.name]">
+                        <input type="text" media-path-picker="@@ field.allowed || '*' @@" data-ng-model="$parent.metaimage.data[field.name]">
                     </div>
 
                     <div data-ng-switch-when="boolean">
