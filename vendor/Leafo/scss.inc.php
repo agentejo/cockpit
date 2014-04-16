@@ -43,7 +43,7 @@
  * @author Leaf Corcoran <leafot@gmail.com>
  */
 class scssc {
-	static public $VERSION = "v0.0.9";
+	static public $VERSION = "v0.0.10";
 
 	static protected $operatorNames = array(
 		'+' => "add",
@@ -1868,7 +1868,7 @@ class scssc {
 	protected static $lib_if = array("condition", "if-true", "if-false");
 	protected function lib_if($args) {
 		list($cond,$t, $f) = $args;
-		if ($cond == self::$false) return $f;
+		if (!$this->isTruthy($cond)) return $f;
 		return $t;
 	}
 
