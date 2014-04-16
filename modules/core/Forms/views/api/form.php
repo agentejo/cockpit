@@ -27,12 +27,15 @@
                 }
             };
 
+        if(msgsuccess) msgsuccess.style.display = "none";
+        if(msgfail)    msgfail.style.display = "none";
+
         bind(form, "submit", function(e){
 
             e.preventDefault();
 
             if(msgsuccess) msgsuccess.style.display = "none";
-            if(msgfail) msgfail.style.display = "none";
+            if(msgfail)    msgfail.style.display = "none";
 
             var data = serialize(form),
                 xhr  = new XMLHttpRequest();
