@@ -37,8 +37,15 @@
             if(msgsuccess) msgsuccess.style.display = "none";
             if(msgfail)    msgfail.style.display = "none";
 
-            var data = serialize(form),
-                xhr  = new XMLHttpRequest();
+            var xhr = new XMLHttpRequest(), data;
+
+            if(window.FormData) {
+                data = new FormData(form);
+            } else {
+                // deprecated: remove after dropping ie 9 support
+                data = serialize(form);
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            }
 
             xhr.onload = function(){
 
@@ -59,7 +66,6 @@
             };
 
             xhr.open('POST', "@route('/api/forms/submit/'.$name)", true);
-            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             xhr.send(data);
         });
 
