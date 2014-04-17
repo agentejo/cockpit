@@ -100,7 +100,7 @@
         </div>
 
         <ul class="uk-grid uk-grid-small" data-ng-show="mode=='list' && dir && (dir.folders.length || dir.files.length)">
-            <li class="uk-grid-margin uk-width-medium-1-5 uk-width-1-1" ng-repeat="folder in dir.folders" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
+            <li class="uk-grid-margin uk-width-medium-1-5 uk-width-1-1" ng-repeat="folder in dir.folders track by folder.path" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
                 <div class="app-panel">
                     <span class="js-select"><input type="checkbox" ng-model="selected[folder.path]"></span>
                     <div class="mm-type mm-type-folder">
@@ -116,7 +116,7 @@
                     </div>
                 </div>
             </li>
-            <li class="uk-grid-margin uk-width-medium-1-5 uk-width-1-1" ng-repeat="file in dir.files" data-ng-hide="(viewfilter=='folders' || !matchName(file.name))">
+            <li class="uk-grid-margin uk-width-medium-1-5 uk-width-1-1" ng-repeat="file in dir.files track by file.path" data-ng-hide="(viewfilter=='folders' || !matchName(file.name))">
                 <div class="app-panel">
                     <span class="js-select"><input type="checkbox" ng-model="selected[file.path]"> </span>
                     <div class="mm-type mm-type-file">
@@ -148,7 +148,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="folder in dir.folders" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
+                <tr ng-repeat="folder in dir.folders track by folder.path" data-type="folder" data-ng-hide="(viewfilter=='files' || !matchName(folder.name))">
                    <td><input type="checkbox" ng-model="selected[folder.path]"></td>
                    <td><i class="uk-icon-folder-o"></i></td>
                    <td><div class="uk-text-truncate" title="@@ folder.name @@"><a href="#@@ folder.path @@" ng-click="updatepath(folder.path)">@@ folder.name @@</a></div></td>
@@ -169,7 +169,7 @@
                    </td>
                 </tr>
 
-                <tr ng-repeat="file in dir.files" data-type="file" data-ng-hide="(viewfilter=='folders' || !matchName(file.name))">
+                <tr ng-repeat="file in dir.files track by file.path" data-type="file" data-ng-hide="(viewfilter=='folders' || !matchName(file.name))">
                    <td><input type="checkbox" ng-model="selected[file.path]"></td>
                    <td><i class="uk-icon-file-o" media-preview="@@ file.url @@"></i></td>
                    <td><div class="uk-text-truncate" title="@@ file.name @@"><a ng-click="open(file)">@@ file.name @@</a></div></td>

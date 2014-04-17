@@ -29,7 +29,7 @@
     </nav>
 
     <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="collections && collections.length && mode=='list'">
-        <div class="uk-width-1-1 uk-width-medium-1-3 uk-width-large-1-4" data-ng-repeat="collection in collections" data-ng-show="matchName(collection.name)">
+        <div class="uk-width-1-1 uk-width-medium-1-3 uk-width-large-1-4" data-ng-repeat="collection in collections track by collection._id" data-ng-show="matchName(collection.name)">
 
             <div class="app-panel">
 
@@ -54,15 +54,17 @@
     </div>
 
     <div class="app-panel" data-ng-if="collections && collections.length && mode=='table'">
-        <table class="uk-table uk-table-striped">
+        <table class="uk-table uk-table-striped" multiple-select="{model:collections}">
             <thead>
                 <tr>
+                    <th width="10"><input class="js-select-all" type="checkbox"></th>
                     <th>@lang('Collection')</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr data-ng-repeat="collection in collections" data-ng-show="matchName(collection.name)">
+                <tr class="js-multiple-select" data-ng-repeat="collection in collections track by collection._id" data-ng-show="matchName(collection.name)">
+                    <td><input class="js-select" type="checkbox"></td>
                     <td>
                         <a href="@route('/collections/collection')/@@ collection._id @@">@@ collection.name @@</a>
                     </td>
@@ -71,13 +73,17 @@
                             <li><a href="@route('/collections/entries')/@@ collection._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a></li>
                             <li><a href="@route('/collections/entry')/@@ collection._id @@" title="@lang('Create new entry')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a></li>
                             @hasaccess?("Collections", 'manage.collections')
-                            <li><a class="uk-text-danger" data-ng-click="remove($index, collection)" href="#" title="@lang('Delete collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a></li>
+                            <li><a class="uk-text-danger" data-ng-click="remove($index, collection)" href="#" title="@lang('Delete collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle js-ignore-select"></i></a></li>
                             @end
                         </ul>
                     </td>
                 </tr>
             </tbody>
         </table>
+
+        <div class="uk-margin-top">
+            <button class="uk-button uk-button-danger" data-ng-click="removeSelected()" data-ng-show="selected"><i class="uk-icon-trash-o"></i> @lang('Delete')</button>
+        </div>
     </div>
 
     <div class="uk-text-center app-panel" data-ng-show="collections && !collections.length">

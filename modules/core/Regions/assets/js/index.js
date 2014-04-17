@@ -5,6 +5,7 @@
         $scope.activegroup = '-all';
         $scope.groups      = [];
         $scope.mode        = App.storage.get("cockpit.view.listmode", 'list');
+        $scope.selected    = null;
 
         // get regions
         $http.post(App.route("/api/regions/find"), {}).success(function(regions){
@@ -115,6 +116,45 @@
             }
         };
 
+        $scope.$on('multiple-select', function(e, data){
+            $timeout(function(){
+                $scope.selected = data.items.length ? data.items : null;
+            }, 0);
+        });
+
+        $scope.removeSelected = function(){
+
+            if ($scope.selected && $scope.selected.length) {
+
+                App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
+
+                    var row, scope, $index;
+
+                    for(var i=0;i<$scope.selected.length;i++) {
+                        row    = $scope.selected[i],
+                        scope  = $(row).scope(),
+                        region = scope.region,
+                        $index = scope.$index;
+
+                        (function(row, scope, $index){
+
+                            $http.post(App.route("/api/regions/remove"), {
+
+                                "region": angular.copy(region)
+
+                            }, {responseType:"json"}).success(function(data){
+
+
+                            }).error(App.module.callbacks.error.http);
+
+
+                        })(row, scope, $index);
+
+                        $scope.regions.splice($index, 1);
+                    }
+                });
+            }
+        };
 
         var grouplist = $("#groups-list");
 

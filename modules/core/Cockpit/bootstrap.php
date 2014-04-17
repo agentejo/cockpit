@@ -89,6 +89,7 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
         'assets:vendor/uikit/js/addons/autocomplete.min.js',
         'assets:vendor/uikit/js/addons/search.min.js',
         'assets:vendor/uikit/js/addons/form-select.min.js',
+        'assets:vendor/multipleselect.js',
         'cockpit:assets/js/app.js',
         'cockpit:assets/js/app.module.js',
         'cockpit:assets/js/bootstrap.js',

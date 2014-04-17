@@ -38,21 +38,19 @@
         };
     });
 
-    module.directive("appCodeText", function(){
+    module.directive("multipleSelect", function(){
 
         return {
             restrict: 'A',
 
             link: function (scope, elm, attrs) {
 
-                if(elm.is("textarea")){
+                var options        = $.extend({}, MultipleSelect.defaults, scope.$eval(attrs.multipleSelect))
+                    multipleSelect = new MultipleSelect(elm, options);
 
-                    App.assets.require('/assets/vendor/behave.js', function(){
-
-                        elm.data("behave", new Behave({
-                            textarea: elm[0]
-                        }));
-
+                if (scope && scope.$parent) {
+                    elm.on('multiple-select', function(e, items){
+                        scope.$parent.$broadcast('multiple-select', {"items":items});
                     });
                 }
             }

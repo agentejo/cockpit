@@ -28,7 +28,7 @@
     </nav>
 
     <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="forms && forms.length && mode=='list'">
-        <div class="uk-width-1-1 uk-width-medium-1-3 uk-width-large-1-4" data-ng-repeat="form in forms" data-ng-show="matchName(form.name)">
+        <div class="uk-width-1-1 uk-width-medium-1-3 uk-width-large-1-4" data-ng-repeat="form in forms track by form._id" data-ng-show="matchName(form.name)">
 
             <div class="app-panel">
 
@@ -52,26 +52,32 @@
     </div>
 
     <div class="app-panel" data-ng-if="forms && forms.length && mode=='table'">
-        <table class="uk-table uk-table-striped">
+        <table class="uk-table uk-table-striped" multiple-select="{model:forms}">
             <thead>
                 <tr>
+                    <th width="10"><input class="js-select-all" type="checkbox"></th>
                     <th>@lang('Form')</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr data-ng-repeat="form in forms" data-ng-show="matchName(form.name)">
+                <tr class="js-multiple-select" data-ng-repeat="form in forms track by form._id" data-ng-show="matchName(form.name)">
+                    <td><input class="js-select" type="checkbox"></td>
                     <td>
                         <a href="@route('/forms/form')/@@ form._id @@">@@ form.name @@</a>
                     </td>
                     <td align="right">
                         @hasaccess?("Forms", 'manage.forms')
-                        <a class="uk-text-danger" data-ng-click="remove($index, form)" href="#" title="@lang('Delete form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                        <a class="uk-text-danger" data-ng-click="remove($index, form)" href="#" title="@lang('Delete form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle js-ignore-select"></i></a>
                         @end
                     </td>
                 </tr>
             </tbody>
         </table>
+
+        <div class="uk-margin-top">
+            <button class="uk-button uk-button-danger" data-ng-click="removeSelected()" data-ng-show="selected"><i class="uk-icon-trash-o"></i> @lang('Delete')</button>
+        </div>
     </div>
 
     <div class="uk-text-center app-panel" data-ng-show="forms && !forms.length">

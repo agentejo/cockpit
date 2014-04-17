@@ -250,9 +250,9 @@
                     <div class="uk-form-row">
                         <label><strong>@lang("Group")</strong></label>
                         <div class="uk-form-controls uk-margin-small-top">
-                            <div class="uk-form-select uk-button uk-button-large" data-uk-form-select>
+                            <div class="uk-form-select">
                                 <i class="uk-icon-sitemap uk-margin-small-right"></i>
-                                <span></span>
+                                <a>@@ region.group || '- @lang("No group") -' @@</a>
                                 <select class="uk-width-1-1" data-ng-model="region.group">
                                     <option ng-repeat="group in groups" value="@@ group @@">@@ group @@</option>
                                     <option value="">- @lang("No group") -</option>

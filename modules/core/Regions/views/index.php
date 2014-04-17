@@ -68,7 +68,7 @@
             </div>
 
             <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="regions && regions.length && mode=='list'">
-                <div class="uk-width-1-1 uk-width-medium-1-3" data-ng-repeat="region in regions" data-ng-show="matchName(region.name) && inGroup(region.group)">
+                <div class="uk-width-1-1 uk-width-medium-1-3" data-ng-repeat="region in regions track by region._id" data-ng-show="matchName(region.name) && inGroup(region.group)">
 
                     <div class="app-panel">
 
@@ -91,26 +91,32 @@
             </div>
 
             <div class="app-panel" data-ng-if="regions && regions.length && mode=='table'">
-                <table class="uk-table uk-table-striped">
+                <table class="uk-table uk-table-striped js-multiple" multiple-select="{model:regions}">
                     <thead>
                         <tr>
+                            <th width="10"><input class="js-select-all" type="checkbox"></th>
                             <th>@lang('Region')</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr data-ng-repeat="region in regions" data-ng-show="matchName(region.name) && inGroup(region.group)">
+                        <tr class="js-multiple-select" data-ng-repeat="region in regions track by region._id" ng-show="matchName(region.name) && inGroup(region.group)">
+                            <td><input class="js-select" type="checkbox"></td>
                             <td>
                                 <a href="@route('/regions/region')/@@ region._id @@">@@ region.name @@</a>
                             </td>
                             <td align="right">
                                 @hasaccess?("Regions", 'create.regions')
-                                <a class="uk-text-danger" data-ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                                <a class="uk-text-danger" ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle js-ignore-select"></i></a>
                                 @end
                             </td>
                         </tr>
                     </tbody>
                 </table>
+
+                <div class="uk-margin-top">
+                    <button type="button" class="uk-button uk-button-danger" ng-click="removeSelected()" ng-show="selected"><i class="uk-icon-trash-o"></i> @lang('Delete')</button>
+                </div>
             </div>
 
         </div>

@@ -68,7 +68,7 @@
             </div>
 
             <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="galleries && galleries.length && mode=='list'">
-                <div class="uk-width-1-1 uk-width-medium-1-3" data-ng-repeat="gallery in galleries" data-ng-show="matchName(gallery.name) && inGroup(gallery.group)">
+                <div class="uk-width-1-1 uk-width-medium-1-3" data-ng-repeat="gallery in galleries track by gallery._id" data-ng-show="matchName(gallery.name) && inGroup(gallery.group)">
 
                     <div class="app-panel">
 
@@ -97,16 +97,18 @@
             </div>
 
             <div class="app-panel" data-ng-if="galleries && galleries.length && mode=='table'">
-                <table class="uk-table uk-table-striped">
+                <table class="uk-table uk-table-striped" multiple-select="{model:galleries}">
                     <thead>
                         <tr>
+                            <th width="10"><input class="js-select-all" type="checkbox"></th>
                             <th>@lang('Gallery')</th>
                             <th></th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr data-ng-repeat="gallery in galleries" data-ng-show="matchName(gallery.name) && inGroup(gallery.group)">
+                        <tr class="js-multiple-select" data-ng-repeat="gallery in galleries track by gallery._id" data-ng-show="matchName(gallery.name) && inGroup(gallery.group)">
+                            <td><input class="js-select" type="checkbox"></td>
                             <td>
                                 <a href="@route('/galleries/gallery')/@@ gallery._id @@">@@ gallery.name @@</a>
                             </td>
@@ -117,12 +119,16 @@
                             </td>
                             <td align="right">
                                 @hasaccess?("Galleries", 'create.gallery')
-                                <a class="uk-text-danger" data-ng-click="remove($index, gallery)" href="#" title="@lang('Delete gallery')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                                <a class="uk-text-danger" data-ng-click="remove($index, gallery)" href="#" title="@lang('Delete gallery')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle js-ignore-select"></i></a>
                                 @end
                             </td>
                         </tr>
                     </tbody>
                 </table>
+
+                <div class="uk-margin-top">
+                    <button class="uk-button uk-button-danger" data-ng-click="removeSelected()" data-ng-show="selected"><i class="uk-icon-trash-o"></i> @lang('Delete')</button>
+                </div>
             </div>
         </div>
     </div>
