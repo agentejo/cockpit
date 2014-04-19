@@ -128,7 +128,7 @@
 
                 App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
 
-                    var row, scope, $index;
+                    var row, scope, $index, $ids = [];
 
                     for(var i=0;i<$scope.selected.length;i++) {
                         row    = $scope.selected[i],
@@ -136,7 +136,7 @@
                         region = scope.region,
                         $index = scope.$index;
 
-                        (function(row, scope, $index){
+                        (function(row, scope, region, $index){
 
                             $http.post(App.route("/api/regions/remove"), {
 
@@ -147,11 +147,14 @@
 
                             }).error(App.module.callbacks.error.http);
 
+                            $ids.push(region._id);
 
-                        })(row, scope, $index);
-
-                        $scope.regions.splice($index, 1);
+                        })(row, scope, region, $index);
                     }
+
+                    $scope.regions = $scope.regions.filter(function(region){
+                        return ($ids.indexOf(region._id)===-1);
+                    });
                 });
             }
         };

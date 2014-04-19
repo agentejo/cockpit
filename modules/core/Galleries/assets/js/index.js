@@ -48,7 +48,7 @@
 
                 App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
 
-                    var row, scope, $index;
+                    var row, scope, $index, $ids = [];
 
                     for(var i=0;i<$scope.selected.length;i++) {
                         row     = $scope.selected[i],
@@ -56,16 +56,20 @@
                         gallery = scope.gallery,
                         $index  = scope.$index;
 
-                        (function(row, scope, $index){
+                        (function(row, scope, gallery, $index){
 
                             $http.post(App.route("/api/galleries/remove"), { "gallery": angular.copy(gallery) }, {responseType:"json"}).success(function(data){
 
                             }).error(App.module.callbacks.error.http);
 
-                        })(row, scope, $index);
+                            $ids.push(gallery._id);
 
-                        $scope.galleries.splice($index, 1);
+                        })(row, scope, gallery, $index);
                     }
+
+                    $scope.galleries = $scope.galleries.filter(function(gallery){
+                        return ($ids.indexOf(gallery._id)===-1);
+                    });
                 });
             }
         };

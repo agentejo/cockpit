@@ -26,10 +26,10 @@
 
         <div class="uk-width-medium-4-5">
             <div class="app-panel">
-                <table class="uk-table uk-table-striped">
+                <table class="uk-table uk-table-striped" multiple-select="{model:entries}">
                     <thead>
                         <tr>
-                            <th width="10"><input class="js-all" type="checkbox"></th>
+                            <th width="10"><input class="js-select-all" type="checkbox"></th>
                             <th>
                                 @lang('Form data')
                             </th>
@@ -38,8 +38,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr data-ng-repeat="entry in entries">
-                            <td><input class="js-select" type="checkbox" data-id="@@ entry._id @@"></td>
+                        <tr class="js-multiple-select" data-ng-repeat="entry in entries by entry._id">
+                            <td><input class="js-select" type="checkbox"></td>
                             <td>
                                 <div class="uk-grid uk-grid-preserve uk-text-small" data-ng-repeat="(key, value) in entry.data">
                                     <div class="uk-width-medium-1-5">
@@ -59,7 +59,7 @@
                 </table>
 
                 <div class="uk-margin-top">
-                    <button class="uk-button uk-button-danger" data-ng-click="removeSelected()" data-ng-show="selected.length"><i class="uk-icon-trash-o"></i> @lang('Delete entries')</button>
+                    <button class="uk-button uk-button-danger" data-ng-click="removeSelected()" data-ng-show="selected"><i class="uk-icon-trash-o"></i> @lang('Delete entries')</button>
                 </div>
 
             </div>

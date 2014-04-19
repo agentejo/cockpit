@@ -51,7 +51,7 @@
 
                 App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
 
-                    var row, scope, $index;
+                    var row, scope, $index, $ids = [];
 
                     for(var i=0;i<$scope.selected.length;i++) {
                         row    = $scope.selected[i],
@@ -59,17 +59,20 @@
                         collection = scope.collection,
                         $index = scope.$index;
 
-                        (function(row, scope, $index){
+                        (function(row, scope, collection, $index){
 
                             $http.post(App.route("/api/collections/remove"), { "collection": angular.copy(collection) }, {responseType:"json"}).success(function(data){
 
                             }).error(App.module.callbacks.error.http);
 
+                            $ids.push(collection._id);
 
-                        })(row, scope, $index);
-
-                        $scope.collections.splice($index, 1);
+                        })(row, scope, collection, $index);
                     }
+
+                    $scope.collections = $scope.collections.filter(function(collection){
+                        return ($ids.indexOf(collection._id)===-1);
+                    });
                 });
             }
         };

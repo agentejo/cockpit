@@ -39,57 +39,46 @@
 
         // batch actions
 
-        $scope.selected = [];
+        $scope.selected = null;
+
+        $scope.$on('multiple-select', function(e, data){
+            $timeout(function(){
+                $scope.selected = data.items.length ? data.items : null;
+            }, 0);
+        });
 
         $scope.removeSelected = function(){
+            if ($scope.selected && $scope.selected.length) {
 
-            if(!$scope.selected.length) return;
+                App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
 
-            App.Ui.confirm(App.i18n.get("Are you sure?"), function(){
+                    var row, scope, $index, $ids = [], form = angular.copy($scope.form);
 
-                var form = angular.copy($scope.form);
+                    for(var i=0;i<$scope.selected.length;i++) {
+                        row    = $scope.selected[i],
+                        scope  = $(row).scope(),
+                        entry  = scope.entry,
+                        $index = scope.$index;
 
-                $scope.selected.forEach(function(entryId){
-                    for(var index=0; index<$scope.entries.length;index++) {
-                        if($scope.entries[index]._id == entryId) {
+                        (function(row, scope, entry, $index){
 
                             $http.post(App.route("/api/forms/removeentry"), {
                                 "form": form,
-                                "entryId": entryId
+                                "entryId": entry._id
                             }, {responseType:"json"}).error(App.module.callbacks.error.http);
 
-                            $scope.entries.splice(index, 1);
+                            $ids.push(entry._id);
                             $scope.form.count -= 1;
-                            break;
-                        }
+
+                        })(row, scope, entry, $index);
                     }
+
+                    $scope.entries = $scope.entries.filter(function(entry){
+                        return ($ids.indexOf(entry._id)===-1);
+                    });
                 });
-
-                $scope.selected = [];
-            });
+            }
         };
-
-        var updateSelected = function(){
-            var items = $(".js-select:checked");
-
-            $scope.$apply(function(){
-                $scope.selected = [];
-
-                items.each(function(){
-                    $scope.selected.push($(this).data("id"));
-                });
-            });
-        };
-
-        var cbAll = $(".js-all").on("click", function(){
-            $(".js-select").prop("checked", cbAll.prop("checked"));
-            updateSelected();
-        });
-
-        $("table").on("click", ".js-select", function(){
-            cbAll.prop("checked", false);
-            updateSelected();
-        });
 
     });
 

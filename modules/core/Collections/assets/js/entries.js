@@ -100,7 +100,7 @@
 
                 App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
 
-                    var row, scope, $index, collection = angular.copy($scope.collection);
+                    var row, scope, $index, $ids = [], collection = angular.copy($scope.collection);
 
                     for(var i=0;i<$scope.selected.length;i++) {
                         row    = $scope.selected[i],
@@ -108,18 +108,22 @@
                         entry  = scope.entry,
                         $index = scope.$index;
 
-                        (function(row, scope, $index){
+                        (function(row, scope, entry, $index){
 
                             $http.post(App.route("/api/collections/removeentry"), {
                                 "collection": collection,
                                 "entryId": entry._id
                             }, {responseType:"json"}).error(App.module.callbacks.error.http);
 
-                            $scope.entries.splice($index, 1);
+                            $ids.push(entry._id);
                             $scope.collection.count -= 1;
 
-                        })(row, scope, $index);
+                        })(row, scope, entry, $index);
                     }
+
+                    $scope.entries = $scope.entries.filter(function(entry){
+                        return ($ids.indexOf(entry._id)===-1);
+                    });
                 });
             }
         };
