@@ -2,18 +2,13 @@
 
     var module = angular.module('app', []);
 
+    // Completely disable SCE
     module.config(function($sceProvider) {
-
-      // Completely disable SCE
-      $sceProvider.enabled(false);
-
+      //$sceProvider.enabled(false);
     });
 
     module.run(function($rootScope, $http){
-
-        $rootScope.app = {
-            "notifications": []
-        };
+        // startup app module
     });
 
     module.directive("appClock", function(){
@@ -54,6 +49,12 @@
                     });
                 }
             }
+        };
+    });
+
+    module.filter('unsafe', function($sce) {
+        return function(val) {
+            return $sce.trustAsHtml(val);
         };
     });
 

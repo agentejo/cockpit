@@ -20,26 +20,6 @@
         '</div>'
     ].join(""));
 
-    function autocomplete(cm) {
-        var doc = cm.getDoc(),
-            cur = cm.getCursor(),
-            toc = cm.getTokenAt(cur),
-            mode = CodeMirror.innerMode(cm.getMode(), toc.state).mode.name;
-
-        if(!toc.string.trim()) return;
-
-        if (mode == 'xml') { //html depends on xml
-
-            if(toc.string.charAt(0) == "<" || toc.type == "attribute") {
-                CodeMirror.showHint(cm, CodeMirror.hint.html, {completeSingle:false});
-            }
-        } else {
-            if(toc.string.charAt(0) != "<") {
-              CodeMirror.showHint(cm, CodeMirror.hint.anyword, {completeSingle:false});
-            }
-        }
-    };
-
     $.UIkit.htmleditor.addPlugin('htmlimages', /<img(.+?)>/gim, function(marker) {
 
         var img, attrs = {"src":"", "alt":""};
@@ -132,10 +112,6 @@
               htmleditor = new $.UIkit.htmleditor(txt, options);
 
               setTimeout(function(){
-
-                  htmleditor.editor.on("inputRead", $.UIkit.Utils.debounce(function(){
-                    autocomplete(htmleditor.editor);
-                  }, 100));
 
                   htmleditor.editor.on("change", $.UIkit.Utils.debounce(function(){
 
