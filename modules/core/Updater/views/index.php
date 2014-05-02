@@ -25,7 +25,7 @@
 
     <div class="uk-text-center uk-animation-fade" ng-if="data && !data.error">
 
-        <div ng-if="(data.current.version == data.local.version)">
+        <div ng-if="version_compare(data.local.version, data.current.version, '<=')">
             <h2><i class="uk-icon-thumbs-o-up"></i></h2>
             <p class="uk-text-large">
                 <strong>@@ data.current.version @@</strong>
@@ -38,7 +38,7 @@
             </p>
         </div>
 
-        <div ng-if="(data.current.version != data.local.version)">
+        <div ng-if="version_compare(data.local.version, data.current.version, '>')">
             <h2><i class="uk-icon-bullhorn"></i></h2>
             <p class="uk-text-large">
                 <span class="uk-text-muted">@@ data.local.version @@</span> / <strong>@@ data.current.version @@</strong>

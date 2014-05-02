@@ -6,85 +6,87 @@
 
 
     var template = $.UIkit.Utils.template([
-        '<div id="{{{ uid }}}" class="uk-overlay uk-display-block">',
+        '<div class="uk-overlay uk-display-block">',
             '{{{ img }}}',
             '<div class="uk-overlay-area">',
                 '<div class="uk-overlay-area-content">',
                     '<div><span class="uk-badge">{{{ alt }}}</span></div>',
                     '<div class="uk-button-group uk-margin-top">',
-                        '<button class="uk-button uk-button-primary js-config" type="button" title="Pick image"><i class="uk-icon-hand-o-up"></i></button>',
-                        '<button class="uk-button uk-button-danger js-remove" type="button" title="Remove image"><i class="uk-icon-trash-o"></i></button>',
+                        '<button class="uk-button uk-button-primary js-editor-image js-config" type="button" title="Pick image"><i class="uk-icon-hand-o-up"></i></button>',
+                        '<button class="uk-button uk-button-danger js-editor-image js-remove" type="button" title="Remove image"><i class="uk-icon-trash-o"></i></button>',
                     '</div>',
                 '</div>',
             '</div>',
         '</div>'
     ].join(""));
 
-    $.UIkit.htmleditor.addPlugin('htmlimages', /<img(.+?)>/gim, function(marker) {
+    $.UIkit.htmleditor.addPlugin('image', function(editor) {
 
-        var img, attrs = {"src":"", "alt":""};
+      var images = [];
 
-        marker.found[0].match(/(\S+)=["']?((?:.(?!["']?\s+(?:\S+)=|[>"']))+.)["']?/g).forEach(function(attr){
-            var parts = attr.replace(/('|")/g, '').split("=");
-            attrs[parts[0]] = parts[1];
+      editor.element.on('render', function() {
+
+        var regexp = editor.getMode() != 'gfm' ? /<img(.+?)>/gi : /(?:<img(.+?)>|!(?:\[([^\n\]]*)\])(?:\(([^\n\]]*)\))?)/gi, img;
+
+        images = editor.replaceInPreview(regexp, function(data) {
+
+            if (data.matches[0][0] == '<') {
+
+                if (data.matches[0].match(/js\-no\-parse/)) return false;
+
+                var matchesSrc = data.matches[0].match(/\ssrc="(.*?)"/),
+                    matchesAlt = data.matches[0].match(/\salt="(.*?)"/);
+
+                data['src'] = matchesSrc ? matchesSrc[1] : '';
+                data['alt'] = matchesAlt ? matchesAlt[1] : '';
+                data['handler'] = function(src) {
+
+                    var src = ' src="' + src +'"', alt = ' alt="'+data['alt']+'"', output = data.matches[0];
+
+                    output = matchesSrc ? output.replace(matchesSrc[0], src) : [output.slice(0, 4), src, output.slice(4)].join('');
+                    output = matchesAlt ? output.replace(matchesAlt[0], alt) : [output.slice(0, 4), alt, output.slice(4)].join('');
+
+                    data.replace(output);
+                };
+
+            } else {
+
+                data['src'] = data.matches[3].trim();
+                data['alt'] = data.matches[2];
+                data['handler'] = function(src) {
+
+                    data.replace('![' + data['alt'] + '](' + src + ')');
+                };
+            }
+
+            if (data['src'] && 'http://'!==data['src'].trim()) {
+              img = '<img src="'+data['src']+'" alt="'+data['alt']+'">';
+            } else {
+              img = [
+                '<div class="uk-placeholder uk-placeholder-large uk-text-center uk-vertical-align">',
+                  '<div class="uk-vertical-align-middle"><i class="uk-icon-picture-o"></i></div>',
+                '</div>'
+              ].join("");
+            }
+
+            return template({ 'img': img, alt: data['alt'] || 'No alt text'  }).replace(/(\r\n|\n|\r)/gm, '');
         });
 
-        if (attrs.src && 'http://'!==attrs.src.trim()) {
-          img = '<img src="'+attrs.src+'" alt="'+attrs.alt+'">';
-        } else {
-          img = [
-            '<div class="uk-placeholder uk-placeholder-large uk-text-center uk-vertical-align">',
-              '<div class="uk-vertical-align-middle"><i class="uk-icon-picture-o"></i></div>',
-            '</div>'
-          ].join("");
-        }
+      });
 
-        var replacement = template({"img":img, "uid":marker.uid, "alt": (attrs.alt || 'Image') });
+      editor.preview.on('click', '.js-editor-image.js-config', function() {
 
-        marker.editor.preview.on('click', '#' + marker.uid + ' .js-config', function () {
-            new PathPicker(function(path){
-                marker.replace('<img src="'+path.replace('site:', COCKPIT_SITE_BASE_URL)+'" alt="'+attrs.alt+'">');
-            }, "*.(jpg|png|gif)");
-        });
+          var data = images[editor.preview.find('.js-editor-image.js-config').index(this)];
 
-        marker.editor.preview.on('click', '#' + marker.uid + ' .js-remove', function () {
-            marker.replace('');
-        });
+          new PathPicker(function(path){
+              data.handler(path.replace('site:', COCKPIT_SITE_BASE_URL));
+          }, "*.(jpg|png|gif)");
+      });
 
-        return replacement;
-    });
+      editor.preview.on('click', '.js-editor-image.js-remove', function() {
+          images[editor.preview.find('.js-editor-image.js-remove').index(this)].replace('');
+      });
 
-    $.UIkit.htmleditor.addPlugin('markdownimages', /(?:\{<(.*?)>\})?!(?:\[([^\n\]]*)\])(?:\(([^\n\]]*)\))?$/gim, function (marker) {
-
-        if(marker.editor.editor.options.mode != "gfm") {
-          return marker.found[0];
-        }
-
-        var img;
-
-        if (marker.found[3] && 'http://'!==marker.found[3].trim()) {
-          img = '<img src="'+marker.found[3]+'" alt="">';
-        } else {
-          img = [
-            '<div class="uk-placeholder uk-placeholder-large uk-text-center uk-vertical-align" style="margin:0;">',
-              '<div class="uk-vertical-align-middle"><i class="uk-icon-picture-o"></i></div>',
-            '</div>'
-          ].join("");
-        }
-
-        var replacement = template({"img":img, "uid":marker.uid, "alt": (marker.found[2] || 'Image') });
-
-        marker.editor.preview.on('click', '#' + marker.uid + ' .js-config', function () {
-            new PathPicker(function(path){
-                marker.replace('![' + marker.found[2] + '](' + path.replace('site:', COCKPIT_SITE_BASE_URL) + ')');
-            }, "*.(jpg|png|gif)");
-        });
-
-        marker.editor.preview.on('click', '#' + marker.uid + ' .js-remove', function () {
-            marker.replace('');
-        });
-
-        return replacement;
     });
 
     angular.module('cockpit.directives').directive("htmleditor", function($timeout){
@@ -98,7 +100,7 @@
 
           var txt = $('<textarea class="js-htmleditor" style="display:none;"></textarea>'), htmleditor, options;
 
-          options = $.extend({plugins:['htmlimages', 'markdownimages']}, scope.$eval(attrs.options));
+          options = $.extend({plugins:[]}, scope.$eval(attrs.options));
 
           options.maxsplitsize = 300;
 
@@ -110,6 +112,12 @@
 
             if(!htmleditor) {
               htmleditor = new $.UIkit.htmleditor(txt, options);
+
+              htmleditor.addPlugin('image');
+
+              if (options.markdown) {
+                htmleditor.addPlugin('markdown');
+              }
 
               setTimeout(function(){
 

@@ -1,7 +1,6 @@
 <?php
 
 $app['app.assets.base'] = [
-    'assets:vendor/promise.js',
     'assets:vendor/jquery.js',
     'assets:vendor/angular.js',
     'assets:vendor/storage.js',

@@ -77,7 +77,67 @@
             }).error(App.module.callbacks.error.http);
         };
 
-
+        $scope.version_compare = version_compare;
     });
+
+    // helper
+
+    function version_compare(v1, v2, operator) {
+
+        if (!operator) {
+            return compare;
+        }
+
+        var i = 0, x = 0, compare = 0,
+
+        vm = { 'dev': -6, 'alpha': -5, 'a': -5, 'beta': -4, 'b': -4, 'RC': -3, 'rc': -3, '#': -2, 'p': 1, 'pl': 1 },
+
+        prepVersion = function (v) {
+            v = ('' + v).replace(/[_\-+]/g, '.');
+            v = v.replace(/([^.\d]+)/g, '.$1.').replace(/\.{2,}/g, '.');
+            return (!v.length ? [-8] : v.split('.'));
+        },
+
+        numVersion = function (v) {
+            return !v ? 0 : (isNaN(v) ? vm[v] || -7 : parseInt(v, 10));
+        };
+
+        v1 = prepVersion(v1);
+        v2 = prepVersion(v2);
+        x  = Math.max(v1.length, v2.length);
+
+        for (i = 0; i < x; i++) {
+
+            if (v1[i] == v2[i]) continue;
+
+            v1[i] = numVersion(v1[i]);
+            v2[i] = numVersion(v2[i]);
+
+            if (v1[i] < v2[i]) {
+                compare = -1;
+                break;
+            } else if (v1[i] > v2[i]) {
+                compare = 1;
+                break;
+            }
+        }
+
+        switch (operator) {
+            case '>':
+                return (compare > 0);
+            case '>=':
+                return (compare >= 0);
+            case '<=':
+                return (compare <= 0);
+            case '==':
+                return (compare === 0);
+            case '!=':
+                return (compare !== 0);
+            case '<':
+                return (compare < 0);
+            default:
+                return null;
+        }
+    }
 
 })(jQuery);
