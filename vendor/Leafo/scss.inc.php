@@ -1806,7 +1806,7 @@ class scssc {
 		if ($min == $max) {
 			$s = $h = 0;
 		} else {
-		        $d = $max - $min;
+			$d = $max - $min;
 
 			if ($l < 255)
 				$s = $d / $l;
@@ -3988,7 +3988,7 @@ class scss_parser {
 		$token = null;
 
 		$end = strpos($this->buffer, "\n", $this->count);
-		if ($end === false) {
+		if ($end === false || $this->buffer[$end - 1] == '\\') {
 			$end = strlen($this->buffer);
 		}
 

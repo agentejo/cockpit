@@ -27,7 +27,7 @@ $this->module("cockpit")->extend([
 
     "markdown" => function($content) use($app) {
 
-        return \Parsedown::instance()->parse($content);
+        return \Parsedown::instance()->text($content);
     },
 
     "get_registry" => function($key, $default=null) use($app) {

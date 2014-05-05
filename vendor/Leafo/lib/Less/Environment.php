@@ -47,6 +47,11 @@ class Less_Environment{
 
 	public static $mixin_stack = 0;
 
+	/**
+	 * @var array
+	 */
+	public $functions = array();
+
 
 	public function Init(){
 

@@ -40,8 +40,9 @@ class Less_Tree_Variable extends Less_Tree{
 
 		foreach($env->frames as $frame){
 			if( $v = $frame->variable($name) ){
+				$r = $v->value->compile($env);
 				$this->evaluating = false;
-				return $v->value->compile($env);
+				return $r;
 			}
 		}
 
