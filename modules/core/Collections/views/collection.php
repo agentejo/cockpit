@@ -49,6 +49,7 @@
                                     <option value="date">Date</option>
                                     <option value="time">Time</option>
                                     <option value="media">Media</option>
+                                    <option value="region">Region</option>
                                     <option value="gallery">Gallery</option>
                                     <option value="tags">Tags</option>
                                 </select>

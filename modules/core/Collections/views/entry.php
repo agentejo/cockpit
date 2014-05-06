@@ -19,6 +19,7 @@
 {{ $app->assets(['assets:angular/directives/tags.js'], $app['cockpit/version']) }}
 
 {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
+{{ $app->assets(['regions:assets/regionpicker.directive.js'], $app['cockpit/version']) }}
 
 <style>
     textarea { min-height: 150px; }
@@ -142,6 +143,10 @@
 
                         <div data-ng-switch-when="time">
                             <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-uk-timepicker data-ng-model="entry[field.name]">
+                        </div>
+
+                        <div data-ng-switch-when="region">
+                            <input class="uk-width-1-1 uk-form-large" type="text" region-picker data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[field.name]">
                         </div>
 
                         <div data-ng-switch-when="tags">
