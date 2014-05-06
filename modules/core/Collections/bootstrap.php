@@ -64,7 +64,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
                 if(stripos($c["name"], $search)!==false){
                     $list[] = [
                         "title" => '<i class="uk-icon-list"></i> '.$c["name"],
-                        "url"   => $app->routeUrl('/collections/collection/'.$c["_id"])
+                        "url"   => $app->routeUrl('/collections/entries/'.$c["_id"])
                     ];
                 }
             }
