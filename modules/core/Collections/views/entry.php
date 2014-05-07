@@ -104,6 +104,10 @@
                             <gallery data-ng-model="entry[field.name]"></gallery>
                         </div>
 
+                        <div data-ng-switch-when="link-collection">
+                            Todo...
+                        </div>
+
                         <div data-ng-switch-default>
                             <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[field.name]">
                         </div>

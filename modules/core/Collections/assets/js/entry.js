@@ -109,7 +109,7 @@
 
                 fields = $scope.collection.fields.filter(function(field){
 
-                    return (['text','html', 'markdown','code','wysiwyg','markdown', 'gallery'].indexOf(field.type) > -1);
+                    return (['text','html', 'markdown','code','wysiwyg','markdown','gallery','link-collection'].indexOf(field.type) > -1);
                 });
 
             }

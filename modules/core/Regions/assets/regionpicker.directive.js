@@ -18,7 +18,7 @@
 
                         regions = data, options = [];
 
-                        $element.wrap('<div class="uk-autocomplete uk-width-1-1"><div class="uk-form-icon"></div></div>').before('<i class="uk-icon-th-large"></i>');
+                        $element.wrap('<div class="uk-autocomplete uk-width-1-1"><div class="uk-form-icon uk-width-1-1"></div></div>').before('<i class="uk-icon-th-large"></i>');
 
                         regions.forEach(function(region){
                             options.push({value:region.name});

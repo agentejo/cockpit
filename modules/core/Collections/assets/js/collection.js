@@ -24,6 +24,13 @@
             };
         }
 
+        $scope.collections = [];
+
+        $http.post(App.route("/api/collections/find"), {}).success(function(data){
+
+            $scope.collections = data;
+        });
+
         $scope.addfield = function(){
 
             if(!$scope.collection.fields) {
