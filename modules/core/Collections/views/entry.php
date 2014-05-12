@@ -20,6 +20,7 @@
 
 {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
 {{ $app->assets(['regions:assets/regionpicker.directive.js'], $app['cockpit/version']) }}
+{{ $app->assets(['collections:assets/linkcollection.directive.js'], $app['cockpit/version']) }}
 
 <style>
     textarea { min-height: 150px; }
@@ -105,7 +106,7 @@
                         </div>
 
                         <div data-ng-switch-when="link-collection">
-                            Todo...
+                            <div link-collection="@@ field.collection @@" data-ng-model="entry[field.name]">Linking @@ field.collection @@</div>
                         </div>
 
                         <div data-ng-switch-default>

@@ -36,49 +36,53 @@
                         <ul class="uk-list">
                             <li class="uk-margin-bottom uk-clearfix" data-ng-repeat="field in collection.fields">
 
-                                <div class="uk-float-left uk-width-1-2">
-                                    <input type="text" data-ng-model="field.name" placeholder="@lang('Field name')" pattern="[a-zA-Z0-9]+" required>
+                                <div class="uk-panel app-panel-box">
+                                        <div class="uk-clearfix">
+                                            <div class="uk-float-left">
 
+                                                <input type="text" data-ng-model="field.name" placeholder="@lang('Field name')" pattern="[a-zA-Z0-9]+" required>
 
-                                    <select data-ng-model="field.type" title="@lang('Field type')" data-uk-tooltip>
-                                        <option value="text">Text</option>
-                                        <option value="select">Select</option>
-                                        <option value="boolean">Boolean</option>
-                                        <option value="html">Html</option>
-                                        <option value="wysiwyg">Html (WYSIWYG)</option>
-                                        <option value="code">Code</option>
-                                        <option value="markdown">Markdown</option>
-                                        <option value="date">Date</option>
-                                        <option value="time">Time</option>
-                                        <option value="media">Media</option>
-                                        <option value="region">Region</option>
-                                        <option value="link-collection">Collection link</option>
-                                        <option value="gallery">Gallery</option>
-                                        <option value="tags">Tags</option>
-                                    </select>
+                                                <select data-ng-model="field.type" title="@lang('Field type')" data-uk-tooltip>
+                                                    <option value="text">Text</option>
+                                                    <option value="select">Select</option>
+                                                    <option value="boolean">Boolean</option>
+                                                    <option value="html">Html</option>
+                                                    <option value="wysiwyg">Html (WYSIWYG)</option>
+                                                    <option value="code">Code</option>
+                                                    <option value="markdown">Markdown</option>
+                                                    <option value="date">Date</option>
+                                                    <option value="time">Time</option>
+                                                    <option value="media">Media</option>
+                                                    <option value="region">Region</option>
+                                                    <option value="link-collection">Collection link</option>
+                                                    <option value="gallery">Gallery</option>
+                                                    <option value="tags">Tags</option>
+                                                </select>
 
-                                    <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="@lang('options...')" title="@lang('Separate different options by comma')" data-uk-tooltip>
-                                    <input type="text" data-ng-if="field.type=='media'" data-ng-model="field.allowed" placeholder="*.*" title="@lang('Allowed media types')" data-uk-tooltip>
+                                                <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="@lang('options...')" title="@lang('Separate different options by comma')" data-uk-tooltip>
+                                                <input type="text" data-ng-if="field.type=='media'" data-ng-model="field.allowed" placeholder="*.*" title="@lang('Allowed media types')" data-uk-tooltip>
 
-                                    <select data-ng-if="field.type=='code'" data-ng-model="field.syntax" title="@lang('Code syntax')" data-uk-tooltip>
-                                        <option value="text">Text</option>
-                                        <option value="css">CSS</option>
-                                        <option value="htmlmixed">Html</option>
-                                        <option value="javascript">Javascript</option>
-                                        <option value="markdown">Markdown</option>
-                                    </select>
+                                                <select data-ng-if="field.type=='code'" data-ng-model="field.syntax" title="@lang('Code syntax')" data-uk-tooltip>
+                                                    <option value="text">Text</option>
+                                                    <option value="css">CSS</option>
+                                                    <option value="htmlmixed">Html</option>
+                                                    <option value="javascript">Javascript</option>
+                                                    <option value="markdown">Markdown</option>
+                                                </select>
 
-                                    <select data-ng-if="field.type=='link-collection'" ng-options="c._id as c.name for c in collections" data-ng-model="field.collection" title="@lang('Related collection')" data-uk-tooltip required></select>
-                                </div>
+                                                <select data-ng-if="field.type=='link-collection'" ng-options="c._id as c.name for c in collections" data-ng-model="field.collection" title="@lang('Related collection')" data-uk-tooltip required></select>
+                                            </div>
 
-                                <div class="uk-float-right uk-text-right">
-                                    <input type="text" data-ng-model="field.default" placeholder="@lang('default value...')">
+                                            <div class="uk-float-right uk-text-right">
+                                                <input type="checkbox" class="uk-margin-small-right" data-ng-model="field.required" data-uk-tooltip title="@lang('Required')" />
+                                                <a data-ng-click="remove(field)" class="uk-close"></a>
+                                            </div>
+                                        </div>
 
-                                    <span>
-                                        <input type="checkbox" data-ng-model="field.required" data-uk-tooltip title="@lang('Required')" />
-                                    </span>
+                                        <hr>
 
-                                    <a data-ng-click="remove(field)" class="uk-close"></a>
+                                        <input type="text" class="uk-width-1-1 uk-form-blank uk-margin-small-bottom" data-ng-model="field.default" placeholder="@lang('default value...')">
+
                                 </div>
                             </li>
                         </ul>
