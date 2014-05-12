@@ -52,7 +52,7 @@
                     }
                 };
 
-            var uploadselect = new $.UIkit.upload.select(modal.find('input.js-upload-select'), uploadsettings);
+            var uploadselect = new $.UIkit.uploadSelect(modal.find('input.js-upload-select'), uploadsettings);
 
             modal.on("drop", function(e){
 
@@ -77,7 +77,7 @@
         });
 
 
-        var picker = new $.UIkit.modal.Modal(modal);
+        var picker = $.UIkit.modal(modal);
 
 
         this.type    = type || '*';

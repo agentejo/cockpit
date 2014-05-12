@@ -7,7 +7,7 @@
                 currentpath = location.hash ? location.hash.replace("#", ''):"/",
                 apiurl      = App.route('/mediamanager/api'),
 
-                imgpreview  = new $.UIkit.modal.Modal("#mm-image-preview"),
+                imgpreview  = $.UIkit.modal("#mm-image-preview"),
                 dirlst      = [];
 
             $scope.dir;
@@ -210,7 +210,7 @@
                         $scope.dirlist = true;
 
 
-                        var dirsearch = new $.UIkit.autocomplete('#dirsearch', {
+                        var dirsearch = $.UIkit.autocomplete('#dirsearch', {
                             source: function(release) {
                                 var data = FuzzySearch.filter(dirlst, dirsearch.input.val(), {key:'path', maxResults: 10});
 
@@ -268,7 +268,7 @@
                     }
             };
 
-            var uploadselect = new $.UIkit.upload.select($('#js-upload-select'), uploadsettings);
+            var uploadselect = new $.UIkit.uploadSelect($('#js-upload-select'), uploadsettings);
 
             $("body").on("drop", function(e){
 

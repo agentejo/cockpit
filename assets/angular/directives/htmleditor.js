@@ -20,124 +20,120 @@
         '</div>'
     ].join(""));
 
-    $.UIkit.htmleditor.addPlugin('image', function(editor) {
+    $.UIkit.plugin('htmleditor', 'image', {
 
-      var images = [];
+        init: function(editor) {
 
-      editor.element.on('render', function() {
+            var images = [];
 
-        var regexp = editor.getMode() != 'gfm' ? /<img(.+?)>/gi : /(?:<img(.+?)>|!(?:\[([^\n\]]*)\])(?:\(([^\n\]]*)\))?)/gi, img;
+            editor.element.on('render', function() {
 
-        images = editor.replaceInPreview(regexp, function(data) {
+                    var regexp = editor.getMode() != 'gfm' ? /<img(.+?)>/gi : /(?:<img(.+?)>|!(?:\[([^\n\]]*)\])(?:\(([^\n\]]*)\))?)/gi, img;
 
-            if (data.matches[0][0] == '<') {
+                    images = editor.replaceInPreview(regexp, function(data) {
 
-                if (data.matches[0].match(/js\-no\-parse/)) return false;
+                    if (data.matches[0][0] == '<') {
 
-                var matchesSrc = data.matches[0].match(/\ssrc="(.*?)"/),
-                    matchesAlt = data.matches[0].match(/\salt="(.*?)"/);
+                        if (data.matches[0].match(/js\-no\-parse/)) return false;
 
-                data['src'] = matchesSrc ? matchesSrc[1] : '';
-                data['alt'] = matchesAlt ? matchesAlt[1] : '';
-                data['handler'] = function(src) {
+                        var matchesSrc = data.matches[0].match(/\ssrc="(.*?)"/),
+                        matchesAlt = data.matches[0].match(/\salt="(.*?)"/);
 
-                    var src = ' src="' + src +'"', alt = ' alt="'+data['alt']+'"', output = data.matches[0];
+                        data['src'] = matchesSrc ? matchesSrc[1] : '';
+                        data['alt'] = matchesAlt ? matchesAlt[1] : '';
+                        data['handler'] = function(src) {
 
-                    output = matchesSrc ? output.replace(matchesSrc[0], src) : [output.slice(0, 4), src, output.slice(4)].join('');
-                    output = matchesAlt ? output.replace(matchesAlt[0], alt) : [output.slice(0, 4), alt, output.slice(4)].join('');
+                            var src = ' src="' + src +'"', alt = ' alt="'+data['alt']+'"', output = data.matches[0];
 
-                    data.replace(output);
-                };
+                            output = matchesSrc ? output.replace(matchesSrc[0], src) : [output.slice(0, 4), src, output.slice(4)].join('');
+                            output = matchesAlt ? output.replace(matchesAlt[0], alt) : [output.slice(0, 4), alt, output.slice(4)].join('');
 
-            } else {
+                            data.replace(output);
+                        };
 
-                data['src'] = data.matches[3].trim();
-                data['alt'] = data.matches[2];
-                data['handler'] = function(src) {
+                    } else {
 
-                    data.replace('![' + data['alt'] + '](' + src + ')');
-                };
-            }
+                        data['src'] = data.matches[3].trim();
+                        data['alt'] = data.matches[2];
+                        data['handler'] = function(src) {
+                            data.replace('![' + data['alt'] + '](' + src + ')');
+                        };
+                    }
 
-            if (data['src'] && 'http://'!==data['src'].trim()) {
-              img = '<img src="'+data['src']+'" alt="'+data['alt']+'">';
-            } else {
-              img = [
-                '<div class="uk-placeholder uk-placeholder-large uk-text-center uk-vertical-align">',
-                  '<div class="uk-vertical-align-middle"><i class="uk-icon-picture-o"></i></div>',
-                '</div>'
-              ].join("");
-            }
+                    if (data['src'] && 'http://'!==data['src'].trim()) {
+                        img = '<img src="'+data['src']+'" alt="'+data['alt']+'">';
+                    } else {
+                        img = [
+                            '<div class="uk-placeholder uk-placeholder-large uk-text-center uk-vertical-align">',
+                                '<div class="uk-vertical-align-middle"><i class="uk-icon-picture-o"></i></div>',
+                            '</div>'
+                            ].join("");
+                    }
 
-            return template({ 'img': img, alt: data['alt'] || 'No alt text'  }).replace(/(\r\n|\n|\r)/gm, '');
-        });
+                    return template({ 'img': img, alt: data['alt'] || 'No alt text'  }).replace(/(\r\n|\n|\r)/gm, '');
+                });
 
-      });
+            });
 
-      editor.preview.on('click', '.js-editor-image.js-config', function() {
+            editor.preview.on('click', '.js-editor-image.js-config', function() {
 
-          var data = images[editor.preview.find('.js-editor-image.js-config').index(this)];
+                var data = images[editor.preview.find('.js-editor-image.js-config').index(this)];
 
-          new PathPicker(function(path){
-              data.handler(path.replace('site:', COCKPIT_SITE_BASE_URL));
-          }, "*.(jpg|png|gif)");
-      });
+                new PathPicker(function(path){
+                    data.handler(path.replace('site:', COCKPIT_SITE_BASE_URL));
+                }, "*.(jpg|png|gif)");
+            });
 
-      editor.preview.on('click', '.js-editor-image.js-remove', function() {
-          images[editor.preview.find('.js-editor-image.js-remove').index(this)].replace('');
-      });
-
+            editor.preview.on('click', '.js-editor-image.js-remove', function() {
+                images[editor.preview.find('.js-editor-image.js-remove').index(this)].replace('');
+            });
+        }
     });
 
     angular.module('cockpit.directives').directive("htmleditor", function($timeout){
 
-      return {
+        return {
 
-        require: 'ngModel',
-        restrict: 'E',
+            require: 'ngModel',
+            restrict: 'E',
 
-        link: function (scope, elm, attrs, ngModel) {
+            link: function (scope, elm, attrs, ngModel) {
 
-          var txt = $('<textarea class="js-htmleditor" style="display:none;"></textarea>'), htmleditor, options;
+                var txt = $('<textarea class="js-htmleditor" style="display:none;"></textarea>'), htmleditor, options;
 
-          options = $.extend({plugins:[]}, scope.$eval(attrs.options));
+                options = $.extend({plugins:['base', 'markdown', 'image']}, scope.$eval(attrs.options));
 
-          options.maxsplitsize = 300;
+                options.maxsplitsize = 300;
 
-          elm.after(txt).hide();
+                elm.after(txt).hide();
 
-          ngModel.$render = function() {
+                ngModel.$render = function() {
 
-            txt.val(ngModel.$viewValue || '');
+                    txt.val(ngModel.$viewValue || '');
 
-            if(!htmleditor) {
-              htmleditor = new $.UIkit.htmleditor(txt, options);
+                    if(!htmleditor) {
 
-              htmleditor.addPlugin('image');
+                        htmleditor = $.UIkit.htmleditor(txt, options);
 
-              if (options.markdown) {
-                htmleditor.addPlugin('markdown');
-              }
+                        setTimeout(function(){
 
-              setTimeout(function(){
+                            htmleditor.editor.on("change", $.UIkit.Utils.debounce(function(){
 
-                  htmleditor.editor.on("change", $.UIkit.Utils.debounce(function(){
+                                ngModel.$setViewValue(htmleditor.editor.getValue());
 
-                    ngModel.$setViewValue(htmleditor.editor.getValue());
+                                if (!scope.$root.$$phase) {
+                                    scope.$apply();
+                                }
+                            }, 100));
 
-                    if (!scope.$root.$$phase) {
-                      scope.$apply();
+                            htmleditor.fit();
+
+                        }, 50);
+
                     }
-                  }, 100));
-
-                  htmleditor.fit();
-
-              }, 50);
-
+                };
             }
-          };
-        }
-      };
+        };
 
     });
 

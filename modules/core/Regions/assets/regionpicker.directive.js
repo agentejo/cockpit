@@ -24,7 +24,7 @@
                             options.push({value:region.name});
                         });
 
-                        var autocompleter = new $.UIkit.autocomplete($element.parent(), {source:options, minLength:1});
+                        var autocompleter = $.UIkit.autocomplete($element.parent(), {source:options, minLength:1});
 
                         if (ngModel) {
 
