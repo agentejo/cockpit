@@ -306,7 +306,7 @@
             };
 
             editor.addMenuItem('mediapath', {
-                icon: false,
+                icon: 'image',
                 text: 'Insert media',
                 onclick: picker,
                 context: 'insert',
