@@ -82,10 +82,10 @@ class Api extends \Cockpit\Controller {
                 $options["sort"][$collection["sortfield"]] = $collection["sortorder"];
             }
 
-            if($filter = $this->param("filter", null)) $options["filter"] = json_decode($filter, true);
-            if($limit  = $this->param("limit", null))  $options["limit"] = $limit;
-            if($sort   = $this->param("sort", null))   $options["sort"] = $sort;
-            if($skip   = $this->param("skip", null))   $options["skip"] = $skip;
+            if($filter = $this->param("filter", null)) $options["filter"] = is_string($filter) ? json_decode($filter, true) : $filter;
+            if($limit  = $this->param("limit", null))  $options["limit"]  = $limit;
+            if($sort   = $this->param("sort", null))   $options["sort"]   = $sort;
+            if($skip   = $this->param("skip", null))   $options["skip"]   = $skip;
 
             $entries = $this->app->db->find("collections/{$col}", $options);
         }
