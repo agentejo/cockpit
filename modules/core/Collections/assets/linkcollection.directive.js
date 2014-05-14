@@ -24,11 +24,10 @@
                 if ($item) {
                     resolve($item);
                 } else {
-                    var entry = $data.value.split(':');
 
                     App.request("/api/collections/entries", {
                         "collection": angular.copy($data.collection),
-                        "filter": JSON.stringify({'_id': entry[1]})
+                        "filter": JSON.stringify({'_id': $data.value})
                     }, function(data){
                         resolve(data && data[0] ? data[0]:false);
                     }, 'json');
@@ -163,7 +162,7 @@
 
                                     handler = function(index) {
 
-                                        data.value = [collectionId, ':', cache[collectionId][index]._id].join('');
+                                        data.value = cache[collectionId][index]._id;
                                         ngModel.$setViewValue(data.value);
                                         render($element, data, cache[collectionId][index]);
                                     };
