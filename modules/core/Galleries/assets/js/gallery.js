@@ -3,7 +3,7 @@
     App.module.controller("gallery", function($scope, $rootScope, $http, $timeout){
 
         var id         = $("[data-ng-controller='gallery']").data("id"),
-            dialog     = new $.UIkit.modal.Modal("#meta-dialog"),
+            dialog     = $.UIkit.modal("#meta-dialog"),
             site_base  = COCKPIT_SITE_BASE_URL.replace(/^\/+|\/+$/g, ""),
             media_base = COCKPIT_MEDIA_BASE_URL.replace(/^\/+|\/+$/g, ""),
             site2media = media_base.replace(site_base, "").replace(/^\/+|\/+$/g, "");
