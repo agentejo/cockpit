@@ -106,7 +106,7 @@
                         </div>
 
                         <div data-ng-switch-when="link-collection">
-                            <div link-collection="@@ field.collection @@" data-ng-model="entry[field.name]">Linking @@ field.collection @@</div>
+                            <div link-collection="@@ field.collection @@" data-ng-model="entry[field.name]" data-multiple="@@ field.multiple ? 'true':'false' @@">Linking @@ field.collection @@</div>
                         </div>
 
                         <div data-ng-switch-default>

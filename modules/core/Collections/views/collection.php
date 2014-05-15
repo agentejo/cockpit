@@ -70,7 +70,12 @@
                                                     <option value="markdown">Markdown</option>
                                                 </select>
 
+
                                                 <select data-ng-if="field.type=='link-collection'" ng-options="c._id as c.name for c in collections" data-ng-model="field.collection" title="@lang('Related collection')" data-uk-tooltip required></select>
+                                                <span data-ng-if="field.type=='link-collection'">
+                                                    <input type="checkbox" data-ng-model="field.multiple"> @lang('multiple')
+                                                </span>
+
                                             </div>
 
                                             <div class="uk-float-right uk-text-right">
