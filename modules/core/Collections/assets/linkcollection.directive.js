@@ -145,13 +145,24 @@
 
                             container.html('<div class="uk-text-center uk-text-large uk-margin"><i class="uk-icon-spinner uk-icon-spin"></i></div>');
 
-                            if (!cache[collectionId]) {
+                            if (!itemsloaded) {
 
-                                itemsloaded = $http.post(App.route("/api/collections/entries"), {
-                                    "collection": angular.copy(data.collection)
-                                }, {responseType:"json"}).success(function(data){
-                                    cache[collectionId] = data;
-                                }).error(App.module.callbacks.error.http);
+                                itemsloaded = new Promise(function(resolve){
+
+                                    if (!cache[collectionId]) {
+
+                                        $http.post(App.route("/api/collections/entries"), {
+                                            "collection": angular.copy(data.collection)
+                                        }, {responseType:"json"}).success(function(data){
+                                            cache[collectionId] = data;
+                                            resolve();
+                                        }).error(App.module.callbacks.error.http);
+
+                                    } else {
+                                       resolve();
+                                    }
+
+                                });
                             }
 
                             itemsloaded.then(function() {
