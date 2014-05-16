@@ -57,7 +57,7 @@
                         }
 
                         return [
-                            '<div class="uk-margin-top uk-text-small">',
+                            '<div class="uk-panel uk-panel-divider uk-text-small">',
                                 '<div class="uk-margin">',
                                     main,
                                 '</div>',
@@ -129,7 +129,7 @@
                             output += '<hr><div><button class="uk-button uk-button-small js-pick" type="button"><i class="uk-icon-plus"></i></button></div>';
                         }
 
-                        $this.element.html(output);
+                        $this.element.html('<div class="uk-margin-top">'+output+'</div>');
 
                     });
                 }
@@ -159,11 +159,13 @@
 
                 var $this = this;
 
+                index = isNaN(index) ? -1 : Number(index);
+
                 Picker.show($this.collection, function(idx) {
 
                     if($this.options.multiple) {
 
-                        if (index && $this.value[index]) {
+                        if (index > -1 && $this.value && $this.value[index]  ) {
                             $this.value[index] = cache[$this.collection._id][idx]._id;
                         } else {
 
