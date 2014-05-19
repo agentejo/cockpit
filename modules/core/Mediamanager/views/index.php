@@ -53,10 +53,10 @@
             </div>
 
             <div class="uk-navbar-content">
-                <button class="uk-button uk-form-file" data-uk-tooltip title="@lang('Upload files')">
+                <span class="uk-button uk-form-file" data-uk-tooltip title="@lang('Upload files')">
                     <input id="js-upload-select" type="file" multiple="true" title="">
                     <i class="uk-icon-plus"></i>
-                </button>
+                </span>
             </div>
         </div>
     </div>
