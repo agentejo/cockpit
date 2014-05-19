@@ -199,5 +199,19 @@ class Api extends \Cockpit\Controller {
         return false;
     }
 
+    public function export($collectionId) {
 
+        if (!$this->app->module("auth")->hasaccess("Collections", 'manage.collections')) {
+            return false;
+        }
+
+        $collection = $this->app->db->findOneById("common/collections", $collectionId);
+
+        if (!$collection) return false;
+
+        $col     = "collection".$collection["_id"];
+        $entries = $this->app->db->find("collections/{$col}");
+
+        return json_encode($entries, JSON_PRETTY_PRINT);
+    }
 }

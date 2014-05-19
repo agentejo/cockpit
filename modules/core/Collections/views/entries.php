@@ -30,6 +30,15 @@
                 </div>
             </form>
         </div>
+        <div class="uk-navbar-flip">
+            @hasaccess?("Collections", 'manage.collections')
+            <div class="uk-navbar-content">
+                <a href="@route('/api/collections/export/'.$collection['_id'])" download="{{ $collection['name'] }}.json" title="@lang('Export data')" data-uk-tooltip="{pos:'bottom'}">
+                    <i class="uk-icon-archive"></i>
+                </a>
+            </div>
+            @end
+        </div>
     </nav>
 
     <div class="app-panel uk-margin uk-text-center" data-ng-show="entries && !filter && !entries.length">
