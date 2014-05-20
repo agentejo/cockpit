@@ -252,7 +252,7 @@ return [
     'Gallery' => '',
     'You don\'t have any galleries created.' => '',
     'All galleries' => '',
-    'Add gallerie' => '',
+    'Add gallery' => '',
     'Create a gallery' => '',
     'Edit gallery' => '',
     'Delete gallery' => '',

@@ -15,7 +15,7 @@
         </div>
         @hasaccess?("Galleries", 'create.gallery')
         <ul class="uk-navbar-nav">
-            <li><a href="@route('/galleries/gallery')" title="@lang('Add gallerie')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-circle"></i></a></li>
+            <li><a href="@route('/galleries/gallery')" title="@lang('Add gallery')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-plus-circle"></i></a></li>
         </ul>
         @end
         <div class="uk-navbar-flip" data-ng-if="galleries && galleries.length">
