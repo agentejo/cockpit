@@ -72,21 +72,36 @@
         <h3>@lang('System')</h3>
         <div class="uk-form-row">
             <label class="uk-text-small">@lang('Language')</label>
-            <select class="uk-width-1-1 uk-form-large" data-ng-model="account.i18n">
-                @foreach($languages as $lang)
-                <option value="{{ $lang['i18n'] }}">{{ $lang['language'] }}</option>
-                @endforeach
-            </select>
+
+            <div class="uk-form-controls uk-margin-small-top">
+                <div class="uk-form-select">
+                    <i class="uk-icon-language uk-margin-small-right"></i>
+                    <a>@@ languages[account.i18n] @@</a>
+                    <select class="uk-width-1-1 uk-form-large" data-ng-model="account.i18n">
+                        @foreach($languages as $lang)
+                        <option value="{{ $lang['i18n'] }}">{{ $lang['language'] }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
         </div>
 
         @if($app["user"]["group"]=="admin" AND @$account["_id"]!=$app["user"]["_id"])
         <div class="uk-form-row">
             <label class="uk-text-small">@lang('Group')</label>
-            <select class="uk-width-1-1 uk-form-large" data-ng-model="account.group">
-                @foreach($groups as $group)
-                <option value="{{ $group }}">{{ $group }}</option>
-                @endforeach
-            </select>
+
+            <div class="uk-form-controls uk-margin-small-top">
+                <div class="uk-form-select">
+                    <i class="uk-icon-sitemap uk-margin-small-right"></i>
+                    <a>@@ account.group @@</a>
+                    <select class="uk-width-1-1 uk-form-large" data-ng-model="account.group">
+                        @foreach($groups as $group)
+                        <option value="{{ $group }}">{{ $group }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
         </div>
         @endif
 
@@ -114,6 +129,12 @@
 
             }).error(App.module.callbacks.error.http);
         };
+
+        $scope.languages = {};
+
+        @foreach($languages as $lang)
+        $scope.languages['{{ $lang['i18n'] }}'] = '{{ $lang['language'] }}';
+        @endforeach
 
     });
 </script>

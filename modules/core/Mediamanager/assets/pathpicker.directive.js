@@ -89,14 +89,13 @@
         picker.show();
 
         this.dirview.on("click", "li", function(){
-            var data = $(this).data();
 
-            $this.dirview.children().removeClass("active").filter(this).addClass("active");
+            var data = $(this).data();
 
             $this.mediapath = 'site:'+[site2media, data.path].join('/').replace(/^\/+|\/+$/g, "");
 
+            $this.dirview.children().removeClass("active").filter(this).addClass("active");
             $this.btnOk.prop("disabled", !matchName($this.type, data.name));
-
         });
 
         this.dirview.on("dblclick", "li", function(){
@@ -173,13 +172,29 @@
 
                 setTimeout(function(){
                     $this.dirview.find('[data-file]').each(function(){
-                        var element = $(this);
+                        var element = $(this), url = element.data("file"), $r;
 
-                        if(element.data("file").match(/\.(jpg|jpeg|png|gif|svg)$/i)) {
-                            var $r = $('<div class="media-url-preview" style="background-image:url('+element.data("file")+');margin:0 auto;"></div>');
-
-                            element.replaceWith($r.css({width:element.width(),height:element.height()}));
+                        if(url.match(/\.(jpg|jpeg|png|gif|svg)$/i)) {
+                            $r = $('<div class="media-url-preview" style="background-image:url('+element.data("file")+');margin:0 auto;"></div>').css({width:element.width(), height:element.height()});
                         }
+
+                        if (url.match(/\.(mp4|mpeg|ogv|webm|wmv)$/i)) {
+                            $r = '<i class="uk-icon-file-video-o"></i>';
+                        }
+
+                        if (url.match(/\.(zip|rar|gz|7zip|bz2)$/i)) {
+                            $r = '<i class="uk-icon-file-archive-o"></i>';
+                        }
+
+                        if (url.match(/\.(pdf)$/i)) {
+                            $r = '<i class="uk-icon-file-pdf-o"></i>';
+                        }
+
+                        if (url.match(/\.(sqlite|db)$/i)) {
+                            $r = '<i class="uk-icon-database"></i>';
+                        }
+
+                        if($r) element.replaceWith($r);
                     })
                 }, 0);
 

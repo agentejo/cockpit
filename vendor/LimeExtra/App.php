@@ -4,7 +4,7 @@ namespace LimeExtra;
 
 class App extends \Lime\App {
 
-    public $viewvars         = array();
+    public $viewvars = array();
 
     protected $view_renderer = null;
 
@@ -13,7 +13,6 @@ class App extends \Lime\App {
         $settings["helpers"]  = array_merge([
             "acl"     => "Lime\\Helper\\SimpleAcl",
             "assets"  => "Lime\\Helper\\Assets",
-            "cache"   => "Lime\\Helper\\Cache",
             "fs"      => "Lime\\Helper\\Filesystem",
             "image"   => "Lime\\Helper\\Image",
             "i18n"    => "Lime\\Helper\\I18n",

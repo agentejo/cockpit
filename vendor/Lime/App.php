@@ -169,7 +169,7 @@ class App implements \ArrayAccess {
 
         $this->registry = array_merge(array(
             'debug'        => true,
-            'app.name'     => '',
+            'app.name'     => null,
             'session.name' => null,
             'autoload'     => new \ArrayObject(array()),
             'sec-key'      => 'xxxxx-SiteSecKeyPleaseChangeMe-xxxxx',
@@ -178,21 +178,25 @@ class App implements \ArrayAccess {
             'helpers'      => array(),
             'base_url'     => implode("/", array_slice(explode("/", $_SERVER['SCRIPT_NAME']), 0, -1)),
             'base_route'   => implode("/", array_slice(explode("/", $_SERVER['SCRIPT_NAME']), 0, -1)),
-            'docs_root'    => isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT']:''
+            'docs_root'    => null
         ), $settings);
 
-        if(!isset($this["name"])){
-            $this["name"] = uniqid();
+        if(!isset($this["app.name"])){
+            $this["app.name"] = uniqid();
         }
 
         if(!isset($this["session.name"])){
             $this["session.name"] = $this["name"];
         }
 
-        self::$apps[$this["name"]] = $this;
+        if (!isset($this["docs_root"])) {
+            $this["docs_root"] = str_replace(DIRECTORY_SEPARATOR, '/', isset($_SERVER['DOCUMENT_ROOT']) ? (is_link($_SERVER['DOCUMENT_ROOT']) ? readlink($_SERVER['DOCUMENT_ROOT']) : $_SERVER['DOCUMENT_ROOT']) : dirname($_SERVER['SCRIPT_FILENAME']));
+        }
+
+        self::$apps[$this["app.name"]] = $this;
 
         // default helpers
-        $this->helpers = new \ArrayObject(array_merge(array("session" => 'Lime\\Session'), $this->registry["helpers"]));
+        $this->helpers = new \ArrayObject(array_merge(array('session' => 'Lime\\Session', 'cache' => 'Lime\\Cache'), $this->registry["helpers"]));
 
         // register simple autoloader
         spl_autoload_register(function ($class) use($self){
@@ -443,21 +447,6 @@ class App implements \ArrayAccess {
             return $this("cache")->write($args[0], $args[1]);
             break;
         }
-    }
-
-    /**
-    * [onlyif description]
-    * @param  [type] $condition [description]
-    * @return [type]            [description]
-    */
-    public function onlyif($condition) {
-
-        static $dummy;
-
-        if(!$dummy) $dummy = new DummyObject();
-        if(is_callable($condition)) $condition = call_user_func($condition);
-
-        return $condition ? $this:$dummy;
     }
 
     /**
@@ -1159,15 +1148,6 @@ class App implements \ArrayAccess {
 } // End site
 
 
-class DummyObject {
-    public function __set($name , $value) { }
-    public function __get($name) { }
-    public function __isset($name) { }
-    public function __unset($name) { }
-    public function __call($name, $arguments) { return $this; }
-    public static function __callStatic($name, $arguments) { }
-}
-
 class Response {
     public $body    = "";
     public $status  = 200;
@@ -1232,9 +1212,7 @@ class AppAware {
 
     public function __invoke($helper) {
 
-        $app = $this->app;
-
-        return $app($helper);
+        return $this->app->helper($helper);
     }
 
 }
@@ -1281,49 +1259,123 @@ class Session extends Helper {
     }
 }
 
+class Cache extends Helper {
+
+    public $prefix = null;
+    protected $cachePath = null;
 
 
-// helper function
+    public function initialize(){
+        $this->cachePath = rtrim(sys_get_temp_dir(),"/\\")."/";
+        $this->prefix    = $this->app['app.name'];
+    }
+
+    public function setCachePath($path){
+        if ($path) {
+            $this->cachePath = rtrim($this->app->path($path), "/\\")."/";
+        }
+    }
+
+    public function getCachePath(){
+
+        return $this->cachePath;
+    }
+
+    public function write($key, $value, $duration = -1){
+
+        $expire = ($duration==-1) ? -1:(time() + (is_string($duration) ? strtotime($duration):$duration));
+
+        $safe_var = array(
+            'expire' => $expire,
+            'value' => serialize($value)
+        );
+
+        file_put_contents($this->cachePath.md5($this->prefix.'-'.$key).".cache" , serialize($safe_var));
+    }
+
+    public function read($key, $default=null){
+        $var = @file_get_contents($this->cachePath.md5($this->prefix.'-'.$key).".cache");
+
+        if ($var==='') {
+            return $default;
+        } else {
+
+            $time = time();
+            $var  = unserialize($var);
+
+            if (($var['expire'] < $time) && $var['expire']!=-1) {
+                $this->delete($key);
+                return is_callable($default) ? call_user_func($default):$default;
+            }
+
+            return unserialize($var['value']);
+        }
+    }
+
+    public function delete($key){
+
+        $file = $this->cachePath.md5($this->prefix.'-'.$key).".cache";
+
+        if (file_exists($file)) {
+            @unlink($file);
+        }
+
+    }
+
+    public function clear(){
+
+        $iterator = new \RecursiveDirectoryIterator($this->cachePath);
+
+        foreach($iterator as $file) {
+            if ($file->isFile() && substr($file, -6)==".cache") {
+                @unlink($this->cachePath.$file->getFilename());
+            }
+        }
+    }
+}
+
+// helper functions
+
 function fetch_from_array(&$array, $index=null, $default = null) {
 
     if (is_null($index)) {
 
-    return $array;
+        return $array;
 
     } elseif(isset($array[$index])) {
 
-    return $array[$index];
+        return $array[$index];
 
-    } elseif(strpos($index, '/')){
+    } elseif(strpos($index, '/')) {
 
-    $keys = explode('/', $index);
+        $keys = explode('/', $index);
 
-    switch(count($keys)){
+        switch(count($keys)){
 
-        case 1:
-            if(isset($array[$keys[0]])){
-                return $array[$keys[0]];
-            }
-            break;
+            case 1:
+                if(isset($array[$keys[0]])){
+                    return $array[$keys[0]];
+                }
+                break;
 
-        case 2:
-            if(isset($array[$keys[0]][$keys[1]])){
-                return $array[$keys[0]][$keys[1]];
-            }
-            break;
+            case 2:
+                if(isset($array[$keys[0]][$keys[1]])){
+                    return $array[$keys[0]][$keys[1]];
+                }
+                break;
 
-        case 3:
-            if(isset($array[$keys[0]][$keys[1]][$keys[2]])){
-                return $array[$keys[0]][$keys[1]][$keys[2]];
-            }
-            break;
+            case 3:
+                if(isset($array[$keys[0]][$keys[1]][$keys[2]])){
+                    return $array[$keys[0]][$keys[1]][$keys[2]];
+                }
+                break;
 
-        case 4:
-            if(isset($array[$keys[0]][$keys[1]][$keys[2]][$keys[3]])){
-                return $array[$keys[0]][$keys[1]][$keys[2]][$keys[3]];
-            }
-            break;
-    }
+            case 4:
+                if(isset($array[$keys[0]][$keys[1]][$keys[2]][$keys[3]])){
+                    return $array[$keys[0]][$keys[1]][$keys[2]][$keys[3]];
+                }
+                break;
+        }
     }
 
     return $default;

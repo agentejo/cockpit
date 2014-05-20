@@ -16,14 +16,24 @@
 
                             var $r;
 
-                            if(url.match(/\.(jpg|jpeg|png|gif|svg)$/i)) {
-
+                            if (url.match(/\.(jpg|jpeg|png|gif|svg)$/i)) {
                                 $r = '<div class="media-url-preview" style="background-image:url('+url+')"></div>';
                             }
 
-                            if(url.match(/\.(mp4|mpeg|ogv|webm|wmv)$/i)) {
+                            if (url.match(/\.(mp4|mpeg|ogv|webm|wmv)$/i)) {
+                                $r = '<i class="uk-icon-file-video-o"></i>';
+                            }
 
-                                $r = '<i class="uk-icon-play-circle"></i>';
+                            if (url.match(/\.(zip|rar|gz|7zip|bz2)$/i)) {
+                                $r = '<i class="uk-icon-file-archive-o"></i>';
+                            }
+
+                            if (url.match(/\.(pdf)$/i)) {
+                                $r = '<i class="uk-icon-file-pdf-o"></i>';
+                            }
+
+                            if (url.match(/\.(sqlite|db)$/i)) {
+                                $r = '<i class="uk-icon-database"></i>';
                             }
 
                             if($r) elm.replaceWith($r);
