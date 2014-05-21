@@ -1,6 +1,6 @@
 {{ $app->assets(['regions:assets/regions.js','regions:assets/js/region.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/uikit/js/addons/sortable.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/js/addons/nestable.min.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:vendor/uikit/js/addons/timepicker.min.js'], $app['cockpit/version']) }}
 {{ $app->assets(['assets:vendor/uikit/js/addons/datepicker.min.js'], $app['cockpit/version']) }}
 
@@ -25,37 +25,37 @@
 
     <div id="region-versions" class="uk-offcanvas">
         <div class="uk-offcanvas-bar">
-          <div class="uk-panel">
+            <div class="uk-panel">
 
-              <div data-ng-show="versions.length">
+            <div data-ng-show="versions.length">
                 <h3 class="uk-panel-title">@lang('Versions')</h3>
 
                 <ul class="uk-nav uk-nav-offcanvas" data-ng-show="versions.length">
-                  <li data-ng-repeat="version in versions">
-                    <a href="#v-@@ version.uid @@" data-ng-click="restoreVersion(version.uid)" title="@lang('Restore this version')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-clock-o"></i> @@ version.time | fmtdate:'d M, Y H:i:s' @@</a>
-                  </li>
+                    <li data-ng-repeat="version in versions">
+                        <a href="#v-@@ version.uid @@" data-ng-click="restoreVersion(version.uid)" title="@lang('Restore this version')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-clock-o"></i> @@ version.time | fmtdate:'d M, Y H:i:s' @@</a>
+                    </li>
                 </ul>
                 <br>
 
                 <div class="uk-button-group">
-                  <button type="button" class="uk-button uk-button-danger" data-ng-click="clearVersions()" title="@lang('Clear version history')" data-uk-tooltip="{pos:'bottom-left'}"><i class="uk-icon-trash-o"></i></button>
-                  <button type="button" class="uk-button uk-button-primary" onclick="$.UIkit.offcanvas.offcanvas.hide()" title="@lang('Close versions')" data-uk-tooltip="{pos:'bottom-left'}">@lang('Cancel')</button>
+                    <button type="button" class="uk-button uk-button-danger" data-ng-click="clearVersions()" title="@lang('Clear version history')" data-uk-tooltip="{pos:'bottom-left'}"><i class="uk-icon-trash-o"></i></button>
+                    <button type="button" class="uk-button uk-button-primary" onclick="$.UIkit.offcanvas.offcanvas.hide()" title="@lang('Close versions')" data-uk-tooltip="{pos:'bottom-left'}">@lang('Cancel')</button>
                 </div>
-              </div>
+            </div>
 
-              <div class="uk-text-muted uk-text-center" data-ng-show="!versions.length">
-                <div class="uk-margin-small-bottom"><i class="uk-icon-clock-o"></i></div>
-                <div>@lang('Empty')</div>
-              </div>
-          </div>
+            <div class="uk-text-muted uk-text-center" data-ng-show="!versions.length">
+            <div class="uk-margin-small-bottom"><i class="uk-icon-clock-o"></i></div>
+            <div>@lang('Empty')</div>
+            </div>
+            </div>
         </div>
     </div>
 
     <nav class="uk-navbar uk-margin-large-bottom">
         <span class="uk-navbar-brand">
-          <a href="@route("/regions")">@lang('Regions')</a> /
-          <span class="uk-text-muted" ng-show="!region.name">@lang('Entry')</span>
-          <span ng-show="region.name">@@ region.name @@</span>
+            <a href="@route("/regions")">@lang('Regions')</a> /
+            <span class="uk-text-muted" ng-show="!region.name">@lang('Entry')</span>
+            <span ng-show="region.name">@@ region.name @@</span>
         </span>
         <div class="uk-navbar-content">
             <a href="#region-versions" data-uk-offcanvas data-ng-show="versions.length"><i class="uk-icon-clock-o"></i> @lang('Versions') <span class="uk-badge">@@ versions.length @@</span></a>
@@ -88,24 +88,24 @@
 
                             <div class="uk-margin-bottom">
                               <button type="button" class="uk-button" data-ng-class="manageform ? 'uk-button-success':'uk-button-primary'" data-ng-click="(manageform = !manageform)" title="@lang('Manage form')">
-                                  <span ng-show="!manageform"><i class="uk-icon-cog"></i></span>
-                                  <span ng-show="manageform"><i class="uk-icon-check"></i></span>
+                                    <span ng-show="!manageform"><i class="uk-icon-cog"></i></span>
+                                    <span ng-show="manageform"><i class="uk-icon-check"></i></span>
                               </button>
                             </div>
 
                             <div class="uk-grid">
-                              <div class="uk-width-1-1">
+                                <div class="uk-width-1-1">
 
-                                  <div class="uk-alert" ng-show="region && !region.fields.length">
-                                    @lang('This region has no fields yet.')
-                                  </div>
+                                    <div class="uk-alert" ng-show="region && !region.fields.length">
+                                        @lang('This region has no fields yet.')
+                                    </div>
 
                                   <div ng-show="manageform">
 
-                                    <ul id="manage-fields-list" class="uk-sortable" data-uk-sortable="{maxDepth:1}">
+                                    <ul id="manage-fields-list" class="uk-nestable" data-uk-nestable="{maxDepth:1}">
                                          <li data-ng-repeat="field in region.fields">
-                                            <div class="uk-sortable-item uk-sortable-item-table">
-                                               <div class="uk-sortable-handle"></div>
+                                            <div class="uk-nestable-item uk-nestable-item-table">
+                                               <div class="uk-nestable-handle"></div>
                                                <input type="text" data-ng-model="field.name" placeholder="@lang('Field name')" pattern="[a-zA-Z0-9]+" required>
                                                <select data-ng-model="field.type" title="@lang('Field type')" data-uk-tooltip>
                                                    <option value="text">Text</option>
@@ -178,7 +178,10 @@
                                           </div>
 
                                           <div data-ng-switch-when="date">
-                                              <input class="uk-width-1-1 uk-form-large" type="text" data-uk-datepicker="{format:'YYYY-MM-DD'}" data-ng-model="region.fields[$index].value">
+                                              <div class="uk-form-icon uk-width-1-1">
+                                                  <i class="uk-icon-calendar"></i>
+                                                  <input class="uk-width-1-1 uk-form-large" type="text" data-uk-datepicker="{format:'YYYY-MM-DD'}" data-ng-model="region.fields[$index].value">
+                                              </div>
                                           </div>
 
                                           <div data-ng-switch-when="time">

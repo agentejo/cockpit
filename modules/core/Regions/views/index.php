@@ -1,4 +1,4 @@
-{{ $app->assets(['assets:vendor/nativesortable.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/js/addons/sortable.min.js'], $app['cockpit/version']) }}
 {{ $app->assets(['regions:assets/regions.js','regions:assets/js/index.js'], $app['cockpit/version']) }}
 
 <div data-ng-controller="regions" ng-cloak>
@@ -38,7 +38,7 @@
                     <li class="uk-nav-divider" ng-show="groups.length"></li>
                 </ul>
 
-                <ul id="groups-list" class="uk-nav uk-nav-side uk-animation-fade" ng-show="groups.length">
+                <ul id="groups-list" class="uk-nav uk-nav-side uk-animation-fade uk-sortable" ng-show="groups.length" data-uk-sortable >
                     <li ng-repeat="group in groups" ng-class="$parent.activegroup==group ? 'uk-active':''" ng-click="($parent.activegroup=group)" draggable="true">
                         <a><i class="uk-icon-bars" style="cursor:move;"></i> @@ group @@</a>
                         @hasaccess?("Regions", 'create.regions')
@@ -135,22 +135,6 @@
 </div>
 
 <style>
-
-    #groups-list > li {
-        transform: scale(1.0);
-        -webkit-transition: -webkit-transform 0.2s ease-out;
-        transition: transform 0.2s ease-out;
-    }
-
-    #groups-list .sortable-dragging {
-        opacity: .25;
-        -webkit-transform: scale(0.8);
-        transform: scale(0.8);
-    }
-
-    #groups-list .sortable-over {
-        opacity: .25;
-    }
 
     #groups-list li {
         position: relative;

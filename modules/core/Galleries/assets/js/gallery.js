@@ -166,9 +166,6 @@
             });
         });
 
-        nativesortable(imglist[0]);
-
-
         // after sorting list
 
         var list = $("#manage-fields-list").on("sortable-change", function(){

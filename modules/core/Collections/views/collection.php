@@ -1,5 +1,5 @@
 {{ $app->assets(['collections:assets/collections.js','collections:assets/js/collection.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/uikit/js/addons/sortable.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/js/addons/nestable.min.js'], $app['cockpit/version']) }}
 
 <div data-ng-controller="collection" data-id="{{ $id }}" ng-cloak>
 
@@ -113,10 +113,10 @@
                     <p>
                         @lang('Fields on entries list page'):
                     </p>
-                    <ul id="fields-list" class="uk-sortable" data-uk-sortable="{maxDepth:1}">
+                    <ul id="fields-list" class="uk-nestable" data-uk-nestable="{maxDepth:1}">
                         <li data-ng-repeat="field in collection.fields">
-                            <div class="uk-sortable-item uk-sortable-item-table">
-                                <div class="uk-sortable-handle"></div>
+                            <div class="uk-nestable-item uk-nestable-item-table">
+                                <div class="uk-nestable-handle"></div>
                                 <input type="checkbox" data-ng-checked="field.lst" data-ng-model="field.lst">
                                 @@ field.name @@
                             </div>

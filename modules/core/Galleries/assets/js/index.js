@@ -168,8 +168,6 @@
                 $scope.updateGroups();
             });
         });
-
-        nativesortable(grouplist[0]);
     });
 
 })(jQuery);

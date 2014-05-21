@@ -143,7 +143,10 @@
                         </div>
 
                         <div data-ng-switch-when="date">
-                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-uk-datepicker="{format:'YYYY-MM-DD'}" data-ng-model="entry[field.name]">
+                            <div class="uk-form-icon uk-width-1-1">
+                                <i class="uk-icon-calendar"></i>
+                                <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-uk-datepicker="{format:'YYYY-MM-DD'}" data-ng-model="entry[field.name]">
+                            </div>
                         </div>
 
                         <div data-ng-switch-when="time">

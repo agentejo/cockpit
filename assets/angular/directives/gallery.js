@@ -10,7 +10,7 @@
 
     var tpl = [
         '<div>',
-            '<div class="uk-grid uk-grid-small uk-grid-width-medium-1-5 uk-grid-width-1-3 gallery-list"></div>',
+            '<ul class="uk-grid uk-grid-small uk-grid-width-medium-1-5 uk-grid-width-1-3 gallery-list uk-sortable"></ul>',
             '<button class="uk-button uk-margin-top" type="button"><i class="uk-icon-plus-circle"></i></button>',
         '</div>'
     ].join('')
@@ -83,7 +83,7 @@
             });
 
 
-            App.assets.require(window.nativesortable ? []:['assets/vendor/nativesortable.js'], function(){
+            App.assets.require($.UIkit.sortable ? []:['assets/vendor/uikit/js/addons/sortable.min.js'], function(){
 
                 $container.on("dragend", "[draggable]",function(){
 
@@ -99,7 +99,8 @@
 
                 });
 
-                nativesortable($container[0]);
+                $.UIkit.sortable($container);
+
             });
 
             ngModel.$render = function() {
@@ -140,10 +141,10 @@
                         }
 
                         $container.append([
-                            '<div class="uk-grid-margin" data-path="'+path+'" draggable="true" title="'+path+'">',
+                            '<li class="uk-grid-margin" data-path="'+path+'" draggable="true" title="'+path+'" stype="position:relative;">',
                                 '<div class="uk-thumbnail" style="min-height:180px;">'+mediatpl+'</div>',
                                 '<div class="gallery-list-actions"><button class="uk-button uk-button-small uk-button-danger js-remove" type="button"><i class="uk-icon-trash-o"></i></button></div>',
-                            '</div>'
+                            '</li>'
                         ].join(''));
                     });
                 } else {

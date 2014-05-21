@@ -1,6 +1,5 @@
-{{ $app->assets(['assets:vendor/nativesortable.js'], $app['cockpit/version']) }}
-
 {{ $app->assets(['assets:vendor/uikit/js/addons/sortable.min.js'], $app['cockpit/version']) }}
+{{ $app->assets(['assets:vendor/uikit/js/addons/nestable.min.js'], $app['cockpit/version']) }}
 
 {{ $app->assets(['galleries:assets/galleries.js','galleries:assets/js/gallery.js'], $app['cockpit/version']) }}
 {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
@@ -44,8 +43,8 @@
 
                             <div data-ng-show="!managefields">
 
-                                <div id="images-list" class="uk-grid" data-uk-grid-match="{target:'.uk-thumbnail'}">
-                                    <div class="uk-width-1-2 uk-width-medium-1-5 uk-grid-margin" data-ng-repeat="image in gallery.images" draggable="true">
+                                <ul id="images-list" class="uk-grid uk-sortable" data-uk-grid-match="{target:'.uk-thumbnail'}" data-uk-sortable>
+                                    <li class="uk-width-1-2 uk-width-medium-1-5 uk-grid-margin" data-ng-repeat="image in gallery.images" draggable="true">
                                         <div class="uk-thumbnail uk-width-1-1 uk-text-center uk-visible-hover">
                                             <div class="uk-text-center" style="background: #fff url(@@ imgurl(image) @@) 50% 50% no-repeat;background-size:contain;height:140px;">
 
@@ -57,8 +56,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
+                                    </li>
+                                </ul>
 
 
                                 <div class="uk-text-center uk-margin-large-top uk-margin-large-bottom" data-ng-show="gallery && !gallery.images.length">
@@ -72,10 +71,10 @@
 
                             <div data-ng-show="managefields">
 
-                                <ul id="manage-fields-list" class="uk-sortable" data-uk-sortable="{maxDepth:1}">
+                                <ul id="manage-fields-list" class="uk-nestable" data-uk-nestable="{maxDepth:1}">
                                      <li data-ng-repeat="field in gallery.fields">
-                                        <div class="uk-sortable-item uk-sortable-item-table">
-                                           <div class="uk-sortable-handle"></div>
+                                        <div class="uk-nestable-item uk-nestable-item-table">
+                                           <div class="uk-nestable-handle"></div>
                                            <input type="text" data-ng-model="field.name" placeholder="Field name" pattern="[a-zA-Z0-9]+" required>
                                            <select data-ng-model="field.type" title="@lang('Field type')" data-uk-tooltip>
                                                <option value="text">Text</option>
@@ -189,21 +188,8 @@
 
 <style>
 
-    #images-list > div {
+    #images-list > li {
         cursor: move;
-        transform: scale(1.0);
-        -webkit-transition: -webkit-transform 0.2s ease-out;
-        transition: transform 0.2s ease-out;
-    }
-
-    #images-list .sortable-dragging {
-        opacity: .25;
-        -webkit-transform: scale(0.8);
-        transform: scale(0.8);
-    }
-
-    #images-list .sortable-over {
-        opacity: .25;
     }
 
     #images-list .uk-thumbnail {
@@ -217,6 +203,4 @@
         -webkit-transform: translateY(-50%);
         transform: translateY(-50%);
     }
-
-
 </style>
