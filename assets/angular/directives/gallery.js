@@ -72,11 +72,17 @@
                 var ele = $(this);
 
                 App.Ui.confirm(App.i18n.get("Are you sure?"), function(){
-                    var item  = ele.closest('div[data-path]'),
+                    var item  = ele.closest('li[data-path]'),
                         index = $container.children().index(item);
 
                     media.splice(index, 1);
-                    item.fadeOut(function(){ item.remove(); });
+                    item.fadeOut(function(){
+                        item.remove();
+
+                        if (!media.length) {
+                            rendermedia();
+                        }
+                    });
 
                     updateSope();
                 });
