@@ -186,7 +186,7 @@ class App implements \ArrayAccess {
         }
 
         if(!isset($this["session.name"])){
-            $this["session.name"] = $this["name"];
+            $this["session.name"] = $this["app.name"];
         }
 
         if (!isset($this["docs_root"])) {
@@ -852,7 +852,7 @@ class App implements \ArrayAccess {
                     /* e.g. /admin/*  */
                     if(strpos($route, '*') !== false){
 
-                        $pattern = '#^'.str_replace('\*', '(.*?)', preg_quote($route, '#')).'#';
+                        $pattern = '#^'.str_replace('\*', '(.*)', preg_quote($route, '#')).'#';
 
                         if(preg_match($pattern, $path, $matches)){
 
