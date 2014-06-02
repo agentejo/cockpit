@@ -10,13 +10,16 @@ $this->module("mediamanager")->extend([
         if($width && is_array($height)) {
             $options = $height;
             $height  = $width;
+        } else {
+            $height = $height ?: $width;
         }
 
         $options = array_merge(array(
             "rebuild"     => false,
             "cachefolder" => "cache:thumbs",
             "quality"     => 100,
-            "base64"      => false
+            "base64"      => false,
+            "mode"        => "crop"
         ), $options);
 
         extract($options);
@@ -41,10 +44,16 @@ $this->module("mediamanager")->extend([
             return $app->pathToUrl($path);
         }
 
+        if (!in_array($mode, ['crop', 'best_fit', 'resize'])) {
+            $mode = 'crop';
+        }
+
+        $method = $mode == 'crop' ? 'thumbnail':$mode;
+
         if($base64) {
 
             try {
-                $data = $app("image")->take($path)->thumbnail($width, $height)->base64data(null, $quality);
+                $data = $app("image")->take($path)->{$method}($width, $height)->base64data(null, $quality);
             } catch(Exception $e) {
                 return $url;
             }
@@ -54,11 +63,11 @@ $this->module("mediamanager")->extend([
         } else {
 
             $filetime = filemtime($path);
-            $savepath = $app->path($cachefolder)."/".md5($path)."_{$width}x{$height}_{$quality}_{$filetime}.{$ext}";
+            $savepath = $app->path($cachefolder)."/".md5($path)."_{$width}x{$height}_{$quality}_{$filetime}_{$mode}.{$ext}";
 
             if($rebuild || !file_exists($savepath)) {
                 try {
-                    $app("image")->take($path)->thumbnail($width, $height)->save($savepath, $quality);
+                    $app("image")->take($path)->{$method}($width, $height)->save($savepath, $quality);
                 } catch(Exception $e) {
                     return $url;
                 }
@@ -91,7 +100,7 @@ if (!function_exists('thumbnail')) {
 
     function thumbnail($image, $width = null, $height = null, $options=array()) {
 
-        $url = cockpit("mediamanager")->thumbnail($image, $width, $height, $options=array());
+        $url = cockpit("mediamanager")->thumbnail($image, $width, $height, $options);
 
         echo '<img src="'.$url.'" alt="'.$url.'">';
     }

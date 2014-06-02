@@ -92,6 +92,13 @@ class Img {
         return $this;
     }
 
+    public function best_fit($width, $height) {
+
+        $this->image->best_fit($width, $height);
+
+        return $this;
+    }
+
     public function rotate($angle) {
 
         $this->image->rotate($angle);
