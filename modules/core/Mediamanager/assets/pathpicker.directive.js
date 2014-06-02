@@ -47,8 +47,13 @@
                     "progress": function(percent){
                         $this.caption.html('<span>'+Math.ceil(percent)+"%</span>");
                     },
-                    "allcomplete": function(){
-                        $this.loadPath($this.currentpath);
+                    "allcomplete": function(response){
+
+                        if(response && response.length) {
+                            $this.loadPath($this.currentpath);
+                        } else {
+                            App.module.callbacks.error.http();
+                        }
                     }
                 };
 

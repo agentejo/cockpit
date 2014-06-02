@@ -262,9 +262,12 @@
                     },
                     allcomplete: function(response) {
 
-                        App.notify(App.i18n.get("File(s) uploaded."), "success");
-
-                        loadPath(currentpath);
+                        if(response && response.length) {
+                            App.notify(App.i18n.get("File(s) uploaded."), "success");
+                            loadPath(currentpath);
+                        } else {
+                            App.module.callbacks.error.http();
+                        }
                     }
             };
 
