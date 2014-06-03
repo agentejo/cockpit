@@ -26,6 +26,11 @@ class Collections extends \Cockpit\Controller {
         if(!$collection) {
             return false;
         }
+      
+        // RCH 20140602
+        if(!$this->app->module("auth")->hasaccess("Collections", 'manage.entries.list.'.$collection['name'])) {
+            return false;
+        }
 
         $count = $this->app->module("collections")->collectionById($collection["_id"])->count();
 
@@ -43,6 +48,12 @@ class Collections extends \Cockpit\Controller {
             return false;
         }
 
+       // RCH 20140602
+       if(!$this->app->module("auth")->hasaccess("Collections", 'manage.entries.addedit.'.$collection['name'])) {
+           return false;
+       }
+
+      
         if($entryId) {
             $col   = "collection".$collection["_id"];
             $entry = $this->app->db->findOne("collections/{$col}", ["_id" => $entryId]);

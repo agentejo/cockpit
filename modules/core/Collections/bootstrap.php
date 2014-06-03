@@ -84,6 +84,16 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
     });
 
     // acl
-    $app("acl")->addResource("Collections", ['manage.collections', 'manage.entries']);
+    $actions = ['manage.collections', 'manage.entries'];
+  $collections = $app->db->getCollection("common/collections")->find([]);
+  
+    foreach ($collections as $k=>$collection) {
+      //print_r($collection);echo '<hr/>';
+      $actions[] = 'manage.collection.'.$collection['name'];     
+      $actions[] = 'manage.entries.list.'.$collection['name'];     
+      $actions[] = 'manage.entries.addedit.'.$collection['name'];     
+    }
+    //$app("acl")->addResource("Collections", ['manage.collections', 'manage.entries']);
+  $app("acl")->addResource("Collections", $actions);
 
 }

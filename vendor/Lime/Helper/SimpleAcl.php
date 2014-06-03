@@ -12,8 +12,14 @@ class SimpleAcl {
 
 
   public function addResource($resource, $actions = array()){
-    $this->resources[$resource] = $actions;
-  }
+    
+    // RCH Support appending actions to existing resources
+    if (!empty($this->resources[$resource])) {
+      $this->resources[$resource] = array_merge($this->resources[$resource], $actions);
+    } else {
+      $this->resources[$resource] = $actions;
+    }
+  } // addResource
 
 
   public function addGroup($name, $isSuperAdmin = false){
