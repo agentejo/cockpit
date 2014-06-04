@@ -29,6 +29,8 @@
 <script>
  var COLLECTION = {{ json_encode($collection) }},
      COLLECTION_ENTRY = {{ json_encode($entry) }};
+ var USER = {{json_encode($user)}}; // RCH 20140604
+ var CANAPPROVE = {{json_encode($canapprove)}} // RCH 20140604 
 </script>
 
 <div data-ng-controller="entry" ng-cloak>
@@ -125,7 +127,7 @@
             <div class="uk-width-medium-1-4">
                     <div class="uk-form-row" data-ng-repeat="field in fieldsInArea('side')" data-ng-switch="field.type">
 
-                        <label class="uk-text-small">@@ field.name | uppercase @@ <span ng-show="field.required">*</span></label>
+                        <label class="uk-text-small" ng-hide="@@field.hidden && user.group!='admin'@@" class="ng-hide">@@ field.name | uppercase @@ <span ng-show="field.required">*</span></label>
                         <div class="uk-text-small uk-text-danger uk-float-right uk-animation-slide-top" data-ng-if="field.error">@@ field.error @@</div>
 
                         <div data-ng-switch-when="select">
@@ -139,7 +141,11 @@
                         </div>
 
                         <div data-ng-switch-when="boolean">
-                            <input type="checkbox" data-ng-model="entry[field.name]">
+                            <input type="checkbox" data-ng-model="entry[field.name]" ng-hide="@@field.hidden && user.group!='admin'@@" class="ng-hide">                            
+                        </div>
+<!-- RCH 20140604 -->
+                       <div data-ng-switch-when="approval">
+                            <input type="checkbox" data-ng-model="entry[field.name]" ng-hide="@@!canapprove || field.hidden@@" class="ng-hide">                            
                         </div>
 
                         <div data-ng-switch-when="date">

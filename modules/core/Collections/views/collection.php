@@ -46,6 +46,7 @@
                                                     <option value="text">Text</option>
                                                     <option value="select">Select</option>
                                                     <option value="boolean">Boolean</option>
+                                                    <option value="approval">Approval</option> <!-- RCH 20140604 -->
                                                     <option value="html">Html</option>
                                                     <option value="wysiwyg">Html (WYSIWYG)</option>
                                                     <option value="code">Code</option>
@@ -80,6 +81,7 @@
 
                                             <div class="uk-float-right uk-text-right">
                                                 <input type="checkbox" class="uk-margin-small-right" data-ng-model="field.required" data-uk-tooltip title="@lang('Required')" />
+                                                <input type="checkbox" class="uk-margin-small-right" data-ng-model="field.hidden" data-uk-tooltip title="@lang('Hidden')" />
                                                 <a data-ng-click="remove(field)" class="uk-close"></a>
                                             </div>
                                         </div>

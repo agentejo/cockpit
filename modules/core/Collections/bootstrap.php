@@ -92,6 +92,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
       $actions[] = 'manage.collection.'.$collection['name'];     
       $actions[] = 'manage.entries.list.'.$collection['name'];     
       $actions[] = 'manage.entries.addedit.'.$collection['name'];     
+      $actions[] = 'manage.collection.approve.'.$collection['name'];     
     }
     //$app("acl")->addResource("Collections", ['manage.collections', 'manage.entries']);
   $app("acl")->addResource("Collections", $actions);

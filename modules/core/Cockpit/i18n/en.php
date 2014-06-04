@@ -269,5 +269,6 @@ return [
     '%s image(s) imported' => '',
     'Create groups to organize your galleries.' => '',
     'Create new group' => ''
+    'Hidden' => '',
 */
 ];

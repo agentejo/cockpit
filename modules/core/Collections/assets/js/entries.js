@@ -5,6 +5,7 @@
         $scope.collection = COLLECTION || {};
         $scope.fields = [];
         $scope.filter = $('input[name="filter"]').val();
+      
 
         $scope.fields = (COLLECTION.fields.length ? COLLECTION.fields : [COLLECTION.fields]).filter(function(field){
             return field.lst;

@@ -8,6 +8,9 @@
         $scope.collection = collection;
         $scope.entry      = entry;
         $scope.versions   = [];
+        $scope.user = USER || {}; // RCH 20140603
+        $scope.canapprove = CANAPPROVE || $scope.user.group=='admin' || false; // RCH 20140604
+
 
         // init entry with default values
         if(!entry["_id"] && collection.fields && collection.fields.length) {
@@ -116,12 +119,16 @@
 
             if(area=="side"){
                 fields = $scope.collection.fields.filter(function(field){
-                    return ['select','date','time','media','boolean','tags','region'].indexOf(field.type) > -1;
+                    return ['select','date','time','media','boolean','approval','tags','region'].indexOf(field.type) > -1; // RCH 20140604
                 });
             }
 
             return fields;
         };
+      
+      $scope.canapprove = function() {
+        
+      };
 
         $scope.loadVersions();
     });

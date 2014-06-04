@@ -62,8 +62,14 @@ class Collections extends \Cockpit\Controller {
                 return false;
             }
         }
-
-        return $this->render("collections:views/entry.php", compact('collection', 'entry'));
+      
+        // RCH 20140604
+        // Allow hidden fields to be show if admin, and allow user in groups with approve permissions
+        // to see special Approval fields
+        // (an 'approval' field is a variant of a 'boolean' or Checkbox field)
+        $user = $this->user;
+        $canapprove = $this->app->module("auth")->hasaccess("Collections", 'manage.entries.approve.'.$collection['name']);
+        return $this->render("collections:views/entry.php", compact('collection', 'entry', 'user', 'canapprove'));
 
     }
 

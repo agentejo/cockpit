@@ -41,7 +41,8 @@
                 "name": "",
                 "type": "text",
                 "lst": false,
-                "required": false
+                "required": false,
+                "hidden": false // RCH 20140603
             });
         };
 
