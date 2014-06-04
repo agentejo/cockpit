@@ -60,11 +60,22 @@ if (!function_exists('markdown')) {
 if (!function_exists('url_to')) {
 
     function url_to($path) {
-        echo cockpit()->pathToUrl($content);
+        echo cockpit()->pathToUrl($path);
     }
 
     function get_url_to($path) {
-        return cockpit()->pathToUrl($content);
+        return cockpit()->pathToUrl($path);
+    }
+}
+
+if (!function_exists('path_to')) {
+
+    function path_to($path) {
+        echo cockpit()->path($path);
+    }
+
+    function get_path_to($path) {
+        return cockpit()->path($path);
     }
 }
 
