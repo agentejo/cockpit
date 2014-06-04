@@ -55,3 +55,19 @@
 [03-Jun-2014 16:55:36 UTC] PHP Notice:  Use of undefined constant hidden - assumed 'hidden' in /home/action/workspace/www/exmp-cockpit/storage/cache/tmp/d41178bd7fda7dc4b5b9a3e8a8c7513a.view.php on line 143
 [03-Jun-2014 16:55:36 UTC] PHP Notice:  Use of undefined constant user - assumed 'user' in /home/action/workspace/www/exmp-cockpit/storage/cache/tmp/d41178bd7fda7dc4b5b9a3e8a8c7513a.view.php on line 143
 [03-Jun-2014 16:55:36 UTC] PHP Notice:  Use of undefined constant group - assumed 'group' in /home/action/workspace/www/exmp-cockpit/storage/cache/tmp/d41178bd7fda7dc4b5b9a3e8a8c7513a.view.php on line 143
+[04-Jun-2014 16:16:01 UTC] PHP Notice:  Array to string conversion in /home/action/workspace/www/exmp-cockpit/modules/core/Collections/Controller/RestApi.php on line 49
+[04-Jun-2014 16:56:25 UTC] PHP Notice:  Array to string conversion in /home/action/workspace/www/exmp-cockpit/modules/core/Collections/Controller/RestApi.php on line 40
+[04-Jun-2014 16:57:49 UTC] PHP Notice:  Array to string conversion in /home/action/workspace/www/exmp-cockpit/modules/core/Collections/Controller/RestApi.php on line 40
+[04-Jun-2014 17:02:00 UTC] PHP Notice:  Array to string conversion in /home/action/workspace/www/exmp-cockpit/modules/core/Collections/Controller/RestApi.php on line 40
+[04-Jun-2014 17:04:56 UTC] PHP Notice:  Array to string conversion in /home/action/workspace/www/exmp-cockpit/modules/core/Collections/Controller/RestApi.php on line 40
+[04-Jun-2014 17:06:25 UTC] PHP Notice:  Array to string conversion in /home/action/workspace/www/exmp-cockpit/modules/core/Collections/Controller/RestApi.php on line 40
+[04-Jun-2014 17:07:33 UTC] PHP Notice:  Array to string conversion in /home/action/workspace/www/exmp-cockpit/modules/core/Collections/Controller/RestApi.php on line 40
+[04-Jun-2014 17:10:10 UTC] PHP Notice:  Array to string conversion in /home/action/workspace/www/exmp-cockpit/modules/core/Collections/Controller/RestApi.php on line 40
+[04-Jun-2014 17:14:26 UTC] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW), expecting ']' in /home/action/workspace/www/exmp-cockpit/modules/core/Collections/Controller/RestApi.php on line 44
+[04-Jun-2014 17:14:26 UTC] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW), expecting ']' in /home/action/workspace/www/exmp-cockpit/modules/core/Collections/Controller/RestApi.php on line 44
+[04-Jun-2014 17:15:04 UTC] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW), expecting ']' in /home/action/workspace/www/exmp-cockpit/modules/core/Collections/Controller/RestApi.php on line 44
+[04-Jun-2014 17:15:04 UTC] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW), expecting ']' in /home/action/workspace/www/exmp-cockpit/modules/core/Collections/Controller/RestApi.php on line 44
+[04-Jun-2014 17:15:37 UTC] PHP Parse error:  syntax error, unexpected ';', expecting ']' in /home/action/workspace/www/exmp-cockpit/modules/core/Collections/Controller/RestApi.php on line 44
+[04-Jun-2014 17:15:37 UTC] PHP Parse error:  syntax error, unexpected ';', expecting ']' in /home/action/workspace/www/exmp-cockpit/modules/core/Collections/Controller/RestApi.php on line 44
+[04-Jun-2014 17:15:56 UTC] PHP Notice:  Undefined index: filter in /home/action/workspace/www/exmp-cockpit/modules/core/Collections/Controller/RestApi.php on line 46
+[04-Jun-2014 17:15:56 UTC] PHP Warning:  array_merge(): Argument #1 is not an array in /home/action/workspace/www/exmp-cockpit/modules/core/Collections/Controller/RestApi.php on line 46
