@@ -35,7 +35,6 @@
                 <ul class="uk-nav uk-nav-side uk-nav-plain" ng-show="groups.length">
                     <li class="uk-nav-header">@lang("Groups")</li>
                     <li ng-class="activegroup=='-all' ? 'uk-active':''" ng-click="(activegroup='-all')"><a>@lang("All regions")</a></li>
-                    <li class="uk-nav-divider" ng-show="groups.length"></li>
                 </ul>
 
                 <ul id="groups-list" class="uk-nav uk-nav-side uk-animation-fade uk-sortable" ng-show="groups.length" data-uk-sortable >
@@ -55,6 +54,7 @@
                 </div>
 
                 @hasaccess?("Regions", 'create.regions')
+                <hr>
                 <div class="uk-margin-top">
                     <button class="uk-button uk-button-success" title="@lang('Create new group')" data-uk-tooltip="{pos:'right'}" ng-click="addGroup()"><i class="uk-icon-plus-circle"></i></button>
                 </div>

@@ -72,20 +72,20 @@
 .app-top-navbar {
     position: relative;
     background: #fff;
-    border-bottom: 1px #ddd solid;
     z-index: 7;
 
     .uk-navbar-nav > li > a {
         height: 60px;
         line-height: 60px;
-
-        &:active { background: #eee; }
     }
+
+    .uk-navbar-nav > li:hover >a,
+    .uk-navbar-nav > li > a:focus,
+    .uk-navbar-nav > li.uk-open>a { background: none; }
 
     .uk-navbar-nav > li.uk-active > a {
         color: #5BA4EB;
-        background: #fafafa;
-        border-bottom: 3px #5BA4EB solid;
+        background: none;
     }
 
     .uk-navbar-content, .uk-navbar-brand, .uk-navbar-toggle {

@@ -77,7 +77,7 @@
         // after sorting list
         $(function(){
 
-            var list = $("#fields-list").on("sortable-change", function(){
+            var list = $("#fields-list").on("nestable-change", function(){
                 var fields = [];
 
                 list.children().each(function(){

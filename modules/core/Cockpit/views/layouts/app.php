@@ -66,11 +66,6 @@
 
                     @trigger("navbar-primary")
                 </ul>
-
-
-                <div class="uk-navbar-content uk-hidden-small">
-                    <i class="uk-icon-time"></i> <strong app-clock="h:i A">00:00 AM</strong>
-                </div>
             </div>
         </div>
     </nav>
