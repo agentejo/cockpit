@@ -6,7 +6,6 @@ class Api extends \Cockpit\Controller {
 
 
     public function find(){
-
         $options = [];
 
         if($filter = $this->param("filter", null)) $options["filter"] = $filter;
@@ -25,25 +24,6 @@ class Api extends \Cockpit\Controller {
         return json_encode($docs->toArray());
     }
 
-      public function findApproved(){
-
-        $options = [];
-
-        if($filter = $this->param("filter", null)) $options["filter"] = $filter;
-        if($limit  = $this->param("limit", null))  $options["limit"] = $limit;
-        if($sort   = $this->param("sort", null))   $options["sort"] = $sort;
-        if($skip   = $this->param("skip", null))   $options["skip"] = $skip;
-
-        $docs = $this->app->db->find("common/collections", $options);
-
-        if(count($docs) && $this->param("extended", false)){
-            foreach ($docs as &$doc) {
-                $doc["count"] = $this->app->module("collections")->collectionById($doc["_id"])->count();
-            }
-        }
-
-        return json_encode($docs->toArray());
-    } // findApproved
 
     public function findOne(){
 
@@ -173,6 +153,7 @@ class Api extends \Cockpit\Controller {
         if($id && $colid) {
 
             $versions = $this->app->helper("versions")->get("coentry:{$colid}-{$id}");
+            error_log(__METHOD__.': versions='.print_r($versions,true));
 
             foreach ($versions as $uid => $data) {
                 $return[] = ["time"=>$data["time"], "uid"=>$uid];
@@ -183,6 +164,49 @@ class Api extends \Cockpit\Controller {
 
     }
 
+      /**
+       * Get the latest approved version of a particular entry
+       */
+  /*
+      public function getLatestApprovedVersion() {
+
+        $return = [];
+        $id     = $this->param("id", false);
+        $colid  = $this->param("colId", false);
+
+        if($id && $colid) {
+
+            $collection = $this->app->db->findOneById("common/collections", $colid);
+            $approvalFields = array();
+            foreach($collection['fields'] as $field) {
+              // is this field an approval field?
+              if ($field['type']=='approval')
+                $approvalFields[]=$field['name']; // only include entries where this field is true
+            } // foreach
+
+            $versions = $this->app->helper("versions")->get("coentry:{$colid}-{$id}");
+            $versions = array_reverse($versions); // we need the latest version
+
+            foreach ($versions as $uid => $data) {
+              $approvals = 0;
+              // check that each approval field has been approved in this version
+              foreach ($approvalFields as $approvalField) {
+                if ($data[$approvalField])
+                  $approvals++;
+              } // foreach
+              
+              if ($approvals==count($approvalFields)) {
+                return json_encode($data);
+                // stop when we have the latest approved version of this entry
+              }
+            }
+        }
+
+        // if we get this far there wasn't any approved versions
+        return json_encode(false);
+
+    } // getLatestApprovedVersion
+*/
 
     public function clearVersions() {
 

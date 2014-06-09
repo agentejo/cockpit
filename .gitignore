@@ -15,3 +15,4 @@
 /storage/data/*.sqlite
 /storage/uploads/*
 /custom/*
+php_errors.log

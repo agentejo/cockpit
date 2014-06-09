@@ -34,10 +34,13 @@ class Versions extends \Lime\Helper {
     public function get($path, $uid = null) {
 
       if($uid) {
-            return $this->storage->hget($path, $uid);
+            $stuff = $this->storage->hget($path, $uid);
       } else {
-            return $this->storage->hgetall($path);
+            $stuff = $this->storage->hgetall($path);         
       }
+      error_log(__METHOD__.': $stuff='.print_r($stuff,true));
+           
+      return $stuff;
     }
 
     public function remove($path, $uid = null) {

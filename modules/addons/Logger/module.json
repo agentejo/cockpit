@@ -1,0 +1,7 @@
+{
+    "name"       : "Logger",
+    "version"    : "0.1",
+    "description": "Log debug messages to a collection",
+    "homepage"   : "",
+    "license"    : "MIT"
+}
