@@ -33,7 +33,7 @@
         <div class="uk-navbar-flip">
             @hasaccess?("Collections", 'manage.collections')
             <div class="uk-navbar-content" data-ng-show="entries && entries.length">
-                <a href="@route('/api/collections/export/'.$collection['_id'])" download="{{ $collection['name'] }}.json" title="@lang('Export data')" data-uk-tooltip="{pos:'bottom'}">
+                <a class="uk-button" href="@route('/api/collections/export/'.$collection['_id'])" download="{{ $collection['name'] }}.json" title="@lang('Export data')" data-uk-tooltip="{pos:'bottom'}">
                     <i class="uk-icon-share-alt"></i>
                 </a>
             </div>

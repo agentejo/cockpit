@@ -1,5 +1,22 @@
 # Changelog
 
+### 0.9.15  (Jun 11, 2014)
+
+    + Added mode option to thumbnail function ['crop', 'resize', 'best_fit']
+    + Added allow videos to be selected in gallery field
+    + Added download/export collection entries as json export
+    + Added region field to link regions in collections
+    + Added batch remove for any list in table view
+    ^ Updated form api: using formdata object when possible
+    ^ Updated vendor assets + scripts
+    # Fixed shortcut api functions url_to / path_to
+    # Fixed success message on upload max filesize error
+    # Fixed gallery field: removing media
+    # Fixed login history
+    # Fixed media upload button not working in firefox
+    # Fixed hide form success and error messages initially
+
+
 ### 0.9.14  (Apr 16, 2014)
 
     + Added batch delete (media manager)
