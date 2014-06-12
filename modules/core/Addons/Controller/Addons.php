@@ -5,7 +5,7 @@ namespace Addons\Controller;
 class Addons extends \Cockpit\Controller {
 
 	public function index(){
-		
+
         $addons = [];
 
         foreach (new \DirectoryIterator($this->app->path('modules:addons')) as $addon) {
@@ -19,7 +19,8 @@ class Addons extends \Cockpit\Controller {
                 "version"     => null,
                 "description" => null,
                 "homepage"    => null,
-                "check_url"   => null   
+                "check_url"   => null,
+                "repo"        => null
             ];
 
             if ($meta = $this->app->path("modules:addons/{$name}/module.json")) {
