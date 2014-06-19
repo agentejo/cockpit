@@ -2,7 +2,7 @@
 
     App.module.controller("entries", function($scope, $rootScope, $http, $timeout){
 
-        $scope.form = $("[data-ng-controller='entries']").data("form");
+        $scope.form = FORMDATA || {};
 
         $http.post(App.route("/api/forms/entries"), {
 
