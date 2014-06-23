@@ -220,10 +220,10 @@ class Accounts extends \Cockpit\Controller {
 
         foreach ($this->app->helper("acl")->getGroups() as $group => $isadmin) {
 
-            $acl[$group] = [];
+            $acl[$group] = new \ArrayObject([]);
 
             foreach ($this->app->helper("acl")->getResources() as $resource => $actions) {
-                $acl[$group][$resource] = [];
+                $acl[$group][$resource] = new \ArrayObject([]);
 
                 foreach ($actions as $action) {
                     $acl[$group][$resource][$action] = $this->app->helper("acl")->hasaccess($group, $resource, $action);
