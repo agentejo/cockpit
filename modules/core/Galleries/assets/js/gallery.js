@@ -151,9 +151,7 @@
 
         };
 
-        var imglist = $("#images-list");
-
-        imglist.on("dragend", "[draggable]",function(){
+        var imglist = $("#images-list").on("sortable-change",function(){
 
             var images = [];
 
@@ -168,7 +166,7 @@
 
         // after sorting list
 
-        var list = $("#manage-fields-list").on("sortable-change", function(){
+        var list = $("#manage-fields-list").on("nestable-change", function(){
             var fields = [];
 
             list.children().each(function(){

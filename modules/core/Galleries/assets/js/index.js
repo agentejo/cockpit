@@ -150,9 +150,7 @@
             }
         };
 
-        var grouplist = $("#groups-list");
-
-        grouplist.on("dragend", "[draggable]",function(){
+        var grouplist = $("#groups-list").on("sortable-change",function(){
 
             if($scope.groups.length==1) return;
 

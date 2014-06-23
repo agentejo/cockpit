@@ -91,7 +91,7 @@
 
             App.assets.require($.UIkit.sortable ? []:['assets/vendor/uikit/js/addons/sortable.min.js'], function(){
 
-                $container.on("dragend", "[draggable]",function(){
+                $container.on("sortable-change",function(){
 
                     var imgs = [];
 

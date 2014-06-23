@@ -150,7 +150,10 @@
                         </div>
 
                         <div data-ng-switch-when="time">
-                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-uk-timepicker data-ng-model="entry[field.name]">
+                            <div class="uk-form-icon uk-width-1-1" data-uk-timepicker>
+                                <i class="uk-icon-clock-o"></i>
+                                <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[field.name]">
+                            </div>
                         </div>
 
                         <div data-ng-switch-when="region">

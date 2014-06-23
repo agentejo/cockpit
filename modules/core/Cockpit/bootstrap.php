@@ -2,7 +2,6 @@
 
 $app['app.assets.base'] = [
     'assets:vendor/jquery.js',
-    'assets:vendor/angular.js',
     'assets:vendor/storage.js',
     'assets:vendor/i18n.js',
 
@@ -96,6 +95,12 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
     $app["cockpit"] = json_decode($app->helper("fs")->read("#root:package.json"), true);
 
     $assets = array_merge([
+
+        // angular
+        'assets:vendor/angular/angular.min.js',
+        'assets:vendor/angular/angular-sanitize.min.js',
+        'assets:vendor/angular/angular-animate.min.js',
+
         'assets:vendor/uikit/js/addons/autocomplete.min.js',
         'assets:vendor/uikit/js/addons/search.min.js',
         'assets:vendor/uikit/js/addons/form-select.min.js',

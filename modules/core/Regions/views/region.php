@@ -24,7 +24,7 @@
 <div data-ng-controller="region" data-id="{{ $id }}" ng-cloak>
 
     <div id="region-versions" class="uk-offcanvas">
-        <div class="uk-offcanvas-bar uk-offcanvas-bar-flip">
+        <div class="uk-offcanvas-bar">
             <div class="uk-panel">
 
             <div data-ng-show="versions.length">
