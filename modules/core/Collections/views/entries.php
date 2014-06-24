@@ -77,7 +77,7 @@
                             <td>
                                 <div class="uk-grid uk-grid-preserve uk-text-small" data-ng-repeat="field in fields">
                                     <div class="uk-width-medium-1-5">
-                                        <strong>@@ field.name @@</strong>
+                                        <strong>@@ (field.label || field.name) @@</strong>
                                     </div>
                                     <div class="uk-width-medium-4-5">
                                         <a class="uk-link-muted" href="@route('/collections/entry/'.$collection["_id"])/@@ entry._id @@">@@ entry[field.name] @@</a>

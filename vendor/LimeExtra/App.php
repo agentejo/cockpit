@@ -93,7 +93,7 @@ class App extends \Lime\App {
     * @param  Array  $slots   Passed variables
     * @return String               Rendered view
     */
-    public function view($template, $slots = array()) {
+    public function view($template, $slots = []) {
 
         $renderer     = $this->renderer();
         $olayout      = $this->layout;
@@ -152,6 +152,13 @@ class App extends \Lime\App {
         $this->layout = $olayout;
 
         return $output;
+    }
+
+    /**
+     * Outputs view content result
+     */
+    public function renderView($template, $slots = []) {
+        echo $this->view($template, $slots);
     }
 
     public function renderer() {

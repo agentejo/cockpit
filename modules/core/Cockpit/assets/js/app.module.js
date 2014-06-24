@@ -126,6 +126,20 @@
       };
     });
 
+    module.directive('appDynamic', function ($compile) {
+        return {
+            restrict: 'A',
+            replace: true,
+            link: function (scope, ele, attrs) {
+
+                scope.$watch(attrs.appDynamic, function(html) {
+                    ele.html(html);
+                    $compile(ele.contents())(scope);
+                });
+            }
+        };
+    });
+
     module.directive("appConfirmLink", function(){
 
         return {

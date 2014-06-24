@@ -6,7 +6,7 @@
 
             "base_route" : html.data("route"),
             "base_url"   : html.data("base"),
-            "modules"    : [],
+            "modules"    : ['ngSanitize', 'ngAnimate'],
             "_events"    : {},
 
             base: function(url) {

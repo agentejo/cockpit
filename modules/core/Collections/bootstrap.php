@@ -80,7 +80,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
         $badge       = $app->db->getCollection("common/collections")->count();
         $collections = $app->db->find("common/collections", ["limit"=> 3, "sort"=>["created"=>-1] ])->toArray();
 
-        echo $app->view("collections:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'collections'));
+        $app->renderView("collections:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'collections'));
     });
 
     // acl

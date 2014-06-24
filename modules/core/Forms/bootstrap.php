@@ -63,7 +63,7 @@ $this->module("forms")->extend([
             "csrf"  => $app->hash($name)
         ), $options);
 
-        echo $app->view("forms:views/api/form.php", compact('name', 'options'));
+        $app->renderView("forms:views/api/form.php", compact('name', 'options'));
     },
 
     "collectionById" => function($formId) use($app) {
@@ -122,7 +122,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
         $badge = $app->db->getCollection("common/forms")->count();
         $forms = $app->db->find("common/forms", ["limit"=> 3, "sort"=>["created"=>-1] ])->toArray();
 
-        echo $app->view("forms:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'forms'));
+        $app->renderView("forms:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'forms'));
     });
 
     // acl

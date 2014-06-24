@@ -132,7 +132,7 @@
             $http.post(App.route("/api/regions/save"), {"region": region, "createversion": true}).success(function(data){
 
                 if(data && Object.keys(data).length) {
-                    $scope.region = data;
+                    $scope.region._id = data._id;
                     App.notify(App.i18n.get("Region saved!"), "success");
 
                     $scope.loadVersions();

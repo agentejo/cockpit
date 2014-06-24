@@ -4,6 +4,7 @@ $app['app.assets.base'] = [
     'assets:vendor/jquery.js',
     'assets:vendor/storage.js',
     'assets:vendor/i18n.js',
+    'assets:vendor/animate.min.css',
 
     // UIkit
     'cockpit:assets/css/uikit.cockpit.min.css',
@@ -101,13 +102,17 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
         'assets:vendor/angular/angular-sanitize.min.js',
         'assets:vendor/angular/angular-animate.min.js',
 
+        // uikit addons
         'assets:vendor/uikit/js/addons/autocomplete.min.js',
         'assets:vendor/uikit/js/addons/search.min.js',
         'assets:vendor/uikit/js/addons/form-select.min.js',
         'assets:vendor/multipleselect.js',
+
+        // app related
         'cockpit:assets/js/app.js',
         'cockpit:assets/js/app.module.js',
         'cockpit:assets/js/bootstrap.js',
+
     ], $app->retrieve('app.config/app.assets.backend', []));
 
     $app['app.assets.backend'] = $assets;
@@ -149,16 +154,21 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
     // dashboard widgets
     $app->on("admin.dashboard.main", function() use($app){
         $title = $app("i18n")->get("Today");
-        echo $app->view("cockpit:views/dashboard/datetime.php with cockpit:views/layouts/dashboard.widget.php", compact('title'));
+        $app->renderView("cockpit:views/dashboard/datetime.php with cockpit:views/layouts/dashboard.widget.php", compact('title'));
     }, 100);
 
     $app->on("admin.dashboard.main", function() use($app){
-        echo $app->view("cockpit:views/dashboard/history.php", ['history' => $app("history")->load()]);
+        $app->renderView("cockpit:views/dashboard/history.php", ['history' => $app("history")->load()]);
     }, 5);
 
+
+
     // init admin menus
+
     $app['admin.menu.top']      = new \PriorityQueue();
     $app['admin.menu.dropdown'] = new \PriorityQueue();
+
+
 
     // load i18n definition
 
@@ -181,5 +191,6 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
 
 
     // acl
+
     $app("acl")->addResource("Cockpit", ['manage.backups']);
 }

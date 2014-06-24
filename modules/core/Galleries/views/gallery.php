@@ -188,10 +188,6 @@
 
 <style>
 
-    #images-list > li {
-        cursor: move;
-    }
-
     #images-list .uk-thumbnail {
         position: relative;
     }
