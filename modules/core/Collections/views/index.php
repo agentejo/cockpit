@@ -65,7 +65,7 @@
         <div class="uk-width-medium-3-4">
 
             <div class="uk-margin-bottom">
-                <span class="uk-badge app-badge">@@ (activegroup=='-all' ? '@lang("All galleries")' : activegroup) @@</span>
+                <span class="uk-badge app-badge">@@ (activegroup=='-all' ? '@lang("All collections")' : activegroup) @@</span>
             </div>
 
             <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="collections && collections.length && mode=='list'">
