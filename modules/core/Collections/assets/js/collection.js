@@ -25,11 +25,19 @@
         }
 
         $scope.collections = [];
+        $scope.groups      = [];
 
+        // get collections
         $http.post(App.route("/api/collections/find"), {}).success(function(data){
-
             $scope.collections = data;
         });
+
+        // get groups
+        $http.post(App.route("/api/collections/getGroups"), {}).success(function(groups){
+
+            $scope.groups = groups;
+
+        }).error(App.module.callbacks.error.http);
 
         $scope.addfield = function(){
 

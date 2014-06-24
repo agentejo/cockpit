@@ -52,6 +52,18 @@ class Api extends \Cockpit\Controller {
         return $collection ? json_encode($collection) : '{}';
     }
 
+    public function update(){
+
+        $criteria = $this->param("criteria", false);
+        $data     = $this->param("data", false);
+
+        if($criteria && $data) {
+            $this->app->db->update("common/collections", $criteria, $data);
+        }
+
+        return '{"success":true}';
+    }
+
     public function remove(){
 
         $collection = $this->param("collection", null);
@@ -213,5 +225,26 @@ class Api extends \Cockpit\Controller {
         $entries = $this->app->db->find("collections/{$col}");
 
         return json_encode($entries, JSON_PRETTY_PRINT);
+    }
+
+    public function updateGroups() {
+
+        $groups = $this->param("groups", false);
+
+        if($groups !== false) {
+
+            $this->app->memory->set("cockpit.collections.groups", $groups);
+
+            return '{"success":true}';
+        }
+
+        return false;
+    }
+
+    public function getGroups() {
+
+        $groups = $this->app->memory->get("cockpit.collections.groups", []);
+
+        return json_encode($groups);
     }
 }

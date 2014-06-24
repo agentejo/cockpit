@@ -15,7 +15,6 @@
 
             <div class="uk-width-3-4">
 
-
                     <div class="uk-form-row">
                         <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="collection.name" pattern="[a-zA-Z0-9\s]+" required>
                     </div>
@@ -154,7 +153,22 @@
 
             </div>
             <div class="uk-width-1-4" data-ng-show="collection.fields && collection.fields.length">
+
                 <strong>@lang('Settings')</strong>
+
+                <div class="uk-margin">
+                    <p>@lang("Group")</p>
+                    <div class="uk-form-controls uk-margin-small-top">
+                        <div class="uk-form-select">
+                            <i class="uk-icon-sitemap uk-margin-small-right"></i>
+                            <a>@@ collection.group || '- @lang("No group") -' @@</a>
+                            <select class="uk-width-1-1 uk-margin-small-top" data-ng-model="collection.group">
+                                <option ng-repeat="group in groups" value="@@ group @@">@@ group @@</option>
+                                <option value="">- @lang("No group") -</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="uk-margin">
                     <p>
@@ -181,6 +195,7 @@
                         <option value="1">@lang('ascending')</option>
                     </select>
                 </div>
+
             </div>
 
         </div>

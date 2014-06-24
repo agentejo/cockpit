@@ -1,3 +1,4 @@
+{{ $app->assets(['assets:vendor/uikit/js/addons/sortable.min.js'], $app['cockpit/version']) }}
 {{ $app->assets(['collections:assets/collections.js','collections:assets/js/index.js'], $app['cockpit/version']) }}
 
 
@@ -28,74 +29,142 @@
         </div>
     </nav>
 
-    <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="collections && collections.length && mode=='list'">
-        <div class="uk-width-1-1 uk-width-medium-1-3 uk-width-large-1-4" data-ng-repeat="collection in collections track by collection._id" data-ng-show="matchName(collection.name)">
+    <div class="uk-grid uk-grid-divider" data-uk-grid-match data-ng-show="collections && collections.length">
 
-            <div class="app-panel">
+        <div class="uk-width-medium-1-4">
+            <div class="uk-panel">
+                <ul class="uk-nav uk-nav-side uk-nav-plain" ng-show="groups.length">
+                    <li class="uk-nav-header">@lang("Groups")</li>
+                    <li ng-class="activegroup=='-all' ? 'uk-active':''" ng-click="(activegroup='-all')"><a>@lang("All collections")</a></li>
+                </ul>
 
-                <a class="uk-link-muted" href="@route('/collections/entries')/@@ collection._id @@"><strong>@@ collection.name @@</strong></a>
-
-                <div class="uk-margin">
-                    <span class="uk-badge app-badge">@@ collection.count @@ @lang('Entries')</span>
-                </div>
-
-                <div class="app-panel-box docked-bottom">
-                    <span class="uk-button-group">
-                        <a class="uk-button uk-button-primary uk-button-small" href="@route('/collections/entries')/@@ collection._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a>
-                        <a class="uk-button uk-button-small" href="@route('/collections/entry')/@@ collection._id @@" title="@lang('Create new entry')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
+                <ul id="groups-list" class="uk-nav uk-nav-side uk-animation-fade uk-sortable" ng-show="groups.length" data-uk-sortable>
+                    <li ng-repeat="group in groups" ng-class="$parent.activegroup==group ? 'uk-active':''" ng-click="($parent.activegroup=group)" draggable="true">
+                        <a><i class="uk-icon-bars" style="cursor:move;"></i> @@ group @@</a>
                         @hasaccess?("Collections", 'manage.collections')
-                        <a class="uk-button uk-button-small" href="@route('/collections/collection')/@@ collection._id @@" title="@lang('Edit collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
-                        <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, collection)" href="#" title="@lang('Delete collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                        <ul class="uk-subnav group-actions uk-animation-slide-right">
+                            <li><a href="#" ng-click="editGroup(group, $index)"><i class="uk-icon-pencil"></i></a></li>
+                            <li><a href="#" ng-click="removeGroup($index)"><i class="uk-icon-trash-o"></i></a></li>
+                        </ul>
                         @end
-                    </span>
+                    </li>
+                </ul>
+
+                <div class="uk-text-muted" ng-show="!groups.length">
+                    @lang('Create groups to organize your collections.')
                 </div>
+
+                @hasaccess?("Collections", 'manage.collections')
+                <hr>
+                <div class="uk-margin-top">
+                    <button class="uk-button uk-button-success" title="@lang('Create new group')" data-uk-tooltip="{pos:'right'}" ng-click="addGroup()"><i class="uk-icon-plus-circle"></i></button>
+                </div>
+                @end
             </div>
         </div>
-    </div>
+        <div class="uk-width-medium-3-4">
 
-    <div class="app-panel" data-ng-if="collections && collections.length && mode=='table'">
-        <table class="uk-table uk-table-striped" multiple-select="{model:collections}">
-            <thead>
-                <tr>
-                    <th width="10"><input class="js-select-all" type="checkbox"></th>
-                    <th>@lang('Collection')</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="js-multiple-select" data-ng-repeat="collection in collections track by collection._id" data-ng-show="matchName(collection.name)">
-                    <td><input class="js-select" type="checkbox"></td>
-                    <td>
-                        <a href="@route('/collections/collection')/@@ collection._id @@">@@ collection.name @@</a>
-                    </td>
-                    <td align="right">
-                        <ul class="uk-subnav uk-subnav-line">
-                            <li><a href="@route('/collections/entries')/@@ collection._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a></li>
-                            <li><a href="@route('/collections/entry')/@@ collection._id @@" title="@lang('Create new entry')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a></li>
-                            @hasaccess?("Collections", 'manage.collections')
-                            <li><a class="uk-text-danger" data-ng-click="remove($index, collection)" href="#" title="@lang('Delete collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle js-ignore-select"></i></a></li>
-                            @end
-                        </ul>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+            <div class="uk-margin-bottom">
+                <span class="uk-badge app-badge">@@ (activegroup=='-all' ? '@lang("All galleries")' : activegroup) @@</span>
+            </div>
 
-        <div class="uk-margin-top">
-            <button class="uk-button uk-button-danger" data-ng-click="removeSelected()" data-ng-show="selected"><i class="uk-icon-trash-o"></i> @lang('Delete')</button>
+            <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="collections && collections.length && mode=='list'">
+                <div class="uk-width-1-1 uk-width-medium-1-3" data-ng-repeat="collection in collections track by collection._id" data-ng-show="matchName(collection.name) && inGroup(collection.group)">
+
+                    <div class="app-panel">
+
+                        <a class="uk-link-muted" href="@route('/collections/entries')/@@ collection._id @@"><strong>@@ collection.name @@</strong></a>
+
+                        <div class="uk-margin">
+                            <span class="uk-badge app-badge">@@ collection.count @@ @lang('Entries')</span>
+                        </div>
+
+                        <div class="app-panel-box docked-bottom">
+                            <span class="uk-button-group">
+                                <a class="uk-button uk-button-primary uk-button-small" href="@route('/collections/entries')/@@ collection._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a>
+                                <a class="uk-button uk-button-small" href="@route('/collections/entry')/@@ collection._id @@" title="@lang('Create new entry')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
+                                @hasaccess?("Collections", 'manage.collections')
+                                <a class="uk-button uk-button-small" href="@route('/collections/collection')/@@ collection._id @@" title="@lang('Edit collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
+                                <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, collection)" href="#" title="@lang('Delete collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
+                                @end
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-panel" data-ng-if="collections && collections.length && mode=='table'">
+                <table class="uk-table uk-table-striped" multiple-select="{model:collections}">
+                    <thead>
+                        <tr>
+                            <th width="10"><input class="js-select-all" type="checkbox"></th>
+                            <th>@lang('Collection')</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="js-multiple-select" data-ng-repeat="collection in collections track by collection._id" data-ng-show="matchName(collection.name) && inGroup(collection.group)">
+                            <td><input class="js-select" type="checkbox"></td>
+                            <td>
+                                <a href="@route('/collections/collection')/@@ collection._id @@">@@ collection.name @@</a>
+                            </td>
+                            <td align="right">
+                                <ul class="uk-subnav uk-subnav-line">
+                                    <li><a href="@route('/collections/entries')/@@ collection._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a></li>
+                                    <li><a href="@route('/collections/entry')/@@ collection._id @@" title="@lang('Create new entry')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a></li>
+                                    @hasaccess?("Collections", 'manage.collections')
+                                    <li><a class="uk-text-danger" data-ng-click="remove($index, collection)" href="#" title="@lang('Delete collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle js-ignore-select"></i></a></li>
+                                    @end
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="uk-margin-top">
+                    <button class="uk-button uk-button-danger" data-ng-click="removeSelected()" data-ng-show="selected"><i class="uk-icon-trash-o"></i> @lang('Delete')</button>
+                </div>
+            </div>
+
+            <div class="uk-text-center app-panel" data-ng-show="collections && !collections.length">
+                <h2><i class="uk-icon-list"></i></h2>
+                <p class="uk-text-large">
+                    @lang('You don\'t have any collections created.')
+                </p>
+
+                @hasaccess?("Collections", 'manage.collections')
+                <a href="@route('/collections/collection')" class="uk-button uk-button-success uk-button-large">@lang('Create a collection')</a>
+                @end
+            </div>
+
+
         </div>
     </div>
 
-    <div class="uk-text-center app-panel" data-ng-show="collections && !collections.length">
-        <h2><i class="uk-icon-list"></i></h2>
-        <p class="uk-text-large">
-            @lang('You don\'t have any collections created.')
-        </p>
-
-        @hasaccess?("Collections", 'manage.collections')
-        <a href="@route('/collections/collection')" class="uk-button uk-button-success uk-button-large">@lang('Create a collection')</a>
-        @end
-    </div>
-
-
 </div>
+
+<style>
+
+    #groups-list li {
+        position: relative;
+        overflow: hidden;
+    }
+    .group-actions {
+        position: absolute;
+        display:none;
+        min-width: 60px;
+        text-align: right;
+        top: 5px;
+        right: 10px;
+    }
+
+    .group-actions a { font-size: 11px; }
+
+    #groups-list li.uk-active .group-actions,
+    #groups-list li:hover .group-actions { display:block; }
+    #groups-list li:hover .group-actions a { color: #666; }
+    #groups-list li.uk-active a,
+    #groups-list li.uk-active .group-actions a { color: #fff; }
+
+
+</style>
