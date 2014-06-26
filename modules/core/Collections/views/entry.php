@@ -85,6 +85,13 @@
                         <label class="uk-text-small">@@ (field.label || field.name) | uppercase @@ <span ng-show="field.required">*</span></label>
                         <div class="uk-text-small uk-text-danger uk-float-right uk-animation-slide-top" data-ng-if="field.error">@@ field.error @@</div>
 
+                        <div data-ng-switch-when="text">
+                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[field.name]">
+                            <div class="uk-margin-top" ng-if="field.slug">
+                                <input class="uk-width-1-1 uk-form-blank uk-text-muted" type="text" data-ng-model="entry[field.name+'_slug']" app-slug="entry[field.name]" placeholder="@lang('Slug...')" title="@@ (field.label || field.name) @@ slug" data-uk-tooltip="{pos:'left'}">
+                            </div>
+                        </div>
+
                         <div data-ng-switch-when="html">
                             <htmleditor data-ng-model="entry[field.name]"></htmleditor>
                         </div>

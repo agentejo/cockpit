@@ -93,6 +93,13 @@
                                                         </div>
                                                     </div>
 
+                                                    <div class="uk-form-row" data-ng-if="field.type=='text'">
+                                                        <label class="uk-form-label">@lang('Slug')</label>
+                                                        <div class="uk-form-controls">
+                                                            <input type="checkbox" data-ng-model="field.slug" />
+                                                        </div>
+                                                    </div>
+
                                                     <div class="uk-form-row" data-ng-if="field.type=='select'">
                                                         <label class="uk-form-label">@lang('Options')</label>
                                                         <div class="uk-form-controls">

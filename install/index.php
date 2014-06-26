@@ -2,6 +2,7 @@
 
 $sqlitesupport = false;
 
+// check whether sqlite is supported
 try {
     if(extension_loaded('pdo')) {
         $test = new PDO('sqlite::memory:');
@@ -9,6 +10,7 @@ try {
     }
 } catch (Exception $e) { }
 
+// misc checks
 $checks = array(
     "Php version >= 5.4.0"                             => (version_compare(PHP_VERSION, '5.4.0') >= 0),
     "PDO extension loaded with Sqlite support"         => $sqlitesupport,
@@ -21,7 +23,7 @@ $checks = array(
 foreach($checks as $info => $check) {
     if(!$check) {
         include(__DIR__."/fail.php");
-        return;
+        exit;
     }
 }
 
@@ -29,10 +31,13 @@ require(__DIR__.'/../bootstrap.php');
 
 $app = cockpit();
 
-if($app->db->getCollection("cockpit/accounts")->count()) {
-    header('Location: ../index.php');
-    exit;
-}
+// check whether cockpit is already installed
+try {
+    if ($app->db->getCollection("cockpit/accounts")->count()) {
+        header('Location: ../index.php');
+        exit;
+    }
+} catch(Exception $e) { }
 
 $account = [
     "user"     => "admin",
