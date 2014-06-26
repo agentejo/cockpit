@@ -1,5 +1,13 @@
 # Changelog
 
+### 0.9.16  (Jun 26, 2014)
+
+    + Added slug option for collection text fields
+    + Added collection can be grouped now
+    + Added field label option
+    # Fixed form entries list view
+    # Fixed media root path didn't save properly
+
 ### 0.9.15  (Jun 11, 2014)
 
     + Added mode option to thumbnail function ['crop', 'resize', 'best_fit']
