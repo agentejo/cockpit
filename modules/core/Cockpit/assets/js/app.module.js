@@ -170,6 +170,10 @@
 
                     if (!ngModel.$viewValue || ngModel.$viewValue===_slugify(oldValue)) {
                         ele.val(_slugify(newValue));
+                        ngModel.$setViewValue(ele.val());
+                        if (!scope.$root.$$phase) {
+                          scope.$apply();
+                        }
                     }
                 });
             }
