@@ -17,7 +17,8 @@ class Lexy {
         'default_structures',
         'else',
         'unless',
-        'unescape_echos'
+        'unescape_echos',
+        'php_tags'
     );
 
     protected $extensions = array();
@@ -328,6 +329,17 @@ class Lexy {
         $value = str_replace('@endunless', '<?php endif; ?>', $value);
 
         return $value;
+    }
+
+    /**
+     * Rewrites Lexi's php tags.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    protected function compile_php_tags($value) {
+
+        return str_replace(array('{%', '%}'), array('<?php', '?>'), $value);
     }
 
     /**
