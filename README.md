@@ -14,7 +14,7 @@ Manage content like collections, regions, forms and galleries which you can reus
 ### Requirements
 
 * PHP >= 5.4
-* PDO + SQLite
+* PDO + SQLite (or MongoDB)
 * GD extension
 
 make also sure that 
