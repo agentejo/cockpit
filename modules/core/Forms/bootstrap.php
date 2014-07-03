@@ -8,9 +8,9 @@ $app->bind("/api/forms/submit/:form", function($params) use($app){
 
     // Security check
 
-    if($formhash = $app->param("__csrf", false)) {
+    if ($formhash = $app->param("__csrf", false)) {
 
-        if($formhash != $app->hash($form)) {
+        if ($formhash != $app->hash($form)) {
             return false;
         }
 
@@ -20,13 +20,13 @@ $app->bind("/api/forms/submit/:form", function($params) use($app){
 
     $frm = $app->db->findOne("common/forms", ["name"=>$form]);
 
-    if(!$frm) {
+    if (!$frm) {
         return false;
     }
 
-    if($formdata = $app->param("form", false)) {
+    if ($formdata = $app->param("form", false)) {
 
-        if(isset($frm["email"]) && filter_var($frm["email"], FILTER_VALIDATE_EMAIL)) {
+        if (isset($frm["email"]) && filter_var($frm["email"], FILTER_VALIDATE_EMAIL)) {
 
             $body = array();
 
@@ -38,7 +38,7 @@ $app->bind("/api/forms/submit/:form", function($params) use($app){
             $app->mailer->mail($frm["email"], $app->param("__mailsubject", "New form data for: ".$form), implode("\n<br>", $body));
         }
 
-        if(isset($frm["entry"]) && $frm["entry"]) {
+        if (isset($frm["entry"]) && $frm["entry"]) {
 
             $collection = "form".$frm["_id"];
             $entry      = ["data" => $formdata, "created"=>time()];
