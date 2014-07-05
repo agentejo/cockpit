@@ -8,13 +8,12 @@ date_default_timezone_set('UTC');
 
 if (!isset($_SERVER['PATH_INFO']) && strpos($_SERVER['REQUEST_URI'], $_SERVER['PHP_SELF'])===0) {
 
-        $_URI  = preg_replace('/\?(.*)/', '', $_SERVER['REQUEST_URI']);
-        $_SELF = $_SERVER['PHP_SELF'];
-        $_PATH = substr($_URI, strlen($_SELF));
+    $_URI  = preg_replace('/\?(.*)/', '', $_SERVER['REQUEST_URI']);
+    $_SELF = $_SERVER['PHP_SELF'];
+    $_PATH = substr($_URI, strlen($_SELF));
 
-        if ($_PATH && $_PATH[0] == '/') $_SERVER['PATH_INFO'] = $_PATH;
+    if ($_PATH && $_PATH[0] == '/') $_SERVER['PATH_INFO'] = $_PATH;
 }
-
 
 require(__DIR__.'/bootstrap.php');
 

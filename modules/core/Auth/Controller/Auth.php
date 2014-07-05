@@ -37,10 +37,6 @@ class Auth extends \LimeExtra\Controller {
 
     public function login() {
 
-        if(!$this->app->db->getCollection("cockpit/accounts")->count()) {
-            $this->reroute($this->app->getSiteUrl().'/install');
-        }
-
         return $this->render('cockpit:views/layouts/login.php');
     }
 

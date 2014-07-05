@@ -178,7 +178,8 @@ class App implements \ArrayAccess {
             'helpers'      => array(),
             'base_url'     => implode("/", array_slice(explode("/", $_SERVER['SCRIPT_NAME']), 0, -1)),
             'base_route'   => implode("/", array_slice(explode("/", $_SERVER['SCRIPT_NAME']), 0, -1)),
-            'docs_root'    => null
+            'docs_root'    => null,
+            'site_url'     => null
         ), $settings);
 
         if(!isset($this["app.name"])){
@@ -187,6 +188,10 @@ class App implements \ArrayAccess {
 
         if(!isset($this["session.name"])){
             $this["session.name"] = $this["app.name"];
+        }
+
+        if (!isset($this["site_url"])) {
+            $this["site_url"] = $this->getSiteUrl(false);
         }
 
         if (!isset($this["docs_root"])) {
@@ -279,7 +284,21 @@ class App implements \ArrayAccess {
     */
     public function baseUrl($path) {
 
-        return strpos($path, ':')===false ? $this->registry["base_url"].'/'.ltrim($path, '/') : $this->pathToUrl($path);
+        $url = '';
+
+        if (strpos($path, ':')===false) {
+
+            if ($_SERVER["SERVER_PORT"] != '80') {
+                $url .= $this->registry['site_url'];
+            }
+
+            $url .= $this->registry["base_url"].'/'.ltrim($path, '/');
+
+        } else {
+            $url = $this->pathToUrl($path);
+        }
+
+        return $url;
     }
 
     public function base($path) {
@@ -296,7 +315,15 @@ class App implements \ArrayAccess {
     */
     public function routeUrl($path) {
 
-        return $this->registry["base_route"].'/'.ltrim($path, '/');
+        $url = '';
+
+        if ($_SERVER["SERVER_PORT"] != '80') {
+            $url .= $this->registry['site_url'];
+        }
+
+        $url .= $this->registry["base_route"];
+
+        return $url.'/'.ltrim($path, '/');
     }
 
     public function route() {
@@ -426,6 +453,10 @@ class App implements \ArrayAccess {
             $root = str_replace(DIRECTORY_SEPARATOR, '/', $this['docs_root']);
 
             $url = '/'.ltrim(str_replace($root, '', $file), '/');
+        }
+
+        if ($_SERVER["SERVER_PORT"] != "80") {
+            $url = $this->registry['site_url'].$url;
         }
 
         return $url;
@@ -1022,7 +1053,8 @@ class App implements \ArrayAccess {
     * Get site url
     * @return String
     */
-    public function getSiteUrl() {
+    public function getSiteUrl($withpath = false) {
+
         $url = ($this->req_is("ssl") ? 'https':'http')."://";
 
         if ($_SERVER["SERVER_PORT"] != "80") {
@@ -1031,7 +1063,9 @@ class App implements \ArrayAccess {
             $url .= $_SERVER["SERVER_NAME"];
         }
 
-        $url .= implode("/", array_slice(explode("/", $_SERVER['SCRIPT_NAME']), 0, -1));
+        if ($withpath) {
+            $url .= implode("/", array_slice(explode("/", $_SERVER['SCRIPT_NAME']), 0, -1));
+        }
 
         return rtrim($url,'/');
     }
