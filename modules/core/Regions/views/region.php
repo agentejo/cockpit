@@ -106,7 +106,7 @@
                                          <li data-ng-repeat="field in region.fields">
                                             <div class="uk-nestable-item uk-nestable-item-table">
                                                <div class="uk-nestable-handle"></div>
-                                               <input type="text" data-ng-model="field.name" placeholder="@lang('Field name')" title="@lang('Field name')" data-uk-tooltip pattern="[a-zA-Z0-9]+" required>
+                                               <input type="text" data-ng-model="field.name" placeholder="@lang('Field name')" title="@lang('Field name')" data-uk-tooltip pattern="^[a-zA-Z][a-zA-Z0-9]*" required>
                                                <input type="text" data-ng-model="field.label" placeholder="@lang('Field label')" title="@lang('Field label')" data-uk-tooltip>
                                                <select data-ng-model="field.type" title="@lang('Field type')" data-uk-tooltip>
                                                    <option value="text">Text</option>
