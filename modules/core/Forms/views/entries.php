@@ -56,7 +56,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>@@ entry.created | fmtdate:'d M, Y H:m' @@</td>
+                            <td>@@ entry.created | fmtdate:'d M, Y H:i' @@</td>
                             <td class="uk-text-right">
                                 <a href="#" data-ng-click="remove($index, entry._id)" title="@lang('Delete entry')"><i class="uk-icon-trash-o"></i></a>
                             </td>
