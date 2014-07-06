@@ -78,7 +78,7 @@ class Mediamanager extends \Cockpit\Controller {
                         "path" => trim($path.'/'.$file->getFilename(), '/'),
                         "url"  => $this->app->pathToUrl($file->getPathname()),
                         "size" => $file->isDir() ? "" : $this->app->helper("utils")->formatSize($file->getSize()),
-                        "lastmodified" => $file->isDir() ? "" : date("d.m.y H:m", $file->getMTime()),
+                        "lastmodified" => $file->isDir() ? "" : date("d.m.y H:i", $file->getMTime()),
                     );
                 }
             }
