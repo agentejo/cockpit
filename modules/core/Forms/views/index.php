@@ -67,9 +67,12 @@
                         <a href="@route('/forms/form')/@@ form._id @@">@@ form.name @@</a>
                     </td>
                     <td align="right">
-                        @hasaccess?("Forms", 'manage.forms')
-                        <a class="uk-text-danger" data-ng-click="remove($index, form)" href="#" title="@lang('Delete form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle js-ignore-select"></i></a>
-                        @end
+                        <ul class="uk-subnav uk-subnav-line">
+                            <li><a href="@route('/forms/entries')/@@ form._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a></li>
+                            @hasaccess?("Forms", 'manage.forms')
+                            <li><a class="uk-text-danger" data-ng-click="remove($index, form)" href="#" title="@lang('Delete form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle js-ignore-select"></i></a></li>
+                            @end
+                        </ul>
                     </td>
                 </tr>
             </tbody>

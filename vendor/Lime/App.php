@@ -198,6 +198,10 @@ class App implements \ArrayAccess {
             $this["docs_root"] = str_replace(DIRECTORY_SEPARATOR, '/', isset($_SERVER['DOCUMENT_ROOT']) ? (is_link($_SERVER['DOCUMENT_ROOT']) ? readlink($_SERVER['DOCUMENT_ROOT']) : $_SERVER['DOCUMENT_ROOT']) : dirname($_SERVER['SCRIPT_FILENAME']));
         }
 
+        // make sure base + route url doesn't end with a slash;
+        $settings["base_url"]   = rtrim($settings["base_url"], '/');
+        $settings["base_route"] = rtrim($settings["base_route"], '/');
+
         self::$apps[$this["app.name"]] = $this;
 
         // default helpers
@@ -1067,7 +1071,7 @@ class App implements \ArrayAccess {
             $url .= implode("/", array_slice(explode("/", $_SERVER['SCRIPT_NAME']), 0, -1));
         }
 
-        return rtrim($url,'/');
+        return rtrim($url, '/');
     }
 
     /**
