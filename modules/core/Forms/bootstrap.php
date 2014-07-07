@@ -71,6 +71,19 @@ $this->module("forms")->extend([
         $entrydb = "form{$formId}";
 
         return $app->db->getCollection("forms/{$entrydb}");
+    },
+
+    "entries" => function($name) use($app) {
+
+        $frm = $app->db->findOne("common/forms", ["name"=>$name]);
+
+        if (!$frm) {
+            return false;
+        }
+
+        $entrydb = "form".$frm["_id"];
+
+        return $app->db->getCollection("forms/{$entrydb}");
     }
 ]);
 
