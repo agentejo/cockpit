@@ -99,7 +99,8 @@ class Mediamanager extends \Cockpit\Controller {
         if (isset($files['name']) && $path && file_exists($targetpath)) {
             for ($i = 0; $i < count($files['name']); $i++) {
 
-                $clean = $files['name'][$i];
+                // clean filename
+                $clean = preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $files['name'][$i]));
 
                 if (!$files['error'][$i] && move_uploaded_file($files['tmp_name'][$i], $targetpath.'/'.$clean)) {
                     $uploaded[] = $files['name'][$i];
