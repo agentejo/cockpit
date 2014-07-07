@@ -251,6 +251,7 @@
 
                     action: apiurl,
                     params: {"cmd":"upload"},
+                    type: 'json',
                     before: function(options) {
                         options.params.path = currentpath;
                     },
@@ -262,10 +263,16 @@
                     },
                     allcomplete: function(response) {
 
-                        if(response && response.length) {
-                            App.notify(App.i18n.get("File(s) uploaded."), "success");
+                        if(response && response.failed && response.failed.length) {
+                            App.notify(App.i18n.get("%s File(s) failed to uploaded.", response.failed.length), "danger");
+                        }
+
+                        if(response && response.uploaded && response.uploaded.length) {
+                            App.notify(App.i18n.get("%s File(s) uploaded.", response.uploaded.length), "success");
                             loadPath(currentpath);
-                        } else {
+                        }
+
+                        if(!response) {
                             App.module.callbacks.error.http();
                         }
                     }

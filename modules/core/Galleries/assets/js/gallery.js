@@ -120,7 +120,7 @@
         };
 
         $scope.imgurl = function(image) {
-            return image.path.replace('site:', window.COCKPIT_SITE_BASE_URL);
+            return encodeURI(image.path.replace('site:', window.COCKPIT_SITE_BASE_URL));
         };
 
         $scope.showMeta = function(index){

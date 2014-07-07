@@ -17,7 +17,7 @@
                             var $r;
 
                             if (url.match(/\.(jpg|jpeg|png|gif|svg)$/i)) {
-                                $r = '<div class="media-url-preview" style="background-image:url('+url+')"></div>';
+                                $r = '<div class="media-url-preview" style="background-image:url('+encodeURI(url)+')"></div>';
                             }
 
                             if (url.match(/\.(mp4|mpeg|ogv|webm|wmv)$/i)) {

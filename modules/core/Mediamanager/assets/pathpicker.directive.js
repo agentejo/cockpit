@@ -17,10 +17,11 @@
                     '<div class="uk-clearfix">',
                     '<div class="caption uk-float-left">&nbsp;</div>',
                     '<div class="uk-float-right">',
-                        '<span class="uk-button uk-form-file" data-uk-tooltip title="'+App.i18n.get('Upload files')+'">',
+                        '<span class="uk-button uk-form-file uk-margin-small-right" data-uk-tooltip title="'+App.i18n.get('Upload files')+'">',
                             '<input class="js-upload-select" type="file" multiple="true" title="">',
                             '<i class="uk-icon-plus"></i>',
                         '</span>',
+                        '<button type="button" class="uk-button js-refresh" data-uk-tooltip title="'+App.i18n.get('Refresh')+'"><i class="uk-icon-refresh"></i></button>',
                     '</div>',
                     '</div>',
                     '<div class="uk-overflow-container uk-margin-top">',
@@ -49,11 +50,19 @@
                     },
                     "allcomplete": function(response){
 
-                        if(response && response.length) {
-                            $this.loadPath($this.currentpath);
-                        } else {
+                        if(response && response.failed && response.failed.length) {
+                            App.notify(App.i18n.get("%s File(s) failed to uploaded.", response.failed.length), "danger");
+                        }
+
+                        if(response && response.uploaded && response.uploaded.length) {
+                            App.notify(App.i18n.get("%s File(s) uploaded.", response.uploaded.length), "success");
+                        }
+
+                        if(!response) {
                             App.module.callbacks.error.http();
                         }
+
+                        $this.loadPath($this.currentpath);
                     }
                 };
 
@@ -78,6 +87,10 @@
             }).on("dragleave", function(e){
                     e.stopPropagation();
                     e.preventDefault();
+            });
+
+            modal.on('click', '.js-refresh', function() {
+                $this.loadPath($this.currentpath);
             });
         });
 
@@ -180,7 +193,7 @@
                         var element = $(this), url = element.data("file"), $r;
 
                         if(url.match(/\.(jpg|jpeg|png|gif|svg)$/i)) {
-                            $r = $('<div class="media-url-preview" style="background-image:url('+element.data("file")+');margin:0 auto;"></div>').css({width:element.width(), height:element.height()});
+                            $r = $('<div class="media-url-preview" style="background-image:url('+encodeURI(element.data("file"))+');margin:0 auto;"></div>').css({width:element.width(), height:element.height()});
                         }
 
                         if (url.match(/\.(mp4|mpeg|ogv|webm|wmv)$/i)) {
@@ -237,10 +250,10 @@
                         }
 
                         if(path && path.match(/\.(jpg|jpeg|png|gif)$/i)) {
-                            $prv.html('<div class="uk-margin" title="'+path+'"><img class="auto-size" src="'+path.replace('site:', window.COCKPIT_SITE_BASE_URL)+'"></div>');
+                            $prv.html('<div class="uk-margin" title="'+path+'"><img class="auto-size" src="'+encodeURI(path.replace('site:', window.COCKPIT_SITE_BASE_URL))+'"></div>');
 
                         } else if(path && path.match(/\.(mp4|ogv|wmv|webm|mpeg|avi)$/i)) {
-                            $prv.html('<div class="uk-margin" title="'+path+'"><video class="auto-size" src="'+path.replace('site:', window.COCKPIT_SITE_BASE_URL)+'"></video></div>');
+                            $prv.html('<div class="uk-margin" title="'+path+'"><video class="auto-size" src="'+encodeURI(path.replace('site:', window.COCKPIT_SITE_BASE_URL))+'"></video></div>');
 
                         } else {
                             $prv.html(path ? '<div class="uk-trunkate" title="'+path+'">'+path+'</div>':'<div class="uk-alert">No path selected</div>');
