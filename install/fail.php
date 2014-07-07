@@ -21,7 +21,9 @@
             <h1 class="uk-margin">Installation failed</h1>
 
             <div class="uk-panel">
-                Failed:
+                <p>
+                    <span class="uk-badge uk-badge-danger">Failed:</span>
+                </p>
                 <div class="uk-alert uk-alert-danger">
                     <?php echo @$info;?>
                 </div>
