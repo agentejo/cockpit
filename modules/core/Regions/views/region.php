@@ -238,7 +238,7 @@
 
                             <div class="uk-margin" ng-show="region.name">
                                 <strong>@lang('Embed region snippet'):</strong>
-                                <pre><code>&lt;?php <strong>region('@@region.name@@')</strong> ?&gt;</code></pre>
+                                <pre><code>&lt;?php <strong>region('@@region.name@@'<span ng-show="region.fields && region.fields.length">, [<span ng-repeat="field in region.fields">'@@field.name@@' => $@@field.name@@<span ng-show="!$last">, </span></span>]</span>)</strong> ?&gt;</code></pre>
                             </div>
                         </div>
 
