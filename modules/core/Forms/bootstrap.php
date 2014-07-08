@@ -26,7 +26,17 @@ $app->bind("/api/forms/submit/:form", function($params) use($app){
 
     if ($formdata = $app->param("form", false)) {
 
-        if (isset($frm["email"]) && filter_var($frm["email"], FILTER_VALIDATE_EMAIL)) {
+        if(isset($frm["email"])) {
+
+            $temp = array_map('trim', explode(',', $frm['email']));
+            $good_addresses = array();
+            foreach($temp as $to){
+                // Validate each email address individually, push if valid
+                if(filter_var($to, FILTER_VALIDATE_EMAIL)){
+                    array_push($good_addresses, $to);
+                };
+            };
+            $frm['email'] = implode(',', $good_addresses);
 
             $body = array();
 
