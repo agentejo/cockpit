@@ -78,7 +78,7 @@
 
                     if(data && Object.keys(data).length) {
                         $scope.entry = data;
-                        App.notify(App.i18n.get("Entry saved!"));
+                        App.notify(App.i18n.get("Entry saved!"), "success");
 
                         $scope.loadVersions();
                     }
@@ -124,6 +124,19 @@
         };
 
         $scope.loadVersions();
+
+
+        // bind clobal command + save
+        Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            } else {
+                e.returnValue = false; // ie
+            }
+            $scope.save();
+            return false;
+        });
+
     });
 
 })(jQuery);

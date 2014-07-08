@@ -97,6 +97,9 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
 
     $assets = array_merge([
 
+        // misc
+        'assets:vendor/mousetrap.js',
+
         // angular
         'assets:vendor/angular/angular.min.js',
         'assets:vendor/angular/angular-sanitize.min.js',
