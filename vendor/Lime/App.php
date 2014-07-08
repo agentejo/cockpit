@@ -199,8 +199,8 @@ class App implements \ArrayAccess {
         }
 
         // make sure base + route url doesn't end with a slash;
-        $settings["base_url"]   = rtrim($settings["base_url"], '/');
-        $settings["base_route"] = rtrim($settings["base_route"], '/');
+        $this->registry["base_url"]   = rtrim($this->registry["base_url"], '/');
+        $this->registry["base_route"] = rtrim($this->registry["base_route"], '/');
 
         self::$apps[$this["app.name"]] = $this;
 
