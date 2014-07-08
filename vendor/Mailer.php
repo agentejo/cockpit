@@ -65,7 +65,10 @@ class Mailer {
       $mail->AltBody = strip_tags($message);
       $mail->CharSet = 'utf-8';
 
-      $mail->AddAddress($to);
+      $to_array = explode(",", $to);
+      foreach ($to_array as $to_single) {
+        $mail->addAddress($to_single);
+      }
 
       if($mail->Body != $mail->AltBody) {
           $mail->IsHTML(true); // Set email format to HTML
