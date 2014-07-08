@@ -28,24 +28,30 @@ $app->bind("/api/forms/submit/:form", function($params) use($app){
 
         if(isset($frm["email"])) {
 
-            $temp = array_map('trim', explode(',', $frm['email']));
-            $good_addresses = array();
-            foreach($temp as $to){
+            $emails          = array_map('trim', explode(',', $frm['email']));
+            $filtered_emails = [];
+
+            foreach($emails as $to){
+
                 // Validate each email address individually, push if valid
                 if(filter_var($to, FILTER_VALIDATE_EMAIL)){
-                    array_push($good_addresses, $to);
-                };
-            };
-            $frm['email'] = implode(',', $good_addresses);
-
-            $body = array();
-
-            foreach ($formdata as $key => $value) {
-                $body[] = "<b>{$key}:</b>\n<br>";
-                $body[] = (is_string($value) ? $value:json_encode($value))."\n<br>";
+                    $filtered_emails[] = $to;
+                }
             }
 
-            $app->mailer->mail($frm["email"], $app->param("__mailsubject", "New form data for: ".$form), implode("\n<br>", $body));
+            if (count($filtered_emails)) {
+
+                $frm['email'] = implode(',', $filtered_emails);
+
+                $body = [];
+
+                foreach ($formdata as $key => $value) {
+                    $body[] = "<b>{$key}:</b>\n<br>";
+                    $body[] = (is_string($value) ? $value:json_encode($value))."\n<br>";
+                }
+
+                $app->mailer->mail($frm["email"], $app->param("__mailsubject", "New form data for: ".$form), implode("\n<br>", $body));
+            }
         }
 
         if (isset($frm["entry"]) && $frm["entry"]) {
