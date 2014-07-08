@@ -4,7 +4,7 @@
 
         $scope.mode = App.storage.get("cockpit.view.listmode", 'list');
 
-        $http.post(App.route("/api/forms/find"), {}).success(function(data){
+        $http.post(App.route("/api/forms/find"), {extended: true}).success(function(data){
 
             $scope.forms = data;
 

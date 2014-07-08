@@ -98,7 +98,8 @@
                     <thead>
                         <tr>
                             <th width="10"><input class="js-select-all" type="checkbox"></th>
-                            <th>@lang('Collection')</th>
+                            <th width="60%">@lang('Collection')</th>
+                            <th width="10%">@lang('Entries')</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -106,8 +107,9 @@
                         <tr class="js-multiple-select" data-ng-repeat="collection in collections track by collection._id" data-ng-show="matchName(collection.name) && inGroup(collection.group)">
                             <td><input class="js-select" type="checkbox"></td>
                             <td>
-                                <a href="@route('/collections/collection')/@@ collection._id @@">@@ collection.name @@</a>
+                                <a href="@route('/collections/entries')/@@ collection._id @@">@@ collection.name @@</a>
                             </td>
+                            <td>@@ collection.count @@</td>
                             <td align="right">
                                 <ul class="uk-subnav uk-subnav-line">
                                     <li><a href="@route('/collections/entries')/@@ collection._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a></li>

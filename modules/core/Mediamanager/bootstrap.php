@@ -100,9 +100,31 @@ if (!function_exists('thumbnail')) {
 
     function thumbnail($image, $width = null, $height = null, $options=array()) {
 
+        if($width && is_array($height)) {
+            $options = $height;
+            $height  = $width;
+        } else {
+            $height = $height ?: $width;
+        }
+
         $url = cockpit("mediamanager")->thumbnail($image, $width, $height, $options);
 
-        echo '<img src="'.$url.'" alt="'.$url.'">';
+        // generate attributes list
+        $attributes = \Lime\fetch_from_array($options, 'attrs', []);
+
+        if (is_array($attributes)) {
+
+            $tmp        = [];
+            $attributes = array_merge(['alt' => $image], $attributes);
+
+            foreach ($attributes as $key => $val) {
+                $tmp[] = $key.'="'.$val.'"';
+            }
+
+            $attributes = implode(' ', $tmp);
+        }
+
+        echo '<img src="'.$url.'" '.$attributes.'>';
     }
 }
 

@@ -125,4 +125,20 @@ class Api extends \Cockpit\Controller {
         return $entry ? json_encode($entry) : '{}';
     }
 
+    public function export($formId) {
+
+        if (!$this->app->module("auth")->hasaccess("Forms", 'manage.forms')) {
+            return false;
+        }
+
+        $form = $this->app->db->findOneById("common/forms", $formId);
+
+        if (!$form) return false;
+
+        $col     = "form".$form["_id"];
+        $entries = $this->app->db->find("forms/{$col}");
+
+        return json_encode($entries, JSON_PRETTY_PRINT);
+    }
+
 }

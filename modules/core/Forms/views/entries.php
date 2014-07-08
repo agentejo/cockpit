@@ -19,6 +19,16 @@
             <li><a href="@route('/forms/form/'.$form["_id"])" title="@lang('Edit form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a></li>
         </ul>
         @end
+
+        <div class="uk-navbar-flip">
+            @hasaccess?("Forms", 'manage.forms')
+            <div class="uk-navbar-content" data-ng-show="entries && entries.length">
+                <a class="uk-button" href="@route('/api/forms/export/'.$form['_id'])" download="{{ $form['name'] }}.json" title="@lang('Export data')" data-uk-tooltip="{pos:'bottom'}">
+                    <i class="uk-icon-share-alt"></i>
+                </a>
+            </div>
+            @end
+        </div>
     </nav>
 
     <div class="app-panel uk-margin uk-text-center" data-ng-show="entries && !entries.length">
