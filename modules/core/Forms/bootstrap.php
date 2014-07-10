@@ -26,6 +26,11 @@ $app->bind("/api/forms/submit/:form", function($params) use($app){
 
     if ($formdata = $app->param("form", false)) {
 
+        // custom form validation
+        if ($app->path("custom:forms/{$form}.php") && false===include($app->path("custom:forms/{$form}.php"))) {
+            return false;
+        }
+
         if(isset($frm["email"])) {
 
             $emails          = array_map('trim', explode(',', $frm['email']));
