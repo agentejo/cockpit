@@ -1,4 +1,8 @@
-{{ $app->assets(['forms:assets/forms.js','forms:assets/js/index.js'], $app['cockpit/version']) }}
+@start('header')
+
+    {{ $app->assets(['forms:assets/forms.js','forms:assets/js/index.js'], $app['cockpit/version']) }}
+
+@end('header')
 
 <div data-ng-controller="forms" ng-cloak>
 

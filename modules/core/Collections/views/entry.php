@@ -1,35 +1,39 @@
-{{ $app->assets(['collections:assets/collections.js','collections:assets/js/entry.js'], $app['cockpit/version']) }}
+@start('header')
 
-{{ $app->assets(['assets:vendor/uikit/js/addons/timepicker.min.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/uikit/js/addons/datepicker.min.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['collections:assets/collections.js','collections:assets/js/entry.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/codemirror/codemirror.js','assets:vendor/codemirror/codemirror.css','assets:vendor/codemirror/pastel-on-dark.css'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:angular/directives/codearea.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/uikit/js/addons/timepicker.min.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/uikit/js/addons/datepicker.min.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/tinymce/tinymce.min.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/codemirror/codemirror.js','assets:vendor/codemirror/codemirror.css','assets:vendor/codemirror/pastel-on-dark.css'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:angular/directives/codearea.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/uikit/js/addons/htmleditor.min.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/marked.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/tinymce/tinymce.min.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js'], $app['cockpit/version']) }}
+
+    {{ $app->assets(['assets:vendor/uikit/js/addons/htmleditor.min.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/marked.js'], $app['cockpit/version']) }}
 
 
-{{ $app->assets(['assets:angular/directives/wysiwyg.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:angular/directives/htmleditor.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:angular/directives/gallery.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:angular/directives/tags.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:angular/directives/wysiwyg.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:angular/directives/htmleditor.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:angular/directives/gallery.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:angular/directives/tags.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
-{{ $app->assets(['regions:assets/regionpicker.directive.js'], $app['cockpit/version']) }}
-{{ $app->assets(['collections:assets/linkcollection.directive.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['regions:assets/regionpicker.directive.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['collections:assets/linkcollection.directive.js'], $app['cockpit/version']) }}
 
-<style>
-    textarea { min-height: 150px; }
-</style>
+    <style>
+        textarea { min-height: 150px; }
+    </style>
 
-<script>
- var COLLECTION = {{ json_encode($collection) }},
-     COLLECTION_ENTRY = {{ json_encode($entry) }};
-</script>
+    <script>
+     var COLLECTION = {{ json_encode($collection) }},
+         COLLECTION_ENTRY = {{ json_encode($entry) }};
+    </script>
+
+@end('header')
 
 <div data-ng-controller="entry" ng-cloak>
 
@@ -181,7 +185,5 @@
         </div>
 
     </form>
-
-
 
 </div>

@@ -9,9 +9,13 @@
     @assets($app['app.assets.base'], 'app.base'.$app['cockpit/version'], 'cache:assets', 360, $app['cockpit/version'])
     @assets($app['app.assets.backend'], 'app.backend'.$app['cockpit/version'], 'cache:assets', 360, $app['cockpit/version'])
 
+    {{ $app->assets(["assets:angular/cockpit.js"], $app['cockpit/version']) }}
+
     @trigger('app.layout.header')
 
-    {{ $app->assets(["assets:angular/cockpit.js"], $app['cockpit/version']) }}
+    @block('header')
+
+
 </head>
 <body>
 
@@ -79,6 +83,7 @@
     <script src="@route("/i18n.js")"></script>
 
     @trigger("app.layout.footer")
+    @block('footer')
 
 </body>
 </html>

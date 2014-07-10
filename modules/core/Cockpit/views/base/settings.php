@@ -1,3 +1,24 @@
+@start('header')
+
+    <style>
+
+        .app-panel > div {
+            text-align: center;
+        }
+
+        .app-panel > div  *[class*=uk-icon], .app-panel > div img {
+            font-size: 40px;
+            line-height: 60px;
+        }
+
+        .app-panel > div img {
+            width: 40px;
+            height: 40px;
+        }
+
+    </style>
+
+@end('header')
 
 <h1>@lang('Settings')</h1>
 
@@ -80,21 +101,3 @@
 </div>
 
 @trigger('cockpit.settings.index')
-
-<style>
-
-    .app-panel > div {
-        text-align: center;
-    }
-
-    .app-panel > div  *[class*=uk-icon], .app-panel > div img {
-        font-size: 40px;
-        line-height: 60px;
-    }
-
-    .app-panel > div img {
-        width: 40px;
-        height: 40px;
-    }
-
-</style>

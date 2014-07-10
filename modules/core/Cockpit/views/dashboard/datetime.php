@@ -6,6 +6,34 @@
     $uid = uniqid('weekdays');
 ?>
 
+@start('header')
+
+    <style type="text/css">
+
+        .date-widget-weekdays span {
+            margin-right: 5px;
+        }
+        .date-widget-weekdays span.active {
+            color: #000;
+            font-weight: bold;
+        }
+        .date-widget-clock {
+            font-size: 30px;
+            margin-top:20px;
+            font-weight: bold;
+        }
+    </style>
+
+    <script>
+        jQuery(function($) {
+
+            $("#{{ $uid }}").find('span[data-day="'+(new Date().getDay())+'"]').addClass('active');
+        });
+    </script>
+
+@end('header')
+
+
 <div class="uk-grid">
 
     <div class="uk-width-medium-1-1">
@@ -28,23 +56,3 @@
         </div>
     </div>
 </div>
-
-<style type="text/css">
-
-    .date-widget-weekdays span {
-        margin-right: 5px;
-    }
-    .date-widget-weekdays span.active {
-        color: #000;
-        font-weight: bold;
-    }
-    .date-widget-clock {
-        font-size: 30px;
-        margin-top:20px;
-        font-weight: bold;
-    }
-</style>
-
-<script>
-    $("#{{ $uid }}").find('span[data-day="'+(new Date().getDay())+'"]').addClass('active');
-</script>

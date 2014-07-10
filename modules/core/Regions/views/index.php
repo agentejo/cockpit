@@ -1,5 +1,34 @@
-{{ $app->assets(['assets:vendor/uikit/js/addons/sortable.min.js'], $app['cockpit/version']) }}
-{{ $app->assets(['regions:assets/regions.js','regions:assets/js/index.js'], $app['cockpit/version']) }}
+@start('header')
+
+    {{ $app->assets(['assets:vendor/uikit/js/addons/sortable.min.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['regions:assets/regions.js','regions:assets/js/index.js'], $app['cockpit/version']) }}
+
+    <style>
+
+        #groups-list li {
+            position: relative;
+            overflow: hidden;
+        }
+        .group-actions {
+            position: absolute;
+            display:none;
+            min-width: 60px;
+            text-align: right;
+            top: 5px;
+            right: 10px;
+        }
+
+        .group-actions a { font-size: 11px; }
+
+        #groups-list li.uk-active .group-actions,
+        #groups-list li:hover .group-actions { display:block; }
+        #groups-list li:hover .group-actions a { color: #666; }
+        #groups-list li.uk-active a,
+        #groups-list li.uk-active .group-actions a { color: #fff; }
+
+    </style>
+
+@end('header')
 
 <div data-ng-controller="regions" ng-cloak>
 
@@ -134,27 +163,3 @@
     </div>
 </div>
 
-<style>
-
-    #groups-list li {
-        position: relative;
-        overflow: hidden;
-    }
-    .group-actions {
-        position: absolute;
-        display:none;
-        min-width: 60px;
-        text-align: right;
-        top: 5px;
-        right: 10px;
-    }
-
-    .group-actions a { font-size: 11px; }
-
-    #groups-list li.uk-active .group-actions,
-    #groups-list li:hover .group-actions { display:block; }
-    #groups-list li:hover .group-actions a { color: #666; }
-    #groups-list li.uk-active a,
-    #groups-list li.uk-active .group-actions a { color: #fff; }
-
-</style>

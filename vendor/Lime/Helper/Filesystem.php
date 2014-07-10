@@ -176,6 +176,22 @@ class Filesystem extends \Lime\Helper {
         return $size;
     }
 
+
+    public function removeEmptySubFolders($dir, $selfremove = false) {
+
+        if ($path = $this->app->path($dir)) {
+
+            $empty = true;
+
+            foreach (glob($path.DIRECTORY_SEPARATOR."*") as $file) {
+                $empty &= is_dir($file) && $this->removeEmptySubFolders($file, true);
+            }
+
+            return $empty && ($selfremove ? rmdir($path) : true);
+        }
+
+        return false;
+    }
 }
 
 

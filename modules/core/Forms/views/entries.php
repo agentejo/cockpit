@@ -1,14 +1,17 @@
-{{ $app->assets(['forms:assets/forms.js','forms:assets/js/entries.js'], $app['cockpit/version']) }}
+@start('header')
 
-<style>
-    td .uk-grid+.uk-grid { margin-top: 5px; }
-</style>
+    {{ $app->assets(['forms:assets/forms.js','forms:assets/js/entries.js'], $app['cockpit/version']) }}
 
-<script>
+    <style>
+        td .uk-grid+.uk-grid { margin-top: 5px; }
+    </style>
 
-    var FORMDATA = {{ json_encode($form) }};
+    <script>
+        var FORMDATA = {{ json_encode($form) }};
+    </script>
 
-</script>
+@end('header')
+
 
 <div data-ng-controller="entries" ng-cloak>
 

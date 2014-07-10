@@ -80,9 +80,11 @@ class Api extends \Cockpit\Controller {
 
                     if ($folder = $this->app->path("tmp:{$version}")) {
 
+                        $fs       = $this->app->helper("fs");
+                        $root     = $this->app->path('#root:');
                         $distroot = false;
 
-                        // find cockpit root
+                        // find cockpit dist root
                         foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folder)) as $file) {
                             if($file->getFilename() == 'package.json') {
                                 $distroot = dirname($file->getRealPath());
@@ -91,7 +93,21 @@ class Api extends \Cockpit\Controller {
                         }
 
                         if ($distroot) {
-                            $this->app->helper("fs")->copy($distroot, $this->app->path('#root:'));
+
+                            // clean existing installation
+
+                            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($root), \RecursiveIteratorIterator::SELF_FIRST);
+
+                            foreach ($files as $file) {
+
+                                if(!$file->isFile()) continue;
+                                if(preg_match('/(custom\/|storage\/|custom\/|modules\/addons)/', $file)) continue;
+
+                                @unlink($file->getRealPath());
+                            }
+
+                            $fs->removeEmptySubFolders($root);
+                            $fs->copy($distroot, $root);
                         }
 
                         $success = $distroot ? true : false;
@@ -105,17 +121,7 @@ class Api extends \Cockpit\Controller {
                 // cleanup
                 case 4:
 
-                    $this->app->helper("fs")->delete("tmp:{$version}");
-
-                    $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->app->path("cache:")), \RecursiveIteratorIterator::SELF_FIRST);
-
-                    foreach ($files as $file) {
-
-                        if(!$file->isFile()) continue;
-                        if(preg_match('/(.gitkeep|index\.html)$/', $file)) continue;
-
-                        @unlink($file->getRealPath());
-                    }
+                    $this->module('cockpit')->clearCache();
 
                     return '{"success": true}';
 

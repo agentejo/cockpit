@@ -1,24 +1,28 @@
-{{ $app->assets(['regions:assets/regions.js','regions:assets/js/region.js'], $app['cockpit/version']) }}
+@start('header')
 
-{{ $app->assets(['assets:vendor/uikit/js/addons/nestable.min.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/uikit/js/addons/timepicker.min.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/uikit/js/addons/datepicker.min.js'], $app['cockpit/version']) }}
+  {{ $app->assets(['regions:assets/regions.js','regions:assets/js/region.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/codemirror/codemirror.js','assets:vendor/codemirror/codemirror.css','assets:vendor/codemirror/pastel-on-dark.css'], $app['cockpit/version']) }}
+  {{ $app->assets(['assets:vendor/uikit/js/addons/nestable.min.js'], $app['cockpit/version']) }}
+  {{ $app->assets(['assets:vendor/uikit/js/addons/timepicker.min.js'], $app['cockpit/version']) }}
+  {{ $app->assets(['assets:vendor/uikit/js/addons/datepicker.min.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:angular/directives/codearea.js'], $app['cockpit/version']) }}
+  {{ $app->assets(['assets:vendor/codemirror/codemirror.js','assets:vendor/codemirror/codemirror.css','assets:vendor/codemirror/pastel-on-dark.css'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/tinymce/tinymce.min.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:angular/directives/wysiwyg.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:angular/directives/gallery.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:angular/directives/tags.js'], $app['cockpit/version']) }}
+  {{ $app->assets(['assets:angular/directives/codearea.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
+  {{ $app->assets(['assets:vendor/tinymce/tinymce.min.js'], $app['cockpit/version']) }}
+  {{ $app->assets(['assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js'], $app['cockpit/version']) }}
+  {{ $app->assets(['assets:angular/directives/wysiwyg.js'], $app['cockpit/version']) }}
+  {{ $app->assets(['assets:angular/directives/gallery.js'], $app['cockpit/version']) }}
+  {{ $app->assets(['assets:angular/directives/tags.js'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/uikit/js/addons/htmleditor.min.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/marked.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:angular/directives/htmleditor.js'], $app['cockpit/version']) }}
+  {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
+
+  {{ $app->assets(['assets:vendor/uikit/js/addons/htmleditor.min.js'], $app['cockpit/version']) }}
+  {{ $app->assets(['assets:vendor/marked.js'], $app['cockpit/version']) }}
+  {{ $app->assets(['assets:angular/directives/htmleditor.js'], $app['cockpit/version']) }}
+
+@end('header')
 
 
 <div data-ng-controller="region" data-id="{{ $id }}" ng-cloak>

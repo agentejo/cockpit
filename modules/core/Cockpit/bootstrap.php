@@ -33,6 +33,23 @@ $this->module("cockpit")->extend([
     "get_registry" => function($key, $default=null) use($app) {
 
         return $app->memory->hget("cockpit.api.registry", $key, $default);
+    },
+
+    "clearCache" => function() use($app) {
+
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($app->path("cache:")), \RecursiveIteratorIterator::SELF_FIRST);
+
+        foreach ($files as $file) {
+
+            if(!$file->isFile()) continue;
+            if(preg_match('/(.gitkeep|index\.html)$/', $file)) continue;
+
+            @unlink($file->getRealPath());
+        }
+
+        $app->helper("fs")->removeEmptySubFolders('cache:');
+
+        return ["size"=>$app->helper("utils")->formatSize($app->helper("fs")->getDirSize('cache:'))];
     }
 ]);
 

@@ -1,8 +1,27 @@
-{{ $app->assets(['assets:vendor/uikit/js/addons/sortable.min.js'], $app['cockpit/version']) }}
-{{ $app->assets(['assets:vendor/uikit/js/addons/nestable.min.js'], $app['cockpit/version']) }}
+@start('header')
 
-{{ $app->assets(['galleries:assets/galleries.js','galleries:assets/js/gallery.js'], $app['cockpit/version']) }}
-{{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/uikit/js/addons/sortable.min.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/uikit/js/addons/nestable.min.js'], $app['cockpit/version']) }}
+
+    {{ $app->assets(['galleries:assets/galleries.js','galleries:assets/js/gallery.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
+
+    <style>
+
+        #images-list .uk-thumbnail {
+            position: relative;
+        }
+
+        .images-list-actions {
+            position: absolute;
+            width: 100%;
+            top: 50%;
+            -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+        }
+    </style>
+
+@end('header')
 
 <div data-ng-controller="gallery" data-id="{{ $id }}" ng-cloak>
 
@@ -185,18 +204,3 @@
     </div>
 
 </div>
-
-<style>
-
-    #images-list .uk-thumbnail {
-        position: relative;
-    }
-
-    .images-list-actions {
-        position: absolute;
-        width: 100%;
-        top: 50%;
-        -webkit-transform: translateY(-50%);
-        transform: translateY(-50%);
-    }
-</style>

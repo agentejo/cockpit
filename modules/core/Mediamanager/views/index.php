@@ -1,13 +1,17 @@
-{{ $app->assets(['assets:vendor/codemirror/codemirror.js','assets:vendor/codemirror/codemirror.css','assets:vendor/codemirror/pastel-on-dark.css'], $app['cockpit/version']) }}
+@start('header')
 
-{{ $app->assets(['assets:vendor/loadie/jquery.loadie.js', 'assets:vendor/loadie/loadie.css'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/codemirror/codemirror.js','assets:vendor/codemirror/codemirror.css','assets:vendor/codemirror/pastel-on-dark.css'], $app['cockpit/version']) }}
 
-{{ $app->assets(['assets:vendor/uikit/js/addons/upload.min.js']) }}
-{{ $app->assets(['assets:vendor/fuzzysearch.js']) }}
+    {{ $app->assets(['assets:vendor/loadie/jquery.loadie.js', 'assets:vendor/loadie/loadie.css'], $app['cockpit/version']) }}
 
-{{ $app->assets(['mediamanager:assets/js/index.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/uikit/js/addons/upload.min.js']) }}
+    {{ $app->assets(['assets:vendor/fuzzysearch.js']) }}
 
-{{ $app->assets(['assets:angular/directives/mediapreview.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['mediamanager:assets/js/index.js'], $app['cockpit/version']) }}
+
+    {{ $app->assets(['assets:angular/directives/mediapreview.js'], $app['cockpit/version']) }}
+
+@end('header')
 
 
 <div data-ng-controller="mediamanager" ng-cloak>
