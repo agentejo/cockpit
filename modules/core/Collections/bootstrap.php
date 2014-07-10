@@ -129,6 +129,12 @@ if(!function_exists("collection")) {
     }
 }
 
+if(!function_exists("populate_resultset")) {
+    function populate_resultset($collection, $resultset) {
+        return cockpit("collections")->populate($collection, $resultset);
+    }
+}
+
 //rest
 $app->on("cockpit.rest.init", function($routes) {
     $routes["collections"] = 'Collections\\Controller\\RestApi';
