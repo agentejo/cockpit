@@ -129,8 +129,8 @@ if(!function_exists("collection")) {
     }
 }
 
-if(!function_exists("populate_collection_resultset")) {
-    function populate_collection_resultset($collection, $resultset) {
+if(!function_exists("collection_populate")) {
+    function collection_populate($collection, $resultset) {
         return cockpit("collections")->populate($collection, $resultset);
     }
 }
