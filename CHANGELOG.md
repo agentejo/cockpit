@@ -1,5 +1,18 @@
 # Changelog
 
+### 0.9.17  (Jul 13, 2014)
+
+    + Added new api function "collection_populate" to populate linked collection items
+    + Added export form entries in json format
+    + Added form entries data api
+    + Added custom form validation
+    + Added bind global "cmd + s" && "ctrl + s" to trigger save in edit views
+    # Fixed running on a non-standard http port (80) breaks cockpit
+    # Fixed slug option for text field
+    # Fixed image thumbnail with space in filename doesn't show up
+    # Fixed not correct date display in views @rpeshkov
+    # Fixed disallow name fields beginning with a number @rpeshkov
+
 ### 0.9.16  (Jun 26, 2014)
 
     + Added slug option for collection text fields

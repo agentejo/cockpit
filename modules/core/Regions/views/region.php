@@ -86,15 +86,15 @@
 
                         <div data-ng-show="mode=='form'">
 
-                            <div class="uk-form-row">
-                                <h3>@lang('Region fields')</h3>
-                            </div>
+                            <div class="uk-form-row uk-clearfix">
 
-                            <div class="uk-margin-bottom">
-                              <button type="button" class="uk-button" data-ng-class="manageform ? 'uk-button-success':'uk-button-primary'" data-ng-click="(manageform = !manageform)" title="@lang('Manage form')">
-                                    <span ng-show="!manageform"><i class="uk-icon-cog"></i></span>
-                                    <span ng-show="manageform"><i class="uk-icon-check"></i></span>
-                              </button>
+                                <h3 class="uk-float-left">@lang('Region fields')</h3>
+
+                                <button type="button" class="uk-button uk-button-small uk-float-right" data-ng-class="manageform ? 'uk-button-success':'uk-button-primary'" data-ng-click="(manageform = !manageform)" title="@lang('Manage form')">
+                                      <span ng-show="!manageform"><i class="uk-icon-cog"></i></span>
+                                      <span ng-show="manageform"><i class="uk-icon-check"></i></span>
+                                </button>
+
                             </div>
 
                             <div class="uk-grid">
