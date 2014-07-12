@@ -23,9 +23,13 @@ class Assets extends \Lime\Helper {
             return $tag;
         }
 
-        file_put_contents($path, $this->compile($assets, "css"));
-
-        return $tag;
+        $result = $this->compile($assets, "css");
+        if ($result) {
+            file_put_contents($path, $result);
+            return $tag;
+        }
+        
+        return null;
     }
 
     /**
@@ -47,9 +51,13 @@ class Assets extends \Lime\Helper {
             return $tag;
         }
 
-        file_put_contents($path, $this->compile($assets, "js"));
-
-        return $tag;
+        $result = $this->compile($assets, "js");
+        if ($result) {
+            file_put_contents($path, $result);
+            return $tag;
+        }
+        
+        return null;
     }
 
     public function style_and_script($assets, $name, $path="", $cache=0, $version=false) {
