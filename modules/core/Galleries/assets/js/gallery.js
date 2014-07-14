@@ -82,8 +82,8 @@
                             data.files.forEach(function(file) {
 
                                 if(file.name.match(/\.(jpg|png|gif)$/i)) {
-                                    if (site2media) site2media += '/';
-                                    $scope.gallery.images.push({"path":"site:"+site2media+file.path, data:{}});
+                                    var full_path = site2media ? site2media+'/'+file.path : file.path;
+                                    $scope.gallery.images.push({"path":"site:"+full_path, data:{}});
 
                                     count = count + 1;
                                 }
