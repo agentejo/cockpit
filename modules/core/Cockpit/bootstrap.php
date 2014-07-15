@@ -1,10 +1,11 @@
 <?php
 
 $app['app.assets.base'] = [
+    'assets:vendor/es-shim.js',
     'assets:vendor/jquery.js',
     'assets:vendor/storage.js',
     'assets:vendor/i18n.js',
-    'assets:vendor/animate.min.css',
+    'assets:vendor/animate.css',
 
     // UIkit
     'cockpit:assets/css/uikit.cockpit.min.css',
