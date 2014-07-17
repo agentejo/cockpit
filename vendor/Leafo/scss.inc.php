@@ -14,9 +14,9 @@
  * The scss compiler and parser.
  *
  * Converting SCSS to CSS is a three stage process. The incoming file is parsed
- * by `scssc_parser` into a syntax tree, then it is compiled into another tree
+ * by `scss_parser` into a syntax tree, then it is compiled into another tree
  * representing the CSS structure by `scssc`. The CSS tree is fed into a
- * formatter, like `scssc_formatter` which then outputs CSS as a string.
+ * formatter, like `scss_formatter` which then outputs CSS as a string.
  *
  * During the first compile, all values are *reduced*, which means that their
  * types are brought to the lowest form before being dump as strings. This
@@ -31,9 +31,9 @@
  * evaluation context, such as all available mixins and variables at any given
  * time.
  *
- * The `scssc_parser` class is only concerned with parsing its input.
+ * The `scss_parser` class is only concerned with parsing its input.
  *
- * The `scssc_formatter` takes a CSS tree, and dumps it to a formatted string,
+ * The `scss_formatter` takes a CSS tree, and dumps it to a formatted string,
  * handling things like indentation.
  */
 
@@ -43,7 +43,7 @@
  * @author Leaf Corcoran <leafot@gmail.com>
  */
 class scssc {
-	static public $VERSION = "v0.0.10";
+	static public $VERSION = 'v0.0.13';
 
 	static protected $operatorNames = array(
 		'+' => "add",
@@ -89,34 +89,48 @@ class scssc {
 	protected $importCache = array();
 
 	protected $userFunctions = array();
+	protected $registeredVars = array();
 
 	protected $numberPrecision = 5;
 
 	protected $formatter = "scss_formatter_nested";
 
-	public function compile($code, $name=null) {
-		$this->indentLevel = -1;
+	/**
+	 * Compile scss
+	 *
+	 * @param string $code
+	 * @param string $name
+	 *
+	 * @return string
+	 */
+	public function compile($code, $name = null)
+	{
+		$this->indentLevel  = -1;
 		$this->commentsSeen = array();
-		$this->extends = array();
-		$this->extendsMap = array();
+		$this->extends      = array();
+		$this->extendsMap   = array();
+		$this->parsedFiles  = array();
+		$this->env          = null;
+		$this->scope        = null;
 
 		$locale = setlocale(LC_NUMERIC, 0);
 		setlocale(LC_NUMERIC, "C");
 
-		$this->parsedFiles = array();
 		$this->parser = new scss_parser($name);
+
 		$tree = $this->parser->parse($code);
 
 		$this->formatter = new $this->formatter();
 
-		$this->env = null;
-		$this->scope = null;
-
+		$this->pushEnv($tree);
+		$this->injectVariables($this->registeredVars);
 		$this->compileRoot($tree);
+		$this->popEnv();
 
 		$out = $this->formatter->format($this->scope);
 
 		setlocale(LC_NUMERIC, $locale);
+
 		return $out;
 	}
 
@@ -306,14 +320,12 @@ class scssc {
 		}
 	}
 
-	protected function compileRoot($rootBlock) {
-		$this->pushEnv($rootBlock);
-		$this->scope = $this->makeOutputBlock("root");
+	protected function compileRoot($rootBlock)
+	{
+		$this->scope = $this->makeOutputBlock('root');
 
 		$this->compileChildren($rootBlock->children, $this->scope);
 		$this->flattenSelectors($this->scope);
-
-		$this->popEnv();
 	}
 
 	protected function compileMedia($media) {
@@ -1549,6 +1561,54 @@ class scssc {
 		return $defaultValue; // found nothing
 	}
 
+	protected function injectVariables(array $args)
+	{
+		if (empty($args)) {
+			return;
+		}
+
+		$parser = new scss_parser(__METHOD__, false);
+
+		foreach ($args as $name => $strValue) {
+			if ($name[0] === '$') {
+				$name = substr($name, 1);
+			}
+
+			$parser->env             = null;
+			$parser->count           = 0;
+			$parser->buffer          = (string) $strValue;
+			$parser->inParens        = false;
+			$parser->eatWhiteDefault = true;
+			$parser->insertComments  = true;
+
+			if ( ! $parser->valueList($value)) {
+				throw new Exception("failed to parse passed in variable $name: $strValue");
+			}
+
+			$this->set($name, $value);
+		}
+	}
+
+	/**
+	 * Set variables
+	 *
+	 * @param array $variables
+	 */
+	public function setVariables(array $variables)
+	{
+		$this->registeredVars = array_merge($this->registeredVars, $variables);
+	}
+
+	/**
+	 * Unset variable
+	 *
+	 * @param string $name
+	 */
+	public function unsetVariable($name)
+	{
+		unset($this->registeredVars[$name]);
+	}
+
 	protected function popEnv() {
 		$env = $this->env;
 		$this->env = $this->env->parent;
@@ -2627,6 +2687,12 @@ class scss_parser {
 	static protected $commentMultiLeft = "/*";
 	static protected $commentMultiRight = "*/";
 
+	/**
+	 * Constructor
+	 *
+	 * @param string  $sourceName
+	 * @param boolean $rootParser
+	 */
 	public function __construct($sourceName = null, $rootParser = true) {
 		$this->sourceName = $sourceName;
 		$this->rootParser = $rootParser;
@@ -2647,27 +2713,38 @@ class scss_parser {
 			$operators)).')';
 	}
 
-	public function parse($buffer) {
-		$this->count = 0;
-		$this->env = null;
-		$this->inParens = false;
-		$this->pushBlock(null); // root block
+	/**
+	 * Parser buffer
+	 *
+	 * @param string $buffer;
+	 *
+	 * @return \StdClass
+	 */
+	public function parse($buffer)
+	{
+		$this->count           = 0;
+		$this->env             = null;
+		$this->inParens        = false;
 		$this->eatWhiteDefault = true;
-		$this->insertComments = true;
+		$this->insertComments  = true;
+		$this->buffer          = $buffer;
 
-		$this->buffer = $buffer;
-
+		$this->pushBlock(null); // root block
 		$this->whitespace();
-		while (false !== $this->parseChunk());
 
-		if ($this->count != strlen($this->buffer))
+		while (false !== $this->parseChunk())
+			;
+
+		if ($this->count != strlen($this->buffer)) {
 			$this->throwParseError();
+		}
 
 		if (!empty($this->env->parent)) {
 			$this->throwParseError("unclosed block");
 		}
 
-		$this->env->isRoot = true;
+		$this->env->isRoot    = true;
+
 		return $this->env;
 	}
 
@@ -3171,13 +3248,21 @@ class scss_parser {
 		return false;
 	}
 
-
-	protected function valueList(&$out) {
-		return $this->genericList($out, "spaceList", ",");
+	/**
+	 * Parse list
+	 *
+	 * @param string $out
+	 *
+	 * @return boolean
+	 */
+	public function valueList(&$out)
+	{
+		return $this->genericList($out, 'spaceList', ',');
 	}
 
-	protected function spaceList(&$out) {
-		return $this->genericList($out, "expression");
+	protected function spaceList(&$out)
+	{
+		return $this->genericList($out, 'expression');
 	}
 
 	protected function genericList(&$out, $parseItem, $delim="", $flatten=true) {
@@ -4317,37 +4402,91 @@ class scss_server {
 	}
 
 	/**
-	 * Get path to cached imports
+	 * Get path to meta data
 	 *
 	 * @return string
 	 */
-	protected function importsCacheName($out) {
-		return $out . '.imports';
+	protected function metadataName($out) {
+		return $out . '.meta';
 	}
 
 	/**
 	 * Determine whether .scss file needs to be re-compiled.
 	 *
-	 * @param string $in  Input path
-	 * @param string $out Output path
+	 * @param string $in   Input path
+	 * @param string $out  Output path
+	 * @param string $etag ETag
 	 *
 	 * @return boolean True if compile required.
 	 */
-	protected function needsCompile($in, $out) {
-		if (!is_file($out)) return true;
+	protected function needsCompile($in, $out, &$etag) {
+		if ( ! is_file($out)) {
+			return true;
+		}
 
 		$mtime = filemtime($out);
-		if (filemtime($in) > $mtime) return true;
 
-		// look for modified imports
-		$icache = $this->importsCacheName($out);
-		if (is_readable($icache)) {
-			$imports = unserialize(file_get_contents($icache));
-			foreach ($imports as $import) {
-				if (filemtime($import) > $mtime) return true;
+		if (filemtime($in) > $mtime) {
+			return true;
+		}
+
+		$metadataName = $this->metadataName($out);
+
+		if (is_readable($metadataName)) {
+			$metadata = unserialize(file_get_contents($metadataName));
+
+			if ($metadata['etag'] === $etag) {
+				return false;
+			}
+
+			foreach ($metadata['imports'] as $import) {
+				if (filemtime($import) > $mtime) {
+					return true;
+				}
+			}
+
+			$etag = $metadata['etag'];
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get If-Modified-Since header from client request
+	 *
+	 * @return string|null
+	 */
+	protected function getIfModifiedSinceHeader()
+	{
+		$modifiedSince = null;
+
+		if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+			$modifiedSince = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
+
+			if (false !== ($semicolonPos = strpos($modifiedSince, ';'))) {
+				$modifiedSince = substr($modifiedSince, 0, $semicolonPos);
 			}
 		}
-		return false;
+
+		return $modifiedSince;
+	}
+
+	/**
+	 * Get If-None-Match header from client request
+	 *
+	 * @return string|null
+	 */
+	protected function getIfNoneMatchHeader()
+	{
+		$noneMatch = null;
+
+		if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+			$noneMatch = $_SERVER['HTTP_IF_NONE_MATCH'];
+		}
+
+		return $noneMatch;
 	}
 
 	/**
@@ -4356,21 +4495,29 @@ class scss_server {
 	 * @param string $in  Input path (.scss)
 	 * @param string $out Output path (.css)
 	 *
-	 * @return string
+	 * @return array
 	 */
-	protected function compile($in, $out) {
-		$start = microtime(true);
-		$css = $this->scss->compile(file_get_contents($in), $in);
+	protected function compile($in, $out)
+	{
+		$start   = microtime(true);
+		$css     = $this->scss->compile(file_get_contents($in), $in);
 		$elapsed = round((microtime(true) - $start), 4);
 
-		$v = scssc::$VERSION;
-		$t = date('r');
-		$css = "/* compiled by scssphp $v on $t (${elapsed}s) */\n\n" . $css;
+		$v    = scssc::$VERSION;
+		$t    = @date('r');
+		$css  = "/* compiled by scssphp $v on $t (${elapsed}s) */\n\n" . $css;
+		$etag = md5($css);
 
 		file_put_contents($out, $css);
-		file_put_contents($this->importsCacheName($out),
-			serialize($this->scss->getParsedFiles()));
-		return $css;
+		file_put_contents(
+			$this->metadataName($out),
+			serialize(array(
+				'etag'    => $etag,
+				'imports' => $this->scss->getParsedFiles(),
+			))
+		);
+
+		return array($css, $etag);
 	}
 
 	/**
@@ -4379,27 +4526,65 @@ class scss_server {
 	 * @param string $salt Prefix a string to the filename for creating the cache name hash
 	 */
 	public function serve($salt = '') {
+		$protocol = isset($_SERVER['SERVER_PROTOCOL'])
+			? $_SERVER['SERVER_PROTOCOL']
+			: 'HTTP/1.0';
+
 		if ($input = $this->findInput()) {
 			$output = $this->cacheName($salt . $input);
-			header('Content-type: text/css');
+			$etag = $noneMatch = trim($this->getIfNoneMatchHeader(), '"');
 
-			if ($this->needsCompile($input, $output)) {
+			if ($this->needsCompile($input, $output, $etag)) {
 				try {
-					echo $this->compile($input, $output);
+					list($css, $etag) = $this->compile($input, $output);
+
+					$lastModified = gmdate('D, d M Y H:i:s', filemtime($output)) . ' GMT';
+
+					header('Last-Modified: ' . $lastModified);
+					header('Content-type: text/css');
+					header('ETag: "' . $etag . '"');
+
+					echo $css;
+
+					return;
 				} catch (Exception $e) {
-					header('HTTP/1.1 500 Internal Server Error');
+					header($protocol . ' 500 Internal Server Error');
+					header('Content-type: text/plain');
+
 					echo 'Parse error: ' . $e->getMessage() . "\n";
 				}
-			} else {
-				header('X-SCSS-Cache: true');
-				echo file_get_contents($output);
 			}
+
+			header('X-SCSS-Cache: true');
+			header('Content-type: text/css');
+			header('ETag: "' . $etag . '"');
+
+			if ($etag === $noneMatch) {
+				header($protocol . ' 304 Not Modified');
+
+				return;
+			}
+
+			$modifiedSince = $this->getIfModifiedSinceHeader();
+			$mtime = filemtime($output);
+
+			if (@strtotime($modifiedSince) === $mtime) {
+				header($protocol . ' 304 Not Modified');
+
+				return;
+			}
+
+			$lastModified  = gmdate('D, d M Y H:i:s', $mtime) . ' GMT';
+			header('Last-Modified: ' . $lastModified);
+
+			echo file_get_contents($output);
 
 			return;
 		}
 
-		header('HTTP/1.0 404 Not Found');
-		header('Content-type: text');
+		header($protocol . ' 404 Not Found');
+		header('Content-type: text/plain');
+
 		$v = scssc::$VERSION;
 		echo "/* INPUT NOT FOUND scss $v */\n";
 	}
