@@ -24,7 +24,7 @@
             var $tags      = $(tpl),
                 $input     = $tags.find('input'),
                 $container = $tags.find('div'),
-                tags;
+                tags=[];
 
             $input.on("keydown", function(e) {
 
