@@ -4,24 +4,29 @@
 
         if (!window.FormData) return;
 
-        var form       = document.getElementById("{{ $options['id'] }}"),
-            msgsuccess = form.getElementsByClassName("form-message-success").item(0),
-            msgfail    = form.getElementsByClassName("form-message-fail").item(0),
-            success = function(){
+        var form        = document.getElementById("{{ $options['id'] }}"),
+            msgsuccess  = form.getElementsByClassName("form-message-success").item(0),
+            msgfail     = form.getElementsByClassName("form-message-fail").item(0),
+            disableForm = function(status) {
+                for(var i=0, max=form.elements.length;i<max;i++) form.elements[i].disabled = status;
+            },
+            success     = function(){
                 if(msgsuccess) {
                     msgsuccess.style.display = 'block';
                 } else {
                     alert("@lang('Form submission was successfull.')");
                 }
 
-                for(var i=0, max=form.elements.length;i<max;i++) form.elements[i].disabled = false;
+                disableForm(false);
             },
-            fail = function(){
+            fail        = function(){
                 if(msgfail) {
                     msgfail.style.display = 'block';
                 } else {
                     alert("@lang('Form submission failed.')");
                 }
+
+                disableForm(false);
             };
 
         if(msgsuccess) msgsuccess.style.display = "none";
@@ -46,7 +51,7 @@
                 }
             };
 
-            for(var i=0, max=form.elements.length;i<max;i++) form.elements[i].disabled = true;
+            disableForm(true);
 
             xhr.open('POST', "@route('/api/forms/submit/'.$name)", true);
             xhr.send(data);
