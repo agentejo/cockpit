@@ -12,7 +12,7 @@ $this->module("regions")->extend([
             return null;
         }
 
-        $renderer = $app->renderer();
+        $renderer = $app->renderer;
         $fields   = [];
 
         if(isset($region["fields"]) && count($region["fields"])) {
@@ -34,7 +34,7 @@ $this->module("regions")->extend([
 ]);
 
 // extend lexy parser
-$app->renderer()->extend(function($content){
+$app->renderer->extend(function($content){
 
     $content = preg_replace('/(\s*)@region\((.+?)\)/', '$1<?php echo cockpit("regions")->render($2); ?>', $content);
 

@@ -99,7 +99,7 @@ if (!function_exists('path_to')) {
 
 
 // extend lexy parser
-$app->renderer()->extend(function($content){
+$app->renderer->extend(function($content){
 
     $content = preg_replace('/(\s*)@markdown\((.+?)\)/', '$1<?php echo \Parsedown::instance()->parse($2); ?>', $content);
     $content = preg_replace('/(\s*)@assets\((.+?)\)/' , '$1<?php $app("assets")->style_and_script($2); ?>', $content);

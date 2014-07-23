@@ -66,7 +66,7 @@ function cockpit($module = null) {
         // set cache path
         $tmppath = $app->path("cache:tmp");
         $app("cache")->setCachePath($tmppath);
-        $app->renderer()->setCachePath($tmppath);
+        $app->renderer->setCachePath($tmppath);
 
         // i18n
         $app("i18n")->locale = isset($config["i18n"]) ? $config["i18n"]:"en";

@@ -77,7 +77,7 @@ $this->module("auth")->extend([
 if (COCKPIT_ADMIN) {
 
     // extend lexy parser
-    $app->renderer()->extend(function($content){
+    $app->renderer->extend(function($content){
 
         $content = preg_replace('/(\s*)@hasaccess\?\((.+?)\)/', '$1<?php if($app->module("auth")->hasaccess($2)) { ?>', $content);
 

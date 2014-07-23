@@ -81,7 +81,7 @@ $this->module("mediamanager")->extend([
 ]);
 
 // extend lexy parser
-$app->renderer()->extend(function($content){
+$app->renderer->extend(function($content){
 
     $content = preg_replace('/(\s*)@thumbnail_url\((.+?)\)/', '$1<?php echo cockpit("mediamanager")->thumbnail($2); ?>', $content);
     $content = preg_replace('/(\s*)@thumbnail\((.+?)\)/', '$1<?php thumbnail($2); ?>', $content);

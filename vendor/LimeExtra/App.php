@@ -6,8 +6,6 @@ class App extends \Lime\App {
 
     public $viewvars = array();
 
-    protected $view_renderer = null;
-
     public function __construct ($settings = array()) {
 
         $settings["helpers"]  = array_merge([
@@ -28,6 +26,31 @@ class App extends \Lime\App {
         $this->viewvars["docs_root"]  = $this["docs_root"];
 
         $this->registry["modules"] = new \ArrayObject(array());
+
+        // renderer service
+        $this->service('renderer', function() {
+
+            $renderer = new \Lexy();
+
+            //register app helper functions
+            $renderer->extend(function($content){
+
+                $content = preg_replace('/(\s*)@base\((.+?)\)/'   , '$1<?php $app->base($2); ?>', $content);
+                $content = preg_replace('/(\s*)@route\((.+?)\)/'  , '$1<?php $app->route($2); ?>', $content);
+                $content = preg_replace('/(\s*)@scripts\((.+?)\)/', '$1<?php echo $app->assets($2); ?>', $content);
+                $content = preg_replace('/(\s*)@render\((.+?)\)/' , '$1<?php echo $app->view($2); ?>', $content);
+                $content = preg_replace('/(\s*)@trigger\((.+?)\)/', '$1<?php $app->trigger($2); ?>', $content);
+                $content = preg_replace('/(\s*)@lang\((.+?)\)/'   , '$1<?php echo $app("i18n")->get($2); ?>', $content);
+
+                $content = preg_replace('/(\s*)@start\((.+?)\)/'   , '$1<?php $app->start($2); ?>', $content);
+                $content = preg_replace('/(\s*)@end\((.+?)\)/'     , '$1<?php $app->end($2); ?>', $content);
+                $content = preg_replace('/(\s*)@block\((.+?)\)/'   , '$1<?php $app->block($2); ?>', $content);
+
+                return $content;
+            });
+
+            return $renderer;
+        });
 
         $this("session")->init();
     }
@@ -95,7 +118,7 @@ class App extends \Lime\App {
     */
     public function view($template, $slots = []) {
 
-        $renderer     = $this->renderer();
+        $renderer     = $this->renderer;
         $olayout      = $this->layout;
 
         $slots         = array_merge($this->viewvars, $slots);
@@ -146,32 +169,5 @@ class App extends \Lime\App {
      */
     public function renderView($template, $slots = []) {
         echo $this->view($template, $slots);
-    }
-
-    public function renderer() {
-
-        if (!$this->view_renderer)  {
-
-            $this->view_renderer = new \Lexy();
-
-            //register app helper functions
-            $this->view_renderer->extend(function($content){
-
-                $content = preg_replace('/(\s*)@base\((.+?)\)/'   , '$1<?php $app->base($2); ?>', $content);
-                $content = preg_replace('/(\s*)@route\((.+?)\)/'  , '$1<?php $app->route($2); ?>', $content);
-                $content = preg_replace('/(\s*)@scripts\((.+?)\)/', '$1<?php echo $app->assets($2); ?>', $content);
-                $content = preg_replace('/(\s*)@render\((.+?)\)/' , '$1<?php echo $app->view($2); ?>', $content);
-                $content = preg_replace('/(\s*)@trigger\((.+?)\)/', '$1<?php $app->trigger($2); ?>', $content);
-                $content = preg_replace('/(\s*)@lang\((.+?)\)/'   , '$1<?php echo $app("i18n")->get($2); ?>', $content);
-
-                $content = preg_replace('/(\s*)@start\((.+?)\)/'   , '$1<?php $app->start($2); ?>', $content);
-                $content = preg_replace('/(\s*)@end\((.+?)\)/'     , '$1<?php $app->end($2); ?>', $content);
-                $content = preg_replace('/(\s*)@block\((.+?)\)/'   , '$1<?php $app->block($2); ?>', $content);
-
-                return $content;
-            });
-        }
-
-        return $this->view_renderer;
     }
 }
