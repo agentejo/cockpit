@@ -120,6 +120,11 @@ $this->module("collections")->extend([
         }
 
         return $resultset;
+    },
+
+    "populateOne" => function($collection, $item) use($app) {
+        $item = $this->populate($collection, [$item]);
+        return $item[0];
     }
 ]);
 
@@ -132,6 +137,10 @@ if(!function_exists("collection")) {
 if(!function_exists("collection_populate")) {
     function collection_populate($collection, $resultset) {
         return cockpit("collections")->populate($collection, $resultset);
+    }
+
+    function collection_populate_one($collection, $item) {
+        return cockpit("collections")->populateOne($collection, $item);
     }
 }
 
