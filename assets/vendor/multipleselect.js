@@ -1,5 +1,19 @@
 (function($, global){
 
+    function debounce(func, wait, immediate) {
+        var timeout;
+        return function() {
+            var context = this, args = arguments;
+            var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    };
 
     var MultipleSelect = function(container, options){
 
@@ -50,7 +64,19 @@
             $this.handleSelected(checkboxes);
         });
 
-        $(document).on('uk-domready', function(){ $this.fetchRows(); });
+        if(!window.MutationObserver) {
+
+            try {
+
+                var observer = new MutationObserver(debounce(function(mutations) {
+                    $this.fetchRows();
+                }, 50));
+
+                // pass in the target node, as well as the observer options
+                observer.observe(this.container[0], { childList: true, subtree: true });
+
+            } catch(e) {}
+        }
 
         this.fetchRows();
     };
