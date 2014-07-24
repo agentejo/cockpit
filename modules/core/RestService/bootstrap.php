@@ -19,7 +19,7 @@ if(!function_exists("cockpit_js_lib")) {
     }
 }
 
-$app->on("before", function() use($app) {
+$app->on("before", function() {
 
     $routes = new \ArrayObject([]);
 
@@ -28,17 +28,17 @@ $app->on("before", function() use($app) {
 
     */
 
-    $app->trigger("cockpit.rest.init", [$routes])->bind("/rest/api/*", function($params) use($routes, $app){
+    $this->trigger("cockpit.rest.init", [$routes])->bind("/rest/api/*", function($params) use($routes){
 
-        $token = $app->param("token", "n/a");
+        $token = $this->param("token", "n/a");
         $path  = $params[":splat"][0];
 
         if(!$params[":splat"][0]) {
             return false;
         }
 
-        if($token !== $app->memory->get("cockpit.api.token", false)) {
-            $app->response->status = 401;
+        if($token !== $this->memory->get("cockpit.api.token", false)) {
+            $this->response->status = 401;
             return ["error" => "access denied"];
         }
 
@@ -53,7 +53,7 @@ $app->on("before", function() use($app) {
 
                 $action = count($params) ? array_shift($params):'index';
 
-                return $app->invoke($routes[$resource], $action, $params);
+                return $this->invoke($routes[$resource], $action, $params);
             }
 
             if(is_callable($routes[$resource])) {
@@ -66,12 +66,12 @@ $app->on("before", function() use($app) {
 
 });
 
-$app->bind("/rest/api.js", function() use($app){
+$app->bind("/rest/api.js", function() {
 
-    $token    = $app->param("token", "");
-    $registry = json_encode((object)$app->memory->get("cockpit.api.registry", []));
+    $token    = $this->param("token", "");
+    $registry = json_encode((object)$this->memory->get("cockpit.api.registry", []));
 
-    $app->response->mime = "js";
+    $this->response->mime = "js";
 
-    return $app->view('restservice:views/api.js', compact('token', 'registry'));
+    return $this->view('restservice:views/api.js', compact('token', 'registry'));
 });

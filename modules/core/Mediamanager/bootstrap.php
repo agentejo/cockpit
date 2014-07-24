@@ -137,52 +137,52 @@ $app->on("cockpit.rest.init", function($routes) {
 if(COCKPIT_ADMIN && !COCKPIT_REST) {
 
 
-    $app->on("app.layout.header", function() use($app){
+    $app->on("app.layout.header", function() {
 
-        $mediapath = trim($app->module("auth")->getGroupSetting("media.path", '/'), '/');
+        $mediapath = trim($this->module("auth")->getGroupSetting("media.path", '/'), '/');
 
         ?>
             <script>
-                window.COCKPIT_SITE_BASE_URL  = '<?=$app->pathToUrl("site:");?>';
-                window.COCKPIT_MEDIA_BASE_URL = '<?=rtrim($app->pathToUrl("site:{$mediapath}"), '/');?>';
+                window.COCKPIT_SITE_BASE_URL  = '<?=$this->pathToUrl("site:");?>';
+                window.COCKPIT_MEDIA_BASE_URL = '<?=rtrim($this->pathToUrl("site:{$mediapath}"), '/');?>';
             </script>
         <?php
     });
 
 
-    $app->on("admin.init", function() use($app){
+    $app->on("admin.init", function() {
 
         // bind controller
-        $app->bindClass("Mediamanager\\Controller\\Mediamanager", "mediamanager");
+        $this->bindClass("Mediamanager\\Controller\\Mediamanager", "mediamanager");
 
         // thumbnail api
-        $app->bind("/media/thumbnail/*", function($params) use($app){
-            $options = $app->params("options", []);
-            return $app->module("mediamanager")->thumbnail($params[":splat"], $options);
+        $this->bind("/media/thumbnail/*", function($params) {
+            $options = $this->params("options", []);
+            return $this->module("mediamanager")->thumbnail($params[":splat"], $options);
         });
 
-        if(!$app->module("auth")->hasaccess("Mediamanager","manage")) return;
+        if(!$this->module("auth")->hasaccess("Mediamanager","manage")) return;
 
-        $app("admin")->menu("top", [
-            "url"    => $app->routeUrl("/mediamanager"),
+        $this("admin")->menu("top", [
+            "url"    => $this->routeUrl("/mediamanager"),
             "label"  => '<i class="uk-icon-cloud"></i>',
-            "title"  => $app("i18n")->get("Mediamanager"),
-            "active" => (strpos($app["route"], '/mediamanager') === 0)
+            "title"  => $this("i18n")->get("Mediamanager"),
+            "active" => (strpos($this["route"], '/mediamanager') === 0)
         ], 0);
 
 
         // handle global search request
-        $app->on("cockpit.globalsearch", function($search, $list) use($app){
+        $this->on("cockpit.globalsearch", function($search, $list) {
 
-            $user = $app->module("auth")->getUser();
+            $user = $this->module("auth")->getUser();
 
-            $bookmarks = $app->memory->get("mediamanager.bookmarks.".$user["_id"], ["folders"=>[], "files"=>[]]);
+            $bookmarks = $this->memory->get("mediamanager.bookmarks.".$user["_id"], ["folders"=>[], "files"=>[]]);
 
             foreach ($bookmarks["folders"] as $f) {
                 if(stripos($f["name"], $search)!==false){
                     $list[] = [
                         "title" => '<i class="uk-icon-folder-o"></i> '.$f["name"],
-                        "url"   => $app->routeUrl('/mediamanager#'.$f["path"])
+                        "url"   => $this->routeUrl('/mediamanager#'.$f["path"])
                     ];
                 }
             }
@@ -191,7 +191,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
                 if(stripos($f["name"], $search)!==false){
                     $list[] = [
                         "title" => '<i class="uk-icon-file-o"></i> '.$f["name"],
-                        "url"   => $app->routeUrl('/mediamanager#'.dirname($f["path"]))
+                        "url"   => $this->routeUrl('/mediamanager#'.dirname($f["path"]))
                     ];
                 }
             }

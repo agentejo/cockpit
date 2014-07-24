@@ -491,9 +491,14 @@ class App implements \ArrayAccess {
     * @param  Integer $priority
     * @return void
     */
-    public function on($event,$callback, $priority = 0){
+    public function on($event, $callback, $priority = 0){
 
         if(!isset($this->events[$event])) $this->events[$event] = array();
+
+        // make $this available in closures
+        if (is_object($callback) && $callback instanceof \Closure && version_compare(PHP_VERSION, '5.4.0') >= 0) {
+            $callback = $callback->bindTo($this, $this);
+        }
 
         $this->events[$event][] = array("fn" => $callback, "prio" => $priority);
     }
@@ -804,6 +809,11 @@ class App implements \ArrayAccess {
 
         if (!isset($this->routes[$path])) {
             $this->routes[$path] = array();
+        }
+
+        // make $this available in closures
+        if (is_object($callback) && $callback instanceof \Closure && version_compare(PHP_VERSION, '5.4.0') >= 0) {
+            $callback = $callback->bindTo($this, $this);
         }
 
         $this->routes[$path] = $callback;

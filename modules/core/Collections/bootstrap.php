@@ -160,29 +160,29 @@ $app->on("cockpit.rest.init", function($routes) {
 if(COCKPIT_ADMIN && !COCKPIT_REST) {
 
 
-    $app->on("admin.init", function() use($app){
+    $app->on("admin.init", function() {
 
-        if(!$app->module("auth")->hasaccess("Collections", ['manage.collections', 'manage.entries'])) return;
+        if(!$this->module("auth")->hasaccess("Collections", ['manage.collections', 'manage.entries'])) return;
 
         // bind controllers
-        $app->bindClass("Collections\\Controller\\Collections", "collections");
-        $app->bindClass("Collections\\Controller\\Api", "api/collections");
+        $this->bindClass("Collections\\Controller\\Collections", "collections");
+        $this->bindClass("Collections\\Controller\\Api", "api/collections");
 
-        $app("admin")->menu("top", [
-            "url"    => $app->routeUrl("/collections"),
+        $this("admin")->menu("top", [
+            "url"    => $this->routeUrl("/collections"),
             "label"  => '<i class="uk-icon-list"></i>',
-            "title"  => $app("i18n")->get("Collections"),
-            "active" => (strpos($app["route"], '/collections') === 0)
+            "title"  => $this("i18n")->get("Collections"),
+            "active" => (strpos($this["route"], '/collections') === 0)
         ], 5);
 
         // handle global search request
-        $app->on("cockpit.globalsearch", function($search, $list) use($app){
+        $this->on("cockpit.globalsearch", function($search, $list) {
 
-            foreach ($app->db->find("common/collections") as $c) {
+            foreach ($this->db->find("common/collections") as $c) {
                 if(stripos($c["name"], $search)!==false){
                     $list[] = [
                         "title" => '<i class="uk-icon-list"></i> '.$c["name"],
-                        "url"   => $app->routeUrl('/collections/entries/'.$c["_id"])
+                        "url"   => $this->routeUrl('/collections/entries/'.$c["_id"])
                     ];
                 }
             }
@@ -190,18 +190,17 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
 
     });
 
-    $app->on("admin.dashboard.aside", function() use($app){
+    $app->on("admin.dashboard.aside", function() {
 
-        if(!$app->module("auth")->hasaccess("Collections", ['manage.collections', 'manage.entries'])) return;
+        if(!$this->module("auth")->hasaccess("Collections", ['manage.collections', 'manage.entries'])) return;
 
-        $title       = $app("i18n")->get("Collections");
-        $badge       = $app->db->getCollection("common/collections")->count();
-        $collections = $app->db->find("common/collections", ["limit"=> 3, "sort"=>["created"=>-1] ])->toArray();
+        $title       = $this("i18n")->get("Collections");
+        $badge       = $this->db->getCollection("common/collections")->count();
+        $collections = $this->db->find("common/collections", ["limit"=> 3, "sort"=>["created"=>-1] ])->toArray();
 
-        $app->renderView("collections:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'collections'));
+        $this->renderView("collections:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'collections'));
     });
 
     // acl
-    $app("acl")->addResource("Collections", ['manage.collections', 'manage.entries']);
-
+    $this("acl")->addResource("Collections", ['manage.collections', 'manage.entries']);
 }

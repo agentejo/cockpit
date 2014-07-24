@@ -144,56 +144,52 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
     $app->helpers["backup"]   = 'Cockpit\\Helper\\Backup';
     $app->helpers["history"]  = 'Cockpit\\Helper\\HistoryLogger';
 
-    $app->bind("/", function() use($app){
-        return $app->invoke("Cockpit\\Controller\\Base", "dashboard");
+    $app->bind("/", function(){
+        return $this->invoke("Cockpit\\Controller\\Base", "dashboard");
     });
 
-    $app->bind("/dashboard", function() use($app){
-        return $app->invoke("Cockpit\\Controller\\Base", "dashboard");
+    $app->bind("/dashboard", function(){
+        return $this->invoke("Cockpit\\Controller\\Base", "dashboard");
     });
 
-    $app->bind("/settingspage", function() use($app){
-        return $app->invoke("Cockpit\\Controller\\Base", "settings");
+    $app->bind("/settingspage", function(){
+        return $this->invoke("Cockpit\\Controller\\Base", "settings");
     });
 
     $app->bindClass("Cockpit\\Controller\\Settings", "settings");
     $app->bindClass("Cockpit\\Controller\\Backups", "backups");
 
     //global search
-    $app->bind("/cockpit-globalsearch", function() use($app){
+    $app->bind("/cockpit-globalsearch", function(){
 
-        $query = $app->param("search", false);
+        $query = $this->param("search", false);
         $list  = new \ArrayObject([]);
 
         if($query) {
-            $app->trigger("cockpit.globalsearch", [$query, $list]);
+            $this->trigger("cockpit.globalsearch", [$query, $list]);
         }
 
         return json_encode(["results"=>$list->getArrayCopy()]);
     });
 
     // dashboard widgets
-    $app->on("admin.dashboard.main", function() use($app){
-        $title = $app("i18n")->get("Today");
-        $app->renderView("cockpit:views/dashboard/datetime.php with cockpit:views/layouts/dashboard.widget.php", compact('title'));
+    $app->on("admin.dashboard.main", function() {
+        $title = $this("i18n")->get("Today");
+        $this->renderView("cockpit:views/dashboard/datetime.php with cockpit:views/layouts/dashboard.widget.php", compact('title'));
     }, 100);
 
-    $app->on("admin.dashboard.main", function() use($app){
-        $app->renderView("cockpit:views/dashboard/history.php", ['history' => $app("history")->load()]);
+    $app->on("admin.dashboard.main", function() {
+        $this->renderView("cockpit:views/dashboard/history.php", ['history' => $this("history")->load()]);
     }, 5);
 
 
-
     // init admin menus
-
     $app['admin.menu.top']      = new \PriorityQueue();
     $app['admin.menu.dropdown'] = new \PriorityQueue();
 
 
-
     // load i18n definition
-
-    if($user = $app("session")->read('cockpit.app.auth', null)) {
+    if ($user = $app("session")->read('cockpit.app.auth', null)) {
         $app("i18n")->locale = isset($user['i18n']) ? $user['i18n'] : $app("i18n")->locale;
     }
 
@@ -201,17 +197,15 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
 
     $app("i18n")->load("cockpit:i18n/{$locale}.php", $locale);
 
-    $app->bind("/i18n.js", function() use($app, $locale){
+    $app->bind("/i18n.js", function() use($locale){
 
-        $app->response->mime = "js";
-
-        $data = $app("i18n")->data($locale);
+        $this->response->mime = "js";
+        $data = $this("i18n")->data($locale);
 
         return 'if(i18n) { i18n.register('.(count($data) ? json_encode($data):'{}').'); }';
     });
 
 
     // acl
-
     $app("acl")->addResource("Cockpit", ['manage.backups']);
 }

@@ -31,43 +31,43 @@ $app->on("cockpit.rest.init", function($routes) {
 if(COCKPIT_ADMIN && !COCKPIT_REST) {
 
 
-    $app->on("admin.init", function() use($app){
+    $app->on("admin.init", function() {
 
-        if(!$app->module("auth")->hasaccess("Galleries", ['create.gallery', 'edit.gallery'])) return;
+        if(!$this->module("auth")->hasaccess("Galleries", ['create.gallery', 'edit.gallery'])) return;
 
-        $app->bindClass("Galleries\\Controller\\Galleries", "galleries");
-        $app->bindClass("Galleries\\Controller\\Api", "api/galleries");
+        $this->bindClass("Galleries\\Controller\\Galleries", "galleries");
+        $this->bindClass("Galleries\\Controller\\Api", "api/galleries");
 
-        $app("admin")->menu("top", [
-            "url"    => $app->routeUrl("/galleries"),
+        $this("admin")->menu("top", [
+            "url"    => $this->routeUrl("/galleries"),
             "label"  => '<i class="uk-icon-picture-o"></i>',
-            "title"  => $app("i18n")->get("Galleries"),
-            "active" => (strpos($app["route"], '/galleries') === 0)
+            "title"  => $this("i18n")->get("Galleries"),
+            "active" => (strpos($this["route"], '/galleries') === 0)
         ], 5);
 
         // handle global search request
-        $app->on("cockpit.globalsearch", function($search, $list) use($app){
+        $this->on("cockpit.globalsearch", function($search, $list) {
 
-            foreach ($app->db->find("common/galleries") as $g) {
+            foreach ($this->db->find("common/galleries") as $g) {
                 if(stripos($g["name"], $search)!==false){
                     $list[] = [
                         "title" => '<i class="uk-icon-picture-o"></i> '.$g["name"],
-                        "url"   => $app->routeUrl('/galleries/gallery/'.$g["_id"])
+                        "url"   => $this->routeUrl('/galleries/gallery/'.$g["_id"])
                     ];
                 }
             }
         });
     });
 
-    $app->on("admin.dashboard.aside", function() use($app){
+    $app->on("admin.dashboard.aside", function() {
 
-        if(!$app->module("auth")->hasaccess("Galleries", ['create.gallery', 'edit.gallery'])) return;
+        if(!$this->module("auth")->hasaccess("Galleries", ['create.gallery', 'edit.gallery'])) return;
 
-        $title     = $app("i18n")->get("Galleries");
-        $badge     = $app->db->getCollection("common/galleries")->count();
-        $galleries = $app->db->find("common/galleries", ["limit"=> 3, "sort"=>["created"=>-1] ])->toArray();
+        $title     = $this("i18n")->get("Galleries");
+        $badge     = $this->db->getCollection("common/galleries")->count();
+        $galleries = $this->db->find("common/galleries", ["limit"=> 3, "sort"=>["created"=>-1] ])->toArray();
 
-        $app->renderView("galleries:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'galleries'));
+        $this->renderView("galleries:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'galleries'));
     });
 
 
