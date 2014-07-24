@@ -24,7 +24,7 @@
             var $tags      = $(tpl),
                 $input     = $tags.find('input'),
                 $container = $tags.find('div'),
-                tags=[];
+                tags       = false;
 
             $input.on("keydown", function(e) {
 
@@ -96,6 +96,11 @@
             }
 
             elm.replaceWith($tags);
+
+
+            $timeout(function(){
+                ngModel.$render();
+            });
         }
       };
 
