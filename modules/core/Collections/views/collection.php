@@ -187,7 +187,7 @@
                         @lang('Fields on entries list page'):
                     </p>
                     <ul id="fields-list" class="uk-nestable" data-uk-nestable="{maxDepth:1}">
-                        <li data-ng-repeat="field in collection.fields">
+                        <li class="uk-nestable-list-item" data-ng-repeat="field in collection.fields">
                             <div class="uk-nestable-item uk-nestable-item-table">
                                 <div class="uk-nestable-handle"></div>
                                 <input type="checkbox" data-ng-checked="field.lst" data-ng-model="field.lst">

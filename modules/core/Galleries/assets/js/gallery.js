@@ -167,10 +167,10 @@
 
         // after sorting list
 
-        var list = $("#manage-fields-list").on("nestable-change", function(){
+        var list = $("#manage-fields-list").on("nestable-stop", function(){
             var fields = [];
 
-            list.children().each(function(){
+            list.children('.ng-scope').each(function(){
                 fields.push(angular.copy($(this).scope().field));
             });
 

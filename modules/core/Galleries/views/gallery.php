@@ -91,7 +91,7 @@
                             <div data-ng-show="managefields">
 
                                 <ul id="manage-fields-list" class="uk-nestable" data-uk-nestable="{maxDepth:1}">
-                                     <li data-ng-repeat="field in gallery.fields">
+                                     <li class="uk-nestable-list-item" data-ng-repeat="field in gallery.fields">
                                         <div class="uk-nestable-item uk-nestable-item-table">
                                            <div class="uk-nestable-handle"></div>
                                            <input type="text" data-ng-model="field.name" placeholder="Field name" pattern="[a-zA-Z0-9]+" required>

@@ -107,7 +107,7 @@
                                   <div ng-show="manageform">
 
                                     <ul id="manage-fields-list" class="uk-nestable" data-uk-nestable="{maxDepth:1}">
-                                         <li data-ng-repeat="field in region.fields">
+                                         <li class="uk-nestable-list-item" data-ng-repeat="field in region.fields">
                                             <div class="uk-nestable-item uk-nestable-item-table">
                                                <div class="uk-nestable-handle"></div>
                                                <input type="text" data-ng-model="field.name" placeholder="@lang('Field name')" title="@lang('Field name')" data-uk-tooltip pattern="^[a-zA-Z][a-zA-Z0-9]*" required>
