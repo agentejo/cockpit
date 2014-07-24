@@ -123,7 +123,13 @@ $this->module("collections")->extend([
     },
 
     "populateOne" => function($collection, $item) use($app) {
+
+        if (!$item) {
+            return $item;
+        }
+
         $item = $this->populate($collection, [$item]);
+
         return $item[0];
     }
 ]);
