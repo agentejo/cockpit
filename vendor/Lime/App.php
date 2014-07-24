@@ -29,13 +29,13 @@ namespace Lime;
 
 class App implements \ArrayAccess {
 
-    protected static $apps = array();
+    protected static $apps = [];
 
-    protected $registry = array();
-    protected $routes   = array();
-    protected $paths    = array();
-    protected $events   = array();
-    protected $blocks   = array();
+    protected $registry = [];
+    protected $routes   = [];
+    protected $paths    = [];
+    protected $events   = [];
+    protected $blocks   = [];
 
     protected $exit     = false;
 
@@ -163,7 +163,7 @@ class App implements \ArrayAccess {
     * Constructor
     * @param Array $settings initial registry settings
     */
-    public function __construct ($settings = array()) {
+    public function __construct ($settings = []) {
 
         $self = $this;
 
@@ -171,11 +171,11 @@ class App implements \ArrayAccess {
             'debug'        => true,
             'app.name'     => null,
             'session.name' => null,
-            'autoload'     => new \ArrayObject(array()),
+            'autoload'     => new \ArrayObject([]),
             'sec-key'      => 'xxxxx-SiteSecKeyPleaseChangeMe-xxxxx',
             'route'        => isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/",
             'charset'      => 'UTF-8',
-            'helpers'      => array(),
+            'helpers'      => [],
             'base_url'     => implode("/", array_slice(explode("/", $_SERVER['SCRIPT_NAME']), 0, -1)),
             'base_route'   => implode("/", array_slice(explode("/", $_SERVER['SCRIPT_NAME']), 0, -1)),
             'docs_root'    => null,
@@ -210,7 +210,7 @@ class App implements \ArrayAccess {
         // register simple autoloader
         spl_autoload_register(function ($class) use($self){
 
-            foreach ($self->retrieve("autoload", array()) as $dir) {
+            foreach ($self->retrieve("autoload", []) as $dir) {
 
                 $class_file = $dir.'/'.str_replace('\\', '/', $class).'.php';
 
@@ -435,7 +435,7 @@ class App implements \ArrayAccess {
             return false;
         case 2:
             if(!isset($this->paths[$args[0]])) {
-                $this->paths[$args[0]] = array();
+                $this->paths[$args[0]] = [];
             }
             array_unshift($this->paths[$args[0]], rtrim(str_replace(DIRECTORY_SEPARATOR,'/',$args[1]), '/').'/');
             break;
@@ -493,10 +493,10 @@ class App implements \ArrayAccess {
     */
     public function on($event, $callback, $priority = 0){
 
-        if(!isset($this->events[$event])) $this->events[$event] = array();
+        if(!isset($this->events[$event])) $this->events[$event] = [];
 
         // make $this available in closures
-        if (is_object($callback) && $callback instanceof \Closure && version_compare(PHP_VERSION, '5.4.0') >= 0) {
+        if (is_object($callback) && $callback instanceof \Closure) {
             $callback = $callback->bindTo($this, $this);
         }
 
@@ -509,7 +509,7 @@ class App implements \ArrayAccess {
     * @param  Array  $params
     * @return Boolean
     */
-    public function trigger($event,$params=array()){
+    public function trigger($event,$params=[]){
 
         if(!isset($this->events[$event])){
             return $this;
@@ -546,7 +546,7 @@ class App implements \ArrayAccess {
     * @param  Array  $_____slots   Passed variables
     * @return String               Rendered view
     */
-    public function render($____template, $_____slots = array()) {
+    public function render($____template, $_____slots = []) {
 
         $_____slots["app"] = $this;
         $____layout        = $this->layout;
@@ -594,7 +594,7 @@ class App implements \ArrayAccess {
     public function start($name) {
 
         if(!isset($this->blocks[$name])){
-            $this->blocks[$name] = array();
+            $this->blocks[$name] = [];
         }
 
         ob_start();
@@ -621,7 +621,7 @@ class App implements \ArrayAccess {
     * @param  array  $options
     * @return String
     */
-    public function block($name, $options=array()) {
+    public function block($name, $options=[]) {
 
         if(!isset($this->blocks[$name])) return null;
 
@@ -673,7 +673,7 @@ class App implements \ArrayAccess {
     */
     public function style($href, $version=false) {
 
-        $list = array();
+        $list = [];
 
         foreach((array)$href as $style) {
 
@@ -691,7 +691,7 @@ class App implements \ArrayAccess {
     */
     public function script($src, $version=false){
 
-        $list = array();
+        $list = [];
 
         foreach((array)$src as $script) {
             $ispath = strpos($script, ':') !== false && !preg_match('#^(|http\:|https\:)//#', $script);
@@ -703,7 +703,7 @@ class App implements \ArrayAccess {
 
     public function assets($src, $version=false){
 
-        $list = array();
+        $list = [];
 
         foreach((array)$src as $script) {
 
@@ -757,14 +757,14 @@ class App implements \ArrayAccess {
 
             $parts      = explode('/', trim(str_replace($clean,"",$self["route"]),'/'));
             $action     = isset($parts[0]) ? $parts[0]:"index";
-            $params     = count($parts)>1 ? array_slice($parts, 1):array();
+            $params     = count($parts)>1 ? array_slice($parts, 1):[];
 
             return $self->invoke($class,$action, $params);
         });
 
         $this->bind('/'.$clean, function() use($self, $class) {
 
-            return $self->invoke($class,'index', array());
+            return $self->invoke($class,'index', []);
         });
     }
 
@@ -783,7 +783,7 @@ class App implements \ArrayAccess {
             $parts      = explode('/', trim(str_replace($clean,"",$self["route"]),'/'));
             $class      = $namespace.'\\'.$parts[0];
             $action     = isset($parts[1]) ? $parts[1]:"index";
-            $params     = count($parts)>2 ? array_slice($parts, 2):array();
+            $params     = count($parts)>2 ? array_slice($parts, 2):[];
 
             return $self->invoke($class,$action, $params);
         });
@@ -792,7 +792,7 @@ class App implements \ArrayAccess {
 
             $class = $namespace."\\".array_pop(explode('\\', $namespace));
 
-            return $self->invoke($class,'index', array());
+            return $self->invoke($class,'index', []);
         });
     }
 
@@ -808,11 +808,11 @@ class App implements \ArrayAccess {
         if (!$condition) return;
 
         if (!isset($this->routes[$path])) {
-            $this->routes[$path] = array();
+            $this->routes[$path] = [];
         }
 
         // make $this available in closures
-        if (is_object($callback) && $callback instanceof \Closure && version_compare(PHP_VERSION, '5.4.0') >= 0) {
+        if (is_object($callback) && $callback instanceof \Closure) {
             $callback = $callback->bindTo($this, $this);
         }
 
@@ -872,7 +872,7 @@ class App implements \ArrayAccess {
     public function dispatch($path) {
 
             $found  = false;
-            $params = array();
+            $params = [];
 
             if (isset($this->routes[$path])) {
 
@@ -882,7 +882,7 @@ class App implements \ArrayAccess {
 
                 foreach ($this->routes as $route => $callback) {
 
-                    $params = array();
+                    $params = [];
 
                     /* e.g. #\.html$#  */
                     if(substr($route,0,1)=='#' && substr($route,-1)=='#'){
@@ -947,7 +947,7 @@ class App implements \ArrayAccess {
     * @param  array  $params
     * @return String
     */
-    protected function render_route($route, $params = array()) {
+    protected function render_route($route, $params = []) {
 
         $output = false;
 
@@ -973,7 +973,7 @@ class App implements \ArrayAccess {
     * @param  Array  $params
     * @return Misc
     */
-    public function invoke($class, $action="index", $params=array()) {
+    public function invoke($class, $action="index", $params=[]) {
 
         $controller = new $class($this);
 
@@ -1203,7 +1203,7 @@ class Response {
     public $gzip    = false;
     public $nocache = false;
     public $etag    = false;
-    public $headers = array();
+    public $headers = [];
 
     public function __construct() {
 

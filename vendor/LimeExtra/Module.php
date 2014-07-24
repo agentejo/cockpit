@@ -10,7 +10,7 @@ class Module extends \Lime\AppAware {
 
         foreach($api as $name => $value) {
 
-            if ($value instanceof \Closure && version_compare(PHP_VERSION, '5.4.0') >= 0) {
+            if ($value instanceof \Closure) {
                 $value = $value->bindTo($this, $this);
             }
 
