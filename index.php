@@ -5,7 +5,6 @@ define('COCKPIT_ADMIN', 1);
 date_default_timezone_set('UTC');
 
 // $_SERVER['PATH_INFO'] fix for nginx >:-/
-
 if (!isset($_SERVER['PATH_INFO']) && strpos($_SERVER['REQUEST_URI'], $_SERVER['PHP_SELF'])===0) {
 
     $_URI  = preg_replace('/\?(.*)/', '', $_SERVER['REQUEST_URI']);
@@ -17,15 +16,15 @@ if (!isset($_SERVER['PATH_INFO']) && strpos($_SERVER['REQUEST_URI'], $_SERVER['P
 
 require(__DIR__.'/bootstrap.php');
 
-$cockpit->on("after", function() use($cockpit) {
+$cockpit->on("after", function() {
 
-    switch ($cockpit->response->status) {
+    switch ($this->response->status) {
         case 500:
         case 404:
-            if ($cockpit->req_is('ajax')) {
-                $cockpit->response->body = '{"error": "'.$cockpit->response->status.'"}';
+            if ($this->req_is('ajax')) {
+                $this->response->body = '{"error": "'.$this->response->status.'"}';
             } else {
-                $cockpit->response->body = $cockpit->view("cockpit:views/errors/{$cockpit->response->status}.php");
+                $this->response->body = $this->view("cockpit:views/errors/{$this->response->status}.php");
             }
             break;
     }
