@@ -169,8 +169,8 @@ class App implements \ArrayAccess {
 
         $this->registry = array_merge(array(
             'debug'        => true,
-            'app.name'     => null,
-            'session.name' => null,
+            'app.name'     => 'LimeApp',
+            'session.name' => 'limeappsession',
             'autoload'     => new \ArrayObject([]),
             'sec-key'      => 'xxxxx-SiteSecKeyPleaseChangeMe-xxxxx',
             'route'        => isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/",
@@ -182,20 +182,12 @@ class App implements \ArrayAccess {
             'site_url'     => null
         ), $settings);
 
-        if(!isset($this["app.name"])){
-            $this["app.name"] = uniqid();
-        }
-
-        if(!isset($this["session.name"])){
-            $this["session.name"] = $this["app.name"];
-        }
-
         if (!isset($this["site_url"])) {
             $this["site_url"] = $this->getSiteUrl(false);
         }
 
         if (!isset($this["docs_root"])) {
-            $this["docs_root"] = str_replace(DIRECTORY_SEPARATOR, '/', isset($_SERVER['DOCUMENT_ROOT']) ? (is_link($_SERVER['DOCUMENT_ROOT']) ? readlink($_SERVER['DOCUMENT_ROOT']) : $_SERVER['DOCUMENT_ROOT']) : dirname($_SERVER['SCRIPT_FILENAME']));
+            $this["docs_root"] = str_replace(DIRECTORY_SEPARATOR, '/', isset($_SERVER['DOCUMENT_ROOT']) ? realpath($_SERVER['DOCUMENT_ROOT']) : dirname($_SERVER['SCRIPT_FILENAME']));
         }
 
         // make sure base + route url doesn't end with a slash;
@@ -214,7 +206,7 @@ class App implements \ArrayAccess {
 
                 $class_file = $dir.'/'.str_replace('\\', '/', $class).'.php';
 
-                if(file_exists($class_file)){
+                if (file_exists($class_file)){
                     include_once($class_file);
                     return;
                 }
@@ -223,11 +215,11 @@ class App implements \ArrayAccess {
 
 
         // check for php://input and merge with $_REQUEST
-        if(
+        if (
             (isset($_SERVER["CONTENT_TYPE"]) && stripos($_SERVER["CONTENT_TYPE"],'application/json')!==false) ||
             (isset($_SERVER["HTTP_CONTENT_TYPE"]) && stripos($_SERVER["HTTP_CONTENT_TYPE"],'application/json')!==false) // PHP build in Webserver !?
         ) {
-            if($json = json_decode(@file_get_contents('php://input'), true)) {
+            if ($json = json_decode(@file_get_contents('php://input'), true)) {
                 $_REQUEST = array_merge($_REQUEST, $json);
             }
         }
@@ -264,9 +256,10 @@ class App implements \ArrayAccess {
     * stop application (exit)
     */
     public function stop($data = false){
+
         $this->exit = true;
 
-        if($data!==false) {
+        if ($data!==false) {
             echo $data;
         }
 
@@ -346,7 +339,7 @@ class App implements \ArrayAccess {
     public function reroute($path) {
 
         if (strpos($path,'://') === false) {
-            if(substr($path,0,1)!='/'){
+            if (substr($path,0,1)!='/'){
                 $path = '/'.$path;
             }
             $path = $this->routeUrl($path);
@@ -365,7 +358,7 @@ class App implements \ArrayAccess {
 
         $keys = explode('/',$key);
 
-        if(count($keys)>5) return false;
+        if (count($keys)>5) return false;
 
         switch(count($keys)){
 
@@ -413,32 +406,36 @@ class App implements \ArrayAccess {
         $args = func_get_args();
 
         switch(count($args)){
-        case 1:
-            $file  = $args[0];
 
-            if($this->isAbsolutePath($file) && file_exists($file)) {
-                return $file;
-            }
+            case 1:
 
-            $parts = explode(':', $file, 2);
+                $file  = $args[0];
 
-            if(count($parts)==2){
-                if(!isset($this->paths[$parts[0]])) return false;
+                if ($this->isAbsolutePath($file) && file_exists($file)) {
+                    return $file;
+                }
 
-                foreach($this->paths[$parts[0]] as &$path){
-                    if(file_exists($path.$parts[1])){
-                        return $path.$parts[1];
+                $parts = explode(':', $file, 2);
+
+                if (count($parts)==2){
+                    if (!isset($this->paths[$parts[0]])) return false;
+
+                    foreach($this->paths[$parts[0]] as &$path){
+                        if (file_exists($path.$parts[1])){
+                            return $path.$parts[1];
+                        }
                     }
                 }
-            }
 
-            return false;
-        case 2:
-            if(!isset($this->paths[$args[0]])) {
-                $this->paths[$args[0]] = [];
-            }
-            array_unshift($this->paths[$args[0]], rtrim(str_replace(DIRECTORY_SEPARATOR,'/',$args[1]), '/').'/');
-            break;
+                return false;
+
+            case 2:
+
+                if (!isset($this->paths[$args[0]])) {
+                    $this->paths[$args[0]] = [];
+                }
+                array_unshift($this->paths[$args[0]], rtrim(str_replace(DIRECTORY_SEPARATOR, '/', $args[1]), '/').'/');
+                break;
         }
     }
 
@@ -493,7 +490,7 @@ class App implements \ArrayAccess {
     */
     public function on($event, $callback, $priority = 0){
 
-        if(!isset($this->events[$event])) $this->events[$event] = [];
+        if (!isset($this->events[$event])) $this->events[$event] = [];
 
         // make $this available in closures
         if (is_object($callback) && $callback instanceof \Closure) {
@@ -511,11 +508,11 @@ class App implements \ArrayAccess {
     */
     public function trigger($event,$params=[]){
 
-        if(!isset($this->events[$event])){
+        if (!isset($this->events[$event])){
             return $this;
         }
 
-        if(!count($this->events[$event])){
+        if (!count($this->events[$event])){
             return $this;
         }
 
@@ -529,8 +526,8 @@ class App implements \ArrayAccess {
 
         while($queue->valid()){
             $index = $queue->current();
-            if(is_callable($this->events[$event][$index]["fn"])){
-                if(call_user_func_array($this->events[$event][$index]["fn"], $params) === false) {
+            if (is_callable($this->events[$event][$index]["fn"])){
+                if (call_user_func_array($this->events[$event][$index]["fn"], $params) === false) {
                     break; // stop Propagation
                 }
             }
@@ -593,7 +590,7 @@ class App implements \ArrayAccess {
     */
     public function start($name) {
 
-        if(!isset($this->blocks[$name])){
+        if (!isset($this->blocks[$name])){
             $this->blocks[$name] = [];
         }
 
@@ -609,7 +606,7 @@ class App implements \ArrayAccess {
 
         $out = ob_get_clean();
 
-        if(isset($this->blocks[$name])){
+        if (isset($this->blocks[$name])){
             $this->blocks[$name][] = $out;
         }
 
@@ -623,7 +620,7 @@ class App implements \ArrayAccess {
     */
     public function block($name, $options=[]) {
 
-        if(!isset($this->blocks[$name])) return null;
+        if (!isset($this->blocks[$name])) return null;
 
         $options = array_merge(array(
             "print" => true
@@ -631,7 +628,7 @@ class App implements \ArrayAccess {
 
         $block = implode("\n", $this->blocks[$name]);
 
-        if($options["print"]){
+        if ($options["print"]){
             echo $block;
         }
 
@@ -646,7 +643,7 @@ class App implements \ArrayAccess {
     */
     public function escape($string, $charset=null) {
 
-        if(is_null($charset)){
+        if (is_null($charset)){
             $charset = $this["charset"];
         }
 
@@ -707,11 +704,11 @@ class App implements \ArrayAccess {
 
         foreach((array)$src as $script) {
 
-            if(@substr($script, -3) == ".js") {
+            if (@substr($script, -3) == ".js") {
                 $list[] = $this->script($script, $version);
             }
 
-            if(@substr($script, -4) == ".css") {
+            if (@substr($script, -4) == ".css") {
                 $list[] = $this->style($script, $version);
             }
         }
@@ -727,7 +724,7 @@ class App implements \ArrayAccess {
     * @return void
     */
     public function get($path, $callback, $condition = true){
-        if(!$this->req_is("get")) return;
+        if (!$this->req_is("get")) return;
         $this->bind($path, $callback, $condition);
     }
 
@@ -739,7 +736,7 @@ class App implements \ArrayAccess {
     * @return void
     */
     public function post($path, $callback, $condition = true){
-        if(!$this->req_is("post")) return;
+        if (!$this->req_is("post")) return;
         $this->bind($path, $callback, $condition);
     }
 
@@ -830,7 +827,7 @@ class App implements \ArrayAccess {
 
         register_shutdown_function(function() use($self){
 
-            if($self->isExit()){
+            if ($self->isExit()){
                 return;
             }
 
@@ -885,9 +882,9 @@ class App implements \ArrayAccess {
                     $params = [];
 
                     /* e.g. #\.html$#  */
-                    if(substr($route,0,1)=='#' && substr($route,-1)=='#'){
+                    if (substr($route,0,1)=='#' && substr($route,-1)=='#'){
 
-                        if(preg_match($route,$path, $matches)){
+                        if (preg_match($route,$path, $matches)){
                             $params[':captures'] = array_slice($matches, 1);
                             $found = $this->render_route($route, $params);
                             break;
@@ -895,11 +892,11 @@ class App implements \ArrayAccess {
                     }
 
                     /* e.g. /admin/*  */
-                    if(strpos($route, '*') !== false){
+                    if (strpos($route, '*') !== false){
 
                         $pattern = '#^'.str_replace('\*', '(.*)', preg_quote($route, '#')).'#';
 
-                        if(preg_match($pattern, $path, $matches)){
+                        if (preg_match($pattern, $path, $matches)){
 
                             $params[':splat'] = array_slice($matches, 1);
                             $found = $this->render_route($route, $params);
@@ -908,28 +905,28 @@ class App implements \ArrayAccess {
                     }
 
                     /* e.g. /admin/:id  */
-                    if(strpos($route, ':') !== false){
+                    if (strpos($route, ':') !== false){
 
                         $parts_p = explode('/', $path);
                         $parts_r = explode('/', $route);
 
-                        if(count($parts_p) == count($parts_r)){
+                        if (count($parts_p) == count($parts_r)){
 
                             $matched = true;
 
                             foreach($parts_r as $index => $part){
-                                if(':' === substr($part,0,1)) {
+                                if (':' === substr($part,0,1)) {
                                     $params[substr($part,1)] = $parts_p[$index];
                                     continue;
                                 }
 
-                                if($parts_p[$index] != $parts_r[$index]) {
+                                if ($parts_p[$index] != $parts_r[$index]) {
                                     $matched = false;
                                     break;
                                 }
                             }
 
-                            if($matched){
+                            if ($matched){
                                 $found = $this->render_route($route, $params);;
                                 break;
                             }
@@ -951,13 +948,13 @@ class App implements \ArrayAccess {
 
         $output = false;
 
-        if(isset($this->routes[$route])) {
+        if (isset($this->routes[$route])) {
 
-            if(is_callable($this->routes[$route])){
+            if (is_callable($this->routes[$route])){
                 $ret = call_user_func($this->routes[$route], $params);
             }
 
-            if( !is_null($ret) ){
+            if ( !is_null($ret) ){
                 return $ret;
             }
         }
@@ -1149,13 +1146,8 @@ class App implements \ArrayAccess {
         return $this->helpers[$helper];
     }
 
-    public function isAbsolutePath($file) {
-
-        if ($file[0] == '/' || $file[0] == '\\' || (strlen($file) > 3 && ctype_alpha($file[0]) && $file[1] == ':' && ($file[2] == '\\' || $file[2] == '/')) || null !== parse_url($file, PHP_URL_SCHEME)) {
-            return true;
-        }
-
-        return false;
+    public function isAbsolutePath($path) {
+        return '/' == $path[0] || '\\' == $path[0] || (3 < strlen($path) && ctype_alpha($path[0]) && $path[1] == ':' && ('\\' == $path[2] || '/' == $path[2]));
     }
 
     // accces to services
@@ -1213,13 +1205,13 @@ class Response {
 
         if (!headers_sent($filename, $linenum)) {
 
-            if($this->nocache){
+            if ($this->nocache){
                 header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
                 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
                 header('Pragma: no-cache');
             }
 
-            if($this->etag){
+            if ($this->etag){
                 header('ETag: "'.md5($this->body).'"');
             }
 
@@ -1276,9 +1268,9 @@ class Session extends Helper {
 
     public function init($sessionname=null){
 
-        if($this->initialized) return;
+        if ($this->initialized) return;
 
-        if(!strlen(session_id())) {
+        if (!strlen(session_id())) {
             $this->name = $sessionname ? $sessionname : $this->app["session.name"];
 
             session_name($this->name);
@@ -1390,36 +1382,36 @@ function fetch_from_array(&$array, $index=null, $default = null) {
 
         return $array;
 
-    } elseif(isset($array[$index])) {
+    } elseif (isset($array[$index])) {
 
         return $array[$index];
 
-    } elseif(strpos($index, '/')) {
+    } elseif (strpos($index, '/')) {
 
         $keys = explode('/', $index);
 
         switch(count($keys)){
 
             case 1:
-                if(isset($array[$keys[0]])){
+                if (isset($array[$keys[0]])){
                     return $array[$keys[0]];
                 }
                 break;
 
             case 2:
-                if(isset($array[$keys[0]][$keys[1]])){
+                if (isset($array[$keys[0]][$keys[1]])){
                     return $array[$keys[0]][$keys[1]];
                 }
                 break;
 
             case 3:
-                if(isset($array[$keys[0]][$keys[1]][$keys[2]])){
+                if (isset($array[$keys[0]][$keys[1]][$keys[2]])){
                     return $array[$keys[0]][$keys[1]][$keys[2]];
                 }
                 break;
 
             case 4:
-                if(isset($array[$keys[0]][$keys[1]][$keys[2]][$keys[3]])){
+                if (isset($array[$keys[0]][$keys[1]][$keys[2]][$keys[3]])){
                     return $array[$keys[0]][$keys[1]][$keys[2]][$keys[3]];
                 }
                 break;

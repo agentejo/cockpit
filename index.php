@@ -21,6 +21,11 @@ $cockpit->on("after", function() {
     switch ($this->response->status) {
         case 500:
         case 404:
+
+            if ($this->response->status == 500 && $this->param('debug', false)) {
+                return;
+            }
+
             if ($this->req_is('ajax')) {
                 $this->response->body = '{"error": "'.$this->response->status.'"}';
             } else {

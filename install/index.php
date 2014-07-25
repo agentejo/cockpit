@@ -34,7 +34,7 @@ $app = cockpit();
 // check whether cockpit is already installed
 try {
     if ($app->db->getCollection("cockpit/accounts")->count()) {
-        header('Location: ../index.php');
+        header('Location: '.$app->baseUrl('/'));
         exit;
     }
 } catch(Exception $e) { }
