@@ -8,9 +8,10 @@ class Settings extends \Cockpit\Controller {
     public function general() {
 
         $registry = json_encode((object)$this->app->memory->get("cockpit.api.registry", []));
-        $token    = $this->app->memory->get("cockpit.api.token", '');
+        $token    = $this->app->db->getKey("cockpit/settings", "cockpit.api.token", '');
+        $locales  = json_encode($this->app->db->getKey("cockpit/settings", "locales", []));
 
-        return $this->render('cockpit:views/settings/general.php', compact('token', 'registry'));
+        return $this->render('cockpit:views/settings/general.php', compact('token', 'registry', 'locales'));
     }
 
     public function info() {
@@ -80,7 +81,7 @@ class Settings extends \Cockpit\Controller {
 
         if ($token = $this->param("token", false)) {
 
-            $this->app->memory->set("cockpit.api.token", $token);
+            $this->app->db->setKey("cockpit/settings", "cockpit.api.token", $token);
 
             return ["success"=>true];
         }

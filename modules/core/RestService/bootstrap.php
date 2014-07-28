@@ -6,7 +6,7 @@ $this->module("restservice")->extend([
 
     'js_lib' => function() use($app) {
 
-        $token = $app->memory->get("cockpit.api.token", '');
+        $token = $app->db->getKey("cockpit/settings", "cockpit.api.token", '');
 
         return $app->script($app->routeUrl("/rest/api.js?token={$token}"));
     }
@@ -37,7 +37,7 @@ $app->on("before", function() {
             return false;
         }
 
-        if($token !== $this->memory->get("cockpit.api.token", false)) {
+        if($token !== $this->db->getKey("cockpit/settings", "cockpit.api.token", false)) {
             $this->response->status = 401;
             return ["error" => "access denied"];
         }

@@ -7,6 +7,7 @@
         <ul class="uk-nav uk-nav-side" data-uk-switcher="{connect:'#settings-general'}">
             <li><a href="#SYSTEM">@lang('API')</a></li>
             <li><a href="#REGISTRY">@lang('Registry')</a></li>
+            <li><a href="#LOCALES">@lang('Locales')</a></li>
         </ul>
     </div>
 
@@ -29,13 +30,19 @@
                     <span class="uk-badge app-badge">@lang('Registry')</span>
                     <hr>
 
-                    <p class="uk-text-muted">
-                        @lang('The registry is just a global key/value storage you can reuse as global options for your app or site.')
-                    </p>
+                    <div class="uk-text-center" data-ng-show="emptyRegistry()">
+                        <h2><i class="uk-icon-flag"></i></h2>
+                        <p class="uk-text-large">
+                            @lang('The registry is empty.')
+                        </p>
 
+                        <p>
+                            <button class="uk-button uk-button-large uk-button-primary" type="button" ng-click="addRegistryKey()"><i class="uk-icon-plus-circle"></i> @lang('Entry')</button>
+                        </p>
 
-                    <div class="uk-alert" ng-show="emptyRegistry()">
-                        @lang('The registry is empty.')
+                        <p class="uk-text-muted">
+                            @lang('The registry is just a global key/value storage you can reuse as global options for your app or site.')
+                        </p>
                     </div>
 
                     <div class="uk-margin" ng-show="!emptyRegistry()">
@@ -57,24 +64,39 @@
                                 </tr>
                             </tbody>
                         </table>
+
+                        <div class="uk-margin">
+                            <button ng-show="!emptyRegistry()" class="uk-button uk-button-large uk-button-success" type="button" ng-click="saveRegistry()">@lang('Save')</button>
+                            <button class="uk-button uk-button-large uk-button-primary" type="button" ng-click="addRegistryKey()"><i class="uk-icon-plus-circle"></i> @lang('Entry')</button>
+                        </div>
                     </div>
 
-                    <button ng-show="!emptyRegistry()" class="uk-button uk-button-large uk-button-success" type="button" ng-click="saveRegistry()">@lang('Save')</button>
-                    <button class="uk-button uk-button-large uk-button-primary" type="button" ng-click="addRegistryKey()"><i class="uk-icon-plus-circle"></i> @lang('Entry')</button>
 
-                    <hr>
+                    <hr ng-show="!emptyRegistry()">
 
-                    <div class="uk-margin">
+                    <div class="uk-margin" ng-show="!emptyRegistry()">
                         <p>
                             <strong>@lang('Access the registry values'):</strong>
                         </p>
 
                         <span class="uk-badge">PHP</span>
-                        <pre><code>&lt;?php $value = <strong>get_registry</strong>('keyname', [default]); ?&gt;</code></pre>
+                        <pre><code>&lt;?php $value = <strong>get_registry</strong>('keyname' [, default]); ?&gt;</code></pre>
 
                         <span class="uk-badge">Javascript</span>
                         <pre><code>var value = Cockpit.registry.<strong>keyname</strong> || default; <span class="uk-text-muted">// with Cockpit.js API</span></code></pre>
                     </div>
+                </div>
+                <div>
+                    <span class="uk-badge app-badge">@lang('Locales')</span>
+                    <hr>
+
+                    <div class="uk-text-center" data-ng-show="!locales.length">
+                        <h2><i class="uk-icon-language"></i></h2>
+                        <p class="uk-text-large">
+                            @lang('No locales added yet.')
+                        </p>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -88,6 +110,7 @@
 
         $scope.token    = '{{ $token }}';
         $scope.registry = {{ $registry }};
+        $scope.locales  = {{ $locales }};
 
         $scope.addRegistryKey = function(){
 
