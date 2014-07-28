@@ -91,7 +91,7 @@ class Api extends \Cockpit\Controller {
 
             if($collection["sortfield"] && $collection["sortorder"]) {
                 $options["sort"] = [];
-                $options["sort"][$collection["sortfield"]] = $collection["sortorder"];
+                $options["sort"][$collection["sortfield"]] = (int)$collection["sortorder"];
             }
 
             if($filter = $this->param("filter", null)) $options["filter"] = is_string($filter) ? json_decode($filter, true) : $filter;

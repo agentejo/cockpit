@@ -50,11 +50,10 @@ class Mongo {
 
     public function find($collection, $options = []){
 
-        $filter = isset($options["filter"]) ? $options["filter"] : [];
-        $limit  = isset($options["limit"]) ? $options["limit"] : null;
-        $sort   = isset($options["sort"]) ? $options["sort"] : null;
-        $skip   = isset($options["skip"]) ? $options["skip"] : null;
-
+        $filter = isset($options["filter"]) && $options["filter"] ? $options["filter"] : [];
+        $limit  = isset($options["limit"])  && $options["limit"]  ? $options["limit"]  : null;
+        $sort   = isset($options["sort"])   && $options["sort"]   ? $options["sort"]   : null;
+        $skip   = isset($options["skip"])   && $options["skip"]   ? $options["skip"]   : null;
 
         if($filter && isset($filter["_id"])) {
             $filter["_id"] = new \MongoId($filter["_id"]);
@@ -66,10 +65,17 @@ class Mongo {
         if($sort)  $cursor->sort($sort);
         if($skip)  $cursor->skip($skip);
 
-        $docs = array_values(iterator_to_array($cursor));
+        if ($cursor->count()) {
 
-        foreach ($docs as &$doc) {
-            if(isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
+            $docs = array_values(iterator_to_array($cursor));
+
+            foreach ($docs as &$doc) {
+                if(isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
+            }
+
+        } else {
+
+            $docs = [];
         }
 
         $resultSet = new ResultSet($this, $docs);

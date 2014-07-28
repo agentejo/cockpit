@@ -34,7 +34,7 @@
 
             var limit  = 25, filter = false;
 
-            if($scope.filter) {
+            if ($scope.filter) {
 
                 var criteria = {};
 
@@ -50,7 +50,7 @@
                     }
                 });
 
-                if(Object.keys(criteria).length) filter = {'$or':criteria};
+                if (Object.keys(criteria).length) filter = {'$or':criteria};
             }
 
             $http.post(App.route("/api/collections/entries"), {
