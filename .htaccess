@@ -1,0 +1,123 @@
+<FilesMatch "\.(sqlite|sdb|s3db|db)$">
+  Deny from all
+</FilesMatch>
+
+AddDefaultCharset utf-8
+
+AddType application/javascript          js jsonp
+AddType application/json                json
+
+# Audio
+AddType audio/ogg                       oga ogg
+AddType audio/mp4                       m4a f4a f4b
+
+# Video
+AddType video/ogg                       ogv
+AddType video/mp4                       mp4 m4v f4v f4p
+AddType video/webm                      webm
+AddType video/x-flv                     flv
+
+# SVG
+#   Required for svg webfonts on iPad
+#   twitter.com/FontSquirrel/status/14855840545
+AddType     image/svg+xml               svg svgz
+AddEncoding gzip                        svgz
+
+# Webfonts
+AddType application/vnd.ms-fontobject   eot
+AddType application/x-font-ttf          ttf ttc
+AddType font/opentype                   otf
+AddType application/x-font-woff         woff
+
+# Assorted types
+AddType image/x-icon                    ico
+AddType image/webp                      webp
+AddType text/cache-manifest             appcache manifest
+AddType text/x-component                htc
+AddType application/xml                 rss atom xml rdf
+AddType text/x-vcard                    vcf
+AddType application/x-shockwave-flash   swf
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    ExpiresByType application/json              "access plus 1 year"
+    ExpiresByType application/pdf               "access plus 1 year"
+    ExpiresByType application/x-shockwave-flash "access plus 1 year"
+    ExpiresByType image/bmp                     "access plus 1 year"
+    ExpiresByType image/gif                     "access plus 1 year"
+    ExpiresByType image/jpeg                    "access plus 1 year"
+    ExpiresByType image/png                     "access plus 1 year"
+    ExpiresByType image/svg+xml                 "access plus 1 year"
+    ExpiresByType image/tiff                    "access plus 1 year"
+    ExpiresByType image/vnd.microsoft.icon      "access plus 1 year"
+    ExpiresByType image/x-icon                  "access plus 1 year"
+    ExpiresByType text/css                      "access plus 1 year"
+    ExpiresByType video/x-flv                   "access plus 1 year"
+    ExpiresByType application/vnd.bw-fontobject "access plus 1 year"
+    ExpiresByType application/x-font-ttf        "access plus 1 year"
+    ExpiresByType application/font-woff         "access plus 1 year"
+    ExpiresByType font/opentype                 "access plus 1 year"
+    ExpiresByType image/webp                    "access plus 1 year"
+
+    # The following MIME types are in the process of registration
+    ExpiresByType application/xslt+xml          "access plus 1 year"
+    ExpiresByType image/svg+xml                 "access plus 1 year"
+
+    # The following MIME types are NOT registered
+    ExpiresByType application/mathml+xml        "access plus 1 year"
+    ExpiresByType application/rss+xml           "access plus 1 year"
+
+    # JavaScript has various MIME types
+    ExpiresByType application/x-javascript      "access plus 1 year"
+    ExpiresByType application/javascript        "access plus 1 year"
+    ExpiresByType text/ecmascript               "access plus 1 year"
+    ExpiresByType text/javascript               "access plus 1 year"
+</IfModule>
+
+# -------------------------------------------------------------------------
+# Disabling ETags as they are most likely misconfigured and
+# do not add functionalit beyond Last-Modified
+# -------------------------------------------------------------------------
+<IfModule mod_headers.c>
+    # Try removing etag headers (if it's coming from proxy for example)
+    Header unset ETag
+</IfModule>
+
+<IfModule mod_deflate.c>
+
+  # Force deflate for mangled headers developer.yahoo.com/blogs/ydn/posts/2010/12/pushing-beyond-gzipping/
+  <IfModule mod_setenvif.c>
+    <IfModule mod_headers.c>
+      SetEnvIfNoCase ^(Accept-EncodXng|X-cept-Encoding|X{15}|~{15}|-{15})$ ^((gzip|deflate)\s*,?\s*)+|[X~-]{4,13}$ HAVE_Accept-Encoding
+      RequestHeader append Accept-Encoding "gzip,deflate" env=HAVE_Accept-Encoding
+    </IfModule>
+  </IfModule>
+
+  # Compress all output labeled with one of the following MIME-types
+  # (for Apache versions below 2.3.7, you don't need to enable `mod_filter`
+  # and can remove the `<IfModule mod_filter.c>` and `</IfModule>` lines as
+  # `AddOutputFilterByType` is still in the core directives)
+  <IfModule mod_filter.c>
+    AddOutputFilterByType DEFLATE application/atom+xml \
+                                  application/javascript \
+                                  application/json \
+                                  application/rss+xml \
+                                  application/vnd.ms-fontobject \
+                                  application/x-font-ttf \
+                                  application/xhtml+xml \
+                                  application/xml \
+                                  font/opentype \
+                                  image/svg+xml \
+                                  image/x-icon \
+                                  text/css \
+                                  text/html \
+                                  text/plain \
+                                  text/x-component \
+                                  text/xml
+  </IfModule>
+
+</IfModule>
+
+# Remove ETags
+FileETag None
