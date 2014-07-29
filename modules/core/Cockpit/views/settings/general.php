@@ -37,7 +37,7 @@
                         </p>
 
                         <p>
-                            <button class="uk-button uk-button-large uk-button-primary" type="button" ng-click="addRegistryKey()"><i class="uk-icon-plus-circle"></i> @lang('Entry')</button>
+                            <button class="uk-button uk-button-large uk-button-primary" type="button" ng-click="addRegistryKey()"><i class="uk-icon-plus-circle"></i></button>
                         </p>
 
                         <p class="uk-text-muted">
@@ -67,7 +67,7 @@
 
                         <div class="uk-margin">
                             <button ng-show="!emptyRegistry()" class="uk-button uk-button-large uk-button-success" type="button" ng-click="saveRegistry()">@lang('Save')</button>
-                            <button class="uk-button uk-button-large uk-button-primary" type="button" ng-click="addRegistryKey()"><i class="uk-icon-plus-circle"></i> @lang('Entry')</button>
+                            <button class="uk-button uk-button-large uk-button-primary" type="button" ng-click="addRegistryKey()"><i class="uk-icon-plus-circle"></i></button>
                         </div>
                     </div>
 
@@ -95,6 +95,50 @@
                         <p class="uk-text-large">
                             @lang('No locales added yet.')
                         </p>
+                        <p>
+                            <button class="uk-button uk-button-large uk-button-primary" type="button" ng-click="editLocale()"><i class="uk-icon-pencil"></i></button>
+                        </p>
+                    </div>
+
+                    <div data-ng-show="locales.length">
+                        <table class="uk-table">
+                            <tbody>
+                                <tr class="uk-form" ng-repeat="locale in locales">
+                                    <td>
+                                        <i class="uk-icon-language"></i>
+                                        @@ lstlocales[locale] @@
+                                    </td>
+                                    <td width="20">
+                                        <a href="#" class="uk-text-danger" ng-click="removeLocale($index)"><i class="uk-icon-trash-o"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>
+                            <button class="uk-button uk-button-large uk-button-primary" type="button" ng-click="editLocale()"><i class="uk-icon-pencil"></i></button>
+                        </p>
+                    </div>
+
+                    <div id="modalocales" class="uk-modal">
+                        <div class="uk-modal-dialog">
+                            <button type="button" class="uk-modal-close uk-close"></button>
+                            <h1>@lang('Languages')</h1>
+                            <div class="uk-overflow-container">
+                                <table class="uk-table">
+                                    @foreach(\Lime\Helper\I18n::$locals as $short => $long)
+                                    <tr>
+                                        <td width="5%"><input type="checkbox" ng-model="languages['{{ $short }}']"></td>
+                                        <td>{{ $long }}</td>
+                                        <td class="uk-text-muted" width="10%">{{ $short }}</td>
+                                    </tr>
+                                    @endforeach
+                                </table>
+                            </div>
+                            <hr>
+                            <p class="uk-text-center">
+                                <button class="uk-button uk-button-primary">@lang('Save')</button>
+                            </p>
+                        </div>
                     </div>
 
                 </div>
@@ -108,9 +152,33 @@
 <script>
     App.module.controller("general-settings", function($scope, $rootScope, $http, $timeout){
 
-        $scope.token    = '{{ $token }}';
-        $scope.registry = {{ $registry }};
-        $scope.locales  = {{ $locales }};
+        $scope.token     = '{{ $token }}';
+        $scope.registry  = {{ $registry }};
+        $scope.locales   = {{ $locales }};
+
+        $scope.languages = {};
+
+        $scope.lstlocales = {{ json_encode(\Lime\Helper\I18n::$locals) }};
+
+        var modalocales = $.UIkit.modal('#modalocales');
+
+        modalocales.element.on('click', '.uk-button', function() {
+
+            $scope.locales = [];
+
+            $timeout(function() {
+                angular.forEach($scope.languages, function(value, key) {
+                    if (value === true) {
+                        $scope.locales.push(key)
+                    }
+                });
+
+                modalocales.hide();
+
+                $scope.saveLocals();
+            }, 0);
+
+        });
 
         $scope.addRegistryKey = function(){
 
@@ -136,18 +204,46 @@
             })
         };
 
-        $scope.saveRegistry = function(){
+        $scope.saveRegistry = function() {
 
             $http.post(App.route("/settings/saveRegistry"), {"registry": angular.copy($scope.registry)}).success(function(data){
                 App.notify("@lang('Registry updated!')", "success");
             }).error(App.module.callbacks.error.http);
         };
 
-        $scope.emptyRegistry = function(){
+        $scope.emptyRegistry = function() {
             return !Object.keys($scope.registry).length;
         };
 
-        $scope.generateToken = function(){
+        $scope.editLocale = function() {
+
+            // reset list
+            angular.forEach($scope.languages, function(value, key) {
+                if (value === true) $scope.locales[key] = false;
+            });
+
+            $scope.locales.forEach(function(locale){
+                $scope.languages[locale] = true;
+            });
+
+            $timeout(function(){
+                modalocales.show();
+            }, 0);
+        };
+
+        $scope.removeLocale = function(index) {
+            $scope.locales.splice(index, 1);
+            $scope.saveLocals();
+        };
+
+        $scope.saveLocals = function() {
+
+            $http.post(App.route("/settings/saveLocals"), {"locals": angular.copy($scope.locales)}).success(function(data){
+                App.notify("@lang('Locales updated!')", "success");
+            }).error(App.module.callbacks.error.http);
+        };
+
+        $scope.generateToken = function() {
             $scope.token = buildToken(95);
 
             $http.post(App.route("/settings/saveToken"), {"token": $scope.token}).success(function(data){

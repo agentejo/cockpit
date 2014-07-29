@@ -9,7 +9,7 @@ class Settings extends \Cockpit\Controller {
 
         $registry = json_encode((object)$this->app->memory->get("cockpit.api.registry", []));
         $token    = $this->app->db->getKey("cockpit/settings", "cockpit.api.token", '');
-        $locales  = json_encode($this->app->db->getKey("cockpit/settings", "locales", []));
+        $locales  = json_encode($this->app->db->getKey("cockpit/settings", "cockpit.locales", []));
 
         return $this->render('cockpit:views/settings/general.php', compact('token', 'registry', 'locales'));
     }
@@ -101,5 +101,14 @@ class Settings extends \Cockpit\Controller {
         }
 
         return false;
+    }
+
+    public function saveLocals() {
+
+        $locals = $this->param("locals", []);
+
+        $this->app->db->setKey("cockpit/settings", "cockpit.locales", $locals);
+
+        return ["success"=>true];
     }
 }
