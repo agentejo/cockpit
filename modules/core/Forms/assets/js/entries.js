@@ -11,7 +11,7 @@
 
         }, {responseType:"json"}).success(function(data){
 
-            if(data) $scope.entries = data;
+            if (data) $scope.entries = data;
 
         }).error(App.module.callbacks.error.http);
 

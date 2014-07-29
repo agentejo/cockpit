@@ -11,7 +11,7 @@ class Controller extends \LimeExtra\Controller {
 
         $user = $app->module("auth")->getUser();
 
-        if(!$user){
+        if (!$user){
             $app->reroute('/auth/login');
             $app->stop();
         }

@@ -116,9 +116,9 @@
 
             var key = prompt("Key name");
 
-            if(!key) return;
+            if (!key) return;
 
-            if($scope.registry[key]) {
+            if ($scope.registry[key]) {
                 App.Ui.alert('"'+key+'" already exists!');
                 return;
             }

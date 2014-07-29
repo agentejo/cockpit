@@ -48,7 +48,7 @@
 
                         var name = prompt(App.i18n.get("Please enter new name:"), item.name);
 
-                        if(name!=item.name && $.trim(name)) {
+                        if (name!=item.name && $.trim(name)) {
                             requestapi({"cmd":"rename", "path": item.path, "name":name});
                             item.path = item.path.replace(item.name, name);
                             item.name = name;
@@ -60,7 +60,7 @@
 
                         var name = prompt(App.i18n.get("Please enter a name:"), "");
 
-                        if($.trim(name)) {
+                        if ($.trim(name)) {
                             requestapi({"cmd":"createfolder", "path": currentpath, "name":name}, function(){
                                 loadPath(currentpath);
                             });
@@ -72,7 +72,7 @@
 
                         var name = prompt(App.i18n.get('Please enter a filename:'), "");
 
-                        if($.trim(name)) {
+                        if ($.trim(name)) {
                             requestapi({"cmd":"createfile", "path": currentpath, "name":name}, function(){
                                 loadPath(currentpath);
                             });
@@ -91,11 +91,11 @@
 
                 var media = false;
 
-                if(file.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
+                if (file.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
                     media = "image";
                 }
 
-                if(file.name.match(/\.(htaccess|txt|md|php|js|css|scss|sass|less|htm|html|json|xml|svg)$/i)) {
+                if (file.name.match(/\.(htaccess|txt|md|php|js|css|scss|sass|less|htm|html|json|xml|svg)$/i)) {
                     media = "text";
                 }
 
@@ -127,7 +127,7 @@
 
             $scope.matchName = function(name) {
 
-                if(!name || !$scope.namefilter) {
+                if (!name || !$scope.namefilter) {
                     return true;
                 }
 
@@ -141,7 +141,7 @@
 
                 for(var i=0;i<$scope.bookmarks[cat].length;i++) {
 
-                    if($scope.bookmarks[cat][i].path == bookmark.path) {
+                    if ($scope.bookmarks[cat][i].path == bookmark.path) {
                         App.notify(App.i18n.get("%s is already bookmarked.", item.name));
                         return;
                     }
@@ -171,7 +171,7 @@
                     $scope.selected    = {};
                     $scope.selectAll   = false;
 
-                    if(currentpath && currentpath != '/' && currentpath != '.'){
+                    if (currentpath && currentpath != '/' && currentpath != '.'){
                         var parts   = currentpath.split('/'),
                             tmppath = [],
                             crumbs  = [];
@@ -218,7 +218,7 @@
                             },
                             renderer: function(data) {
 
-                                if(data && data.length) {
+                                if (data && data.length) {
 
                                     var lst = $('<ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">'), li;
 
@@ -263,16 +263,16 @@
                     },
                     allcomplete: function(response) {
 
-                        if(response && response.failed && response.failed.length) {
+                        if (response && response.failed && response.failed.length) {
                             App.notify(App.i18n.get("%s File(s) failed to uploaded.", response.failed.length), "danger");
                         }
 
-                        if(response && response.uploaded && response.uploaded.length) {
+                        if (response && response.uploaded && response.uploaded.length) {
                             App.notify(App.i18n.get("%s File(s) uploaded.", response.uploaded.length), "success");
                             loadPath(currentpath);
                         }
 
-                        if(!response) {
+                        if (!response) {
                             App.module.callbacks.error.http();
                         }
                     }
@@ -361,7 +361,7 @@
                 var paths = [];
 
                 Object.keys($scope.selected).forEach(function(path){
-                    if($scope.selected[path]===true) {
+                    if ($scope.selected[path]===true) {
                         paths.push(path);
                     }
                 });

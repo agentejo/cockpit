@@ -8,7 +8,7 @@ class Mediamanager extends \Cockpit\Controller {
 
 	public function index(){
 
-        if(!$this->app->module("auth")->hasaccess("Mediamanager","manage")) return false;
+        if (!$this->app->module("auth")->hasaccess("Mediamanager","manage")) return false;
 
         return $this->render("mediamanager:views/index.php");
 	}
@@ -21,7 +21,7 @@ class Mediamanager extends \Cockpit\Controller {
         $type   = 'gif';
         $data   = base64_decode('R0lGODlhAQABAJEAAAAAAP///////wAAACH5BAEHAAIALAAAAAABAAEAAAICVAEAOw=='); // empty 1x1 gif
 
-        if(!$fail) {
+        if (!$fail) {
 
             $info = pathinfo($imgurl);
             $type = $info['extension'];
@@ -40,7 +40,7 @@ class Mediamanager extends \Cockpit\Controller {
 
         $this->root = rtrim($this->app->path("site:{$mediapath}"), '/');
 
-        if(file_exists($this->root) && in_array($cmd, get_class_methods($this))){
+        if (file_exists($this->root) && in_array($cmd, get_class_methods($this))){
             return $this->{$cmd}();
         }
 
@@ -55,20 +55,20 @@ class Mediamanager extends \Cockpit\Controller {
             '.ds_store', '.thumb'
         ];
 
-		if($path = $this->param("path", false)){
+		if ($path = $this->param("path", false)){
 
             $dir = $this->root.'/'.trim($path, '/');
             $data["path"] = $dir;
 
-            if(file_exists($dir)){
+            if (file_exists($dir)){
 
                foreach (new \DirectoryIterator($dir) as $file) {
 
-               		if($file->isDot()) continue;
+               		if ($file->isDot()) continue;
 
                     $filename = $file->getFilename();
 
-                    if($filename[0]=='.' && in_array(strtolower($filename), $toignore)) continue;
+                    if ($filename[0]=='.' && in_array(strtolower($filename), $toignore)) continue;
 
                     $data[$file->isDir() ? "folders":"files"][] = array(
                         "is_file" => !$file->isDir(),
@@ -148,11 +148,11 @@ class Mediamanager extends \Cockpit\Controller {
 
             $delpath = $this->root.'/'.trim($path, '/');
 
-            if(is_dir($delpath)) {
+            if (is_dir($delpath)) {
                 $this->_rrmdir($delpath);
             }
 
-            if(is_file($delpath)){
+            if (is_file($delpath)){
                 unlink($delpath);
             }
         }
@@ -195,7 +195,7 @@ class Mediamanager extends \Cockpit\Controller {
         $path = $this->param('path', false);
         $file = $this->root.'/'.trim($path, '/');
 
-        if($path && file_exists($file)) {
+        if ($path && file_exists($file)) {
             echo file_get_contents($file);
         }
 
@@ -209,7 +209,7 @@ class Mediamanager extends \Cockpit\Controller {
         $file    = $this->root.'/'.trim($path, '/');
         $ret     = false;
 
-        if($path && file_exists($file) && $content!==false) {
+        if ($path && file_exists($file) && $content!==false) {
             $ret = file_put_contents($file, $content);
         }
 
@@ -221,7 +221,7 @@ class Mediamanager extends \Cockpit\Controller {
         $path = $this->param('path', false);
         $file = $this->root.'/'.trim($path, '/');
 
-        if(!$path && !file_exists($file)) {
+        if (!$path && !file_exists($file)) {
             $this->app->stop();
         }
 
@@ -251,11 +251,11 @@ class Mediamanager extends \Cockpit\Controller {
 
         foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->root)) as $file) {
 
-            if($file->isDir()) continue;
+            if ($file->isDir()) continue;
 
             $filename = $file->getFilename();
 
-            if($filename[0]=='.' || preg_match($toignore, $file->getPathname())) continue;
+            if ($filename[0]=='.' || preg_match($toignore, $file->getPathname())) continue;
 
             $path = trim(str_replace(['\\', $this->root], ['/',''], $file->getPathname()), '/');
 
@@ -276,7 +276,7 @@ class Mediamanager extends \Cockpit\Controller {
 
     public function savebookmarks() {
 
-        if($bookmarks = $this->param('bookmarks', false)) {
+        if ($bookmarks = $this->param('bookmarks', false)) {
             $this->memory->set("mediamanager.bookmarks.".$this->user["_id"], $bookmarks);
         }
 

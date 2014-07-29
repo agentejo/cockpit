@@ -10,7 +10,7 @@ class Addons extends \Cockpit\Controller {
 
         foreach (new \DirectoryIterator($this->app->path('modules:addons')) as $addon) {
 
-            if($addon->isFile() || $addon->isDot()) continue;
+            if ($addon->isFile() || $addon->isDot()) continue;
 
             $name = $addon->getFilename();
 
@@ -27,7 +27,7 @@ class Addons extends \Cockpit\Controller {
 
                 $meta = json_decode(file_get_contents($meta), true);
 
-                if(!is_null($meta)) {
+                if (!is_null($meta)) {
                     $info = array_merge($info, $meta);
                 }
             }

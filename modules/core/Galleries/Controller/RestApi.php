@@ -6,7 +6,7 @@ class RestApi extends \LimeExtra\Controller {
 
     public function get($name = null) {
 
-        if(!$name) {
+        if (!$name) {
             return false;
         }
 

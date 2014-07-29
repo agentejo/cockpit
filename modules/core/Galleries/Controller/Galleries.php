@@ -12,7 +12,7 @@ class Galleries extends \Cockpit\Controller {
 
     public function gallery($id=null){
 
-        if(!$id && !$this->app->module("auth")->hasaccess("Galleries", 'create.gallery')) {
+        if (!$id && !$this->app->module("auth")->hasaccess("Galleries", 'create.gallery')) {
             return false;
         }
 

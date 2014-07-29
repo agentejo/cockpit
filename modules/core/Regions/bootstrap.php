@@ -8,14 +8,14 @@ $this->module("regions")->extend([
 
         $region = $app->db->findOne("common/regions", ["name"=>$name]);
 
-        if(!$region) {
+        if (!$region) {
             return null;
         }
 
         $renderer = $app->renderer;
         $fields   = [];
 
-        if(isset($region["fields"]) && count($region["fields"])) {
+        if (isset($region["fields"]) && count($region["fields"])) {
             foreach ($region["fields"] as &$field) {
                 $fields[$field["name"]] = $field["value"];
             }
@@ -41,13 +41,13 @@ $app->renderer->extend(function($content){
     return $content;
 });
 
-if(!function_exists("region")) {
+if (!function_exists("region")) {
     function region($name, $params = []) {
         echo cockpit("regions")->render($name, $params);
     }
 }
 
-if(!function_exists("get_region")) {
+if (!function_exists("get_region")) {
     function get_region($name, $params = []) {
         return cockpit("regions")->render($name, $params);
     }
@@ -60,12 +60,12 @@ $app->on("cockpit.rest.init", function($routes) {
 
 // ADMIN
 
-if(COCKPIT_ADMIN && !COCKPIT_REST) {
+if (COCKPIT_ADMIN && !COCKPIT_REST) {
 
 
     $app->on("admin.init", function() {
 
-        if(!$this->module("auth")->hasaccess("Regions", ['create.regions', 'edit.regions'])) return;
+        if (!$this->module("auth")->hasaccess("Regions", ['create.regions', 'edit.regions'])) return;
 
         $this->bindClass("Regions\\Controller\\Regions", "regions");
         $this->bindClass("Regions\\Controller\\Api", "api/regions");
@@ -81,7 +81,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
         $this->on("cockpit.globalsearch", function($search, $list) {
 
             foreach ($this->db->find("common/regions") as $r) {
-                if(stripos($r["name"], $search)!==false){
+                if (stripos($r["name"], $search)!==false){
                     $list[] = [
                         "title" => '<i class="uk-icon-th-large"></i> '.$r["name"],
                         "url"   => $this->routeUrl('/regions/region/'.$r["_id"])
@@ -93,7 +93,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
 
     $app->on("admin.dashboard.aside", function() {
 
-        if(!$this->module("auth")->hasaccess("Regions", ['create.regions', 'edit.regions'])) return;
+        if (!$this->module("auth")->hasaccess("Regions", ['create.regions', 'edit.regions'])) return;
 
         $title   = $this("i18n")->get("Regions");
         $badge   = $this->db->getCollection("common/regions")->count();

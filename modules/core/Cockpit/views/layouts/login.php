@@ -27,7 +27,7 @@
                                         loginbox.removeClass("app-loading");
                                         container.removeClass("uk-animation-shake");
 
-                                        if(data && data.success) {
+                                        if (data && data.success) {
 
                                             form.hide();
                                             profile.find("img").attr("src", "http://www.gravatar.com/avatar/"+data.avatar+"?d=mm&s=60");

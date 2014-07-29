@@ -10,8 +10,8 @@ class Backups extends \Cockpit\Controller {
 
         foreach ($this->app->helper("fs")->ls('*.zip', 'backups:') as $file) {
 
-            if(!$file->isFile()) continue;
-            if($file->getExtension()!='zip') continue;
+            if (!$file->isFile()) continue;
+            if ($file->getExtension()!='zip') continue;
 
             $backups[] = ["timestamp" => $file->getBasename('.zip'), "size" => $this->app->helper("utils")->formatSize($file->getSize())];
         }
@@ -40,9 +40,9 @@ class Backups extends \Cockpit\Controller {
 
     public function remove() {
 
-        if($timestamp = $this->param("timestamp", false)) {
+        if ($timestamp = $this->param("timestamp", false)) {
 
-            if($file = $this->app->path("backups:{$timestamp}.zip")) {
+            if ($file = $this->app->path("backups:{$timestamp}.zip")) {
 
                 @unlink($file);
 

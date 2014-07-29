@@ -11,7 +11,7 @@ class Collections extends \Cockpit\Controller {
 
     public function collection($id = null) {
 
-        if(!$this->app->module("auth")->hasaccess("Collections", 'manage.collections')) {
+        if (!$this->app->module("auth")->hasaccess("Collections", 'manage.collections')) {
             return false;
         }
 
@@ -23,7 +23,7 @@ class Collections extends \Cockpit\Controller {
 
         $collection = $this->app->db->findOne("common/collections", ["_id" => $id]);
 
-        if(!$collection) {
+        if (!$collection) {
             return false;
         }
 
@@ -39,15 +39,15 @@ class Collections extends \Cockpit\Controller {
         $collection = $this->app->db->findOne("common/collections", ["_id" => $collectionId]);
         $entry      = null;
 
-        if(!$collection) {
+        if (!$collection) {
             return false;
         }
 
-        if($entryId) {
+        if ($entryId) {
             $col   = "collection".$collection["_id"];
             $entry = $this->app->db->findOne("collections/{$col}", ["_id" => $entryId]);
 
-            if(!$entry) {
+            if (!$entry) {
                 return false;
             }
         }

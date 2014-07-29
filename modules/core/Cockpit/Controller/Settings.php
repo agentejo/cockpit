@@ -45,7 +45,7 @@ class Settings extends \Cockpit\Controller {
 
                 $email = $this->param("email", false);
 
-                if($email) {
+                if ($email) {
                     $ret = $this->app->mailer->mail($email, "Test Email", "It seems your Server can send Emails with the current mailer settings.");
                 } else {
                     $ret = false;

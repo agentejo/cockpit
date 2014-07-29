@@ -50,20 +50,20 @@
             },
 
             on: function(name, fn){
-                if(!this._events[name]) this._events[name] = [];
+                if (!this._events[name]) this._events[name] = [];
 
                 this._events[name].push(fn);
             },
 
             off: function(name, fn){
-                if(!this._events[name]) return;
+                if (!this._events[name]) return;
 
                 if (!fn) {
                    this._events[name] = [];
                 } else {
 
                     for(var i=0; i < this._events[name].length; i++) {
-                        if(this._events[name][i]===fn) {
+                        if (this._events[name][i]===fn) {
                             this._events[name].splice(i, 1);
                             break;
                         }
@@ -72,7 +72,7 @@
             },
 
             trigger: function(name, params) {
-                if(!this._events[name]) return;
+                if (!this._events[name]) return;
 
                 var event = {"name":name, "params": params};
 
@@ -93,7 +93,7 @@
 
             for (var i=0, len=ress.length; i<len; i++) {
 
-                if(!ress[i]) continue;
+                if (!ress[i]) continue;
 
                 if (!this._ress[ress[i]]) {
                    if (ress[i].match(/\.js$/)) {
@@ -118,7 +118,7 @@
 
             script.onload = function() {
                 d.resolve();
-                if(callback) { callback(script); }
+                if (callback) { callback(script); }
             };
 
             script.onerror = function() {
@@ -144,7 +144,7 @@
             var img = document.createElement('img');
                 img.onerror = function(){
                     d.resolve();
-                    if(callback) callback(link);
+                    if (callback) callback(link);
                 };
                 img.src = link.href;
 

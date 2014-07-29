@@ -12,7 +12,7 @@ class Regions extends \Cockpit\Controller {
 
     public function region($id=null){
 
-        if(!$id && !$this->app->module("auth")->hasaccess("Regions", 'create.regions')) {
+        if (!$id && !$this->app->module("auth")->hasaccess("Regions", 'create.regions')) {
             return false;
         }
 

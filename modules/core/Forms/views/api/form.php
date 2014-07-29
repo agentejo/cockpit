@@ -11,7 +11,7 @@
                 for(var i=0, max=form.elements.length;i<max;i++) form.elements[i].disabled = status;
             },
             success     = function(){
-                if(msgsuccess) {
+                if (msgsuccess) {
                     msgsuccess.style.display = 'block';
                 } else {
                     alert("@lang('Form submission was successfull.')");
@@ -20,7 +20,7 @@
                 disableForm(false);
             },
             fail        = function(){
-                if(msgfail) {
+                if (msgfail) {
                     msgfail.style.display = 'block';
                 } else {
                     alert("@lang('Form submission failed.')");
@@ -29,15 +29,15 @@
                 disableForm(false);
             };
 
-        if(msgsuccess) msgsuccess.style.display = "none";
-        if(msgfail)    msgfail.style.display = "none";
+        if (msgsuccess) msgsuccess.style.display = "none";
+        if (msgfail)    msgfail.style.display = "none";
 
         form.addEventListener("submit", function(e) {
 
             e.preventDefault();
 
-            if(msgsuccess) msgsuccess.style.display = "none";
-            if(msgfail)    msgfail.style.display = "none";
+            if (msgsuccess) msgsuccess.style.display = "none";
+            if (msgfail)    msgfail.style.display = "none";
 
             var xhr = new XMLHttpRequest(), data = new FormData(form);
 

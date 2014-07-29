@@ -10,7 +10,7 @@ class Forms extends \Cockpit\Controller {
 
     public function form($id = null) {
 
-        if(!$this->app->module("auth")->hasaccess("Forms", 'manage.forms')) {
+        if (!$this->app->module("auth")->hasaccess("Forms", 'manage.forms')) {
             return false;
         }
 
@@ -21,7 +21,7 @@ class Forms extends \Cockpit\Controller {
 
         $form = $this->app->db->findOne("common/forms", ["_id" => $id]);
 
-        if(!$form) {
+        if (!$form) {
             return false;
         }
 

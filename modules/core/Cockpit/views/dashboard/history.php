@@ -1,5 +1,5 @@
 <div class="app-dashboard-widget">
-    
+
     <div class="app-panel-secondary">
 
         <div class="uk-margin-bottom uk-text-right">
@@ -27,7 +27,7 @@
         </ul>
 
         @else
-            
+
             <div class="uk-text-center uk-text-muted">
                 <div class="uk-text-large uk-margin-small-bottom">
                     <i class="uk-icon-flag"></i>

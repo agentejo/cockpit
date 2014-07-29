@@ -9,7 +9,7 @@
         $doc.on("keydown", function(e) {
 
             //ctrl-c, ctrl-v etc.
-            if(e.ctrlKey || e.altKey || e.metaKey) return;
+            if (e.ctrlKey || e.altKey || e.metaKey) return;
 
             if (e.target.tagName && e.target.tagName.toLowerCase()=='body' && (e.keyCode>=65 && e.keyCode<=90)) {
                 txtSearch.focus();
@@ -50,7 +50,7 @@
 
                 respfn = function(){
 
-                    if(!menu.is(':visible')) return;
+                    if (!menu.is(':visible')) return;
 
                     more.addClass('uk-hidden');
                     links.removeClass("uk-hidden");

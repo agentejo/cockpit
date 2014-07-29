@@ -61,9 +61,9 @@
     module.filter('fmtdate', function() {
         return function(input, format) {
 
-            if(!input) return input;
-            if(!String(input).match(/^\d+$/)) input = strtotime(input);
-            if(!format) format = "Y-m-d H:i";
+            if (!input) return input;
+            if (!String(input).match(/^\d+$/)) input = strtotime(input);
+            if (!format) format = "Y-m-d H:i";
 
             return i18n_date(format, input);
         }
@@ -89,7 +89,7 @@
 
             var attributes = false;
 
-            if(attrs.appInplaceEdit) {
+            if (attrs.appInplaceEdit) {
                 try { attributes = (new Function("", "var json = " + attrs.appInplaceEdit + "; return JSON.parse(JSON.stringify(json));"))(); } catch (e) {}
             }
 
@@ -103,11 +103,11 @@
                         var input = $('<input type="text" value="'+ngModel.$viewValue+'">');
                     }
 
-                    if(attributes) input.attr(attributes);
+                    if (attributes) input.attr(attributes);
 
                     input.on("change", function(){
 
-                        if(input.is(":invalid")) return;
+                        if (input.is(":invalid")) return;
 
                         ngModel.$setViewValue(input.val());
 
@@ -115,7 +115,7 @@
                     })
 
                     element.html(input.on("blur", function(){
-                        if(input.is(":invalid")) return;
+                        if (input.is(":invalid")) return;
                         element.html(ngModel.$viewValue);
                     }));
 
@@ -187,7 +187,7 @@
 
             link: function (scope, elm, attrs) {
 
-                if(elm.is("a")){
+                if (elm.is("a")){
 
                     var msg = attrs.appConfirmLink || App.i18n.get("Are you sure?");
 
@@ -221,7 +221,7 @@
 
         var d = date(format, input);
 
-        if(App.i18n.key("@meta") && App.i18n.key("@meta").date) {
+        if (App.i18n.key("@meta") && App.i18n.key("@meta").date) {
 
             var meta = App.i18n.key("@meta").date;
 
@@ -238,7 +238,7 @@
     }
 
 
-    function str_replace(e,d,a,f){var b=0,c=0,g="",h="",k=0,l=0;e=[].concat(e);d=[].concat(d);var m="[object Array]"===Object.prototype.toString.call(d),n="[object Array]"===Object.prototype.toString.call(a);a=[].concat(a);f&&(this.window[f]=0);b=0;for(k=a.length;b<k;b++)if(""!==a[b])for(c=0,l=e.length;c<l;c++)g=a[b]+"",h=m?void 0!==d[c]?d[c]:"":d[0],a[b]=g.split(e[c]).join(h),f&&a[b]!==g&&(this.window[f]+=(g.length-a[b].length)/e[c].length);return n?a:a[0]};
+    function str_replace(e,d,a,f){var b=0,c=0,g="",h="",k=0,l=0;e=[].concat(e);d=[].concat(d);var m="[object Array]"===Object.prototype.toString.call(d),n="[object Array]"===Object.prototype.toString.call(a);a=[].concat(a);f&&(this.window[f]=0);b=0;for(k=a.length;b<k;b++)if (""!==a[b])for(c=0,l=e.length;c<l;c++)g=a[b]+"",h=m?void 0!==d[c]?d[c]:"":d[0],a[b]=g.split(e[c]).join(h),f&&a[b]!==g&&(this.window[f]+=(g.length-a[b].length)/e[c].length);return n?a:a[0]};
 
     function date(k,l){var d,a,h="Sun Mon Tues Wednes Thurs Fri Satur January February March April May June July August September October November December".split(" "),f=/\\?(.?)/gi,g=function(b,c){return a[b]?a[b]():c},e=function(b,a){for(b=String(b);b.length<a;)b="0"+b;return b};a={d:function(){return e(a.j(),2)},D:function(){return a.l().slice(0,3)},j:function(){return d.getDate()},l:function(){return h[a.w()]+"day"},N:function(){return a.w()||7},S:function(){var b=a.j(),c=b%10;3>=c&&1==parseInt(b%
     100/10,10)&&(c=0);return["st","nd","rd"][c-1]||"th"},w:function(){return d.getDay()},z:function(){var b=new Date(a.Y(),a.n()-1,a.j()),c=new Date(a.Y(),0,1);return Math.round((b-c)/864E5)},W:function(){var b=new Date(a.Y(),a.n()-1,a.j()-a.N()+3),c=new Date(b.getFullYear(),0,4);return e(1+Math.round((b-c)/864E5/7),2)},F:function(){return h[6+a.n()]},m:function(){return e(a.n(),2)},M:function(){return a.F().slice(0,3)},n:function(){return d.getMonth()+1},t:function(){return(new Date(a.Y(),a.n(),0)).getDate()},
@@ -246,10 +246,10 @@
     h:function(){return e(a.g(),2)},H:function(){return e(a.G(),2)},i:function(){return e(d.getMinutes(),2)},s:function(){return e(d.getSeconds(),2)},u:function(){return e(1E3*d.getMilliseconds(),6)},e:function(){throw"Not supported (see source code of date() for timezone on how to add support)";},I:function(){var b=new Date(a.Y(),0),c=Date.UTC(a.Y(),0),d=new Date(a.Y(),6),e=Date.UTC(a.Y(),6);return b-c!==d-e?1:0},O:function(){var a=d.getTimezoneOffset(),c=Math.abs(a);return(0<a?"-":"+")+e(100*Math.floor(c/
     60)+c%60,4)},P:function(){var b=a.O();return b.substr(0,3)+":"+b.substr(3,2)},T:function(){return"UTC"},Z:function(){return 60*-d.getTimezoneOffset()},c:function(){return"Y-m-d\\TH:i:sP".replace(f,g)},r:function(){return"D, d M Y H:i:s O".replace(f,g)},U:function(){return d/1E3|0}};this.date=function(a,c){d=void 0===c?new Date:c instanceof Date?new Date(c):new Date(1E3*c);return a.replace(f,g)};return this.date(k,l)};
 
-    function strtotime(c,e){function m(a){var c=a.split(" ");a=c[0];var b=c[1].substring(0,3),e=/\d+/.test(a),f=("last"===a?-1:1)*("ago"===c[2]?-1:1);e&&(f*=parseInt(a,10));if(g.hasOwnProperty(b)&&!c[1].match(/^mon(day|\.)?$/i))return d["set"+g[b]](d["get"+g[b]]()+f);if("wee"===b)return d.setDate(d.getDate()+7*f);if("next"===a||"last"===a)c=f,b=l[b],"undefined"!==typeof b&&(b-=d.getDay(),0===b?b=7*c:0<b&&"last"===a?b-=7:0>b&&"next"===a&&(b+=7),d.setDate(d.getDate()+b));else if(!e)return!1;return!0}var a,
-    h,d,l,g,k;if(!c)return null;c=c.trim().replace(/\s{2,}/g," ").replace(/[\t\r\n]/g,"").toLowerCase();if("now"===c)return null===e||isNaN(e)?(new Date).getTime()/1E3|0:e|0;if(!isNaN(a=Date.parse(c)))return a/1E3|0;if("now"===c)return(new Date).getTime()/1E3;if(!isNaN(a=Date.parse(c)))return a/1E3;if(a=c.match(/^(\d{2,4})-(\d{2})-(\d{2})(?:\s(\d{1,2}):(\d{2})(?::\d{2})?)?(?:\.(\d+)?)?$/))return h=0<=a[1]&&69>=a[1]?+a[1]+2E3:a[1],new Date(h,parseInt(a[2],10)-1,a[3],a[4]||0,a[5]||0,a[6]||0,a[7]||0)/1E3;
+    function strtotime(c,e){function m(a){var c=a.split(" ");a=c[0];var b=c[1].substring(0,3),e=/\d+/.test(a),f=("last"===a?-1:1)*("ago"===c[2]?-1:1);e&&(f*=parseInt(a,10));if (g.hasOwnProperty(b)&&!c[1].match(/^mon(day|\.)?$/i))return d["set"+g[b]](d["get"+g[b]]()+f);if ("wee"===b)return d.setDate(d.getDate()+7*f);if ("next"===a||"last"===a)c=f,b=l[b],"undefined"!==typeof b&&(b-=d.getDay(),0===b?b=7*c:0<b&&"last"===a?b-=7:0>b&&"next"===a&&(b+=7),d.setDate(d.getDate()+b));else if (!e)return!1;return!0}var a,
+    h,d,l,g,k;if (!c)return null;c=c.trim().replace(/\s{2,}/g," ").replace(/[\t\r\n]/g,"").toLowerCase();if ("now"===c)return null===e||isNaN(e)?(new Date).getTime()/1E3|0:e|0;if (!isNaN(a=Date.parse(c)))return a/1E3|0;if ("now"===c)return(new Date).getTime()/1E3;if (!isNaN(a=Date.parse(c)))return a/1E3;if (a=c.match(/^(\d{2,4})-(\d{2})-(\d{2})(?:\s(\d{1,2}):(\d{2})(?::\d{2})?)?(?:\.(\d+)?)?$/))return h=0<=a[1]&&69>=a[1]?+a[1]+2E3:a[1],new Date(h,parseInt(a[2],10)-1,a[3],a[4]||0,a[5]||0,a[6]||0,a[7]||0)/1E3;
     d=e?new Date(1E3*e):new Date;l={sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6};g={yea:"FullYear",mon:"Month",day:"Date",hou:"Hours",min:"Minutes",sec:"Seconds"};a=c.match(RegExp("([+-]?\\d+\\s(years?|months?|weeks?|days?|hours?|minutes?|min|seconds?|sec|sunday|sun\\.?|monday|mon\\.?|tuesday|tue\\.?|wednesday|wed\\.?|thursday|thu\\.?|friday|fri\\.?|saturday|sat\\.?)|(last|next)\\s(years?|months?|weeks?|days?|hours?|minutes?|min|seconds?|sec|sunday|sun\\.?|monday|mon\\.?|tuesday|tue\\.?|wednesday|wed\\.?|thursday|thu\\.?|friday|fri\\.?|saturday|sat\\.?))(\\sago)?",
-    "gi"));if(!a)return!1;k=0;for(h=a.length;k<h;k++)if(!m(a[k]))return!1;return d.getTime()/1E3};
+    "gi"));if (!a)return!1;k=0;for(h=a.length;k<h;k++)if (!m(a[k]))return!1;return d.getTime()/1E3};
 
     function md5(n){var g=function(b,a){var d,c,e,f,g;e=b&2147483648;f=a&2147483648;d=b&1073741824;c=a&1073741824;g=(b&1073741823)+(a&1073741823);return d&c?g^2147483648^e^f:d|c?g&1073741824?g^3221225472^e^f:g^1073741824^e^f:g^e^f},h=function(b,a,d,c,e,f,h){b=g(b,g(g(a&d|~a&c,e),h));return g(b<<f|b>>>32-f,a)},k=function(b,a,d,c,e,f,h){b=g(b,g(g(a&c|d&~c,e),h));return g(b<<f|b>>>32-f,a)},m=function(b,a,c,d,e,f,h){b=g(b,g(g(a^c^d,e),h));return g(b<<f|b>>>32-f,a)},l=function(b,a,c,d,f,e,h){b=g(b,g(g(c^(a|
     ~d),f),h));return g(b<<e|b>>>32-e,a)},p=function(b){var a="",c="",d;for(d=0;3>=d;d++)c=b>>>8*d&255,c="0"+c.toString(16),a+=c.substr(c.length-2,2);return a},e=[],f,q,r,s,t,b,a,d,c;n=utf8_encode(n);e=function(b){var a,c=b.length;a=c+8;for(var d=16*((a-a%64)/64+1),e=Array(d-1),f=0,g=0;g<c;)a=(g-g%4)/4,f=8*(g%4),e[a]|=b.charCodeAt(g)<<f,g++;a=(g-g%4)/4;e[a]|=128<<8*(g%4);e[d-2]=c<<3;e[d-1]=c>>>29;return e}(n);b=1732584193;a=4023233417;d=2562383102;c=271733878;n=e.length;for(f=0;f<n;f+=16)q=b,r=a,s=d,

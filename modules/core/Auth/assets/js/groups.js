@@ -14,7 +14,7 @@
             $scope.groupsettings['admin'] = {};
         }
 
-        if(location.hash && $scope.acl[location.hash.replace("#", "")]) {
+        if (location.hash && $scope.acl[location.hash.replace("#", "")]) {
             $scope.active = location.hash.replace("#", "");
         }
 
@@ -28,7 +28,7 @@
 
         $scope.addOrEditGroup = function(oldname, remove) {
 
-            if(remove) {
+            if (remove) {
 
                 App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
 
@@ -50,7 +50,7 @@
 
             var name = prompt(App.i18n.get("Please enter a groupname") + ":", oldname ? oldname:"");
 
-            if($.trim(name)) {
+            if ($.trim(name)) {
 
                 $http.post(App.route("/accounts/addOrEditGroup"), {"name": name, "oldname":oldname}).success(function(data){
 
@@ -71,7 +71,7 @@
         $scope.save = function() {
 
             $http.post(App.route("/accounts/saveAcl"), {
-                "acl": angular.copy($scope.acl), 
+                "acl": angular.copy($scope.acl),
                 "aclSettings": angular.copy($scope.groupsettings)
             }).success(function(data){
 

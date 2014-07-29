@@ -18,13 +18,13 @@ class Versions extends \Lime\Helper {
         $versions = $this->storage->hkeys($path);
         $count    = count($versions);
 
-        if($count) {
+        if ($count) {
           $prev = $this->storage->hget($path, $versions[$count-1]);
 
-          if(json_encode($prev["data"]) === json_encode($data)) return;
+          if (json_encode($prev["data"]) === json_encode($data)) return;
         }
 
-        if($count == $this->maxVersions) {
+        if ($count == $this->maxVersions) {
           $this->storage->hdel($path, $versions[0]);
         }
 
@@ -33,7 +33,7 @@ class Versions extends \Lime\Helper {
 
     public function get($path, $uid = null) {
 
-      if($uid) {
+      if ($uid) {
             return $this->storage->hget($path, $uid);
       } else {
             return $this->storage->hgetall($path);

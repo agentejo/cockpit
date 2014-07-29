@@ -10,21 +10,21 @@
         $scope.versions   = [];
 
         // init entry with default values
-        if(!entry["_id"] && collection.fields && collection.fields.length) {
+        if (!entry["_id"] && collection.fields && collection.fields.length) {
             collection.fields.forEach(function(field){
-                if(field["default"]) entry[field.name] = field["default"];
+                if (field["default"]) entry[field.name] = field["default"];
             });
         }
 
         $scope.loadVersions = function() {
 
-            if(!$scope.entry["_id"]) {
+            if (!$scope.entry["_id"]) {
                 return;
             }
 
             $http.post(App.route("/api/collections/getVersions"), {"id":$scope.entry["_id"], "colId":$scope.collection["_id"]}).success(function(data){
 
-                if(data) {
+                if (data) {
                     $scope.versions = data;
                 }
 
@@ -33,7 +33,7 @@
 
         $scope.clearVersions = function() {
 
-            if(!$scope.entry["_id"]) {
+            if (!$scope.entry["_id"]) {
                 return;
             }
 
@@ -50,7 +50,7 @@
 
         $scope.restoreVersion = function(versionId) {
 
-            if(!versionId || !$scope.entry["_id"]) {
+            if (!versionId || !$scope.entry["_id"]) {
                 return;
             }
 
@@ -76,7 +76,7 @@
             if ($scope.validateForm(entry)) {
                 $http.post(App.route("/api/collections/saveentry"), {"collection": collection, "entry":entry, "createversion": true}).success(function(data){
 
-                    if(data && Object.keys(data).length) {
+                    if (data && Object.keys(data).length) {
                         $scope.entry = data;
                         App.notify(App.i18n.get("Entry saved!"), "success");
 
@@ -105,7 +105,7 @@
 
             var fields = [];
 
-            if(area=="main") {
+            if (area=="main") {
 
                 fields = $scope.collection.fields.filter(function(field){
 
@@ -114,7 +114,7 @@
 
             }
 
-            if(area=="side"){
+            if (area=="side"){
                 fields = $scope.collection.fields.filter(function(field){
                     return ['select','date','time','media','boolean','tags','region'].indexOf(field.type) > -1;
                 });

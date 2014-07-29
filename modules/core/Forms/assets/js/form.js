@@ -5,11 +5,11 @@
         var id = $("[data-ng-controller='form']").data("id");
 
 
-        if(id) {
+        if (id) {
 
             $http.post(App.route("/api/forms/findOne"), {filter: {"_id":id}}, {responseType:"json"}).success(function(data){
 
-                if(data && Object.keys(data).length) {
+                if (data && Object.keys(data).length) {
                     $scope.form = data;
                 }
 
@@ -33,7 +33,7 @@
 
             $http.post(App.route("/api/forms/save"), {"form": form}).success(function(data){
 
-                if(data && Object.keys(data).length) {
+                if (data && Object.keys(data).length) {
                     $scope.form = data;
                     App.notify(App.i18n.get("Form saved!"), "success");
                 }

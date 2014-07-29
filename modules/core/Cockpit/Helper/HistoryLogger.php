@@ -18,8 +18,8 @@ class HistoryLogger extends \Lime\Helper {
         $config["limit"] = $options["limit"];
         $config["sort"]  = $options["sort"] ;
 
-        if($options["from"]) $config["filter"]["time"] = ['$gte' => $options["from"]];
-        if($options["to"])   $config["filter"]["time"] = ['$lte' => $options["to"]];
+        if ($options["from"]) $config["filter"]["time"] = ['$gte' => $options["from"]];
+        if ($options["to"])   $config["filter"]["time"] = ['$lte' => $options["to"]];
 
         return $this->app->db->find("cockpit/history", $config)->toArray();
     }

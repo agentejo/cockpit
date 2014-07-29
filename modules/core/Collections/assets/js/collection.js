@@ -4,11 +4,11 @@
 
         var id = $("[data-ng-controller='collection']").data("id");
 
-        if(id) {
+        if (id) {
 
             $http.post(App.route("/api/collections/findOne"), {filter: {"_id":id}}, {responseType:"json"}).success(function(data){
 
-                if(data && Object.keys(data).length) {
+                if (data && Object.keys(data).length) {
                     $scope.collection = data;
                 }
 
@@ -41,7 +41,7 @@
 
         $scope.addfield = function(){
 
-            if(!$scope.collection.fields) {
+            if (!$scope.collection.fields) {
                 $scope.collection.fields = [];
             }
 
@@ -57,7 +57,7 @@
 
             var index = $scope.collection.fields.indexOf(field);
 
-            if(index > -1) {
+            if (index > -1) {
                 $scope.collection.fields.splice(index, 1);
             }
 
@@ -73,7 +73,7 @@
 
             $http.post(App.route("/api/collections/save"), {"collection": collection}).success(function(data){
 
-                if(data && Object.keys(data).length) {
+                if (data && Object.keys(data).length) {
                     $scope.collection._id = data._id;
                     App.notify(App.i18n.get("Collection saved!"), "success");
                 }

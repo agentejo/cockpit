@@ -120,7 +120,7 @@
 
             $http.post(App.route("/accounts/save"), {"account": account}).success(function(data){
 
-                if(data && Object.keys(data).length) {
+                if (data && Object.keys(data).length) {
                     App.notify("@lang('Account saved!')");
 
                     $scope.account = data;

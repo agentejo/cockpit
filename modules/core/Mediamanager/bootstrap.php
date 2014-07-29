@@ -7,7 +7,7 @@ $this->module("mediamanager")->extend([
 
     "thumbnail" => function($image, $width = null, $height = null, $options=array()) use($app) {
 
-        if($width && is_array($height)) {
+        if ($width && is_array($height)) {
             $options = $height;
             $height  = $width;
         } else {
@@ -28,19 +28,19 @@ $this->module("mediamanager")->extend([
         $ext   = pathinfo($path, PATHINFO_EXTENSION);
         $url   = "data:image/gif;base64,R0lGODlhAQABAJEAAAAAAP///////wAAACH5BAEHAAIALAAAAAABAAEAAAICVAEAOw=="; // transparent 1px gif
 
-        if(!file_exists($path) || is_dir($path)) {
+        if (!file_exists($path) || is_dir($path)) {
             return $url;
         }
 
-        if(!in_array(strtolower($ext), array('png','jpg','jpeg','gif'))) {
+        if (!in_array(strtolower($ext), array('png','jpg','jpeg','gif'))) {
             return $url;
         }
 
-        if(!is_numeric($height)) {
+        if (!is_numeric($height)) {
             $height = $width;
         }
 
-        if(is_null($width) && is_null($height)) {
+        if (is_null($width) && is_null($height)) {
             return $app->pathToUrl($path);
         }
 
@@ -50,7 +50,7 @@ $this->module("mediamanager")->extend([
 
         $method = $mode == 'crop' ? 'thumbnail':$mode;
 
-        if($base64) {
+        if ($base64) {
 
             try {
                 $data = $app("image")->take($path)->{$method}($width, $height)->base64data(null, $quality);
@@ -65,7 +65,7 @@ $this->module("mediamanager")->extend([
             $filetime = filemtime($path);
             $savepath = $app->path($cachefolder)."/".md5($path)."_{$width}x{$height}_{$quality}_{$filetime}_{$mode}.{$ext}";
 
-            if($rebuild || !file_exists($savepath)) {
+            if ($rebuild || !file_exists($savepath)) {
                 try {
                     $app("image")->take($path)->{$method}($width, $height)->save($savepath, $quality);
                 } catch(Exception $e) {
@@ -100,7 +100,7 @@ if (!function_exists('thumbnail')) {
 
     function thumbnail($image, $width = null, $height = null, $options=array()) {
 
-        if($width && is_array($height)) {
+        if ($width && is_array($height)) {
             $options = $height;
             $height  = $width;
         } else {
@@ -134,7 +134,7 @@ $app->on("cockpit.rest.init", function($routes) {
 });
 
 
-if(COCKPIT_ADMIN && !COCKPIT_REST) {
+if (COCKPIT_ADMIN && !COCKPIT_REST) {
 
 
     $app->on("app.layout.header", function() {
@@ -161,7 +161,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
             return $this->module("mediamanager")->thumbnail($params[":splat"], $options);
         });
 
-        if(!$this->module("auth")->hasaccess("Mediamanager","manage")) return;
+        if (!$this->module("auth")->hasaccess("Mediamanager","manage")) return;
 
         $this("admin")->menu("top", [
             "url"    => $this->routeUrl("/mediamanager"),
@@ -179,7 +179,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
             $bookmarks = $this->memory->get("mediamanager.bookmarks.".$user["_id"], ["folders"=>[], "files"=>[]]);
 
             foreach ($bookmarks["folders"] as $f) {
-                if(stripos($f["name"], $search)!==false){
+                if (stripos($f["name"], $search)!==false){
                     $list[] = [
                         "title" => '<i class="uk-icon-folder-o"></i> '.$f["name"],
                         "url"   => $this->routeUrl('/mediamanager#'.$f["path"])
@@ -188,7 +188,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
             }
 
             foreach ($bookmarks["files"] as $f) {
-                if(stripos($f["name"], $search)!==false){
+                if (stripos($f["name"], $search)!==false){
                     $list[] = [
                         "title" => '<i class="uk-icon-file-o"></i> '.$f["name"],
                         "url"   => $this->routeUrl('/mediamanager#'.dirname($f["path"]))

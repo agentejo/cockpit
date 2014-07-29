@@ -13,7 +13,7 @@ $this->module("restservice")->extend([
 ]);
 
 
-if(!function_exists("cockpit_js_lib")) {
+if (!function_exists("cockpit_js_lib")) {
     function cockpit_js_lib() {
         echo cockpit("restservice")->js_lib();
     }
@@ -33,11 +33,11 @@ $app->on("before", function() {
         $token = $this->param("token", "n/a");
         $path  = $params[":splat"][0];
 
-        if(!$params[":splat"][0]) {
+        if (!$params[":splat"][0]) {
             return false;
         }
 
-        if($token !== $this->db->getKey("cockpit/settings", "cockpit.api.token", false)) {
+        if ($token !== $this->db->getKey("cockpit/settings", "cockpit.api.token", false)) {
             $this->response->status = 401;
             return ["error" => "access denied"];
         }
@@ -46,17 +46,17 @@ $app->on("before", function() {
         $resource   = $parts[0];
         $params     = isset($parts[1]) ? explode('/', $parts[1]) : [];
 
-        if(isset($routes[$resource])) {
+        if (isset($routes[$resource])) {
 
             // invoke class
-            if(is_string($routes[$resource])) {
+            if (is_string($routes[$resource])) {
 
                 $action = count($params) ? array_shift($params):'index';
 
                 return $this->invoke($routes[$resource], $action, $params);
             }
 
-            if(is_callable($routes[$resource])) {
+            if (is_callable($routes[$resource])) {
                 return call_user_func_array($routes[$resource], $params);
             }
         }

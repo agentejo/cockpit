@@ -37,7 +37,7 @@ class Api extends \Cockpit\Controller {
 
                     $success = false;
 
-                    if(file_put_contents($this->app->path("tmp:")."/{$version}.zip", $handle = fopen("https://github.com/aheinze/cockpit/archive/{$version}.zip", 'r'))) {
+                    if (file_put_contents($this->app->path("tmp:")."/{$version}.zip", $handle = fopen("https://github.com/aheinze/cockpit/archive/{$version}.zip", 'r'))) {
                         $success = true;
                     }
 
@@ -86,7 +86,7 @@ class Api extends \Cockpit\Controller {
 
                         // find cockpit dist root
                         foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folder)) as $file) {
-                            if($file->getFilename() == 'package.json') {
+                            if ($file->getFilename() == 'package.json') {
                                 $distroot = dirname($file->getRealPath());
                                 break;
                             }
@@ -100,8 +100,8 @@ class Api extends \Cockpit\Controller {
 
                             foreach ($files as $file) {
 
-                                if(!$file->isFile()) continue;
-                                if(preg_match('/(custom\/|storage\/|custom\/|modules\/addons)/', $file)) continue;
+                                if (!$file->isFile()) continue;
+                                if (preg_match('/(custom\/|storage\/|custom\/|modules\/addons)/', $file)) continue;
 
                                 @unlink($file->getRealPath());
                             }

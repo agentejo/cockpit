@@ -31,7 +31,7 @@ $app->bind("/api/forms/submit/:form", function($params) use($app) {
             return false;
         }
 
-        if(isset($frm["email"])) {
+        if (isset($frm["email"])) {
 
             $emails          = array_map('trim', explode(',', $frm['email']));
             $filtered_emails = [];
@@ -39,7 +39,7 @@ $app->bind("/api/forms/submit/:form", function($params) use($app) {
             foreach($emails as $to){
 
                 // Validate each email address individually, push if valid
-                if(filter_var($to, FILTER_VALIDATE_EMAIL)){
+                if (filter_var($to, FILTER_VALIDATE_EMAIL)){
                     $filtered_emails[] = $to;
                 }
             }
@@ -118,11 +118,11 @@ if (!function_exists('form')) {
 
 // ADMIN
 
-if(COCKPIT_ADMIN && !COCKPIT_REST) {
+if (COCKPIT_ADMIN && !COCKPIT_REST) {
 
     $app->on("admin.init", function() {
 
-        if(!$this->module("auth")->hasaccess("Forms", ['manage.forms', 'manage.entries'])) return;
+        if (!$this->module("auth")->hasaccess("Forms", ['manage.forms', 'manage.entries'])) return;
 
         $this->bindClass("Forms\\Controller\\Forms", "forms");
         $this->bindClass("Forms\\Controller\\Api", "api/forms");
@@ -138,7 +138,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
         $this->on("cockpit.globalsearch", function($search, $list) {
 
             foreach ($this->db->find("common/forms") as $f) {
-                if(stripos($f["name"], $search)!==false){
+                if (stripos($f["name"], $search)!==false){
                     $list[] = [
                         "title" => '<i class="uk-icon-inbox"></i> '.$f["name"],
                         "url"   => $this->routeUrl('/forms/form/'.$f["_id"])
@@ -150,7 +150,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
 
     $app->on("admin.dashboard.aside", function() {
 
-        if(!$this->module("auth")->hasaccess("Forms", ['manage.forms', 'manage.entries'])) return;
+        if (!$this->module("auth")->hasaccess("Forms", ['manage.forms', 'manage.entries'])) return;
 
         $title = $this("i18n")->get("Forms");
         $badge = $this->db->getCollection("common/forms")->count();

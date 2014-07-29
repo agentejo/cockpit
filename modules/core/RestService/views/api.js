@@ -17,7 +17,7 @@
                     "_s": [],
                     "_f": [],
                     "success": function(fn){
-                        if(!status) {
+                        if (!status) {
                             this._s.push(fn);
                         } else {
                             if (status===1) fn(ret._r, ret._req);
@@ -26,7 +26,7 @@
                         return ret;
                     },
                     "fail": function(fn){
-                        if(!status) {
+                        if (!status) {
                             this._f.push(fn)
                         } else {
                             if (status===-1) fn(ret._r, ret._req);
@@ -44,11 +44,11 @@
 
                     status = 1;
 
-                    if(type=="auto" && String(ret._r).match(/^(\{(.*)\}|\[(.*)\])$/g)) {
+                    if (type=="auto" && String(ret._r).match(/^(\{(.*)\}|\[(.*)\])$/g)) {
                         type = "json";
                     }
 
-                    if(type=="json") {
+                    if (type=="json") {
                         try { ret._r = JSON.parse(ret._r); } catch(e){ ret._r = null; }
                     }
 

@@ -17,7 +17,7 @@ $this->module("collections")->extend([
 
             $collection = $app->db->findOne("common/collections", ["name"=>$name]);
 
-            if($collection) {
+            if ($collection) {
                 $collection = "collection".$collection["_id"];
                 $collections[$name] = $app->db->getCollection("collections/{$collection}");
             }
@@ -54,8 +54,8 @@ $this->module("collections")->extend([
 
         // check if resultset is a cursor object
         if (is_object($resultset)) {
-            if(is_a($resultset, 'MongoLite\\Cursor')) $resultset = $resultset->toArray();
-            if(is_a($resultset, 'MongoCursor')) $resultset = iterator_to_array($resultset);
+            if (is_a($resultset, 'MongoLite\\Cursor')) $resultset = $resultset->toArray();
+            if (is_a($resultset, 'MongoCursor')) $resultset = iterator_to_array($resultset);
         }
 
         if (!count($resultset)) {
@@ -134,13 +134,13 @@ $this->module("collections")->extend([
     }
 ]);
 
-if(!function_exists("collection")) {
+if (!function_exists("collection")) {
     function collection($name) {
         return cockpit("collections")->collection($name);
     }
 }
 
-if(!function_exists("collection_populate")) {
+if (!function_exists("collection_populate")) {
     function collection_populate($collection, $resultset) {
         return cockpit("collections")->populate($collection, $resultset);
     }
@@ -157,12 +157,12 @@ $app->on("cockpit.rest.init", function($routes) {
 
 // ADMIN
 
-if(COCKPIT_ADMIN && !COCKPIT_REST) {
+if (COCKPIT_ADMIN && !COCKPIT_REST) {
 
 
     $app->on("admin.init", function() {
 
-        if(!$this->module("auth")->hasaccess("Collections", ['manage.collections', 'manage.entries'])) return;
+        if (!$this->module("auth")->hasaccess("Collections", ['manage.collections', 'manage.entries'])) return;
 
         // bind controllers
         $this->bindClass("Collections\\Controller\\Collections", "collections");
@@ -179,7 +179,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
         $this->on("cockpit.globalsearch", function($search, $list) {
 
             foreach ($this->db->find("common/collections") as $c) {
-                if(stripos($c["name"], $search)!==false){
+                if (stripos($c["name"], $search)!==false){
                     $list[] = [
                         "title" => '<i class="uk-icon-list"></i> '.$c["name"],
                         "url"   => $this->routeUrl('/collections/entries/'.$c["_id"])
@@ -192,7 +192,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
 
     $app->on("admin.dashboard.aside", function() {
 
-        if(!$this->module("auth")->hasaccess("Collections", ['manage.collections', 'manage.entries'])) return;
+        if (!$this->module("auth")->hasaccess("Collections", ['manage.collections', 'manage.entries'])) return;
 
         $title       = $this("i18n")->get("Collections");
         $badge       = $this->db->getCollection("common/collections")->count();

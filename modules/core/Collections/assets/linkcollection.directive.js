@@ -93,7 +93,7 @@
                             // hide previous slide
                             if (cacheItems[item]) {
                                 max = max-1;
-                                if(!max) resolve();
+                                if (!max) resolve();
                             } else {
 
                                 App.request("/api/collections/entries", {
@@ -102,7 +102,7 @@
                                 }, function(data){
                                     cacheItems[item] = data && data[0] ? data[0]:false;
                                     max = max-1;
-                                    if(!max) resolve();
+                                    if (!max) resolve();
                                 }, 'json');
                             }
                         });
@@ -138,7 +138,7 @@
 
             remove: function(index) {
 
-                if(this.options.multiple && this.value[index]) {
+                if (this.options.multiple && this.value[index]) {
 
                     this.value.splice(index, 1);
 
@@ -163,7 +163,7 @@
 
                 Picker.show($this.collection, function(idx) {
 
-                    if($this.options.multiple) {
+                    if ($this.options.multiple) {
 
                         if (index > -1 && $this.value && $this.value[index]  ) {
                             $this.value[index] = cache[$this.collection._id][idx]._id;

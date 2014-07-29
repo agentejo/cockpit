@@ -50,15 +50,15 @@
                     },
                     "allcomplete": function(response){
 
-                        if(response && response.failed && response.failed.length) {
+                        if (response && response.failed && response.failed.length) {
                             App.notify(App.i18n.get("%s File(s) failed to uploaded.", response.failed.length), "danger");
                         }
 
-                        if(response && response.uploaded && response.uploaded.length) {
+                        if (response && response.uploaded && response.uploaded.length) {
                             App.notify(App.i18n.get("%s File(s) uploaded.", response.uploaded.length), "success");
                         }
 
-                        if(!response) {
+                        if (!response) {
                             App.module.callbacks.error.http();
                         }
 
@@ -130,7 +130,7 @@
         });
 
         this.btnOk.on("click", function(){
-            if($this.mediapath) onselect($this.mediapath);
+            if ($this.mediapath) onselect($this.mediapath);
             picker.hide();
         });
 
@@ -151,7 +151,7 @@
 
                 $this.currentpath = path;
 
-                if(data) {
+                if (data) {
 
                     $this.dirview.html('');
 
@@ -172,11 +172,11 @@
 
                     for(var i=0;i<parts.length;i++){
 
-                        if(!parts[i]) continue;
+                        if (!parts[i]) continue;
 
                         tmppath.push(parts[i]);
 
-                        if(i<parts.length-1) {
+                        if (i<parts.length-1) {
                             $this.caption.append('<span data-path="'+tmppath.join("/")+'"><i class="uk-icon-folder-o"></i> '+parts[i]+'</span>');
                         } else {
                             $this.caption.append('<span class="uk-text-muted"><i class="uk-icon-folder-o"></i> '+parts[i]+'</span>');
@@ -192,7 +192,7 @@
                     $this.dirview.find('[data-file]').each(function(){
                         var element = $(this), url = element.data("file"), $r;
 
-                        if(url.match(/\.(jpg|jpeg|png|gif|svg)$/i)) {
+                        if (url.match(/\.(jpg|jpeg|png|gif|svg)$/i)) {
                             $r = $('<div class="media-url-preview" style="background-image:url('+encodeURI(element.data("file"))+');margin:0 auto;"></div>').css({width:element.width(), height:element.height()});
                         }
 
@@ -212,7 +212,7 @@
                             $r = '<i class="uk-icon-database"></i>';
                         }
 
-                        if($r) element.replaceWith($r);
+                        if ($r) element.replaceWith($r);
                     })
                 }, 0);
 
@@ -245,14 +245,14 @@
 
                     function setPath(path) {
 
-                        if(!path) {
+                        if (!path) {
                            return $prv.html('<span class="uk-text-muted uk-text-small"><i class="uk-icon-info-circle"></i> '+App.i18n.get('Nothing selected')+'</span>');
                         }
 
-                        if(path && path.match(/\.(jpg|jpeg|png|gif)$/i)) {
+                        if (path && path.match(/\.(jpg|jpeg|png|gif)$/i)) {
                             $prv.html('<div class="uk-margin" title="'+path+'"><img class="auto-size" src="'+encodeURI(path.replace('site:', window.COCKPIT_SITE_BASE_URL))+'"></div>');
 
-                        } else if(path && path.match(/\.(mp4|ogv|wmv|webm|mpeg|avi)$/i)) {
+                        } else if (path && path.match(/\.(mp4|ogv|wmv|webm|mpeg|avi)$/i)) {
                             $prv.html('<div class="uk-margin" title="'+path+'"><video class="auto-size" src="'+encodeURI(path.replace('site:', window.COCKPIT_SITE_BASE_URL))+'"></video></div>');
 
                         } else {
@@ -313,7 +313,7 @@
     });
 
 
-    if(window.tinymce) {
+    if (window.tinymce) {
         tinymce.PluginManager.add('mediapath', function(editor) {
 
             var picker = function(){
@@ -321,14 +321,14 @@
 
                     var content = '';
 
-                    if(!path) {
+                    if (!path) {
                        return;
                     }
 
-                    if(path && path.match(/\.(jpg|jpeg|png|gif)/i)) {
+                    if (path && path.match(/\.(jpg|jpeg|png|gif)/i)) {
                         content = '<img class="auto-size" src="'+path.replace('site:', window.COCKPIT_SITE_BASE_URL)+'">';
 
-                    } else if(path && path.match(/\.(mp4|ogv|wmv|webm|mpeg|avi)$/i)) {
+                    } else if (path && path.match(/\.(mp4|ogv|wmv|webm|mpeg|avi)$/i)) {
                         content = '<video class="auto-size" src="'+path.replace('site:', window.COCKPIT_SITE_BASE_URL)+'"></video>';
 
                     } else {

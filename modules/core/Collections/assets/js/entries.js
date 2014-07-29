@@ -62,15 +62,15 @@
 
             }, {responseType:"json"}).success(function(data){
 
-                if(data) {
+                if (data) {
 
-                    if(!$scope.entries) {
+                    if (!$scope.entries) {
                         $scope.entries = [];
                     }
 
-                    if(data.length) {
+                    if (data.length) {
 
-                        if(data.length < limit) {
+                        if (data.length < limit) {
                             $scope.nomore = true;
                         }
 

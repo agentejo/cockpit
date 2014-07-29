@@ -84,7 +84,7 @@
 
                 info.close();
 
-                if(data && data.timestamp) {
+                if (data && data.timestamp) {
                     App.notify(App.i18n.get("Backup created"), "success");
 
                     $scope.backups.unshift(data);

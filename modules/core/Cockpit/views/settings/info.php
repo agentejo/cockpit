@@ -75,7 +75,7 @@
 
                             var email = prompt("Send test email to:", '{{ @$info['mailer']['from'] }}');
 
-                            if(email && email.match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
+                            if (email && email.match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
 
                                 App.request('/settings/test/email', {"email":email}, function(data){
                                     App.notify(data.status ? 'Email was sent. Please check your mailbox.': 'Sending email failed.', data.status ? 'info':'danger');

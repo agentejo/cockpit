@@ -53,12 +53,12 @@
 
         $scope.remove = function(index, account){
 
-            if(account._id == $scope.current) {
+            if (account._id == $scope.current) {
                 App.notify(App.i18n.get("You can't delete yourself!"), "danger");
                 return;
             }
 
-            if(account.group && account.group == "admin") {
+            if (account.group && account.group == "admin") {
                 App.notify(App.i18n.get("You can't delete admin accounts!"), "danger");
                 return;
             }

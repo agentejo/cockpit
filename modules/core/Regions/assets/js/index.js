@@ -60,7 +60,7 @@
 
             var name = prompt(App.i18n.get('Group name'));
 
-            if(name && $scope.groups.indexOf(name)==-1) {
+            if (name && $scope.groups.indexOf(name)==-1) {
                 $scope.groups.push(name);
                 $scope.updateGroups();
             }
@@ -99,7 +99,7 @@
 
             var name = prompt(App.i18n.get('Group name'), $scope.groups[index]);
 
-            if(name && $scope.groups.indexOf(name)==-1) {
+            if (name && $scope.groups.indexOf(name)==-1) {
 
                 var oldname = $scope.groups[index];
 
@@ -107,7 +107,7 @@
                 $scope.activegroup   = name;
 
                 $scope.regions.forEach(function(region){
-                    if(region.group === oldname) region.group = name;
+                    if (region.group === oldname) region.group = name;
                 });
 
                 $http.post(App.route("/api/regions/update"), {"criteria":{"group":oldname}, "data":{"group":name}});
@@ -161,7 +161,7 @@
 
         var grouplist = $("#groups-list").on("sortable-change",function(){
 
-            if($scope.groups.length==1) return;
+            if ($scope.groups.length==1) return;
 
             var groups = [];
 

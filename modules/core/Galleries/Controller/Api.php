@@ -8,10 +8,10 @@ class Api extends \Cockpit\Controller {
 
         $options = [];
 
-        if($filter = $this->param("filter", null)) $options["filter"] = $filter;
-        if($limit  = $this->param("limit", null))  $options["limit"] = $limit;
-        if($sort   = $this->param("sort", null))   $options["sort"] = $sort;
-        if($skip   = $this->param("skip", null))   $options["skip"] = $skip;
+        if ($filter = $this->param("filter", null)) $options["filter"] = $filter;
+        if ($limit  = $this->param("limit", null))  $options["limit"] = $limit;
+        if ($sort   = $this->param("sort", null))   $options["sort"] = $sort;
+        if ($skip   = $this->param("skip", null))   $options["skip"] = $skip;
 
         $docs = $this->app->db->find("common/galleries", $options);
 
@@ -30,12 +30,12 @@ class Api extends \Cockpit\Controller {
 
         $gallery = $this->param("gallery", null);
 
-        if($gallery) {
+        if ($gallery) {
 
             $gallery["modified"] = time();
             $gallery["_uid"]     = @$this->user["_id"];
 
-            if(!isset($gallery["_id"])){
+            if (!isset($gallery["_id"])){
                 $gallery["created"] = $gallery["modified"];
             }
 
@@ -50,7 +50,7 @@ class Api extends \Cockpit\Controller {
         $criteria = $this->param("criteria", false);
         $data     = $this->param("data", false);
 
-        if($criteria && $data) {
+        if ($criteria && $data) {
             $this->app->db->update("common/galleries", $criteria, $data);
         }
 
@@ -61,7 +61,7 @@ class Api extends \Cockpit\Controller {
 
         $gallery = $this->param("gallery", null);
 
-        if($gallery) {
+        if ($gallery) {
             $this->app->db->remove("common/galleries", ["_id" => $gallery["_id"]]);
         }
 
@@ -72,7 +72,7 @@ class Api extends \Cockpit\Controller {
 
         $groups = $this->param("groups", false);
 
-        if($groups !== false) {
+        if ($groups !== false) {
 
             $this->app->memory->set("cockpit.galleries.groups", $groups);
 

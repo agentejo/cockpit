@@ -6,11 +6,11 @@
             toc = cm.getTokenAt(cur),
             mode = CodeMirror.innerMode(cm.getMode(), toc.state).mode.name;
 
-        if(!toc.string.trim()) return;
+        if (!toc.string.trim()) return;
 
         if (mode == 'xml') { //html depends on xml
 
-            if(toc.string.charAt(0) == "<" || toc.type == "attribute") {
+            if (toc.string.charAt(0) == "<" || toc.type == "attribute") {
                 CodeMirror.showHint(cm, CodeMirror.hint.html, {completeSingle:false});
             }
 
@@ -83,7 +83,7 @@
 
         resize: function(){
 
-            if(!this.element.is(":visible")) {
+            if (!this.element.is(":visible")) {
                 return;
             }
 
@@ -95,11 +95,11 @@
 
         save: function(){
 
-            if(!this.file) {
+            if (!this.file) {
                 return;
             }
 
-            if(!this.file.is_writable) {
+            if (!this.file.is_writable) {
                 App.notify(App.i18n.get("This file is not writable!"), "danger");
                 return;
             }

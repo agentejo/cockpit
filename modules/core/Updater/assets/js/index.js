@@ -27,7 +27,7 @@
             // download file
             $http.post(App.route("/api/updater/update/1"), {"version":version}).success(function(data){
 
-                if(!data.success) {
+                if (!data.success) {
                     info.close();
                     App.module.callbacks.error.http();
                     return;
@@ -38,7 +38,7 @@
                 // extract file
                 $http.post(App.route("/api/updater/update/2"), {"version":version}).success(function(data){
 
-                    if(!data.success) {
+                    if (!data.success) {
                         info.close();
                         App.module.callbacks.error.http();
                         return;
@@ -49,7 +49,7 @@
                     // override
                     $http.post(App.route("/api/updater/update/3"), {"version":version}).success(function(data){
                         console.log(data);
-                        if(!data.success) {
+                        if (!data.success) {
                             info.close();
                             App.module.callbacks.error.http();
                             return;
@@ -60,7 +60,7 @@
                         // cleanup
                         $http.post(App.route("/api/updater/update/4"), {"version":version}).success(function(data){
 
-                            if(!data.success) {
+                            if (!data.success) {
                                 info.close();
                                 App.module.callbacks.error.http();
                                 return;

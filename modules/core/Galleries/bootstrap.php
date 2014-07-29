@@ -13,7 +13,7 @@ $this->module("galleries")->extend([
 ]);
 
 
-if(!function_exists("gallery")) {
+if (!function_exists("gallery")) {
     function gallery($name) {
         return cockpit("galleries")->gallery($name);
     }
@@ -28,12 +28,12 @@ $app->on("cockpit.rest.init", function($routes) {
 
 // ADMIN
 
-if(COCKPIT_ADMIN && !COCKPIT_REST) {
+if (COCKPIT_ADMIN && !COCKPIT_REST) {
 
 
     $app->on("admin.init", function() {
 
-        if(!$this->module("auth")->hasaccess("Galleries", ['create.gallery', 'edit.gallery'])) return;
+        if (!$this->module("auth")->hasaccess("Galleries", ['create.gallery', 'edit.gallery'])) return;
 
         $this->bindClass("Galleries\\Controller\\Galleries", "galleries");
         $this->bindClass("Galleries\\Controller\\Api", "api/galleries");
@@ -49,7 +49,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
         $this->on("cockpit.globalsearch", function($search, $list) {
 
             foreach ($this->db->find("common/galleries") as $g) {
-                if(stripos($g["name"], $search)!==false){
+                if (stripos($g["name"], $search)!==false){
                     $list[] = [
                         "title" => '<i class="uk-icon-picture-o"></i> '.$g["name"],
                         "url"   => $this->routeUrl('/galleries/gallery/'.$g["_id"])
@@ -61,7 +61,7 @@ if(COCKPIT_ADMIN && !COCKPIT_REST) {
 
     $app->on("admin.dashboard.aside", function() {
 
-        if(!$this->module("auth")->hasaccess("Galleries", ['create.gallery', 'edit.gallery'])) return;
+        if (!$this->module("auth")->hasaccess("Galleries", ['create.gallery', 'edit.gallery'])) return;
 
         $title     = $this("i18n")->get("Galleries");
         $badge     = $this->db->getCollection("common/galleries")->count();

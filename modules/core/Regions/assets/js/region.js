@@ -20,13 +20,13 @@
 
         $scope.loadVersions = function() {
 
-            if(!$scope.region["_id"]) {
+            if (!$scope.region["_id"]) {
                 return;
             }
 
             $http.post(App.route("/api/regions/getVersions"), {"id":$scope.region["_id"]}).success(function(data){
 
-                if(data) {
+                if (data) {
                     $scope.versions = data;
                 }
 
@@ -35,7 +35,7 @@
 
         $scope.clearVersions = function() {
 
-            if(!$scope.region["_id"]) {
+            if (!$scope.region["_id"]) {
                 return;
             }
 
@@ -51,7 +51,7 @@
 
         $scope.restoreVersion = function(versionId) {
 
-            if(!versionId || !$scope.region["_id"]) {
+            if (!versionId || !$scope.region["_id"]) {
                 return;
             }
 
@@ -71,15 +71,15 @@
         };
 
 
-        if(id) {
+        if (id) {
 
             $http.post(App.route("/api/regions/findOne"), {filter: {"_id":id}}, {responseType:"json"}).success(function(data){
 
-                if(data && Object.keys(data).length) {
+                if (data && Object.keys(data).length) {
 
                     $scope.region = data;
 
-                    if($scope.region.fields.length) {
+                    if ($scope.region.fields.length) {
                         $scope.mode = "form";
                     }
 
@@ -100,7 +100,7 @@
 
         $scope.addfield = function(){
 
-            if(!$scope.region.fields) {
+            if (!$scope.region.fields) {
                 $scope.region.fields = [];
             }
 
@@ -115,7 +115,7 @@
 
             var index = $scope.region.fields.indexOf(field);
 
-            if(index > -1) {
+            if (index > -1) {
                 $scope.region.fields.splice(index, 1);
             }
 
@@ -131,7 +131,7 @@
 
             $http.post(App.route("/api/regions/save"), {"region": region, "createversion": true}).success(function(data){
 
-                if(data && Object.keys(data).length) {
+                if (data && Object.keys(data).length) {
                     $scope.region._id = data._id;
                     App.notify(App.i18n.get("Region saved!"), "success");
 
@@ -175,7 +175,7 @@
         function refreshcodeareas() {
             $("textarea[codearea]").each(function(){
                 var data = $(this).data();
-                if(data["codearea"]) data.codearea.refresh();
+                if (data["codearea"]) data.codearea.refresh();
             });
         }
 

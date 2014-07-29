@@ -11,11 +11,11 @@
         $scope.groups    = [];
         $scope.metaimage = {};
 
-        if(id) {
+        if (id) {
 
             $http.post(App.route("/api/galleries/findOne"), {filter: {"_id":id}}, {responseType:"json"}).success(function(data){
 
-                if(data && Object.keys(data).length) {
+                if (data && Object.keys(data).length) {
                     $scope.gallery = data;
                 }
 
@@ -48,13 +48,13 @@
 
             gallery.images.forEach(function(image){
                 gallery.fields.forEach(function(field){
-                    if(!image.data[field.name]) image.data[field.name] = "";
+                    if (!image.data[field.name]) image.data[field.name] = "";
                 });
             });
 
             $http.post(App.route("/api/galleries/save"), {"gallery": gallery}).success(function(data){
 
-                if(data && Object.keys(data).length) {
+                if (data && Object.keys(data).length) {
                     $scope.gallery = data;
                     App.notify(App.i18n.get("Gallery saved!"));
                 }
@@ -66,7 +66,7 @@
 
             new PathPicker(function(path){
 
-                if(String(path).match(/\.(jpg|png|gif)$/i)){
+                if (String(path).match(/\.(jpg|png|gif)$/i)){
                     $scope.$apply(function(){
                         $scope.gallery.images.push({"path":path, data:{}});
                         App.notify(App.i18n.get("%s image(s) imported", 1));
@@ -81,7 +81,7 @@
 
                             data.files.forEach(function(file) {
 
-                                if(file.name.match(/\.(jpg|png|gif)$/i)) {
+                                if (file.name.match(/\.(jpg|png|gif)$/i)) {
                                     var full_path = site2media ? site2media+'/'+file.path : file.path;
                                     $scope.gallery.images.push({"path":"site:"+full_path, data:{}});
 
@@ -131,7 +131,7 @@
 
         $scope.addfield = function(){
 
-            if(!$scope.gallery.fields) {
+            if (!$scope.gallery.fields) {
                 $scope.gallery.fields = [];
             }
 
@@ -146,7 +146,7 @@
 
             var index = $scope.gallery.fields.indexOf(field);
 
-            if(index > -1) {
+            if (index > -1) {
                 $scope.gallery.fields.splice(index, 1);
             }
 

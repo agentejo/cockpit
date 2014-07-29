@@ -8,11 +8,11 @@ class Auth extends \LimeExtra\Controller {
     public function check() {
 
 
-        if($data = $this->param('auth')) {
+        if ($data = $this->param('auth')) {
 
             $user = $this->module('auth')->authenticate($data);
 
-            if($user) {
+            if ($user) {
 
                 $this->module("auth")->setUser($user);
 
@@ -24,7 +24,7 @@ class Auth extends \LimeExtra\Controller {
                 ]);
             }
 
-            if($this->req_is('ajax')) {
+            if ($this->req_is('ajax')) {
                 return $user ? json_encode(["success" => true, "user" => $user, "avatar"=> md5($user["email"])]) : '{"success":0}';
             } else {
                 $this->reroute('/');
@@ -44,7 +44,7 @@ class Auth extends \LimeExtra\Controller {
 
         $this->module('auth')->logout();
 
-        if($this->req_is('ajax')) {
+        if ($this->req_is('ajax')) {
             return '{"logout":1}';
         } else {
             $this->reroute('/auth/login');

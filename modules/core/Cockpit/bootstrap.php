@@ -42,8 +42,8 @@ $this->module("cockpit")->extend([
 
         foreach ($files as $file) {
 
-            if(!$file->isFile()) continue;
-            if(preg_match('/(.gitkeep|index\.html)$/', $file)) continue;
+            if (!$file->isFile()) continue;
+            if (preg_match('/(.gitkeep|index\.html)$/', $file)) continue;
 
             @unlink($file->getRealPath());
         }
@@ -165,7 +165,7 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
         $query = $this->param("search", false);
         $list  = new \ArrayObject([]);
 
-        if($query) {
+        if ($query) {
             $this->trigger("cockpit.globalsearch", [$query, $list]);
         }
 
@@ -202,7 +202,7 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
         $this->response->mime = "js";
         $data = $this("i18n")->data($locale);
 
-        return 'if(i18n) { i18n.register('.(count($data) ? json_encode($data):'{}').'); }';
+        return 'if (i18n) { i18n.register('.(count($data) ? json_encode($data):'{}').'); }';
     });
 
 
