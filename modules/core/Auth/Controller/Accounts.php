@@ -22,13 +22,13 @@ class Accounts extends \Cockpit\Controller {
 
     public function account($uid=null) {
 
-        if(!$uid) {
+        if (!$uid) {
             $uid = $this->user["_id"];
         }
 
         $account = $this->app->db->findOne("cockpit/accounts", ["_id" => $uid]);
 
-        if(!$account) {
+        if (!$account) {
             return false;
         }
 
@@ -42,8 +42,8 @@ class Accounts extends \Cockpit\Controller {
 
     public function create() {
 
-        $uid     = null;
-        $account = ["user"=>"", "email"=>"", "active"=>1, "group"=>"admin", "i18n"=>$this->app->helper("i18n")->locale];
+        $uid       = null;
+        $account   = ["user"=>"", "email"=>"", "active"=>1, "group"=>"admin", "i18n"=>$this->app->helper("i18n")->locale];
 
         $languages = $this->getLanguages();
         $groups    = $this->getGroups();
@@ -53,11 +53,11 @@ class Accounts extends \Cockpit\Controller {
 
     public function save() {
 
-        if($data = $this->param("account", false)) {
+        if ($data = $this->param("account", false)) {
 
+            if (isset($data["password"])) {
 
-            if(isset($data["password"])) {
-                if(strlen($data["password"])){
+                if (strlen($data["password"])){
                     $data["password"] = $this->app->hash($data["password"]);
                 } else {
                     unset($data["password"]);
@@ -66,12 +66,11 @@ class Accounts extends \Cockpit\Controller {
 
             $this->app->db->save("cockpit/accounts", $data);
 
-            if(isset($data["password"])) {
+            if (isset($data["password"])) {
                 unset($data["password"]);
             }
 
-            if($data["_id"] == $this->user["_id"]) {
-
+            if ($data["_id"] == $this->user["_id"]) {
                 $this->module("auth")->setUser($data);
             }
 
@@ -84,10 +83,10 @@ class Accounts extends \Cockpit\Controller {
 
     public function remove() {
 
-        if($data = $this->param("account", false)) {
+        if ($data = $this->param("account", false)) {
 
             // user can't delete himself
-            if($data["_id"] != $this->user["_id"]) {
+            if ($data["_id"] != $this->user["_id"]) {
 
                 $this->app->db->remove("cockpit/accounts", ["_id" => $data["_id"]]);
 
@@ -100,7 +99,7 @@ class Accounts extends \Cockpit\Controller {
 
     public function groups() {
 
-        if($this->user["group"]!="admin") return false;
+        if ($this->user["group"]!="admin") return false;
 
         $acl = $this->getAcl();
 
@@ -110,24 +109,24 @@ class Accounts extends \Cockpit\Controller {
 
     public function addOrEditGroup() {
 
-        if($this->user["group"]!="admin") return false;
+        if ($this->user["group"]!="admin") return false;
 
-        if($name = $this->app->param("name", false)) {
+        if ($name = $this->app->param("name", false)) {
 
-            if($name!="admin") {
-                $groups = $this->app->memory->get("cockpit.acl.groups", []);
+            if ($name!="admin") {
 
+                $groups = $this->app->db->getKey("cockpit/settings", "cockpit.acl.groups", []);
 
-                if($oldname = $this->app->param("oldname", false)) {
+                if ($oldname = $this->app->param("oldname", false)) {
 
-                    if(isset($groups[$oldname]) && $oldname!="admin") {
+                    if (isset($groups[$oldname]) && $oldname!="admin") {
 
-                        $rights = $this->app->memory->get("cockpit.acl.rights", []);
+                        $rights = $this->app->db->getKey("cockpit/settings", "cockpit.acl.rights", []);
 
-                        if(isset($rights[$oldname])) {
+                        if (isset($rights[$oldname])) {
                             $rights[$name] = $rights[$oldname];
                             unset($rights[$oldname]);
-                            $this->app->memory->set("cockpit.acl.rights", $rights);
+                            $this->app->db->setKey("cockpit/settings", "cockpit.acl.rights", $rights);
                         }
 
                         $this->app->db->update("cockpit/accounts", ["group"=>$oldname], ["group"=>$name]);
@@ -139,7 +138,7 @@ class Accounts extends \Cockpit\Controller {
 
                 $groups[$name] = false;
 
-                $this->app->memory->set("cockpit.acl.groups", $groups);
+                $this->app->db->setKey("cockpit/settings", "cockpit.acl.groups", $groups);
             }
         }
 
@@ -150,19 +149,19 @@ class Accounts extends \Cockpit\Controller {
 
     public function deleteGroup() {
 
-        if($this->user["group"]!="admin") return false;
+        if ($this->user["group"]!="admin") return false;
 
-        if($name = $this->app->param("name", false)) {
+        if ($name = $this->app->param("name", false)) {
 
-            if($name!="admin") {
-                $groups = $this->app->memory->get("cockpit.acl.groups", []);
+            if ($name!="admin") {
+                $groups = $this->app->db->getKey("cockpit/settings", "cockpit.acl.groups", []);
 
-                if(isset($groups[$name])) {
+                if (isset($groups[$name])) {
+
                     unset($groups[$name]);
                     $this->app->db->update("cockpit/accounts", ["group"=>""], ["group"=>$name]);
+                    $this->app->db->setKey("cockpit/settings", "cockpit.acl.groups", $groups);
                 }
-
-                $this->app->memory->set("cockpit.acl.groups", $groups);
             }
         }
 
@@ -173,14 +172,14 @@ class Accounts extends \Cockpit\Controller {
 
     public function saveAcl() {
 
-        if($this->user["group"]!="admin") return false;
+        if ($this->user["group"]!="admin") return false;
 
-        if($acl = $this->app->param("acl", false)) {
-            $this->app->memory->set("cockpit.acl.rights", $acl);
+        if ($acl = $this->app->param("acl", false)) {
+            $this->app->db->setKey("cockpit/settings", "cockpit.acl.rights", $acl);
         }
 
-        if($settings = $this->app->param("aclSettings", false)) {
-            $this->app->memory->set("cockpit.acl.groups.settings", $settings);
+        if ($settings = $this->app->param("aclSettings", false)) {
+            $this->app->db->setKey("cockpit/settings", "cockpit.acl.groups.settings", $settings);
         }
 
         return '{"success":true}';
@@ -192,12 +191,11 @@ class Accounts extends \Cockpit\Controller {
 
         foreach ($this->app->helper("fs")->ls('*.php', 'cockpit:i18n') as $file) {
 
-            $lang = include($file->getRealPath());
-            $i18n = $file->getBasename('.php');
+            $lang     = include($file->getRealPath());
+            $i18n     = $file->getBasename('.php');
             $language = isset($lang['@meta']['language']) ? $lang['@meta']['language'] : $i18n;
 
             $languages[] = ["i18n" => $i18n, "language"=> $language];
-
         }
 
         return $languages;
@@ -207,7 +205,7 @@ class Accounts extends \Cockpit\Controller {
 
         $groups = ['admin'];
 
-        foreach ($this->app->memory->get("cockpit.acl.groups", []) as $group => $isadmin) {
+        foreach ($this->app->db->getKey("cockpit/settings", "cockpit.acl.groups", []) as $group => $isadmin) {
             $groups[] = $group;
         }
 

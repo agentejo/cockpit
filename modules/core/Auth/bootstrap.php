@@ -91,17 +91,17 @@ if (COCKPIT_ADMIN) {
 
     // init acl
 
-    $app["cockpit.acl.groups.settings"] = $app->memory->get("cockpit.acl.groups.settings", new \ArrayObject([]));
+    $app["cockpit.acl.groups.settings"] = $app->db->getKey("cockpit/settings", "cockpit.acl.groups.settings", new \ArrayObject([]));
 
     $app("acl")->addGroup("admin", true);
 
     if($user = $app->module("auth")->getUser()) {
 
-        foreach ($app->memory->get("cockpit.acl.groups", []) as $group => $isadmin) {
+        foreach ($app->db->getKey("cockpit/settings", "cockpit.acl.groups", []) as $group => $isadmin) {
             $app("acl")->addGroup($group, $isadmin);
         }
 
-        foreach ($app->memory->get("cockpit.acl.rights", []) as $group => $resources) {
+        foreach ($app->db->getKey("cockpit/settings", "cockpit.acl.rights", []) as $group => $resources) {
 
             if (!$app("acl")->hasGroup($group)) continue;
 
