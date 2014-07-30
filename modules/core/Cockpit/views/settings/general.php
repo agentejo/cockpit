@@ -108,6 +108,9 @@
                                         <i class="uk-icon-language"></i>
                                         @@ lstlocales[locale] @@
                                     </td>
+                                    <td width="30" class="uk-text-muted">
+                                        @@ locale @@
+                                    </td>
                                     <td width="20">
                                         <a href="#" class="uk-text-danger" ng-click="removeLocale($index)"><i class="uk-icon-trash-o"></i></a>
                                     </td>

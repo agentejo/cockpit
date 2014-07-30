@@ -16,12 +16,12 @@ class Mailer {
   }
 
   public function mail($to, $subject, $message, $options = array()) {
-    
+
     $options = array_merge($this->options, $options);
 
     $message = $this->createMessage($to, $subject, $message);
 
-    $message->setFrom(isset($options['from']) ? $options['from']:'mailer@'.$_SERVER["SERVER_NAME"]);
+    $message->setFrom(isset($options['from']) ? $options['from'] : 'mailer@'.(isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : 'localhost'));
 
     return $message->send();
   }
@@ -34,7 +34,7 @@ class Mailer {
       $mail->Mailer    = $this->transport;
 
       if($this->transport == 'smtp') {
-          
+
           if(isset($this->options['host']) && $this->options['host'])      {
             $mail->Host = $this->options['host']; // Specify main and backup server
           }
