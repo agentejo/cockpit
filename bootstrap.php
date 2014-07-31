@@ -1,15 +1,23 @@
 <?php
 
-// autoload from vendor (PSR-0)
+/*
+ * Autoload from vendor (PSR-0)
+ */
+
 spl_autoload_register(function($class){
     $class_path = __DIR__.'/vendor/'.str_replace('\\', '/', $class).'.php';
     if(file_exists($class_path)) include_once($class_path);
 });
 
+
+/*
+ * Collect needed paths
+ */
+
 $COCKPIT_DIR         = str_replace(DIRECTORY_SEPARATOR, '/', __DIR__);
 $COCKPIT_DOCS_ROOT   = str_replace(DIRECTORY_SEPARATOR, '/', isset($_SERVER['DOCUMENT_ROOT']) ? realpath($_SERVER['DOCUMENT_ROOT']) : dirname(__DIR__));
 
-// make sure that $_SERVER['DOCUMENT_ROOT'] is set correctly
+# make sure that $_SERVER['DOCUMENT_ROOT'] is set correctly
 if (strpos($COCKPIT_DIR, $COCKPIT_DOCS_ROOT)!==0 && isset($_SERVER['SCRIPT_NAME'])) {
     $COCKPIT_DOCS_ROOT = str_replace(dirname(str_replace(DIRECTORY_SEPARATOR, '/', $_SERVER['SCRIPT_NAME'])), '', $COCKPIT_DIR);
 }
@@ -18,7 +26,9 @@ $COCKPIT_BASE        = trim(str_replace($COCKPIT_DOCS_ROOT, '', $COCKPIT_DIR), "
 $COCKPIT_BASE_URL    = strlen($COCKPIT_BASE) ? "/{$COCKPIT_BASE}": $COCKPIT_BASE;
 $COCKPIT_BASE_ROUTE  = "{$COCKPIT_BASE_URL}/index.php";
 
-// SYSTEM DEFINES
+/*
+ * SYSTEM DEFINES
+ */
 if (!defined('COCKPIT_ADMIN'))      define('COCKPIT_ADMIN'      , 0);
 if (!defined('COCKPIT_REST'))       define('COCKPIT_REST'       , COCKPIT_ADMIN && isset($_SERVER["PATH_INFO"]) && strpos($_SERVER["PATH_INFO"], '/rest/api')===0 ? 1:0);
 if (!defined('COCKPIT_DIR'))        define('COCKPIT_DIR'        , $COCKPIT_DIR);

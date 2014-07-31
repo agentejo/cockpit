@@ -105,7 +105,6 @@
                             <tbody>
                                 <tr class="uk-form" ng-repeat="locale in locales">
                                     <td>
-                                        <i class="uk-icon-language"></i>
                                         @@ lstlocales[locale] @@
                                     </td>
                                     <td width="30" class="uk-text-muted">

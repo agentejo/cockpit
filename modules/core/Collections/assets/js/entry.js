@@ -3,16 +3,47 @@
     App.module.controller("entry", function($scope, $rootScope, $http, $timeout){
 
         var collection = COLLECTION,
-            entry      = COLLECTION_ENTRY || {};
+            entry      = COLLECTION_ENTRY || {},
+            locales    = LOCALES || [];
+
+        // init entry and its fields
+        if (collection.fields && collection.fields.length) {
+
+            collection.fields.forEach(function(field){
+
+                // default values
+                if (!entry["_id"] && field["default"]) {
+                    entry[field.name] = field["default"];
+                }
+
+                // localize fields
+                if (locales.length && field["localize"]) {
+
+                    if(!entry[field.name]) {
+                        entry[field.name] = '';
+                    }
+
+
+                    locales.forEach(function(locale){
+                        if (!entry[field.name+'_'+locale]) {
+                            entry[field.name+'_'+locale] = '';
+                        }
+                    });
+
+                    $scope.hasLocals = true;
+                }
+            });
+        }
 
         $scope.collection = collection;
         $scope.entry      = entry;
         $scope.versions   = [];
+        $scope.locales    = locales;
+        $scope.locale     = '';
 
-        // init entry with default values
-        if (!entry["_id"] && collection.fields && collection.fields.length) {
-            collection.fields.forEach(function(field){
-                if (field["default"]) entry[field.name] = field["default"];
+        if (locales.length) {
+            $scope.$watch('locale', function(newValue, oldValue){
+                if (newValue !== oldValue) $scope.collection = angular.copy($scope.collection);
             });
         }
 
@@ -85,6 +116,10 @@
 
                 }).error(App.module.callbacks.error.http);
             }
+        };
+
+        $scope.getFieldname = function(field) {
+            return $scope.locale ? field.name + '_' + $scope.locale : field.name;
         };
 
         $scope.validateForm = function(entry){

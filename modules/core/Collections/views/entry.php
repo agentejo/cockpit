@@ -29,8 +29,9 @@
     </style>
 
     <script>
-     var COLLECTION = {{ json_encode($collection) }},
-         COLLECTION_ENTRY = {{ json_encode($entry) }};
+     var COLLECTION       = {{ json_encode($collection) }},
+         COLLECTION_ENTRY = {{ json_encode($entry) }},
+         LOCALES          = {{ json_encode($locales) }};
     </script>
 
 @end('header')
@@ -72,6 +73,18 @@
           <a href="@route("/collections/entries")/@@ collection._id @@">@@ collection.name @@</a> /
           @lang('Entry')
         </span>
+
+        @if(count($locales))
+        <div class="uk-navbar-content" ng-show="hasLocals">
+            <select ng-model="locale">
+                <option value="">Default</option>
+                @foreach($locales as $locale)
+                <option value="{{ $locale }}">{{ \Lime\Helper\I18n::$locals[$locale] }}</option>
+                @endforeach
+            </select>
+        </div>
+        @endif
+
         <div class="uk-navbar-content">
             <a href="#entry-versions" data-uk-offcanvas data-ng-show="versions.length"><i class="uk-icon-clock-o"></i> @lang('Versions') <span class="uk-badge">@@ versions.length @@</span></a>
         </div>
@@ -86,42 +99,48 @@
 
                     <div class="uk-form-row" data-ng-repeat="field in fieldsInArea('main')" data-ng-switch="field.type">
 
-                        <label class="uk-text-small">@@ (field.label || field.name) | uppercase @@ <span ng-show="field.required">*</span></label>
+                        <label class="uk-text-small">
+                            <span ng-if="field.localize"><i class="uk-icon-comments-o"></i></span>
+                            @@ (field.label || field.name) | uppercase @@
+                            <span ng-if="field.required">*</span>
+                        </label>
+
+
                         <div class="uk-text-small uk-text-danger uk-float-right uk-animation-slide-top" data-ng-if="field.error">@@ field.error @@</div>
 
                         <div data-ng-switch-when="text">
-                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[field.name]">
+                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[getFieldname(field)]">
                             <div class="uk-margin-top" ng-if="field.slug">
-                                <input class="uk-width-1-1 uk-form-blank uk-text-muted" type="text" data-ng-model="entry[field.name+'_slug']" app-slug="entry[field.name]" placeholder="@lang('Slug...')" title="@@ (field.label || field.name) @@ slug" data-uk-tooltip="{pos:'left'}">
+                                <input class="uk-width-1-1 uk-form-blank uk-text-muted" type="text" data-ng-model="entry[getFieldname(field)+'_slug']" app-slug="entry[getFieldname(field)]" placeholder="@lang('Slug...')" title="@@ (field.label || field.name) @@ slug" data-uk-tooltip="{pos:'left'}">
                             </div>
                         </div>
 
                         <div data-ng-switch-when="html">
-                            <htmleditor data-ng-model="entry[field.name]"></htmleditor>
+                            <htmleditor data-ng-model="entry[getFieldname(field)]"></htmleditor>
                         </div>
 
                         <div data-ng-switch-when="code">
-                            <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[field.name]" style="height:350px !important;"></textarea>
+                            <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[getFieldname(field)]" style="height:350px !important;"></textarea>
                         </div>
 
                         <div data-ng-switch-when="wysiwyg">
-                            <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[field.name]"></textarea>
+                            <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[getFieldname(field)]"></textarea>
                         </div>
 
                         <div data-ng-switch-when="markdown">
-                            <htmleditor data-ng-model="entry[field.name]" options="{markdown:true}"></htmleditor>
+                            <htmleditor data-ng-model="entry[getFieldname(field)]" options="{markdown:true}"></htmleditor>
                         </div>
 
                         <div data-ng-switch-when="gallery">
-                            <gallery data-ng-model="entry[field.name]"></gallery>
+                            <gallery data-ng-model="entry[getFieldname(field)]"></gallery>
                         </div>
 
                         <div data-ng-switch-when="link-collection">
-                            <div link-collection="@@ field.collection @@" data-ng-model="entry[field.name]" data-multiple="@@ field.multiple ? 'true':'false' @@">Linking @@ field.collection @@</div>
+                            <div link-collection="@@ field.collection @@" data-ng-model="entry[getFieldname(field)]" data-multiple="@@ field.multiple ? 'true':'false' @@">Linking @@ field.collection @@</div>
                         </div>
 
                         <div data-ng-switch-default>
-                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[field.name]">
+                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[getFieldname(field)]">
                         </div>
                     </div>
 
@@ -136,7 +155,12 @@
             <div class="uk-width-medium-1-4">
                     <div class="uk-form-row" data-ng-repeat="field in fieldsInArea('side')" data-ng-switch="field.type">
 
-                        <label class="uk-text-small">@@ (field.label || field.name) | uppercase @@ <span ng-show="field.required">*</span></label>
+                        <label class="uk-text-small">
+                            <span ng-if="field.localize"><i class="uk-icon-comments-o"></i></span>
+                            @@ (field.label || field.name) | uppercase @@
+                            <span ng-if="field.required">*</span>
+                        </label>
+
                         <div class="uk-text-small uk-text-danger uk-float-right uk-animation-slide-top" data-ng-if="field.error">@@ field.error @@</div>
 
                         <div data-ng-switch-when="select">
@@ -168,7 +192,7 @@
                         </div>
 
                         <div data-ng-switch-when="region">
-                            <input class="uk-width-1-1 uk-form-large" type="text" region-picker data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[field.name]">
+                            <input class="uk-width-1-1 uk-form-large" type="text" region-picker data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[getFieldname(field)]">
                         </div>
 
                         <div data-ng-switch-when="tags">

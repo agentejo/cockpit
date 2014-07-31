@@ -104,6 +104,15 @@
                                                         </div>
                                                     </div>
 
+                                                    @if(count($locales))
+                                                    <div class="uk-form-row" data-ng-if="field.type=='text' || field.type=='code' || field.type=='html' || field.type=='wysiwyg' || field.type=='markdown' || field.type=='region'">
+                                                        <label class="uk-form-label">@lang('Localize')</label>
+                                                        <div class="uk-form-controls">
+                                                            <input type="checkbox" data-ng-model="field.localize" />
+                                                        </div>
+                                                    </div>
+                                                    @endif
+
                                                     <div class="uk-form-row" data-ng-if="field.type=='select'">
                                                         <label class="uk-form-label">@lang('Options')</label>
                                                         <div class="uk-form-controls">

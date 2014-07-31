@@ -15,7 +15,9 @@ class Collections extends \Cockpit\Controller {
             return false;
         }
 
-        return $this->render("collections:views/collection.php", compact('id'));
+        $locales = $this->app->db->getKey("cockpit/settings", "cockpit.locales", []);
+
+        return $this->render("collections:views/collection.php", compact('id', 'locales'));
     }
 
 
@@ -52,7 +54,9 @@ class Collections extends \Cockpit\Controller {
             }
         }
 
-        return $this->render("collections:views/entry.php", compact('collection', 'entry'));
+		$locales = $this->app->db->getKey("cockpit/settings", "cockpit.locales", []);
+
+        return $this->render("collections:views/entry.php", compact('collection', 'entry', 'locales'));
 
     }
 

@@ -75,7 +75,6 @@
 
             <div class="uk-form-controls uk-margin-small-top">
                 <div class="uk-form-select">
-                    <i class="uk-icon-language uk-margin-small-right"></i>
                     <a>@@ languages[account.i18n] @@</a>
                     <select class="uk-width-1-1 uk-form-large" data-ng-model="account.i18n">
                         @foreach($languages as $lang)
