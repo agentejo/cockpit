@@ -1,26 +1,30 @@
 @start('header')
 
-  {{ $app->assets(['regions:assets/regions.js','regions:assets/js/region.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['regions:assets/regions.js','regions:assets/js/region.js'], $app['cockpit/version']) }}
 
-  {{ $app->assets(['assets:vendor/uikit/js/addons/nestable.min.js'], $app['cockpit/version']) }}
-  {{ $app->assets(['assets:vendor/uikit/js/addons/timepicker.min.js'], $app['cockpit/version']) }}
-  {{ $app->assets(['assets:vendor/uikit/js/addons/datepicker.min.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/uikit/js/addons/nestable.min.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/uikit/js/addons/timepicker.min.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/uikit/js/addons/datepicker.min.js'], $app['cockpit/version']) }}
 
-  {{ $app->assets(['assets:vendor/codemirror/codemirror.js','assets:vendor/codemirror/codemirror.css','assets:vendor/codemirror/pastel-on-dark.css'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/codemirror/codemirror.js','assets:vendor/codemirror/codemirror.css','assets:vendor/codemirror/pastel-on-dark.css'], $app['cockpit/version']) }}
 
-  {{ $app->assets(['assets:angular/directives/codearea.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:angular/directives/codearea.js'], $app['cockpit/version']) }}
 
-  {{ $app->assets(['assets:vendor/tinymce/tinymce.min.js'], $app['cockpit/version']) }}
-  {{ $app->assets(['assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js'], $app['cockpit/version']) }}
-  {{ $app->assets(['assets:angular/directives/wysiwyg.js'], $app['cockpit/version']) }}
-  {{ $app->assets(['assets:angular/directives/gallery.js'], $app['cockpit/version']) }}
-  {{ $app->assets(['assets:angular/directives/tags.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/tinymce/tinymce.min.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:angular/directives/wysiwyg.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:angular/directives/gallery.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:angular/directives/tags.js'], $app['cockpit/version']) }}
 
-  {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
 
-  {{ $app->assets(['assets:vendor/uikit/js/addons/htmleditor.min.js'], $app['cockpit/version']) }}
-  {{ $app->assets(['assets:vendor/marked.js'], $app['cockpit/version']) }}
-  {{ $app->assets(['assets:angular/directives/htmleditor.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/uikit/js/addons/htmleditor.min.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/marked.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:angular/directives/htmleditor.js'], $app['cockpit/version']) }}
+
+    <script>
+        var LOCALES = {{ json_encode($locales) }};
+    </script>
 
 @end('header')
 
@@ -61,6 +65,16 @@
             <span class="uk-text-muted" ng-show="!region.name">@lang('Entry')</span>
             <span ng-show="region.name">@@ region.name @@</span>
         </span>
+        @if(count($locales))
+        <div class="uk-navbar-content" ng-show="hasLocals">
+            <select ng-model="locale">
+                <option value="">Default</option>
+                @foreach($locales as $locale)
+                <option value="{{ $locale }}">{{ \Lime\Helper\I18n::$locals[$locale] }}</option>
+                @endforeach
+            </select>
+        </div>
+        @endif
         <div class="uk-navbar-content">
             <a href="#region-versions" data-uk-offcanvas data-ng-show="versions.length"><i class="uk-icon-clock-o"></i> @lang('Versions') <span class="uk-badge">@@ versions.length @@</span></a>
         </div>
@@ -90,10 +104,12 @@
 
                                 <h3 class="uk-float-left">@lang('Region fields')</h3>
 
+                                @hasaccess?("Regions", 'manage.region.fields')
                                 <button type="button" class="uk-button uk-button-small uk-float-right" data-ng-class="manageform ? 'uk-button-success':'uk-button-primary'" data-ng-click="(manageform = !manageform)" title="@lang('Manage form')">
                                       <span ng-show="!manageform"><i class="uk-icon-cog"></i></span>
                                       <span ng-show="manageform"><i class="uk-icon-check"></i></span>
                                 </button>
+                                @end
 
                             </div>
 
@@ -138,6 +154,12 @@
                                                    <option value="markdown">Markdown</option>
                                                </select>
 
+                                               @if(count($locales))
+                                               <span data-ng-if="field.type=='text' || field.type=='code' || field.type=='html' || field.type=='wysiwyg' || field.type=='markdown'">
+                                                  <input type="checkbox" data-ng-model="field.localize" /> @lang('Localize')
+                                               </span>
+                                               @endif
+
                                                <a data-ng-click="remove(field)" class="uk-close"></a>
                                             </div>
                                          </li>
@@ -150,14 +172,17 @@
 
                                       <div class="uk-form-row" data-ng-repeat="field in region.fields" data-ng-switch="field.type" data-ng-show="field.name">
 
-                                          <label class="uk-text-small">@@ (field.label || field.name) | uppercase @@</label>
+                                          <label class="uk-text-small">
+                                              <span ng-if="field.localize"><i class="uk-icon-comments-o"></i></span>
+                                              @@ (field.label || field.name) | uppercase @@
+                                          </label>
 
                                           <div data-ng-switch-when="html">
-                                              <htmleditor data-ng-model="region.fields[$index].value"></htmleditor>
+                                              <htmleditor data-ng-model="region.fields[$index][locale ? ('value'+'_'+locale):'value']"></htmleditor>
                                           </div>
 
                                           <div data-ng-switch-when="code">
-                                              <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value" style="height:300px !important;"></textarea>
+                                              <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index][locale ? ('value'+'_'+locale):'value']" style="height:300px !important;"></textarea>
                                           </div>
 
                                           <div data-ng-switch-when="markdown">
@@ -165,7 +190,7 @@
                                           </div>
 
                                           <div data-ng-switch-when="wysiwyg">
-                                              <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index].value"></textarea>
+                                              <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-model="region.fields[$index][locale ? ('value'+'_'+locale):'value']"></textarea>
                                           </div>
 
                                           <div data-ng-switch-when="select">
@@ -199,6 +224,10 @@
 
                                           <div data-ng-switch-when="tags">
                                               <tags data-ng-model="region.fields[$index].value"></tags>
+                                          </div>
+
+                                          <div data-ng-switch-when="text">
+                                              <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="region.fields[$index][locale ? ('value'+'_'+locale):'value']">
                                           </div>
 
                                           <div data-ng-switch-default>

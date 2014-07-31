@@ -4,7 +4,13 @@
 
 $this->module("regions")->extend([
 
-    "render" => function($name, $params = []) use($app) {
+    "render" => function($name, $params = [], $locale = null) use($app) {
+
+        if (!$locale && is_string($params)) {
+            $locale = $params;
+            $params = [];
+        }
+
 
         $region = $app->db->findOne("common/regions", ["name"=>$name]);
 
@@ -18,6 +24,10 @@ $this->module("regions")->extend([
         if (isset($region["fields"]) && count($region["fields"])) {
             foreach ($region["fields"] as &$field) {
                 $fields[$field["name"]] = $field["value"];
+
+                if ($locale && isset($field["value_{$locale}"])) {
+                    $fields[$field["name"]] = $field["value_{$locale}"];
+                }
             }
         }
 
@@ -42,14 +52,14 @@ $app->renderer->extend(function($content){
 });
 
 if (!function_exists("region")) {
-    function region($name, $params = []) {
-        echo cockpit("regions")->render($name, $params);
+    function region($name, $params = [], $locale = null) {
+        echo cockpit("regions")->render($name, $params, $locale);
     }
 }
 
 if (!function_exists("get_region")) {
-    function get_region($name, $params = []) {
-        return cockpit("regions")->render($name, $params);
+    function get_region($name, $params = [], $locale = null) {
+        return cockpit("regions")->render($name, $params, $locale);
     }
 }
 
@@ -104,6 +114,6 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
 
 
     // acl
-    $app("acl")->addResource("Regions", ['create.regions', 'edit.regions']);
+    $app("acl")->addResource("Regions", ['create.regions', 'edit.regions', 'manage.region.fields']);
 
 }

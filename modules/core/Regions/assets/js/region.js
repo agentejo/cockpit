@@ -3,12 +3,14 @@
     App.module.controller("region", function($scope, $rootScope, $http, $timeout){
 
         var id       = $("[data-ng-controller='region']").data("id"),
-            template = $("#region-template");
+            template = $("#region-template"),
+            locales  = LOCALES || [];
 
         $scope.mode       = "tpl";
         $scope.manageform = false;
         $scope.versions   = [];
         $scope.groups     = [];
+        $scope.locale     = '';
 
         // get groups
         $http.post(App.route("/api/regions/getGroups"), {}).success(function(groups){
@@ -84,6 +86,8 @@
                     }
 
                     $scope.loadVersions();
+
+                    checklocales();
                 }
 
             }).error(App.module.callbacks.error.http);
@@ -96,6 +100,8 @@
                 tpl: "",
                 group: ""
             };
+
+            checklocales();
         }
 
         $scope.addfield = function(){
@@ -104,11 +110,22 @@
                 $scope.region.fields = [];
             }
 
-            $scope.region.fields.push({
+            var field = {
                 "name"  : "",
                 "type"  : "text",
                 "value" : ""
-            });
+            };
+
+            if (locales.length) {
+
+                locales.forEach(function(locale){
+                    if (!field['value_'+locale]) {
+                        field['value_'+locale] = '';
+                    }
+                });
+            }
+
+            $scope.region.fields.push(field);
         };
 
         $scope.remove = function(field) {
@@ -141,6 +158,19 @@
             }).error(App.module.callbacks.error.http);
         };
 
+        $scope.getFieldname = function(field) {
+            return $scope.locale ? field.name + '_' + $scope.locale : field.name;
+        };
+
+
+        $scope.$watch('locale', function(newValue, oldValue){
+
+            if (locales.length && $scope.region && newValue !== oldValue) {
+                $scope.region = angular.copy($scope.region);
+            }
+        });
+
+
         $scope.$watch("mode", function(val){
 
             setTimeout(function(){
@@ -149,6 +179,8 @@
         });
 
         $scope.$watch("manageform", function(val){
+
+            checklocales();
 
             setTimeout(function(){
                 refreshcodeareas();
@@ -177,6 +209,23 @@
                 var data = $(this).data();
                 if (data["codearea"]) data.codearea.refresh();
             });
+        }
+
+        function checklocales() {
+
+            $scope.hasLocals = false;
+
+            if ($scope.region && $scope.region.fields && $scope.region.fields.length) {
+
+                $scope.region.fields.forEach(function(field){
+
+                    // localize fields
+                    if (locales.length && field["localize"]) {
+
+                        $scope.hasLocals = true;
+                    }
+                });
+            }
         }
 
         // bind clobal command + save

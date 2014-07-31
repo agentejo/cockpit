@@ -19,7 +19,7 @@
                 // localize fields
                 if (locales.length && field["localize"]) {
 
-                    if(!entry[field.name]) {
+                    if (!entry[field.name]) {
                         entry[field.name] = '';
                     }
 
