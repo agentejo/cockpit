@@ -75,8 +75,8 @@
         </span>
 
         @if(count($locales))
-        <div class="uk-navbar-content" ng-show="hasLocals">
-            <select ng-model="locale">
+        <div class="uk-navbar-content uk-form" ng-show="hasLocals">
+            <select ng-model="locale" data-uk-tooltip title="@lang('Language')">
                 <option value="">Default</option>
                 @foreach($locales as $locale)
                 <option value="{{ $locale }}">{{ \Lime\Helper\I18n::$locals[$locale] }}</option>
