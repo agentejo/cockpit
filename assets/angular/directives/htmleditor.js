@@ -103,7 +103,7 @@
 
                 options = $.extend({plugins:['base', 'markdown', 'image']}, scope.$eval(attrs.options));
 
-                options.maxsplitsize = 300;
+                options.maxsplitsize = 900;
 
                 elm.after(txt).hide();
 

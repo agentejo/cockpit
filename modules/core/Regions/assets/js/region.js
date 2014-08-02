@@ -162,6 +162,10 @@
             return $scope.locale ? field.name + '_' + $scope.locale : field.name;
         };
 
+        $scope.toggleOptions = function(index) {
+            $("#options-field-"+index).toggleClass('uk-hidden');
+        };
+
 
         $scope.$watch('locale', function(newValue, oldValue){
 
