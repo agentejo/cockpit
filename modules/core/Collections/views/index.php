@@ -97,8 +97,8 @@
                 <span class="uk-badge app-badge">@@ (activegroup=='-all' ? '@lang("All collections")' : activegroup) @@</span>
             </div>
 
-            <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="collections && collections.length && mode=='list'">
-                <div class="uk-width-1-1 uk-width-medium-1-3" data-ng-repeat="collection in collections track by collection._id" data-ng-show="matchName(collection.name) && inGroup(collection.group)">
+            <div class="uk-grid uk-grid-small" data-uk-grid-match data-ng-if="collections && collections.length && mode=='list'">
+                <div class="uk-width-1-1 uk-width-medium-1-3 uk-grid-margin" data-ng-repeat="collection in collections track by collection._id" data-ng-show="matchName(collection.name) && inGroup(collection.group)">
 
                     <div class="app-panel">
 

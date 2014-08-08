@@ -1,7 +1,7 @@
 <?php
 
 $app['app.assets.base'] = [
-    'assets:vendor/es-shim.js',
+    'assets:vendor/polyfills/es-shim.js',
     'assets:vendor/jquery.js',
     'assets:vendor/storage.js',
     'assets:vendor/i18n.js',

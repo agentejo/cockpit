@@ -96,8 +96,8 @@
                 <span class="uk-badge app-badge">@@ (activegroup=='-all' ? "@lang('All regions')" : activegroup) @@</span>
             </div>
 
-            <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="regions && regions.length && mode=='list'">
-                <div class="uk-width-1-1 uk-width-medium-1-3" data-ng-repeat="region in regions track by region._id" data-ng-show="matchName(region.name) && inGroup(region.group)">
+            <div class="uk-grid uk-grid-small" data-uk-grid-match data-ng-if="regions && regions.length && mode=='list'">
+                <div class="uk-width-1-1 uk-width-medium-1-3 uk-grid-margin" data-ng-repeat="region in regions track by region._id" data-ng-show="matchName(region.name) && inGroup(region.group)">
 
                     <div class="app-panel">
 

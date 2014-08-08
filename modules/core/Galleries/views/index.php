@@ -97,8 +97,8 @@
                 <span class="uk-badge app-badge">@@ (activegroup=='-all' ? '@lang("All galleries")' : activegroup) @@</span>
             </div>
 
-            <div class="uk-grid uk-grid-small" data-uk-grid-margin data-uk-grid-match data-ng-if="galleries && galleries.length && mode=='list'">
-                <div class="uk-width-1-1 uk-width-medium-1-3" data-ng-repeat="gallery in galleries track by gallery._id" data-ng-show="matchName(gallery.name) && inGroup(gallery.group)">
+            <div class="uk-grid uk-grid-small" data-uk-grid-match data-ng-if="galleries && galleries.length && mode=='list'">
+                <div class="uk-width-1-1 uk-width-medium-1-3 uk-grid-margin" data-ng-repeat="gallery in galleries track by gallery._id" data-ng-show="matchName(gallery.name) && inGroup(gallery.group)">
 
                     <div class="app-panel">
 
