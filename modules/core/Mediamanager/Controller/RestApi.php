@@ -23,12 +23,7 @@ class RestApi extends \LimeExtra\Controller {
         $images  = $this->param('images', []);
         $width   = $this->param('w', 50);
         $height  = $this->param('h', false);
-
-        $options = [
-            "quality"     => $this->param('q', 100),
-            "base64"      => $this->param('base64', false),
-            "mode"        => $this->param('m', 'crop')
-        ];
+        $options = $this->param('options', []);
 
         $urls = [];
 
