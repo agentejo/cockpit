@@ -222,7 +222,9 @@
 
     window.PathPicker = Picker;
 
-    App.module.directive("mediaPathPicker", function($timeout){
+    var modulecontainer = angular.module('cockpit').compileProvider || angular.module('cockpit.directives');
+
+    modulecontainer.directive("mediaPathPicker", function($timeout){
 
         return {
             require: '?ngModel',

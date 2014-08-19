@@ -4,6 +4,8 @@
 
         App  = {
 
+            "version"    : html.data("version"),
+            "locale"     : html.data("locale"),
             "base_route" : html.data("route"),
             "base_url"   : html.data("base"),
             "modules"    : ['ngSanitize', 'ngAnimate'],
@@ -125,7 +127,7 @@
                 d.reject(url);
             };
 
-            script.src = url.match(/^http/) ? url : App.base(url);
+            script.src = (url.match(/^http/) ? url : App.base(url))+'?v='+App.version;
 
             document.getElementsByTagName('head')[0].appendChild(script);
 
@@ -137,7 +139,7 @@
                 link      = document.createElement('link');
                 link.type = 'text/css';
                 link.rel  = 'stylesheet';
-                link.href = url.match(/^http/) ? url : App.base(url);
+                link.href = (url.match(/^http/) ? url : App.base(url))+'?v='+App.version;
 
             document.getElementsByTagName('head')[0].appendChild(link);
 
@@ -146,7 +148,7 @@
                     d.resolve();
                     if (callback) callback(link);
                 };
-                img.src = link.href;
+                img.src = link.href+'?v='+App.version;
 
             return d.promise();
         }

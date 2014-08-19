@@ -23,7 +23,9 @@
         }
     };
 
-    angular.module('cockpit.directives').directive("codearea", function($timeout) {
+   var modulecontainer = angular.module('cockpit').compileProvider || angular.module('cockpit.directives');
+
+   modulecontainer.directive("codearea", function($timeout) {
 
         var events = ["cursorActivity", "viewportChange", "gutterClick", "focus", "blur", "scroll", "update"];
 

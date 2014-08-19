@@ -90,7 +90,9 @@
         }
     });
 
-    angular.module('cockpit.directives').directive("htmleditor", function($timeout){
+    var modulecontainer = angular.module('cockpit').compileProvider || angular.module('cockpit.directives');
+
+    modulecontainer.directive("htmleditor", function($timeout){
 
         return {
 
@@ -107,29 +109,27 @@
 
                 elm.after(txt).hide();
 
+                setTimeout(function(){
+
+                    htmleditor = $.UIkit.htmleditor(txt, options);
+
+                    htmleditor.editor.on("change", $.UIkit.Utils.debounce(function(){
+
+                        ngModel.$setViewValue(htmleditor.editor.getValue());
+
+                        if (!scope.$root.$$phase) {
+                            scope.$apply();
+                        }
+
+                    }, 100));
+
+                    htmleditor.fit();
+                })
+
                 ngModel.$render = function() {
 
-                    txt.val(ngModel.$viewValue || '');
-
-                    if(!htmleditor) {
-
-                        htmleditor = $.UIkit.htmleditor(txt, options);
-
-                        setTimeout(function(){
-
-                            htmleditor.editor.on("change", $.UIkit.Utils.debounce(function(){
-
-                                ngModel.$setViewValue(htmleditor.editor.getValue());
-
-                                if (!scope.$root.$$phase) {
-                                    scope.$apply();
-                                }
-                            }, 100));
-
-                            htmleditor.fit();
-
-                        }, 50);
-
+                    if (txt.data('htmleditor')) {
+                        txt.data('htmleditor').editor.setValue(ngModel.$viewValue || '');
                     }
                 };
             }

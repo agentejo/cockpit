@@ -1,6 +1,8 @@
 (function($){
 
-    angular.module('cockpit.directives').directive("linkCollection", function($timeout, $http) {
+    var modulecontainer = angular.module('cockpit').compileProvider || angular.module('cockpit.directives');
+
+    modulecontainer.directive("linkCollection", function($timeout, $http) {
 
         var collections = false, cache = {}, cacheItems = {}, loaded, Field, Picker;
 

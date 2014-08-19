@@ -6,5 +6,8 @@
     angular.module('cockpit.directives', ['cockpit.config']);
     angular.module('cockpit', ['cockpit.filters', 'cockpit.directives', 'cockpit.services', 'cockpit.config']);
 
+    angular.module('cockpit').config(function ($compileProvider) {
+        angular.module('cockpit').compileProvider = $compileProvider;
+    });
 
 })(this, jQuery);

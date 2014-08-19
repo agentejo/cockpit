@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-base="@base('/')" data-route="@route('/')">
+<html lang="{{ $app("i18n")->locale }}" data-base="@base('/')" data-route="@route('/')" data-version="{{ $app['cockpit/version'] }}" data-locale="{{ $app("i18n")->locale }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ $app['app.name'] }}</title>
@@ -55,7 +55,6 @@
             <div class="uk-navbar-content uk-hidden-small">
                 <form id="frmCockpitSearch" class="uk-search" data-uk-search="{source:'@route('/cockpit-globalsearch')', msgMoreResults:false, msgResultsHeader: '@lang('Search Results')', msgNoResults: '@lang('No results found')'}" onsubmit="return false;">
                     <input class="uk-search-field" type="search" placeholder="@lang('Search...')" autocomplete="off">
-                    <button class="uk-search-close" type="reset"></button>
                 </form>
             </div>
 

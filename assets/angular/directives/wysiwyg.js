@@ -3,7 +3,11 @@
  */
 
 (function($){
-    angular.module('cockpit.directives').directive("wysiwyg", function($timeout){
+
+
+    var modulecontainer = angular.module('cockpit').compileProvider || angular.module('cockpit.directives');
+
+    modulecontainer.directive("wysiwyg", function($timeout){
 
         var generatedIds  = 0,
             defaultConfig = {

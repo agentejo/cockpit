@@ -12,7 +12,9 @@
     ].join('');
 
 
-    angular.module('cockpit.directives').directive("tags", function($timeout){
+    var modulecontainer = angular.module('cockpit').compileProvider || angular.module('cockpit.directives');
+
+    modulecontainer.directive("tags", function($timeout) {
 
       return {
 

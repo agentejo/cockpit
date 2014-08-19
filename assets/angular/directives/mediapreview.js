@@ -1,6 +1,8 @@
 (function($){
 
-    angular.module('cockpit.directives').directive("mediaPreview", function($timeout){
+    var modulecontainer = angular.module('cockpit').compileProvider || angular.module('cockpit.directives');
+
+    modulecontainer.directive("mediaPreview", function($timeout){
 
         return {
 

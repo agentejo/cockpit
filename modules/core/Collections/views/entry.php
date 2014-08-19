@@ -1,28 +1,7 @@
 @start('header')
 
+    {{ $app->assets(['assets:angular/directives/contentfield.js'], $app['cockpit/version']) }}
     {{ $app->assets(['collections:assets/collections.js','collections:assets/js/entry.js'], $app['cockpit/version']) }}
-
-    {{ $app->assets(['assets:vendor/uikit/js/addons/timepicker.min.js'], $app['cockpit/version']) }}
-    {{ $app->assets(['assets:vendor/uikit/js/addons/datepicker.min.js'], $app['cockpit/version']) }}
-
-    {{ $app->assets(['assets:vendor/codemirror/codemirror.js','assets:vendor/codemirror/codemirror.css','assets:vendor/codemirror/pastel-on-dark.css'], $app['cockpit/version']) }}
-    {{ $app->assets(['assets:angular/directives/codearea.js'], $app['cockpit/version']) }}
-
-    {{ $app->assets(['assets:vendor/tinymce/tinymce.min.js'], $app['cockpit/version']) }}
-    {{ $app->assets(['assets:vendor/tinymce/langs/'.$app("i18n")->locale.'.js'], $app['cockpit/version']) }}
-
-    {{ $app->assets(['assets:vendor/uikit/js/addons/htmleditor.min.js'], $app['cockpit/version']) }}
-    {{ $app->assets(['assets:vendor/marked.js'], $app['cockpit/version']) }}
-
-
-    {{ $app->assets(['assets:angular/directives/wysiwyg.js'], $app['cockpit/version']) }}
-    {{ $app->assets(['assets:angular/directives/htmleditor.js'], $app['cockpit/version']) }}
-    {{ $app->assets(['assets:angular/directives/gallery.js'], $app['cockpit/version']) }}
-    {{ $app->assets(['assets:angular/directives/tags.js'], $app['cockpit/version']) }}
-
-    {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
-    {{ $app->assets(['regions:assets/regionpicker.directive.js'], $app['cockpit/version']) }}
-    {{ $app->assets(['collections:assets/linkcollection.directive.js'], $app['cockpit/version']) }}
 
     <style>
         textarea { min-height: 150px; }
@@ -105,43 +84,14 @@
                             <span ng-if="field.required">*</span>
                         </label>
 
-
                         <div class="uk-text-small uk-text-danger uk-float-right uk-animation-slide-top" data-ng-if="field.error">@@ field.error @@</div>
 
-                        <div data-ng-switch-when="text">
-                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[getFieldname(field)]">
-                            <div class="uk-margin-top" ng-if="field.slug">
-                                <input class="uk-width-1-1 uk-form-blank uk-text-muted" type="text" data-ng-model="entry[getFieldname(field)+'_slug']" app-slug="entry[getFieldname(field)]" placeholder="@lang('Slug...')" title="@@ (field.label || field.name) @@ slug" data-uk-tooltip="{pos:'left'}">
-                            </div>
+                        <contentfield options="@@ field @@" ng-model="entry[getFieldname(field)]"></contentfield>
+
+                        <div class="uk-margin-top" ng-if="field.slug">
+                            <input class="uk-width-1-1 uk-form-blank uk-text-muted" type="text" data-ng-model="entry[getFieldname(field)+'_slug']" app-slug="entry[getFieldname(field)]" placeholder="@lang('Slug...')" title="@@ (field.label || field.name) @@ slug" data-uk-tooltip="{pos:'left'}">
                         </div>
 
-                        <div data-ng-switch-when="html">
-                            <htmleditor data-ng-model="entry[getFieldname(field)]"></htmleditor>
-                        </div>
-
-                        <div data-ng-switch-when="code">
-                            <textarea codearea="{mode:'@@field.syntax@@'}" class="uk-width-1-1 uk-form-large" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[getFieldname(field)]" style="height:350px !important;"></textarea>
-                        </div>
-
-                        <div data-ng-switch-when="wysiwyg">
-                            <textarea wysiwyg="{document_base_url:'{{ $app->pathToUrl('site:') }}'}" class="uk-width-1-1 uk-form-large" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[getFieldname(field)]"></textarea>
-                        </div>
-
-                        <div data-ng-switch-when="markdown">
-                            <htmleditor data-ng-model="entry[getFieldname(field)]" options="{markdown:true}"></htmleditor>
-                        </div>
-
-                        <div data-ng-switch-when="gallery">
-                            <gallery data-ng-model="entry[getFieldname(field)]"></gallery>
-                        </div>
-
-                        <div data-ng-switch-when="link-collection">
-                            <div link-collection="@@ field.collection @@" data-ng-model="entry[getFieldname(field)]" data-multiple="@@ field.multiple ? 'true':'false' @@">Linking @@ field.collection @@</div>
-                        </div>
-
-                        <div data-ng-switch-default>
-                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[getFieldname(field)]">
-                        </div>
                     </div>
 
                     <div class="uk-form-row">
@@ -163,45 +113,7 @@
 
                         <div class="uk-text-small uk-text-danger uk-float-right uk-animation-slide-top" data-ng-if="field.error">@@ field.error @@</div>
 
-                        <div data-ng-switch-when="select">
-                            <select class="uk-width-1-1 uk-form-large" data-ng-model="entry[field.name]" data-ng-class="{'uk-form-danger':field.error}">
-                                <option value="@@ option @@" data-ng-repeat="option in (field.options || [])" data-ng-selected="(entry[field.name]==option)">@@ option @@</option>
-                            </select>
-                        </div>
-
-                        <div data-ng-switch-when="media">
-                            <input type="text" media-path-picker="@@ field.allowed || '*' @@" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[field.name]">
-                        </div>
-
-                        <div data-ng-switch-when="boolean">
-                            <input type="checkbox" data-ng-model="entry[field.name]">
-                        </div>
-
-                        <div data-ng-switch-when="date">
-                            <div class="uk-form-icon uk-width-1-1">
-                                <i class="uk-icon-calendar"></i>
-                                <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-uk-datepicker="{format:'YYYY-MM-DD'}" data-ng-model="entry[field.name]">
-                            </div>
-                        </div>
-
-                        <div data-ng-switch-when="time">
-                            <div class="uk-form-icon uk-width-1-1" data-uk-timepicker>
-                                <i class="uk-icon-clock-o"></i>
-                                <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[field.name]">
-                            </div>
-                        </div>
-
-                        <div data-ng-switch-when="region">
-                            <input class="uk-width-1-1 uk-form-large" type="text" region-picker data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[getFieldname(field)]">
-                        </div>
-
-                        <div data-ng-switch-when="tags">
-                            <tags data-ng-model="entry[field.name]"></tags>
-                        </div>
-
-                        <div data-ng-switch-default>
-                            <input class="uk-width-1-1 uk-form-large" type="text" data-ng-class="{'uk-form-danger':field.error}" data-ng-model="entry[field.name]">
-                        </div>
+                        <contentfield options="@@ field @@" ng-model="entry[getFieldname(field)]"></contentfield>
                     </div>
 
                 </div>
