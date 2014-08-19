@@ -1,6 +1,6 @@
 (function($){
 
-    App.module.controller("region", function($scope, $rootScope, $http, $timeout){
+    App.module.controller("region", function($scope, $rootScope, $http, $timeout, Contentfields){
 
         var id       = $("[data-ng-controller='region']").data("id"),
             template = $("#region-template"),
@@ -11,6 +11,8 @@
         $scope.versions   = [];
         $scope.groups     = [];
         $scope.locale     = '';
+
+        $scope.contentfields = Contentfields.fields();
 
         // get groups
         $http.post(App.route("/api/regions/getGroups"), {}).success(function(groups){
@@ -164,6 +166,15 @@
 
         $scope.toggleOptions = function(index) {
             $("#options-field-"+index).toggleClass('uk-hidden');
+        };
+
+        $scope.switchFieldsForm = function(refresh) {
+
+            if (refresh) {
+                $scope.region.fields = angular.copy($scope.region.fields);
+            }
+
+            $scope.manageform = !$scope.manageform;
         };
 
 

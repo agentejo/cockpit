@@ -4,7 +4,8 @@
     {{ $app->assets(['assets:vendor/uikit/js/addons/nestable.min.js'], $app['cockpit/version']) }}
 
     {{ $app->assets(['galleries:assets/galleries.js','galleries:assets/js/gallery.js'], $app['cockpit/version']) }}
-    {{ $app->assets(['mediamanager:assets/pathpicker.directive.js'], $app['cockpit/version']) }}
+
+    @trigger('cockpit.content.fields.sources')
 
     <style>
 
@@ -95,13 +96,7 @@
                                         <div class="uk-nestable-item uk-nestable-item-table">
                                            <div class="uk-nestable-handle"></div>
                                            <input type="text" data-ng-model="field.name" placeholder="Field name" pattern="[a-zA-Z0-9]+" required>
-                                           <select data-ng-model="field.type" title="@lang('Field type')" data-uk-tooltip>
-                                               <option value="text">Text</option>
-                                               <option value="html">Html</option>
-                                               <option value="select">Select</option>
-                                               <option value="boolean">Boolean</option>
-                                               <option value="media">Media</option>
-                                           </select>
+                                           <select data-ng-model="field.type" title="@lang('Field type')" ng-options="f.name as f.label for f in contentfields"></select>
 
                                            <input type="text" data-ng-if="field.type=='select'" data-ng-model="field.options" ng-list placeholder="@lang('options...')">
                                            <input type="text" data-ng-if="field.type=='media'" data-ng-model="field.allowed" placeholder="*.*" title="@lang('Allowed media types')" data-uk-tooltip>
@@ -155,7 +150,7 @@
                             </p>
                         </div>
 
-                        <button type="button" class="uk-button" data-ng-class="managefields ? 'uk-button-success':'uk-button-primary'" data-ng-click="(managefields = !managefields)" title="@lang('Manage meta fields')">
+                        <button type="button" class="uk-button" data-ng-class="managefields ? 'uk-button-success':'uk-button-primary'" data-ng-click="switchFieldsForm(managefields)" title="@lang('Manage meta fields')">
                             <span ng-show="!managefields"><i class="uk-icon-cog"></i></span>
                             <span ng-show="managefields"><i class="uk-icon-check"></i></span>
                         </button>
@@ -171,31 +166,11 @@
             <h3>@lang('Meta')</h3>
 
             <div class="uk-form uk-margin">
-                <div class="uk-form-row" data-ng-repeat="field in gallery.fields" data-ng-switch="field.type">
+                <div class="uk-form-row" data-ng-repeat="field in gallery.fields">
 
                     <label class="uk-text-small">@@ field.name | uppercase @@</label>
 
-                    <div data-ng-switch-when="html">
-                        <textarea class="uk-width-1-1 uk-form-large" data-ng-model="$parent.metaimage.data[field.name]"></textarea>
-                    </div>
-
-                    <div data-ng-switch-when="select">
-                        <select class="uk-width-1-1 uk-form-large" data-ng-model="$parent.metaimage.data[field.name]" data-ng-init="fieldindex=$index">
-                            <option value="@@ option @@" data-ng-repeat="option in (field.options || [])" data-ng-selected="($parent.metaimage.data[field.name]==option)">@@ option @@</option>
-                        </select>
-                    </div>
-
-                    <div data-ng-switch-when="media">
-                        <input type="text" media-path-picker="@@ field.allowed || '*' @@" data-ng-model="$parent.metaimage.data[field.name]">
-                    </div>
-
-                    <div data-ng-switch-when="boolean">
-                        <input type="checkbox" data-ng-model="$parent.metaimage.data[field.name]">
-                    </div>
-
-                    <div data-ng-switch-default>
-                        <input class="uk-width-1-1 uk-form-large" type="text" data-ng-model="$parent.metaimage.data[field.name]">
-                    </div>
+                    <contentfield options="@@ field @@" ng-model="$parent.metaimage.data[field.name]"></contentfield>
                 </div>
             </div>
 

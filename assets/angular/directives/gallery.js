@@ -16,10 +16,7 @@
     ].join('')
 
 
-    var modulecontainer = angular.module('cockpit').compileProvider || angular.module('cockpit.directives');
-
-
-    modulecontainer.directive("gallery", function($timeout){
+    angular.module('cockpit.directives').directive("gallery", function($timeout){
 
       return {
 

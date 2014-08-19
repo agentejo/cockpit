@@ -1,6 +1,6 @@
 (function($){
 
-    App.module.controller("gallery", function($scope, $rootScope, $http, $timeout){
+    App.module.controller("gallery", function($scope, $rootScope, $http, $timeout, Contentfields){
 
         var id         = $("[data-ng-controller='gallery']").data("id"),
             dialog     = $.UIkit.modal("#meta-dialog"),
@@ -8,8 +8,9 @@
             media_base = COCKPIT_MEDIA_BASE_URL.replace(/^\/+|\/+$/g, ""),
             site2media = media_base.replace(site_base, "").replace(/^\/+|\/+$/g, "");
 
-        $scope.groups    = [];
-        $scope.metaimage = {};
+        $scope.groups        = [];
+        $scope.metaimage     = {};
+        $scope.contentfields = Contentfields.fields();
 
         if (id) {
 
@@ -150,6 +151,15 @@
                 $scope.gallery.fields.splice(index, 1);
             }
 
+        };
+
+        $scope.switchFieldsForm = function(refresh) {
+
+            if (refresh) {
+                $scope.gallery.fields = angular.copy($scope.gallery.fields);
+            }
+
+            $scope.managefields = !$scope.managefields;
         };
 
         var imglist = $("#images-list").on("sortable-change",function(){

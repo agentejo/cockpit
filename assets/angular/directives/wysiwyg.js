@@ -4,10 +4,13 @@
 
 (function($){
 
+    var reqassets = [];
 
-    var modulecontainer = angular.module('cockpit').compileProvider || angular.module('cockpit.directives');
+    if (!window.tinymce) {
+        reqassets.push('assets/vendor/tinymce/tinymce.min.js');
+    }
 
-    modulecontainer.directive("wysiwyg", function($timeout){
+    angular.module('cockpit.directives').directive("wysiwyg", function($timeout){
 
         var generatedIds  = 0,
             defaultConfig = {
@@ -82,22 +85,34 @@
                 // extend options with initial defaultConfig and options from directive attribute value
                 angular.extend(options, defaultConfig, expression);
 
-                if(defaultConfig.plugins && defaultConfig.plugins.length && tinymce.PluginManager.lookup["mediapath"]) {
-                    defaultConfig.plugins[0] = "mediapath "+defaultConfig.plugins[0];
-                }
+                var deferTinyMCE = function() {
 
-                setTimeout(function () {
-                    tinymce.init(options);
-                });
+                    App.assets.require(reqassets, function() {
 
-                ngModel.$render = function() {
-                    if (!tinyInstance) {
-                        tinyInstance = tinymce.get(attrs.id);
-                    }
-                    if (tinyInstance) {
-                        tinyInstance.setContent(ngModel.$viewValue || '');
-                    }
+                        App.assets.require(tinymce.PluginManager.lookup["mediapath"] ? [] : 'modules/core/Mediamanager/assets/pathpicker.directive.js', function() {
+
+                            if (defaultConfig.plugins && defaultConfig.plugins.length && tinymce.PluginManager.lookup["mediapath"]) {
+                                defaultConfig.plugins[0] = "mediapath "+defaultConfig.plugins[0];
+                            }
+
+                            setTimeout(function () {
+                                tinymce.init(options);
+                            });
+
+                            ngModel.$render = function() {
+                                if (!tinyInstance) {
+                                    tinyInstance = tinymce.get(attrs.id);
+                                }
+                                if (tinyInstance) {
+                                    tinyInstance.setContent(ngModel.$viewValue || '');
+                                }
+                            };
+
+                        });
+                    });
                 };
+
+                $timeout(deferTinyMCE);
             }
         };
 

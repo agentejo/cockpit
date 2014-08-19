@@ -1,6 +1,6 @@
 (function($){
 
-    App.module.controller("collection", function($scope, $rootScope, $http){
+    App.module.controller("collection", function($scope, $rootScope, $http, Contentfields){
 
         var id = $("[data-ng-controller='collection']").data("id");
 
@@ -24,8 +24,9 @@
             };
         }
 
-        $scope.collections = [];
-        $scope.groups      = [];
+        $scope.collections   = [];
+        $scope.groups        = [];
+        $scope.contentfields = Contentfields.fields();
 
         // get collections
         $http.post(App.route("/api/collections/find"), {}).success(function(data){
@@ -60,7 +61,6 @@
             if (index > -1) {
                 $scope.collection.fields.splice(index, 1);
             }
-
         };
 
         $scope.toggleOptions = function(index) {
@@ -81,10 +81,16 @@
             }).error(App.module.callbacks.error.http);
         };
 
-        $scope.getSortFields = function() {
+        $scope.$watchCollection('collection.fields', function() {
 
-            return [{'name':'created'}, {'name':'modified'}].concat($scope.collection && $scope.collection.fields ? angular.copy($scope.collection.fields):[]);
-        };
+            var sortfields = [{name: 'created', label:'created'}, {name: 'modified', label:'modified'}, {name:'custom-order', label:'custom'}];
+
+            if ($scope.collection && $scope.collection.fields) {
+                sortfields = sortfields.concat($scope.collection && $scope.collection.fields ? angular.copy($scope.collection.fields):[]);
+            }
+
+            $scope.sortfields = sortfields;
+        });
 
         // after sorting list
         $(function(){

@@ -3,6 +3,8 @@
     {{ $app->assets(['collections:assets/collections.js','collections:assets/js/collection.js'], $app['cockpit/version']) }}
     {{ $app->assets(['assets:vendor/uikit/js/addons/nestable.min.js'], $app['cockpit/version']) }}
 
+    @trigger('cockpit.content.fields.sources')
+
 @end('header')
 
 <div data-ng-controller="collection" data-id="{{ $id }}" ng-cloak>
@@ -58,22 +60,7 @@
                                         <div class="uk-grid uk-grid-small">
                                             <div class="uk-width-1-3">
                                                 <label class="uk-text-small">@lang('Field type')</label>
-                                                <select class="uk-width-1-1" data-ng-model="field.type" title="@lang('Field type')">
-                                                    <option value="text">Text</option>
-                                                    <option value="select">Select</option>
-                                                    <option value="boolean">Boolean</option>
-                                                    <option value="html">Html</option>
-                                                    <option value="wysiwyg">Html (WYSIWYG)</option>
-                                                    <option value="code">Code</option>
-                                                    <option value="markdown">Markdown</option>
-                                                    <option value="date">Date</option>
-                                                    <option value="time">Time</option>
-                                                    <option value="media">Media</option>
-                                                    <option value="region">Region</option>
-                                                    <option value="link-collection">Collection link</option>
-                                                    <option value="gallery">Gallery</option>
-                                                    <option value="tags">Tags</option>
-                                                </select>
+                                                <select class="uk-width-1-1" data-ng-model="field.type" title="@lang('Field type')" ng-options="f.name as f.label for f in contentfields"></select>
                                             </div>
                                             <div class="uk-width-1-3">
                                                 <label class="uk-text-small">@lang('Field label')</label>
@@ -148,11 +135,12 @@
                                                         </div>
                                                     </div>
 
+                                                    @trigger('cockpit.content.fields.settings')
+
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
 
                                 </div>
                             </li>
@@ -210,11 +198,8 @@
                     <p>
                         @lang('Order entries on list page'):
                     </p>
-                    <select class="uk-width-1-1 uk-margin-bottom" data-ng-model="collection.sortfield">
-                        <option value="created">created</option>
-                        <option value="modified">modified</option>
-                        <option value="@@ f.name @@" ng-repeat="f in collection.fields">@@ f.name @@</option>
-                    </select>
+
+                    <select class="uk-width-1-1 uk-margin-bottom" data-ng-model="collection.sortfield"  ng-options="f.name as f.name for f in sortfields"></select>
                     <select class="uk-width-1-1" data-ng-model="collection.sortorder">
                         <option value="-1">@lang('descending')</option>
                         <option value="1">@lang('ascending')</option>

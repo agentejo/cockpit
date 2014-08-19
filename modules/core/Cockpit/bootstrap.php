@@ -206,6 +206,20 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
     });
 
 
+    $app->on("cockpit.content.fields.sources", function() {
+
+        echo $this->assets([
+            'assets:angular/directives/contentfield.js',
+            'assets:angular/directives/codearea.js',
+            'assets:angular/directives/wysiwyg.js',
+            'assets:angular/directives/gallery.js',
+            'assets:angular/directives/tags.js',
+            'mediamanager:assets/pathpicker.directive.js',
+            'assets:angular/directives/htmleditor.js'
+        ], $this['cockpit/version']);
+
+    }, 100);
+
     // acl
     $app("acl")->addResource("Cockpit", ['manage.backups']);
 }

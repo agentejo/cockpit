@@ -3,6 +3,8 @@
     {{ $app->assets(['assets:angular/directives/contentfield.js'], $app['cockpit/version']) }}
     {{ $app->assets(['collections:assets/collections.js','collections:assets/js/entry.js'], $app['cockpit/version']) }}
 
+    @trigger('cockpit.content.fields.sources')
+
     <style>
         textarea { min-height: 150px; }
     </style>
@@ -76,7 +78,7 @@
             <div class="uk-width-medium-3-4">
                 <div class="app-panel">
 
-                    <div class="uk-form-row" data-ng-repeat="field in fieldsInArea('main')" data-ng-switch="field.type">
+                    <div class="uk-form-row" data-ng-repeat="field in fieldsInArea('main')">
 
                         <label class="uk-text-small">
                             <span ng-if="field.localize"><i class="uk-icon-comments-o"></i></span>
@@ -103,7 +105,7 @@
             </div>
 
             <div class="uk-width-medium-1-4">
-                    <div class="uk-form-row" data-ng-repeat="field in fieldsInArea('side')" data-ng-switch="field.type">
+                    <div class="uk-form-row" data-ng-repeat="field in fieldsInArea('side')">
 
                         <label class="uk-text-small">
                             <span ng-if="field.localize"><i class="uk-icon-comments-o"></i></span>

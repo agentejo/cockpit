@@ -2,9 +2,7 @@
 
     var regions = [];
 
-    var modulecontainer = angular.module('cockpit').compileProvider || angular.module('cockpit.directives');
-
-    modulecontainer.directive("regionPicker", function($timeout, $http){
+    angular.module('cockpit.directives').directive("regionPicker", function($timeout, $http){
 
         return {
             require: '?ngModel',
