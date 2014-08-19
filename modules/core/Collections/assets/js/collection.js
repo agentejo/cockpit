@@ -1,6 +1,6 @@
 (function($){
 
-    App.module.controller("collection", function($scope, $rootScope, $http, Contentfields){
+    App.module.controller("collection", function($scope, $rootScope, $http, $timeout, Contentfields){
 
         var id = $("[data-ng-controller='collection']").data("id");
 
@@ -81,7 +81,7 @@
             }).error(App.module.callbacks.error.http);
         };
 
-        $scope.$watchCollection('collection.fields', function() {
+        $scope.$watch('collection.fields', function() {
 
             var sortfields = [{name: 'created', label:'created'}, {name: 'modified', label:'modified'}, {name:'custom-order', label:'custom'}];
 
@@ -89,8 +89,11 @@
                 sortfields = sortfields.concat($scope.collection && $scope.collection.fields ? angular.copy($scope.collection.fields):[]);
             }
 
-            $scope.sortfields = sortfields;
-        });
+            $timeout(function() {
+                $scope.sortfields = sortfields;
+            });
+
+        }, true);
 
         // after sorting list
         $(function(){
