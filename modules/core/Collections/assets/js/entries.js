@@ -32,7 +32,7 @@
 
         $scope.loadmore = function() {
 
-            var limit  = 25, filter = false;
+            var limit  = COLLECTION.sortfield == 'custom-order' ? 1000 : 25, filter = false;
 
             if ($scope.filter) {
 
@@ -55,10 +55,11 @@
 
             $http.post(App.route("/api/collections/entries"), {
 
-                "collection": angular.copy($scope.collection),
-                "limit": limit,
-                "filter": JSON.stringify(filter),
-                "skip": $scope.entries ? $scope.entries.length : 0
+                "collection" : angular.copy($scope.collection),
+                "limit"      : limit,
+                "filter"     : JSON.stringify(filter),
+                "skip"       : $scope.entries ? $scope.entries.length : 0,
+                "sort"       : (COLLECTION.sortfield == 'custom-order' ? {"custom-order":1}:false)
 
             }, {responseType:"json"}).success(function(data){
 
@@ -127,6 +128,29 @@
                 });
             }
         };
+
+
+        var table = $("#entries-table").on("sortable-change",function(){
+
+            var entries = [];
+
+            table.find('tbody').children().each(function(i){
+
+                var entry = angular.copy($(this).scope().entry);
+
+                entry['custom-order'] = i;
+
+                $http.post(App.route("/api/collections/saveentry"), {"collection": COLLECTION, "entry":entry, "createversion": false}).success(function(data){
+
+                }).error(App.module.callbacks.error.http);
+
+                entries.push(entry);
+            });
+
+            $scope.$apply(function(){
+                $scope.entries = entries;
+            });
+        });
 
         $scope.loadmore();
     });

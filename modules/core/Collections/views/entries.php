@@ -2,8 +2,25 @@
 
     {{ $app->assets(['collections:assets/collections.js','collections:assets/js/entries.js'], $app['cockpit/version']) }}
 
+    @if($collection['sortfield'] == 'custom-order')
+
+        {{ $app->assets(['assets:vendor/uikit/js/addons/sortable.min.js'], $app['cockpit/version']) }}
+
+    @endif
+
     <style>
         td .uk-grid+.uk-grid { margin-top: 5px; }
+
+        .uk-sortable-dragged {
+            border: 1px #eee solid;
+            height: 40px;
+            background: #fefefe;
+            border-radius: 2px;
+        }
+
+        .uk-sortable-dragged td {
+            display: none;
+        }
     </style>
 
     <script>
@@ -11,6 +28,7 @@
     </script>
 
 @end('header')
+
 
 
 <div data-ng-controller="entries" ng-cloak>
@@ -23,6 +41,8 @@
             @end
             <li><a href="@route('/collections/entry/'.$collection["_id"])" title="@lang('Add entry')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a></li>
         </ul>
+
+        @if($collection['sortfield'] != 'custom-order')
         <div class="uk-navbar-content" data-ng-show="collection && collection.count">
             <form class="uk-form uk-margin-remove uk-display-inline-block" method="get" action="?nc={{ time() }}">
                 <div class="uk-form-icon">
@@ -32,6 +52,8 @@
                 </div>
             </form>
         </div>
+        @endif
+
         <div class="uk-navbar-flip">
             @hasaccess?("Collections", 'manage.collections')
             <div class="uk-navbar-content" data-ng-show="entries && entries.length">
@@ -62,7 +84,7 @@
 
         <div class="uk-width-1-1">
             <div class="app-panel">
-                <table class="uk-table uk-table-striped" multiple-select="{model:entries}">
+                <table id="entries-table" class="uk-table uk-table-striped" multiple-select="{model:entries}">
                     <thead>
                         <tr>
                             <th width="10"><input class="js-select-all" type="checkbox"></th>
@@ -73,7 +95,7 @@
                             <th width="10%">&nbsp;</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody {{ $collection['sortfield'] == 'custom-order' ? 'data-uk-sortable="{animation:false}"':'' }}>
                         <tr class="js-multiple-select" data-ng-repeat="entry in entries track by entry._id">
                             <td><input class="js-select" type="checkbox"></td>
                             <td>
@@ -103,7 +125,9 @@
                 </table>
 
                 <div class="uk-margin-top">
+                    @if($collection['sortfield'] != 'custom-order')
                     <button class="uk-button uk-button-primary" data-ng-click="loadmore()" data-ng-show="entries && !nomore">@lang('Load more...')</button>
+                    @endif
                     <button class="uk-button uk-button-danger" data-ng-click="removeSelected()" data-ng-show="selected"><i class="uk-icon-trash-o"></i> @lang('Delete entries')</button>
                 </div>
 
