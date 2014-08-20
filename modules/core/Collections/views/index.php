@@ -58,7 +58,7 @@
         </div>
     </nav>
 
-    <div class="uk-grid uk-grid-divider" data-uk-grid-match data-ng-show="collections && collections.length">
+    <div class="uk-grid uk-grid-divider" data-uk-grid-match data-ng-show="collections && collections.length" data-uk-grid-margin>
 
         <div class="uk-width-medium-1-4">
             <div class="uk-panel">

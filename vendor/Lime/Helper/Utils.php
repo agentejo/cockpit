@@ -5,7 +5,7 @@ namespace Lime\Helper;
 class Utils extends \Lime\Helper {
 
 	public function gravatar($email, $size=40) {
-		return "http://www.gravatar.com/avatar/".md5($email)."?d=mm&s=".$size;
+		return "//www.gravatar.com/avatar/".md5($email)."?d=mm&s=".$size;
 	}
 
     public function formatSize($size) {

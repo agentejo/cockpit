@@ -12,9 +12,9 @@
         td .uk-grid+.uk-grid { margin-top: 5px; }
 
         .uk-sortable-dragged {
-            border: 1px #eee solid;
+            border: 1px #ccc dashed;
             height: 40px;
-            background: #fefefe;
+            background: rgba(255, 255, 255, 0.3);
             border-radius: 2px;
         }
 

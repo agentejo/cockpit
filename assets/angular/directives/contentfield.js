@@ -66,20 +66,41 @@
             'date': {
                 label: 'Date',
                 template: function(model) {
-                    return '<div class="uk-form-icon uk-width-1-1"> \
-                                <i class="uk-icon-calendar"></i> \
-                                <input class="uk-width-1-1 uk-form-large" type="text" data-uk-datepicker="{format:\'YYYY-MM-DD\'}" ng-model="'+model+'"> \
-                            </div>';
+
+                    var tpl = '<div class="uk-form-icon uk-width-1-1"> \
+                                    <i class="uk-icon-calendar"></i> \
+                                    <input class="uk-width-1-1 uk-form-large" type="text" data-uk-datepicker="{format:\'YYYY-MM-DD\'}" ng-model="'+model+'"> \
+                                </div>';
+
+                    if (!$.UIkit.datepicker) {
+
+                        App.assets.require(['assets/vendor/uikit/js/addons/datepicker.min.js'], function() {
+
+                        });
+                    }
+
+                    return tpl;
                 }
             },
 
             'time': {
                 label: 'Time',
                 template: function(model) {
-                    return '<div class="uk-form-icon uk-width-1-1" data-uk-timepicker> \
-                                <i class="uk-icon-clock-o"></i> \
-                                <input class="uk-width-1-1 uk-form-large" type="text" ng-model="'+model+'"> \
-                            </div>';
+
+                    var tpl = $('<div class="uk-form-icon uk-width-1-1"> \
+                                    <i class="uk-icon-clock-o"></i> \
+                                    <input class="uk-width-1-1 uk-form-large" type="text" ng-model="'+model+'"> \
+                                </div>');
+
+                    if (!$.UIkit.timepicker) {
+
+                        App.assets.require(['assets/vendor/uikit/js/addons/timepicker.min.js'], function() {
+                            $.UIkit.timepicker(tpl);
+                            tpl.parent().addClass('uk-width-1-1').find('.uk-dropdown').css('width','100%');
+                        });
+                    }
+
+                    return tpl;
                 }
             },
 
