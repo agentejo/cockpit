@@ -1,5 +1,10 @@
 (function(module, $){
 
+    if (window.CockpitPathPicker) {
+        return;
+    }
+
+
     var site_base  = COCKPIT_SITE_BASE_URL.replace(/^\/+|\/+$/g, ""),
         media_base = COCKPIT_MEDIA_BASE_URL.replace(/^\/+|\/+$/g, ""),
         site2media = media_base.replace(site_base, "").replace(/^\/+|\/+$/g, "");
@@ -220,9 +225,9 @@
         }
     });
 
-    window.PathPicker = Picker;
+    window.CockpitPathPicker = Picker;
 
-    angular.module('cockpit.directives').directive("mediaPathPicker", function($timeout){
+    angular.module('cockpit.fields').directive("mediaPathPicker", function($timeout){
 
         return {
             require: '?ngModel',
@@ -242,6 +247,7 @@
                         $clear = $tpl.find('.js-clear');
 
                     $element.after($tpl);
+
 
                     function setPath(path) {
 
@@ -311,43 +317,6 @@
         };
 
     });
-
-
-    if (window.tinymce) {
-        tinymce.PluginManager.add('mediapath', function(editor) {
-
-            var picker = function(){
-                new Picker(function(path){
-
-                    var content = '';
-
-                    if (!path) {
-                       return;
-                    }
-
-                    if (path && path.match(/\.(jpg|jpeg|png|gif)/i)) {
-                        content = '<img class="auto-size" src="'+path.replace('site:', window.COCKPIT_SITE_BASE_URL)+'">';
-
-                    } else if (path && path.match(/\.(mp4|ogv|wmv|webm|mpeg|avi)$/i)) {
-                        content = '<video class="auto-size" src="'+path.replace('site:', window.COCKPIT_SITE_BASE_URL)+'"></video>';
-
-                    } else {
-                        content = path;
-                    }
-                    editor.insertContent(content);
-                }, "*");
-            };
-
-            editor.addMenuItem('mediapath', {
-                icon: 'image',
-                text: 'Insert media',
-                onclick: picker,
-                context: 'insert',
-                prependToContext: true
-            });
-
-        });
-    }
 
     function matchName(pattern, path) {
 

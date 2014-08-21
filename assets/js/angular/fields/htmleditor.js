@@ -4,7 +4,7 @@
 
 (function($){
 
-    var reqassets = ['assets/vendor/uikit/js/addons/htmleditor.min.js', 'assets/vendor/marked.js'];
+    var reqassets = ['assets/vendor/uikit/js/addons/htmleditor.min.js', 'assets/vendor/marked.js', 'modules/core/Mediamanager/assets/field.pathpicker.js'];
 
     if (!window.CodeMirror) {
         reqassets.push('assets/vendor/codemirror/codemirror.js');
@@ -87,7 +87,7 @@
 
                     var data = images[editor.preview.find('.js-editor-image.js-config').index(this)];
 
-                    new PathPicker(function(path){
+                    new CockpitPathPicker(function(path){
                         data.handler(path.replace('site:', COCKPIT_SITE_BASE_URL));
                     }, "*.(jpg|png|gif)");
                 });
@@ -99,7 +99,7 @@
         });
     });
 
-    angular.module('cockpit.directives').directive("htmleditor", function($timeout){
+    angular.module('cockpit.fields').directive("htmleditor", function($timeout){
 
         return {
 

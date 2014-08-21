@@ -10,7 +10,7 @@
         reqassets.push('assets/vendor/tinymce/tinymce.min.js');
     }
 
-    angular.module('cockpit.directives').directive("wysiwyg", function($timeout){
+    angular.module('cockpit.fields').directive("wysiwyg", function($timeout){
 
         var generatedIds  = 0,
             defaultConfig = {
@@ -89,7 +89,11 @@
 
                     App.assets.require(reqassets, function() {
 
-                        App.assets.require(tinymce.PluginManager.lookup["mediapath"] ? [] : 'modules/core/Mediamanager/assets/pathpicker.directive.js', function() {
+                        App.assets.require('modules/core/Mediamanager/assets/field.pathpicker.js', function() {
+
+                            if (!tinymce.PluginManager.lookup["mediapath"]) {
+                                registerMediaPathPlugin();
+                            }
 
                             if (defaultConfig.plugins && defaultConfig.plugins.length && tinymce.PluginManager.lookup["mediapath"]) {
                                 defaultConfig.plugins[0] = "mediapath "+defaultConfig.plugins[0];
@@ -114,8 +118,46 @@
 
                 $timeout(deferTinyMCE);
             }
+
         };
 
     });
+
+    function registerMediaPathPlugin() {
+
+        tinymce.PluginManager.add('mediapath', function(editor) {
+
+            var picker = function(){
+                new CockpitPathPicker(function(path){
+
+                    var content = '';
+
+                    if (!path) {
+                       return;
+                    }
+
+                    if (path && path.match(/\.(jpg|jpeg|png|gif)/i)) {
+                        content = '<img class="auto-size" src="'+path.replace('site:', window.COCKPIT_SITE_BASE_URL)+'">';
+
+                    } else if (path && path.match(/\.(mp4|ogv|wmv|webm|mpeg|avi)$/i)) {
+                        content = '<video class="auto-size" src="'+path.replace('site:', window.COCKPIT_SITE_BASE_URL)+'"></video>';
+
+                    } else {
+                        content = path;
+                    }
+                    editor.insertContent(content);
+                }, "*");
+            };
+
+            editor.addMenuItem('mediapath', {
+                icon: 'image',
+                text: 'Insert media',
+                onclick: picker,
+                context: 'insert',
+                prependToContext: true
+            });
+
+        });
+    }
 
 })(jQuery);

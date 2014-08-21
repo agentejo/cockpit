@@ -9,7 +9,7 @@
     @assets($app['app.assets.base'], 'app.base'.$app['cockpit/version'], 'cache:assets', 360, $app['cockpit/version'])
     @assets($app['app.assets.backend'], 'app.backend'.$app['cockpit/version'], 'cache:assets', 360, $app['cockpit/version'])
 
-    {{ $app->assets(["assets:angular/cockpit.js"], $app['cockpit/version']) }}
+    {{ $app->assets(["assets:js/angular/cockpit.js"], $app['cockpit/version']) }}
 
     @trigger('app.layout.header')
 

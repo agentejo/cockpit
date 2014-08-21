@@ -1,6 +1,5 @@
 @start('header')
 
-    {{ $app->assets(['assets:angular/directives/contentfield.js'], $app['cockpit/version']) }}
     {{ $app->assets(['collections:assets/collections.js','collections:assets/js/entry.js'], $app['cockpit/version']) }}
 
     @trigger('cockpit.content.fields.sources')

@@ -65,7 +65,7 @@
 
         $scope.importFromFolder = function(){
 
-            new PathPicker(function(path){
+            new CockpitPathPicker(function(path){
 
                 if (String(path).match(/\.(jpg|png|gif)$/i)){
                     $scope.$apply(function(){
@@ -104,7 +104,7 @@
 
         $scope.selectImage = function(){
 
-            new PathPicker(function(path){
+            new CockpitPathPicker(function(path){
                 $scope.$apply(function(){
                     $scope.gallery.images.push({"path":path, data:{}});
                     App.notify(App.i18n.get("%s image(s) imported", 1));

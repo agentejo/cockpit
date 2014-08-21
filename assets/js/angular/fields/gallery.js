@@ -16,7 +16,7 @@
     ].join('')
 
 
-    angular.module('cockpit.directives').directive("gallery", function($timeout){
+    angular.module('cockpit.fields').directive("gallery", function($timeout){
 
       return {
 
@@ -30,7 +30,7 @@
                 media;
 
             $gal.find(">button").on("click", function(){
-                new PathPicker(function(path){
+                new CockpitPathPicker(function(path){
 
                     if(String(path).match(/\.(jpg|jpeg|png|gif|mp4|mpeg|webm|ogv|wmv)$/i)){
 

@@ -1,6 +1,6 @@
 (function($){
 
-    angular.module('cockpit.services').factory('Contentfields', function Contentfields() {
+    angular.module('cockpit.fields').factory('Contentfields', function Contentfields() {
 
         var fields = {
 

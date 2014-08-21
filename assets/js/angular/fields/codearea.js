@@ -30,7 +30,7 @@
         }
     };
 
-   angular.module('cockpit.directives').directive("codearea", function($timeout) {
+   angular.module('cockpit.fields').directive("codearea", function($timeout) {
 
         var events = ["cursorActivity", "viewportChange", "gutterClick", "focus", "blur", "scroll", "update"];
 

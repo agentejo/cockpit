@@ -12,7 +12,7 @@
     ].join('');
 
 
-    angular.module('cockpit.directives').directive("tags", function($timeout) {
+    angular.module('cockpit.fields').directive("tags", function($timeout) {
 
       return {
 

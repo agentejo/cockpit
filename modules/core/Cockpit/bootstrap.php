@@ -8,7 +8,7 @@ $app['app.assets.base'] = [
     'assets:vendor/animate.css',
 
     // UIkit
-    'cockpit:assets/css/uikit.cockpit.min.css',
+    'assets:css/uikit.cockpit.min.css',
     'assets:vendor/uikit/js/uikit.min.js',
     'assets:vendor/uikit/js/addons/notify.min.js'
 ];
@@ -130,9 +130,9 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
         'assets:vendor/multipleselect.js',
 
         // app related
-        'cockpit:assets/js/app.js',
-        'cockpit:assets/js/app.module.js',
-        'cockpit:assets/js/bootstrap.js',
+        'assets:js/app.js',
+        'assets:js/app.module.js',
+        'assets:js/bootstrap.js',
 
     ], $app->retrieve('app.config/app.assets.backend', []));
 
@@ -205,17 +205,17 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
         return 'if (i18n) { i18n.register('.(count($data) ? json_encode($data):'{}').'); }';
     });
 
-
+    // register content fields
     $app->on("cockpit.content.fields.sources", function() {
 
         echo $this->assets([
-            'assets:angular/directives/contentfield.js',
-            'assets:angular/directives/codearea.js',
-            'assets:angular/directives/wysiwyg.js',
-            'assets:angular/directives/gallery.js',
-            'assets:angular/directives/tags.js',
-            'mediamanager:assets/pathpicker.directive.js',
-            'assets:angular/directives/htmleditor.js'
+            'assets:js/angular/fields/contentfield.js',
+            'assets:js/angular/fields/codearea.js',
+            'assets:js/angular/fields/wysiwyg.js',
+            'assets:js/angular/fields/gallery.js',
+            'assets:js/angular/fields/tags.js',
+            'mediamanager:assets/field.pathpicker.js',
+            'assets:js/angular/fields/htmleditor.js'
         ], $this['cockpit/version']);
 
     }, 100);
