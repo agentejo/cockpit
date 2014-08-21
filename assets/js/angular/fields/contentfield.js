@@ -104,13 +104,6 @@
                 }
             },
 
-            'media': {
-                label: 'Media',
-                template: function(model, options) {
-                    return '<input type="text" media-path-picker="'+(options.allowed || '*')+'" ng-model="'+model+'">';
-                }
-            },
-
             'region': {
                 label: 'Region',
                 template: function(model) {

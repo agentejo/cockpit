@@ -81,8 +81,8 @@
 
 
                                 <div class="uk-text-center uk-margin-large-top uk-margin-large-bottom" data-ng-show="gallery && !gallery.images.length">
-                                    <h2><i class="uk-icon-th"></i></h2>
-                                    <p class="uk-text-large">
+                                    <h2 class="uk-text-muted"><i class="uk-icon-th"></i></h2>
+                                    <p class="uk-text-muted uk-text-large">
                                         @lang('You don\'t have any images in this gallery.')
                                     </p>
                                 </div>

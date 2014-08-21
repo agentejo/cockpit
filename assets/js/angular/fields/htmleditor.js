@@ -4,7 +4,7 @@
 
 (function($){
 
-    var reqassets = ['assets/vendor/uikit/js/addons/htmleditor.min.js', 'assets/vendor/marked.js', 'modules/core/Mediamanager/assets/field.pathpicker.js'];
+    var reqassets = ['assets/vendor/uikit/js/addons/htmleditor.min.js', 'assets/vendor/marked.js', 'modules/core/Mediamanager/assets/pathpicker.js'];
 
     if (!window.CodeMirror) {
         reqassets.push('assets/vendor/codemirror/codemirror.js');
