@@ -109,7 +109,7 @@
                         <tbody>
                             @foreach($info['folders'] as $folder=>$permission)
                             <tr>
-                                <td>{{ $app->pathToUrl($folder) }}</td>
+                                <td class="uk-text-small" style="font-family:monospace;">{{ $app->pathToUrl($folder) }}</td>
                                 <td><div class="uk-badge uk-badge-{{ $permission ? 'success':'danger' }}">writable</div></td>
                             </tr>
                             @endforeach

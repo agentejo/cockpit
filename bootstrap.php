@@ -67,7 +67,7 @@ function cockpit($module = null) {
         $app->path('modules' , __DIR__.'/modules');
         $app->path('assets'  , __DIR__.'/assets');
         $app->path('custom'  , __DIR__.'/custom');
-        $app->path('site'    , dirname(__DIR__));
+        $app->path('site'    , COCKPIT_DIR == COCKPIT_DOCS_ROOT ? COCKPIT_DIR : dirname(__DIR__));
 
         // nosql storage
         $app->service('db', function() use($config) {

@@ -48,11 +48,11 @@
         </div>
 
         <div class="uk-text-small">
-            <span app-clock="d. M Y"></span>
+            <span app-clock="d. M Y">&nbsp;</span>
         </div>
 
         <div class="date-widget-clock">
-            <i class="uk-icon-clock-o"></i> <span app-clock="h:i A"></span>
+            <i class="uk-icon-clock-o"></i> <span app-clock="h:i A">&nbsp;</span>
         </div>
     </div>
 </div>
