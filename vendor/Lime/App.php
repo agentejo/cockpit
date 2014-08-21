@@ -178,6 +178,8 @@ class App implements \ArrayAccess {
             'helpers'      => [],
             'base_url'     => implode("/", array_slice(explode("/", $_SERVER['SCRIPT_NAME']), 0, -1)),
             'base_route'   => implode("/", array_slice(explode("/", $_SERVER['SCRIPT_NAME']), 0, -1)),
+            'base_host'    => isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : php_uname('n'),
+            'base_port'    => isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : 80,
             'docs_root'    => null,
             'site_url'     => null
         ), $settings);
@@ -285,7 +287,7 @@ class App implements \ArrayAccess {
 
         if (strpos($path, ':')===false) {
 
-            if ($_SERVER["SERVER_PORT"] != '80') {
+            if ($this->registry['base_port'] != '80') {
                 $url .= $this->registry['site_url'];
             }
 
@@ -314,7 +316,7 @@ class App implements \ArrayAccess {
 
         $url = '';
 
-        if ($_SERVER["SERVER_PORT"] != '80') {
+        if ($this->registry['base_port'] != '80') {
             $url .= $this->registry['site_url'];
         }
 
@@ -456,7 +458,7 @@ class App implements \ArrayAccess {
             $url = '/'.ltrim(str_replace($root, '', $file), '/');
         }
 
-        if ($_SERVER["SERVER_PORT"] != "80") {
+        if ($this->registry['base_port'] != "80") {
             $url = $this->registry['site_url'].$url;
         }
 
@@ -1068,10 +1070,10 @@ class App implements \ArrayAccess {
 
         $url = ($this->req_is("ssl") ? 'https':'http')."://";
 
-        if ($_SERVER["SERVER_PORT"] != "80") {
-            $url .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"];
+        if ($this->registry['base_port'] != "80") {
+            $url .= $this->registry['base_host'].":".$this->registry['base_port'];
         } else {
-            $url .= $_SERVER["SERVER_NAME"];
+            $url .= $this->registry['base_host'];
         }
 
         if ($withpath) {
