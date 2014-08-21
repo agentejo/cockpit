@@ -7,8 +7,8 @@
 <div data-ng-controller="forms" ng-cloak>
 
     <nav class="uk-navbar uk-margin-large-bottom">
-        <span class="uk-navbar-brand">@lang('Forms')</span>
-        <div class="uk-navbar-content" data-ng-show="forms && forms.length">
+        <span class="uk-hidden-small uk-navbar-brand">@lang('Forms')</span>
+        <div class="uk-hidden-small uk-navbar-content" data-ng-show="forms && forms.length">
             <form class="uk-form uk-margin-remove uk-display-inline-block">
                 <div class="uk-form-icon">
                     <i class="uk-icon-filter"></i>

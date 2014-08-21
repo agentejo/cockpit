@@ -9,7 +9,7 @@
 
     {{ $app->assets(['mediamanager:assets/js/index.js'], $app['cockpit/version']) }}
 
-    {{ $app->assets(['assets:angular/directives/mediapreview.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:js/angular/directives/mediapreview.js'], $app['cockpit/version']) }}
 
 @end('header')
 
@@ -17,10 +17,10 @@
 <div data-ng-controller="mediamanager" ng-cloak>
 
     <div class="uk-navbar">
-        <span class="uk-navbar-brand">@lang('Mediamanager')</span>
+        <span class="uk-hidden-small uk-navbar-brand">@lang('Mediamanager')</span>
         <ul class="uk-navbar-nav">
             <li class="uk-parent" data-uk-dropdown>
-                <a><i class="uk-icon-star"></i>&nbsp; @lang('Bookmarks')</a>
+                <a><i class="uk-icon-star"></i><span class="uk-hidden-small">&nbsp; @lang('Bookmarks')</span></a>
                 <div class="uk-dropdown uk-dropdown-navbar">
 
                     <ul id="mmbookmarks" class="uk-nav uk-nav-navbar uk-nav-parent-icon" ng-show="(bookmarks.folders.length || bookmarks.files.length)">
@@ -43,8 +43,8 @@
                     </div>
                 </div>
             </li>
-            <li><a href="" ng-click="action('createfolder')"><i class="uk-icon-plus-circle"></i>&nbsp; @lang('Folder')</a></li>
-            <li><a href="" ng-click="action('createfile')"><i class="uk-icon-plus-circle"></i>&nbsp; @lang('File')</a></li>
+            <li><a href="" ng-click="action('createfolder')"><i class="uk-icon-plus-circle"></i><span class="uk-hidden-small">&nbsp; @lang('Folder')</span></a></li>
+            <li><a href="" ng-click="action('createfile')"><i class="uk-icon-plus-circle"></i><span class="uk-hidden-small">&nbsp; @lang('File')</span></a></li>
         </ul>
 
         <div class="uk-navbar-flip">
@@ -209,7 +209,6 @@
 
 <div id="mm-image-preview" class="uk-modal">
     <div class="uk-modal-dialog">
-        <a class="uk-modal-close uk-close"></a>
         <div class="modal-content uk-text-center"></div>
     </div>
 </div>

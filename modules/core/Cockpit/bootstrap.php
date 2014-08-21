@@ -215,6 +215,7 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
             'assets:js/angular/fields/gallery.js',
             'assets:js/angular/fields/tags.js',
             'mediamanager:assets/field.pathpicker.js',
+            'assets:js/angular/directives/mediapreview.js',
             'assets:js/angular/fields/htmleditor.js'
         ], $this['cockpit/version']);
 

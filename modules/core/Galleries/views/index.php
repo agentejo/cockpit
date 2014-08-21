@@ -34,8 +34,8 @@
 <div data-ng-controller="galleries" ng-cloak>
 
     <nav class="uk-navbar uk-margin-large-bottom">
-        <span class="uk-navbar-brand">@lang('Galleries')</span>
-        <div class="uk-navbar-content" data-ng-show="galleries && galleries.length">
+        <span class="uk-hidden-small uk-navbar-brand">@lang('Galleries')</span>
+        <div class="uk-hidden-small uk-navbar-content" data-ng-show="galleries && galleries.length">
             <form class="uk-form uk-margin-remove uk-display-inline-block">
                 <div class="uk-form-icon">
                     <i class="uk-icon-filter"></i>
@@ -58,7 +58,7 @@
         </div>
     </nav>
 
-    <div class="uk-grid uk-grid-divider" data-uk-grid-match data-ng-show="galleries && galleries.length">
+    <div class="uk-grid uk-grid-divider" data-uk-grid-margin data-ng-show="galleries && galleries.length">
 
         <div class="uk-width-medium-1-4">
             <div class="uk-panel">
