@@ -29,12 +29,13 @@ $COCKPIT_BASE_ROUTE  = "{$COCKPIT_BASE_URL}/index.php";
 /*
  * SYSTEM DEFINES
  */
-if (!defined('COCKPIT_ADMIN'))      define('COCKPIT_ADMIN'      , 0);
-if (!defined('COCKPIT_REST'))       define('COCKPIT_REST'       , COCKPIT_ADMIN && isset($_SERVER["PATH_INFO"]) && strpos($_SERVER["PATH_INFO"], '/rest/api')===0 ? 1:0);
-if (!defined('COCKPIT_DIR'))        define('COCKPIT_DIR'        , $COCKPIT_DIR);
-if (!defined('COCKPIT_DOCS_ROOT'))  define('COCKPIT_DOCS_ROOT'  , $COCKPIT_DOCS_ROOT);
-if (!defined('COCKPIT_BASE_URL'))   define('COCKPIT_BASE_URL'   , $COCKPIT_BASE_URL);
-if (!defined('COCKPIT_BASE_ROUTE')) define('COCKPIT_BASE_ROUTE' , $COCKPIT_BASE_ROUTE);
+if (!defined('COCKPIT_ADMIN'))       define('COCKPIT_ADMIN'      , 0);
+if (!defined('COCKPIT_REST'))        define('COCKPIT_REST'       , COCKPIT_ADMIN && isset($_SERVER["PATH_INFO"]) && strpos($_SERVER["PATH_INFO"], '/rest/api')===0 ? 1:0);
+if (!defined('COCKPIT_DIR'))         define('COCKPIT_DIR'        , $COCKPIT_DIR);
+if (!defined('COCKPIT_DOCS_ROOT'))   define('COCKPIT_DOCS_ROOT'  , $COCKPIT_DOCS_ROOT);
+if (!defined('COCKPIT_BASE_URL'))    define('COCKPIT_BASE_URL'   , $COCKPIT_BASE_URL);
+if (!defined('COCKPIT_BASE_ROUTE'))  define('COCKPIT_BASE_ROUTE' , $COCKPIT_BASE_ROUTE);
+if (!defined('COCKPIT_CONFIG_PATH')) define('COCKPIT_CONFIG_PATH', COCKPIT_DIR . '/config.php');
 
 function cockpit($module = null) {
 
@@ -52,7 +53,7 @@ function cockpit($module = null) {
             'sec-key'      => 'c3b40c4c-db44-s5h7-a814-b4931a15e5e1',
             'i18n'         => 'en',
             'database'     => [ "server" => "mongolite://".(__DIR__."/storage/data"), "options" => ["db" => "cockpitdb"] ]
-        ], include(__DIR__.'/config.php'));
+        ], include(COCKPIT_CONFIG_PATH));
 
         $app = new LimeExtra\App($config);
 
