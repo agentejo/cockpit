@@ -52,23 +52,23 @@ function cockpit($module = null) {
             'session.name' => md5(__DIR__),
             'sec-key'      => 'c3b40c4c-db44-s5h7-a814-b4931a15e5e1',
             'i18n'         => 'en',
-            'database'     => [ "server" => "mongolite://".(__DIR__."/storage/data"), "options" => ["db" => "cockpitdb"] ]
+            'database'     => [ "server" => "mongolite://".(COCKPIT_DIR."/storage/data"), "options" => ["db" => "cockpitdb"] ]
         ], include(COCKPIT_CONFIG_PATH));
 
         $app = new LimeExtra\App($config);
 
         $app["app.config"] = $config;
 
-        $app->path('#root'   , __DIR__);
-        $app->path('storage' , __DIR__.'/storage');
-        $app->path('backups' , __DIR__.'/storage/backups');
-        $app->path('data'    , __DIR__.'/storage/data');
-        $app->path('cache'   , __DIR__.'/storage/cache');
-        $app->path('tmp'     , __DIR__.'/storage/cache/tmp');
-        $app->path('modules' , __DIR__.'/modules');
-        $app->path('assets'  , __DIR__.'/assets');
-        $app->path('custom'  , __DIR__.'/custom');
-        $app->path('site'    , COCKPIT_DIR == COCKPIT_DOCS_ROOT ? COCKPIT_DIR : dirname(__DIR__));
+        $app->path('#root'   , COCKPIT_DIR);
+        $app->path('storage' , COCKPIT_DIR.'/storage');
+        $app->path('backups' , COCKPIT_DIR.'/storage/backups');
+        $app->path('data'    , COCKPIT_DIR.'/storage/data');
+        $app->path('cache'   , COCKPIT_DIR.'/storage/cache');
+        $app->path('tmp'     , COCKPIT_DIR.'/storage/cache/tmp');
+        $app->path('modules' , COCKPIT_DIR.'/modules');
+        $app->path('assets'  , COCKPIT_DIR.'/assets');
+        $app->path('custom'  , COCKPIT_DIR.'/custom');
+        $app->path('site'    , COCKPIT_DIR == COCKPIT_DOCS_ROOT ? COCKPIT_DIR : dirname(COCKPIT_DIR));
 
         // nosql storage
         $app->service('db', function() use($config) {
@@ -99,8 +99,8 @@ function cockpit($module = null) {
 
         // load modules
         $app->loadModules([
-            __DIR__.'/modules/core',  # core
-            __DIR__.'/modules/addons' # addons
+            COCKPIT_DIR.'/modules/core',  # core
+            COCKPIT_DIR.'/modules/addons' # addons
         ]);
     }
 
