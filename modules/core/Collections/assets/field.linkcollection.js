@@ -1,6 +1,18 @@
 (function($){
 
-    angular.module('cockpit.directives').directive("linkCollection", function($timeout, $http) {
+    angular.module('cockpit.fields').run(function(Contentfields) {
+
+        Contentfields.register('link-collection', {
+            label: 'Collection link',
+            template: function(model, options) {
+                return '<div link-collection="'+options.collection+'" ng-model="'+model+'" data-multiple="'+(options.multiple ? 'true':'false')+'">Linking '+options.collection+'</div>';
+            }
+        });
+
+    });
+
+
+    angular.module('cockpit.fields').directive("linkCollection", function($timeout, $http) {
 
         var collections = false, cache = {}, cacheItems = {}, loaded, Field, Picker;
 

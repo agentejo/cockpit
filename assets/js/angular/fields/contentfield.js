@@ -111,13 +111,6 @@
                 }
             },
 
-            'link-collection': {
-                label: 'Collection link',
-                template: function(model, options) {
-                    return '<div link-collection="'+options.collection+'" ng-model="'+model+'" data-multiple="'+(options.multiple ? 'true':'false')+'">Linking '+options.collection+'</div>';
-                }
-            },
-
             'gallery': {
                 label: 'Gallery',
                 template: function(model) {
