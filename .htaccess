@@ -2,6 +2,10 @@
   Deny from all
 </FilesMatch>
 
+# Allow Cross-Origin-Resource-Sharing
+Header add Access-Control-Allow-Origin "*"
+Header add Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
+
 AddDefaultCharset utf-8
 
 AddType application/javascript          js jsonp
