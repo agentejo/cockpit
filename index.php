@@ -35,6 +35,7 @@ $cockpit->on("after", function() {
     }
 });
 
-$route = str_replace([COCKPIT_BASE_URL.'/index.php', COCKPIT_BASE_URL], '', $_SERVER['REQUEST_URI']);
+
+$route = str_replace([COCKPIT_BASE_URL.'/index.php', COCKPIT_BASE_URL], '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
 $cockpit->trigger("admin.init")->run($route);
