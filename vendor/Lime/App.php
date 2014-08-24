@@ -39,6 +39,7 @@ class App implements \ArrayAccess {
 
     protected $exit     = false;
 
+    /** @var Response|null  */
     public $response    = null;
 
     public $helpers;
@@ -239,7 +240,7 @@ class App implements \ArrayAccess {
     /**
     * Returns a closure that stores the result of the given closure
     * @param  String  $name
-    * @param  Closure $callable
+    * @param  \Closure $callable
     * @return Object
     */
     public function service($name, $callable) {
@@ -354,7 +355,7 @@ class App implements \ArrayAccess {
     /**
     * Put a value in the Lime registry
     * @param String $key  Key name
-    * @param Misc $value  Value
+    * @param Mixed $value  Value
     */
     public function set($key, $value) {
 
@@ -391,8 +392,8 @@ class App implements \ArrayAccess {
     /**
     * Get a value from the Lime registry
     * @param  String $key
-    * @param  Misc $default
-    * @return Misc
+    * @param  Mixed $default
+    * @return Mixed
     */
     public function retrieve($key, $default=null) {
         return fetch_from_array($this->registry, $key, $default);
@@ -401,7 +402,7 @@ class App implements \ArrayAccess {
 
     /**
     * Path helper method
-    * @return Misc
+    * @return Mixed
     */
     public function path(){
 
@@ -439,6 +440,8 @@ class App implements \ArrayAccess {
                 array_unshift($this->paths[$args[0]], rtrim(str_replace(DIRECTORY_SEPARATOR, '/', $args[1]), '/').'/');
                 break;
         }
+
+        return null;
     }
 
     /**
@@ -467,7 +470,7 @@ class App implements \ArrayAccess {
 
     /**
     * Cache helper method
-    * @return Misc
+    * @return Mixed
     */
     public function cache(){
 
@@ -481,12 +484,14 @@ class App implements \ArrayAccess {
             return $this("cache")->write($args[0], $args[1]);
             break;
         }
+
+        return null;
     }
 
     /**
     * Bind an event to closure
     * @param  String  $event
-    * @param  Closure $callback
+    * @param  \Closure $callback
     * @param  Integer $priority
     * @return void
     */
@@ -655,9 +660,9 @@ class App implements \ArrayAccess {
     /**
     * Get request variables
     * @param  String $index
-    * @param  Misc $default
+    * @param  Mixed $default
     * @param  Array $source
-    * @return Misc
+    * @return Mixed
     */
     public function param($index=null, $default = null, $source = null) {
 
@@ -721,7 +726,7 @@ class App implements \ArrayAccess {
     /**
     * Bind GET request to route
     * @param  String  $path
-    * @param  Closure  $callback
+    * @param  \Closure  $callback
     * @param  Boolean $condition
     * @return void
     */
@@ -733,7 +738,7 @@ class App implements \ArrayAccess {
     /**
     * Bind POST request to route
     * @param  String  $path
-    * @param  Closure  $callback
+    * @param  \Closure  $callback
     * @param  Boolean $condition
     * @return void
     */
@@ -798,7 +803,7 @@ class App implements \ArrayAccess {
     /**
     * Bind request to route
     * @param  String  $path
-    * @param  Closure  $callback
+    * @param  \Closure  $callback
     * @param  Boolean $condition
     * @return void
     */
@@ -870,7 +875,7 @@ class App implements \ArrayAccess {
     /**
     * Dispatch route
     * @param  String $path
-    * @return Misc
+    * @return Mixed
     */
     public function dispatch($path) {
 
@@ -955,6 +960,7 @@ class App implements \ArrayAccess {
         $output = false;
 
         if (isset($this->routes[$route])) {
+            $ret = null;
 
             if (is_callable($this->routes[$route])){
                 $ret = call_user_func($this->routes[$route], $params);
@@ -974,7 +980,7 @@ class App implements \ArrayAccess {
     * @param  String $class
     * @param  String $action
     * @param  Array  $params
-    * @return Misc
+    * @return Mixed
     */
     public function invoke($class, $action="index", $params=[]) {
 
@@ -1053,6 +1059,8 @@ class App implements \ArrayAccess {
             // The remote IP address
             return $_SERVER['REMOTE_ADDR'];
         }
+
+        return null;
     }
 
     /**
@@ -1238,6 +1246,7 @@ class Response {
 
 class AppAware {
 
+    /** @var App */
     public $app;
 
     public function __construct($app) {
