@@ -2,20 +2,23 @@
 
 define('COCKPIT_ADMIN', 1);
 
-date_default_timezone_set('UTC');
-
-
-if (PHP_SAPI == 'cli-server' && is_file(__DIR__.parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))) {
-    return false;
-}
-
-
+// set default url rewrite setting
 if (!isset($_SERVER['COCKPIT_URL_REWRITE'])) {
     $_SERVER['COCKPIT_URL_REWRITE'] = 'Off';
 }
 
+// set default timezone
+date_default_timezone_set('UTC');
+
+// handle php webserver
+if (PHP_SAPI == 'cli-server' && is_file(__DIR__.parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))) {
+    return false;
+}
+
+// bootstrap cockpit
 require(__DIR__.'/bootstrap.php');
 
+// handle error pages
 $cockpit->on("after", function() {
 
     switch ($this->response->status) {
@@ -35,7 +38,8 @@ $cockpit->on("after", function() {
     }
 });
 
+// get route
+define('COCKPIT_ADMIN_ROUTE', str_replace([COCKPIT_BASE_URL.'/index.php', COCKPIT_BASE_URL], '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)));
 
-$route = str_replace([COCKPIT_BASE_URL.'/index.php', COCKPIT_BASE_URL], '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
-
-$cockpit->trigger("admin.init")->run($route);
+// run backend
+$cockpit->trigger("admin.init")->run(COCKPIT_ADMIN_ROUTE);
