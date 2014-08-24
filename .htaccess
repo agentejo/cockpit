@@ -2,6 +2,28 @@
   Deny from all
 </FilesMatch>
 
+# Don't show directory listings
+Options -Indexes
+
+
+# URL rewrites
+<IfModule mod_rewrite.c>
+
+    Options -MultiViews
+
+    RewriteEngine On
+    # RewriteBase /
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule .* index.php [L]
+
+    <IfModule mod_env.c>
+        SetEnv COCKPIT_URL_REWRITE On
+    </IfModule>
+
+</IfModule>
+
 # Allow Cross-Origin-Resource-Sharing
 Header add Access-Control-Allow-Origin "*"
 Header add Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"

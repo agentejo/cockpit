@@ -45,7 +45,7 @@ class App implements \ArrayAccess {
     public $layout      = false;
 
     /* status codes */
-    public static $statusCodes = array(
+    public static $statusCodes = [
     // Informational 1xx
     100 => 'Continue',
     101 => 'Switching Protocols',
@@ -91,10 +91,10 @@ class App implements \ArrayAccess {
     503 => 'Service Unavailable',
     504 => 'Gateway Timeout',
     505 => 'HTTP Version Not Supported'
-    );
+    ];
 
     /* mime types */
-    public static $mimeTypes = array(
+    public static $mimeTypes = [
         'asc'   => 'text/plain',
         'au'    => 'audio/basic',
         'avi'   => 'video/x-msvideo',
@@ -157,7 +157,7 @@ class App implements \ArrayAccess {
         'wmls'  => 'text/vnd.wap.wmlscript',
         'xsl'   => 'text/xml',
         'xml'   => 'text/xml'
-    );
+    ];
 
     /**
     * Constructor
@@ -167,7 +167,7 @@ class App implements \ArrayAccess {
 
         $self = $this;
 
-        $this->registry = array_merge(array(
+        $this->registry = array_merge([
             'debug'        => true,
             'app.name'     => 'LimeApp',
             'session.name' => 'limeappsession',
@@ -182,7 +182,7 @@ class App implements \ArrayAccess {
             'base_port'    => isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : 80,
             'docs_root'    => null,
             'site_url'     => null
-        ), $settings);
+        ], $settings);
 
         if (!isset($this["site_url"])) {
             $this["site_url"] = $this->getSiteUrl(false);
@@ -199,7 +199,7 @@ class App implements \ArrayAccess {
         self::$apps[$this["app.name"]] = $this;
 
         // default helpers
-        $this->helpers = new \ArrayObject(array_merge(array('session' => 'Lime\\Session', 'cache' => 'Lime\\Cache'), $this->registry["helpers"]));
+        $this->helpers = new \ArrayObject(array_merge(['session' => 'Lime\\Session', 'cache' => 'Lime\\Cache'], $this->registry["helpers"]));
 
         // register simple autoloader
         spl_autoload_register(function ($class) use($self){
@@ -499,7 +499,7 @@ class App implements \ArrayAccess {
             $callback = $callback->bindTo($this, $this);
         }
 
-        $this->events[$event][] = array("fn" => $callback, "prio" => $priority);
+        $this->events[$event][] = ["fn" => $callback, "prio" => $priority];
     }
 
     /**
@@ -624,9 +624,9 @@ class App implements \ArrayAccess {
 
         if (!isset($this->blocks[$name])) return null;
 
-        $options = array_merge(array(
+        $options = array_merge([
             "print" => true
-        ), $options);
+        ], $options);
 
         $block = implode("\n", $this->blocks[$name]);
 
@@ -823,9 +823,13 @@ class App implements \ArrayAccess {
     * @param  String $route Route to parse
     * @return void
     */
-    public function run() {
+    public function run($route = null) {
 
         $self = $this;
+
+        if ($route) {
+            $this["route"] = $route;
+        }
 
         register_shutdown_function(function() use($self){
 
@@ -835,7 +839,7 @@ class App implements \ArrayAccess {
 
             $error = error_get_last();
 
-            if ($error && in_array($error['type'], array(E_ERROR,E_PARSE,E_CORE_ERROR,E_COMPILE_ERROR,E_USER_ERROR))){
+            if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR])){
 
                 ob_end_clean();
 
@@ -976,7 +980,7 @@ class App implements \ArrayAccess {
 
         $controller = new $class($this);
 
-        return method_exists($controller, $action) ? call_user_func_array(array($controller,$action), $params):false;
+        return method_exists($controller, $action) ? call_user_func_array([$controller,$action], $params):false;
     }
 
     /**
@@ -997,11 +1001,11 @@ class App implements \ArrayAccess {
 
             case 'mobile':
 
-            $mobileDevices = array(
+            $mobileDevices = [
                 "midp","240x320","blackberry","netfront","nokia","panasonic","portalmmm","sharp","sie-","sonyericsson",
                 "symbian","windows ce","benq","mda","mot-","opera mini","philips","pocket pc","sagem","samsung",
                 "sda","sgh-","vodafone","xda","iphone", "ipod","android"
-            );
+            ];
 
             return preg_match('/(' . implode('|', $mobileDevices). ')/i',strtolower($_SERVER['HTTP_USER_AGENT']));
             break;
@@ -1101,8 +1105,8 @@ class App implements \ArrayAccess {
      */
     public function encode($data, $pwd, $base64encoded = false) {
 
-        $key = array('');
-        $box = array('');
+        $key = [''];
+        $box = [''];
         $cipher = '';
 
         $pwd_length = strlen($pwd);
@@ -1246,8 +1250,8 @@ class AppAware {
 
     public function __call($name, $arguments) {
 
-        if (is_callable(array($this->app, $name))) {
-            return call_user_func_array(array($this->app, $name), $arguments);
+        if (is_callable([$this->app, $name])) {
+            return call_user_func_array([$this->app, $name], $arguments);
         }
         return $this;
     }
@@ -1327,10 +1331,10 @@ class Cache extends Helper {
 
         $expire = ($duration==-1) ? -1:(time() + (is_string($duration) ? strtotime($duration):$duration));
 
-        $safe_var = array(
+        $safe_var = [
             'expire' => $expire,
             'value' => serialize($value)
-        );
+        ];
 
         file_put_contents($this->cachePath.md5($this->prefix.'-'.$key).".cache" , serialize($safe_var));
     }

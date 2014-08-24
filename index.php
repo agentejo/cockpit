@@ -4,14 +4,14 @@ define('COCKPIT_ADMIN', 1);
 
 date_default_timezone_set('UTC');
 
-// $_SERVER['PATH_INFO'] fix for nginx >:-/
-if (!isset($_SERVER['PATH_INFO']) && strpos($_SERVER['REQUEST_URI'], $_SERVER['PHP_SELF'])===0) {
 
-    $_URI  = preg_replace('/\?(.*)/', '', $_SERVER['REQUEST_URI']);
-    $_SELF = $_SERVER['PHP_SELF'];
-    $_PATH = substr($_URI, strlen($_SELF));
+if (PHP_SAPI == 'cli-server' && is_file(__DIR__.parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))) {
+    return false;
+}
 
-    if ($_PATH && $_PATH[0] == '/') $_SERVER['PATH_INFO'] = $_PATH;
+
+if (!isset($_SERVER['COCKPIT_URL_REWRITE'])) {
+    $_SERVER['COCKPIT_URL_REWRITE'] = 'Off';
 }
 
 require(__DIR__.'/bootstrap.php');
@@ -35,4 +35,6 @@ $cockpit->on("after", function() {
     }
 });
 
-$cockpit->trigger("admin.init")->run();
+$route = str_replace([COCKPIT_BASE_URL.'/index.php', COCKPIT_BASE_URL], '', $_SERVER['REQUEST_URI']);
+
+$cockpit->trigger("admin.init")->run($route);
