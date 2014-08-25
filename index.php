@@ -39,7 +39,14 @@ $cockpit->on("after", function() {
 });
 
 // get route
-define('COCKPIT_ADMIN_ROUTE', str_replace([COCKPIT_BASE_URL.'/index.php', COCKPIT_BASE_URL], '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)));
+if (!defined('COCKPIT_ADMIN_ROUTE')) {
+
+    $route = str_replace([COCKPIT_BASE_URL.'/index.php', COCKPIT_BASE_URL], '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+
+    if ($route == '') $route = '/';
+
+    define('COCKPIT_ADMIN_ROUTE', $route);
+}
 
 // run backend
 $cockpit->trigger("admin.init")->run(COCKPIT_ADMIN_ROUTE);
