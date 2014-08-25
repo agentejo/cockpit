@@ -162,6 +162,10 @@
             $scope.managefields = !$scope.managefields;
         };
 
+        $scope.toggleOptions = function(index) {
+            $("#options-field-"+index).toggleClass('uk-hidden');
+        };
+
         var imglist = $("#images-list").on("sortable-change",function(){
 
             var images = [];
