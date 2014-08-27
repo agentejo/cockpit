@@ -114,6 +114,7 @@
                                 <a class="uk-button uk-button-small" href="@route('/collections/entry')/@@ collection._id @@" title="@lang('Create new entry')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
                                 @hasaccess?("Collections", 'manage.collections')
                                 <a class="uk-button uk-button-small" href="@route('/collections/collection')/@@ collection._id @@" title="@lang('Edit collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
+                                <a class="uk-button uk-button-small" ng-click="duplicate(collection._id)" title="@lang('Duplicate collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-copy"></i></a>
                                 <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, collection)" href="#" title="@lang('Delete collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
                                 @end
                             </span>
@@ -144,6 +145,7 @@
                                     <li><a href="@route('/collections/entries')/@@ collection._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a></li>
                                     <li><a href="@route('/collections/entry')/@@ collection._id @@" title="@lang('Create new entry')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a></li>
                                     @hasaccess?("Collections", 'manage.collections')
+                                    <li><a ng-click="duplicate(collection._id)" title="@lang('Duplicate collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-copy js-ignore-select"></i></a></li>
                                     <li><a class="uk-text-danger" data-ng-click="remove($index, collection)" href="#" title="@lang('Delete collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle js-ignore-select"></i></a></li>
                                     @end
                                 </ul>

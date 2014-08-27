@@ -111,6 +111,7 @@
                             <span class="uk-button-group">
                                 <a class="uk-button uk-button-primary uk-button-small" href="@route('/regions/region')/@@ region._id @@" title="@lang('Edit region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
                                 @hasaccess?("Regions", 'create.regions')
+                                <a class="uk-button uk-button-small" data-ng-click="duplicate(region._id)" href="#" title="@lang('Duplicate region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-copy"></i></a>
                                 <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
                                 @end
                             </span>
@@ -136,6 +137,7 @@
                             </td>
                             <td align="right">
                                 @hasaccess?("Regions", 'create.regions')
+                                <a data-ng-click="duplicate(region._id)" href="#" title="@lang('Duplicate region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-copy js-ignore-select"></i></a>
                                 <a class="uk-text-danger" ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle js-ignore-select"></i></a>
                                 @end
                             </td>

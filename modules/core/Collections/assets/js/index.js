@@ -34,6 +34,17 @@
             });
         };
 
+        $scope.duplicate = function(collectionId){
+
+            $http.post(App.route("/api/collections/duplicate"), { "collectionId": collectionId }, {responseType:"json"}).success(function(collection){
+
+                $timeout(function(){
+                    $scope.collections.push(collection);
+                    App.notify(App.i18n.get("Collection duplicated"), "success");
+                }, 0);
+            }).error(App.module.callbacks.error.http);
+        };
+
         $scope.filter = "";
 
         $scope.matchName = function(name) {

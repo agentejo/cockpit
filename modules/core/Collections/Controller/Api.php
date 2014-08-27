@@ -78,6 +78,31 @@ class Api extends \Cockpit\Controller {
         return $collection ? '{"success":true}' : '{"success":false}';
     }
 
+    public function duplicate(){
+
+        $collectionId = $this->param("collectionId", null);
+
+        if ($collectionId) {
+
+            $collection = $this->app->db->findOneById("common/collections", $collectionId);
+
+            if ($collection) {
+
+                unset($collection['_id']);
+                $collection["modified"] = time();
+                $collection["_uid"]     = @$this->user["_id"];
+                $collection["created"] = $collection["modified"];
+
+                $collection["name"] .= ' (copy)';
+
+                $this->app->db->save("common/collections", $collection);
+
+                return json_encode($collection);
+            }
+        }
+
+        return false;
+    }
 
     public function entries() {
 

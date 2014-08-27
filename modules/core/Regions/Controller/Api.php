@@ -62,6 +62,32 @@ class Api extends \Cockpit\Controller {
         return '{"success":true}';
     }
 
+    public function duplicate(){
+
+        $regionId = $this->param("regionId", null);
+
+        if ($regionId) {
+
+            $region = $this->app->db->findOneById("common/regions", $regionId);
+
+            if ($region) {
+
+                unset($region['_id']);
+                $region["modified"] = time();
+                $region["_uid"]     = @$this->user["_id"];
+                $region["created"] = $region["modified"];
+
+                $region["name"] .= ' (copy)';
+
+                $this->app->db->save("common/regions", $region);
+
+                return json_encode($region);
+            }
+        }
+
+        return false;
+    }
+
     public function remove(){
 
         $region = $this->param("region", null);

@@ -40,6 +40,17 @@
             });
         };
 
+        $scope.duplicate = function(regionId){
+
+            $http.post(App.route("/api/regions/duplicate"), { "regionId": regionId }, {responseType:"json"}).success(function(region){
+
+                $timeout(function(){
+                    $scope.regions.push(region);
+                    App.notify(App.i18n.get("Region duplicated"), "success");
+                }, 0);
+            }).error(App.module.callbacks.error.http);
+        };
+
         $scope.filter = "";
 
         $scope.matchName = function(name) {
