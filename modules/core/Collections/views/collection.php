@@ -47,7 +47,7 @@
 
                                     <div class="uk-grid uk-grid-small">
                                         <div class="uk-width-3-4">
-                                            <input class="uk-width-1-1 uk-form-blank" type="text" data-ng-model="field.name" placeholder="@lang('Field name')" pattern="[a-zA-Z0-9]+" required>
+                                            <input class="uk-width-1-1 uk-form-blank" type="text" data-ng-model="field.name" placeholder="@lang('Field name')" pattern="[a-zA-Z0-9_]+" required>
                                         </div>
                                         <div class="uk-width-1-4 uk-text-right">
                                             <a ng-click="toggleOptions($index)"><i class="uk-icon-cog"></i></a>
