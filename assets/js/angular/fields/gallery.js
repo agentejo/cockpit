@@ -13,7 +13,7 @@
             '<ul class="uk-grid uk-grid-small uk-grid-width-medium-1-5 uk-grid-width-1-3 gallery-list uk-sortable"></ul>',
             '<button class="uk-button uk-margin-top" type="button"><i class="uk-icon-plus-circle"></i></button>',
         '</div>'
-    ].join('')
+    ].join('');
 
 
     angular.module('cockpit.fields').directive("gallery", function($timeout){
@@ -30,41 +30,45 @@
                 media;
 
             $gal.find(">button").on("click", function(){
-                new CockpitPathPicker(function(path){
 
-                    if(String(path).match(/\.(jpg|jpeg|png|gif|mp4|mpeg|webm|ogv|wmv)$/i)){
+                App.assets.require(window.CockpitPathPicker ? [] : 'modules/core/Mediamanager/assets/pathpicker.js', function() {
 
-                        media.push(path);
-                        App.notify(App.i18n.get("%s media file(s) added", 1));
-                        updateSope();
-                        rendermedia();
+                    new CockpitPathPicker(function(path){
 
-                    } else {
+                        if(String(path).match(/\.(jpg|jpeg|png|gif|mp4|mpeg|webm|ogv|wmv)$/i)){
 
-                        $.post(App.route('/mediamanager/api'), {"cmd":"ls", "path": String(path).replace("site:"+site2media, "")}, function(data){
+                            media.push(path);
+                            App.notify(App.i18n.get("%s media file(s) added", 1));
+                            updateSope();
+                            rendermedia();
 
-                            var count = 0;
+                        } else {
 
-                            if (data && data.files && data.files.length) {
+                            $.post(App.route('/mediamanager/api'), {"cmd":"ls", "path": String(path).replace("site:"+site2media, "")}, function(data){
 
-                                data.files.forEach(function(file) {
+                                var count = 0;
 
-                                    if(file.name.match(/\.(jpg|jpeg|png|gif|mp4|mpeg|webm|ogv|wmv)$/i)) {
-                                        media.push("site:"+site2media+'/'+file.path);
-                                        count = count + 1;
-                                    }
-                                });
+                                if (data && data.files && data.files.length) {
 
-                                updateSope();
-                                rendermedia();
-                            }
+                                    data.files.forEach(function(file) {
 
-                            App.notify(App.i18n.get("%s media file(s) added", count));
+                                        if(file.name.match(/\.(jpg|jpeg|png|gif|mp4|mpeg|webm|ogv|wmv)$/i)) {
+                                            media.push("site:"+site2media+'/'+file.path);
+                                            count = count + 1;
+                                        }
+                                    });
 
-                        }, "json");
-                    }
+                                    updateSope();
+                                    rendermedia();
+                                }
 
-                }, "*");
+                                App.notify(App.i18n.get("%s media file(s) added", count));
+
+                            }, "json");
+                        }
+
+                    }, "*");
+                });
             });
 
             $gal.on("click", ".js-remove", function(){

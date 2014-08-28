@@ -103,10 +103,10 @@
                                         @lang('This region has no fields yet.')
                                     </div>
 
-                                  <div ng-show="manageform">
+                                    <div ng-show="manageform">
 
                                     <ul id="manage-fields-list" class="uk-nestable" data-uk-nestable="{maxDepth:1}">
-                                         <li class="uk-nestable-list-item" data-ng-repeat="field in region.fields">
+                                        <li class="uk-nestable-list-item" data-ng-repeat="field in region.fields">
                                             <div class="uk-nestable-item uk-nestable-item-table">
 
                                                 <div class="uk-grid uk-grid-small">
@@ -115,8 +115,8 @@
                                                         <input class="uk-width-2-3 uk-form-blank" type="text" data-ng-model="field.name" placeholder="@lang('Field name')" pattern="[a-zA-Z0-9_]+" required>
                                                     </div>
                                                     <div class="uk-width-1-4 uk-text-right">
-                                                        <a ng-click="toggleOptions($index)"><i class="uk-icon-cog"></i></a>
-                                                        <a data-ng-click="remove(field)" class="uk-close"></a>
+                                                    <a ng-click="toggleOptions($index)"><i class="uk-icon-cog"></i></a>
+                                                    <a data-ng-click="remove(field)" class="uk-close"></a>
                                                     </div>
                                                 </div>
                                                 <div id="options-field-@@ $index @@" class="app-panel uk-margin-small-top uk-hidden">
@@ -127,8 +127,8 @@
                                                             <select class="uk-width-1-1" data-ng-model="field.type" title="@lang('Field type')" ng-options="f.name as f.label for f in contentfields"></select>
                                                         </div>
                                                         <div class="uk-width-1-2">
-                                                            <label class="uk-text-small">@lang('Field label')</label>
-                                                            <input class="uk-width-1-1" type="text" data-ng-model="field.label" placeholder="@lang('Field label')">
+                                                        <label class="uk-text-small">@lang('Field label')</label>
+                                                        <input class="uk-width-1-1" type="text" data-ng-model="field.label" placeholder="@lang('Field label')">
                                                         </div>
 
                                                         <div class="uk-width-1-1 uk-grid-margin">
@@ -180,27 +180,27 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                         </li>
+                                        </li>
                                     </ul>
 
                                     <button data-ng-click="addfield()" type="button" class="uk-button uk-button-success"><i class="uk-icon-plus-circle" title="@lang('Add field')"></i></button>
-                                  </div>
+                                    </div>
 
-                                  <div ng-show="!manageform">
+                                    <div ng-show="!manageform">
 
-                                      <div class="uk-form-row" data-ng-repeat="field in region.fields" data-ng-show="field.name">
+                                        <div class="uk-form-row" data-ng-repeat="field in region.fields" data-ng-show="field.name">
 
-                                          <label class="uk-text-small">
-                                              <span ng-if="field.localize"><i class="uk-icon-comments-o"></i></span>
-                                              @@ (field.label || field.name) | uppercase @@
-                                          </label>
+                                            <label class="uk-text-small">
+                                            <span ng-if="field.localize"><i class="uk-icon-comments-o"></i></span>
+                                            @@ (field.label || field.name) | uppercase @@
+                                            </label>
 
-                                          <contentfield options="@@ field @@" ng-model="region.fields[$index][locale ? ('value'+'_'+locale):'value']"></contentfield>
-                                      </div>
-                                  </div>
+                                            <contentfield options="@@ field @@" ng-model="region.fields[$index][locale ? ('value'+'_'+locale):'value']"></contentfield>
+                                        </div>
+                                    </div>
 
 
-                              </div>
+                                </div>
                             </div>
 
                         </div>
@@ -209,25 +209,25 @@
 
                             <div class="uk-margin uk-clearfix">
 
-                              <div class="uk-button-dropdown uk-float-right" data-uk-dropdown>
-                                <button type="button" class="uk-button">
-                                  <i class="uk-icon-indent"></i> @lang('Insert form field')
-                                </button>
+                                <div class="uk-button-dropdown uk-float-right" data-uk-dropdown>
+                                    <button type="button" class="uk-button">
+                                        <i class="uk-icon-indent"></i> @lang('Insert form field')
+                                    </button>
 
-                                <div class="uk-dropdown uk-dropdown-flip">
-                                    <ul class="uk-nav uk-nav-dropdown" ng-show="region.fields && region.fields.length">
-                                      <li class="uk-nav-header">@lang('Form fields')</li>
-                                      <li ng-repeat="field in region.fields">
-                                        <a ng-click="insertfield(field.name)">@@ field.name @@</a>
-                                      </li>
-                                    </ul>
+                                    <div class="uk-dropdown uk-dropdown-flip">
+                                        <ul class="uk-nav uk-nav-dropdown" ng-show="region.fields && region.fields.length">
+                                            <li class="uk-nav-header">@lang('Form fields')</li>
+                                            <li ng-repeat="field in region.fields">
+                                            <a ng-click="insertfield(field.name)">@@ field.name @@</a>
+                                            </li>
+                                        </ul>
 
-                                    <div class="uk-text-muted" ng-show="region.fields && !region.fields.length">
-                                      @lang('You have no fields added.')
+                                        <div class="uk-text-muted" ng-show="region.fields && !region.fields.length">
+                                        @lang('You have no fields added.')
+                                        </div>
                                     </div>
-                                </div>
 
-                              </div>
+                                </div>
                             </div>
 
                             <textarea id="region-template" codearea="{mode:'application/x-httpd-php', autoCloseTags: true}" class="uk-width-1-1 uk-form-large" style="height:450px !important;" placeholder="@lang('Region code')" data-ng-model="region.tpl"></textarea>

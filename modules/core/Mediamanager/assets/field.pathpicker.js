@@ -85,7 +85,7 @@
 
                         $timeout(function(){
 
-                            App.assets.require('modules/core/Mediamanager/assets/pathpicker.js', function() {
+                            App.assets.require(window.CockpitPathPicker ? [] : 'modules/core/Mediamanager/assets/pathpicker.js', function() {
 
                                 ngModel.$render = function () {
                                     setPath(ngModel.$viewValue);
