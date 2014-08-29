@@ -1,5 +1,28 @@
 # Changelog
 
+### W.I.P.
+
+    + Added duplicate collections and regions
+    + Added usage nice urls for the backend (if possible)
+    + Added custom order via drag'n drop for collection entries
+    + Added multilanguage support for content fields
+    + Added Cross-Origin-Resource-Sharing headers to htaccess to allow extern access (e.g. mobile apps)
+    + Added .htaccess to auto optimize apache based webservers
+    + Added thumbnails api function
+    + Added collection_populate_one api function
+    ^ Updated assets + libs
+    ^ Updated allow underscores in field names
+    ^ Updated group settings moved to main storage (!important: group settings may get lost after update)
+    ^ Updated allow using not latin letters in region & collection name field
+    ^ Updated Lexy renderer refactored to service
+    ^ Updated moved view caching to lexy class
+    # Fixed MongoDB error on collection entries index page
+    # Fixed notices in CLI mode @naumovs
+    # Fixed Form disabled when not valid (form add-on)
+    # Fixed cache empty assets @kinolaev
+    # Fixed Galleries: Thumbnails of images added from folder aren't displayed @kinolaev
+    - Removed $_SERVER['PATH'] dependency
+
 ### 0.9.17  (Jul 13, 2014)
 
     + Added new api function "collection_populate" to populate linked collection items
