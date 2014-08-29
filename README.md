@@ -1,5 +1,7 @@
 # Cockpit
 
+[![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=449417)](https://www.bountysource.com/trackers/449417-cockpit?utm_source=449417&utm_medium=shield&utm_campaign=TRACKER_BADGE)
+
 The CMS for developers. Add content management functionality to any site - plug &amp; play CMS.
 Manage content like collections, regions, forms and galleries which you can reuse anywhere on your website.
 
