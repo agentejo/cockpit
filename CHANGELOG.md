@@ -21,7 +21,7 @@
     # Fixed Form disabled when not valid (form add-on)
     # Fixed cache empty assets @kinolaev
     # Fixed Galleries: Thumbnails of images added from folder aren't displayed @kinolaev
-    - Removed $_SERVER['PATH'] dependency
+    - Removed $_SERVER['PATH_INFO'] dependency
 
 ### 0.9.17  (Jul 13, 2014)
 
