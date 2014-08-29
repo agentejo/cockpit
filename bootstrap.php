@@ -30,7 +30,7 @@ $COCKPIT_BASE_ROUTE  = isset($_SERVER['COCKPIT_URL_REWRITE']) && $_SERVER['COCKP
  * SYSTEM DEFINES
  */
 if (!defined('COCKPIT_ADMIN'))       define('COCKPIT_ADMIN'      , 0);
-if (!defined('COCKPIT_REST'))        define('COCKPIT_REST'       , COCKPIT_ADMIN && isset($_SERVER["PATH_INFO"]) && strpos($_SERVER["PATH_INFO"], '/rest/api')===0 ? 1:0);
+if (!defined('COCKPIT_REST'))        define('COCKPIT_REST'       , COCKPIT_ADMIN && defined(COCKPIT_ADMIN_ROUTE) && strpos(COCKPIT_ADMIN_ROUTE, '/rest/api')===0 ? 1:0);
 if (!defined('COCKPIT_DIR'))         define('COCKPIT_DIR'        , $COCKPIT_DIR);
 if (!defined('COCKPIT_DOCS_ROOT'))   define('COCKPIT_DOCS_ROOT'  , $COCKPIT_DOCS_ROOT);
 if (!defined('COCKPIT_BASE_URL'))    define('COCKPIT_BASE_URL'   , $COCKPIT_BASE_URL);
