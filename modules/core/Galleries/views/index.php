@@ -115,12 +115,19 @@
                         </div>
 
                         <div class="app-panel-box docked-bottom">
-                            <span class="uk-button-group">
-                                <a class="uk-button uk-button-primary uk-button-small" href="@route('/galleries/gallery')/@@ gallery._id @@" title="@lang('Edit gallery')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
-                                @hasaccess?("Galleries", 'create.gallery')
-                                <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, gallery)" href="#" title="@lang('Delete gallery')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
-                                @end
-                            </span>
+
+                            <div class="uk-link" data-uk-dropdown="{mode:'click'}">
+                                <i class="uk-icon-bars"></i>
+                                <div class="uk-dropdown">
+                                    <ul class="uk-nav uk-nav-dropdown uk-nav-parent-icon">
+                                        <li><a href="@route('/galleries/gallery')/@@ gallery._id @@"><i class="uk-icon-pencil"></i> @lang('Edit gallery')</a></li>
+                                        @hasaccess?("Galleries", 'create.gallery')
+                                        <li class="uk-nav-divider"></li>
+                                        <li><a class="uk-text-danger" data-ng-click="remove($index, gallery)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete gallery')</a></li>
+                                        @end
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

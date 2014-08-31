@@ -37,6 +37,14 @@ if (!defined('COCKPIT_BASE_URL'))    define('COCKPIT_BASE_URL'   , $COCKPIT_BASE
 if (!defined('COCKPIT_BASE_ROUTE'))  define('COCKPIT_BASE_ROUTE' , $COCKPIT_BASE_ROUTE);
 if (!defined('COCKPIT_CONFIG_PATH')) define('COCKPIT_CONFIG_PATH', COCKPIT_DIR . '/config.php');
 
+# admin route
+if (COCKPIT_ADMIN && !defined('COCKPIT_ADMIN_ROUTE')) {
+
+    $route = str_replace([COCKPIT_BASE_URL.'/index.php', COCKPIT_BASE_URL], '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+
+    define('COCKPIT_ADMIN_ROUTE', $route == '' ? '/' : $route);
+}
+
 function cockpit($module = null) {
 
     static $app;

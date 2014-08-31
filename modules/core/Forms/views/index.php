@@ -43,13 +43,20 @@
                 </div>
 
                 <div class="app-panel-box docked-bottom">
-                    <span class="uk-button-group">
-                        <a class="uk-button uk-button-primary uk-button-small" href="@route('/forms/entries')/@@ form._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a>
-                        @hasaccess?("Forms", 'manage.forms')
-                        <a class="uk-button uk-button-small" href="@route('/forms/form')/@@ form._id @@" title="@lang('Edit form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
-                        <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, form)" href="#" title="@lang('Delete form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
-                        @end
-                    </span>
+
+                    <div class="uk-link" data-uk-dropdown="{mode:'click'}">
+                        <i class="uk-icon-bars"></i>
+                        <div class="uk-dropdown">
+                            <ul class="uk-nav uk-nav-dropdown uk-nav-parent-icon">
+                                <li><a href="@route('/forms/entries')/@@ form._id @@"><i class="uk-icon-list"></i> @lang('Show entries')</a></li>
+                                @hasaccess?("Forms", 'manage.forms')
+                                <li class="uk-nav-divider"></li>
+                                <li><a href="@route('/forms/form')/@@ form._id @@"><i class="uk-icon-pencil"></i> @lang('Edit form')</a></li>
+                                <li><a class="uk-text-danger" data-ng-click="remove($index, form)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete form')</a></li>
+                                @end
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -69,16 +76,23 @@
                 <tr class="js-multiple-select" data-ng-repeat="form in forms track by form._id" data-ng-show="matchName(form.name)">
                     <td><input class="js-select" type="checkbox"></td>
                     <td>
-                        <a href="@route('/forms/form')/@@ form._id @@">@@ form.name @@</a>
+                        <a href="@route('/forms/entries')/@@ form._id @@">@@ form.name @@</a>
                     </td>
                     <td>@@ form.count @@</td>
-                    <td align="right">
-                        <ul class="uk-subnav uk-subnav-line">
-                            <li><a href="@route('/forms/entries')/@@ form._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a></li>
-                            @hasaccess?("Forms", 'manage.forms')
-                            <li><a class="uk-text-danger" data-ng-click="remove($index, form)" href="#" title="@lang('Delete form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle js-ignore-select"></i></a></li>
-                            @end
-                        </ul>
+                    <td>
+                        <div class="uk-link uk-float-right" data-uk-dropdown>
+                            <i class="uk-icon-bars"></i>
+                            <div class="uk-dropdown">
+                                <ul class="uk-nav uk-nav-dropdown uk-nav-parent-icon">
+                                    <li><a href="@route('/forms/entries')/@@ form._id @@"><i class="uk-icon-list"></i> @lang('Show entries')</a></li>
+                                    @hasaccess?("Forms", 'manage.forms')
+                                    <li class="uk-nav-divider"></li>
+                                    <li><a href="@route('/forms/form')/@@ form._id @@"><i class="uk-icon-pencil"></i> @lang('Edit form')</a></li>
+                                    <li><a class="uk-text-danger" data-ng-click="remove($index, form)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete form')</a></li>
+                                    @end
+                                </ul>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </tbody>

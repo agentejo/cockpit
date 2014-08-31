@@ -42,7 +42,7 @@
 
                         <div class="uk-button-group">
                             <button type="submit" class="uk-button uk-button-primary uk-button-large">@lang('Save form')</button>
-                            <a href="@route('/forms/entries')/@@ form._id @@" class="uk-button uk-button-large" data-ng-show="form._id"><i class="uk-icon-bars"></i> @lang('Goto entries')</a>
+                            <a href="@route('/forms/entries')/@@ form._id @@" class="uk-button uk-button-large" data-ng-show="form._id"><i class="uk-icon-list"></i> @lang('Goto entries')</a>
                         </div>
                         &nbsp;
                         <a href="@route('/forms')">@lang('Cancel')</a>

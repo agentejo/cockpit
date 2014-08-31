@@ -108,13 +108,21 @@
                         </div>
 
                         <div class="app-panel-box docked-bottom">
-                            <span class="uk-button-group">
-                                <a class="uk-button uk-button-primary uk-button-small" href="@route('/regions/region')/@@ region._id @@" title="@lang('Edit region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
-                                @hasaccess?("Regions", 'create.regions')
-                                <a class="uk-button uk-button-small" data-ng-click="duplicate(region._id)" href="#" title="@lang('Duplicate region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-copy"></i></a>
-                                <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
-                                @end
-                            </span>
+
+
+                            <div class="uk-link" data-uk-dropdown="{mode:'click'}">
+                                <i class="uk-icon-bars"></i>
+                                <div class="uk-dropdown">
+                                    <ul class="uk-nav uk-nav-dropdown uk-nav-parent-icon">
+                                        <li><a href="@route('/regions/region')/@@ region._id @@"><i class="uk-icon-pencil"></i> @lang('Edit region')</a></li>
+                                        @hasaccess?("Regions", 'create.regions')
+                                        <li><li class="uk-nav-divider"></li>
+                                        <li><a data-ng-click="duplicate(region._id)" href="#"><i class="uk-icon-copy"></i> @lang('Duplicate region')</a></li>
+                                        <li><a class="uk-text-danger" data-ng-click="remove($index, region)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete region')</a></li>
+                                        @end
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -135,10 +143,19 @@
                             <td>
                                 <a href="@route('/regions/region')/@@ region._id @@">@@ region.name @@</a>
                             </td>
-                            <td align="right">
+                            <td>
                                 @hasaccess?("Regions", 'create.regions')
-                                <a data-ng-click="duplicate(region._id)" href="#" title="@lang('Duplicate region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-copy js-ignore-select"></i></a>
-                                <a class="uk-text-danger" ng-click="remove($index, region)" href="#" title="@lang('Delete region')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle js-ignore-select"></i></a>
+                                <div class="uk-link uk-float-right" data-uk-dropdown>
+                                    <i class="uk-icon-bars"></i>
+                                    <div class="uk-dropdown">
+                                        <ul class="uk-nav uk-nav-dropdown uk-nav-parent-icon">
+                                            <li><a href="@route('/regions/region')/@@ region._id @@"><i class="uk-icon-pencil"></i> @lang('Edit region')</a></li>
+                                            <li><li class="uk-nav-divider"></li>
+                                            <li><a data-ng-click="duplicate(region._id)" href="#"><i class="uk-icon-copy"></i> @lang('Duplicate region')</a></li>
+                                            <li><a class="uk-text-danger" data-ng-click="remove($index, region)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete region')</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
                                 @end
                             </td>
                         </tr>

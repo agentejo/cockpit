@@ -109,15 +109,24 @@
                         </div>
 
                         <div class="app-panel-box docked-bottom">
-                            <span class="uk-button-group">
-                                <a class="uk-button uk-button-primary uk-button-small" href="@route('/collections/entries')/@@ collection._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a>
-                                <a class="uk-button uk-button-small" href="@route('/collections/entry')/@@ collection._id @@" title="@lang('Create new entry')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a>
-                                @hasaccess?("Collections", 'manage.collections')
-                                <a class="uk-button uk-button-small" href="@route('/collections/collection')/@@ collection._id @@" title="@lang('Edit collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a>
-                                <a class="uk-button uk-button-small" ng-click="duplicate(collection._id)" title="@lang('Duplicate collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-copy"></i></a>
-                                <a class="uk-button uk-button-danger uk-button-small" data-ng-click="remove($index, collection)" href="#" title="@lang('Delete collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle"></i></a>
-                                @end
-                            </span>
+
+                            <div class="uk-link" data-uk-dropdown="{mode:'click'}">
+                                <i class="uk-icon-bars"></i>
+                                <div class="uk-dropdown">
+                                    <ul class="uk-nav uk-nav-dropdown uk-nav-parent-icon">
+
+                                        <li><a href="@route('/collections/entries')/@@ collection._id @@"><i class="uk-icon-list"></i> @lang('Show entries')</a></li>
+                                        <li><a href="@route('/collections/entry')/@@ collection._id @@"><i class="uk-icon-plus-circle"></i> @lang('Create new entry')</a></li>
+                                        @hasaccess?("Collections", 'manage.collections')
+                                        <li class="uk-nav-divider"></li>
+                                        <li><a href="@route('/collections/collection')/@@ collection._id @@"><i class="uk-icon-pencil"></i> @lang('Edit collection')</a></li>
+                                        <li><a ng-click="duplicate(collection._id)"><i class="uk-icon-copy"></i> @lang('Duplicate collection')</a></li>
+                                        <li class="uk-nav-divider"></li>
+                                        <li><a class="uk-text-danger" data-ng-click="remove($index, collection)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete collection')</a></li>
+                                        @end
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -140,15 +149,24 @@
                                 <a href="@route('/collections/entries')/@@ collection._id @@">@@ collection.name @@</a>
                             </td>
                             <td>@@ collection.count @@</td>
-                            <td align="right">
-                                <ul class="uk-subnav uk-subnav-line">
-                                    <li><a href="@route('/collections/entries')/@@ collection._id @@" title="@lang('Show entries')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-bars"></i></a></li>
-                                    <li><a href="@route('/collections/entry')/@@ collection._id @@" title="@lang('Create new entry')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a></li>
-                                    @hasaccess?("Collections", 'manage.collections')
-                                    <li><a ng-click="duplicate(collection._id)" title="@lang('Duplicate collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-copy js-ignore-select"></i></a></li>
-                                    <li><a class="uk-text-danger" data-ng-click="remove($index, collection)" href="#" title="@lang('Delete collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-minus-circle js-ignore-select"></i></a></li>
-                                    @end
-                                </ul>
+                            <td>
+                                <div class="uk-float-right uk-link" data-uk-dropdown>
+                                    <i class="uk-icon-bars"></i>
+                                    <div class="uk-dropdown">
+                                        <ul class="uk-nav uk-nav-dropdown uk-nav-parent-icon">
+
+                                            <li><a href="@route('/collections/entries')/@@ collection._id @@"><i class="uk-icon-list"></i> @lang('Show entries')</a></li>
+                                            <li><a href="@route('/collections/entry')/@@ collection._id @@"><i class="uk-icon-plus-circle"></i> @lang('Create new entry')</a></li>
+                                            @hasaccess?("Collections", 'manage.collections')
+                                            <li class="uk-nav-divider"></li>
+                                            <li><a href="@route('/collections/collection')/@@ collection._id @@"><i class="uk-icon-pencil"></i> @lang('Edit collection')</a></li>
+                                            <li><a ng-click="duplicate(collection._id)"><i class="uk-icon-copy"></i> @lang('Duplicate collection')</a></li>
+                                            <li class="uk-nav-divider"></li>
+                                            <li><a class="uk-text-danger" data-ng-click="remove($index, collection)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete collection')</a></li>
+                                            @end
+                                        </ul>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
