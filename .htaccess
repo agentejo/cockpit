@@ -25,8 +25,10 @@ Options -Indexes
 </IfModule>
 
 # Allow Cross-Origin-Resource-Sharing
+<IfModule mod_headers.c>
 Header add Access-Control-Allow-Origin "*"
 Header add Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
+</IfModule>
 
 AddDefaultCharset utf-8
 
