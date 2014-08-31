@@ -21,7 +21,10 @@ class Mailer {
 
     $message = $this->createMessage($to, $subject, $message);
 
-    $message->setFrom(isset($options['from']) ? $options['from'] : 'mailer@'.(isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : 'localhost'));
+    $message->setFrom(isset($options['from']) ? $options['from'] : 'mailer@'.(isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : 'localhost'), isset($options['from_name']) ? $options['from_name'] : false);
+    
+    if(isset($options['reply_to']))
+      $message->addReplyTo($options['reply_to']);
 
     return $message->send();
   }
@@ -105,6 +108,10 @@ class Mailer_Message {
 
     public function addTo($email, $name = '') {
         $this->mail->AddAddress($email, $name);
+    }
+
+    public function addReplyTo($email, $name='') {
+        $this->mail->addReplyTo($email, $name);
     }
 
     public function addCC($email, $name = '') {
