@@ -1,4 +1,4 @@
-@import url(../modules/core/Cockpit/assets/css/uikit.cockpit.min.css);
+@import url(../assets/css/uikit.cockpit.min.css);
 
 *, *:before, *:after {
   box-sizing: border-box !important;
