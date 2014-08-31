@@ -122,7 +122,7 @@
                                         <li><a href="@route('/collections/collection')/@@ collection._id @@"><i class="uk-icon-pencil"></i> @lang('Edit collection')</a></li>
                                         <li><a ng-click="duplicate(collection._id)"><i class="uk-icon-copy"></i> @lang('Duplicate collection')</a></li>
                                         <li class="uk-nav-divider"></li>
-                                        <li><a class="uk-text-danger" data-ng-click="remove($index, collection)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete collection')</a></li>
+                                        <li class="uk-danger"><a data-ng-click="remove($index, collection)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete collection')</a></li>
                                         @end
                                     </ul>
                                 </div>
@@ -162,7 +162,7 @@
                                             <li><a href="@route('/collections/collection')/@@ collection._id @@"><i class="uk-icon-pencil"></i> @lang('Edit collection')</a></li>
                                             <li><a ng-click="duplicate(collection._id)"><i class="uk-icon-copy"></i> @lang('Duplicate collection')</a></li>
                                             <li class="uk-nav-divider"></li>
-                                            <li><a class="uk-text-danger" data-ng-click="remove($index, collection)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete collection')</a></li>
+                                            <li class="uk-danger"><a data-ng-click="remove($index, collection)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete collection')</a></li>
                                             @end
                                         </ul>
                                     </div>

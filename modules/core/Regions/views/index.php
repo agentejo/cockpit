@@ -118,7 +118,7 @@
                                         @hasaccess?("Regions", 'create.regions')
                                         <li><li class="uk-nav-divider"></li>
                                         <li><a data-ng-click="duplicate(region._id)" href="#"><i class="uk-icon-copy"></i> @lang('Duplicate region')</a></li>
-                                        <li><a class="uk-text-danger" data-ng-click="remove($index, region)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete region')</a></li>
+                                        <li class="uk-danger"><a data-ng-click="remove($index, region)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete region')</a></li>
                                         @end
                                     </ul>
                                 </div>
@@ -152,7 +152,7 @@
                                             <li><a href="@route('/regions/region')/@@ region._id @@"><i class="uk-icon-pencil"></i> @lang('Edit region')</a></li>
                                             <li><li class="uk-nav-divider"></li>
                                             <li><a data-ng-click="duplicate(region._id)" href="#"><i class="uk-icon-copy"></i> @lang('Duplicate region')</a></li>
-                                            <li><a class="uk-text-danger" data-ng-click="remove($index, region)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete region')</a></li>
+                                            <li class="uk-danger"><a data-ng-click="remove($index, region)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete region')</a></li>
                                         </ul>
                                     </div>
                                 </div>

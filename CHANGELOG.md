@@ -1,6 +1,6 @@
 # Changelog
 
-### W.I.P.
+### 0.9.18  (Aug 31, 2014)
 
     + Added duplicate collections and regions
     + Added usage nice urls for the backend (if possible)

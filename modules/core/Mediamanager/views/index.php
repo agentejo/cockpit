@@ -166,7 +166,8 @@
                                    <li class="uk-nav-header uk-text-truncate"><i class="uk-icon-folder-o"></i> @@ folder.name @@</li>
                                    <li><a ng-click="addBookmark(folder)" title="@lang('Bookmark folder')"><i class="uk-icon-star"></i> @lang('Bookmark folder')</a></li>
                                    <li><a ng-click="action('rename', folder)" title="@lang('Rename folder')"><i class="uk-icon-text-width"></i> @lang('Rename folder')</a></li>
-                                   <li><a ng-click="action('remove', folder)" title="@lang('Delete folder')"><i class="uk-icon-minus-circle"></i> @lang('Delete folder')</a></li>
+                                   <li class="uk-nav-divider"></li>
+                                   <li class="uk-danger"><a ng-click="action('remove', folder)" title="@lang('Delete folder')"><i class="uk-icon-minus-circle"></i> @lang('Delete folder')</a></li>
                                </ul>
                            </div>
                        </div>
@@ -188,7 +189,8 @@
                                    <li><a ng-click="addBookmark(file)" title="@lang('Bookmark file')"><i class="uk-icon-star"></i> @lang('Bookmark file')</a></li>
                                    <li><a ng-click="action('rename', file)" title="@lang('Rename file')"><i class="uk-icon-text-width"></i> @lang('Rename file')</a></li>
                                    <li><a ng-click="action('download', file)" title="@lang('Download file')"><i class="uk-icon-paperclip"></i> @lang('Download file')</a></li>
-                                   <li><a ng-click="action('remove', file)" title="@lang('Delete file')"><i class="uk-icon-minus-circle"></i> @lang('Delete file')</a></li>
+                                   <li class="uk-nav-divider"></li>
+                                   <li class="uk-danger"><a ng-click="action('remove', file)" title="@lang('Delete file')"><i class="uk-icon-minus-circle"></i> @lang('Delete file')</a></li>
                                </ul>
                            </div>
                        </div>

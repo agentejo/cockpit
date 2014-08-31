@@ -52,7 +52,7 @@
                                 @hasaccess?("Forms", 'manage.forms')
                                 <li class="uk-nav-divider"></li>
                                 <li><a href="@route('/forms/form')/@@ form._id @@"><i class="uk-icon-pencil"></i> @lang('Edit form')</a></li>
-                                <li><a class="uk-text-danger" data-ng-click="remove($index, form)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete form')</a></li>
+                                <li class="uk-danger"><a data-ng-click="remove($index, form)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete form')</a></li>
                                 @end
                             </ul>
                         </div>
@@ -88,7 +88,7 @@
                                     @hasaccess?("Forms", 'manage.forms')
                                     <li class="uk-nav-divider"></li>
                                     <li><a href="@route('/forms/form')/@@ form._id @@"><i class="uk-icon-pencil"></i> @lang('Edit form')</a></li>
-                                    <li><a class="uk-text-danger" data-ng-click="remove($index, form)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete form')</a></li>
+                                    <li class="uk-danger"><a data-ng-click="remove($index, form)" href="#"><i class="uk-icon-minus-circle"></i> @lang('Delete form')</a></li>
                                     @end
                                 </ul>
                             </div>

@@ -134,6 +134,17 @@
 .hook-nav-dropdown-divider() {}
 
 
+.uk-nav-dropdown > li.uk-danger > a,
+.uk-nav-dropdown > li.uk-danger > a { // 1
+    color: @text-danger-color;
+}
+
+.uk-nav-dropdown > li.uk-danger > a:hover,
+.uk-nav-dropdown > li.uk-danger > a:focus { // 1
+    background: @text-danger-color;
+    color: #fff;
+}
+
 // Modifier `uk-nav-navbar`
 // ========================================================================
 

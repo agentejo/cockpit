@@ -53,6 +53,7 @@
                     matchTags: true,
                     autoCloseBrackets: true,
                     autoCloseTags: true,
+                    smartIndent: false,
                     mode: 'text',
                     theme: 'pastel-on-dark'
                 }, scope.$eval(attrs.codearea));
