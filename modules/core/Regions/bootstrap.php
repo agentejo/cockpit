@@ -2,17 +2,27 @@
 
 // API
 
+$regions = []; #cached regions
+
 $this->module("regions")->extend([
 
-    "render" => function($name, $params = [], $locale = null) use($app) {
+    'get_region' => function($name) use($app, $regions) {
+
+        if (!isset($regions[$name])) {
+            $regions[$name] = $app->db->findOne('common/regions', ['name'=>$name]);
+        }
+
+        return $regions[$name];
+    },
+
+    'render' => function($name, $params = [], $locale = null) use($app) {
 
         if (!$locale && is_string($params)) {
             $locale = $params;
             $params = [];
         }
 
-
-        $region = $app->db->findOne("common/regions", ["name"=>$name]);
+        $region = $this->get_region($name);
 
         if (!$region) {
             return null;
@@ -21,25 +31,55 @@ $this->module("regions")->extend([
         $renderer = $app->renderer;
         $fields   = [];
 
-        if (isset($region["fields"]) && count($region["fields"])) {
-            foreach ($region["fields"] as &$field) {
-                $fields[$field["name"]] = $field["value"];
+        if (isset($region['fields']) && count($region['fields'])) {
+            foreach ($region['fields'] as &$field) {
+
+                $fields[$field['name']] = $field['value'];
 
                 if ($locale && isset($field["value_{$locale}"])) {
-                    $fields[$field["name"]] = $field["value_{$locale}"];
+                    $fields[$field['name']] = $field["value_{$locale}"];
                 }
             }
         }
 
         $fields = array_merge($fields, $params);
 
-        $app->trigger("region_before_render", [$name, $region["tpl"], $fields]);
+        $app->trigger('region_before_render', [$name, $region['tpl'], $fields]);
 
-        $output = $renderer->execute($region["tpl"], $fields);
+        $output = $renderer->execute($region['tpl'], $fields);
 
-        $app->trigger("region_after_render", [$name, $output]);
+        $app->trigger('region_after_render', [$name, $output]);
 
         return $output;
+    },
+
+    'region_field' => function($region, $fieldname, $key = null, $default = null) {
+
+
+        $region = $this->get_region($region);
+
+        if ($region && isset($region['fields']) && count($region['fields'])) {
+            foreach ($region['fields'] as &$field) {
+
+                if ($field['name'] == $fieldname) {
+
+                    if ($key) {
+                        return isset($field[$key]) ? $field[$key] : $default;
+                    }
+
+                    return $field;
+                }
+            }
+        }
+
+        return null;
+    },
+
+    'group' => function($group, $sort = null) use($app) {
+
+        if (!$sort) $sort = ['name' => 1];
+
+        return $app->db->find('common/regions', ['filter' =>['group' => $group], 'sort'=> $sort]);
     }
 ]);
 
@@ -51,20 +91,32 @@ $app->renderer->extend(function($content){
     return $content;
 });
 
-if (!function_exists("region")) {
+if (!function_exists('region')) {
     function region($name, $params = [], $locale = null) {
-        echo cockpit("regions")->render($name, $params, $locale);
+        echo cockpit('regions')->render($name, $params, $locale);
     }
 }
 
-if (!function_exists("get_region")) {
+if (!function_exists('get_region')) {
     function get_region($name, $params = [], $locale = null) {
-        return cockpit("regions")->render($name, $params, $locale);
+        return cockpit('regions')->render($name, $params, $locale);
+    }
+}
+
+if (!function_exists('regions_in_group')) {
+    function regions_in_group($group, $sort = null) {
+        return cockpit('regions')->group($group, $sort);
+    }
+}
+
+if (!function_exists('region_field')) {
+    function region_field($region, $field, $key = null, $default = null) {
+        return cockpit('regions')->region_field($region, $field, $key, $default);
     }
 }
 
 //rest
-$app->on("cockpit.rest.init", function($routes) {
+$app->on('cockpit.rest.init', function($routes) {
     $routes["regions"] = 'Regions\\Controller\\RestApi';
 });
 

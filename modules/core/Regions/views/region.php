@@ -74,6 +74,9 @@
 
                         <div class="uk-form-row">
                             <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="region.name" required>
+                            <div class="uk-margin-top">
+                                <input class="uk-width-1-1 uk-form-blank uk-text-muted" type="text" data-ng-model="region.slug" app-slug="region.name" placeholder="@lang('Slug...')" title="slug" data-uk-tooltip="{pos:'left'}">
+                            </div>
                         </div>
 
                         <ul class="uk-tab uk-tab-flip uk-margin" style="margin:25px 0;">
@@ -138,7 +141,7 @@
                                                             <div class="uk-form uk-form-horizontal">
 
                                                                 @if(count($locales))
-                                                                <div class="uk-form-row" data-ng-if="field.type=='text' || field.type=='code' || field.type=='html' || field.type=='wysiwyg' || field.type=='markdown' || field.type=='region'">
+                                                                <div class="uk-form-row">
                                                                     <label class="uk-form-label">@lang('Localize')</label>
                                                                     <div class="uk-form-controls">
                                                                         <input type="checkbox" data-ng-model="field.localize" />

@@ -74,7 +74,19 @@ $app->bind("/api/forms/submit/:form", function($params) use($app) {
 
 });
 
+
+$forms = []; # cached forms
+
 $this->module("forms")->extend([
+
+    "get_form" => function($name) use($app, $forms) {
+
+        if (!isset($forms[$name])) {
+            $forms[$name] = $app->db->findOne("common/forms", ["name"=>$name]);
+        }
+
+        return $forms[$name];
+    },
 
     "form" => function($name, $options = []) use($app) {
 
@@ -96,13 +108,13 @@ $this->module("forms")->extend([
 
     "entries" => function($name) use($app) {
 
-        $frm = $app->db->findOne("common/forms", ["name"=>$name]);
+        $form = $this->get_form($name);
 
-        if (!$frm) {
+        if (!$form) {
             return false;
         }
 
-        $entrydb = "form".$frm["_id"];
+        $entrydb = "form".$form["_id"];
 
         return $app->db->getCollection("forms/{$entrydb}");
     }

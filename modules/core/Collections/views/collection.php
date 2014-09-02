@@ -23,6 +23,9 @@
 
                     <div class="uk-form-row">
                         <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="collection.name" required>
+                        <div class="uk-margin-top">
+                            <input class="uk-width-1-1 uk-form-blank uk-text-muted" type="text" data-ng-model="collection.slug" app-slug="collection.name" placeholder="@lang('Slug...')" title="slug" data-uk-tooltip="{pos:'left'}">
+                        </div>
                     </div>
 
                     <div class="uk-form-row uk-margin uk-text-center" data-ng-show="!collection.fields || !collection.fields.length">
@@ -92,7 +95,7 @@
                                                     </div>
 
                                                     @if(count($locales))
-                                                    <div class="uk-form-row" data-ng-if="field.type=='text' || field.type=='code' || field.type=='html' || field.type=='wysiwyg' || field.type=='markdown' || field.type=='region'">
+                                                    <div class="uk-form-row">
                                                         <label class="uk-form-label">@lang('Localize')</label>
                                                         <div class="uk-form-controls">
                                                             <input type="checkbox" data-ng-model="field.localize" />

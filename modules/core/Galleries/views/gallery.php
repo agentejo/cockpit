@@ -57,6 +57,9 @@
 
                         <div class="uk-form-row">
                             <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="gallery.name" required>
+                            <div class="uk-margin-top">
+                                <input class="uk-width-1-1 uk-form-blank uk-text-muted" type="text" data-ng-model="gallery.slug" app-slug="gallery.name" placeholder="@lang('Slug...')" title="slug" data-uk-tooltip="{pos:'left'}">
+                            </div>
                         </div>
 
                         <div class="uk-form-row">

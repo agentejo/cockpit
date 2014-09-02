@@ -1,6 +1,6 @@
 (function($){
 
-    App.module.controller("entry", function($scope, $rootScope, $http, $timeout){
+    App.module.controller("entry", function($scope, $rootScope, $http, $timeout, Contentfields){
 
         var collection = COLLECTION,
             entry      = COLLECTION_ENTRY || {},
@@ -119,7 +119,7 @@
         };
 
         $scope.getFieldname = function(field) {
-            return $scope.locale ? field.name + '_' + $scope.locale : field.name;
+            return $scope.locale && field.localize ? field.name + '_' + $scope.locale : field.name;
         };
 
         $scope.validateForm = function(entry){

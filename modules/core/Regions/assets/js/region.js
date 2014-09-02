@@ -59,7 +59,6 @@
                 return;
             }
 
-
             App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
 
                 var msg = $.UIkit.notify(['<i class="uk-icon-spinner uk-icon-spin"></i>', App.i18n.get("Restoring version...")].join(" "), {timeout:0});
@@ -161,7 +160,7 @@
         };
 
         $scope.getFieldname = function(field) {
-            return $scope.locale ? field.name + '_' + $scope.locale : field.name;
+            return $scope.locale && field.localize ? field.name + '_' + $scope.locale : field.name;
         };
 
         $scope.toggleOptions = function(index) {
