@@ -203,6 +203,40 @@
         };
     });
 
+    module.directive('highlightcode', ['$compile', '$parse', '$interpolate', function ($compile, $parse, $interpolate) {
+        return {
+            restrict: 'EA',
+            compile: function(tElm, tAttrs, transclude) {
+
+                var container  = $('<div></div>'),
+                    interpolateFn = $interpolate(tElm.html(), true),
+                    update = function(code) {
+
+                        if (!code) return;
+
+                        container.html('<pre class="hljs"><code>'+code.replace(/^(\r\n|\r|\n)/m, '')+'</code></pre>');
+
+                        App.assets.require(window.hljs ? [] : ['assets/vendor/highlightjs/highlight.pack.js','assets/vendor/highlightjs/styles/railscasts.css'], function() {
+
+                            hljs.highlightBlock(container.find('code')[0]);
+                        });
+                    };
+
+                // put template
+                tElm.hide().after(container);
+
+                return function postLink(scope, iElm, iAttrs, ctrl) {
+
+                    update(iElm[0].innerHTML);
+
+                    scope.$watch(interpolateFn, function (code) {
+                        update(code);
+                    });
+                };
+            }
+        };
+    }]);
+
     // global callbacks
 
     module.callbacks = {success:{}, error:{}};

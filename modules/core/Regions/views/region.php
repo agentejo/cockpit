@@ -237,7 +237,7 @@
 
                             <div class="uk-margin" ng-show="region.name">
                                 <strong>@lang('Embed region snippet'):</strong>
-                                <pre><code>&lt;?php <strong>region('@@region.name@@')</strong> ?&gt;</code></pre>
+                                <highlightcode>&lt;?php <strong>region('@@region.name@@')</strong> ?&gt;</highlightcode>
                             </div>
                         </div>
 

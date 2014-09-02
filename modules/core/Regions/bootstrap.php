@@ -15,6 +15,11 @@ $this->module("regions")->extend([
         return $regions[$name];
     },
 
+    'get_region_by_slug' => function($slug) use($app) {
+
+        return $app->db->findOne('common/regions', ['slug'=>$slug]);
+    },
+
     'render' => function($name, $params = [], $locale = null) use($app) {
 
         if (!$locale && is_string($params)) {

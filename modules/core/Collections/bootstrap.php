@@ -5,7 +5,7 @@
 
 $this->module("collections")->extend([
 
-    "collection" => function($name) use($app) {
+    'collection' => function($name) use($app) {
 
         static $collections;
 
@@ -15,10 +15,10 @@ $this->module("collections")->extend([
 
         if (!isset($collections[$name])) {
 
-            $collection = $app->db->findOne("common/collections", ["name"=>$name]);
+            $collection = $app->db->findOne('common/collections', ['name'=>$name]);
 
             if ($collection) {
-                $collection = "collection".$collection["_id"];
+                $collection = 'collection'.$collection["_id"];
                 $collections[$name] = $app->db->getCollection("collections/{$collection}");
             }
         }
@@ -26,7 +26,7 @@ $this->module("collections")->extend([
         return isset($collections[$name]) ? $collections[$name] : null;
     },
 
-    "collectionById" => function($colid) use($app) {
+    'collectionById' => function($colid) use($app) {
 
         static $collections;
 
@@ -44,7 +44,36 @@ $this->module("collections")->extend([
         return $collections[$colid];
     },
 
-    "populate" => function($collection, $resultset) use($app) {
+    'collections'=> function($options = []) {
+
+        $return      = [];
+        $collections = $app->db->find('common/collections', $options)->toArray();
+
+        foreach ($collections as $collection) {
+            $return[$collection['name']] = $this->collectionById($collection['_id']);
+        }
+
+        return $return;
+    },
+
+    'get_collection_by_slug' => function($slug) use($app) {
+
+        $collection = $app->db->findOne('common/collections', ['slug'=>$slug]);
+
+        if ($collection) {
+            $collection = "collection".$collection["_id"];
+            return $app->db->getCollection("collections/{$collection}");
+        }
+
+        return null;
+    },
+
+    'group' => function($group, $sort = null) use($app) {
+
+        return $this->collections(['filter' =>['group' => $group], 'sort'=> $sort]);
+    },
+
+    'populate' => function($collection, $resultset) use($app) {
 
         static $cache;
 
@@ -62,7 +91,7 @@ $this->module("collections")->extend([
             return $resultset;
         }
 
-        $collection = $app->db->findOne("common/collections", ["name"=>$collection]);
+        $collection = $app->db->findOne('common/collections', ['name'=>$collection]);
 
         if (!$collection) {
             return $resultset;
@@ -122,7 +151,7 @@ $this->module("collections")->extend([
         return $resultset;
     },
 
-    "populateOne" => function($collection, $item) use($app) {
+    'populateOne' => function($collection, $item) use($app) {
 
         if (!$item) {
             return $item;
@@ -134,24 +163,24 @@ $this->module("collections")->extend([
     }
 ]);
 
-if (!function_exists("collection")) {
+if (!function_exists('collection')) {
     function collection($name) {
-        return cockpit("collections")->collection($name);
+        return cockpit('collections')->collection($name);
     }
 }
 
-if (!function_exists("collection_populate")) {
+if (!function_exists('collection_populate')) {
     function collection_populate($collection, $resultset) {
-        return cockpit("collections")->populate($collection, $resultset);
+        return cockpit('collections')->populate($collection, $resultset);
     }
 
     function collection_populate_one($collection, $item) {
-        return cockpit("collections")->populateOne($collection, $item);
+        return cockpit('collections')->populateOne($collection, $item);
     }
 }
 
 //rest
-$app->on("cockpit.rest.init", function($routes) {
+$app->on('cockpit.rest.init', function($routes) {
     $routes["collections"] = 'Collections\\Controller\\RestApi';
 });
 
@@ -160,29 +189,29 @@ $app->on("cockpit.rest.init", function($routes) {
 if (COCKPIT_ADMIN && !COCKPIT_REST) {
 
 
-    $app->on("admin.init", function() {
+    $app->on('admin.init', function() {
 
-        if (!$this->module("auth")->hasaccess("Collections", ['manage.collections', 'manage.entries'])) return;
+        if (!$this->module('auth')->hasaccess('Collections', ['manage.collections', 'manage.entries'])) return;
 
         // bind controllers
-        $this->bindClass("Collections\\Controller\\Collections", "collections");
-        $this->bindClass("Collections\\Controller\\Api", "api/collections");
+        $this->bindClass('Collections\\Controller\\Collections', 'collections');
+        $this->bindClass('Collections\\Controller\\Api', 'api/collections');
 
-        $this("admin")->menu("top", [
-            "url"    => $this->routeUrl("/collections"),
-            "label"  => '<i class="uk-icon-list"></i>',
-            "title"  => $this("i18n")->get("Collections"),
-            "active" => (strpos($this["route"], '/collections') === 0)
+        $this('admin')->menu('top', [
+            'url'    => $this->routeUrl('/collections'),
+            'label'  => '<i class="uk-icon-list"></i>',
+            'title'  => $this('i18n')->get('Collections'),
+            'active' => (strpos($this['route'], '/collections') === 0)
         ], 5);
 
         // handle global search request
-        $this->on("cockpit.globalsearch", function($search, $list) {
+        $this->on('cockpit.globalsearch', function($search, $list) {
 
-            foreach ($this->db->find("common/collections") as $c) {
-                if (stripos($c["name"], $search)!==false){
+            foreach ($this->db->find('common/collections') as $c) {
+                if (stripos($c['name'], $search)!==false){
                     $list[] = [
-                        "title" => '<i class="uk-icon-list"></i> '.$c["name"],
-                        "url"   => $this->routeUrl('/collections/entries/'.$c["_id"])
+                        'title' => '<i class="uk-icon-list"></i> '.$c['name'],
+                        'url'   => $this->routeUrl('/collections/entries/'.$c['_id'])
                     ];
                 }
             }
@@ -190,17 +219,17 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
 
     });
 
-    $app->on("admin.dashboard.aside", function() {
+    $app->on('admin.dashboard.aside', function() {
 
-        if (!$this->module("auth")->hasaccess("Collections", ['manage.collections', 'manage.entries'])) return;
+        if (!$this->module('auth')->hasaccess('Collections', ['manage.collections', 'manage.entries'])) return;
 
-        $title       = $this("i18n")->get("Collections");
-        $badge       = $this->db->getCollection("common/collections")->count();
-        $collections = $this->db->find("common/collections", ["limit"=> 3, "sort"=>["created"=>-1] ])->toArray();
+        $title       = $this('i18n')->get('Collections');
+        $badge       = $this->db->getCollection('common/collections')->count();
+        $collections = $this->db->find('common/collections', ['limit'=> 3, 'sort'=>['created'=>-1] ])->toArray();
 
-        $this->renderView("collections:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'collections'));
+        $this->renderView('collections:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php', compact('title', 'badge', 'collections'));
     });
 
     // acl
-    $this("acl")->addResource("Collections", ['manage.collections', 'manage.entries']);
+    $this("acl")->addResource('Collections', ['manage.collections', 'manage.entries']);
 }

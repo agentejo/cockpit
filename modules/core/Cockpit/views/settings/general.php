@@ -79,11 +79,11 @@
                             <strong>@lang('Access the registry values'):</strong>
                         </p>
 
-                        <span class="uk-badge">PHP</span>
-                        <pre><code>&lt;?php $value = <strong>get_registry</strong>('keyname' [, default]); ?&gt;</code></pre>
+                        <span class="uk-badge uk-margin-small-bottom">PHP</span>
+                        <highlightcode>&lt;?php $value = get_registry('keyname' [, default]); ?&gt;</highlightcode>
 
-                        <span class="uk-badge">Javascript</span>
-                        <pre><code>var value = Cockpit.registry.<strong>keyname</strong> || default; <span class="uk-text-muted">// with Cockpit.js API</span></code></pre>
+                        <span class="uk-badge uk-margin-small-bottom">Javascript</span>
+                        <highlightcode>var value = Cockpit.registry.keyname || default; // with Cockpit.js API</highlightcode>
                     </div>
                 </div>
                 <div>
