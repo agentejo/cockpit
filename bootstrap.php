@@ -112,6 +112,16 @@ function cockpit($module = null) {
         ]);
     }
 
+    // shorthand modules method call e.g. cockpit('regions:render', 'test');
+    if (func_num_args() > 1) {
+
+        $arguments = func_get_args();
+
+        list($module, $method) = explode(':', $arguments[0]);
+        array_splice($arguments, 0, 1);
+        return call_user_func_array([$app->module($module), $method], $arguments);
+    }
+
     return $module ? $app->module($module) : $app;
 }
 
