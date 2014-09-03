@@ -97,6 +97,11 @@ if (!function_exists('path_to')) {
     }
 }
 
+// REST
+$app->on('cockpit.rest.init', function($routes) {
+    $routes["cockpit"] = 'Cockpit\\Controller\\RestApi';
+});
+
 
 // extend lexy parser
 $app->renderer->extend(function($content){

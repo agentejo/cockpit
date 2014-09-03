@@ -31,7 +31,7 @@
             'boolean': {
                 label: 'Boolean',
                 template: function(model) {
-                    return '<input type="checkbox" ng-model="'+model+'">';
+                    return '<div><input type="checkbox" ng-model="'+model+'"></div>';
                 }
             },
 

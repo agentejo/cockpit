@@ -13,7 +13,6 @@ $assets = array_merge([
     // angular
     'assets:vendor/angular/angular.min.js',
     'assets:vendor/angular/angular-sanitize.min.js',
-    'assets:vendor/angular/angular-animate.min.js',
 
     // uikit addons
     'assets:vendor/uikit/js/addons/autocomplete.min.js',

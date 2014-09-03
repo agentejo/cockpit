@@ -8,7 +8,7 @@
             "locale"     : html.data("locale"),
             "base_route" : html.data("route"),
             "base_url"   : html.data("base"),
-            "modules"    : ['ngSanitize', 'ngAnimate'],
+            "modules"    : ['ngSanitize'],
             "_events"    : {},
 
             base: function(url) {
