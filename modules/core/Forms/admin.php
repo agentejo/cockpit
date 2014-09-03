@@ -1,5 +1,8 @@
 <?php
 
+// ACL
+$app("acl")->addResource("Forms", ['manage.forms', 'manage.entries']);
+
 $app->on("admin.init", function() {
 
     if (!$this->module("auth")->hasaccess("Forms", ['manage.forms', 'manage.entries'])) return;
@@ -38,6 +41,3 @@ $app->on("admin.dashboard.aside", function() {
 
     $this->renderView("forms:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'forms'));
 });
-
-// ACL
-$app("acl")->addResource("Forms", ['manage.forms', 'manage.entries']);
