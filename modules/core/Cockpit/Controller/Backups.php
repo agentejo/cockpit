@@ -13,12 +13,13 @@ class Backups extends \Cockpit\Controller {
             if (!$file->isFile()) continue;
             if ($file->getExtension()!='zip') continue;
 
-            $parts     = explode('.', $file->getBasename('.zip'));
+            $basename  = $file->getBasename('.zip');
+            $parts     = explode('.', $basename);
             $timestamp = $parts[0];
 
             array_splice($parts, 0, 1);
 
-            $backups[] = ["timestamp" => $timestamp, "info" =>implode('.', $parts),  "size" => $this->app->helper("utils")->formatSize($file->getSize())];
+            $backups[] = ["timestamp" => $timestamp, "info" => implode('.', $parts), "file" => $basename,  "size" => $this->app->helper("utils")->formatSize($file->getSize())];
         }
 
         if (count($backups)) {
@@ -33,21 +34,22 @@ class Backups extends \Cockpit\Controller {
         set_time_limit(0);
 
         $timestamp  = time();
-        $filename   = $timestamp.'.site.zip';
-        $rootfolder = $this->app->path("site:");
+        $target     = $this->param('target', 'site');
+        $filename   = "{$timestamp}.{$target}.zip";
+        $rootfolder = $this->app->path($target == 'cockpit' ? "#root:" : "site:");
 
         $this->app->helper("backup")->backup($rootfolder, $this->app->path("backups:")."/{$filename}", function($file) {
             return preg_match('/cache/', $file) && !preg_match('/index\.html/', $file) || preg_match('/backups/', $file) && !preg_match('/index\.html/', $file);
         });
 
-        return json_encode(["timestamp" => $timestamp, "size" => $this->app->helper("utils")->formatSize(filesize($this->app->path("backups:{$filename}")))]);
+        return json_encode(["timestamp" => $timestamp, "info" => $target, "file" => "{$timestamp}.{$target}.zip", "size" => $this->app->helper("utils")->formatSize(filesize($this->app->path("backups:{$filename}")))]);
     }
 
     public function remove() {
 
-        if ($timestamp = $this->param("timestamp", false)) {
+        if ($file = $this->param("file", false)) {
 
-            if ($file = $this->app->path("backups:{$timestamp}.zip")) {
+            if ($file = $this->app->path("backups:{$file}.zip")) {
 
                 @unlink($file);
 

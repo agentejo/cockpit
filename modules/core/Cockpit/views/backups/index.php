@@ -22,7 +22,7 @@
                             <td class="uk-text-center"><i class="uk-icon-archive"></i></td>
                             <td>
                                 @@ backup.timestamp |  fmtdate:'d M, Y H:i:s' @@
-                                <div ng-if="backup.info">@@ backup.info @@</div>
+                                <div class="uk-text-small uk-text-muted" ng-if="backup.info">@@ backup.info @@</div>
                             </td>
                             <td>@@ backup.size @@</td>
                             <td class="uk-text-right">
@@ -47,17 +47,23 @@
                     <p class="uk-text-large">
                         @lang('You don\'t have any backups created.')
                     </p>
-
-                    <button data-ng-click="create()" class="uk-button uk-button-success uk-button-large" title="@lang('Create a new backup')" data-uk-tooltip><i class="uk-icon-plus-circle"></i></button>
                 </div>
 
             </div>
         </div>
         <div class="uk-width-medium-1-3">
 
-            <button class="uk-button uk-button-large uk-button-primary" data-ng-click="create()">
-                @lang('Create a new backup')
-            </button>
+            <div data-uk-dropdown>
+                <button class="uk-button uk-button-large uk-button-primary">
+                    @lang('Create a new backup')
+                </button>
+                <div class="uk-dropdown">
+                    <ul class="uk-nav uk-nav-dropdown uk-nav-parent-icon">
+                        <li><a data-ng-click="create('site')">Site</a></li>
+                        <li><a data-ng-click="create('cockpit')">Cockpit</a></li>
+                    </ul>
+                </div>
+            </div>
 
             <hr>
 
@@ -79,11 +85,11 @@
 
         $scope.backups = {{ json_encode($backups) }};
 
-        $scope.create = function(){
+        $scope.create = function(target){
 
             var info = $.UIkit.notify(['<i class="uk-icon-spinner uk-icon-spin"></i>', App.i18n.get('Creating backup...')].join(' '), {timeout:0});
 
-            $http.post(App.route("/backups/create"), {}, {responseType:"json"}).success(function(data){
+            $http.post(App.route("/backups/create"), {'target':target}, {responseType:"json"}).success(function(data){
 
                 info.close();
 
@@ -106,7 +112,7 @@
 
                 $http.post(App.route("/backups/remove"), {
 
-                    "timestamp": backup.timestamp
+                    "file": backup.file
 
                 }, {responseType:"json"}).success(function(data){
 
