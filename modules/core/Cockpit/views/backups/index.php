@@ -20,7 +20,10 @@
                     <tbody>
                         <tr data-ng-repeat="backup in backups">
                             <td class="uk-text-center"><i class="uk-icon-archive"></i></td>
-                            <td>@@ backup.timestamp |  fmtdate:'d M, Y H:i:s' @@</td>
+                            <td>
+                                @@ backup.timestamp |  fmtdate:'d M, Y H:i:s' @@
+                                <div ng-if="backup.info">@@ backup.info @@</div>
+                            </td>
                             <td>@@ backup.size @@</td>
                             <td class="uk-text-right">
                                 <div data-uk-dropdown>

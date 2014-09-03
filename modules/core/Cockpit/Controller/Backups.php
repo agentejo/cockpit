@@ -13,9 +13,12 @@ class Backups extends \Cockpit\Controller {
             if (!$file->isFile()) continue;
             if ($file->getExtension()!='zip') continue;
 
-            $parts = explode('.', $file->getBasename('.zip'));
+            $parts     = explode('.', $file->getBasename('.zip'));
+            $timestamp = $parts[0];
 
-            $backups[] = ["timestamp" => $parts[0], "size" => $this->app->helper("utils")->formatSize($file->getSize())];
+            array_splice($parts, 0, 1);
+
+            $backups[] = ["timestamp" => $timestamp, "info" =>implode('.', $parts),  "size" => $this->app->helper("utils")->formatSize($file->getSize())];
         }
 
         if (count($backups)) {
@@ -30,7 +33,7 @@ class Backups extends \Cockpit\Controller {
         set_time_limit(0);
 
         $timestamp  = time();
-        $filename   = $timestamp.'.zip';
+        $filename   = $timestamp.'.site.zip';
         $rootfolder = $this->app->path("site:");
 
         $this->app->helper("backup")->backup($rootfolder, $this->app->path("backups:")."/{$filename}", function($file) {
