@@ -109,7 +109,7 @@ class Api extends \Cockpit\Controller {
                             foreach ($files as $file) {
 
                                 if (!$file->isFile()) continue;
-                                if (preg_match('/(custom\/|storage\/|custom\/|modules\/addons)/', $file)) continue;
+                                if (preg_match('/(custom\/|storage\/|config\.php|modules\/addons)/', $file)) continue;
 
                                 @unlink($file->getRealPath());
                             }
