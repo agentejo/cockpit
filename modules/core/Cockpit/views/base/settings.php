@@ -74,7 +74,6 @@
         </div>
         @endif
 
-        <!--
         @if($app["user"]["group"]=="admin")
         <div class="uk-margin-bottom">
             <div>
@@ -85,7 +84,6 @@
             </div>
         </div>
         @endif
-        -->
 
         @if($app["user"]["group"]=="admin")
         <div class="uk-margin-bottom">
