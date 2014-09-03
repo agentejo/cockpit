@@ -23,7 +23,7 @@
 
             version = version || $scope.data.current.version;
 
-            var info = $.UIkit.notify(['<i class="uk-icon-spinner uk-icon-spin"></i> &nbsp; ', App.i18n.get('Downloading archive...This may take some time!')].join(' '), {timeout:0});
+            var info = $.UIkit.notify(['<i class="uk-icon-spinner uk-icon-spin"></i> &nbsp; ', App.i18n.get('Downloading archive...Grab some coffee!')].join(' '), {timeout:0});
 
             // download file
             $http.post(App.route("/api/updater/update/1"), {"version":version}).success(function(data){
