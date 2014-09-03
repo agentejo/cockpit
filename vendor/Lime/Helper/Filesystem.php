@@ -103,10 +103,12 @@ class Filesystem extends \Lime\Helper {
         }
     }
 
-    public function copy($path, $dest) {
+    public function copy($path, $dest, $_init = true) {
 
-        $path = $this->app->path($path);
-        $dest = $this->app->path($dest);
+        if ($_init) {
+            $path = $this->app->path($path);
+            $dest = $this->app->path($dest);
+        }
 
         if(is_dir($path)) {
 
@@ -120,7 +122,7 @@ class Filesystem extends \Lime\Helper {
                     if($file == "." || $file == "..") continue;
 
                     if(is_dir("{$path}/{$file}")) {
-                        $this->copy("{$path}/{$file}", "{$dest}/{$file}");
+                        $this->copy("{$path}/{$file}", "{$dest}/{$file}", false);
                     } else {
                         copy("{$path}/{$file}", "{$dest}/{$file}");
                     }
@@ -187,7 +189,7 @@ class Filesystem extends \Lime\Helper {
                 $empty &= is_dir($file) && $this->removeEmptySubFolders($file, true);
             }
 
-            return $empty && ($selfremove ? rmdir($path) : true);
+            return $empty && ($selfremove ? @rmdir($path) : true);
         }
 
         return false;
