@@ -21,7 +21,7 @@
 
         $scope.install = function(version) {
 
-            version = version || $scope.data.current.version;
+            version = version || $scope.data.stable.version;
 
             var info = $.UIkit.notify(['<i class="uk-icon-spinner uk-icon-spin"></i> &nbsp; ', App.i18n.get('Downloading archive...Grab some coffee!')].join(' '), {timeout:0});
 

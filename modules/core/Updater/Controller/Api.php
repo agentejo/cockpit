@@ -45,7 +45,7 @@ class Api extends \Cockpit\Controller {
                         $message = 'Cockpit folder is not writable!';
                     } else {
 
-                        if (file_put_contents($this->app->path("tmp:")."/{$version}.zip", $handle = fopen($zipurl, 'r'))) {
+                        if (file_put_contents($this->app->path("tmp:")."/{$version}.zip", $handle = @fopen($zipurl, 'r'))) {
                             $success = true;
                         } else {
                             $message = 'Couldn\'t download release!';
