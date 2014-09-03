@@ -46,7 +46,19 @@ class Api extends \Cockpit\Controller {
                     } else {
 
                         if (file_put_contents($this->app->path("tmp:")."/{$version}.zip", $handle = @fopen($zipurl, 'r'))) {
+
                             $success = true;
+
+                            if ($this->param("backup", true)) {
+
+                                // backup current Cockpit version
+                                $filename = time().'.cockpit-'.$info['version'].'.zip';
+
+                                $this->app->helper("backup")->backup($this->app->path('#root:'), $this->app->path("backups:")."/{$filename}", function($file) {
+                                    return preg_match('/cache/', $file) && !preg_match('/index\.html/', $file) || preg_match('/backups/', $file) && !preg_match('/index\.html/', $file);
+                                });
+                            }
+
                         } else {
                             $message = "Couldn't download {$version} release!";
                         }

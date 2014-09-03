@@ -13,7 +13,9 @@ class Backups extends \Cockpit\Controller {
             if (!$file->isFile()) continue;
             if ($file->getExtension()!='zip') continue;
 
-            $backups[] = ["timestamp" => $file->getBasename('.zip'), "size" => $this->app->helper("utils")->formatSize($file->getSize())];
+            $parts = explode('.', $file);
+
+            $backups[] = ["timestamp" => $parts[0], "size" => $this->app->helper("utils")->formatSize($file->getSize())];
         }
 
         if (count($backups)) {
