@@ -48,7 +48,7 @@ class Api extends \Cockpit\Controller {
                         if (file_put_contents($this->app->path("tmp:")."/{$version}.zip", $handle = @fopen($zipurl, 'r'))) {
                             $success = true;
                         } else {
-                            $message = 'Couldn\'t download release!';
+                            $message = "Couldn't download {$version} release!";
                         }
                     }
 
