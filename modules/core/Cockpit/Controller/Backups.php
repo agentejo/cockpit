@@ -42,7 +42,7 @@ class Backups extends \Cockpit\Controller {
             return preg_match('/cache/', $file) && !preg_match('/index\.html/', $file) || preg_match('/backups/', $file) && !preg_match('/index\.html/', $file);
         });
 
-        return json_encode(["timestamp" => $timestamp, "info" => $target, "file" => "{$timestamp}.{$target}.zip", "size" => $this->app->helper("utils")->formatSize(filesize($this->app->path("backups:{$filename}")))]);
+        return json_encode(["timestamp" => $timestamp, "info" => $target, "file" => "{$timestamp}.{$target}", "size" => $this->app->helper("utils")->formatSize(filesize($this->app->path("backups:{$filename}")))]);
     }
 
     public function remove() {

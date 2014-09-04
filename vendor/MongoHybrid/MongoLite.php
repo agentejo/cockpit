@@ -22,6 +22,8 @@ class MongoLite {
             $db = $this->db;
         }
 
+        $name = str_replace('/', '_', $name);
+
         return $this->client->selectCollection($db, $name);
     }
 
