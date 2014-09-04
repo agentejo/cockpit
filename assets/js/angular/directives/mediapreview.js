@@ -1,6 +1,6 @@
 (function($){
 
-    angular.module('cockpit.directives').directive("mediaPreview", function($timeout){
+    angular.module('cockpit.directives').directive("mediaPreview", ['$timeout', function($timeout){
 
         return {
 
@@ -42,6 +42,6 @@
                 }
             }
         };
-    });
+    }]);
 
 })(jQuery);

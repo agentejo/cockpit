@@ -158,7 +158,7 @@
         };
     });
 
-    angular.module('cockpit.directives').directive("contentfield", function($timeout, $compile, Contentfields) {
+    angular.module('cockpit.directives').directive("contentfield", ['$timeout', '$compile', 'Contentfields', function($timeout, $compile, Contentfields) {
 
         return {
 
@@ -196,6 +196,6 @@
             }
         };
 
-    });
+    }]);
 
 })(jQuery);

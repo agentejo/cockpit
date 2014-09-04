@@ -30,7 +30,7 @@
         }
     };
 
-   angular.module('cockpit.fields').directive("codearea", function($timeout) {
+   angular.module('cockpit.fields').directive("codearea", ['$timeout', function($timeout) {
 
         var events = ["cursorActivity", "viewportChange", "gutterClick", "focus", "blur", "scroll", "update"];
 
@@ -183,7 +183,7 @@
                 $timeout(deferCodeMirror);
             }
         };
-    });
+    }]);
 
 
 })(jQuery);

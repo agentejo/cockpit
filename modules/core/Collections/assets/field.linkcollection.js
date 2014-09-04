@@ -1,6 +1,6 @@
 (function($){
 
-    angular.module('cockpit.fields').run(function(Contentfields) {
+    angular.module('cockpit.fields').run(['Contentfields', function(Contentfields) {
 
         Contentfields.register('link-collection', {
             label: 'Collection link',
@@ -9,10 +9,10 @@
             }
         });
 
-    });
+    }]);
 
 
-    angular.module('cockpit.fields').directive("linkCollection", function($timeout, $http) {
+    angular.module('cockpit.fields').directive("linkCollection", ['$timeout', '$http', function($timeout, $http) {
 
         var collections = false, cache = {}, cacheItems = {}, loaded, Field, Picker;
 
@@ -345,6 +345,6 @@
             }
         };
 
-    });
+    }]);
 
 })(jQuery);

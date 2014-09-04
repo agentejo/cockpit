@@ -52,11 +52,11 @@
         };
     });
 
-    module.filter('unsafe', function($sce) {
+    module.filter('unsafe', ['$sce', function($sce) {
         return function(val) {
             return $sce.trustAsHtml(val);
         };
-    });
+    }]);
 
     module.filter('fmtdate', function() {
         return function(input, format) {
@@ -126,7 +126,7 @@
       };
     });
 
-    module.directive('appDynamic', function ($compile) {
+    module.directive('appDynamic', ['$compile', function ($compile) {
         return {
             restrict: 'A',
             replace: true,
@@ -138,7 +138,7 @@
                 });
             }
         };
-    });
+    }]);
 
     module.directive('appSlug', function () {
 

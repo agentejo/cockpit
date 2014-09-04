@@ -16,156 +16,156 @@
     ].join('');
 
 
-    angular.module('cockpit.fields').directive("gallery", function($timeout){
+    angular.module('cockpit.fields').directive("gallery", ['$timeout', function($timeout){
 
-      return {
+        return {
 
-        require: 'ngModel',
-        restrict: 'E',
+            require: 'ngModel',
+            restrict: 'E',
 
-        link: function (scope, elm, attrs, ngModel) {
+            link: function (scope, elm, attrs, ngModel) {
 
-            var $gal = $(tpl),
-                $container = $gal.find('.uk-grid'),
-                media;
+                var $gal = $(tpl),
+                    $container = $gal.find('.uk-grid'),
+                    media;
 
-            $gal.find(">button").on("click", function(){
+                $gal.find(">button").on("click", function(){
 
-                App.assets.require(window.CockpitPathPicker ? [] : 'modules/core/Mediamanager/assets/pathpicker.js', function() {
+                    App.assets.require(window.CockpitPathPicker ? [] : 'modules/core/Mediamanager/assets/pathpicker.js', function() {
 
-                    new CockpitPathPicker(function(path){
+                        new CockpitPathPicker(function(path){
 
-                        if(String(path).match(/\.(jpg|jpeg|png|gif|mp4|mpeg|webm|ogv|wmv)$/i)){
+                            if(String(path).match(/\.(jpg|jpeg|png|gif|mp4|mpeg|webm|ogv|wmv)$/i)){
 
-                            media.push(path);
-                            App.notify(App.i18n.get("%s media file(s) added", 1));
-                            updateSope();
-                            rendermedia();
+                                media.push(path);
+                                App.notify(App.i18n.get("%s media file(s) added", 1));
+                                updateSope();
+                                rendermedia();
 
-                        } else {
+                            } else {
 
-                            $.post(App.route('/mediamanager/api'), {"cmd":"ls", "path": String(path).replace("site:"+site2media, "")}, function(data){
+                                $.post(App.route('/mediamanager/api'), {"cmd":"ls", "path": String(path).replace("site:"+site2media, "")}, function(data){
 
-                                var count = 0;
+                                    var count = 0;
 
-                                if (data && data.files && data.files.length) {
+                                    if (data && data.files && data.files.length) {
 
-                                    data.files.forEach(function(file) {
+                                        data.files.forEach(function(file) {
 
-                                        if(file.name.match(/\.(jpg|jpeg|png|gif|mp4|mpeg|webm|ogv|wmv)$/i)) {
-                                            media.push("site:"+site2media+'/'+file.path);
-                                            count = count + 1;
-                                        }
-                                    });
+                                            if(file.name.match(/\.(jpg|jpeg|png|gif|mp4|mpeg|webm|ogv|wmv)$/i)) {
+                                                media.push("site:"+site2media+'/'+file.path);
+                                                count = count + 1;
+                                            }
+                                        });
 
-                                    updateSope();
-                                    rendermedia();
-                                }
+                                        updateSope();
+                                        rendermedia();
+                                    }
 
-                                App.notify(App.i18n.get("%s media file(s) added", count));
+                                    App.notify(App.i18n.get("%s media file(s) added", count));
 
-                            }, "json");
-                        }
+                                }, "json");
+                            }
 
-                    }, "*");
+                        }, "*");
+                    });
                 });
-            });
 
-            $gal.on("click", ".js-remove", function(){
+                $gal.on("click", ".js-remove", function(){
 
-                var ele = $(this);
+                    var ele = $(this);
 
-                App.Ui.confirm(App.i18n.get("Are you sure?"), function(){
-                    var item  = ele.closest('li[data-path]'),
-                        index = $container.children().index(item);
+                    App.Ui.confirm(App.i18n.get("Are you sure?"), function(){
+                        var item  = ele.closest('li[data-path]'),
+                            index = $container.children().index(item);
 
-                    media.splice(index, 1);
-                    item.fadeOut(function(){
-                        item.remove();
+                        media.splice(index, 1);
+                        item.fadeOut(function(){
+                            item.remove();
 
-                        if (!media.length) {
-                            rendermedia();
-                        }
+                            if (!media.length) {
+                                rendermedia();
+                            }
+                        });
+
+                        updateSope();
+                    });
+                });
+
+
+                App.assets.require($.UIkit.sortable ? []:['assets/vendor/uikit/js/addons/sortable.min.js'], function(){
+
+                    $container.on("sortable-change",function(){
+
+                        var imgs = [];
+
+                        $container.children().each(function(){
+                            imgs.push($(this).data("path"));
+                        });
+
+                        media = imgs;
+
+                        updateSope()
+
                     });
 
-                    updateSope();
-                });
-            });
-
-
-            App.assets.require($.UIkit.sortable ? []:['assets/vendor/uikit/js/addons/sortable.min.js'], function(){
-
-                $container.on("sortable-change",function(){
-
-                    var imgs = [];
-
-                    $container.children().each(function(){
-                        imgs.push($(this).data("path"));
-                    });
-
-                    media = imgs;
-
-                    updateSope()
+                    $.UIkit.sortable($container);
 
                 });
 
-                $.UIkit.sortable($container);
+                ngModel.$render = function() {
 
-            });
+                    if(!media) {
+                        media = ngModel.$viewValue || [];
+                    }
 
-            ngModel.$render = function() {
+                    setTimeout(function(){
+                        rendermedia();
+                    }, 10);
+                };
 
-                if(!media) {
-                    media = ngModel.$viewValue || [];
+                function updateSope() {
+
+                    ngModel.$setViewValue(media);
+
+                    if (!scope.$root.$$phase) {
+                        scope.$apply();
+                    }
                 }
 
-                setTimeout(function(){
-                    rendermedia();
-                }, 10);
-            };
+                function rendermedia() {
 
-            function updateSope() {
+                    $container.empty();
 
-                ngModel.$setViewValue(media);
+                    var mediatpl;
 
-                if (!scope.$root.$$phase) {
-                    scope.$apply();
+                    if (media && media.length) {
+                        media.forEach(function(path, index){
+
+                            if(path.match(/\.(jpg|jpeg|png|gif|svg)$/i)) {
+                                mediatpl = '<img src="'+App.route("/mediamanager/thumbnail/"+btoa(path))+'/150/150">';
+                            }
+
+                            if(path.match(/\.(mp4|mpeg|ogv|webm|wmv)$/i)) {
+                                mediatpl = '<video src="'+path.replace("site:", COCKPIT_SITE_BASE_URL)+'" style="max-width:100%;height:auto;"></video>';
+                            }
+
+                            $container.append([
+                                '<li class="uk-grid-margin" data-path="'+path+'" draggable="true" title="'+path+'" stype="position:relative;">',
+                                    '<div class="uk-thumbnail" style="min-height:180px;">'+mediatpl+'</div>',
+                                    '<div class="gallery-list-actions"><button class="uk-button uk-button-small uk-button-danger js-remove" type="button"><i class="uk-icon-trash-o"></i></button></div>',
+                                '</li>'
+                            ].join(''));
+                        });
+                    } else {
+                        $container.append('<div class="uk-width-1-1 uk-grid-margin"><p class="uk-text-muted uk-text-small">'+App.i18n.get('No media files.')+'</p></div>');
+                    }
                 }
+
+                elm.replaceWith($gal);
             }
+        };
 
-            function rendermedia() {
-
-                $container.empty();
-
-                var mediatpl;
-
-                if (media && media.length) {
-                    media.forEach(function(path, index){
-
-                        if(path.match(/\.(jpg|jpeg|png|gif|svg)$/i)) {
-                            mediatpl = '<img src="'+App.route("/mediamanager/thumbnail/"+btoa(path))+'/150/150">';
-                        }
-
-                        if(path.match(/\.(mp4|mpeg|ogv|webm|wmv)$/i)) {
-                            mediatpl = '<video src="'+path.replace("site:", COCKPIT_SITE_BASE_URL)+'" style="max-width:100%;height:auto;"></video>';
-                        }
-
-                        $container.append([
-                            '<li class="uk-grid-margin" data-path="'+path+'" draggable="true" title="'+path+'" stype="position:relative;">',
-                                '<div class="uk-thumbnail" style="min-height:180px;">'+mediatpl+'</div>',
-                                '<div class="gallery-list-actions"><button class="uk-button uk-button-small uk-button-danger js-remove" type="button"><i class="uk-icon-trash-o"></i></button></div>',
-                            '</li>'
-                        ].join(''));
-                    });
-                } else {
-                    $container.append('<div class="uk-width-1-1 uk-grid-margin"><p class="uk-text-muted uk-text-small">'+App.i18n.get('No media files.')+'</p></div>');
-                }
-            }
-
-            elm.replaceWith($gal);
-        }
-      };
-
-    });
+    }]);
 
 })(jQuery);

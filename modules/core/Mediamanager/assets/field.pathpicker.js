@@ -1,7 +1,7 @@
 (function(module, $){
 
 
-    angular.module('cockpit.fields').run(function(Contentfields) {
+    angular.module('cockpit.fields').run(['Contentfields', function(Contentfields) {
 
        Contentfields.register('media', {
            label: 'Media',
@@ -10,9 +10,9 @@
            }
        });
 
-    });
+    }]);
 
-    angular.module('cockpit.fields').directive("mediaPathPicker", function($timeout){
+    angular.module('cockpit.fields').directive("mediaPathPicker", ['$timeout', function($timeout){
 
         return {
             require: '?ngModel',
@@ -105,6 +105,6 @@
             }
         };
 
-    });
+    }]);
 
 })(App.module, jQuery);

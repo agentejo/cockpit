@@ -99,7 +99,7 @@
         });
     });
 
-    angular.module('cockpit.fields').directive("htmleditor", function($timeout){
+    angular.module('cockpit.fields').directive("htmleditor", ['$timeout', function($timeout){
 
         return {
 
@@ -151,6 +151,6 @@
             }
         };
 
-    });
+    }]);
 
 })(jQuery);

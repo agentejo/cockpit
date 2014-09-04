@@ -10,7 +10,7 @@
         reqassets.push('assets/vendor/tinymce/tinymce.min.js');
     }
 
-    angular.module('cockpit.fields').directive("wysiwyg", function($timeout){
+    angular.module('cockpit.fields').directive("wysiwyg", ['$timeout', function($timeout){
 
         var generatedIds  = 0,
             defaultConfig = {
@@ -121,7 +121,7 @@
 
         };
 
-    });
+    }]);
 
     function registerMediaPathPlugin() {
 
