@@ -42,11 +42,19 @@
                 </svg>
             </div>
             <div class="uk-width-medium-1-2">
-                <div class="uk-text-bold uk-text-muted">Local</div>
-                <div class="uk-h1 uk-text-muted">@@ data.local.version @@</div>
 
-                <div class="uk-text-bold uk-margin-top">Latest stable</div>
-                <div class="uk-h1">@@ data.stable.version @@</div>
+                <div class="app-panel">
+                    <div class="uk-text-bold uk-text-muted">Local</div>
+                    <div class="uk-h1 uk-text-muted">@@ data.local.version @@</div>
+
+                    <div class="uk-text-bold uk-margin-top">Latest stable</div>
+                    <div class="uk-h1">@@ data.stable.version @@</div>
+
+                    <div class="uk-alert">
+                        @lang('Don\'t forget to backup the cockpit folder before any update.')
+                    </div>
+                </div>
+
                 <hr>
                 <div>
                     <button class="uk-button uk-button-primary" ng-click="install()">

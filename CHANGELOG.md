@@ -1,5 +1,17 @@
 # Changelog
 
+### 0.10.0  (Sep 04, 2014)
+
+    + Added auto-updater (experimental)
+    + Added location field
+    + Added backup options (backup site or cockpit folder)
+    + Added shorthand modules method call e.g. cockpit('regions:render', 'test');
+    + Added auto slugs for collection, region and gallery names
+    ^ Iimproved sluggify functionality, thanks @doctorjuta
+    ^ Regions api extended
+    ^ Localize option for any field
+    # Check whether headers module is enabled in .htaccess (apache)
+
 ### 0.9.18  (Aug 31, 2014)
 
     + Added duplicate collections and regions
