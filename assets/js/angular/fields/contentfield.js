@@ -49,10 +49,10 @@
                 }
             },
 
-            'map': {
-                label: 'Map',
+            'location': {
+                label: 'Location',
                 template: function(model) {
-                    return '<mapfield ng-model="'+model+'"></mapfield>';
+                    return '<locationfield ng-model="'+model+'"></locationfield>';
                 }
             },
 

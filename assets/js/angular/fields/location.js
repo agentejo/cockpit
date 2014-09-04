@@ -4,7 +4,7 @@
 
 (function($){
 
-    angular.module('cockpit.fields').directive("mapfield", ['$timeout', '$compile', function($timeout, $compile){
+    angular.module('cockpit.fields').directive("locationfield", ['$timeout', '$compile', function($timeout, $compile){
 
         var mapId = 0;
 

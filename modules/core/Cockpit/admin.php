@@ -105,7 +105,7 @@ $app->on("cockpit.content.fields.sources", function() {
         'assets:js/angular/fields/wysiwyg.js',
         'assets:js/angular/fields/gallery.js',
         'assets:js/angular/fields/tags.js',
-        'assets:js/angular/fields/map.js',
+        'assets:js/angular/fields/location.js',
         'collections:assets/field.linkcollection.js',
         'mediamanager:assets/field.pathpicker.js',
         'assets:js/angular/directives/mediapreview.js',
