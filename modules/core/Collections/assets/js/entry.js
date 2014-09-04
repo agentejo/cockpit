@@ -138,20 +138,20 @@
 
         $scope.fieldsInArea = function(area) {
 
-            var fields = [];
+            var fields = [], aside = ['select','date','time','media','boolean','tags','region'];
 
             if (area=="main") {
 
                 fields = $scope.collection.fields.filter(function(field){
 
-                    return (['text','html', 'markdown','code','wysiwyg','markdown','gallery','link-collection'].indexOf(field.type) > -1);
+                    return aside.indexOf(field.type) == -1;
                 });
 
             }
 
             if (area=="side"){
                 fields = $scope.collection.fields.filter(function(field){
-                    return ['select','date','time','media','boolean','tags','region'].indexOf(field.type) > -1;
+                    return aside.indexOf(field.type) > -1;
                 });
             }
 

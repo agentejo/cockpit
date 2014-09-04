@@ -49,6 +49,13 @@
                 }
             },
 
+            'map': {
+                label: 'Map',
+                template: function(model) {
+                    return '<mapfield ng-model="'+model+'"></mapfield>';
+                }
+            },
+
             'wysiwyg': {
                 label: 'Html (WYSIWYG)',
                 template: function(model) {
