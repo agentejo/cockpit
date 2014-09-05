@@ -45,6 +45,9 @@ class App implements \ArrayAccess {
     public $helpers;
     public $layout      = false;
 
+    /* global view variables */
+    public $viewvars    = [];
+
     /* status codes */
     public static $statusCodes = [
     // Informational 1xx
@@ -185,6 +188,9 @@ class App implements \ArrayAccess {
             'site_url'     => null
         ], $settings);
 
+        // app modules container
+        $this->registry["modules"] = new \ArrayObject([]);
+
         if (!isset($this["site_url"])) {
             $this["site_url"] = $this->getSiteUrl(false);
         }
@@ -196,6 +202,12 @@ class App implements \ArrayAccess {
         // make sure base + route url doesn't end with a slash;
         $this->registry["base_url"]   = rtrim($this->registry["base_url"], '/');
         $this->registry["base_route"] = rtrim($this->registry["base_route"], '/');
+
+        // default global viewvars
+        $this->viewvars["app"]        = $this;
+        $this->viewvars["base_url"]   = $this["base_url"];
+        $this->viewvars["base_route"] = $this["base_route"];
+        $this->viewvars["docs_root"]  = $this["docs_root"];
 
         self::$apps[$this["app.name"]] = $this;
 
@@ -552,8 +564,8 @@ class App implements \ArrayAccess {
     */
     public function render($____template, $_____slots = []) {
 
-        $_____slots["app"] = $this;
-        $____layout        = $this->layout;
+        $_____slots = array_merge($this->viewvars, $_____slots);
+        $____layout = $this->layout;
 
         if (strpos($____template, ' with ') !== false ) {
             list($____template, $____layout) = explode(' with ', $____template, 2);
@@ -1164,6 +1176,65 @@ class App implements \ArrayAccess {
         return '/' == $path[0] || '\\' == $path[0] || (3 < strlen($path) && ctype_alpha($path[0]) && $path[1] == ':' && ('\\' == $path[2] || '/' == $path[2]));
     }
 
+    public function module($name) {
+        return $this->registry["modules"]->offsetExists($name) && $this->registry["modules"][$name] ? $this->registry["modules"][$name] : null;
+    }
+
+    public function registerModule($name, $dir) {
+
+        $name = strtolower($name);
+
+        if (!isset($this->registry["modules"][$name])) {
+
+            $module = new Module($this);
+
+            $module->_dir      = $dir;
+            $module->_bootfile = "{$dir}/bootstrap.php";
+
+            $this->path($name, $dir);
+
+            $this->registry["modules"][$name] = $module;
+
+            $this->bootModule($module);
+        }
+
+        return $this->registry["modules"][$name];
+    }
+
+    public function loadModules($dirs, $autoload = true) {
+
+        $modules = [];
+        $dirs    = (array)$dirs;
+
+        foreach ($dirs as &$dir) {
+
+            if (file_exists($dir)){
+
+                // load modules
+                foreach (new \DirectoryIterator($dir) as $module) {
+
+                    if($module->isFile() || $module->isDot()) continue;
+
+                    $this->registerModule($module->getBasename(), $module->getRealPath());
+
+                    $modules[] = strtolower($module);
+                }
+
+                if ($autoload) $this["autoload"]->append($dir);
+
+            }
+        }
+
+        return $modules;
+    }
+
+    protected function bootModule($module) {
+
+        $app = $this;
+
+        require($module->_bootfile);
+    }
+
     // accces to services
     public function __get($name) {
         return $this[$name];
@@ -1270,6 +1341,45 @@ class AppAware {
         return $this->app->helper($helper);
     }
 
+}
+
+class Module extends AppAware {
+
+    protected $apis = array();
+
+    public function extend($api) {
+
+        foreach($api as $name => $value) {
+
+            if ($value instanceof \Closure) {
+                $value = $value->bindTo($this, $this);
+            }
+
+            $this->apis[$name] = $value;
+        }
+    }
+
+    public function __set($name , $value) {
+
+        $this->extend(array($name => $value));
+    }
+    public function __get($name) {
+        return isset($this->apis[$name]) ? $this->apis[$name] :null;
+    }
+    public function __isset($name) {
+        return isset($this->apis[$name]);
+    }
+    public function __unset($name) {
+        unset($this->apis[$name]);
+    }
+    public function __call($name, $arguments) {
+
+        if(isset($this->apis[$name]) && is_callable($this->apis[$name])) {
+            return call_user_func_array($this->apis[$name], $arguments);
+        }
+
+        return null;
+    }
 }
 
 

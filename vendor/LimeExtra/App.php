@@ -4,9 +4,7 @@ namespace LimeExtra;
 
 class App extends \Lime\App {
 
-    public $viewvars = array();
-
-    public function __construct ($settings = array()) {
+    public function __construct ($settings = []) {
 
         $settings["helpers"]  = array_merge([
             "acl"     => "Lime\\Helper\\SimpleAcl",
@@ -16,16 +14,9 @@ class App extends \Lime\App {
             "i18n"    => "Lime\\Helper\\I18n",
             "utils"   => "Lime\\Helper\\Utils",
             "coockie" => "Lime\\Helper\\Coockie",
-        ], isset($settings["helpers"]) ? $settings["helpers"] : array());
+        ], isset($settings["helpers"]) ? $settings["helpers"] : []);
 
         parent::__construct($settings);
-
-        $this->viewvars["app"]        = $this;
-        $this->viewvars["base_url"]   = $this["base_url"];
-        $this->viewvars["base_route"] = $this["base_route"];
-        $this->viewvars["docs_root"]  = $this["docs_root"];
-
-        $this->registry["modules"] = new \ArrayObject(array());
 
         // renderer service
         $this->service('renderer', function() {
@@ -53,60 +44,6 @@ class App extends \Lime\App {
         });
 
         $this("session")->init();
-    }
-
-    public function registerModule($name, $dir) {
-
-        $name = strtolower($name);
-
-        if (!isset($this->registry["modules"][$name])) {
-
-            $this->path($name, $dir);
-            $this->registry["modules"][$name] = new Module($this);
-            $this->registry["modules"][$name]->_dir = $dir;
-
-            $this->bootModule("{$dir}/bootstrap.php", $this->registry["modules"][$name]);
-        }
-
-        return $this->registry["modules"][$name];
-    }
-
-    public function loadModules($dirs) {
-
-        $modules = [];
-        $dirs    = (array)$dirs;
-
-        foreach ($dirs as &$dir) {
-
-            if (file_exists($dir)){
-
-                // load modules
-                foreach (new \DirectoryIterator($dir) as $module) {
-
-                    if($module->isFile() || $module->isDot()) continue;
-
-                    $this->registerModule($module->getBasename(), $module->getPathname());
-
-                    $modules[] = strtolower($module);
-                }
-
-                $this["autoload"]->append($dir);
-
-            }
-        }
-
-        return $modules;
-    }
-
-    public function module($name) {
-        return $this->registry["modules"]->offsetExists($name) && $this->registry["modules"][$name] ? $this->registry["modules"][$name] : null;
-    }
-
-    protected function bootModule($bootfile, $module) {
-
-        $app = $this;
-
-        require($bootfile);
     }
 
 
