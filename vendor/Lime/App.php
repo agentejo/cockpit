@@ -398,7 +398,7 @@ class App implements \ArrayAccess {
             break;
         }
 
-        return true;
+        return $this;
     }
 
     /**
@@ -450,7 +450,8 @@ class App implements \ArrayAccess {
                     $this->paths[$args[0]] = [];
                 }
                 array_unshift($this->paths[$args[0]], rtrim(str_replace(DIRECTORY_SEPARATOR, '/', $args[1]), '/').'/');
-                break;
+
+                return $this;
         }
 
         return null;
@@ -494,7 +495,6 @@ class App implements \ArrayAccess {
             return $this("cache")->read($args[0]);
         case 2:
             return $this("cache")->write($args[0], $args[1]);
-            break;
         }
 
         return null;
@@ -517,6 +517,8 @@ class App implements \ArrayAccess {
         }
 
         $this->events[$event][] = ["fn" => $callback, "prio" => $priority];
+
+        return $this;
     }
 
     /**

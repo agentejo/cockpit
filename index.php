@@ -23,20 +23,35 @@ $cockpit->on("after", function() {
 
     switch ($this->response->status) {
         case 500:
-        case 404:
 
-            if ($this->response->status == 500 && $this->param('debug', false)) {
-                return;
+            if ($this['debug']) {
+
+                if ($this->req_is('ajax')) {
+                    $this->response->body = '{"error": "'.$this->response->status.'"}';
+                } else {
+                    $this->response->body = $this->render("cockpit:views/errors/500-debug.php", ['error' => json_decode($this->response->body, true)]);
+                }
+
+            } else {
+
+                if ($this->req_is('ajax')) {
+                    $this->response->body = '{"error": "500", "message": "system error"}';
+                } else {
+                    $this->response->body = $this->view("cockpit:views/errors/500.php");
+                }
             }
 
+            break;
+        case 404:
+
             if ($this->req_is('ajax')) {
-                $this->response->body = '{"error": "'.$this->response->status.'"}';
+                $this->response->body = '{"error": "404", "message":"File not found"}';
             } else {
-                $this->response->body = $this->view("cockpit:views/errors/{$this->response->status}.php");
+                $this->response->body = $this->view("cockpit:views/errors/400.php");
             }
             break;
     }
 });
 
 // run backend
-$cockpit->trigger("admin.init")->run(COCKPIT_ADMIN_ROUTE);
+$cockpit->set('route', COCKPIT_ADMIN_ROUTE)->trigger("admin.init")->run();

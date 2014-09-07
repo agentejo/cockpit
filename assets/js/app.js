@@ -25,6 +25,10 @@
 
             notify: function(note, type){
 
+                if (typeof(note) !== 'string') {
+                    note = JSON.stringify(note);
+                }
+
                 $.UIkit.notify(note, {"status":(type || 'primary')});
             },
 

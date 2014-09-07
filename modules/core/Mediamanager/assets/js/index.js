@@ -220,10 +220,13 @@
 
                                 if (data && data.length) {
 
-                                    var lst = $('<ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">'), li;
+                                    var lst      = $('<ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">'),
+                                        fileicon = '<i class="uk-icon-file uk-text-small"></i>',
+                                        diricon  = '<i class="uk-icon-folder uk-text-small"></i>',
+                                        li;
 
                                     data.forEach(function(item){
-                                        li = $('<li><a><strong>'+item.name+'</strong><div class="uk-text-truncate">'+item.path+'</div></a></li>').data(item);
+                                        li = $('<li><a><strong>'+(item.is_dir ? diricon:fileicon)+' &nbsp;'+item.name+'</strong><div class="uk-text-truncate">'+item.path+'</div></a></li>').data(item);
                                         lst.append(li);
                                     });
 

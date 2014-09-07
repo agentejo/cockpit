@@ -53,6 +53,7 @@ function cockpit($module = null) {
 
         // load config
         $config = array_merge([
+            'debug'        => false,
             'app.name'     => 'Cockpit',
             'base_url'     => COCKPIT_BASE_URL,
             'base_route'   => COCKPIT_BASE_ROUTE,

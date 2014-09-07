@@ -254,7 +254,7 @@
     module.callbacks = {success:{}, error:{}};
 
     module.callbacks.error.http = function(data, status, headers, config){
-        App.notify(data ? String(data) : App.i18n.get("Uuups, something went wrong..."), "danger");
+        App.notify(typeof(data) == 'string' ? data : App.i18n.get("Uuups, something went wrong..."), "danger");
     };
 
     App.module = module;
