@@ -36,7 +36,7 @@
 
             if ($scope.filter) {
 
-                var criteria = {};
+                var criterias = [], criteria;
 
                 COLLECTION.fields.forEach(function(field){
                     switch(field.type) {
@@ -45,12 +45,14 @@
                         case 'html':
                         case 'markdown':
                         case 'wysiwyg':
+                            criteria = {};
                             criteria[field.name] = {'$regex':$scope.filter};
+                            criterias.push(criteria);
                             break;
                     }
                 });
 
-                if (Object.keys(criteria).length) filter = {'$or':criteria};
+                if (Object.keys(criteria).length) filter = {'$or':criterias};
             }
 
             $http.post(App.route("/api/collections/entries"), {
