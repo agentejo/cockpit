@@ -86,4 +86,5 @@
         <div class="uk-width-medium-1-5 uk-hidden-small">
 
         </div>
+    </div>
 </div>

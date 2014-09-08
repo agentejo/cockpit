@@ -32,7 +32,7 @@
 
         $scope.loadmore = function() {
 
-            var limit  = COLLECTION.sortfield == 'custom-order' ? 1000 : 25, filter = false;
+            var limit  = COLLECTION.sortfield == 'custom-order' ? 10000 : 25, filter = false;
 
             if ($scope.filter) {
 

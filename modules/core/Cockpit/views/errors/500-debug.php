@@ -1,70 +1,69 @@
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<title>Error</title>
-<style type="text/css">
-* {
-    -moz-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-}
-body {
-    font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
-    font-size: 18px;
-    font-style: normal;
-    font-weight: normal;
-    text-transform: normal;
-    letter-spacing: normal;
-    line-height: 1.4em;
-    color:black;
-    background-color:#eee;
-}
-h1 { font-size:44px;letter-spacing: -2px;line-height: 1em;margin:0; }
-h2 { font-size:16px;font-weight:normal;color:#999; }
-h3 { font-weight:bold;font-size:11pt}
-p  { margin-top: 5px 0px;}
-.wrapper{
-    width:940px;
-    margin: 20px auto;
-}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Error</title>
+    <style type="text/css">
 
-.content {
-    background-color:white;
-    border: 1px #ccc solid;
-    padding:20px;
-    border-radius: 3px;
-    box-shadow:0px 0px 5px #ccc;
-}
+    * { box-sizing: border-box; }
 
-.italic {
-    font-family: Georgia;
-}
+    body {
+        font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: normal;
+        text-transform: normal;
+        letter-spacing: normal;
+        line-height: 1.4em;
+        color:black;
+        background-color:#eee;
+    }
 
-.code {
-    color: #fff;
-    background-color: #000;
-    padding: 10px;
-    font-size: 12px;
-    border-radius: 4px;
-}
+    h1 { font-size:44px;letter-spacing: -2px;line-height: 1em;margin:0; }
+    h2 { font-size:16px;font-weight:normal;color:#999; }
+    h3 { font-weight:bold;font-size:11pt}
+    p  { margin-top: 5px 0px;}
 
-.code ol {
-    overflow-x: scroll;
-}
+    .wrapper{
+        width:940px;
+        margin: 20px auto;
+    }
 
-.code li.selected {
-    background: #333;
-    color: yellow;
-}
+    .content {
+        background-color:white;
+        border: 1px #ccc solid;
+        padding:20px;
+        border-radius: 3px;
+        box-shadow:0px 0px 5px #ccc;
+    }
 
-.version {
-    margin-top: 30px;
-    padding-top: 10px;
-    color: gray;font-size:8pt;
-    border-top:1px #ccc dotted;
-}
-</style>
+    .italic {
+        font-family: Georgia;
+    }
+
+    .code {
+        color: #fff;
+        background-color: #000;
+        padding: 10px;
+        font-size: 12px;
+        border-radius: 4px;
+    }
+
+    .code ol {
+        overflow-x: scroll;
+    }
+
+    .code li.selected {
+        background: #333;
+        color: yellow;
+    }
+
+    .version {
+        margin-top: 30px;
+        padding-top: 10px;
+        color: gray;font-size:8pt;
+        border-top:1px #ccc dotted;
+    }
+    </style>
 </head>
 <body>
 
@@ -87,11 +86,15 @@ p  { margin-top: 5px 0px;}
     $file   = file($error["file"]);
 
     if($line) {
+
         $i = $offset;
+
         while(true){
+
             if(isset($file[($line-$i)])){
-            echo '<li>'.htmlentities($file[($line-$i)]).'</li>';
+                echo '<li>'.htmlentities($file[($line-$i)]).'</li>';
             }
+
             $i--;
 
             if($i==0) break;
@@ -101,6 +104,7 @@ p  { margin-top: 5px 0px;}
     echo '<li class="selected">'.htmlentities($file[$line]).'</li>';
 
     $i = 1;
+
     while(true){
         if(!isset($file[($line+$i)]) || $i>$offset) break;
         echo '<li>'.htmlentities($file[($line+$i)]).'</li>';
