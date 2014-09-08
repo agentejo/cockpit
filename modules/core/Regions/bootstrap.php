@@ -2,11 +2,15 @@
 
 // API
 
-$regions = []; #cached regions
-
 $this->module("regions")->extend([
 
-    'get_region' => function($name) use($app, $regions) {
+    'get_region' => function($name) use($app) {
+
+        static $regions;
+
+        if (null === $regions) {
+            $regions = [];
+        }
 
         if (!isset($regions[$name])) {
             $regions[$name] = $app->db->findOne('common/regions', ['name'=>$name]);

@@ -75,11 +75,15 @@ $app->bind("/api/forms/submit/:form", function($params) use($app) {
 });
 
 
-$forms = []; # cached forms
-
 $this->module("forms")->extend([
 
-    "get_form" => function($name) use($app, $forms) {
+    "get_form" => function($name) use($app) {
+
+        static $forms;
+
+        if (null === $forms) {
+            $forms = [];
+        }
 
         if (!isset($forms[$name])) {
             $forms[$name] = $app->db->findOne("common/forms", ["name"=>$name]);

@@ -54,7 +54,7 @@ $this->module("datastore")->extend([
         return $this->app->db->findOne("datastore/{$collection}", $criteria);
     },
 
-    "save" => function($table, $data) {
+    "save_entry" => function($table, $data) {
 
         $datastore = $this->get_datastore($table);
 
@@ -78,12 +78,6 @@ $this->module("datastore")->extend([
         if (!$datastore) return false;
 
         $collection = "datastore".$datastore["_id"];
-
-        $data["modified"] = time();
-
-        if (!isset($data["_id"])){
-            $data["created"] = $datastore["modified"];
-        }
 
         return $this->app->db->remove("datastore/{$collection}", $criteria);
     }

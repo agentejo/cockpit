@@ -4,7 +4,7 @@
 
 $this->module("collections")->extend([
 
-    'collection' => function($name) use($app) {
+    'get_collection' => function($name) use($app) {
 
         static $collections;
 
@@ -13,16 +13,23 @@ $this->module("collections")->extend([
         }
 
         if (!isset($collections[$name])) {
-
-            $collection = $app->db->findOne('common/collections', ['name'=>$name]);
-
-            if ($collection) {
-                $collection = 'collection'.$collection["_id"];
-                $collections[$name] = $app->db->getCollection("collections/{$collection}");
-            }
+            $collections[$name] = $app->db->findOne('common/collections', ['name'=>$name]);
         }
 
-        return isset($collections[$name]) ? $collections[$name] : null;
+        return $collections[$name];
+    },
+
+
+    'collection' => function($name) use($app) {
+
+        $collection =  $this->get_collection($name);
+
+        if ($collection) {
+            $col        = 'collection'.$collection["_id"];
+            $collection = $app->db->getCollection("collections/{$col}");
+        }
+
+        return $collection ? $collection : null;
     },
 
     'collectionById' => function($colid) use($app) {
@@ -90,7 +97,7 @@ $this->module("collections")->extend([
             return $resultset;
         }
 
-        $collection = $app->db->findOne('common/collections', ['name'=>$collection]);
+        $collection = $this->get_collection($collection);
 
         if (!$collection) {
             return $resultset;
@@ -159,6 +166,68 @@ $this->module("collections")->extend([
         $item = $this->populate($collection, [$item]);
 
         return $item[0];
+    },
+
+    'find' => function($collection, $options = []) {
+
+        $collection = $this->get_collection($collection);
+
+        if (!$collection) return false;
+
+        $col = "collection".$collection["_id"];
+
+        return $this->app->db->find("collections/{$col}", $options);
+    },
+
+    'findOne' => function($collection, $criteria = []) {
+
+        $collection = $this->get_collection($collection);
+
+        if (!$collection) return false;
+
+        $col = "collection".$collection["_id"];
+
+        return $this->app->db->findOne("collections/{$col}", $criteria);
+    },
+
+    'save_entry' => function($collection, $data) {
+
+        $collection = $this->get_collection($collection);
+
+        if ($collection && $data) {
+
+            $data['modified'] = time();
+            $col              = 'collection'.$collection["_id"];
+
+            if (!isset($data["_id"])){
+
+                $data["created"] = $data["modified"];
+
+                if (isset($collection["fields"])) {
+                    foreach($collection["fields"] as $field) {
+
+                        if (!isset($data[$field['name']])) {
+                            $data[$field['name']] = isset($field['default']) ? $field['default'] : '';
+                        }
+                    }
+                }
+            }
+
+            return $this->app->db->save("collections/{$col}", $data);
+        }
+
+        return false;
+    },
+
+    'remove' => function($collection, $criteria) {
+
+        $collection = $this->get_collection($collection);
+
+        if (!$collection) return false;
+
+        $col = "collection".$datastore["_id"];
+
+        return $this->app->db->remove("collections/{$col}", $criteria);
     }
 ]);
 
