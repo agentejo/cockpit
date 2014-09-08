@@ -149,6 +149,20 @@ class Api extends \Cockpit\Controller {
         return ($collection && $entryId) ? '{"success":true}' : '{"success":false}';
     }
 
+    public function emptytable(){
+
+        $collection = $this->param("collection", null);
+
+        if ($collection) {
+
+            $collection = "collection".$collection["_id"];
+
+            $this->app->db->remove("collections/{$collection}", []);
+        }
+
+        return $collection ? '{"success":true}' : '{"success":false}';
+    }
+
     public function saveentry(){
 
         $collection = $this->param("collection", null);

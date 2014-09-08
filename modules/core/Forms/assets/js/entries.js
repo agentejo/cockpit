@@ -80,6 +80,25 @@
             }
         };
 
+        $scope.emptytable = function() {
+
+            App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
+                $http.post(App.route("/api/forms/emptytable"), {
+
+                    "form": angular.copy($scope.form)
+
+                }, {responseType:"json"}).success(function(data){
+
+                    $timeout(function(){
+                        $scope.entries = [];
+                        $scope.form.count = 0;
+                        App.notify(App.i18n.get("Done."), "success");
+                    }, 0);
+
+                }).error(App.module.callbacks.error.http);
+            });
+        };
+
     });
 
 })(jQuery);

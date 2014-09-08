@@ -38,6 +38,7 @@
         <ul class="uk-navbar-nav">
             @hasaccess?("Collections", 'manage.collections')
             <li><a href="@route('/collections/collection/'.$collection["_id"])" title="@lang('Edit collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a></li>
+            <li><a class="uk-text-danger" ng-click="emptytable()" title="@lang('Empty collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-trash-o"></i></a></li>
             @end
             <li><a href="@route('/collections/entry/'.$collection["_id"])" title="@lang('Add entry')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a></li>
         </ul>
@@ -56,11 +57,13 @@
 
         <div class="uk-navbar-flip">
             @hasaccess?("Collections", 'manage.collections')
-            <div class="uk-navbar-content" data-ng-show="entries && entries.length">
-                <a class="uk-button" href="@route('/api/collections/export/'.$collection['_id'])" download="{{ $collection['name'] }}.json" title="@lang('Export data')" data-uk-tooltip="{pos:'bottom'}">
-                    <i class="uk-icon-share-alt"></i>
-                </a>
-            </div>
+            <ul class="uk-navbar-nav">
+                <li>
+                    <a href="@route('/api/collections/export/'.$collection['_id'])" download="{{ $collection['name'] }}.json" title="@lang('Export data')" data-uk-tooltip="{pos:'bottom'}">
+                        <i class="uk-icon-share-alt"></i>
+                    </a>
+                </li>
+            </ul>
             @end
         </div>
     </nav>

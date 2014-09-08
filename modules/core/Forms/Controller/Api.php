@@ -103,6 +103,20 @@ class Api extends \Cockpit\Controller {
         return ($form && $entryId) ? '{"success":true}' : '{"success":false}';
     }
 
+    public function emptytable(){
+
+        $form = $this->param("form", null);
+
+        if ($form) {
+
+            $form = "form".$form["_id"];
+
+            $this->app->db->remove("forms/{$form}", []);
+        }
+
+        return $form ? '{"success":true}' : '{"success":false}';
+    }
+
     public function saveentry(){
 
         $form = $this->param("form", null);

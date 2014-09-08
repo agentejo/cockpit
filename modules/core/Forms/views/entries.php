@@ -20,6 +20,7 @@
         @hasaccess?("Forms", 'manage.forms')
         <ul class="uk-navbar-nav">
             <li><a href="@route('/forms/form/'.$form["_id"])" title="@lang('Edit form')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a></li>
+            <li><a class="uk-text-danger" ng-click="emptytable()" title="@lang('Empty table')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-trash-o"></i></a></li>
         </ul>
         @end
 

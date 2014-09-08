@@ -131,6 +131,25 @@
             }
         };
 
+        $scope.emptytable = function() {
+
+            App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
+                $http.post(App.route("/api/collections/emptytable"), {
+
+                    "collection": angular.copy($scope.collection)
+
+                }, {responseType:"json"}).success(function(data){
+
+                    $timeout(function(){
+                        $scope.entries = [];
+                        $scope.collection.count = 0;
+                        App.notify(App.i18n.get("Done."), "success");
+                    }, 0);
+
+                }).error(App.module.callbacks.error.http);
+            });
+        };
+
 
         var table = $("#entries-table").on("sortable-change",function(){
 
