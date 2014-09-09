@@ -62,9 +62,11 @@ class Api extends \Cockpit\Controller {
                         } else {
                             $message = "Couldn't download {$version} release!";
                         }
+
+                        @fclose($handle);
                     }
 
-                    @fclose($handle);
+
 
                     return json_encode(["success" => $success, "message" => $message]);
 
@@ -118,16 +120,23 @@ class Api extends \Cockpit\Controller {
 
                             $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($root), \RecursiveIteratorIterator::SELF_FIRST);
 
+                            // backup config.php
+                            $fs->rename('#root:config.php', $this->app->path('#root:').'/backup.config.php');
+
                             foreach ($files as $file) {
 
                                 if (!$file->isFile()) continue;
-                                if (preg_match('/(custom\/|storage\/|config\.php|modules\/addons)/', $file)) continue;
+                                if (preg_match('/(custom\/|storage\/|modules\/addons)/', $file)) continue;
 
                                 @unlink($file->getRealPath());
                             }
 
                             $fs->removeEmptySubFolders($root);
                             $fs->copy($distroot, $root);
+
+                            // put config.php back and delete config backup
+                            $fs->copy('#root:backup.config.php', $this->app->path('#root:config.php'));
+                            $fs->delete('#root:backup.config.php');
                         }
 
                         $fs->delete($folder);
@@ -157,5 +166,3 @@ class Api extends \Cockpit\Controller {
 
         return false;
     }
-
-}
