@@ -166,3 +166,4 @@ class Api extends \Cockpit\Controller {
 
         return false;
     }
+}
