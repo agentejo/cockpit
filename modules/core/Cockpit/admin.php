@@ -84,7 +84,9 @@ if ($user = $app("session")->read('cockpit.app.auth', null)) {
     $app("i18n")->locale = isset($user['i18n']) ? $user['i18n'] : $app("i18n")->locale;
 }
 
-$app("i18n")->load("custom:i18n/{$locale}.php", $app("i18n")->locale);
+$locale = $app("i18n")->locale;
+
+$app("i18n")->load("custom:i18n/{$locale}.php", $locale);
 
 $app->bind("/i18n.js", function() use($locale){
 
