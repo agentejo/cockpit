@@ -5,79 +5,84 @@ include(__DIR__.'/PHPMailer/class.phpmailer.php');
 
 class Mailer {
 
-  protected $mailer;
-  protected $transport;
-  protected $options;
+    protected $mailer;
+    protected $transport;
+    protected $options;
 
-  public function __construct($transport = 'mail', $options = array()) {
-      $this->transport = $transport;
-      $this->options = $options;
+    public function __construct($transport = 'mail', $options = array()) {
 
-  }
+        $this->transport = $transport;
+        $this->options = $options;
+    }
 
-  public function mail($to, $subject, $message, $options = array()) {
+    public function mail($to, $subject, $message, $options = []) {
 
-    $options = array_merge($this->options, $options);
+        $options = array_merge($this->options, is_array($options) ? $options: []);
 
-    $message = $this->createMessage($to, $subject, $message);
+        $message = $this->createMessage($to, $subject, $message);
 
-    $message->setFrom(isset($options['from']) ? $options['from'] : 'mailer@'.(isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : 'localhost'));
+        $message->setFrom(isset($options['from']) ? $options['from'] : 'mailer@'.(isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : 'localhost'));
 
-    return $message->send();
-  }
+        if(isset($options['reply_to'])) {
+            $message->addReplyTo($options['reply_to']);
+        }
 
-  public function createMessage($to, $subject, $message) {
+        return $message->send();
+    }
 
-      $mail = new PHPMailer();
+    public function createMessage($to, $subject, $message) {
 
-      $mail->PluginDir = __DIR__.'/PHPMailer/';
-      $mail->Mailer    = $this->transport;
+        $mail = new PHPMailer();
 
-      if($this->transport == 'smtp') {
+        $mail->PluginDir = __DIR__.'/PHPMailer/';
+        $mail->Mailer    = $this->transport;
 
-          if(isset($this->options['host']) && $this->options['host'])      {
-            $mail->Host = $this->options['host']; // Specify main and backup server
-          }
+        if($this->transport == 'smtp') {
 
-          if(isset($this->options['auth']) && $this->options['auth']) {
-            $mail->SMTPAuth = $this->options['auth']; // Enable SMTP authentication
-          }
+            if(isset($this->options['host']) && $this->options['host'])      {
+                $mail->Host = $this->options['host']; // Specify main and backup server
+            }
 
-          if(isset($this->options['user']) && $this->options['user']) {
-            $mail->Username = $this->options['user']; // SMTP username
-          }
+            if(isset($this->options['auth']) && $this->options['auth']) {
+                $mail->SMTPAuth = $this->options['auth']; // Enable SMTP authentication
+            }
 
-          if(isset($this->options['password']) && $this->options['password']) {
-            $mail->Password = $this->options['password']; // SMTP password
-          }
+            if(isset($this->options['user']) && $this->options['user']) {
+                $mail->Username = $this->options['user']; // SMTP username
+            }
 
-          if(isset($this->options['port']) && $this->options['port']) {
-            $mail->Port = $this->options['port']; // smtp port
-          }
+            if(isset($this->options['password']) && $this->options['password']) {
+                $mail->Password = $this->options['password']; // SMTP password
+            }
 
-          if(isset($this->options['encryption']) && $this->options['encryption']) {
-            $mail->SMTPSecure = $this->options['encryption']; // Enable encryption: 'ssl' , 'tls' accepted
-          }
-      }
+            if(isset($this->options['port']) && $this->options['port']) {
+                $mail->Port = $this->options['port']; // smtp port
+            }
 
-      $mail->Subject = $subject;
-      $mail->Body    = $message;
-      $mail->AltBody = strip_tags($message);
-      $mail->CharSet = 'utf-8';
+            if(isset($this->options['encryption']) && $this->options['encryption']) {
+                $mail->SMTPSecure = $this->options['encryption']; // Enable encryption: 'ssl' , 'tls' accepted
+            }
+        }
 
-      $to_array = explode(",", $to);
-      foreach ($to_array as $to_single) {
-        $mail->addAddress($to_single);
-      }
+        $mail->Subject = $subject;
+        $mail->Body    = $message;
+        $mail->AltBody = strip_tags($message);
+        $mail->CharSet = 'utf-8';
 
-      if($mail->Body != $mail->AltBody) {
-          $mail->IsHTML(true); // Set email format to HTML
-      }
+        $to_array = explode(",", $to);
 
-      $msg = new Mailer_Message($mail);
+        foreach ($to_array as $to_single) {
+            $mail->addAddress($to_single);
+        }
 
-      return $msg;
-  }
+        if($mail->Body != $mail->AltBody) {
+            $mail->IsHTML(true); // Set email format to HTML
+        }
+
+        $msg = new Mailer_Message($mail);
+
+        return $msg;
+    }
 
 }
 
@@ -87,7 +92,6 @@ class Mailer_Message {
 
     public function __construct($mail) {
         $this->mail = $mail;
-
     }
 
     public function setCharset($charset) {
@@ -101,6 +105,10 @@ class Mailer_Message {
     public function setFrom($email, $name=false) {
         $this->mail->From = $email;
         $this->mail->FromName = $name ? $name : $email;
+    }
+
+    public function addReplyTo($email, $name='') {
+        $this->mail->addReplyTo($email, $name);
     }
 
     public function addTo($email, $name = '') {

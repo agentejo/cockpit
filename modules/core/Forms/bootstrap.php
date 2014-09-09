@@ -55,7 +55,9 @@ $app->bind("/api/forms/submit/:form", function($params) use($app) {
                     $body[] = (is_string($value) ? $value:json_encode($value))."\n<br>";
                 }
 
-                $this->mailer->mail($frm["email"], $this->param("__mailsubject", "New form data for: ".$form), implode("\n<br>", $body));
+                $options = $this->param("form_options", []);
+
+                $this->mailer->mail($frm["email"], $this->param("__mailsubject", "New form data for: ".$form), implode("\n<br>", $body), $options);
             }
         }
 
