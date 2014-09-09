@@ -27,7 +27,7 @@ $cockpit->on("after", function() {
             if ($this['debug']) {
 
                 if ($this->req_is('ajax')) {
-                    $this->response->body = '{"error": "'.$this->response->status.'"}';
+                    $this->response->body = json_encode(['error' => json_decode($this->response->body, true)]);
                 } else {
                     $this->response->body = $this->render("cockpit:views/errors/500-debug.php", ['error' => json_decode($this->response->body, true)]);
                 }
