@@ -187,9 +187,9 @@ class Accounts extends \Cockpit\Controller {
 
     protected function getLanguages() {
 
-        $languages = [];
+        $languages = [["i18n" => 'en', "language"=> 'English']];
 
-        foreach ($this->app->helper("fs")->ls('*.php', 'cockpit:i18n') as $file) {
+        foreach ($this->app->helper("fs")->ls('*.php', 'custom:i18n') as $file) {
 
             $lang     = include($file->getRealPath());
             $i18n     = $file->getBasename('.php');
