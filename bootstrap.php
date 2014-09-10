@@ -113,6 +113,11 @@ function cockpit($module = null) {
             COCKPIT_DIR.'/modules/core',  # core
             COCKPIT_DIR.'/modules/addons' # addons
         ]);
+
+        // load custom global bootstrap
+        if ($custombootfile = $app->path('custom:bootstrap.php')) {
+            include($custombootfile);
+        }
     }
 
     // shorthand modules method call e.g. cockpit('regions:render', 'test');
