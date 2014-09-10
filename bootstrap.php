@@ -35,7 +35,7 @@ if (!defined('COCKPIT_DIR'))         define('COCKPIT_DIR'        , $COCKPIT_DIR)
 if (!defined('COCKPIT_DOCS_ROOT'))   define('COCKPIT_DOCS_ROOT'  , $COCKPIT_DOCS_ROOT);
 if (!defined('COCKPIT_BASE_URL'))    define('COCKPIT_BASE_URL'   , $COCKPIT_BASE_URL);
 if (!defined('COCKPIT_BASE_ROUTE'))  define('COCKPIT_BASE_ROUTE' , $COCKPIT_BASE_ROUTE);
-if (!defined('COCKPIT_CONFIG_PATH')) define('COCKPIT_CONFIG_PATH', COCKPIT_DIR . '/config.php');
+if (!defined('COCKPIT_CONFIG_PATH')) define('COCKPIT_CONFIG_PATH', COCKPIT_DIR . '/custom/config.php');
 
 # admin route
 if (COCKPIT_ADMIN && !defined('COCKPIT_ADMIN_ROUTE')) {
@@ -53,6 +53,7 @@ function cockpit($module = null) {
 
         // load config
         $config = array_merge([
+
             'debug'        => false,
             'app.name'     => 'Cockpit',
             'base_url'     => COCKPIT_BASE_URL,
@@ -62,7 +63,8 @@ function cockpit($module = null) {
             'sec-key'      => 'c3b40c4c-db44-s5h7-a814-b4931a15e5e1',
             'i18n'         => 'en',
             'database'     => [ "server" => "mongolite://".(COCKPIT_DIR."/storage/data"), "options" => ["db" => "cockpitdb"] ]
-        ], include(COCKPIT_CONFIG_PATH));
+
+        ], file_exists(COCKPIT_CONFIG_PATH) ? include(COCKPIT_CONFIG_PATH) : []);
 
         $app = new LimeExtra\App($config);
 

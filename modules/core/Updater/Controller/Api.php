@@ -120,9 +120,6 @@ class Api extends \Cockpit\Controller {
 
                             $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($root), \RecursiveIteratorIterator::SELF_FIRST);
 
-                            // backup config.php
-                            $fs->rename('#root:config.php', $this->app->path('#root:').'/backup.config.php');
-
                             foreach ($files as $file) {
 
                                 if (!$file->isFile()) continue;
@@ -133,10 +130,6 @@ class Api extends \Cockpit\Controller {
 
                             $fs->removeEmptySubFolders($root);
                             $fs->copy($distroot, $root);
-
-                            // put config.php back and delete config backup
-                            $fs->copy('#root:backup.config.php', $this->app->path('#root:config.php'));
-                            $fs->delete('#root:backup.config.php');
                         }
 
                         $fs->delete($folder);
