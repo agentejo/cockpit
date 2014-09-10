@@ -55,7 +55,7 @@
                                         data.files.forEach(function(file) {
 
                                             if(file.name.match(/\.(jpg|jpeg|png|gif|mp4|mpeg|webm|ogv|wmv)$/i)) {
-                                                media.push("site:"+site2media+'/'+file.path);
+                                                media.push({"path":("site:"+site2media+'/'+file.path), "title":""});
                                                 count = count + 1;
                                             }
                                         });
