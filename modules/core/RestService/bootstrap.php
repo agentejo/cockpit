@@ -4,18 +4,16 @@
 
 $this->module("restservice")->extend([
 
-    'js_lib' => function() use($app) {
+    'js_lib' => function($token = null) use($app) {
 
-        $token = $app->db->getKey("cockpit/settings", "cockpit.api.token", '');
-
-        return $app->script($app->routeUrl("/rest/api.js?token={$token}"));
+        return $app->script($app->routeUrl("/rest/api-js?token={$token}"));
     }
 ]);
 
 
 if (!function_exists("cockpit_js_lib")) {
-    function cockpit_js_lib() {
-        echo cockpit("restservice")->js_lib();
+    function cockpit_js_lib($token = null) {
+        echo cockpit("restservice")->js_lib($token);
     }
 }
 
@@ -25,22 +23,27 @@ $app->on("before", function() {
 
     /*
         $routes['{:resource}'] = string (classname) | callable
-
     */
 
     $this->trigger("cockpit.rest.init", [$routes])->bind("/rest/api/*", function($params) use($routes){
 
-        $token = $this->param("token", "n/a");
+        $token = $this->param("token", false);
         $path  = $params[":splat"][0];
 
-        if (!$params[":splat"][0]) {
+        if (!$token || !$params[":splat"][0]) {
             return false;
         }
 
-        if ($token !== $this->db->getKey("cockpit/settings", "cockpit.api.token", false)) {
+        $tokens = $app->db->getKey("cockpit/settings", "cockpit.api.tokens", []);
+
+        if (!isset($tokens[$token])) {
             $this->response->status = 401;
             return ["error" => "access denied"];
         }
+
+        $rules      = $tokens[$token];
+
+        // TODO check $route against $rules
 
         $parts      = explode('/', $params[":splat"][0], 2);
         $resource   = $parts[0];
@@ -66,7 +69,7 @@ $app->on("before", function() {
 
 });
 
-$app->bind("/rest/api.js", function() {
+$app->bind("/rest/api-js", function() {
 
     $token    = $this->param("token", "");
     $registry = json_encode((object)$this->memory->get("cockpit.api.registry", []));

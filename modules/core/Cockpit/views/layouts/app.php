@@ -14,8 +14,6 @@
     @trigger('app.layout.header')
 
     @block('header')
-
-
 </head>
 <body>
 
@@ -79,7 +77,7 @@
         </div>
     </div>
 
-    <script src="@route("/i18n.js")"></script>
+    <script charset="utf-8" src="@route('/i18n-js')"></script>
 
     @trigger("app.layout.footer")
     @block('footer')

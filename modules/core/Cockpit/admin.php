@@ -88,7 +88,7 @@ $locale = $app("i18n")->locale;
 
 $app("i18n")->load("custom:i18n/{$locale}.php", $locale);
 
-$app->bind("/i18n.js", function() use($locale){
+$app->bind("/i18n-js", function() use($locale){
 
     $this->response->mime = "js";
     $data = $this("i18n")->data($locale);

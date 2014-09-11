@@ -18,19 +18,33 @@
                     <span class="uk-badge app-badge">@lang('API')</span>
                     <hr>
 
-                    <div class="uk-text-small">@lang('Token'):</div>
-                    <div class="uk-text-large uk-margin">
-                        <strong ng-if="!token" class="uk-text-muted">@lang('You have no api token generated yet.')</strong>
-                        <strong ng-if="token">@@ token @@</strong>
+                    <div ng-if="!(tokens|count)" class="uk-margin uk-text-large uk-text-muted uk-text-strong">
+                        @lang('You have no api token generated yet.')
                     </div>
 
-                    <button class="uk-button uk-button-large uk-button-primary" ng-click="generateToken()">@lang('Generate api token')</button>
+                    <div ng-repeat="(token, rules) in tokens" ng-if="(tokens|count)">
+
+                        <div class="uk-text-small">@lang('Token'):</div>
+                        <div class="uk-text-large uk-margin">
+                            <strong ng-if="token">@@ token @@ <a class="uk-text-danger" ng-click="removeToken(token)"><i class="uk-icon-trash-o"></i></a></strong>
+                        </div>
+
+                        <div class="uk-margin uk-form" ng-if="token">
+                            <label>@lang('Access rules')</label>
+                            <textarea class="uk-width-1-1" placeholder="*" style="min-height:300px;" ng-bind="rules" ng-model="tokens[token]"></textarea>
+                        </div>
+
+                        <hr>
+                    </div>
+
+                    <button ng-show="(tokens|count)" class="uk-button uk-button-large uk-button-success" type="button" ng-click="saveTokens()">@lang('Save')</button>
+                    <button class="uk-button uk-button-large" ng-click="generateToken()">@lang('Generate api token')</button>
                 </div>
                 <div>
                     <span class="uk-badge app-badge">@lang('Registry')</span>
                     <hr>
 
-                    <div class="uk-text-center" data-ng-show="emptyRegistry()">
+                    <div class="uk-text-center" data-ng-show="($scope.registry|count)">
                         <h2><i class="uk-icon-flag"></i></h2>
                         <p class="uk-text-large">
                             @lang('The registry is empty.')
@@ -45,7 +59,7 @@
                         </p>
                     </div>
 
-                    <div class="uk-margin" ng-show="!emptyRegistry()">
+                    <div class="uk-margin" ng-show="!($scope.registry|count)">
                         <h3>@lang('Entries')</h3>
 
                         <table class="uk-table">
@@ -72,9 +86,9 @@
                     </div>
 
 
-                    <hr ng-show="!emptyRegistry()">
+                    <hr ng-show="!($scope.registry|count)">
 
-                    <div class="uk-margin" ng-show="!emptyRegistry()">
+                    <div class="uk-margin" ng-show="!($scope.registry|count)">
                         <p>
                             <strong>@lang('Access the registry values'):</strong>
                         </p>
@@ -154,7 +168,7 @@
 <script>
     App.module.controller("general-settings", function($scope, $rootScope, $http, $timeout){
 
-        $scope.token     = '{{ $token }}';
+        $scope.tokens    = {{ json_encode($tokens) }};
         $scope.registry  = {{ $registry }};
         $scope.locales   = {{ $locales }};
 
@@ -246,13 +260,21 @@
         };
 
         $scope.generateToken = function() {
-            $scope.token = buildToken(95);
-
-            $http.post(App.route("/settings/saveToken"), {"token": $scope.token}).success(function(data){
-                App.notify("@lang('New api token created!')", "success");
-            }).error(App.module.callbacks.error.http);
+            $scope.tokens[buildToken(95)] = '*';
         };
 
+        $scope.removeToken = function(token) {
+            if ($scope.tokens[token]) {
+                delete $scope.tokens[token];
+                $scope.saveTokens("@lang('Token removed!')");
+            }
+        };
+
+        $scope.saveTokens = function() {
+            $http.post(App.route("/settings/saveTokens"), {"tokens": angular.copy($scope.tokens)}).success(function(data){
+                App.notify("@lang('Tokens updated!')", "success");
+            }).error(App.module.callbacks.error.http);
+        };
 
         function buildToken(bits, base) {
             if (!base) base = 16;

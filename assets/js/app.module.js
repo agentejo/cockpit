@@ -66,19 +66,42 @@
             if (!format) format = "Y-m-d H:i";
 
             return i18n_date(format, input);
-        }
+        };
     });
 
     module.filter('md5hash', function() {
         return function(input) {
             return md5(input);
-        }
+        };
     });
 
     module.filter('base64', function() {
         return function(input) {
             return btoa(input);
-        }
+        };
+    });
+
+    module.filter('count', function() {
+        return function(value) {
+
+            var length = 0, key;
+
+            if (angular.isObject(value)) {
+                for (key in value) {
+                    if (value.hasOwnProperty(key) && !(key.charAt(0) === '$')) {
+                        length++;
+                    }
+                }
+
+                return length;
+            }
+
+            if (angular.isString(value) || angular.isArray(value)) {
+                return value.length;
+            }
+
+            return length;
+        };
     });
 
     module.directive('appInplaceEdit', function() {
