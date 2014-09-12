@@ -42,12 +42,13 @@ $cockpit->on("after", function() {
             }
 
             break;
+
         case 404:
 
             if ($this->req_is('ajax')) {
                 $this->response->body = '{"error": "404", "message":"File not found"}';
             } else {
-                $this->response->body = $this->view("cockpit:views/errors/400.php");
+                $this->response->body = $this->view("cockpit:views/errors/404.php");
             }
             break;
     }
