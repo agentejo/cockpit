@@ -177,10 +177,18 @@
                             opts.onLoad(codeMirror);
                         }
 
+                        elm.attr('data-uk-check-display', 1).on('uk-check-display', function(e) {
+
+                            if (codeMirror.getWrapperElement().style.height == '0px') {
+                                codeMirror.setSize(null, elm.css('height'));
+                                codeMirror.refresh();
+                            }
+                        });
                     });
                 };
 
                 $timeout(deferCodeMirror);
+
             }
         };
     }]);

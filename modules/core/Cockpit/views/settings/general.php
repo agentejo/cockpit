@@ -1,3 +1,9 @@
+@start('header')
+
+    {{ $app->assets(['assets:js/angular/fields/codearea.js'], $app['cockpit/version']) }}
+
+@end('header')
+
 
 <h1><a href="@route('/settingspage')">@lang('Settings')</a> / @lang('General')</h1>
 
@@ -5,101 +11,16 @@
 
     <div class="uk-width-medium-1-4">
         <ul class="uk-nav uk-nav-side" data-uk-switcher="{connect:'#settings-general'}">
-            <li><a href="#SYSTEM">@lang('API')</a></li>
-            <li><a href="#REGISTRY">@lang('Registry')</a></li>
             <li><a href="#LOCALES">@lang('Locales')</a></li>
+            <li><a href="#REGISTRY">@lang('Registry')</a></li>
+            <li><a href="#SYSTEM">@lang('API')</a></li>
         </ul>
     </div>
 
     <div class="uk-width-medium-3-4">
         <div class="app-panel">
             <div id="settings-general" class="uk-switcher">
-                <div>
-                    <span class="uk-badge app-badge">@lang('API')</span>
-                    <hr>
 
-                    <div ng-if="!(tokens|count)" class="uk-margin uk-text-large uk-text-muted uk-text-strong">
-                        @lang('You have no api token generated yet.')
-                    </div>
-
-                    <div ng-repeat="(token, rules) in tokens" ng-if="(tokens|count)">
-
-                        <div class="uk-text-small">@lang('Token'):</div>
-                        <div class="uk-text-large uk-margin">
-                            <strong ng-if="token">@@ token @@ <a class="uk-text-danger" ng-click="removeToken(token)"><i class="uk-icon-trash-o"></i></a></strong>
-                        </div>
-
-                        <div class="uk-margin uk-form" ng-if="token">
-                            <label>@lang('Access rules')</label>
-                            <textarea class="uk-width-1-1" placeholder="*" style="min-height:300px;" ng-bind="rules" ng-model="tokens[token]"></textarea>
-                        </div>
-
-                        <hr>
-                    </div>
-
-                    <button ng-show="(tokens|count)" class="uk-button uk-button-large uk-button-success" type="button" ng-click="saveTokens()">@lang('Save')</button>
-                    <button class="uk-button uk-button-large" ng-click="generateToken()">@lang('Generate api token')</button>
-                </div>
-                <div>
-                    <span class="uk-badge app-badge">@lang('Registry')</span>
-                    <hr>
-
-                    <div class="uk-text-center" data-ng-show="($scope.registry|count)">
-                        <h2><i class="uk-icon-flag"></i></h2>
-                        <p class="uk-text-large">
-                            @lang('The registry is empty.')
-                        </p>
-
-                        <p>
-                            <button class="uk-button uk-button-large uk-button-primary" type="button" ng-click="addRegistryKey()"><i class="uk-icon-plus-circle"></i></button>
-                        </p>
-
-                        <p class="uk-text-muted">
-                            @lang('The registry is just a global key/value storage you can reuse as global options for your app or site.')
-                        </p>
-                    </div>
-
-                    <div class="uk-margin" ng-show="!($scope.registry|count)">
-                        <h3>@lang('Entries')</h3>
-
-                        <table class="uk-table">
-                            <tbody>
-                                <tr class="uk-form" ng-repeat="(key, value) in registry">
-                                    <td>
-                                        <i class="uk-icon-flag"></i>
-                                        @@ key @@
-                                    </td>
-                                    <td class="uk-width-3-4">
-                                        <textarea class="uk-width-1-1" placeholder="key value..." ng-model="registry[key]"></textarea>
-                                    </td>
-                                    <td width="20">
-                                        <a href="#" class="uk-text-danger" ng-click="removeRegistryKey(key)"><i class="uk-icon-trash-o"></i></a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <div class="uk-margin">
-                            <button ng-show="!emptyRegistry()" class="uk-button uk-button-large uk-button-success" type="button" ng-click="saveRegistry()">@lang('Save')</button>
-                            <button class="uk-button uk-button-large uk-button-primary" type="button" ng-click="addRegistryKey()"><i class="uk-icon-plus-circle"></i></button>
-                        </div>
-                    </div>
-
-
-                    <hr ng-show="!($scope.registry|count)">
-
-                    <div class="uk-margin" ng-show="!($scope.registry|count)">
-                        <p>
-                            <strong>@lang('Access the registry values'):</strong>
-                        </p>
-
-                        <span class="uk-badge uk-margin-small-bottom">PHP</span>
-                        <highlightcode>&lt;?php $value = get_registry('keyname' [, default]); ?&gt;</highlightcode>
-
-                        <span class="uk-badge uk-margin-small-bottom">Javascript</span>
-                        <highlightcode>var value = Cockpit.registry.keyname || default; // with Cockpit.js API</highlightcode>
-                    </div>
-                </div>
                 <div>
                     <span class="uk-badge app-badge">@lang('Locales')</span>
                     <hr>
@@ -158,6 +79,96 @@
                     </div>
 
                 </div>
+
+                <div>
+                    <span class="uk-badge app-badge">@lang('Registry')</span>
+                    <hr>
+
+                    <div class="uk-text-center" data-ng-show="!(registry|count)">
+                        <h2><i class="uk-icon-flag"></i></h2>
+                        <p class="uk-text-large">
+                            @lang('The registry is empty.')
+                        </p>
+
+                        <p>
+                            <button class="uk-button uk-button-large uk-button-primary" type="button" ng-click="addRegistryKey()"><i class="uk-icon-plus-circle"></i></button>
+                        </p>
+
+                        <p class="uk-text-muted">
+                            @lang('The registry is just a global key/value storage you can reuse as global options for your app or site.')
+                        </p>
+                    </div>
+
+                    <div class="uk-margin" ng-show="(registry|count)">
+                        <h3>@lang('Entries')</h3>
+
+                        <table class="uk-table">
+                            <tbody>
+                                <tr class="uk-form" ng-repeat="(key, value) in registry">
+                                    <td>
+                                        <i class="uk-icon-flag"></i>
+                                        @@ key @@
+                                    </td>
+                                    <td class="uk-width-3-4">
+                                        <textarea class="uk-width-1-1" placeholder="key value..." ng-model="registry[key]"></textarea>
+                                    </td>
+                                    <td width="20">
+                                        <a href="#" class="uk-text-danger" ng-click="removeRegistryKey(key)"><i class="uk-icon-trash-o"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="uk-margin">
+                            <button ng-show="!emptyRegistry()" class="uk-button uk-button-large uk-button-success" type="button" ng-click="saveRegistry()">@lang('Save')</button>
+                            <button class="uk-button uk-button-large uk-button-primary" type="button" ng-click="addRegistryKey()"><i class="uk-icon-plus-circle"></i></button>
+                        </div>
+                    </div>
+
+
+                    <hr ng-show="(registry|count)">
+
+                    <div class="uk-margin" ng-show="(registry|count)">
+                        <p>
+                            <strong>@lang('Access the registry values'):</strong>
+                        </p>
+
+                        <span class="uk-badge uk-margin-small-bottom">PHP</span>
+                        <highlightcode>&lt;?php $value = get_registry('keyname' [, default]); ?&gt;</highlightcode>
+
+                        <span class="uk-badge uk-margin-small-bottom">Javascript</span>
+                        <highlightcode>var value = Cockpit.registry.keyname || default; // with Cockpit.js API</highlightcode>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="uk-badge app-badge">@lang('API')</span>
+                    <hr>
+
+                    <div ng-if="!(tokens|count)" class="uk-margin uk-text-large uk-text-muted uk-text-strong">
+                        @lang('You have no api token generated yet.')
+                    </div>
+
+                    <div ng-repeat="(token, rules) in tokens" ng-if="(tokens|count)">
+
+                        <div class="uk-text-small">@lang('Token'):</div>
+                        <div class="uk-text-large uk-margin">
+                            <strong ng-if="token">@@ token @@ <a class="uk-text-danger" ng-click="removeToken(token)"><i class="uk-icon-trash-o"></i></a></strong>
+                        </div>
+
+                        <div class="uk-margin uk-form" ng-if="token">
+                            <label class="uk-badge uk-margin-small-bottom">@lang('Access rules')</label>
+                            <textarea codearea class="uk-width-1-1" placeholder="@lang('Allow all')" style="min-height:300px;" ng-bind="rules" ng-model="tokens[token]"></textarea>
+                        </div>
+
+                        <hr>
+                    </div>
+
+                    <button ng-show="(tokens|count)" class="uk-button uk-button-large uk-button-success" type="button" ng-click="saveTokens()">@lang('Save')</button>
+                    <button class="uk-button uk-button-large" ng-click="generateToken()">@lang('Generate api token')</button>
+                </div>
+
+
             </div>
         </div>
     </div>
@@ -207,7 +218,9 @@
                 return;
             }
 
-            $scope.registry[key] = "";
+            $timeout(function(){
+                $scope.registry[key] = "";
+            });
         };
 
         $scope.removeRegistryKey = function(key){
@@ -217,7 +230,7 @@
                     delete $scope.registry[key];
                     $scope.saveRegistry();
                 }, 0);
-            })
+            });
         };
 
         $scope.saveRegistry = function() {
@@ -260,13 +273,19 @@
         };
 
         $scope.generateToken = function() {
-            $scope.tokens[buildToken(95)] = '*';
+            $scope.tokens[buildToken(95)] = '';
         };
 
         $scope.removeToken = function(token) {
-            if ($scope.tokens[token]) {
-                delete $scope.tokens[token];
-                $scope.saveTokens("@lang('Token removed!')");
+
+            if ($scope.tokens[token] !== undefined) {
+
+                App.Ui.confirm("@lang('Are you sure?')", function() {
+                    $timeout(function(){
+                        delete $scope.tokens[token];
+                        $scope.saveTokens();
+                    }, 0);
+                });
             }
         };
 

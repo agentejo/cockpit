@@ -27,6 +27,7 @@ $app->on("before", function() {
 
     $this->trigger("cockpit.rest.init", [$routes])->bind("/rest/api/*", function($params) use($routes){
 
+        $route = $this['route'];
         $token = $this->param("token", false);
         $path  = $params[":splat"][0];
 
@@ -34,16 +35,49 @@ $app->on("before", function() {
             return false;
         }
 
-        $tokens = $app->db->getKey("cockpit/settings", "cockpit.api.tokens", []);
+        $tokens = $this->db->getKey("cockpit/settings", "cockpit.api.tokens", []);
 
         if (!isset($tokens[$token])) {
             $this->response->status = 401;
             return ["error" => "access denied"];
         }
 
-        $rules      = $tokens[$token];
 
-        // TODO check $route against $rules
+        // rules validation
+        $rules = trim(preg_replace('/#(.+)/', '', $tokens[$token])); // trim and replace comments
+        $pass  = false;
+
+        if ($rules == '') {
+            $pass = true;
+        } else {
+
+            $lines = explode("\n", $rules);
+
+            // validate every rule
+            foreach ($lines as $rule) {
+
+                $rule = trim($rule);
+
+                if (!$rule) continue;
+
+                $ret  = $rule[0] == '!' ? false : true;
+
+                if (!$ret) {
+                    $rule = substr($rule, 1);
+                }
+
+                if (preg_match("#{$rule}#", $route)) {
+                    $pass = $ret;
+                    break;
+                }
+            }
+        }
+
+        // deny access
+        if (!$pass) {
+            $this->response->status = 401;
+            return ["error" => "access denied"];
+        }
 
         $parts      = explode('/', $params[":splat"][0], 2);
         $resource   = $parts[0];

@@ -10,8 +10,7 @@ class RestApi extends \LimeExtra\Controller {
     */
     public function thumbnail($image, $width = 50, $height = 50) {
 
-        $image = base64_decode($image);
-
+        $image  = base64_decode($image);
         $imgurl = $this->module("mediamanager")->thumbnail($image, $width, $height);
 
         return $imgurl;
@@ -20,18 +19,12 @@ class RestApi extends \LimeExtra\Controller {
 
     public function thumbnails() {
 
-        $images  = $this->param('images', []);
-        $width   = $this->param('w', 50);
-        $height  = $this->param('h', false);
-        $options = $this->param('options', []);
-
-        $urls = [];
-
-        foreach ($images as $image) {
-            $urls[$image] = $this->module("mediamanager")->thumbnail($image, $width, $height, $options);
-        }
-
-        return json_encode($urls);
+        return json_encode($this->module("mediamanager")->thumbnails([
+            'images'  => $this->param('images', []),
+            'width'   => $this->param('w', 50),
+            'height'  => $this->param('h', false),
+            'options' => $this->param('options', [])
+        ]));
     }
 
 }

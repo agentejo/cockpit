@@ -5,7 +5,7 @@
 
 $this->module("mediamanager")->extend([
 
-    "thumbnail" => function($image, $width = null, $height = null, $options=array()) use($app) {
+    'thumbnail' => function($image, $width = null, $height = null, $options=array()) use($app) {
 
         if ($width && is_array($height)) {
             $options = $height;
@@ -19,7 +19,8 @@ $this->module("mediamanager")->extend([
             "cachefolder" => "cache:thumbs",
             "quality"     => 100,
             "base64"      => false,
-            "mode"        => "crop"
+            "mode"        => "crop",
+            "domain"      => false
         ), $options);
 
         extract($options);
@@ -74,9 +75,44 @@ $this->module("mediamanager")->extend([
             }
 
             $url = $app->pathToUrl($savepath);
+
+            if ($domain) {
+                $url = rtrim($app->getSiteUrl(true), '/').$url;
+            }
         }
 
         return $url;
+    },
+
+    'thumbnails' => function ($settings = []) {
+
+        $settings = array_merge([
+            'images'  => [],
+            'width'   => 50,
+            'height'  => false,
+            'options' => []
+        ], $settings);
+
+        $urls = [];
+
+        foreach ($settings['images'] as $image) {
+
+            if (is_string($image)) {
+
+                $urls[$image] = $this->thumbnail($image, $settings['width'], $settings['height'], $settings['options']);
+
+            } elseif ($image) {
+
+                $image = array_merge($settings, (array) $image);
+
+                if (isset($image['path'])) {
+                    $urls[$image['path']] = $this->thumbnail($image['path'], $image['width'], $image['height'], $image['options']);
+                }
+
+            }
+        }
+
+        return $urls;
     }
 ]);
 

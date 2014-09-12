@@ -29,7 +29,7 @@
                     note = JSON.stringify(note);
                 }
 
-                $.UIkit.notify(note, {"status":(type || 'primary')});
+                $.UIkit.notify(note, {"status":(type || 'primary'), timeout: 2000});
             },
 
             Ui: {

@@ -909,7 +909,7 @@ class App implements \ArrayAccess {
                     /* e.g. #\.html$#  */
                     if (substr($route,0,1)=='#' && substr($route,-1)=='#'){
 
-                        if (preg_match($route,$path, $matches)){
+                        if (preg_match($route, $path, $matches)){
                             $params[':captures'] = array_slice($matches, 1);
                             $found = $this->render_route($route, $params);
                             break;
