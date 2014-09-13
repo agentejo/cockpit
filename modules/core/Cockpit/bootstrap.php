@@ -8,7 +8,7 @@ $app['app.assets.base'] = [
     'assets:vendor/animate.css',
 
     // UIkit
-    'assets:css/uikit.cockpit.min.css',
+    'assets:css/cockpit.css',
     'assets:vendor/uikit/js/uikit.min.js',
     'assets:vendor/uikit/js/addons/notify.min.js'
 ];
