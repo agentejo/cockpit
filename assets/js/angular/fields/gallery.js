@@ -121,10 +121,11 @@
 
                     $container.on("sortable-change",function(){
 
-                        var imgs = [];
+                        var imgs = [], img;
 
                         $container.children().each(function(){
-                            imgs.push($(this).data("path"));
+                            img = $(this);
+                            imgs.push({'path':img.data("path"),'title':img.data("title")});
                         });
 
                         media = imgs;
@@ -146,7 +147,7 @@
                         if (media[0] && typeof(media[0])=='string') {
 
                             media.forEach(function(path, i){
-                                media[0] = {'path':path,'title':''};
+                                media[i] = {'path':path,'title':''};
                             });
 
                             updateSope();
@@ -185,7 +186,7 @@
                             }
 
                             var li = $([
-                                '<li class="uk-grid-margin" data-path="'+item.path+'" draggable="true" title="'+(item.title || item.path)+'" stype="position:relative;">',
+                                '<li class="uk-grid-margin" data-path="'+item.path+'" data-title="'+item.title+'" draggable="true" title="'+(item.title || item.path)+'" stype="position:relative;">',
                                     '<div class="uk-thumbnail" style="min-height:180px;">'+mediatpl+'</div>',
                                     '<div class="gallery-list-actions uk-button-group">',
                                         '<button class="uk-button uk-button-small js-title" type="button"><i class="uk-icon-pencil"></i></button>',
