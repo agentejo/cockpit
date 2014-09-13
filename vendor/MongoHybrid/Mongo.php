@@ -129,4 +129,10 @@ class Mongo {
         return $this->getCollection($collection)->remove($filter);
     }
 
+    public function count($collection, $filter=[]) {
+
+        return $this->getCollection($collection)->count($filter);
+    }
+
+
 }
