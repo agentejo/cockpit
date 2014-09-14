@@ -1,5 +1,19 @@
 # Changelog
 
+### 0.11.0  (Sep 14, 2014)
+
+    + Added Datastore module for simple embedded data storage
+    + Added uikit less sources to easily rebuild admin theme
+    + Added ParsedownExtra class
+    + Added multiple api tokens supporting custom url rules
+    + Custom bootstrap file support (/custom/bootstrap.php)
+    + Empty collection action
+    ^ Add title for each image in a gallery field
+    ^ Custom config.php moved to /custom/config.php
+    ^ Language files are now loaded from /custom/i18n
+    ^ Improved auto-updater
+    # Fixed collection entries filtering for mongodb based installations
+
 ### 0.10.0  (Sep 04, 2014)
 
     + Added auto-updater (experimental)
