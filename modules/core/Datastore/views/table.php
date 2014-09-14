@@ -39,9 +39,9 @@
                         </div>
                     </form>
 
-                    <div class="uk-margin-top" data-ng-show="table._id && entries && !entries.length">
+                    <div class="uk-margin-top uk-text-large uk-text-muted" data-ng-show="table._id && entries && !entries.length">
                         <hr>
-                        <span class="uk-badge app-badge">@lang('No Entries')</span>
+                        @lang('No Entries')
                     </div>
 
                     <div class="uk-margin-top" data-ng-show="table._id && entries && entries.length">
