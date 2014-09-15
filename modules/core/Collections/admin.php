@@ -43,3 +43,13 @@ $app->on('admin.dashboard.aside', function() {
 
     $this->renderView('collections:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php', compact('title', 'badge', 'collections'));
 });
+
+
+// register content fields
+$app->on("cockpit.content.fields.sources", function() {
+
+    echo $this->assets([
+        'collections:assets/field.linkcollection.js',
+    ], $this['cockpit/version']);
+
+});

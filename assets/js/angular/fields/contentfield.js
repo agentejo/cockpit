@@ -111,13 +111,6 @@
                 }
             },
 
-            'region': {
-                label: 'Region',
-                template: function(model) {
-                    return '<input class="uk-width-1-1 uk-form-large" type="text" region-picker ng-model="'+model+'">';
-                }
-            },
-
             'gallery': {
                 label: 'Gallery',
                 template: function(model) {

@@ -42,3 +42,13 @@ $app->on("admin.dashboard.aside", function() {
 
     $this->renderView("regions:views/dashboard.php with cockpit:views/layouts/dashboard.widget.php", compact('title', 'badge', 'regions'));
 });
+
+
+// register content fields
+$app->on("cockpit.content.fields.sources", function() {
+
+    echo $this->assets([
+        'regions:assets/field.regionpicker.js',
+    ], $this['cockpit/version']);
+
+});

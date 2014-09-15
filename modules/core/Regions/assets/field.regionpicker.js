@@ -1,5 +1,16 @@
 (function($) {
 
+    angular.module('cockpit.fields').run(['Contentfields', function(Contentfields) {
+
+        Contentfields.register('region', {
+            label: 'Region',
+            template: function(model) {
+                return '<input class="uk-width-1-1 uk-form-large" type="text" region-picker ng-model="'+model+'">';
+            }
+        });
+
+    }]);
+
     var regions = [];
 
     angular.module('cockpit.directives').directive("regionPicker", function($timeout, $http){
