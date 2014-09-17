@@ -28,7 +28,13 @@ $this->module("cockpit")->extend([
 
     "markdown" => function($content, $extra = false) use($app) {
 
-        return $extra ? \ParsedownExtra::instance()->text($content) : \Parsedown::instance()->text($content);
+        static $parseDown;
+        static $parsedownExtra;
+
+        if (!$extra && !$parsedown)      $parsedown      = new \Parsedown();
+        if ($extra && !$parsedownExtra)  $parsedownExtra = new \ParsedownExtra();
+
+        return $extra ? $parsedownExtra->text($content) : $parseDown->text($content);
     },
 
     "get_registry" => function($key, $default=null) use($app) {
@@ -69,6 +75,10 @@ if (!function_exists('get_registry')) {
 }
 
 if (!function_exists('markdown')) {
+
+    function get_markdown($content, $extra = false) {
+        return cockpit("cockpit")->markdown($content, $extra);
+    }
 
     function markdown($content, $extra = false) {
         echo cockpit("cockpit")->markdown($content, $extra);
