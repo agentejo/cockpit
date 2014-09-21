@@ -32,7 +32,6 @@ $app['app.assets.backend'] = $assets;
 // helpers
 $app->helpers["admin"]    = 'Cockpit\\Helper\\Admin';
 $app->helpers["versions"] = 'Cockpit\\Helper\\Versions';
-$app->helpers["backup"]   = 'Cockpit\\Helper\\Backup';
 $app->helpers["history"]  = 'Cockpit\\Helper\\HistoryLogger';
 
 $app->bind("/", function(){
@@ -48,7 +47,6 @@ $app->bind("/settingspage", function(){
 });
 
 $app->bindClass("Cockpit\\Controller\\Settings", "settings");
-$app->bindClass("Cockpit\\Controller\\Backups", "backups");
 
 //global search
 $app->bind("/cockpit-globalsearch", function(){

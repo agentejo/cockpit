@@ -1,6 +1,6 @@
 <?php
 
-namespace Cockpit\Helper;
+namespace Backups\Helper;
 
 class Backup extends \Lime\Helper {
 

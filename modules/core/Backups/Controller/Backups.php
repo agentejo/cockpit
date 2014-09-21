@@ -1,6 +1,6 @@
 <?php
 
-namespace Cockpit\Controller;
+namespace Backups\Controller;
 
 class Backups extends \Cockpit\Controller {
 
@@ -26,7 +26,7 @@ class Backups extends \Cockpit\Controller {
             $backups = array_reverse($backups);
         }
 
-        return $this->render('cockpit:views/backups/index.php', compact('backups'));
+        return $this->render('backups:views/index.php', compact('backups'));
     }
 
     public function create() {
