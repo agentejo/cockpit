@@ -43,10 +43,16 @@ class Collection {
      * count count of inserted documents for arrays
      */
     public function insert(&$document) {
+
         if (isset($document[0])) {
+
             $this->database->connection->beginTransaction();
-            foreach ($document as $key => $value) {
-                $res = $this->_insert($value);
+
+            foreach ($document as &$doc) {
+
+                if(!is_array($doc)) continue;
+
+                $res = $this->_insert($doc);
                 if(!$res) {
                     $this->database->connection->rollBack();
                     return $res;
