@@ -1,5 +1,12 @@
 # Changelog
 
+### 0.11.1  (Sep 2, 2014)
+
+    ^ Extracted Backups to standalone core module
+    ^ Decoupled module fields from core content fields
+    # Fixed Parsedown extra parameter
+    # Fixed install screen
+
 ### 0.11.0  (Sep 14, 2014)
 
     + Added Datastore module for simple embedded data storage
