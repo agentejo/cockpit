@@ -66,8 +66,6 @@ class Api extends \Cockpit\Controller {
                         @fclose($handle);
                     }
 
-
-
                     return json_encode(["success" => $success, "message" => $message]);
 
                     break;
