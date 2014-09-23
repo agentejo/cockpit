@@ -54,7 +54,7 @@ class Api extends \Cockpit\Controller {
                                 // backup current Cockpit version
                                 $filename = time().'.cockpit-'.$info['version'].'.zip';
 
-                                $this->app->helper("backup")->backup($this->app->path('#root:'), $this->app->path("backups:")."/{$filename}", function($file) {
+                                $this->app->helper("backup")->backup($this->app->path('#root:'), $this->app->path("#backups:")."/{$filename}", function($file) {
                                     return preg_match('/cache/', $file) && !preg_match('/index\.html/', $file) || preg_match('/backups/', $file) && !preg_match('/index\.html/', $file);
                                 });
                             }

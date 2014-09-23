@@ -32,7 +32,7 @@
 
                                     <div class="uk-dropdown uk-dropdown-flip uk-text-left">
                                         <ul class="uk-nav uk-nav-dropdown">
-                                            <li><a href="{{ $app->pathToUrl('backups:') }}@@ backup.timestamp @@.zip"><i class="uk-icon-cloud-download"></i> @lang('Download backup')</a></li>
+                                            <li><a href="{{ $app->pathToUrl('#backups:') }}@@ backup.file @@.zip"><i class="uk-icon-cloud-download"></i> @lang('Download backup')</a></li>
                                             <li><a href="#" data-ng-click="remove($index, backup)"><i class="uk-icon-trash-o"></i> @lang('Delete backup')</li>
                                         </ul>
                                     </div>
@@ -70,7 +70,7 @@
             <div class="uk-text-truncate uk-text-small">
                 @lang('Backups are located here'):
                 <p class="uk-margin">
-                    <strong><i class="uk-icon-folder-open"></i> {{ $app->pathToUrl("backups:") }}</strong>
+                    <strong><i class="uk-icon-folder-open"></i> {{ $app->pathToUrl("#backups:") }}</strong>
                 </p>
             </div>
         </div>

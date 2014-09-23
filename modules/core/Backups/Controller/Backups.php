@@ -8,7 +8,7 @@ class Backups extends \Cockpit\Controller {
 
         $backups = [];
 
-        foreach ($this->app->helper("fs")->ls('*.zip', 'backups:') as $file) {
+        foreach ($this->app->helper("fs")->ls('*.zip', '#backups:') as $file) {
 
             if (!$file->isFile()) continue;
             if ($file->getExtension()!='zip') continue;
@@ -38,18 +38,18 @@ class Backups extends \Cockpit\Controller {
         $filename   = "{$timestamp}.{$target}.zip";
         $rootfolder = $this->app->path($target == 'cockpit' ? "#root:" : "site:");
 
-        $this->app->helper("backup")->backup($rootfolder, $this->app->path("backups:")."/{$filename}", function($file) {
+        $this->app->helper("backup")->backup($rootfolder, $this->app->path("#backups:")."/{$filename}", function($file) {
             return preg_match('/cache/', $file) && !preg_match('/index\.html/', $file) || preg_match('/backups/', $file) && !preg_match('/index\.html/', $file);
         });
 
-        return json_encode(["timestamp" => $timestamp, "info" => $target, "file" => "{$timestamp}.{$target}", "size" => $this->app->helper("utils")->formatSize(filesize($this->app->path("backups:{$filename}")))]);
+        return json_encode(["timestamp" => $timestamp, "info" => $target, "file" => "{$timestamp}.{$target}", "size" => $this->app->helper("utils")->formatSize(filesize($this->app->path("#backups:{$filename}")))]);
     }
 
     public function remove() {
 
         if ($file = $this->param("file", false)) {
 
-            if ($file = $this->app->path("backups:{$file}.zip")) {
+            if ($file = $this->app->path("#backups:{$file}.zip")) {
 
                 @unlink($file);
 

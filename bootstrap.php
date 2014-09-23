@@ -72,7 +72,7 @@ function cockpit($module = null) {
 
         $app->path('#root'   , COCKPIT_DIR);
         $app->path('storage' , COCKPIT_DIR.'/storage');
-        $app->path('backups' , COCKPIT_DIR.'/storage/backups');
+        $app->path('#backups' , COCKPIT_DIR.'/storage/backups');
         $app->path('data'    , COCKPIT_DIR.'/storage/data');
         $app->path('cache'   , COCKPIT_DIR.'/storage/cache');
         $app->path('tmp'     , COCKPIT_DIR.'/storage/cache/tmp');
