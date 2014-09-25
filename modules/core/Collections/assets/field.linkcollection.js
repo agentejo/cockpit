@@ -16,7 +16,7 @@
 
         var collections = false, cache = {}, cacheItems = {}, loaded, Field, Picker;
 
-        Field = function($element, model, options) {
+        Field = function($element, options, model, scope) {
 
             this.element    = $element;
             this.options    = $.extend({multiple: false, collection: null}, options);
@@ -150,6 +150,8 @@
 
             remove: function(index) {
 
+                var $this = this;
+
                 if (this.options.multiple && this.value[index]) {
 
                     this.value.splice(index, 1);
@@ -164,7 +166,10 @@
                 }
 
                 this.model.$setViewValue(this.value);
-                this.render();
+
+                $timeout(function(){
+                    $this.render();
+                });
             },
 
             select: function(index) {
@@ -193,7 +198,10 @@
                     }
 
                     $this.model.$setViewValue($this.value);
-                    $this.render();
+
+                    $timeout(function(){
+                        $this.render();
+                    });
                 });
             }
         };
@@ -323,19 +331,23 @@
 
                         if (collections[collectionId]) {
 
-                            var options = {
-                                multiple   : attrs.multiple==='true',
-                                collection : collections[collectionId],
-                                model      : ngModel
-                            },
 
-                            field = new Field($element, ngModel, options);
+                            $timeout(function(){
 
-                            ngModel.$render = function() {
-                                field.render();
-                            };
+                                var options = {
+                                    multiple   : attrs.multiple==='true',
+                                    collection : collections[collectionId],
+                                    model      : ngModel
+                                },
 
-                            ngModel.$render();
+                                field = new Field($element, options, ngModel, scope);
+
+                                ngModel.$render = function() {
+                                    field.render();
+                                };
+
+                                ngModel.$render();
+                            });
 
                         } else {
                             $element.html('<div class="uk-alert uk-alert-danger">'+App.i18n.get('Linked collection doesn\'t exist.')+'</div>');
