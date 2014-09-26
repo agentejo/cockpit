@@ -15,7 +15,7 @@
         var generatedIds  = 0,
             defaultConfig = {
             plugins: [
-                "link image lists print preview hr anchor",
+                "link image lists preview hr anchor",
                 "code fullscreen media",
                 "table contextmenu paste"
             ],

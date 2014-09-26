@@ -100,6 +100,23 @@ return [
     'Addons' => '',
     'No additional addons installed.' => '',
 
+    // Datastore
+    'Datastore' => '',
+    'No tables yet.' => '',
+    'Add table' => '',
+    'Create a table' => '',
+    'Table' => '',
+    'Manage table' => '',
+    'Delete table' => '',
+    'No Entries' => '',
+    'Actions' => '',
+    'Export data' => '',
+    'Empty table' => '',
+
+    // Updater
+    'Update' => '',
+    'Getting information...' => '',
+
     // Collections
     'Collections' => '',
     'Collection' => '',
