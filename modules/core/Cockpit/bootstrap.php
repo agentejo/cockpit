@@ -31,7 +31,7 @@ $this->module("cockpit")->extend([
         static $parseDown;
         static $parsedownExtra;
 
-        if (!$extra && !$parsedown)      $parsedown      = new \Parsedown();
+        if (!$extra && !$parseDown)      $parseDown      = new \Parsedown();
         if ($extra && !$parsedownExtra)  $parsedownExtra = new \ParsedownExtra();
 
         return $extra ? $parsedownExtra->text($content) : $parseDown->text($content);
