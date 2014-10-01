@@ -3,6 +3,8 @@
     {{ $app->assets(['assets:vendor/uikit/js/addons/sortable.min.js'], $app['cockpit/version']) }}
     {{ $app->assets(['assets:vendor/uikit/js/addons/nestable.min.js'], $app['cockpit/version']) }}
 
+    {{ $app->assets(['mediamanager:assets/pathpicker.js'], $app['cockpit/version']) }}
+
     {{ $app->assets(['galleries:assets/galleries.js','galleries:assets/js/gallery.js'], $app['cockpit/version']) }}
 
     @trigger('cockpit.content.fields.sources')
