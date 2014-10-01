@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.11.3  (Oct 1, 2014)
+
+    # Fixed gallery pathpicker js error
+
 ### 0.11.2  (Oct 1, 2014)
 
     # Fixed collection link field on locale change
