@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.11.2  (Oct 1, 2014)
+
+    # Fixed collection link field on locale change
+    # Fixed 404 error on empty string output
+    # Fixed Backups download
+
 ### 0.11.1  (Sep 2, 2014)
 
     ^ Extracted Backups to standalone core module
