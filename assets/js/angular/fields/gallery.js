@@ -117,7 +117,7 @@
                 });
 
 
-                App.assets.require($.UIkit.sortable ? []:['assets/vendor/uikit/js/addons/sortable.min.js'], function(){
+                App.assets.require($.UIkit.sortable ? []:['assets/vendor/uikit/js/components/sortable.min.js'], function(){
 
                     $container.on("sortable-change",function(){
 

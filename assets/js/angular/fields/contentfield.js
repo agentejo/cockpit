@@ -81,7 +81,7 @@
 
                     if (!$.UIkit.datepicker) {
 
-                        App.assets.require(['assets/vendor/uikit/js/addons/datepicker.min.js'], function() {
+                        App.assets.require(['assets/vendor/uikit/js/components/datepicker.min.js'], function() {
 
                         });
                     }
@@ -101,7 +101,7 @@
 
                     if (!$.UIkit.timepicker) {
 
-                        App.assets.require(['assets/vendor/uikit/js/addons/timepicker.min.js'], function() {
+                        App.assets.require(['assets/vendor/uikit/js/components/timepicker.min.js'], function() {
                             $.UIkit.timepicker(tpl);
                             tpl.parent().addClass('uk-width-1-1').find('.uk-dropdown').css('width','100%');
                         });

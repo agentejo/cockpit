@@ -4,7 +4,7 @@
 
     {{ $app->assets(['assets:vendor/loadie/jquery.loadie.js', 'assets:vendor/loadie/loadie.css'], $app['cockpit/version']) }}
 
-    {{ $app->assets(['assets:vendor/uikit/js/addons/upload.min.js']) }}
+    {{ $app->assets(['assets:vendor/uikit/js/components/upload.min.js']) }}
     {{ $app->assets(['assets:vendor/fuzzysearch.js']) }}
 
     {{ $app->assets(['mediamanager:assets/js/index.js'], $app['cockpit/version']) }}

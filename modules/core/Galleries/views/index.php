@@ -1,6 +1,6 @@
 @start('header')
 
-    {{ $app->assets(['assets:vendor/uikit/js/addons/sortable.min.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/uikit/js/components/sortable.min.js'], $app['cockpit/version']) }}
     {{ $app->assets(['galleries:assets/galleries.js','galleries:assets/js/index.js'], $app['cockpit/version']) }}
 
     <style>

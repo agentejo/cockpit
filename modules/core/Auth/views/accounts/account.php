@@ -1,4 +1,4 @@
-{{ $app->assets(['assets:vendor/uikit/js/addons/form-password.min.js']) }}
+{{ $app->assets(['assets:vendor/uikit/js/components/form-password.min.js']) }}
 
 <h1>
     <a href="@route('/settingspage')">@lang('Settings')</a> / <a href="@route('/accounts/index')">@lang('Accounts')</a> / @lang('Account')

@@ -10,7 +10,7 @@ $app['app.assets.base'] = [
     // UIkit
     'assets:css/cockpit.css',
     'assets:vendor/uikit/js/uikit.min.js',
-    'assets:vendor/uikit/js/addons/notify.min.js'
+    'assets:vendor/uikit/js/components/notify.min.js'
 ];
 
 

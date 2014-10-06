@@ -7,7 +7,7 @@
     <link rel="icon" href="@base("/favicon.ico")" type="image/x-icon">
 
     @assets($app['app.assets.base'], 'app.base', 'cache:assets', 30, $app['cockpit/version'])
-    {{ $app->assets(['assets:vendor/uikit/js/addons/form-password.min.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:vendor/uikit/js/components/form-password.min.js'], $app['cockpit/version']) }}
 
     <script>
         $(function(){

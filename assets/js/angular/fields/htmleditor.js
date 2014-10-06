@@ -4,7 +4,7 @@
 
 (function($){
 
-    var reqassets = ['assets/vendor/uikit/js/addons/htmleditor.min.js', 'assets/vendor/marked.js', 'modules/core/Mediamanager/assets/pathpicker.js'];
+    var reqassets = ['assets/vendor/uikit/js/components/htmleditor.min.js', 'assets/vendor/marked.js', 'modules/core/Mediamanager/assets/pathpicker.js'];
 
     if (!window.CodeMirror) {
         reqassets.push('assets/vendor/codemirror/codemirror.js');
@@ -26,7 +26,7 @@
         '</div>'
     ].join(""));
 
-    App.assets.require($.UIkit.htmleditor ? []:'assets/vendor/uikit/js/addons/htmleditor.min.js', function() {
+    App.assets.require($.UIkit.htmleditor ? []:'assets/vendor/uikit/js/components/htmleditor.min.js', function() {
 
         $.UIkit.plugin('htmleditor', 'image', {
 
