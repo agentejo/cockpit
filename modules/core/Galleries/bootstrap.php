@@ -20,7 +20,7 @@ $this->module('galleries')->extend([
 
         $gallery = $galleries[$name];
 
-        return $gallery ? $gallery['images'] : null;
+        return $gallery ? $gallery : null;
     },
 
     'galleries' => function($options = []) use($app) {
@@ -48,7 +48,7 @@ $this->module('galleries')->extend([
 
         $gallery = $galleries[$slug];
 
-        return $gallery ? $gallery['images'] : null;
+        return $gallery ? $gallery : null;
     },
 ]);
 
