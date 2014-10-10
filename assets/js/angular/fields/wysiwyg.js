@@ -72,6 +72,11 @@
                                 updateView();
                             }
                         });
+			// Update model on tinymce's event ObjectResized
+			ed.on('ObjectResized', function (e) {
+                            ed.save();
+                            updateView();
+                        });
 
                         if (expression.setup) {
                             scope.$eval(expression.setup);
