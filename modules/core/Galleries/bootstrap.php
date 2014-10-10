@@ -42,11 +42,11 @@ $this->module('galleries')->extend([
 
         $gallery = null;
 
-        if (!isset($galleries[$name])) {
-            $galleries[$name] = $app->db->findOne('common/galleries', ['slug'=>$slug]);
+        if (!isset($galleries[$slug])) {
+            $galleries[$slug] = $app->db->findOne('common/galleries', ['slug'=>$slug]);
         }
 
-        $gallery = $galleries[$name];
+        $gallery = $galleries[$slug];
 
         return $gallery ? $gallery['images'] : null;
     },

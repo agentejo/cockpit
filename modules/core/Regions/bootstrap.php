@@ -38,9 +38,10 @@ $this->module("regions")->extend([
         }
 
         $renderer = $app->renderer;
-        $fields   = [];
+        $_fields  = isset($region['fields']) ? $region['fields'] : [];
+        $fields   = ['_fields' => $_fields];
 
-        if (isset($region['fields']) && count($region['fields'])) {
+        if (count($_fields)) {
             foreach ($region['fields'] as &$field) {
 
                 $fields[$field['name']] = $field['value'];
