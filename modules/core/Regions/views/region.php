@@ -176,6 +176,14 @@
                                                                     </div>
                                                                 </div>
 
+                                                                <div class="uk-form-row" data-ng-if="field.type=='link-collection'">
+                                                                    <label class="uk-form-label">@lang('Collection')</label>
+                                                                    <div class="uk-form-controls">
+                                                                        <select ng-options="c._id as c.name for c in collections" data-ng-model="field.collection" title="@lang('Related collection')" data-uk-tooltip required></select>
+                                                                        <input type="checkbox" data-ng-model="field.multiple"> @lang('multiple')
+                                                                    </div>
+                                                                </div>
+
                                                                 @trigger('cockpit.content.fields.settings')
 
                                                             </div>

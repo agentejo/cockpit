@@ -21,14 +21,21 @@
 
         }).error(App.module.callbacks.error.http);
 
+        // get collections
+        $scope.collections = [];
+
+        $http.post(App.route("/api/collections/find"), {}).success(function(data){
+            $scope.collections = data;
+        });
+
 
         $scope.loadVersions = function() {
 
-            if (!$scope.region["_id"]) {
+            if (!$scope.region._id) {
                 return;
             }
 
-            $http.post(App.route("/api/regions/getVersions"), {"id":$scope.region["_id"]}).success(function(data){
+            $http.post(App.route("/api/regions/getVersions"), {"id":$scope.region._id}).success(function(data){
 
                 if (data) {
                     $scope.versions = data;
@@ -39,12 +46,12 @@
 
         $scope.clearVersions = function() {
 
-            if (!$scope.region["_id"]) {
+            if (!$scope.region._id) {
                 return;
             }
 
             App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
-                $http.post(App.route("/api/regions/clearVersions"), {"id":$scope.region["_id"]}).success(function(data){
+                $http.post(App.route("/api/regions/clearVersions"), {"id":$scope.region._id}).success(function(data){
                     $timeout(function(){
                         $scope.versions = [];
                         App.notify(App.i18n.get("Version history cleared!"), "success");
@@ -55,7 +62,7 @@
 
         $scope.restoreVersion = function(versionId) {
 
-            if (!versionId || !$scope.region["_id"]) {
+            if (!versionId || !$scope.region._id) {
                 return;
             }
 
@@ -63,11 +70,11 @@
 
                 var msg = $.UIkit.notify(['<i class="uk-icon-spinner uk-icon-spin"></i>', App.i18n.get("Restoring version...")].join(" "), {timeout:0});
 
-                $http.post(App.route("/api/regions/restoreVersion"), {"docId":$scope.region["_id"], "versionId":versionId}).success(function(data){
+                $http.post(App.route("/api/regions/restoreVersion"), {"docId":$scope.region._id, "versionId":versionId}).success(function(data){
 
                     setTimeout(function(){
                         msg.close();
-                        location.href = App.route("/regions/region/"+$scope.region["_id"]);
+                        location.href = App.route("/regions/region/"+$scope.region._id);
                     }, 1500);
                 }).error(App.module.callbacks.error.http);
             });

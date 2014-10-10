@@ -168,6 +168,45 @@ $this->module("collections")->extend([
         return $item[0];
     },
 
+    'getLinked' => function($colId, $itemId) {
+
+        static $cache;
+
+        $result     = null;
+        $collection = $this->collectionById($colId);
+
+        if (!$collection) {
+            return $result;
+        }
+
+        if (is_array($itemId)) {
+
+            $result = [];
+
+            foreach($itemId as &$id) {
+
+                if (!isset($cache[$colId][$id])) {
+
+                    $cache[$colId][$id] = $collection->findOne(['_id' => $id]);
+                }
+
+                $result[$id] = $cache[$colId][$id];
+            }
+
+
+        } else {
+
+            if (!isset($cache[$colId][$itemId])) {
+
+                $cache[$colId][$itemId] = $collection->findOne(['_id' => $itemId]);
+            }
+
+            $result = $cache[$colId][$itemId];
+        }
+
+        return $result;
+    },
+
     'find' => function($collection, $options = []) {
 
         $collection = $this->get_collection($collection);
