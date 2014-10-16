@@ -166,7 +166,7 @@
             $("#options-field-"+index).toggleClass('uk-hidden');
         };
 
-        var imglist = $("#images-list").on("sortable-change",function(){
+        var imglist = $("#images-list").on("uk.sortable.change",function(){
 
             var images = [];
 
@@ -181,7 +181,7 @@
 
         // after sorting list
 
-        var list = $("#manage-fields-list").on("nestable-stop", function(){
+        var list = $("#manage-fields-list").on("uk.nestable.stop", function(){
             var fields = [];
 
             list.children('.ng-scope').each(function(){

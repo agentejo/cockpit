@@ -72,8 +72,8 @@
                                 updateView();
                             }
                         });
-			// Update model on tinymce's event ObjectResized
-			ed.on('ObjectResized', function (e) {
+                        // Update model on tinymce's event ObjectResized
+                        ed.on('ObjectResized', function (e) {
                             ed.save();
                             updateView();
                         });

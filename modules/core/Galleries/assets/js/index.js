@@ -150,7 +150,7 @@
             }
         };
 
-        var grouplist = $("#groups-list").on("sortable-change",function(){
+        var grouplist = $("#groups-list").on("uk.sortable.change",function(){
 
             if ($scope.groups.length==1) return;
 

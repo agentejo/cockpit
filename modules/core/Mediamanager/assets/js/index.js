@@ -237,7 +237,7 @@
                             }
                         });
 
-                        dirsearch.element.on('autocomplete-select', function(e, data){
+                        dirsearch.element.on('uk.autocomplete.select', function(e, data){
                             loadPath(data.dir);
                             dirsearch.input.val('');
                             $scope.open(data);
