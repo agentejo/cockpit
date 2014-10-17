@@ -60,7 +60,7 @@
     </script>
 </head>
 <body>
-    <div>
+    <div class="uk-container uk-container-center">
         <div class="uk-animation-fade app-login-box">
             <div class="app-login-box-container">
 
