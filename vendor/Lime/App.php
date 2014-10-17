@@ -300,9 +300,11 @@ class App implements \ArrayAccess {
 
         if (strpos($path, ':')===false) {
 
+            /*
             if ($this->registry['base_port'] != '80') {
                 $url .= $this->registry['site_url'];
             }
+            */
 
             $url .= $this->registry["base_url"].'/'.ltrim($path, '/');
 
@@ -329,9 +331,11 @@ class App implements \ArrayAccess {
 
         $url = '';
 
+        /*
         if ($this->registry['base_port'] != '80') {
             $url .= $this->registry['site_url'];
         }
+        */
 
         $url .= $this->registry["base_route"];
 
@@ -474,9 +478,11 @@ class App implements \ArrayAccess {
             $url = '/'.ltrim(str_replace($root, '', $file), '/');
         }
 
+        /*
         if ($this->registry['base_port'] != "80") {
             $url = $this->registry['site_url'].$url;
         }
+        */
 
         return $url;
     }
