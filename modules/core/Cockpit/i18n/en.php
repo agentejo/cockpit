@@ -133,12 +133,12 @@ return [
     'Add entry' => '',
     'Edit entry' => '',
     'Delete entry' => '',
+    'Delete entries' => '',
     'Filter entries...' => '',
     'Reset filter' => '',
     'No entries found.' => '',
     'This field is required.' => '',
     'It seems you don\'t have any fields created.' => '',
-    'Field name' => '',
     'Field type' => '',
     'options...' => '',
     'Code syntax' => '',
@@ -226,6 +226,7 @@ return [
     'Save Region' => '',
     'Region removed' => '',
     'Region saved!' => '',
+    'Show all regions' => '',
 
     // Versions
     'Versions' => '',
@@ -263,6 +264,8 @@ return [
     'It is important to prefix the form fields with <strong>form[...]</strong>.' => '',
     'It seems you don\'t have any form entries.' => '',
     'Form data' => '',
+    'Form saved!' => '',
+    'Form removed' => '',
 
     // Galleries
     'Galleries' => '',
@@ -285,6 +288,13 @@ return [
     'Save gallery' => '',
     '%s image(s) imported' => '',
     'Create groups to organize your galleries.' => '',
-    'Create new group' => ''
+    'Create new group' => '',
+    'Create new group' => '',
+    'Import' => 'Importer',
+    'Manage meta fields' => '',
+    'Add images to gallery' => '',
+    'Single image' => '',
+    'Images from folder' => '',
+    'Show all galleries' => ''
 */
 ];
