@@ -121,10 +121,6 @@
             });
         };
 
-        $scope.imgurl = function(image) {
-            return encodeURI(image.path.replace('site:', window.COCKPIT_SITE_BASE_URL));
-        };
-
         $scope.showMeta = function(index){
             $scope.metaimage = $scope.gallery.images[index];
             dialog.show();

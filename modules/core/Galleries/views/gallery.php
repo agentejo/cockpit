@@ -71,7 +71,7 @@
                                 <ul id="images-list" class="uk-grid uk-sortable" data-uk-grid-match="{target:'.uk-thumbnail'}" data-uk-sortable>
                                     <li class="uk-width-1-2 uk-width-medium-1-5 uk-grid-margin" data-ng-repeat="image in gallery.images" draggable="true">
                                         <div class="uk-thumbnail uk-width-1-1 uk-text-center uk-visible-hover">
-                                            <div class="uk-text-center" style="background: #fff url(@@ imgurl(image) @@) 50% 50% no-repeat;background-size:contain;height:140px;">
+                                            <div class="uk-text-center" style="background: #fff url(@route('/mediamanager/thumbnail')/@@ image.path|base64 @@/200/200) 50% 50% no-repeat;background-size:contain;height:140px;">
 
                                                 <div class="images-list-actions uk-hidden">
                                                     <div class="uk-button-group">

@@ -175,9 +175,10 @@
                     var mediatpl;
 
                     if (media && media.length) {
+
                         media.forEach(function(item, index){
 
-                            if(item.path.match(/\.(jpg|jpeg|png|gif|svg)$/i)) {
+                            if (item.path.match(/\.(jpg|jpeg|png|gif|svg)$/i)) {
                                 mediatpl = '<img src="'+App.route("/mediamanager/thumbnail/"+btoa(item.path))+'/150/150">';
                             }
 
