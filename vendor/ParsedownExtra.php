@@ -65,7 +65,7 @@ class ParsedownExtra extends Parsedown
     {
         $Block = parent::identifyAtx($Line);
 
-        if (preg_match('/[ ]*'.$this->attributesPattern.'[ ]*$/', $Block['element']['text'], $matches, PREG_OFFSET_CAPTURE))
+        if (preg_match('/[ #]*'.$this->attributesPattern.'[ ]*$/', $Block['element']['text'], $matches, PREG_OFFSET_CAPTURE))
         {
             $attributeString = $matches[1][0];
 
@@ -352,7 +352,7 @@ class ParsedownExtra extends Parsedown
             ),
         );
 
-        usort($this->Definitions['Footnote'], function($A, $B) {
+        uasort($this->Definitions['Footnote'], function($A, $B) {
             return $A['number'] - $B['number'];
         });
 

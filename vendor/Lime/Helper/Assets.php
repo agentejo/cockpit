@@ -28,7 +28,7 @@ class Assets extends \Lime\Helper {
             file_put_contents($path, $result);
             return $tag;
         }
-        
+
         return null;
     }
 
@@ -56,7 +56,7 @@ class Assets extends \Lime\Helper {
             file_put_contents($path, $result);
             return $tag;
         }
-        
+
         return null;
     }
 
@@ -117,7 +117,7 @@ class Assets extends \Lime\Helper {
                 "file" => $file
             );
 
-            $ext     = ($asset['ext']=="scss" || $asset['ext']=="less") ? "css":$asset['ext'];
+            $ext     = $asset['ext'];
             $content = '';
 
             if (strpos($file, ':') !== false && $____file = $this->app->path($file)) {
@@ -133,21 +133,9 @@ class Assets extends \Lime\Helper {
                     $content = @file_get_contents($file);
                     break;
 
-                case 'scss':
-                case 'less':
                 case 'css':
 
-                    switch($asset['ext']) {
-                        case 'scss':
-                            $content = \Sass::parse($file);
-                            break;
-                        case 'less':
-                            $content = \Less::parse($file);
-                            break;
-                        default:
-                            $content = @file_get_contents($file);
-                    }
-
+                    $content = @file_get_contents($file);
                     $content = $rewriteCssUrls($content, $asset);
 
                     break;
