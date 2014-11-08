@@ -524,7 +524,6 @@ class I18n extends \Lime\Helper {
         'TRY' => 'TL',
         'TRL' => '£',
         'TVD' => '$',
-        'GBP' => '£',
         'USD' => '$',
         'UYU' => '$U',
         'VEF' => 'Bs',
