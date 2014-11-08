@@ -264,7 +264,7 @@ $this->module("collections")->extend([
 
         if (!$collection) return false;
 
-        $col = "collection".$datastore["_id"];
+        $col = "collection".$collection["_id"];
 
         return $this->app->db->remove("collections/{$col}", $criteria);
     }
