@@ -50,7 +50,7 @@ $this->module("collections")->extend([
         return $collections[$colid];
     },
 
-    'collections'=> function($options = []) {
+    'collections'=> function($options = []) use($app) {
 
         $return      = [];
         $collections = $app->db->find('common/collections', $options)->toArray();
