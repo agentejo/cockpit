@@ -186,11 +186,11 @@ class Client {
         $list = $this->getKey($collection, $key, []);
 
         if($index < 0) {
-            $index = count($list) - abs(index);
+            $index = count($list) - abs($index);
         }
 
         if(isset($list[$index])){
-            $list[index] = $value;
+            $list[$index] = $value;
             $this->setKey($collection, $key, $list);
 
             return true;
@@ -212,7 +212,7 @@ class Client {
         $list = $this->getKey($collection, $key, []);
 
         if($index < 0) {
-            $index = count($list) - abs(index);
+            $index = count($list) - abs($index);
         }
 
         return isset($list[$index]) ? $list[$index]:null;
@@ -361,7 +361,7 @@ class Client {
     public function hincrby($collection, $key, $field, $by = 1) {
 
         $current = $this->hget($collection, $key, $field, 0);
-        $newone  = $current+by;
+        $newone  = $current+$by;
 
         $this->hset($collection, $key, $field, $newone);
 

@@ -242,11 +242,11 @@ class RedisLite {
         $list = $this->get($key, array());
 
         if($index < 0) {
-            $index = count($list) - abs(index);
+            $index = count($list) - abs($index);
         }
 
         if(isset($list[$index])){
-            $list[index] = $value;
+            $list[$index] = $value;
             $this->set($key, $list);
 
             return true;
@@ -267,7 +267,7 @@ class RedisLite {
         $list = $this->get($key, array());
 
         if($index < 0) {
-            $index = count($list) - abs(index);
+            $index = count($list) - abs($index);
         }
 
         return isset($list[$index]) ? $list[$index]:null;
@@ -408,7 +408,7 @@ class RedisLite {
     public function hincrby($key, $field, $by = 1) {
 
         $current = $this->hget($key, $field, 0);
-        $newone  = $current+by;
+        $newone  = $current+$by;
 
         $this->hset($key, $field, $newone);
 
