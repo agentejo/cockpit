@@ -266,7 +266,6 @@ class Mediamanager extends \Cockpit\Controller {
                 "name" => $filename,
                 "path" => $path,
                 "dir" => dirname($path),
-                "is_writable" => is_writable($file->getPathname()),
                 "url"  => $this->app->pathToUrl($file->getPathname()),
             ];
         }
