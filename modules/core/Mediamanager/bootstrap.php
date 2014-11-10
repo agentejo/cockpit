@@ -45,16 +45,16 @@ $this->module("mediamanager")->extend([
             return $app->pathToUrl($path);
         }
 
-        if (!in_array($mode, ['crop', 'best_fit', 'resize'])) {
-            $mode = 'crop';
+        if (!in_array($options['mode'], ['crop', 'best_fit', 'resize'])) {
+            $options['mode'] = 'crop';
         }
 
-        $method = $mode == 'crop' ? 'thumbnail':$mode;
+        $method = $options['mode'] == 'crop' ? 'thumbnail' : $options['mode'];
 
-        if ($base64) {
+        if ($options['base64']) {
 
             try {
-                $data = $app("image")->take($path)->{$method}($width, $height)->base64data(null, $quality);
+                $data = $app("image")->take($path)->{$method}($width, $height)->base64data(null, $options['quality']);
             } catch(Exception $e) {
                 return $url;
             }
@@ -64,11 +64,11 @@ $this->module("mediamanager")->extend([
         } else {
 
             $filetime = filemtime($path);
-            $savepath = $app->path($cachefolder)."/".md5($path)."_{$width}x{$height}_{$quality}_{$filetime}_{$mode}.{$ext}";
+            $savepath = $app->path($options['cachefolder'])."/".md5($path)."_{$width}x{$height}_{$options['quality']}_{$filetime}_{$options['mode']}.{$ext}";
 
-            if ($rebuild || !file_exists($savepath)) {
+            if ($options['rebuild'] || !file_exists($savepath)) {
                 try {
-                    $app("image")->take($path)->{$method}($width, $height)->save($savepath, $quality);
+                    $app("image")->take($path)->{$method}($width, $height)->save($savepath, $options['quality']);
                 } catch(Exception $e) {
                     return $url;
                 }
@@ -76,7 +76,7 @@ $this->module("mediamanager")->extend([
 
             $url = $app->pathToUrl($savepath);
 
-            if ($domain) {
+            if ($options['domain']) {
                 $url = rtrim($app->getSiteUrl(true), '/').$url;
             }
         }
