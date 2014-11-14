@@ -165,8 +165,8 @@ class Collection {
      * @param  mixed $criteria
      * @return object Cursor
      */
-    public function find($criteria = null) {
-        return new Cursor($this, $this->database->registerCriteriaFunction($criteria));
+    public function find($criteria = null, $projection = null) {
+        return new Cursor($this, $this->database->registerCriteriaFunction($criteria), $projection);
     }
 
     /**
@@ -175,8 +175,9 @@ class Collection {
      * @param  mixed $criteria
      * @return array
      */
-    public function findOne($criteria = null) {
-        $items = $this->find($criteria)->limit(1)->toArray();
+    public function findOne($criteria = null, $projection = null) {
+
+        $items = $this->find($criteria, $projection)->limit(1)->toArray();
 
         return isset($items[0]) ? $items[0]:null;
     }

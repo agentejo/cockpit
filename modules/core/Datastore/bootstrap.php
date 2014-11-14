@@ -43,7 +43,7 @@ $this->module("datastore")->extend([
         return $this->app->db->find("datastore/{$collection}", $options);
     },
 
-    "findOne" => function($table, $criteria = []) {
+    "findOne" => function($table, $criteria = [], $projection = null) {
 
         $datastore = $this->get_datastore($table);
 
@@ -51,7 +51,7 @@ $this->module("datastore")->extend([
 
         $collection = "datastore".$datastore["_id"];
 
-        return $this->app->db->findOne("datastore/{$collection}", $criteria);
+        return $this->app->db->findOne("datastore/{$collection}", $criteria, $projection);
     },
 
     "save_entry" => function($table, $data) {

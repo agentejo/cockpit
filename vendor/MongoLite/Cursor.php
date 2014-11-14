@@ -28,6 +28,11 @@ class Cursor implements \Iterator{
     protected $criteria;
 
     /**
+     * @var array|null
+     */
+    protected $projection;
+
+    /**
      * @var null|integer
      */
     protected $limit;
@@ -48,9 +53,10 @@ class Cursor implements \Iterator{
      * @param object $collection
      * @param mixed $criteria
      */
-    public function __construct($collection, $criteria) {
-        $this->collection = $collection;
-        $this->criteria   = $criteria;
+    public function __construct($collection, $criteria, $projection = null) {
+        $this->collection  = $collection;
+        $this->criteria    = $criteria;
+        $this->projection  = $projection;
     }
 
     /**
@@ -183,8 +189,45 @@ class Cursor implements \Iterator{
         $result    = $stmt->fetchAll( \PDO::FETCH_ASSOC);
         $documents = array();
 
-        foreach($result as $doc) {
-            $documents[] = json_decode($doc["document"], true);
+        if (!$this->projection) {
+
+            foreach($result as &$doc) {
+                $documents[] = json_decode($doc["document"], true);
+            }
+
+        } else {
+
+            $exclude = [];
+            $include = [];
+
+            foreach($this->projection as $key => $value) {
+
+                if ($value) {
+                    $include[$key] = 1;
+                } else {
+                    $exclude[$key] = 1;
+                }
+            }
+
+            foreach($result as &$doc) {
+
+                $item = json_decode($doc["document"], true);
+                $id   = $item["_id"];
+
+                if ($exclude) {
+                    $item = array_diff_key($item, $exclude);
+                }
+
+                if ($include) {
+                    $item = array_key_intersect($item, $include);
+                }
+
+                if (!isset($exclude["_id"])) {
+                    $item["_id"] = $id;
+                }
+
+                $documents[] = $item;
+            }
         }
 
         return $documents;
@@ -223,4 +266,15 @@ class Cursor implements \Iterator{
         return isset($this->data[$this->position]);
     }
 
+}
+
+function array_key_intersect(&$a, &$b) {
+
+    $array = [];
+
+    while (list($key,$value) = each($a)) {
+        if (isset($b[$key])) $array[$key] = $value;
+    }
+
+    return $array;
 }

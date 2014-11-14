@@ -218,7 +218,7 @@ $this->module("collections")->extend([
         return $this->app->db->find("collections/{$col}", $options);
     },
 
-    'findOne' => function($collection, $criteria = []) {
+    'findOne' => function($collection, $criteria = [], $projection = null) {
 
         $collection = $this->get_collection($collection);
 
@@ -226,7 +226,7 @@ $this->module("collections")->extend([
 
         $col = "collection".$collection["_id"];
 
-        return $this->app->db->findOne("collections/{$col}", $criteria);
+        return $this->app->db->findOne("collections/{$col}", $criteria, $projection);
     },
 
     'save_entry' => function($collection, $data) {
