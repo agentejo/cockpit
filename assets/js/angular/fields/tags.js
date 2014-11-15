@@ -34,7 +34,7 @@
 
                         if(tags.indexOf(tag) === -1 ) {
                             tags.push(tag);
-                            updateSope();
+                            updateScope();
                             renderTags();
                         }
 
@@ -53,7 +53,7 @@
                     tags.splice(index, 1);
                     item.fadeOut(function(){ item.remove(); });
 
-                    updateSope();
+                    updateScope();
                 });
 
                 ngModel.$render = function() {
@@ -67,7 +67,7 @@
                     }, 10);
                 };
 
-                function updateSope() {
+                function updateScope() {
 
                     ngModel.$setViewValue(tags);
 
