@@ -6,19 +6,19 @@
 
     angular.module('cockpit.fields').run(['Contentfields', function(Contentfields) {
 
-       Contentfields.register('fieldrepeater', {
-           label: 'Field repeater',
+       Contentfields.register('multifield', {
+           label: 'Multi field',
            template: function(model, options) {
-               return '<fieldrepeater ng-model="'+model+'"></fieldrepeater>';
+               return '<multifield ng-model="'+model+'"></multifield>';
            }
        });
 
     }]);
 
-    angular.module('cockpit.fields').directive("fieldrepeater", ['$timeout', '$compile', 'Contentfields', function($timeout, $compile, Contentfields) {
+    angular.module('cockpit.fields').directive("multifield", ['$timeout', '$compile', 'Contentfields', function($timeout, $compile, Contentfields) {
 
         var contentfields = [],
-            exclude       = ['select', 'boolean', 'link-collection', 'fieldrepeater'];
+            exclude       = ['select', 'boolean', 'link-collection', 'multifield'];
 
         Contentfields.fields().forEach(function(field){
             if(exclude.indexOf(field.name) == -1) {
@@ -34,7 +34,7 @@
             },
             restrict: 'E',
             replace: true,
-            templateUrl: App.base('/assets/js/angular/fields/tpl/fieldrepeater.html'),
+            templateUrl: App.base('/assets/js/angular/fields/tpl/multifield.html'),
 
             link: function (scope, elm, attrs, ngModel) {
 
