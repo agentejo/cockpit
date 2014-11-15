@@ -43,7 +43,7 @@
                     scope.contentfields   = contentfields;
                     scope.repeaterfields  = ngModel.$viewValue;
 
-                    if(!scope.repeaterfields.push) {
+                    if(!scope.repeaterfields) {
                         scope.repeaterfields = [];
                     }
 
