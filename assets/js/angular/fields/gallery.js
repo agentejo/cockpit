@@ -41,7 +41,7 @@
 
                                 media.push({"path":path, "title":""});
                                 App.notify(App.i18n.get("%s media file(s) added", 1));
-                                updateSope();
+                                updateScope();
                                 rendermedia();
 
                             } else {
@@ -60,7 +60,7 @@
                                             }
                                         });
 
-                                        updateSope();
+                                        updateScope();
                                         rendermedia();
                                     }
 
@@ -77,7 +77,7 @@
 
                     App.Ui.confirm(App.i18n.get("Are you sure?"), function(){
                         media = [];
-                        updateSope();
+                        updateScope();
                         rendermedia();
                     });
                 });
@@ -99,7 +99,7 @@
                             }
                         });
 
-                        updateSope();
+                        updateScope();
                     });
                 });
 
@@ -112,7 +112,7 @@
                     if (title!==null) {
 
                         media[index].title = title;
-                        updateSope();
+                        updateScope();
                     }
                 });
 
@@ -130,7 +130,7 @@
 
                         media = imgs;
 
-                        updateSope();
+                        updateScope();
 
                     });
 
@@ -150,7 +150,7 @@
                                 media[i] = {'path':path,'title':''};
                             });
 
-                            updateSope();
+                            updateScope();
                         }
                     }
 
@@ -159,7 +159,7 @@
                     }, 10);
                 };
 
-                function updateSope() {
+                function updateScope() {
 
                     ngModel.$setViewValue(media);
 
