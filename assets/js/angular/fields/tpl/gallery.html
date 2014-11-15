@@ -1,0 +1,22 @@
+<div>
+
+    <ul class="uk-grid uk-grid-small uk-grid-width-medium-1-5 uk-grid-width-1-3 gallery-list uk-sortable" ng-show="images.length">
+
+        <li class="uk-grid-margin" stype="position:relative;" ng-repeat="img in images">
+            <div class="uk-thumbnail media-cover" style="min-height:180px;"><i class="uk-icon-file-o" media-preview="{{ img.path }}"></i></div>
+            <div class="gallery-list-actions uk-button-group">
+                <button class="uk-button uk-button-small" type="button" ng-click="updateTitle(img)"><i class="uk-icon-pencil"></i></button>
+                <button class="uk-button uk-button-small uk-button-danger" type="button" ng-click="removeImage($index)"><i class="uk-icon-trash-o"></i></button></div>
+            </div>
+        </li>
+
+    </ul>
+
+    <div class="uk-alert" ng-show="!images.length">
+        No images in gallery.
+    </div>
+
+    <hr>
+    <button class="uk-button uk-margin-small-right js-gallery-import" type="button" ng-click="pickImage()"><i class="uk-icon-plus-circle"></i></button>
+    <a class="uk-text-danger js-gallery-empty" ng-click="emptyGallery()" ng-show="images.length"><i class="uk-icon-trash-o"></i> Empty</a>
+</div>

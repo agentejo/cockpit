@@ -12,11 +12,16 @@
 
                     attrs.$observe('mediaPreview', function(url){
 
-                        if(url) {
+                        if (url) {
 
                             var $r;
 
                             if (url.match(/\.(jpg|jpeg|png|gif|svg)$/i)) {
+
+                                if (url.indexOf('site:')===0) {
+                                    url = url.replace("site:", COCKPIT_SITE_BASE_URL)
+                                }
+
                                 $r = '<div class="media-url-preview" style="background-image:url('+encodeURI(url)+')"></div>';
                             }
 
@@ -39,7 +44,7 @@
                             if($r) elm.replaceWith($r);
                         }
                     });
-                }
+                };
             }
         };
     }]);
