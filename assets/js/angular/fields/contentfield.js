@@ -177,7 +177,7 @@
 
                         content = field.template(attrs.ngModel, options);
 
-                        if (content['then']) {
+                        if (content.then) {
 
                             content.then(function(markup){
                                 $compile(elm.html(markup).contents())(scope);

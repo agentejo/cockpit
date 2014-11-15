@@ -1,0 +1,31 @@
+<div ng-cloak>
+
+    <div class="uk-margin uk-panel uk-panel-box" ng-show="repeaterfields.length">
+
+        <div class="uk-margin" ng-repeat="repeaterfield in repeaterfields">
+            <div class="uk-margin-small-bottom uk-clearfix">
+                <span class="uk-badge app-badge">{{ repeaterfield.type }}</span>
+                <a class="uk-text-danger uk-float-right" ng-click="removerepeaterfield($index)"><i class="uk-icon-trash-o"></i></a>
+            </div>
+            <contentfield options="{{ repeaterfield }}" ng-model="repeaterfield.value"></contentfield>
+        </div>
+
+    </div>
+
+    <div class="uk-alert" ng-show="!repeaterfields.length">No fields.</div>
+
+    <hr>
+
+    <div class="uk-margin">
+
+        <div class="uk-button-dropdown" data-uk-dropdown="{ mode: 'click' }">
+            <button class="uk-button uk-button-small" type="button">Add field &nbsp; <i class="uk-icon-caret-down"></i></button>
+            <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-small uk-text-left">
+                <ul class="uk-nav uk-nav-dropdown">
+                    <li class="uk-nav-header">Field Types</li>
+                    <li ng-repeat="f in contentfields"><a ng-click="addrepeaterfield(f.name)">{{ f.label}}</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
