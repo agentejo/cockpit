@@ -26,7 +26,7 @@
 
                     scope.images = ngModel.$viewValue;
 
-                    if (!scope.images.push) {
+                    if (!angular.isArray(scope.images)) {
                         scope.images = [];
                     }
 

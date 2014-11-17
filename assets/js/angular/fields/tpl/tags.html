@@ -1,0 +1,15 @@
+<div>
+    <input type="text" class="uk-width-1-1 uk-form-large" placeholder="Add tag...">
+
+    <div class="uk-margin-small-top uk-clearfix" ng-show="tags.length">
+
+        <div class="uk-margin-small-top uk-margin-small-right uk-float-left uk-badge" ng-repeat="tag in tags">
+            <i class="uk-icon-tag"></i> {{ tag }}
+            &nbsp;<span style="cursor:pointer;" ng-click="removeTag($index)"><i class="uk-icon-times"></i></span>
+        </div>
+    </div>
+
+    <div class="uk-width-1-1 uk-grid-margin" ng-show="!tags.length"><p class="uk-text-muted uk-text-small">No tags</p></div>
+
+
+</div>

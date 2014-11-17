@@ -30,7 +30,7 @@
             require: 'ngModel',
             scope: {
                 repeaterfields: '@',
-                addrepeaterfield: '@',
+                addrepeaterfield: '@'
             },
             restrict: 'E',
             replace: true,
@@ -43,7 +43,7 @@
                     scope.contentfields   = contentfields;
                     scope.repeaterfields  = ngModel.$viewValue;
 
-                    if(!scope.repeaterfields.push) {
+                    if (!angular.isArray(scope.repeaterfields)) {
                         scope.repeaterfields = [];
                     }
 

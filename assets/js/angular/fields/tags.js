@@ -4,102 +4,54 @@
 
 (function($){
 
-    var tpl = [
-        '<div>',
-            '<input type="text" class="uk-width-1-1 uk-form-large" placeholder="'+App.i18n.get('Add tag...')+'">',
-            '<div class="uk-margin-small-top uk-clearfix"></div>',
-        '</div>'
-    ].join('');
-
 
     angular.module('cockpit.fields').directive("tags", ['$timeout', function($timeout) {
 
         return {
 
-            require: 'ngModel',
-            restrict: 'E',
+            require  : 'ngModel',
+            restrict : 'E',
+            scope    : {
+                tags: '@'
+            },
+            templateUrl : App.base('/assets/js/angular/fields/tpl/tags.html'),
 
             link: function (scope, elm, attrs, ngModel) {
 
-                var $tags      = $(tpl),
-                    $input     = $tags.find('input'),
-                    $container = $tags.find('div'),
-                    tags       = false;
+                $timeout(function(){
 
-                $input.on("keydown", function(e) {
+                    scope.tags  = ngModel.$viewValue;
 
-                    if (e.which && e.which == 13) {
+                    if (!angular.isArray(scope.tags)) {
+                        scope.tags = [];
+                    }
 
-                        var tag = $input.val().trim();
+                    scope.removeTag = function(index) {
+                        scope.tags.splice(index, 1);
+                    };
 
-                        if(tags.indexOf(tag) === -1 ) {
-                            tags.push(tag);
-                            updateSope();
-                            renderTags();
+
+                    elm.find('input:first').on("keydown", function(e) {
+
+                        if (e.which && e.which == 13) {
+
+                            var tag = this.value.trim();
+
+                            if (scope.tags.indexOf(tag) === -1 ) {
+                                scope.tags.push(tag);
+                            }
+
+                            e.preventDefault();
+                            this.value = "";
+
+                            scope.$apply();
                         }
 
-                        e.preventDefault();
-                        $input.val("");
-                    }
+                    });
 
-                });
-
-                $container.on("click", ".js-remove", function(){
-
-                    var ele   = $(this),
-                        item  = ele.closest('div[data-tag]'),
-                        index = $container.children().index(item);
-
-                    tags.splice(index, 1);
-                    item.fadeOut(function(){ item.remove(); });
-
-                    updateSope();
-                });
-
-                ngModel.$render = function() {
-
-                    if(!tags) {
-                        tags = ngModel.$viewValue || [];
-                    }
-
-                    setTimeout(function(){
-                        renderTags();
-                    }, 10);
-                };
-
-                function updateSope() {
-
-                    ngModel.$setViewValue(tags);
-
-                    if (!scope.$root.$$phase) {
-                        scope.$apply();
-                    }
-                }
-
-                function renderTags() {
-
-                    $container.empty();
-
-                    if (tags && tags.length) {
-                        tags.forEach(function(tag, index){
-
-                            $container.append([
-                                '<div class="uk-margin-small-top uk-margin-small-right uk-float-left uk-badge" data-tag="'+tag+'" >',
-                                    '<i class="uk-icon-tag"></i> '+tag,
-                                    '&nbsp;<span class="js-remove" style="cursor:pointer;"><i class="uk-icon-times"></i></span>',
-                                '</div>'
-                            ].join(''));
-                        });
-                    } else {
-                        $container.append('<div class="uk-width-1-1 uk-grid-margin"><p class="uk-text-muted uk-text-small">'+App.i18n.get('No tags')+'</p></div>');
-                    }
-                }
-
-                elm.replaceWith($tags);
-
-
-                $timeout(function(){
-                    ngModel.$render();
+                    scope.$watch('tags', function() {
+                        ngModel.$setViewValue(scope.tags);
+                    });
                 });
             }
         };
