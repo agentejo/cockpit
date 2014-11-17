@@ -6,87 +6,149 @@
 
     angular.module('cockpit.fields').directive("locationfield", ['$timeout', '$compile', function($timeout, $compile){
 
-        var mapId = 0;
+
+        var uuid = 0,
+            loadApi = (function(){
+
+                var p, fn = function(){
+
+                    if (!p) {
+
+                        p = new Promise(function(resolve){
+
+                            var script = document.createElement('script');
+
+                            script.async = true;
+
+                            script.onload = function() {
+
+                                google.load("maps", "3", {other_params:'sensor=false&libraries=places', callback: function(){
+                                  if (google && google.maps.places) resolve();
+                                }});
+                            };
+
+                            script.onerror = function() {
+                                alert('Failed loading google maps api.');
+                            };
+
+                            script.src = 'https://www.google.com/jsapi';
+
+                            document.getElementsByTagName('head')[0].appendChild(script);
+                        });
+                    }
+
+                    return p;
+                };
+
+                return fn;
+            })();
 
         return {
-            require: 'ngModel',
-            restrict: 'E',
+            restrict    : 'EA',
+            require     : '?ngModel',
+            scope       : {latlng: '@'},
+            replace     : true,
+            template    : '<div>\
+                                <div class="uk-form uk-form-icon uk-margin-small-bottom uk-width-1-1">\
+                                    <i class="uk-icon-search"></i><input class="uk-width-1-1">\
+                                </div>\
+                                <div class="js-map" style="min-height:300px;"> \
+                                Loading map... \
+                                </div> \
+                                <div class="uk-text-small uk-margin-small-top">LAT: <span class="uk-text-muted">{{ latlng.lat }}</span> LNG: <span class="uk-text-muted">{{ latlng.lng }}</span></div> \
+                           </div>',
+            link        : function (scope, elm, attrs, ngModel) {
 
-            link: function (scope, elm, attrs, ngModel) {
+                loadApi().then(function(){
 
-                var fieldId    = 'mapfield-'+(mapId++),
-                    $container = $(['<div>',
-                                        '<div id="'+fieldId+'" style="min-height:350px;margin-bottom:10px;"></div>',
-                                        '<div class="uk-grid uk-grid-width-medium-1-2">',
-                                            '<div><span class="uk-text-small">Lat:</span> <input type="text" class="uk-width-1-1" data-ref="lat"></div>',
-                                            '<div><span class="uk-text-small">Lng:</span> <input type="text" class="uk-width-1-1" data-ref="lng"></div>',
-                                        '</div>',
-                                    '</div>'].join('\n')),
+                    $timeout(function() {
 
-                    $inputLat     = $container.find('input[data-ref="lat"]'),
-                    $inputLng     = $container.find('input[data-ref="lng"]'),
+                        var map, marker, mapId = 'google-maps-location-'+(++uuid), point = new google.maps.LatLng(53.55909862554551, 9.998652343749995),
+                            input, autocomplete;
 
-                    map, marker, start = [51.505, -0.09];
+                        scope.latlng = ngModel.$viewValue || {lat: point.lat(), lng:point.lng()};
 
-                $container.on('change', 'input[data-ref]', function() {
+                        elm.find('.js-map').attr('id', mapId);
 
-                    updateScope({
-                        lat: $inputLat.val(),
-                        lng: $inputLng.val()
-                    });
-                });
-
-                var deferMap = function() {
-
-                    App.assets.require(window.L ? [] : ['assets/vendor/leaflet/leaflet.js', 'assets/vendor/leaflet/leaflet.css'], function() {
-
-                        map = L.map(fieldId, {
-                            center: start,
-                            zoom: 6
+                        map = new google.maps.Map(document.getElementById(mapId), {
+                            zoom   : 6,
+                            center : point
                         });
 
-                        marker = L.marker(start, {draggable:true}).on('dragend', function() {
-                            var latlng = marker.getLatLng();
+                        marker = new google.maps.Marker({
+                            position  : point,
+                            map       : map,
+                            draggable : true
+                        });
 
-                            updateScope({
-                                lat: latlng.lat,
-                                lng: latlng.lng
-                            });
+                        google.maps.event.addListener(marker, 'dragend', function() {
+                            var point = marker.getPosition();
+                            updateScope({lat: point.lat(), lng:point.lng()} );
+                            input.value = "";
+                        });
 
-                        }).addTo(map);
+                        jQuery.UIkit.$win.on('resize', function(){
+                            google.maps.event.trigger(map,'resize');
+                            map.setCenter(marker.getPosition());
+                        });
 
-                        L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                            maxZoom: 18,
-                            type: 'xyz'
-                        }).addTo(map);
+                        input = elm.find('input')[0];
 
+                        autocomplete = new google.maps.places.Autocomplete(input);
+                        autocomplete.bindTo('bounds', map);
+
+                        google.maps.event.addListener(autocomplete, 'place_changed', function(e) {
+
+                            var place = autocomplete.getPlace();
+
+                            if (!place.geometry) {
+                              return;
+                            }
+
+                            // If the place has a geometry, then present it on a map.
+                            if (place.geometry.viewport) {
+                              map.fitBounds(place.geometry.viewport);
+                            } else {
+                              map.setCenter(place.geometry.location);
+                            }
+
+                            marker.setPosition(place.geometry.location);
+                            input.value = "";
+
+                            var point = marker.getPosition();
+                            updateScope({lat: point.lat(), lng:point.lng()} );
+                        });
+
+                        google.maps.event.addDomListener(input, 'keydown', function(e) {
+                            if (e.keyCode == 13) {
+                                e.preventDefault();
+                            }
+                        });
 
                         ngModel.$render = function() {
 
                             try {
-                                if(ngModel.$viewValue && ngModel.$viewValue.lat && ngModel.$viewValue.lng) {
-                                    marker.setLatLng(L.latLng(ngModel.$viewValue.lat, ngModel.$viewValue.lng));
-                                    $inputLat.val(ngModel.$viewValue.lat);
-                                    $inputLng.val(ngModel.$viewValue.lng);
 
-                                    map.setView([ngModel.$viewValue.lat, ngModel.$viewValue.lng]);
+                                if (ngModel.$viewValue && ngModel.$viewValue.lat && ngModel.$viewValue.lng) {
+
+                                    var point = new google.maps.LatLng(ngModel.$viewValue.lat, ngModel.$viewValue.lng);
+
+                    				marker.setPosition(point);
+                    				map.setCenter(point);
                                 }
+
                             } catch(e) {}
                         };
 
                         ngModel.$render();
-
                     });
-                };
-
-                elm.replaceWith($container);
-                $timeout(deferMap);
+                });
 
                 function updateScope(latlng) {
 
                     ngModel.$setViewValue(latlng);
-                    ngModel.$render();
+
+                    scope.latlng = latlng;
 
                     if (!scope.$root.$$phase) {
                         scope.$apply();
@@ -94,7 +156,6 @@
                 }
             }
         };
-
     }]);
 
 })(jQuery);
