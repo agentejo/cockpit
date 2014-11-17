@@ -71,7 +71,7 @@ class App extends \Lime\App {
             $template = $file;
         }
 
-        $extend = function($from) use(&$layout) {
+        $slots['extend'] = function($from) use(&$layout) {
             $layout = $from;
         };
 
