@@ -56,7 +56,7 @@
             $http.post(App.route("/api/galleries/save"), {"gallery": gallery}).success(function(data){
 
                 if (data && Object.keys(data).length) {
-                    $scope.gallery = data;
+                    $scope.gallery._id = data._id;
                     App.notify(App.i18n.get("Gallery saved!"));
                 }
 
@@ -162,22 +162,19 @@
             $("#options-field-"+index).toggleClass('uk-hidden');
         };
 
-        var imglist = $("#images-list").on("uk.sortable.change",function(){
+        var imglist = $("#images-list").on("uk.sortable.change", function(e, sortable, ele){
 
-            var images = [];
+            ele = angular.element(ele);
 
-            imglist.children().each(function(){
-                images.push(angular.copy($(this).scope().image));
-            });
-
-            $scope.$apply(function(){
-                $scope.gallery.images = images;
+            $timeout(function(){
+                $scope.gallery.images.splice(ele.index(), 0, $scope.gallery.images.splice($scope.gallery.images.indexOf(ele.scope().image), 1)[0]);
             });
         });
 
         // after sorting list
 
         var list = $("#manage-fields-list").on("uk.nestable.stop", function(){
+
             var fields = [];
 
             list.children('.ng-scope').each(function(){
