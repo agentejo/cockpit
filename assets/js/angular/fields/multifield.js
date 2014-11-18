@@ -60,6 +60,20 @@
                         scope.repeaterfields.splice(index, 1);
                     };
 
+                    App.assets.require($.UIkit.sortable ? []:['assets/vendor/uikit/js/components/sortable.min.js'], function(){
+
+                        var $list = elm.find('.js-repeaterfields').on("uk.sortable.change",function(e, sortable, ele){
+
+                            ele = angular.element(ele);
+
+                            $timeout(function(){
+                                scope.repeaterfields.splice(ele.index(), 0, scope.repeaterfields.splice(scope.repeaterfields.indexOf(ele.scope().repeaterfield), 1)[0]);
+                            });
+                        });
+
+                        $.UIkit.sortable($list, {handleClass:'js-repeaterfield-drag', dragCustomClass:'uk-form'});
+                    });
+
 
                     scope.$watch('repeaterfields', function() {
                         ngModel.$setViewValue(scope.repeaterfields);
