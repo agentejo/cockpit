@@ -4,7 +4,7 @@
 
         <div class="uk-margin" ng-repeat="repeaterfield in repeaterfields">
             <div class="uk-margin-small-bottom uk-clearfix">
-                <span class="uk-badge app-badge js-repeaterfield-drag">{{ repeaterfield.type }}</span>
+                <span class="uk-badge app-badge uk-cursor-move js-repeaterfield-drag">{{ repeaterfield.type }}</span>
                 <a class="uk-text-danger uk-float-right" ng-click="removerepeaterfield($index)"><i class="uk-icon-trash-o"></i></a>
             </div>
             <contentfield options="{{ repeaterfield }}" ng-model="repeaterfield.value"></contentfield>

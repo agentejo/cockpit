@@ -102,13 +102,16 @@
                         <tr class="js-multiple-select" data-ng-repeat="entry in entries track by entry._id">
                             <td><input class="js-select" type="checkbox"></td>
                             <td>
-                                <div class="uk-grid uk-grid-preserve uk-text-small" data-ng-repeat="field in fields">
+                                <div class="uk-grid uk-grid-preserve uk-text-small" data-ng-repeat="field in fields" data-ng-if="fields.length">
                                     <div class="uk-width-medium-1-5">
                                         <strong>@@ (field.label || field.name) @@</strong>
                                     </div>
                                     <div class="uk-width-medium-4-5">
                                         <a class="uk-link-muted" href="@route('/collections/entry/'.$collection["_id"])/@@ entry._id @@">@@ entry[field.name] @@</a>
                                     </div>
+                                </div>
+                                <div class="uk-text-small" data-ng-if="!fields.length">
+                                    <a href="@route('/collections/entry/'.$collection["_id"])/@@ entry._id @@">@lang('Show entry')</a>
                                 </div>
                             </td>
                             <td>@@ entry.modified | fmtdate:'d M, Y' @@</td>

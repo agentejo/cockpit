@@ -138,6 +138,18 @@
                                                         </div>
                                                     </div>
 
+                                                    <div class="uk-form-row" data-ng-if="field.type=='multifield'">
+                                                        <label class="uk-form-label">@lang('Multi field')</label>
+                                                        <div class="uk-form-controls">
+                                                            <span class="uk-text-muted uk-text-small">@lang('Allowed fields'):</span>
+                                                            <div class="uk-scrollable-box uk-panel-box uk-margin-small-top">
+                                                                <div ng-repeat="cf in contentfields" ng-if="(['select', 'boolean', 'multifield'].indexOf(cf.name) == -1)">
+                                                                    <input type="checkbox" data-ng-model="field.allowedfields[cf.name]"> @@ cf.label @@
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                     @trigger('cockpit.content.fields.settings')
 
                                                 </div>

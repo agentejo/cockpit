@@ -9,7 +9,7 @@
        Contentfields.register('multifield', {
            label: 'Multi field',
            template: function(model, options) {
-               return '<multifield ng-model="'+model+'"></multifield>';
+               return '<multifield ng-model="'+model+'" allowedfields=\''+JSON.stringify(options.allowedfields || false)+'\'></multifield>';
            }
        });
 
@@ -38,9 +38,30 @@
 
             link: function (scope, elm, attrs, ngModel) {
 
+                var allowedfields;
+
                 $timeout(function(){
 
-                    scope.contentfields   = contentfields;
+                    if (attrs.allowedfields){
+
+                        try {
+                            allowedfields = JSON.parse(attrs.allowedfields);
+                        } catch(e) {}
+                    }
+
+                    scope.contentfields = [];
+
+                    if (allowedfields) {
+
+                        contentfields.forEach(function(field){
+                            if(allowedfields[field.name]) scope.contentfields.push(field);
+                        });
+                    }
+
+                    if (!allowedfields || !scope.contentfields.length) {
+                        scope.contentfields = contentfields;
+                    }
+
                     scope.repeaterfields  = ngModel.$viewValue;
 
                     if (!angular.isArray(scope.repeaterfields)) {
