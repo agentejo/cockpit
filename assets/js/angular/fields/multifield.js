@@ -66,6 +66,8 @@
 
                             ele = angular.element(ele);
 
+                            if(!ele.parent().is('.js-repeaterfields')) return;
+
                             $timeout(function(){
                                 scope.repeaterfields.splice(ele.index(), 0, scope.repeaterfields.splice(scope.repeaterfields.indexOf(ele.scope().repeaterfield), 1)[0]);
                             });
