@@ -1,5 +1,19 @@
 # Changelog
 
+### 0.12.0  (Nov 19, 2014)
+
+    + Added "Multiple Field" content field (repeatable fields)
+    ^ Updated assets (angular, UIkit, ...)
+    ^ Reworked and optimized gallery content field + gallery module
+    ^ Many small improvements
+    ^ Updated language file @Remigr
+    ^ Updated language file @Remigr
+    # Fixed undefined constant @sergeypavlenko
+    # Fixed remove api for collections @sergeypavlenko
+    # Fixed galleries::get_gallery_by_slug
+    - Removed LESS and SCSS compilers
+    - Removed Leaflet.js dependency
+
 ### 0.11.3  (Oct 1, 2014)
 
     # Fixed gallery pathpicker js error
