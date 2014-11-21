@@ -151,7 +151,7 @@
         };
 
 
-        var table = $("#entries-table").on("uk.sortable.change",function(){
+        var table = $("#entries-table").on("change.uk.sortable",function(){
 
             var entries = [];
 

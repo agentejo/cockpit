@@ -34,7 +34,7 @@
 
                   <div class="uk-button-group">
                     <button type="button" class="uk-button uk-button-danger" data-ng-click="clearVersions()" title="@lang('Clear version history')" data-uk-tooltip="{pos:'bottom-left'}"><i class="uk-icon-trash-o"></i></button>
-                    <button type="button" class="uk-button uk-button-primary" onclick="$.UIkit.offcanvas.hide()" title="@lang('Close versions')" data-uk-tooltip="{pos:'bottom-left'}">@lang('Cancel')</button>
+                    <button type="button" class="uk-button uk-button-primary" onclick="UIkit.offcanvas.hide()" title="@lang('Close versions')" data-uk-tooltip="{pos:'bottom-left'}">@lang('Cancel')</button>
                   </div>
               </div>
 

@@ -222,7 +222,7 @@
                 ].join('')).appendTo('body'),
 
                 container   = modal.find('.js-items'),
-                picker      = $.UIkit.modal(modal),
+                picker      = UIkit.modal(modal),
                 itemsloaded = {};
 
             container.on('click', '.js-select', function(e){

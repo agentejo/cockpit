@@ -85,7 +85,7 @@
 
             respfn();
 
-            return $.UIkit.Utils.debounce(respfn, 50);
+            return UIkit.Utils.debounce(respfn, 50);
 
         })());
     }

@@ -7,7 +7,7 @@
                 currentpath = location.hash ? location.hash.replace("#", ''):"/",
                 apiurl      = App.route('/mediamanager/api'),
 
-                imgpreview  = $.UIkit.modal("#mm-image-preview"),
+                imgpreview  = UIkit.modal("#mm-image-preview"),
                 dirlst      = [];
 
             $scope.dir;
@@ -210,7 +210,7 @@
                         $scope.dirlist = true;
 
 
-                        var dirsearch = $.UIkit.autocomplete('#dirsearch', {
+                        var dirsearch = UIkit.autocomplete('#dirsearch', {
                             source: function(release) {
                                 var data = FuzzySearch.filter(dirlst, dirsearch.input.val(), {key:'path', maxResults: 10});
 
@@ -237,7 +237,7 @@
                             }
                         });
 
-                        dirsearch.element.on('uk.autocomplete.select', function(e, data){
+                        dirsearch.element.on('select.uk.autocomplete', function(e, data){
                             loadPath(data.dir);
                             dirsearch.input.val('');
                             $scope.open(data);
@@ -281,7 +281,7 @@
                     }
             };
 
-            var uploadselect = new $.UIkit.uploadSelect($('#js-upload-select'), uploadsettings);
+            var uploadselect = new UIkit.uploadSelect($('#js-upload-select'), uploadsettings);
 
             $("body").on("drop", function(e){
 
@@ -290,7 +290,7 @@
                     e.stopPropagation();
                     e.preventDefault();
 
-                    $.UIkit.Utils.xhrupload(e.dataTransfer.files, uploadsettings);
+                    UIkit.Utils.xhrupload(e.dataTransfer.files, uploadsettings);
                 }
 
             }).on("dragenter", function(e){

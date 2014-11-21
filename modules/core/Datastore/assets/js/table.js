@@ -226,7 +226,7 @@
 
             this.resize();
 
-            $(window).on("resize", $.UIkit.Utils.debounce(function(){
+            $(window).on("resize", UIkit.Utils.debounce(function(){
                 $this.resize();
             }, 150));
 

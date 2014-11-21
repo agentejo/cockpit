@@ -187,7 +187,7 @@
 
         $scope.lstlocales = {{ json_encode(\Lime\Helper\I18n::$locals) }};
 
-        var modalocales = $.UIkit.modal('#modalocales');
+        var modalocales = UIkit.modal('#modalocales');
 
         modalocales.element.on('click', '.uk-button', function() {
 

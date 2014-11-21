@@ -87,7 +87,7 @@
 
         $scope.create = function(target){
 
-            var info = $.UIkit.notify(['<i class="uk-icon-spinner uk-icon-spin"></i>', App.i18n.get('Creating backup...')].join(' '), {timeout:0});
+            var info = UIkit.notify(['<i class="uk-icon-spinner uk-icon-spin"></i>', App.i18n.get('Creating backup...')].join(' '), {timeout:0});
 
             $http.post(App.route("/backups/create"), {'target':target}, {responseType:"json"}).success(function(data){
 

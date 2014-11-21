@@ -79,7 +79,7 @@
                                     <input class="uk-width-1-1 uk-form-large" type="text" data-uk-datepicker="{format:\'YYYY-MM-DD\'}" ng-model="'+model+'"> \
                                 </div>';
 
-                    if (!$.UIkit.datepicker) {
+                    if (!UIkit.datepicker) {
 
                         App.assets.require(['assets/vendor/uikit/js/components/datepicker.min.js'], function() {
 
@@ -99,10 +99,10 @@
                                     <input class="uk-width-1-1 uk-form-large" type="text" ng-model="'+model+'"> \
                                 </div>');
 
-                    if (!$.UIkit.timepicker) {
+                    if (!UIkit.timepicker) {
 
                         App.assets.require(['assets/vendor/uikit/js/components/timepicker.min.js'], function() {
-                            $.UIkit.timepicker(tpl);
+                            UIkit.timepicker(tpl);
                             tpl.parent().addClass('uk-width-1-1').find('.uk-dropdown').css('width','100%');
                         });
                     }

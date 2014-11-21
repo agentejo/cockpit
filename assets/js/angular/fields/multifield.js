@@ -81,9 +81,9 @@
                         scope.repeaterfields.splice(index, 1);
                     };
 
-                    App.assets.require($.UIkit.sortable ? []:['assets/vendor/uikit/js/components/sortable.min.js'], function(){
+                    App.assets.require(UIkit.sortable ? []:['assets/vendor/uikit/js/components/sortable.min.js'], function(){
 
-                        var $list = elm.find('.js-repeaterfields').on("uk.sortable.change",function(e, sortable, ele){
+                        var $list = elm.find('.js-repeaterfields').on("change.uk.sortable",function(e, sortable, ele){
 
                             ele = angular.element(ele);
 
@@ -94,7 +94,7 @@
                             });
                         });
 
-                        $.UIkit.sortable($list, {handleClass:'js-repeaterfield-drag', dragCustomClass:'uk-form'});
+                        UIkit.sortable($list, {handleClass:'js-repeaterfield-drag', dragCustomClass:'uk-form'});
                     });
 
 

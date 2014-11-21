@@ -49,13 +49,13 @@
 
             this.filename = this.element.find(".filename");
 
-            this.code.on("inputRead", $.UIkit.Utils.debounce(function(){
+            this.code.on("inputRead", UIkit.Utils.debounce(function(){
               autocomplete($this.code);
             }, 200));
 
             this.resize();
 
-            $(window).on("resize", $.UIkit.Utils.debounce(function(){
+            $(window).on("resize", UIkit.Utils.debounce(function(){
                 $this.resize();
             }, 150));
 

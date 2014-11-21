@@ -48,7 +48,7 @@
 
                                             setTimeout(function(){
                                                 container.addClass("uk-animation-shake");
-                                                $.UIkit.notify("@lang('Login failed')", 'danger');
+                                                UIkit.notify("@lang('Login failed')", 'danger');
                                             }, 50);
                                         }
 

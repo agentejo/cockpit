@@ -3,7 +3,7 @@
     App.module.controller("gallery", function($scope, $rootScope, $http, $timeout, Contentfields){
 
         var id         = $("[data-ng-controller='gallery']").data("id"),
-            dialog     = $.UIkit.modal("#meta-dialog"),
+            dialog     = UIkit.modal("#meta-dialog"),
             site_base  = COCKPIT_SITE_BASE_URL.replace(/^\/+|\/+$/g, ""),
             media_base = COCKPIT_MEDIA_BASE_URL.replace(/^\/+|\/+$/g, ""),
             site2media = media_base.replace(site_base, "").replace(/^\/+|\/+$/g, "");
@@ -162,7 +162,7 @@
             $("#options-field-"+index).toggleClass('uk-hidden');
         };
 
-        var imglist = $("#images-list").on("uk.sortable.change", function(e, sortable, ele){
+        var imglist = $("#images-list").on("change.uk.sortable", function(e, sortable, ele){
 
             ele = angular.element(ele);
 
@@ -173,7 +173,7 @@
 
         // after sorting list
 
-        var list = $("#manage-fields-list").on("uk.nestable.stop", function(){
+        var list = $("#manage-fields-list").on("stop.uk.nestable", function(){
 
             var fields = [];
 

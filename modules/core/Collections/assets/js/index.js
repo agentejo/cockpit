@@ -123,7 +123,7 @@
             }
         };
 
-        var grouplist = $("#groups-list").on("uk.sortable.change",function(){
+        var grouplist = $("#groups-list").on("change.uk.sortable",function(){
 
             if ($scope.groups.length==1) return;
 

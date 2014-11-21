@@ -11,7 +11,7 @@
         reqassets.push('assets/vendor/codemirror/codemirror.css');
     }
 
-    var template = $.UIkit.Utils.template([
+    var template = UIkit.Utils.template([
         '<div class="uk-overlay uk-display-block">',
             '{{{ img }}}',
             '<div class="uk-overlay-area">',
@@ -26,9 +26,9 @@
         '</div>'
     ].join(""));
 
-    App.assets.require($.UIkit.htmleditor ? []:'assets/vendor/uikit/js/components/htmleditor.min.js', function() {
+    App.assets.require(UIkit.htmleditor ? []:'assets/vendor/uikit/js/components/htmleditor.min.js', function() {
 
-        $.UIkit.plugin('htmleditor', 'image', {
+        UIkit.plugin('htmleditor', 'image', {
 
             init: function(editor) {
 
@@ -129,9 +129,9 @@
 
                         setTimeout(function(){
 
-                            htmleditor = $.UIkit.htmleditor(txt, options);
+                            htmleditor = UIkit.htmleditor(txt, options);
 
-                            htmleditor.editor.on("change", $.UIkit.Utils.debounce(function(){
+                            htmleditor.editor.on("change", UIkit.Utils.debounce(function(){
 
                                 ngModel.$setViewValue(htmleditor.editor.getValue());
 

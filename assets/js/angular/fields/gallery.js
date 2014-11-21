@@ -94,9 +94,9 @@
                     };
 
 
-                    App.assets.require($.UIkit.sortable ? []:['assets/vendor/uikit/js/components/sortable.min.js'], function(){
+                    App.assets.require(UIkit.sortable ? []:['assets/vendor/uikit/js/components/sortable.min.js'], function(){
 
-                        var $list = elm.find('.uk-grid').on("uk.sortable.change",function(e, sortable, ele){
+                        var $list = elm.find('.uk-grid').on("change.uk.sortable",function(e, sortable, ele){
 
                             ele = angular.element(ele);
 
@@ -105,7 +105,7 @@
                             });
                         });
 
-                        $.UIkit.sortable($list);
+                        UIkit.sortable($list);
                     });
 
                     scope.$watch('images', function() {

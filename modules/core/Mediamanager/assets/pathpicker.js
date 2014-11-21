@@ -38,7 +38,7 @@
         ].join('')).appendTo('body');
 
 
-        App.assets.require($.UIkit.Utils.xhrupload ? [] : ['assets/vendor/uikit/js/components/upload.min.js'], function(){
+        App.assets.require(UIkit.Utils.xhrupload ? [] : ['assets/vendor/uikit/js/components/upload.min.js'], function(){
 
             var uploadsettings = {
                     "action": App.route('/mediamanager/api'),
@@ -71,7 +71,7 @@
                     }
                 };
 
-            var uploadselect = new $.UIkit.uploadSelect(modal.find('input.js-upload-select'), uploadsettings);
+            var uploadselect = new UIkit.uploadSelect(modal.find('input.js-upload-select'), uploadsettings);
 
             modal.on("drop", function(e){
 
@@ -80,7 +80,7 @@
                     e.stopPropagation();
                     e.preventDefault();
 
-                    $.UIkit.Utils.xhrupload(e.dataTransfer.files, uploadsettings);
+                    UIkit.Utils.xhrupload(e.dataTransfer.files, uploadsettings);
                 }
 
             }).on("dragenter", function(e){
@@ -100,7 +100,7 @@
         });
 
 
-        var picker = $.UIkit.modal(modal);
+        var picker = UIkit.modal(modal);
 
 
         this.type    = type || '*';

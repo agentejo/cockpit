@@ -104,7 +104,7 @@
                         codeMirror.setOption("mode", opts.mode);
                         codeMirror.setOption("theme", opts.theme);
 
-                        codeMirror.on("inputRead", $.UIkit.Utils.debounce(function() {
+                        codeMirror.on("inputRead", UIkit.Utils.debounce(function() {
                             autocomplete(codeMirror);
                         }, 200));
 

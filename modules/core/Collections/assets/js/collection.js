@@ -98,7 +98,7 @@
         // after sorting list
         $(function(){
 
-            var list = $("#fields-list").on("uk.nestable.stop", function(){
+            var list = $("#fields-list").on("stop.uk.nestable", function(){
                 var fields = [];
 
                 list.children('.ng-scope').each(function(){

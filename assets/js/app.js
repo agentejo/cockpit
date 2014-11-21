@@ -29,7 +29,7 @@
                     note = JSON.stringify(note);
                 }
 
-                $.UIkit.notify(note, {"status":(type || 'primary'), timeout: 2000});
+                UIkit.notify(note, {"status":(type || 'primary'), timeout: 2000});
             },
 
             Ui: {
@@ -43,15 +43,15 @@
                 },
 
                 dialog: function(content, options) {
-                    $.UIkit.modal.dialog(content, options);
+                    UIkit.modal.dialog(content, options);
                 },
 
                 alert: function(content, options) {
-                    $.UIkit.modal.alert(content, options);
+                    UIkit.modal.alert(content, options);
                 },
 
                 confirm: function(content, onconfirm, options){
-                    $.UIkit.modal.confirm(content, onconfirm, options);
+                    UIkit.modal.confirm(content, onconfirm, options);
                 }
             },
 
