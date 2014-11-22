@@ -94,7 +94,7 @@
 
                     App.assets.require(reqassets, function() {
 
-                        App.assets.require('modules/core/Mediamanager/assets/field.pathpicker.js', function() {
+                        App.assets.require('modules/core/Mediamanager/assets/pathpicker.js', function() {
 
                             if (!tinymce.PluginManager.lookup["mediapath"]) {
                                 registerMediaPathPlugin();
