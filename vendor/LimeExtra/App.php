@@ -26,6 +26,7 @@ class App extends \Lime\App {
             //register app helper functions
             $renderer->extend(function($content){
 
+                $content = preg_replace('/(\s*)@extend\((.+?)\)/' , '$1<?php $extend($2); ?>', $content);
                 $content = preg_replace('/(\s*)@base\((.+?)\)/'   , '$1<?php $app->base($2); ?>', $content);
                 $content = preg_replace('/(\s*)@route\((.+?)\)/'  , '$1<?php $app->route($2); ?>', $content);
                 $content = preg_replace('/(\s*)@scripts\((.+?)\)/', '$1<?php echo $app->assets($2); ?>', $content);

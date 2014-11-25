@@ -869,7 +869,7 @@ class App implements \ArrayAccess {
                 ob_end_clean();
 
                 $self->response->status = "500";
-                $self->response->body   = $self["debug"] ? json_encode($error):'Internal Error.';
+                $self->response->body   = $self["debug"] ? json_encode($error, JSON_PRETTY_PRINT):'Internal Error.';
 
             } elseif (!$self->response->body && !is_string($self->response->body)) {
                 $self->response->status = "404";
