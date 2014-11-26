@@ -1,5 +1,7 @@
 # Cockpit
 
+[![Latest Stable Version](https://poser.pugx.org/aheinze/cockpit/v/stable.svg)](https://packagist.org/packages/aheinze/cockpit) [![Latest Unstable Version](https://poser.pugx.org/aheinze/cockpit/v/unstable.svg)](https://packagist.org/packages/aheinze/cockpit) [![License](https://poser.pugx.org/aheinze/cockpit/license.svg)](https://packagist.org/packages/aheinze/cockpit)
+
 The CMS for developers. Add content management functionality to any site - plug &amp; play CMS.
 Manage content like collections, regions, forms and galleries which you can reuse anywhere on your website.
 

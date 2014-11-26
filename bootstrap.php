@@ -118,6 +118,8 @@ function cockpit($module = null) {
         if ($custombootfile = $app->path('custom:bootstrap.php')) {
             include($custombootfile);
         }
+
+        $app->trigger('cockpit.bootstrap');
     }
 
     // shorthand modules method call e.g. cockpit('regions:render', 'test');
