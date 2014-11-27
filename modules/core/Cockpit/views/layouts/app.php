@@ -60,8 +60,24 @@
 
                 <ul class="uk-navbar-nav app-top-navbar-links">
                     @foreach($app("admin")->menu('top') as $item)
-                    <li class="{{ (isset($item["active"]) && $item["active"]) ? 'uk-active':'' }}">
+                    <li class="{{ (isset($item["active"]) && $item["active"]) ? 'uk-active':'' }}" {{ (isset($item["children"]) && count($item["children"])) ? 'data-uk-dropdown':'' }}>
                         <a href="{{ $item["url"] }}" title="{{ $item["title"] }}" data-uk-tooltip>{{ $item["label"] }}</a>
+                        @if(isset($item["children"]) && count($item["children"]))
+                            <div class="uk-dropdown uk-dropdown-navbar">
+                                <ul class="uk-nav uk-nav-navbar uk-nav-parent-icon">
+
+                                @foreach($item["children"] as $child)
+                                    @if(isset($child["header"]))
+                                        <li class="uk-nav-header uk-text-truncate">{{ $child["header"] }}</li>
+                                    @endif
+                                    @if(isset($child["divider"]))
+                                        <li class="uk-nav-divider"></li>
+                                    @endif
+                                    <li><a href="{{ $child["url"] }}">{{ $child["label"] }}</a></li>
+                                @endforeach
+                                </ul>
+                            </div>
+                        @endif
                     </li>
                     @endforeach
 

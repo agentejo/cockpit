@@ -16,7 +16,8 @@ class Admin extends \Lime\Helper {
             $lst->insert(array_merge([
                 "url"   => "",
                 "label" => "",
-                "title" => ""
+                "title" => "",
+                "children" => new \ArrayObject([])
             ], $def), (int)$prio);
         }
 
