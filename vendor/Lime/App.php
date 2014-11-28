@@ -1256,13 +1256,13 @@ class App implements \ArrayAccess {
 
     public function offsetGet($key) {
 
-        $value = $this->retrieve($key, 'key-not-found');
+        $value = $this->retrieve($key, null);
 
-        if ($value!=='key-not-found') {
-            return $value instanceof \Closure ? $value($this) : $value;
+        if (!is_null($value)) {
+            return ($value instanceof \Closure) ? $value($this) : $value;
         }
 
-        throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $key));
+        return $value;
     }
 
     public function offsetExists($key) {
