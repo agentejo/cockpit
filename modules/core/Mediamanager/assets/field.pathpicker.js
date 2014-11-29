@@ -6,7 +6,7 @@
        Contentfields.register('media', {
            label: 'Media',
            template: function(model, options) {
-               return '<input type="text" media-path-picker="'+(options.allowed || '*')+'" ng-model="'+model+'">';
+               return '<input type="text" media-path-picker="'+(options.allowed || '*')+'" ng-model="'+model+'" caption="'+(options.caption || '')+'">';
            }
        });
 
@@ -26,10 +26,11 @@
 
                     $element = $(elm);
 
-                    var $tpl   = $('<div><div class="uk-margin" data-preview=""></div><button class="uk-button uk-button-small app-button-secondary js-select" type="button"><i class="uk-icon-code-fork"></i> Pick Media path</button> <button class="uk-button uk-button-small app-button-secondary uk-hidden js-clear" type="button"><i class="uk-icon-trash-o"></i></button></div>'),
-                        $btn   = $tpl.find('.js-select'),
-                        $prv   = $tpl.find('[data-preview]'),
-                        $clear = $tpl.find('.js-clear');
+                    var caption = attrs.caption || 'Pick Media path',
+                        $tpl    = $('<div><div class="uk-margin" data-preview=""></div><button class="uk-button uk-button-small app-button-secondary js-select" type="button"><i class="uk-icon-code-fork"></i> '+caption+'</button> <button class="uk-button uk-button-small app-button-secondary uk-hidden js-clear" type="button"><i class="uk-icon-trash-o"></i></button></div>'),
+                        $btn    = $tpl.find('.js-select'),
+                        $prv    = $tpl.find('[data-preview]'),
+                        $clear  = $tpl.find('.js-clear');
 
                     $element.after($tpl);
 
