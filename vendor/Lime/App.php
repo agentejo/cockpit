@@ -1386,6 +1386,10 @@ class Module extends AppAware {
             return call_user_func_array($this->apis[$name], $arguments);
         }
 
+        if(isset($this->apis['__call']) && is_callable($this->apis['__call'])) {
+            return call_user_func_array($this->apis['__call'], $arguments);
+        }
+
         return null;
     }
 }
