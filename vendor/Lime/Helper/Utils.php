@@ -13,6 +13,21 @@ class Utils extends \Lime\Helper {
       return ($size == 0) ? "n/a" : (round($size/pow(1024, ($i = floor(log($size, 1024)))), 2) . $sizes[$i]);
     }
 
+    public function fixRelativeUrls($content, $base = '/'){
+
+        $protocols = '[a-zA-Z0-9\-]+:';
+
+        $regex     = '#\s+(src|href|poster)="(?!/|' . $protocols . '|\#|\')([^"]*)"#m';
+        $content   = preg_replace($regex, " $1=\"$base\$2\"", $content);
+
+        // Background image.
+        $regex     = '#style\s*=\s*[\'\"](.*):\s*url\s*\([\'\"]?(?!/|' . $protocols . '|\#)([^\)\'\"]+)[\'\"]?\)#m';
+        $content   = preg_replace($regex, 'style="$1: url(\'' . $base . '$2$3\')', $content);
+
+        return $content;
+
+    }
+
     public function sluggify($string, $replacement = '-', $tolower = true) {
         $quotedReplacement = preg_quote($replacement, '/');
 
