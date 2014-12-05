@@ -16,6 +16,11 @@ class RedisLite {
     protected $connection;
 
     /**
+     * @var string
+     */
+    protected $table;
+
+    /**
      * Constructor
      *
      * @param string $path
@@ -26,15 +31,21 @@ class RedisLite {
         $options = array_merge(array("storagetable"=>"storage"), $options);
         $dns     = "sqlite:{$path}";
 
-        $this->path = $path;
+        $this->path  = $path;
+        $this->table = $options["storagetable"];
         $this->connection = new \PDO($dns, null, null, $options);
 
-        $stmt  = $this->connection->query("SELECT name FROM sqlite_master WHERE type='table' AND name='".$options["storagetable"]."';");
+        $stmt  = $this->connection->query("SELECT name FROM sqlite_master WHERE type='table' AND name='".$this->table."';");
         $table = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        if(!isset($table["name"])) {
-            $this->connection->exec("CREATE TABLE ".$options["storagetable"]." (key VARCHAR PRIMARY KEY, keyval TEXT)");
+        if (!isset($table["name"])) {
+            $this->createTable();
         }
+    }
+
+    protected function createTable() {
+        $this->connection->exec("CREATE TABLE ".$this->table." (key VARCHAR PRIMARY KEY, keyval TEXT)");
+        $this->connection->exec("CREATE UNIQUE INDEX key_name on ".$this->table." (key);");
     }
 
     /**
@@ -46,7 +57,7 @@ class RedisLite {
      */
     public function get($key, $default = null) {
 
-        $stmt = $this->connection->query("SELECT * FROM storage WHERE `key`='{$key}';");
+        $stmt = $this->connection->query("SELECT * FROM ".$this->table." WHERE `key`='{$key}';");
         $res  = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         return  isset($res["key"]) ? json_decode($res["keyval"], true) : $default;
@@ -60,15 +71,23 @@ class RedisLite {
      */
     public function set($key, $value) {
 
-        $value = $this->connection->quote(json_encode($value,JSON_NUMERIC_CHECK));
+        $value = $this->connection->quote(json_encode($value, JSON_NUMERIC_CHECK));
 
         if($this->exists($key)) {
-            $sql = "UPDATE storage SET `keyval`={$value} WHERE `key`='{$key}'";
+            $sql = "UPDATE ".$this->table." SET `keyval`={$value} WHERE `key`='{$key}'";
         } else {
-            $sql = "INSERT INTO storage (`key`,`keyval`) VALUES ('{$key}',{$value})";
+            $sql = "INSERT INTO ".$this->table." (`key`,`keyval`) VALUES ('{$key}',{$value})";
         }
 
         $this->connection->exec($sql);
+    }
+
+    /**
+     * Clear database
+     *
+     */
+    public function flushdb() {
+        $this->connection->exec("DELETE FROM ".$this->table);
     }
 
     /**
@@ -78,7 +97,7 @@ class RedisLite {
      */
     public function exists($key) {
 
-        $stmt = $this->connection->query("SELECT `key` FROM storage WHERE `key`='{$key}';");
+        $stmt = $this->connection->query("SELECT `key` FROM ".$this->table." WHERE `key`='{$key}';");
         $res  = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         return isset($res["key"]);
@@ -93,7 +112,7 @@ class RedisLite {
     public function keys($pattern = null) {
 
         $keys = array();
-        $stmt = $this->connection->query("SELECT `key` FROM storage ORDER BY `key`;");
+        $stmt = $this->connection->query("SELECT `key` FROM ".$this->table." ORDER BY `key`;");
         $res  = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         if (!$pattern) {
@@ -130,7 +149,7 @@ class RedisLite {
         $removed = 0;
 
         foreach ($keys as $key) {
-            $sql = 'DELETE FROM storage WHERE `key`="'.$key.'"';
+            $sql = 'DELETE FROM '.$this->table.' WHERE `key`="'.$key.'"';
             $this->connection->exec($sql);
             $removed++;
         }
