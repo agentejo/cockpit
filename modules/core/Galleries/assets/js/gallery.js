@@ -67,7 +67,7 @@
 
             new CockpitPathPicker(function(path){
 
-                if (String(path).match(/\.(jpg|png|gif)$/i)){
+                if (String(path).match(/\.(jpg|png|gif|svg)$/i)){
                     $scope.$apply(function(){
                         $scope.gallery.images.push({"path":path, data:{}});
                         App.notify(App.i18n.get("%s image(s) imported", 1));
@@ -82,7 +82,7 @@
 
                             data.files.forEach(function(file) {
 
-                                if (file.name.match(/\.(jpg|png|gif)$/i)) {
+                                if (file.name.match(/\.(jpg|png|gif|svg)$/i)) {
                                     var full_path = site2media ? site2media+'/'+file.path : file.path;
                                     $scope.gallery.images.push({"path":"site:"+full_path, data:{}});
 
@@ -109,7 +109,7 @@
                     $scope.gallery.images.push({"path":path, data:{}});
                     App.notify(App.i18n.get("%s image(s) imported", 1));
                 });
-            }, "*.(jpg|png|gif)");
+            }, "*.(jpg|png|gif|svg)");
         };
 
         $scope.removeImage = function(index) {
