@@ -216,7 +216,7 @@
                             '<div class="uk-overflow-container uk-margin-top">',
                                 '<div class="js-items"></div>',
                             '</div>',
-                            '<div class="uk-modal-buttons"><button class="media-select uk-button uk-button-large uk-button-primary uk-hidden" type="button">Select</button> <button class="uk-button uk-button-large uk-modal-close" type="button">Cancel</button></div>',
+                            '<div class="uk-modal-buttons"><button class="media-select uk-button uk-button-large uk-button-primary uk-hidden" type="button">'+App.i18n.get('Select')+'</button> <button class="uk-button uk-button-large uk-modal-close" type="button">Cancel</button></div>',
                         '</div>',
                     '</div>'
                 ].join('')).appendTo('body'),

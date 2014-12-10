@@ -78,7 +78,7 @@
                     <div class="uk-form-row">
                         <div class="uk-form-password uk-width-1-1">
                             <input name="auth[password]" class="uk-form-large uk-width-1-1" type="password" placeholder="@lang('Password')">
-                            <a href="" class="uk-form-password-toggle" data-uk-form-password>Show</a>
+                            <a href="" class="uk-form-password-toggle" data-uk-form-password>@lang('Show')</a>
                         </div>
                     </div>
 
