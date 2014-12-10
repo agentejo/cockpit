@@ -27,6 +27,7 @@
                                 <td width="30%">Data size</td>
                                 <td><a id="vacuumdata" href="#vacuumdata" title="Click to optimize data" data-uk-tooltip>{{ $info['sizeData']=='n/a' ? '0 KB':$info['sizeData'] }}</a></td>
                             </tr>
+                        </tbody>
                     </table>
 
                     <script>

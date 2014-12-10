@@ -59,7 +59,7 @@ class Settings extends \Cockpit\Controller {
                             // Enable throwing exceptions
                             true
                         );
-                    // Catch phpMailerException
+                    // Catch phpmailerException
                     } catch (\Exception $e) {
                         return json_encode([
                             'status' => false,
