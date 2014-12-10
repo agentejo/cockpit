@@ -18,7 +18,7 @@
             '<div class="uk-modal media-path-picker">',
                 '<div class="uk-modal-dialog uk-modal-dialog-large">',
                     '<button type="button" class="uk-modal-close uk-close"></button>',
-                    '<h4>Mediapicker</h4>',
+                    '<h4>'+App.i18n.get('Mediapicker')+'</h4>',
                     '<div class="uk-clearfix">',
                     '<div class="caption uk-float-left">&nbsp;</div>',
                     '<div class="uk-float-right">',
@@ -32,7 +32,7 @@
                     '<div class="uk-overflow-container uk-margin-top">',
                         '<ul class="dir-view uk-grid uk-grid-width-1-5 uk-grid-small uk-clearfix"></ul>',
                     '</div>',
-                    '<div class="uk-modal-buttons"><button class="media-select uk-button uk-button-large uk-button-primary" type="button">Select</button> <button class="uk-button uk-button-large uk-modal-close" type="button">Cancel</button></div>',
+                    '<div class="uk-modal-buttons"><button class="media-select uk-button uk-button-large uk-button-primary" type="button">'+App.i18n.get('Select')+'</button> <button class="uk-button uk-button-large uk-modal-close" type="button">Cancel</button></div>',
                 '</div>',
             '</div>'
         ].join('')).appendTo('body');
