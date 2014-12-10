@@ -18,6 +18,7 @@ Manage content like collections, regions, forms and galleries which you can reus
 * PHP >= 5.4
 * PDO + SQLite (or MongoDB)
 * GD extension
+* support for .htaccess file
 
 make also sure that <code>$_SERVER['DOCUMENT_ROOT']</code> exists and is set correctly.
 
