@@ -1,6 +1,7 @@
-<FilesMatch "\.(sqlite|sdb|s3db|db)$">
+# Deny access to database files
+<Files ~ "\.(sqlite|sdb|s3db|db)$">
   Deny from all
-</FilesMatch>
+</Files>
 
 # Don't show directory listings
 Options -Indexes
