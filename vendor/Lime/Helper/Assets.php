@@ -2,13 +2,21 @@
 
 namespace Lime\Helper;
 
+/**
+ * Assets class.
+ */
 class Assets extends \Lime\Helper {
 
     /**
-    * [style description]
-    * @param  String $name
-    * @return String
-    */
+     * Compile styles and return in a link tag
+     *
+     * @param  Array   $assets
+     * @param  String  $name
+     * @param  String  $path
+     * @param  Float   $cache
+     * @param  Boolean $version
+     * @return String
+     */
     public function style($assets, $name, $path="", $cache=0, $version=false) {
 
         $path = $this->path($path);
@@ -33,10 +41,15 @@ class Assets extends \Lime\Helper {
     }
 
     /**
-    * [script description]
-    * @param  String $name
-    * @return String
-    */
+     * Compile scripts and return in a script tag
+     *
+     * @param  Array   $assets
+     * @param  String  $name
+     * @param  String  $path
+     * @param  Float   $cache
+     * @param  Boolean $version
+     * @return String
+     */
     public function script($assets, $name, $path="", $cache=0, $version=false){
 
         $path = $this->path($path);
@@ -60,6 +73,16 @@ class Assets extends \Lime\Helper {
         return null;
     }
 
+    /**
+     * Echo tags for scripts and styles
+     *
+     * @param  Array   $assets
+     * @param  String  $name
+     * @param  String  $path
+     * @param  Float   $cache
+     * @param  Boolean $version
+     * @return void
+     */
     public function style_and_script($assets, $name, $path="", $cache=0, $version=false) {
         echo $this->script($assets, $name, $path, $cache, $version);
         echo $this->style($assets, $name, $path, $cache, $version);
@@ -67,10 +90,12 @@ class Assets extends \Lime\Helper {
 
 
     /**
-    * [assets description]
-    * @param  Array $assets
-    * @return String         js or css
-    */
+     * Compile assets into one file
+     *
+     * @param  Array  $assets
+     * @param  String $type   js or css
+     * @return String
+     */
     public function compile($assets, $type) {
 
         $self = $this;
@@ -143,11 +168,15 @@ class Assets extends \Lime\Helper {
                 default:
                     continue;
             }
+            
+            // Remove references to source maps
+            $content = preg_replace('~/[/|\*]# sourceMappingURL=.*~', '', $content);
 
             $output[] = $content;
         }
 
-        return implode("", $output);
+        // Add newlines between files to fix problem with stacking comments.
+        return implode("\n", $output);
     }
 
 }

@@ -26,7 +26,7 @@
 
                     $element = $(elm);
 
-                    var caption = attrs.caption || 'Pick Media path',
+                    var caption = attrs.caption || App.i18n.get('Pick Media path'),
                         $tpl    = $('<div><div class="uk-margin" data-preview=""></div><button class="uk-button uk-button-small app-button-secondary js-select" type="button"><i class="uk-icon-code-fork"></i> '+caption+'</button> <button class="uk-button uk-button-small app-button-secondary uk-hidden js-clear" type="button"><i class="uk-icon-trash-o"></i></button></div>'),
                         $btn    = $tpl.find('.js-select'),
                         $prv    = $tpl.find('[data-preview]'),
