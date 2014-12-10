@@ -13,7 +13,7 @@ class App extends \Lime\App {
             "image"   => "Lime\\Helper\\Image",
             "i18n"    => "Lime\\Helper\\I18n",
             "utils"   => "Lime\\Helper\\Utils",
-            "coockie" => "Lime\\Helper\\Coockie",
+            "coockie" => "Lime\\Helper\\Cookie",
         ], isset($settings["helpers"]) ? $settings["helpers"] : []);
 
         parent::__construct($settings);
