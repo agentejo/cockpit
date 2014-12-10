@@ -55,6 +55,7 @@ $this->module("cockpit")->extend([
         }
 
         $app->helper("fs")->removeEmptySubFolders('cache:');
+        $app->trigger("cockpit.clearcache");
 
         return ["size"=>$app->helper("utils")->formatSize($app->helper("fs")->getDirSize('cache:'))];
     }

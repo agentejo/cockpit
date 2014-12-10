@@ -45,13 +45,13 @@
                             if (data.matches[0].match(/js\-no\-parse/)) return false;
 
                             var matchesSrc = data.matches[0].match(/\ssrc="(.*?)"/),
-                            matchesAlt = data.matches[0].match(/\salt="(.*?)"/);
+                                matchesAlt = data.matches[0].match(/\salt="(.*?)"/);
 
-                            data['src'] = matchesSrc ? matchesSrc[1] : '';
-                            data['alt'] = matchesAlt ? matchesAlt[1] : '';
-                            data['handler'] = function(src) {
+                            data.src     = matchesSrc ? matchesSrc[1] : '';
+                            data.alt     = matchesAlt ? matchesAlt[1] : '';
+                            data.handler = function(src) {
 
-                                var src = ' src="' + src +'"', alt = ' alt="'+data['alt']+'"', output = data.matches[0];
+                                src = ' src="' + src +'"', alt = ' alt="'+data.alt+'"', output = data.matches[0];
 
                                 output = matchesSrc ? output.replace(matchesSrc[0], src) : [output.slice(0, 4), src, output.slice(4)].join('');
                                 output = matchesAlt ? output.replace(matchesAlt[0], alt) : [output.slice(0, 4), alt, output.slice(4)].join('');
@@ -61,10 +61,10 @@
 
                         } else {
 
-                            data['src'] = data.matches[3].trim();
-                            data['alt'] = data.matches[2];
-                            data['handler'] = function(src) {
-                                data.replace('![' + data['alt'] + '](' + src + ')');
+                            data.src = data.matches[3].trim();
+                            data.alt = data.matches[2];
+                            data.handler = function(src) {
+                                data.replace('![' + data.alt + '](' + src + ')');
                             };
                         }
 

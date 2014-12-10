@@ -23,6 +23,21 @@ $this->module('galleries')->extend([
         return $gallery ? $gallery['images'] : null;
     },
 
+    'galleryById' => function($id) use($app) {
+
+        static $galleries;
+
+        if (null === $galleries) {
+            $galleries = [];
+        }
+
+        if (!isset($galleries[$id])) {
+            $galleries[$id] = $app->db->findOne('common/galleries', ['_id'=>$id]);
+        }
+
+        return $galleries[$id];
+    },
+
     'galleries' => function($options = []) use($app) {
 
         return $app->db->find('common/galleries', $options)->toArray();
