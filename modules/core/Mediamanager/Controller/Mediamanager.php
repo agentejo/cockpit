@@ -70,14 +70,17 @@ class Mediamanager extends \Cockpit\Controller {
 
                     if ($filename[0]=='.' && in_array(strtolower($filename), $toignore)) continue;
 
+                    $isDir = $file->isDir();
+
                     $data[$file->isDir() ? "folders":"files"][] = array(
-                        "is_file" => !$file->isDir(),
-                        "is_dir" => $file->isDir(),
+                        "is_file" => !$isDir,
+                        "is_dir" => $isDir,
                         "is_writable" => is_writable($file->getPathname()),
                         "name" => $filename,
                         "path" => trim($path.'/'.$file->getFilename(), '/'),
                         "url"  => $this->app->pathToUrl($file->getPathname()),
-                        "size" => $file->isDir() ? "" : $this->app->helper("utils")->formatSize($file->getSize()),
+                        "size" => $isDir ? "" : $this->app->helper("utils")->formatSize($file->getSize()),
+                        "ext"  => $isDir ? "" : strtolower($file->getExtension()),
                         "lastmodified" => $file->isDir() ? "" : date("d.m.y H:i", $file->getMTime()),
                     );
                 }
@@ -214,6 +217,33 @@ class Mediamanager extends \Cockpit\Controller {
         }
 
         return json_encode(array("success"=>$ret));
+    }
+
+    protected function unzip() {
+
+        $return  = ['success' => false];
+
+        $path    = $this->param('path', false);
+        $zip     = $this->param('zip', false);
+
+        if ($path && $zip) {
+
+            $path =  $this->root.'/'.trim($path, '/');
+            $zip  =  $this->root.'/'.trim($zip, '/');
+
+            $za = new \ZipArchive;
+
+            if ($za->open($zip)) {
+
+                if ($za->extractTo($path)) {
+                    $return = ['success' => true];
+                }
+
+                $za->close();
+            }
+        }
+
+        return json_encode($return);
     }
 
     protected function download() {

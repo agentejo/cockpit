@@ -132,6 +132,7 @@
                             <li><a ng-click="addBookmark(file)" title="@lang('Bookmark file')"><i class="uk-icon-star"></i></a></li>
                             <li><a ng-click="action('rename', file)" title="@lang('Rename file')"><i class="uk-icon-text-width"></i></a></li>
                             <li><a ng-click="action('download', file)" title="@lang('Download file')"><i class="uk-icon-paperclip"></i></a></li>
+                            <li ng-if="(file.ext == 'zip')"><a ng-click="action('unzip', file)" title="@lang('Unzip file')"><i class="uk-icon-archive"></i></a></li>
                             <li><a ng-click="action('remove', file)" title="@lang('Delete file')"><i class="uk-icon-minus-circle"></i></a></li>
                         </ul>
                     </div>
@@ -189,6 +190,7 @@
                                    <li><a ng-click="addBookmark(file)" title="@lang('Bookmark file')"><i class="uk-icon-star"></i> @lang('Bookmark file')</a></li>
                                    <li><a ng-click="action('rename', file)" title="@lang('Rename file')"><i class="uk-icon-text-width"></i> @lang('Rename file')</a></li>
                                    <li><a ng-click="action('download', file)" title="@lang('Download file')"><i class="uk-icon-paperclip"></i> @lang('Download file')</a></li>
+                                   <li ng-if="(file.ext == 'zip')"><a ng-click="action('unzip', file)" title="@lang('Unzip file')"><i class="uk-icon-archive"></i> @lang('Unzip file')</a></li>
                                    <li class="uk-nav-divider"></li>
                                    <li class="uk-danger"><a ng-click="action('remove', file)" title="@lang('Delete file')"><i class="uk-icon-minus-circle"></i> @lang('Delete file')</a></li>
                                </ul>

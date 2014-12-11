@@ -83,6 +83,25 @@
                     case "download":
                         location.href = apiurl+"?cmd=download&path="+encodeURI(item.path);
                         break;
+
+                    case "unzip":
+
+                        requestapi({"cmd": "unzip", "path": currentpath, "zip": item.path}, function(resp){
+
+                            if (resp) {
+
+                                if (resp.success) {
+                                    App.notify("Archive extracted!", "success");
+                                } else {
+                                    App.notify("Extracting archive failed!", "error");
+                                }
+                            }
+
+                            loadPath(currentpath);
+
+                        });
+
+                        break;
                 }
 
             };
