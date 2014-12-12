@@ -49,7 +49,7 @@
 
                 App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
 
-                    var row, scope, $index, $ids = [];
+                    var row, scope, form, $index, $ids = [];
 
                     for(var i=0;i<$scope.selected.length;i++) {
                         row    = $scope.selected[i],
