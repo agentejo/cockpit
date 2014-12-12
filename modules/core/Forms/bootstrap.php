@@ -49,8 +49,8 @@ $app->bind("/api/forms/submit/:form", function($params) use($app) {
                 $frm['email'] = implode(',', $filtered_emails);
 
                 // There is an email template available
-                if ($this->path("custom:emails/{$form}.php")) {
-                    $body = $this->renderer->file($this->path("custom:emails/{$form}.php"), $formdata, false);
+                if ($template = $this->path("custom:forms/emails/{$form}.php")) {
+                    $body = $this->renderer->file($template, $formdata, false);
                 // Prepare template manually
                 } else {
                     $body = [];
