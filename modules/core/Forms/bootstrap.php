@@ -102,15 +102,16 @@ $this->module("forms")->extend([
         return $forms[$name];
     },
 
-    "form" => function($name, $options = []) use($app) {
+    "form" => function($name, $options = [], $attributes = []) use($app) {
 
         $options = array_merge(array(
-            "id"    => uniqid("form"),
-            "class" => "",
-            "csrf"  => $app->hash($name)
+            "id"             => uniqid("form"),
+            "class"          => "",
+            "csrf"           => $app->hash($name),
+            "ajaxValidation" => true,
         ), $options);
 
-        $app->renderView("forms:views/api/form.php", compact('name', 'options'));
+        $app->renderView("forms:views/api/form.php", compact('name', 'options', 'attributes'));
     },
 
     "collectionById" => function($formId) use($app) {

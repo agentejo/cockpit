@@ -1,3 +1,4 @@
+@if ($options["ajaxValidation"])
 <script>
 
     setTimeout(function(){
@@ -62,7 +63,8 @@
 
 </script>
 
-<form id="{{ $options["id"] }}" name="{{ $name }}" class="{{ $options["class"] }}" action="@route('/api/forms/submit/'.$name)" method="post" onsubmit="return false;">
+@endif
+<form id="{{ $options["id"] }}" name="{{ $name }}" class="{{ $options["class"] }}" action="@route('/api/forms/submit/'.$name)" method="post"@if ($options["ajaxValidation"]) onsubmit="return false;"@endif @foreach ($attributes as $attrName => $attrValue) {{ $attrName }}="{{ $attrValue }}"@endforeach>
 <input type="hidden" name="__csrf" value="{{ $options["csrf"] }}">
 @if(isset($options["mailsubject"])):
 <input type="hidden" name="__mailsubject" value="{{ $options["mailsubject"] }}">
