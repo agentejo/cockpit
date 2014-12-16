@@ -32,6 +32,28 @@
                 UIkit.notify(note, {"status":(type || 'primary'), timeout: 2000});
             },
 
+            viewpopup: function(url) {
+
+                var src = url.match(/^http/) ? url : App.base(url);
+
+                var modal = $([
+                    '<div id="vp-modal-wrapper" class="vp-modal-wrapper">',
+                        '<div class="vp-modal-container">',
+                            '<a class="vp-modal-close">&times;</a>',
+                            '<iframe id="vp-iframe" frameborder="0"></iframe>',
+                        '</div>',
+                    '</div>'
+                ].join(''));
+
+                modal.on('click', '.vp-modal-close', function(){
+
+                    modal.fadeOut(200, function(){
+                        modal.remove();
+                    });
+
+                }).appendTo('body').find('iframe').attr('src', src);
+            },
+
             Ui: {
 
                 block: function(message) {

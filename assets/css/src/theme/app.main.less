@@ -273,3 +273,50 @@ td .uk-subnav { margin: 0; }
 
 
 [id^="google-maps-location-"] img { max-width: none; }
+
+.vp-modal-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.6);
+    z-index: 9999;
+}
+
+.vp-modal-container {
+    box-sizing: border-box;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: calc(~"100% - 40px");
+    height: calc(~"100% - 40px");
+    border: 5px #eee solid;
+    border-radius: 3px;
+    background: #eee;
+}
+
+.vp-modal-close {
+    position: absolute;
+    display: block;
+    top: -15px;
+    right: -15px;
+    width: 24px;
+    height: 24px;
+    background: #000;
+    color: #fff;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.vp-modal-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 3px;
+}

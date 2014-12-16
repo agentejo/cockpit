@@ -48,16 +48,24 @@ $app->bind("/api/forms/submit/:form", function($params) use($app) {
 
                 $frm['email'] = implode(',', $filtered_emails);
 
-                $body = [];
+                // There is an email template available
+                if ($template = $this->path("custom:forms/emails/{$form}.php")) {
+                    $body = $this->renderer->file($template, $formdata, false);
+                // Prepare template manually
+                } else {
+                    $body = [];
 
-                foreach ($formdata as $key => $value) {
-                    $body[] = "<b>{$key}:</b>\n<br>";
-                    $body[] = (is_string($value) ? $value:json_encode($value))."\n<br>";
+                    foreach ($formdata as $key => $value) {
+                        $body[] = "<b>{$key}:</b>\n<br>";
+                        $body[] = (is_string($value) ? $value:json_encode($value))."\n<br>";
+                    }
+
+                    $body = implode("\n<br>", $body);
                 }
 
                 $options = $this->param("form_options", []);
 
-                $this->mailer->mail($frm["email"], $this->param("__mailsubject", "New form data for: ".$form), implode("\n<br>", $body), $options);
+                $this->mailer->mail($frm["email"], $this->param("__mailsubject", "New form data for: ".$form), $body, $options);
             }
         }
 
