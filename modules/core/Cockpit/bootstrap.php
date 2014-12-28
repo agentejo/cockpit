@@ -5,7 +5,6 @@ $app['app.assets.base'] = [
     'assets:vendor/jquery.js',
     'assets:vendor/storage.js',
     'assets:vendor/i18n.js',
-    'assets:vendor/animate.css',
 
     // UIkit
     'assets:css/cockpit.css',

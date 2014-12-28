@@ -17,6 +17,7 @@
 
         .images-list-actions {
             position: absolute;
+            left: 0;
             width: 100%;
             top: 50%;
             -webkit-transform: translateY(-50%);
