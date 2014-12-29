@@ -80,6 +80,17 @@ $this->module("datastore")->extend([
         $collection = "datastore".$datastore["_id"];
 
         return $this->app->db->remove("datastore/{$collection}", $criteria);
+    },
+
+    'count' => function($table, $criteria = []) {
+
+        $datastore = $this->get_datastore($table);
+
+        if (!$datastore) return false;
+
+        $collection = "datastore".$datastore["_id"];
+
+        return $this->app->db->count("datastore/{$collection}", $criteria);
     }
 ]);
 

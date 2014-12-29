@@ -267,6 +267,17 @@ $this->module("collections")->extend([
         $col = "collection".$collection["_id"];
 
         return $this->app->db->remove("collections/{$col}", $criteria);
+    },
+
+    'count' => function($collection, $criteria = []) {
+
+        $collection = $this->get_collection($collection);
+
+        if (!$collection) return false;
+
+        $col = "collection".$collection["_id"];
+
+        return $this->app->db->count("collections/{$col}", $criteria);
     }
 ]);
 
