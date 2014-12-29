@@ -44,7 +44,7 @@
 
     <div class="uk-grid" data-uk-grid-margin data-ng-show="entries && entries.length">
 
-        <div class="uk-width-medium-4-5">
+        <div class="uk-width-medium-1-1">
             <div class="app-panel">
                 <table class="uk-table uk-table-striped" multiple-select="{model:entries}">
                     <thead>
@@ -84,9 +84,6 @@
                 </div>
 
             </div>
-        </div>
-        <div class="uk-width-medium-1-5 uk-hidden-small">
-
         </div>
     </div>
 </div>
