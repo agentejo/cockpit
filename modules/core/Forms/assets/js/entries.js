@@ -4,17 +4,6 @@
 
         $scope.form = FORMDATA || {};
 
-        $http.post(App.route("/api/forms/entries"), {
-
-            "form": angular.copy($scope.form),
-            "sort": {"created":-1}
-
-        }, {responseType:"json"}).success(function(data){
-
-            if (data) $scope.entries = data;
-
-        }).error(App.module.callbacks.error.http);
-
         $scope.remove = function(index, entryId){
 
             App.Ui.confirm(App.i18n.get("Are you sure?"), function() {
@@ -35,7 +24,6 @@
                 }).error(App.module.callbacks.error.http);
             });
         };
-
 
         // batch actions
 
@@ -98,6 +86,45 @@
                 }).error(App.module.callbacks.error.http);
             });
         };
+
+        $scope.loadmore = function() {
+
+            var limit  = 25;
+
+            $http.post(App.route("/api/forms/entries"), {
+
+                "form" : angular.copy($scope.form),
+                "sort" : {"created":-1},
+                "limit": limit,
+                "skip" : $scope.entries ? $scope.entries.length : 0
+
+            }, {responseType:"json"}).success(function(data){
+
+                if (data) {
+
+                    if (!$scope.entries) {
+                        $scope.entries = [];
+                    }
+
+                    if (data.length) {
+
+                        if (data.length < limit) {
+                            $scope.nomore = true;
+                        }
+
+                        $scope.entries = $scope.entries.concat(data);
+
+                    } else {
+                       $scope.nomore = true;
+                    }
+
+                }
+
+            }).error(App.module.callbacks.error.http);
+
+        };
+
+        $scope.loadmore();
 
     });
 
