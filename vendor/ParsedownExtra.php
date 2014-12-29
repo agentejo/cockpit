@@ -183,25 +183,41 @@ class ParsedownExtra extends Parsedown
         $DOMDocument->documentElement->removeAttribute('markdown');
 
         $index = 0;
-        $texts = array();
+        $nestedElements = array();
+
+        $markdown = '';
 
         foreach ($DOMDocument->documentElement->childNodes as $Node)
         {
             if ($Node instanceof DOMText)
             {
-                $texts [] = $this->text($Node->nodeValue);
+                $markdown .= $Node->nodeValue;
+            }
+            elseif ($Node instanceof DOMNode)
+            {
+                $nestedElements []= $DOMDocument->saveXML($Node);
 
-                # replaces the text of the node with a placeholder
-                $Node->nodeValue = '\x1A'.$index ++;
+                # replace nested elements with placeholders
+                $markdown .= '\x1A'.$index ++.'/';
+            }
+            else
+            {
+                continue;
             }
         }
 
-        $markup = $DOMDocument->saveXML($DOMDocument->documentElement);
-
-        foreach ($texts as $index => $text)
+        foreach ($nestedElements as $index => $nestedElement)
         {
-            $markup = str_replace('\x1A'.$index, $text, $markup);
+            $markdown = str_replace('\x1A'.$index.'/', $nestedElement, $markdown);
         }
+
+        $text = $this->text($markdown);
+
+        # because we don't want markup to get encoded
+        $DOMDocument->documentElement->nodeValue = "\n".'placeholder'."\n";
+
+        $markup = $DOMDocument->saveXML($DOMDocument->documentElement);
+        $markup = str_replace('placeholder', $text, $markup);
 
         $Block['element'] = $markup;
 
@@ -366,7 +382,9 @@ class ParsedownExtra extends Parsedown
             $text = $Data['text'];
             $text = $this->line($text);
 
-            foreach (range(1, $Data['count']) as $number)
+            $numbers = range(1, $Data['count']);
+
+            foreach ($numbers as $number)
             {
                 $text .= '&#160;<a href="#fnref'.$number.':'.$name.'" rev="footnote" class="footnote-backref">&#8617;</a>';
             }
@@ -388,10 +406,10 @@ class ParsedownExtra extends Parsedown
     }
 
     #
-    # Private
+    # ~
     #
 
-    private function parseAttributes($attributeString)
+    protected function parseAttributes($attributeString)
     {
         $Data = array();
 
@@ -417,5 +435,5 @@ class ParsedownExtra extends Parsedown
         return $Data;
     }
 
-    private $attributesPattern = '{((?:[#.][-\w]+[ ]*)+)}';
+    protected $attributesPattern = '{((?:[#.][-\w]+[ ]*)+)}';
 }

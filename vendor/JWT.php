@@ -15,7 +15,7 @@
  */
 class JWT
 {
-    static $methods = array(
+    public static $methods = array(
         'HS256' => array('hash_hmac', 'SHA256'),
         'HS512' => array('hash_hmac', 'SHA512'),
         'HS384' => array('hash_hmac', 'SHA384'),
@@ -30,9 +30,14 @@ class JWT
      * @param bool        $verify    Don't skip verification process
      *
      * @return object      The JWT's payload as a PHP object
-     * @throws UnexpectedValueException Provided JWT was invalid
-     * @throws DomainException          Algorithm was not provided
-     * 
+     *
+     * @throws DomainException              Algorithm was not provided
+     * @throws UnexpectedValueException     Provided JWT was invalid
+     * @throws SignatureInvalidException    Provided JWT was invalid because the signature verification failed
+     * @throws BeforeValidException         Provided JWT is trying to be used before it's eligible as defined by 'nbf'
+     * @throws BeforeValidException         Provided JWT is trying to be used before it's been created as defined by 'iat'
+     * @throws ExpiredException             Provided JWT has since expired, as defined by the 'exp' claim
+     *
      * @uses jsonDecode
      * @uses urlsafeB64Decode
      */
@@ -44,10 +49,10 @@ class JWT
         }
         list($headb64, $bodyb64, $cryptob64) = $tks;
         if (null === ($header = JWT::jsonDecode(JWT::urlsafeB64Decode($headb64)))) {
-            throw new UnexpectedValueException('Invalid segment encoding');
+            throw new UnexpectedValueException('Invalid header encoding');
         }
         if (null === $payload = JWT::jsonDecode(JWT::urlsafeB64Decode($bodyb64))) {
-            throw new UnexpectedValueException('Invalid segment encoding');
+            throw new UnexpectedValueException('Invalid claims encoding');
         }
         $sig = JWT::urlsafeB64Decode($cryptob64);
         if ($verify) {
@@ -55,20 +60,41 @@ class JWT
                 throw new DomainException('Empty algorithm');
             }
             if (is_array($key)) {
-                if(isset($header->kid)) {
+                if (isset($header->kid)) {
                     $key = $key[$header->kid];
                 } else {
                     throw new DomainException('"kid" empty, unable to lookup correct key');
                 }
             }
+
+            // Check the signature
             if (!JWT::verify("$headb64.$bodyb64", $sig, $key, $header->alg)) {
-                throw new UnexpectedValueException('Signature verification failed');
+                throw new SignatureInvalidException('Signature verification failed');
             }
-            // Check token expiry time if defined.
-            if (isset($payload->exp) && time() >= $payload->exp){
-                throw new UnexpectedValueException('Expired Token');
+
+            // Check if the nbf if it is defined. This is the time that the
+            // token can actually be used. If it's not yet that time, abort.
+            if (isset($payload->nbf) && $payload->nbf > time()) {
+                throw new BeforeValidException(
+                    'Cannot handle token prior to ' . date(DateTime::ISO8601, $payload->nbf)
+                );
+            }
+
+            // Check that this token has been created before 'now'. This prevents
+            // using tokens that have been created for later use (and haven't
+            // correctly used the nbf claim).
+            if (isset($payload->iat) && $payload->iat > time()) {
+                throw new BeforeValidException(
+                    'Cannot handle token prior to ' . date(DateTime::ISO8601, $payload->iat)
+                );
+            }
+
+            // Check if this token has expired.
+            if (isset($payload->exp) && time() >= $payload->exp) {
+                throw new ExpiredException('Expired token');
             }
         }
+
         return $payload;
     }
 
@@ -87,7 +113,7 @@ class JWT
     public static function encode($payload, $key, $algo = 'HS256', $keyId = null)
     {
         $header = array('typ' => 'JWT', 'alg' => $algo);
-        if($keyId !== null) {
+        if ($keyId !== null) {
             $header['kid'] = $keyId;
         }
         $segments = array();
@@ -124,7 +150,7 @@ class JWT
             case 'openssl':
                 $signature = '';
                 $success = openssl_sign($msg, $signature, $key, $algo);
-                if(!$success) {
+                if (!$success) {
                     throw new DomainException("OpenSSL unable to sign data");
                 } else {
                     return $signature;
@@ -142,7 +168,8 @@ class JWT
      * @return bool
      * @throws DomainException Invalid Algorithm or OpenSSL failure
      */
-    public static function verify($msg, $signature, $key, $method = 'HS256') {
+    public static function verify($msg, $signature, $key, $method = 'HS256')
+    {
         if (empty(self::$methods[$method])) {
             throw new DomainException('Algorithm not supported');
         }
@@ -150,7 +177,7 @@ class JWT
         switch($function) {
             case 'openssl':
                 $success = openssl_verify($msg, $signature, $key, $algo);
-                if(!$success) {
+                if (!$success) {
                     throw new DomainException("OpenSSL unable to verify data: " . openssl_error_string());
                 } else {
                     return $signature;
@@ -181,13 +208,15 @@ class JWT
     public static function jsonDecode($input)
     {
         if (version_compare(PHP_VERSION, '5.4.0', '>=') && !(defined('JSON_C_VERSION') && PHP_INT_SIZE > 4)) {
-            /* In PHP >=5.4.0, json_decode() accepts an options parameter, that allows you to specify that large ints (like Steam
-             * Transaction IDs) should be treated as strings, rather than the PHP default behaviour of converting them to floats.
+            /** In PHP >=5.4.0, json_decode() accepts an options parameter, that allows you
+             * to specify that large ints (like Steam Transaction IDs) should be treated as
+             * strings, rather than the PHP default behaviour of converting them to floats.
              */
             $obj = json_decode($input, false, 512, JSON_BIGINT_AS_STRING);
         } else {
-            /* Not all servers will support that, however, so for older versions we must manually detect large ints in the JSON
-             * string and quote them (thus converting them to strings) before decoding, hence the preg_replace() call.
+            /** Not all servers will support that, however, so for older versions we must
+             * manually detect large ints in the JSON string and quote them (thus converting
+             *them to strings) before decoding, hence the preg_replace() call.
              */
             $max_int_length = strlen((string) PHP_INT_MAX) - 1;
             $json_without_bigints = preg_replace('/:\s*(-?\d{'.$max_int_length.',})/', ': "$1"', $input);
@@ -195,8 +224,8 @@ class JWT
         }
 
         if (function_exists('json_last_error') && $errno = json_last_error()) {
-            JWT::_handleJsonError($errno);
-        } else if ($obj === null && $input !== 'null') {
+            JWT::handleJsonError($errno);
+        } elseif ($obj === null && $input !== 'null') {
             throw new DomainException('Null result with non-null input');
         }
         return $obj;
@@ -214,8 +243,8 @@ class JWT
     {
         $json = json_encode($input);
         if (function_exists('json_last_error') && $errno = json_last_error()) {
-            JWT::_handleJsonError($errno);
-        } else if ($json === 'null' && $input !== null) {
+            JWT::handleJsonError($errno);
+        } elseif ($json === 'null' && $input !== null) {
             throw new DomainException('Null result with non-null input');
         }
         return $json;
@@ -257,7 +286,7 @@ class JWT
      *
      * @return void
      */
-    private static function _handleJsonError($errno)
+    private static function handleJsonError($errno)
     {
         $messages = array(
             JSON_ERROR_DEPTH => 'Maximum stack depth exceeded',
@@ -270,6 +299,8 @@ class JWT
             : 'Unknown JSON error: ' . $errno
         );
     }
-
 }
 
+class BeforeValidException extends UnexpectedValueException {}
+class ExpiredException extends UnexpectedValueException {}
+class SignatureInvalidException extends UnexpectedValueException {}
