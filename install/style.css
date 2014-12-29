@@ -4,9 +4,14 @@
   box-sizing: border-box !important;
   -moz-box-sizing: border-box !important;
 }
+
+html,
+body {
+    background: #eee;
+}
+
 body {
     padding-top: 100px;
-    background: #eee;
 }
 
 h1 { font-size: 30px; }
