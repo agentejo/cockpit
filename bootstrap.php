@@ -52,7 +52,7 @@ function cockpit($module = null) {
     if (!$app) {
 
         // load config
-        $config = array_merge([
+        $config = array_replace_recursive([
 
             'debug'        => false,
             'app.name'     => 'Cockpit',
@@ -62,7 +62,20 @@ function cockpit($module = null) {
             'session.name' => md5(__DIR__),
             'sec-key'      => 'c3b40c4c-db44-s5h7-a814-b4931a15e5e1',
             'i18n'         => 'en',
-            'database'     => [ "server" => "mongolite://".(COCKPIT_DIR."/storage/data"), "options" => ["db" => "cockpitdb"] ]
+            'database'     => [ "server" => "mongolite://".(COCKPIT_DIR."/storage/data"), "options" => ["db" => "cockpitdb"] ],
+
+            'paths'        => [
+                '#root'   => COCKPIT_DIR,
+                'storage' => COCKPIT_DIR.'/storage',
+                '#backups'=> COCKPIT_DIR.'/storage/backups',
+                'data'    => COCKPIT_DIR.'/storage/data',
+                'cache'   => COCKPIT_DIR.'/storage/cache',
+                'tmp'     => COCKPIT_DIR.'/storage/cache/tmp',
+                'modules' => COCKPIT_DIR.'/modules',
+                'assets'  => COCKPIT_DIR.'/assets',
+                'custom'  => COCKPIT_DIR.'/custom',
+                'site'    => COCKPIT_DIR == COCKPIT_DOCS_ROOT ? COCKPIT_DIR : dirname(COCKPIT_DIR)
+            ]
 
         ], file_exists(COCKPIT_CONFIG_PATH) ? include(COCKPIT_CONFIG_PATH) : []);
 
@@ -70,16 +83,10 @@ function cockpit($module = null) {
 
         $app["app.config"] = $config;
 
-        $app->path('#root'   , COCKPIT_DIR);
-        $app->path('storage' , COCKPIT_DIR.'/storage');
-        $app->path('#backups' , COCKPIT_DIR.'/storage/backups');
-        $app->path('data'    , COCKPIT_DIR.'/storage/data');
-        $app->path('cache'   , COCKPIT_DIR.'/storage/cache');
-        $app->path('tmp'     , COCKPIT_DIR.'/storage/cache/tmp');
-        $app->path('modules' , COCKPIT_DIR.'/modules');
-        $app->path('assets'  , COCKPIT_DIR.'/assets');
-        $app->path('custom'  , COCKPIT_DIR.'/custom');
-        $app->path('site'    , COCKPIT_DIR == COCKPIT_DOCS_ROOT ? COCKPIT_DIR : dirname(COCKPIT_DIR));
+        // register paths
+        foreach ($config['paths'] as $key => $path) {
+            $app->path($key, $path);
+        }
 
         // nosql storage
         $app->service('db', function() use($config) {
