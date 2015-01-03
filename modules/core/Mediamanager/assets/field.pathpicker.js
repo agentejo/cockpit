@@ -42,10 +42,10 @@
                         }
 
                         if (path && path.match(/\.(jpg|jpeg|png|gif)$/i)) {
-                            $prv.html('<div class="uk-margin" title="'+path+'"><img class="auto-size" src="'+encodeURI(path.replace('site:', window.COCKPIT_SITE_BASE_URL))+'"></div>');
+                            $prv.html('<div class="uk-margin" title="'+path+'"><img class="uk-responsive-width" src="'+encodeURI(path.replace('site:', window.COCKPIT_SITE_BASE_URL))+'"></div>');
 
                         } else if (path && path.match(/\.(mp4|ogv|wmv|webm|mpeg|avi)$/i)) {
-                            $prv.html('<div class="uk-margin" title="'+path+'"><video class="auto-size" src="'+encodeURI(path.replace('site:', window.COCKPIT_SITE_BASE_URL))+'"></video></div>');
+                            $prv.html('<div class="uk-margin" title="'+path+'"><video class="uk-responsive-width" src="'+encodeURI(path.replace('site:', window.COCKPIT_SITE_BASE_URL))+'"></video></div>');
 
                         } else {
                             $prv.html(path ? '<div class="uk-trunkate" title="'+path+'">'+path+'</div>':'<div class="uk-alert">No path selected</div>');
