@@ -85,6 +85,27 @@ $this->module("regions")->extend([
         return null;
     },
 
+    'update_region_field' => function($region, $fieldname, $value) use($app) {
+
+        $region = $this->get_region($region);
+
+        if ($region && isset($region['fields']) && count($region['fields'])) {
+
+            foreach ($region['fields'] as &$field) {
+
+                if ($field['name'] == $fieldname) {
+
+                    $field['value']     = $value;
+                    $region["modified"] = time();
+
+                    return $app->db->save("common/regions", $region);
+                }
+            }
+        }
+
+        return false;
+    },
+
     'group' => function($group, $sort = null) use($app) {
 
         if (!$sort) $sort = ['name' => 1];
