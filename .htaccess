@@ -153,3 +153,5 @@ AddType application/x-shockwave-flash   swf
 
 # Remove ETags
 FileETag None
+
+DirectoryIndex index.php
