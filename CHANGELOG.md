@@ -1,5 +1,22 @@
 # Changelog
 
+### WIP
+
+    + Added update_region_field api method
+    + Added possibility to override paths in custom config.php
+    + Added "count" api method to collections and datastore modules
+    + Added pagination for form entries
+    + Added App.viewpopup(url) backend js api
+    + Added file based email templates @piotr-cz
+    + Added extract zip files in mediamanager
+    + Added cockpit.clearcache event
+    + Added ContainerArray class
+    ^ Updated assets
+    ^ Updated language file reference @piotr-cz
+    # Fixed collection media preview breaks out of the container
+    # Fixed installation background size @piotr-cz
+    # Fixed Insert media button in WYSIWYG editor
+
 ### 0.12.0  (Nov 19, 2014)
 
     + Added "Multiple Field" content field (repeatable fields)
