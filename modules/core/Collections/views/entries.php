@@ -1,6 +1,7 @@
 @start('header')
 
     {{ $app->assets(['collections:assets/collections.js','collections:assets/js/entries.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:js/angular/directives/mediapreview.js'], $app['cockpit/version']) }}
 
     @if($collection['sortfield'] == 'custom-order')
 
@@ -9,7 +10,12 @@
     @endif
 
     <style>
+
         td .uk-grid+.uk-grid { margin-top: 5px; }
+
+        .type-media .media-url-preview {
+            border-radius: 50%;
+        }
 
         .uk-sortable-dragged {
             border: 1px #ccc dashed;
@@ -21,6 +27,7 @@
         .uk-sortable-dragged td {
             display: none;
         }
+
     </style>
 
     <script>
@@ -107,7 +114,15 @@
                                         <strong>@@ (field.label || field.name) @@</strong>
                                     </div>
                                     <div class="uk-width-medium-4-5">
-                                        <a class="uk-link-muted" href="@route('/collections/entry/'.$collection["_id"])/@@ entry._id @@">@@ entry[field.name] @@</a>
+                                        <a class="uk-link-muted" href="@route('/collections/entry/'.$collection["_id"])/@@ entry._id @@" ng-switch="field.type">
+                                            <div class="type-media" ng-switch-when="media"><div style="width:20px;height:20px;" media-preview="@@ entry[field.name] @@"><i class="uk-icon-ellipsis-h"></i></div></div>
+                                            <div ng-switch-when="gallery">
+                                                <div class="uk-thumbnail uk-rounded uk-thumb-small uk-margin-small-right" data-ng-repeat="image in entry[field.name]" ng-if="$index < 6">
+                                                    <img ng-src="@route('/mediamanager/thumbnail')/@@ image.path|base64 @@/20/20" width="20" height="20" title="@@ image.path @@">
+                                                </div>
+                                            </div>
+                                            <span ng-switch-default>@@ entry[field.name] @@</span>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="uk-text-small" data-ng-if="!fields.length">

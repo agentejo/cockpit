@@ -2,6 +2,7 @@
 
 ### WIP
 
+    + Added preview for media + gallery field in collection entries list view
     + Added update_region_field api method
     + Added possibility to override paths in custom config.php
     + Added "count" api method to collections and datastore modules
