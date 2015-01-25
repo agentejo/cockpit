@@ -115,7 +115,7 @@
                                     </div>
                                     <div class="uk-width-medium-4-5">
                                         <a class="uk-link-muted" href="@route('/collections/entry/'.$collection["_id"])/@@ entry._id @@" ng-switch="field.type">
-                                            <div class="type-media" ng-switch-when="media"><div style="width:20px;height:20px;" media-preview="@@ entry[field.name] @@"><i class="uk-icon-ellipsis-h"></i></div></div>
+                                            <div class="type-media" ng-switch-when="media"><div style="width:30px;height:30px;" media-preview="@@ entry[field.name] @@"><i class="uk-icon-ellipsis-h"></i></div></div>
                                             <div ng-switch-when="gallery">
                                                 <div class="uk-thumbnail uk-rounded uk-thumb-small uk-margin-small-right" data-ng-repeat="image in entry[field.name]" ng-if="$index < 6">
                                                     <img ng-src="@route('/mediamanager/thumbnail')/@@ image.path|base64 @@/20/20" width="20" height="20" title="@@ image.path @@">
