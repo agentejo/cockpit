@@ -202,4 +202,192 @@ class ContainerArray implements  ArrayAccess, Countable, IteratorAggregate {
 
         return $default;
     }
+
+    /**
+     * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+     * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+     *
+     * Source: Utility/Hash.php
+     */
+
+    public function extract($path) {
+
+        if (empty($path)) {
+            return $this->props;
+        }
+        // Simple paths.
+        if (!preg_match('/[{\[]/', $path)) {
+            return (array)$this->get($path);
+        }
+        if (strpos($path, '[') === false) {
+            $tokens = explode('/', $path);
+        } else {
+            $tokens = $this->_tokenize($path, '/', '[', ']');
+        }
+        $_key = '__set_item__';
+        $context = array($_key => array($this->props));
+        foreach ($tokens as $token) {
+            $next = array();
+            list($token, $conditions) = $this->_splitConditions($token);
+            foreach ($context[$_key] as $item) {
+                foreach ((array)$item as $k => $v) {
+                    if ($this->_matchToken($k, $token)) {
+                        $next[] = $v;
+                    }
+                }
+            }
+            // Filter for attributes.
+            if ($conditions) {
+                $filter = array();
+                foreach ($next as $item) {
+                    if (is_array($item) && $this->_matches($item, $conditions)) {
+                        $filter[] = $item;
+                    }
+                }
+                $next = $filter;
+            }
+            $context = array($_key => $next);
+        }
+        return $context[$_key];
+    }
+
+    protected function _tokenize($data, $separator = ',', $leftBound = '(', $rightBound = ')') {
+
+        if (empty($data)) {
+            return array();
+        }
+
+        $depth    = 0;
+        $offset   = 0;
+        $buffer   = '';
+        $results  = array();
+        $length   = strlen($data);
+        $open     = false;
+
+        while ($offset <= $length) {
+            $tmpOffset = -1;
+            $offsets   = array(
+                strpos($data, $separator, $offset),
+                strpos($data, $leftBound, $offset),
+                strpos($data, $rightBound, $offset)
+            );
+
+            for ($i = 0; $i < 3; $i++) {
+                if ($offsets[$i] !== false && ($offsets[$i] < $tmpOffset || $tmpOffset == -1)) {
+                    $tmpOffset = $offsets[$i];
+                }
+            }
+
+            if ($tmpOffset !== -1) {
+                $buffer .= substr($data, $offset, ($tmpOffset - $offset));
+                if (!$depth && $data{$tmpOffset} === $separator) {
+                    $results[] = $buffer;
+                    $buffer = '';
+                } else {
+                    $buffer .= $data{$tmpOffset};
+                }
+                if ($leftBound !== $rightBound) {
+                    if ($data{$tmpOffset} === $leftBound) {
+                        $depth++;
+                    }
+                    if ($data{$tmpOffset} === $rightBound) {
+                        $depth--;
+                    }
+                } else {
+                    if ($data{$tmpOffset} === $leftBound) {
+                        if (!$open) {
+                            $depth++;
+                            $open = true;
+                        } else {
+                            $depth--;
+                        }
+                    }
+                }
+                $offset = ++$tmpOffset;
+            } else {
+                $results[] = $buffer . substr($data, $offset);
+                $offset = $length + 1;
+            }
+        }
+        if (empty($results) && !empty($buffer)) {
+            $results[] = $buffer;
+        }
+        if (!empty($results)) {
+            return array_map('trim', $results);
+        }
+        return array();
+    }
+
+    protected function _splitConditions($token) {
+        $conditions = false;
+        $position = strpos($token, '[');
+        if ($position !== false) {
+            $conditions = substr($token, $position);
+            $token = substr($token, 0, $position);
+        }
+        return array($token, $conditions);
+    }
+
+    protected function _matchToken($key, $token) {
+        if ($token === '{n}') {
+            return is_numeric($key);
+        }
+        if ($token === '{s}') {
+            return is_string($key);
+        }
+        if (is_numeric($token)) {
+            return ($key == $token);
+        }
+        return ($key === $token);
+    }
+
+    protected function _matches(array $data, $selector) {
+
+        preg_match_all(
+            '/(\[ (?P<attr>[^=><!]+?) (\s* (?P<op>[><!]?[=]|[><]) \s* (?P<val>(?:\/.*?\/ | [^\]]+)) )? \])/x',
+            $selector,
+            $conditions,
+            PREG_SET_ORDER
+        );
+
+        foreach ($conditions as $cond) {
+            $attr = $cond['attr'];
+            $op = isset($cond['op']) ? $cond['op'] : null;
+            $val = isset($cond['val']) ? $cond['val'] : null;
+            // Presence test.
+            if (empty($op) && empty($val) && !isset($data[$attr])) {
+                return false;
+            }
+            // Empty attribute = fail.
+            if (!(isset($data[$attr]) || array_key_exists($attr, $data))) {
+                return false;
+            }
+            $prop = null;
+            if (isset($data[$attr])) {
+                $prop = $data[$attr];
+            }
+            $isBool = is_bool($prop);
+            if ($isBool && is_numeric($val)) {
+                $prop = $prop ? '1' : '0';
+            } elseif ($isBool) {
+                $prop = $prop ? 'true' : 'false';
+            }
+            // Pattern matches and other operators.
+            if ($op === '=' && $val && $val[0] === '/') {
+                if (!preg_match($val, $prop)) {
+                    return false;
+                }
+            } elseif (($op === '=' && $prop != $val) ||
+                ($op === '!=' && $prop == $val) ||
+                ($op === '>' && $prop <= $val) ||
+                ($op === '<' && $prop >= $val) ||
+                ($op === '>=' && $prop < $val) ||
+                ($op === '<=' && $prop > $val)
+            ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
