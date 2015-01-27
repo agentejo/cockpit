@@ -9,7 +9,6 @@ class Mongo {
 
     public function __construct($server, $options=[]) {
 
-
         $this->client  = new \MongoClient($server, $options);
         $this->db      = $this->client->selectDB($options["db"]);
         $this->options = $options;
