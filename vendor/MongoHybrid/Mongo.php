@@ -37,7 +37,7 @@ class Mongo {
         return $doc;
     }
 
-    public function findOne($collection, $filter = [], $projection = null) {
+    public function findOne($collection, $filter = [], $projection = []) {
 
         if(isset($filter["_id"]) && is_string($filter["_id"])) $filter["_id"] = new \MongoId($filter["_id"]);
 
@@ -51,7 +51,7 @@ class Mongo {
     public function find($collection, $options = []){
 
         $filter = isset($options["filter"]) && $options["filter"] ? $options["filter"] : [];
-        $fields = isset($options["fields"]) && $options["fields"] ? $options["fields"] : null;
+        $fields = isset($options["fields"]) && $options["fields"] ? $options["fields"] : [];
         $limit  = isset($options["limit"])  && $options["limit"]  ? $options["limit"]  : null;
         $sort   = isset($options["sort"])   && $options["sort"]   ? $options["sort"]   : null;
         $skip   = isset($options["skip"])   && $options["skip"]   ? $options["skip"]   : null;
