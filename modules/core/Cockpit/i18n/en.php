@@ -275,7 +275,7 @@ return [
     'Edit form' => '',
     'Delete form' => '',
     'You don\'t have any forms created.' => '',
-    'Email form data to this adress' => '',
+    'Email form data to this address' => '',
     'Leave the field empty if you don\'t want to recieve any form data via email.' => '',
     'Save form data' => '',
     'Save form' => '',
