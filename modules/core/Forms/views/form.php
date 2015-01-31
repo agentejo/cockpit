@@ -27,7 +27,7 @@
 
                     <div class="uk-form-row">
                         <label class="uk-text-small">Email</label>
-                        <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Email form data to this adress')" data-ng-model="form.email">
+                        <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Email form data to this address')" data-ng-model="form.email">
 
                         <div class="uk-alert">
                             @lang('Leave the email field empty if you don\'t want to recieve any form data via email.')
