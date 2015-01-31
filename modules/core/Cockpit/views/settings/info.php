@@ -82,7 +82,7 @@
                                 }, "json");
 
                             } else {
-                                App.notify("Please provide a valid email adress", "danger");
+                                App.notify("Please provide a valid email address", "danger");
                             }
 
                         });
