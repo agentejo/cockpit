@@ -10,7 +10,7 @@ $app->renderer->extend(function($content){
 
 // register controller
 
-$app->bindClass("Auth\\Controller\\Auth", 'auth');
+$app->bindClass("Auth\\Controller\\Auth", "auth");
 $app->bindClass("Auth\\Controller\\Accounts", "accounts");
 
 // init acl
