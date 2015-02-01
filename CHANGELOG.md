@@ -1,6 +1,6 @@
 # Changelog
 
-### WIP
+### 0.13.0  (Feb 02, 2015)
 
     + Added preview for media + gallery field in collection entries list view
     + Added update_region_field api method
