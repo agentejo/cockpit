@@ -17,6 +17,7 @@
     # Fixed collection media preview breaks out of the container
     # Fixed installation background size @piotr-cz
     # Fixed Insert media button in WYSIWYG editor
+    # Fixed MongoDB find api
 
 ### 0.12.0  (Nov 19, 2014)
 
