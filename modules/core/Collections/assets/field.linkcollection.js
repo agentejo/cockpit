@@ -40,7 +40,7 @@
 
                 this.element.on('click', '.js-remove', function(e){
                     e.preventDefault();
-                    $this.remove($(this).data('index'));
+                    $this.remove(parseInt($(this).data('index')));
                 });
             },
 
@@ -324,13 +324,19 @@
 
                 return function link(scope, elm, attrs, ngModel) {
 
+                    if (elm.data('linkcollection')) {
+                        return;
+                    }
+
+                    elm.data('linkcollection', true);
+
                     var $element     = $(elm).html('<i class="uk-icon-spinner uk-icon-spin"></i>'),
-                        collectionId = attrs.linkCollection;
+                        collectionId = attrs.linkCollection,
+                        field;
 
                     loaded.then(function() {
 
                         if (collections[collectionId]) {
-
 
                             $timeout(function(){
 
