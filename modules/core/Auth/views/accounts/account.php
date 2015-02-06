@@ -11,13 +11,13 @@
         <div class="app-panel">
 
 
-        <div class="uk-panel app-panel-box docked uk-text-center">
-            <div class="uk-thumbnail uk-rounded">
-                <img src="http://www.gravatar.com/avatar/{{ md5(@$account['email']) }}?d=mm&s=100" width="100" height="100" alt="">
-            </div>
+            <div class="uk-panel app-panel-box docked uk-text-center">
+                <div class="uk-thumbnail uk-rounded">
+                    <img src="http://www.gravatar.com/avatar/{{ md5(@$account['email']) }}?d=mm&s=100" width="100" height="100" alt="">
+                </div>
 
-            <h2 class="uk-text-truncate">@@ account.name @@</h2>
-        </div>
+                <h2 class="uk-text-truncate">@@ account.name @@</h2>
+            </div>
 
 
             <div class="uk-grid" data-uk-margin>
@@ -54,6 +54,8 @@
                                 @lang('Leave the password field empty to keep your current password.')
                             </div>
                         </div>
+
+                        @trigger('cockpit.account.editview')
 
                         <div class="uk-form-row">
                             <button class="uk-button uk-button-large uk-button-primary uk-width-1-2">@lang('Save')</button>
