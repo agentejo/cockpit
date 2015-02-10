@@ -52,7 +52,7 @@
 
     <form class="uk-form" data-ng-submit="save()" data-ng-show="gallery">
 
-            <div class="uk-grid">
+            <div class="uk-grid" data-uk-grid-margin>
 
                 <div class="uk-width-medium-4-5">
 

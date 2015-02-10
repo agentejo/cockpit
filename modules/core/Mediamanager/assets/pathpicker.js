@@ -30,7 +30,7 @@
                     '</div>',
                     '</div>',
                     '<div class="uk-overflow-container uk-margin-top">',
-                        '<ul class="dir-view uk-grid uk-grid-width-1-5 uk-grid-small uk-clearfix"></ul>',
+                        '<ul class="dir-view uk-grid uk-grid-width-1-2 uk-grid-width-medium-1-5 uk-grid-small uk-clearfix"></ul>',
                     '</div>',
                     '<div class="uk-modal-buttons"><button class="media-select uk-button uk-button-large uk-button-primary" type="button">'+App.i18n.get('Select')+'</button> <button class="uk-button uk-button-large uk-modal-close" type="button">Cancel</button></div>',
                 '</div>',
@@ -121,7 +121,7 @@
             $this.btnOk.prop("disabled", !matchName($this.type, data.name));
         });
 
-        this.dirview.on("dblclick", "li", function(){
+        this.dirview.on("dblclick doubleTap", "li", function(){
             var data = $(this).blur().data();
 
             if (data.is_dir) {
