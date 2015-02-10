@@ -20,7 +20,7 @@
     },
 
     "autoload": {
-        "files": ["bootstrap.php"]
+        
     },
 
     "archive": {
