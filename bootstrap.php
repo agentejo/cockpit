@@ -63,6 +63,7 @@ function cockpit($module = null) {
             'sec-key'      => 'c3b40c4c-db44-s5h7-a814-b4931a15e5e1',
             'i18n'         => 'en',
             'database'     => [ "server" => "mongolite://".(COCKPIT_DIR."/storage/data"), "options" => ["db" => "cockpitdb"] ],
+            'memory'       => [ "server" => "redislite://".(COCKPIT_DIR."/storage/data/cockpit.memory.sqlite"), "options" => [] ],
 
             'paths'        => [
                 '#root'   => COCKPIT_DIR,
@@ -95,8 +96,8 @@ function cockpit($module = null) {
         });
 
         // key-value storage
-        $app->service('memory', function() use($app) {
-            $client = new RedisLite(sprintf("%s/cockpit.memory.sqlite", $app->path('data:')));
+        $app->service('memory', function() use($config) {
+            $client = new SimpleStorage\Client($config['memory']['server'], $config['memory']['options']);
             return $client;
         });
 

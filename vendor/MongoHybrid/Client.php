@@ -8,11 +8,11 @@ class Client {
 
     public function __construct($server, $options=[]) {
 
-        if(strpos($server, 'mongodb://')===0) {
+        if (strpos($server, 'mongodb://')===0) {
             $this->driver = new Mongo($server, $options);
         }
 
-        if(strpos($server, 'mongolite://')===0) {
+        if (strpos($server, 'mongolite://')===0) {
             $this->driver = new MongoLite($server, $options);
         }
     }
@@ -91,8 +91,7 @@ class Client {
 
     /**
      * Check if key exists
-     *  *
-
+     *
      * @param  string $collection @param  string $collection
      * @param  string $key
      */
@@ -132,8 +131,7 @@ class Client {
 
     /**
      * Add item to a value (right)
-     *  *
-
+     *
      * @param  string $collection @param  string $collection
      * @param  string $key
      * @param  mixed $value
@@ -152,8 +150,7 @@ class Client {
 
     /**
      * Add item to a value (left)
-     *  *
-
+     *
      * @param  string $collection @param  string $collection
      * @param  string $key
      * @param  mixed $value
@@ -185,11 +182,11 @@ class Client {
 
         $list = $this->getKey($collection, $key, []);
 
-        if($index < 0) {
+        if ($index < 0) {
             $index = count($list) - abs($index);
         }
 
-        if(isset($list[$index])){
+        if (isset($list[$index])){
             $list[$index] = $value;
             $this->setKey($collection, $key, $list);
 
@@ -211,7 +208,7 @@ class Client {
 
         $list = $this->getKey($collection, $key, []);
 
-        if($index < 0) {
+        if ($index < 0) {
             $index = count($list) - abs($index);
         }
 
@@ -330,7 +327,7 @@ class Client {
 
         $set = $this->getKey($collection, $key, []);
 
-        if(!count($set)) return 0;
+        if (!count($set)) return 0;
 
         $fields  = func_get_args();
         $removed = 0;
@@ -339,7 +336,7 @@ class Client {
 
             $field = $fields[$i];
 
-            if(isset($set[$field])){
+            if (isset($set[$field])){
                 unset($set[$field]);
                 $removed++;
             }

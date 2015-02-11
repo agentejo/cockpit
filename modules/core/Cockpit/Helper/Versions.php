@@ -9,7 +9,12 @@ class Versions extends \Lime\Helper {
 
     public function initialize(){
 
-        $this->storage = new \RedisLite(sprintf("%s/cockpit.versions.sqlite", $this->app->path('data:')));
+        $config = array_merge([
+          'server'  => sprintf("redislite://%s/cockpit.versions.sqlite", $this->app->path('data:')),
+          'options' => []
+        ], $this->app->retrieve('app.config/cockpit.versions', []));
+
+        $this->storage = new \SimpleStorage\Client($config['server'], $config['options']);
     }
 
 
