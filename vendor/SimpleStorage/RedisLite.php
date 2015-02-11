@@ -8,7 +8,7 @@ class RedisLite {
 
     public function __construct($server, $options=[]) {
 
-        $this->client = new \RedisLite(str_replace('redislite://', '', $server));
+        $this->client = new \RedisLite(str_replace('redislite://', '', $server), $options);
     }
 
     public function __call($method, $args) {

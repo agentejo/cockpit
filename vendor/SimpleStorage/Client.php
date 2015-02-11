@@ -15,10 +15,6 @@ class Client {
         if (strpos($server, 'redislite://')===0) {
             $this->driver = new RedisLite($server, $options);
         }
-
-        if (strpos($server, 'file://')===0) {
-            $this->driver = new File($server, $options);
-        }
     }
 
 
