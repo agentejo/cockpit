@@ -17,12 +17,12 @@
             <span ng-show="table.name">@@ table.name @@</span>
         </span>
 
-        <ul class="uk-navbar-nav">
+        <ul class="uk-navbar-nav" data-ng-show="table._id">
             <li><a class="uk-text-danger" ng-click="emptytable()" title="@lang('Empty table')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-trash-o"></i></a></li>
-            <li data-ng-show="table._id"><a title="@lang('Add entry')" data-uk-tooltip="{pos:'bottom'}" ng-click="edit({})"><i class="uk-icon-plus-circle"></i></a></li>
+            <li><a title="@lang('Add entry')" data-uk-tooltip="{pos:'bottom'}" ng-click="edit({})"><i class="uk-icon-plus-circle"></i></a></li>
         </ul>
 
-        <div class="uk-navbar-flip">
+        <div class="uk-navbar-flip" data-ng-show="table._id">
             <ul class="uk-navbar-nav">
                 <li>
                     <a href="@route('/api/datastore/export/')@@ table._id @@" download="@@ table.name @@.json" title="@lang('Export data')" data-uk-tooltip="{pos:'bottom'}">
