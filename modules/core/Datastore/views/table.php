@@ -8,18 +8,38 @@
 
 <div data-ng-controller="table" data-id="{{ $id }}" ng-cloak>
 
-    <h1>
-        <a href="@route("/datastore")">@lang('Datastore')</a> /
-        <span class="uk-text-muted" ng-show="!table.name">@lang('Table')</span>
-        <span ng-show="table.name">@@ table.name @@</span>
-    </h1>
+
+    <nav class="uk-navbar uk-margin-bottom">
+
+        <span class="uk-navbar-brand">
+            <a href="@route("/datastore")">@lang('Datastore')</a> /
+            <span class="uk-text-muted" ng-show="!table.name">@lang('Table')</span>
+            <span ng-show="table.name">@@ table.name @@</span>
+        </span>
+
+        <ul class="uk-navbar-nav">
+            <li><a class="uk-text-danger" ng-click="emptytable()" title="@lang('Empty table')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-trash-o"></i></a></li>
+            <li data-ng-show="table._id"><a title="@lang('Add entry')" data-uk-tooltip="{pos:'bottom'}" ng-click="edit({})"><i class="uk-icon-plus-circle"></i></a></li>
+        </ul>
+
+        <div class="uk-navbar-flip">
+            <ul class="uk-navbar-nav">
+                <li>
+                    <a href="@route('/api/datastore/export/')@@ table._id @@" download="@@ table.name @@.json" title="@lang('Export data')" data-uk-tooltip="{pos:'bottom'}">
+                        <i class="uk-icon-share-alt"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    </nav>
 
 
     <div class="uk-form" data-ng-show="table">
 
-        <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-grid">
 
-            <div class="uk-width-medium-4-5">
+            <div class="uk-width-1-1">
 
                 <div class="app-panel">
 
@@ -35,7 +55,6 @@
 
                         <div class="uk-form-row">
                             <button class="uk-button uk-button-primary">@lang('Save')</button>
-                            <button type="button" class="uk-button uk-button-success" data-ng-show="table._id" title="@lang('Add entry')" data-uk-tooltip="{pos:'bottom'}" ng-click="edit({})"><i class="uk-icon-plus-circle"></i></button>
                         </div>
                     </form>
 
@@ -80,8 +99,15 @@
                                     </td>
                                     <td>@@ entry.modified | fmtdate:'d M, Y H:i' @@</td>
                                     <td class="uk-text-right">
-                                        <a data-ng-click="edit(entry)" title="@lang('Edit entry')"><i class="uk-icon-pencil"></i></a>
-                                        <a class="uk-text-danger" data-ng-click="remove($index, entry._id)" title="@lang('Delete entry')"><i class="uk-icon-trash-o"></i></a>
+                                        <div data-uk-dropdown>
+                                            <i class="uk-icon-bars"></i>
+                                            <div class="uk-dropdown uk-dropdown-flip uk-text-left">
+                                                <ul class="uk-nav uk-nav-dropdown uk-nav-parent-icon">
+                                                    <li><a href="#" data-ng-click="edit(entry)"><i class="uk-icon-pencil"></i> @lang('Edit entry')</a></li>
+                                                    <li><a href="#" class="uk-text-danger" data-ng-click="remove($index, entry._id)"><i class="uk-icon-trash-o"></i> @lang('Delete entry')</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -96,17 +122,6 @@
                 </div>
             </div>
 
-            <div class="uk-width-medium-1-5">
-                <ul class="uk-nav uk-nav-side" ng-show="table._id">
-                    <li class="uk-nav-header">@lang('Actions')</li>
-                    <li>
-                        <a href="@route('/api/datastore/export/')@@ table._id @@" download="@@ table.name @@.json">
-                            <i class="uk-icon-share-alt"></i> @lang('Export data')
-                        </a>
-                    </li>
-                    <li><a class="uk-text-danger" ng-click="emptytable()"><i class="uk-icon-trash-o"></i> @lang('Empty table')</a></li>
-                </ul>
-            </div>
         </div>
     </div>
 </div>
