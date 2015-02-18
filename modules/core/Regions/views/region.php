@@ -21,9 +21,18 @@
                 <div data-ng-show="versions.length">
                     <h3 class="uk-panel-title">@lang('Versions')</h3>
 
-                    <ul class="uk-nav uk-nav-offcanvas" data-ng-show="versions.length">
-                        <li data-ng-repeat="version in versions">
-                            <a href="#v-@@ version.uid @@" data-ng-click="restoreVersion(version.uid)" title="@lang('Restore this version')" data-uk-tooltip="{pos:'right'}"><i class="uk-icon-clock-o"></i> @@ version.time | fmtdate:'d M, Y H:i:s' @@</a>
+                    <ul class="uk-list uk-list-space" data-ng-show="versions.length">
+                        <li class="uk-flex" data-ng-repeat="version in versions">
+
+                            <div><i class="uk-icon-clock-o uk-margin-small-right"></i></div>
+
+                            <div class="uk-flex-item-1">
+                                <strong> @@ version.time | fmtdate:'d M, Y H:i:s' @@</strong>
+                                <div class="uk-text-small">
+                                    <a class="uk-link uk-text-muted" href="#v-@@ version.uid @@" data-ng-click="restoreVersion(version.uid)">@lang('Restore this version')</a>
+                                </div>
+                            </div>
+
                         </li>
                     </ul>
                     <br>
