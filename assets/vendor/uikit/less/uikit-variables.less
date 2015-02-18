@@ -30,7 +30,8 @@
 @datepicker-table-active-background:            #00a8e6;
 @datepicker-table-active-color:                 #fff;
 @datepicker-table-muted-color:                  #999;
-@dotnav-margin-left:                            15px;
+@dotnav-margin-horizontal:                      15px;
+@dotnav-margin-vertical:                        @dotnav-margin-horizontal;
 @dotnav-width:                                  20px;
 @dotnav-height:                                 @dotnav-width;
 @dotnav-background:                             rgba(50,50,50,0.1);
@@ -41,7 +42,6 @@
 @dotnav-contrast-hover-background:              rgba(255,255,255,0.7);
 @dotnav-contrast-onclick-background:            rgba(255,255,255,0.9);
 @dotnav-contrast-active-background:             rgba(255,255,255,0.9);
-@dotnav-vertical-margin-top:                    @dotnav-margin-left;
 @form-advanced-size:                          14px;
 @form-advanced-border:                        #aaa;
 @form-advanced-border-width:                  1px;
@@ -627,11 +627,12 @@
 @progress-bar-success-background:               #8cc14c;
 @progress-bar-warning-background:               #faa732;
 @progress-bar-danger-background:                #da314b;
-@subnav-font-size:                              1rem;
-@subnav-margin:                                 10px;
-@subnav-color:                                  #07D;
-@subnav-hover-color:                            #059;
-@subnav-disabled-color:                         #999;
+@subnav-margin-horizontal:                      10px;
+@subnav-margin-vertical:                        @subnav-margin-horizontal;
+@subnav-color:                                  #444;
+@subnav-hover-color:                            #07D;
+@subnav-hover-text-decoration:                  none;
+@subnav-active-color:                           #07D;
 @subnav-line-border-height:                     10px;
 @subnav-line-border:                            #ddd;
 @subnav-line-border-width:                      1px;
@@ -641,6 +642,7 @@
 @subnav-pill-hover-color:                       #444;
 @subnav-pill-active-background:                 #00a8e6;
 @subnav-pill-active-color:                      #fff;
+@subnav-disabled-color:                         #999;
 @tab-border:                                    #ddd;
 @tab-border-width:                              1px;
 @tab-padding-horizontal:                        12px;
@@ -689,6 +691,12 @@
 @thumbnail-small-width:                         200px;
 @thumbnail-medium-width:                        300px;
 @thumbnail-large-width:                         400px;
+@thumbnav-margin-horizontal:                    10px;
+@thumbnav-margin-vertical:                      @thumbnav-margin-horizontal;
+@thumbnav-background:                           #fff;
+@thumbnav-opacity:                              0.7;
+@thumbnav-hover-opacity:                        1;
+@thumbnav-active-opacity:                       1;
 @tooltip-z-index:                               1030;
 @tooltip-max-width:                             200px;
 @tooltip-padding-vertical:                      5px;
