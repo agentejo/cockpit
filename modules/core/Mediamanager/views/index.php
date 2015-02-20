@@ -112,7 +112,7 @@
                     </div>
                     <div class="app-panel-box docked-bottom uk-text-center">
                         <div class="uk-text-truncate mm-caption" title="@@ folder.name @@"><a href="#@@ folder.path @@" ng-click="updatepath(folder.path)">@@ folder.name @@</a></div>
-                        <ul class="uk-subnav uk-subnav-line mm-actions">
+                        <ul class="uk-subnav uk-subnav-line uk-flex-center mm-actions">
                             <li><a ng-click="addBookmark(folder)" title="@lang('Bookmark folder')"><i class="uk-icon-star"></i></a></li>
                             <li><a ng-click="action('rename', folder)" title="@lang('Rename folder')"><i class="uk-icon-text-width"></i></a></li>
                             <li><a ng-click="action('remove', folder)" title="@lang('Delete folder')"><i class="uk-icon-minus-circle"></i></a></li>
@@ -128,7 +128,7 @@
                     </div>
                     <div class="app-panel-box docked-bottom uk-text-center">
                         <div class="uk-text-truncate mm-caption" title="@@ file.name @@"><a ng-click="open(file)">@@ file.name @@</a></div>
-                        <ul class="uk-subnav uk-subnav-line mm-actions">
+                        <ul class="uk-subnav uk-subnav-line uk-flex-center mm-actions">
                             <li><a ng-click="addBookmark(file)" title="@lang('Bookmark file')"><i class="uk-icon-star"></i></a></li>
                             <li><a ng-click="action('rename', file)" title="@lang('Rename file')"><i class="uk-icon-text-width"></i></a></li>
                             <li><a ng-click="action('download', file)" title="@lang('Download file')"><i class="uk-icon-paperclip"></i></a></li>
