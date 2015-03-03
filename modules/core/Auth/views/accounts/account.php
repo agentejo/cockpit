@@ -13,7 +13,7 @@
 
             <div class="uk-panel app-panel-box docked uk-text-center">
                 <div class="uk-thumbnail uk-rounded">
-                    <img src="http://www.gravatar.com/avatar/{{ md5(@$account['email']) }}?d=mm&s=100" width="100" height="100" alt="">
+                    <img src="//www.gravatar.com/avatar/{{ md5(@$account['email']) }}?d=mm&s=100" width="100" height="100" alt="">
                 </div>
 
                 <h2 class="uk-text-truncate">@@ account.name @@</h2>

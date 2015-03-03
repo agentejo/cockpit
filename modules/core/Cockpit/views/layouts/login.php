@@ -30,7 +30,7 @@
                                         if (data && data.success) {
 
                                             form.hide();
-                                            profile.find("img").attr("src", "http://www.gravatar.com/avatar/"+data.avatar+"?d=mm&s=60");
+                                            profile.find("img").attr("src", "//www.gravatar.com/avatar/"+data.avatar+"?d=mm&s=60");
                                             profile.find("span").html(data.user.name);
                                             profile.removeClass('uk-hidden');
 

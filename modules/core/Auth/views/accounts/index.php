@@ -26,7 +26,7 @@
             <div class="app-panel app-panel-box uk-text-center">
 
                 <div class="uk-margin">
-                    <img class="uk-rounded" ng-src="http://www.gravatar.com/avatar/@@ account.md5email @@?d=mm&s=60" width="60" height="60" alt="gravatar">
+                    <img class="uk-rounded" ng-src="//www.gravatar.com/avatar/@@ account.md5email @@?d=mm&s=60" width="60" height="60" alt="gravatar">
                 </div>
 
                 <strong>@@ account.user @@</strong>

@@ -13,7 +13,7 @@
             <li class="uk-margin-bottom">
                 <div class="uk-grid uk-grid-divider">
                     <div class="uk-width-medium-1-5 uk-text-center">
-                        <img class="uk-rounded" src="http://www.gravatar.com/avatar/{{ md5($log['uid']['email']) }}?d=mm&s=40" width="40" height="40" alt="avatar">
+                        <img class="uk-rounded" src="//www.gravatar.com/avatar/{{ md5($log['uid']['email']) }}?d=mm&s=40" width="40" height="40" alt="avatar">
                     </div>
                     <div class="uk-width-medium-4-5">
                         <time class="uk-text-small uk-text-muted">{{ date("d.m.y H:i", $log["time"]) }}</time>
