@@ -65,7 +65,7 @@ $this->module("datastore")->extend([
         $data["modified"] = time();
 
         if (!isset($data["_id"])){
-            $data["created"] = $datastore["modified"];
+            $data["created"] = $data["modified"];
         }
 
         return $this->app->db->save("datastore/{$collection}", $data);
