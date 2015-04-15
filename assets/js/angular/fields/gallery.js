@@ -83,13 +83,13 @@
                         });
                     };
 
-                    scope.updateTitle = function(img) {
+                    scope.updateTitle = function(index) {
 
-                        var title = prompt(App.i18n.get("Title"), img.title);
+                        var title = prompt(App.i18n.get("Title"), scope.images[index].title);
 
                         if (title!==null) {
 
-                            img.title = title;
+                            scope.images[index].title = title;
                         }
                     };
 

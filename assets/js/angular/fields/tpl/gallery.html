@@ -5,7 +5,7 @@
         <li class="uk-grid-margin" stype="position:relative;" ng-repeat="img in images">
             <div class="uk-thumbnail media-cover" style="min-height:180px;"><i class="uk-icon-file-o" media-preview="{{ img.path }}"></i></div>
             <div class="gallery-list-actions uk-button-group">
-                <button class="uk-button uk-button-small" type="button" ng-click="updateTitle(img)"><i class="uk-icon-pencil"></i></button>
+                <button class="uk-button uk-button-small" type="button" ng-click="updateTitle($index)"><i class="uk-icon-pencil"></i></button>
                 <button class="uk-button uk-button-small uk-button-danger" type="button" ng-click="removeImage($index)"><i class="uk-icon-trash-o"></i></button></div>
             </div>
         </li>
