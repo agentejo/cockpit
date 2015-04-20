@@ -14,6 +14,7 @@
         right: 10px;
     }
 
+    .group-actions li { margin: 0; }
     .group-actions, .group-actions a { font-size: 11px; }
 
     .group-list li:hover .group-actions a { color: #666; }
@@ -50,19 +51,19 @@
             <button class="uk-button uk-button-success" data-ng-click="addOrEditGroup()" title="@lang('Add group')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus"></i></button>
             <button class="uk-button uk-button-primary" data-ng-click="save()">@lang('Save')</button>
         </div>
-        <div class="uk-width-medium-3-4">   
-            
+        <div class="uk-width-medium-3-4">
+
             <div class="uk-margin-large-bottom">
                 <ul class="uk-tab" data-uk-tab="{connect:'#group-sections'}">
                     <li class="uk-active"><a>@lang("Access")</a></li>
                     <li><a>@lang("Settings")</a></li>
                 </ul>
             </div>
-            
+
             <div id="group-sections" class="uk-switcher uk-margin">
                 <div>
                     <div class="uk-margin" data-ng-repeat="(resource, actions) in acl[active]">
-                        
+
                         <div class="uk-grid uk-grid-divider">
                             <div class="uk-width-medium-1-3 uk-text-small">
                                 <strong><i class="uk-icon-cog"></i> @@ resource @@</strong>
@@ -78,8 +79,8 @@
                                 </table>
                             </div>
                         </div>
-                        
-                    </div>                    
+
+                    </div>
                 </div>
                 <div class="uk-form">
                     <div class="uk-form-row">

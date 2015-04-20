@@ -18,6 +18,7 @@
             right: 10px;
         }
 
+        .group-actions li { margin: 0; }
         .group-actions a { font-size: 11px; }
 
         #groups-list li.uk-active .group-actions,
