@@ -7,7 +7,7 @@
 <div data-ng-controller="datastore" ng-cloak>
 
     <nav class="uk-navbar uk-margin-large-bottom">
-        <span class="uk-hidden-small uk-navbar-brand">@lang('Datastore')</span>
+        <span class="uk-hidden-small uk-navbar-brand"><a href="@route('/settingspage')">@lang('Settings')</a> / @lang('Datastore')</span>
         <div class="uk-hidden-small uk-navbar-content" data-ng-show="tables && tables.length">
             <form class="uk-form uk-margin-remove uk-display-inline-block">
                 <div class="uk-form-icon">
