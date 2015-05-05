@@ -475,7 +475,7 @@ class App implements \ArrayAccess {
             $file = str_replace(DIRECTORY_SEPARATOR, '/', $file);
             $root = str_replace(DIRECTORY_SEPARATOR, '/', $this['docs_root']);
 
-            $url = '/'.ltrim(str_replace($root, '', $file), '/');
+            $url = $this['base_url'] . '/' . ltrim(str_replace($root, '', $file), '/');
         }
 
         /*
