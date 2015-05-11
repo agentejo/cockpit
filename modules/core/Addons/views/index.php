@@ -14,7 +14,14 @@
                 <table class="uk-table" ng-show="addons.length">
                     <tbody>
                         <tr ng-repeat="addon in addons">
-                            <td>@@ addon.name @@</td>
+                            <td class="uk-text-bold">@@ addon.name @@</td>
+                            <td>@@ addon.description @@</td>
+                            <td>
+								<div ng-if="addon.homepage"><a href="@@ addon.homepage @@" target="_blank">@@ addon.homepage @@</a></div>
+							</td>
+                            <td style="width:5%;text-align:center;">
+								<div ng-if="addon.repo"><a href="@@ addon.repo @@" target="_blank"><i class="uk-icon-github uk-icon-hover"></i></a></div>
+							</td>
                             <td style="width:10%;text-align:right;">@@ addon.version @@</td>
                         </tr>
                     </tbody>
