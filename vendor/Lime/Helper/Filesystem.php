@@ -44,25 +44,32 @@ class Filesystem extends \Lime\Helper {
     public function read() {
 
         $args = func_get_args();
-
-        if(!count($args)) {
+        if ( ! count($args) )
+        {
             return false;
         }
-
+        
+        $alias   = $args[0];
         $args[0] = $this->app->path($args[0]);
-
+        if ( ! $args[0] ) {
+            throw new \Exception("Unable to read file. Incorrect path alias: {$alias}.");
+        }
+        
         return call_user_func_array('file_get_contents', $args);
     }
 
     public function write() {
 
         $args = func_get_args();
-
-        if(!count($args)) {
+        if ( ! count($args) ) {
             return false;
         }
-
+        
+        $alias   = $args[0];
         $args[0] = $this->app->path($args[0]);
+        if ( ! $args[0] ) {
+            throw new \Exception("Unable to write file. Incorrect path alias: {$alias}.");
+        }
 
         return call_user_func_array('file_put_contents', $args);
     }
