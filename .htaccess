@@ -1,5 +1,5 @@
 # Deny access to database files
-<Files ~ "\.(sqlite|sdb|s3db|db)$">
+<Files ~ "\.(sqlite|SQLITE|sdb|SDB|s3db|S3DB|db|DB)$">
   Deny from all
 </Files>
 
