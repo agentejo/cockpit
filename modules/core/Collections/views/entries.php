@@ -114,7 +114,7 @@
 
                         <ul class="uk-nav uk-nav-side">
                             <li class="uk-nav-header">@lang('Actions')</li>
-                            <li><a href="@route('/collections/entry/'.$collection['name'])"><i class="uk-icon-justify uk-icon-plus"></i> @lang('Create entry')</a></li>
+                            <li><a class="uk-text-primary" href="@route('/collections/entry/'.$collection['name'])"><i class="uk-icon-justify uk-icon-plus"></i> @lang('Create entry')</a></li>
                             <li><a href="@route('/collections/export/'.$collection['name'])" download="{{ $collection['name'] }}.json"><i class="uk-icon-justify uk-icon-download"></i> @lang('Export data')</a></li>
                         </ul>
 
