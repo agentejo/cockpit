@@ -253,16 +253,16 @@
                             $this.uploadprogress.classList.add('uk-hidden');
 
                             if (response && response.failed && response.failed.length) {
-                                App.UI.notify("File(s) failed to uploaded.", "danger");
+                                App.ui.notify("File(s) failed to uploaded.", "danger");
                             }
 
                             if (response && response.uploaded && response.uploaded.length) {
-                                App.UI.notify("File(s) uploaded.", "success");
+                                App.ui.notify("File(s) uploaded.", "success");
                                 $this.loadPath();
                             }
 
                             if (!response) {
-                                App.UI.notify("Soething went wrong.", "danger");
+                                App.ui.notify("Soething went wrong.", "danger");
                             }
 
                         }
@@ -311,13 +311,13 @@
                 this.tags.picoedit.open(file.path);
 
             } else {
-                App.UI.notify("Filetype nor supported");
+                App.ui.notify("Filetype nor supported");
             }
         }
 
         refresh() {
             this.loadPath().then(function(){
-                App.UI.notify('Folder reloaded');
+                App.ui.notify('Folder reloaded');
             });
         }
 
@@ -382,7 +382,7 @@
 
             item = e.item.folder || e.item.file;
 
-            App.UI.prompt("Please enter a name:", item.name, function(name){
+            App.ui.prompt("Please enter a name:", item.name, function(name){
 
 
                 if (name!=item.name && name.trim()) {
@@ -408,9 +408,9 @@
                 if (resp) {
 
                     if (resp.success) {
-                        App.UI.notify("Archive extracted!", "success");
+                        App.ui.notify("Archive extracted!", "success");
                     } else {
-                        App.UI.notify("Extracting archive failed!", "error");
+                        App.ui.notify("Extracting archive failed!", "error");
                     }
                 }
 
@@ -425,7 +425,7 @@
 
             item = e.item.folder || e.item.file;
 
-            App.UI.confirm("Are you sure?", function() {
+            App.ui.confirm("Are you sure?", function() {
 
                 requestapi({"cmd":"removefiles", "paths": item.path}, function(){
 
@@ -433,7 +433,7 @@
 
                     $this.data[item.is_file ? "files":"folders"].splice(index, 1);
 
-                    App.UI.notify("Item(s) deleted", "success");
+                    App.ui.notify("Item(s) deleted", "success");
 
                     $this.update();
                 });
@@ -446,11 +446,11 @@
 
             if (paths.length) {
 
-                App.UI.confirm("Are you sure?", function() {
+                App.ui.confirm("Are you sure?", function() {
 
                     requestapi({"cmd":"removefiles", "paths": paths}, function(){
                         $this.loadPath();
-                        App.UI.notify("File(s) deleted", "success");
+                        App.ui.notify("File(s) deleted", "success");
                     });
                 });
             }
@@ -458,7 +458,7 @@
 
         createfolder() {
 
-            App.UI.prompt("Please enter a folder name:", "", function(name){
+            App.ui.prompt("Please enter a folder name:", "", function(name){
 
                 if (name.trim()) {
                     requestapi({"cmd":"createfolder", "path": $this.currentpath, "name":name}, function(){
@@ -470,7 +470,7 @@
 
         createfile() {
 
-            App.UI.prompt("Please enter a file name:", "", function(name){
+            App.ui.prompt("Please enter a file name:", "", function(name){
 
                 if (name.trim()) {
                     requestapi({"cmd":"createfile", "path": $this.currentpath, "name":name}, function(){

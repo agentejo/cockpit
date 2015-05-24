@@ -122,7 +122,7 @@
         }
     };
 
-    App.UI = {
+    App.ui = {
 
         notify: function(note, type, pos){
 

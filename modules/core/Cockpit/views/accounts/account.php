@@ -139,7 +139,7 @@
 
             App.request("/accounts/save", {"account": this.account}).then(function(data){
                 $this.account = data;
-                App.UI.notify("Account saved", "success");
+                App.ui.notify("Account saved", "success");
             });
 
             return false;

@@ -172,11 +172,11 @@
             entry = e.item.entry
             idx   = e.item.idx;
 
-            App.UI.confirm("Are you sure?", function() {
+            App.ui.confirm("Are you sure?", function() {
 
                 App.callmodule('collections:remove', [this.collection.name, {'_id':entry._id}]).then(function(data) {
 
-                    App.UI.notify("Entry removed", "success");
+                    App.ui.notify("Entry removed", "success");
 
                     $this.entries.splice(idx, 1);
 
@@ -192,7 +192,7 @@
 
             if (this.selected.length) {
 
-                App.UI.confirm("Are you sure?", function() {
+                App.ui.confirm("Are you sure?", function() {
 
                     var promises = [];
 
@@ -208,7 +208,7 @@
                     });
 
                     Promise.all(promises).then(function(){
-                        App.UI.notify("Entries removed", "success");
+                        App.ui.notify("Entries removed", "success");
                     });
 
                     this.update();

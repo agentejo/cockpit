@@ -74,7 +74,7 @@
 
                 if (data.result) {
 
-                    App.UI.notify("Saving successfull", "success");
+                    App.ui.notify("Saving successfull", "success");
 
                     $this.entry = data.result;
 
@@ -88,7 +88,7 @@
                     $this.update();
 
                 } else {
-                    App.UI.notify("Saving failed.", "danger");
+                    App.ui.notify("Saving failed.", "danger");
                 }
             });
         }

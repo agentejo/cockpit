@@ -69,15 +69,15 @@
             var account = evt.item.account;
 
             if (account._id == this.current) {
-                App.UI.notify("You can't delete yourself", "danger");
+                App.ui.notify("You can't delete yourself", "danger");
                 return;
             }
 
-            App.UI.confirm("Are you sure?", function() {
+            App.ui.confirm("Are you sure?", function() {
 
                 App.request('/accounts/remove', { "account": account }).then(function(data){
 
-                    App.UI.notify("Account removed", "success");
+                    App.ui.notify("Account removed", "success");
                     $this.accounts.splice(evt.item.$index, 1);
                     $this.update();
                 });

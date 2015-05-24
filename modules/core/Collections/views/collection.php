@@ -268,7 +268,7 @@
 
                 if (data.result) {
 
-                    App.UI.notify("Saving successfull", "success");
+                    App.ui.notify("Saving successfull", "success");
                     $this.collection = data.result;
 
                     stringifyFieldMeta();
@@ -277,7 +277,7 @@
 
                 } else {
 
-                    App.UI.notify("Saving failed.", "danger");
+                    App.ui.notify("Saving failed.", "danger");
                 }
             });
         }

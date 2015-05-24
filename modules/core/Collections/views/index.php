@@ -120,11 +120,11 @@
 
             collection = e.item.collection;
 
-            App.UI.confirm("Are you sure?", function() {
+            App.ui.confirm("Are you sure?", function() {
 
                 App.callmodule('collections:removeCollection', collection).then(function(data) {
 
-                    App.UI.notify("Collection removed", "success");
+                    App.ui.notify("Collection removed", "success");
 
                     delete $this.collections[collection];
 

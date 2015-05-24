@@ -79,7 +79,7 @@
 
             requestapi({"cmd":"writefile", "path": this.path, "content":editor.getValue()}, function(status){
 
-                App.UI.notify("File saved", "success");
+                App.ui.notify("File saved", "success");
 
             }, "text");
         }
