@@ -109,6 +109,12 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <div class="uk margin" if="{ loadmore }">
+                        <a class="uk-button uk-width-1-1" onclick="{ load }">
+                            @lang('Load more..')
+                        </a>
+                    </div>
                 </div>
                 <div class="uk-width-medium-1-4 uk-form">
 
@@ -141,6 +147,7 @@
 
         this.ready      = false;
         this.collection = {{ json_encode($collection) }};
+        this.loadmore   = false;
         this.entries    = [];
         this.fieldsidx  = {};
         this.fields     = this.collection.fields.filter(function(field){
@@ -224,7 +231,9 @@
 
         load() {
 
-            var options = {sort:this.sort};
+            var limit = 25;
+
+            var options = {sort:this.sort, limit: limit, skip: this.entries.length || 0 };
 
             if (this.filter) {
                 options.filter = this.filter;
@@ -232,10 +241,12 @@
 
             return App.callmodule('collections:find', [this.collection.name, options]).then(function(data){
 
-                this.entries  = data.result;
-                this.ready    = true;
+                this.entries = this.entries.concat(data.result);
 
-                $this.checkselected();
+                this.ready    = true;
+                this.loadmore = data.result.length && data.result.length == limit;
+
+                this.checkselected();
 
                 this.update();
 
@@ -256,6 +267,8 @@
             } else {
                 this.sort[field] = this.sort[field] == 1 ? -1:1;
             }
+
+            this.entries = [];
 
             this.load();
         }
@@ -337,6 +350,7 @@
 
 
             if (this.filter || load) {
+                this.entries = [];
                 this.load();
             }
         }
