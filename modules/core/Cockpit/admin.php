@@ -87,6 +87,11 @@ $app['app.assets.backend'] = new ArrayObject(array_merge($app['app.assets.base']
 
 ], $app->retrieve('app.config/app.assets.backend', [])));
 
+// load custom css style
+if ($app->path('config:style.css')) {
+    $app['app.assets.backend']->append('config:style.css');
+}
+
 
 /**
  * web components

@@ -109,10 +109,11 @@
 
             App.callmodule('collections:collections', true).then(function(data) {
 
-                $this.collections = data.result;
-                $this.ready  = true;
-                $this.update();
-            });
+                this.collections = data.result;
+                this.ready  = true;
+                this.update();
+
+            }.bind(this));
         });
 
         remove(e, collection) {
