@@ -6,10 +6,10 @@
 .settings
 .idea
 /storage/*
-!/storage/cache/index.html
-!/storage/data/index.html
-!/storage/data/.htaccess
-!/storage/tmp/index.html
-!/storage/uploads/index.html
 /config/*
 /modules/addons/*/*
+
+!.gitignore
+!.gitkeep
+!/storage/*/index.html
+!/storage/*/.htaccess
