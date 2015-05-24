@@ -64,6 +64,8 @@
                                             <li class="uk-nav-divider"></li>
                                             <li><a href="@route('/collections/collection')/{ collection }">@lang('Edit')</a></li>
                                             <li><a onclick="{ parent.remove }">@lang('Delete')</a></li>
+                                            <li class="uk-nav-divider"></li>
+                                            <li class="uk-text-truncate"><a href="@route('/collections/export')/{ meta.name }" download="{ meta.name }.json">@lang('Export entries')</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -84,10 +86,8 @@
 
                 <div class="uk-margin">
 
-                    <ul class="uk-nav uk-nav-side">
-                        <li class="uk-nav-header">@lang('Actions')</li>
-                        <li><a class="uk-text-primary" href="@route('/collections/collection')"><i class="uk-icon-justify uk-icon-plus"></i> @lang('Create a Collection')</a></li>
-                    </ul>
+                    <a class="uk-button uk-button-large uk-button-primary uk-width-1-1" href="@route('/collections/collection')">@lang('Create a Collection')</a>
+
 
                 </div>
 

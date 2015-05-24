@@ -9,6 +9,8 @@
                 <ul class="uk-nav uk-nav-dropdown">
                     <li class="uk-nav-header">@lang('Collections')</li>
                     <li><a href="@route('/collections/collection/'.$collection['name'])">@lang('Edit')</a></li>
+                    <li class="uk-nav-divider"></li>
+                    <li class="uk-text-truncate"><a href="@route('/collections/export/'.$collection['name'])" download="{{ $collection['name'] }}.json">@lang('Export entries')</a></li>
                 </ul>
             </div>
 
@@ -112,11 +114,7 @@
 
                     <div class="uk-margin">
 
-                        <ul class="uk-nav uk-nav-side">
-                            <li class="uk-nav-header">@lang('Actions')</li>
-                            <li><a class="uk-text-primary" href="@route('/collections/entry/'.$collection['name'])"><i class="uk-icon-justify uk-icon-plus"></i> @lang('Create entry')</a></li>
-                            <li><a href="@route('/collections/export/'.$collection['name'])" download="{{ $collection['name'] }}.json"><i class="uk-icon-justify uk-icon-download"></i> @lang('Export data')</a></li>
-                        </ul>
+                        <a class="uk-button uk-button-large uk-button-primary uk-width-1-1" href="@route('/collections/entry/'.$collection['name'])">@lang('Add entry')</a>
 
                     </div>
 
