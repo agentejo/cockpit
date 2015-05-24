@@ -58,11 +58,19 @@ class Filesystem extends \Lime\Helper {
 
         $args = func_get_args();
 
-        if(!count($args)) {
+        if (!count($args)) {
             return false;
         }
 
-        $args[0] = $this->app->path($args[0]);
+        if (strpos($args[0], ':') !== false) {
+            list($namespace, $additional) = explode(":",$args[0], 2);
+
+            if (!$this->app->path("{$namespace}:")) {
+                return false;
+            }
+
+            $args[0] = $this->app->path("{$namespace}:").$additional;
+        }
 
         return call_user_func_array('file_put_contents', $args);
     }

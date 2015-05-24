@@ -1,229 +1,296 @@
-@start('header')
+<div>
+    <ul class="uk-breadcrumb">
+        <li><a href="@route('/collections')">@lang('Collections')</a></li>
+        <li class="uk-active"><span>@lang('Collection')</span></li>
+    </ul>
+</div>
 
-    {{ $app->assets(['collections:assets/collections.js','collections:assets/js/collection.js'], $app['cockpit/version']) }}
-    {{ $app->assets(['assets:vendor/uikit/js/components/nestable.min.js'], $app['cockpit/version']) }}
+<div class="uk-margin-large-top" riot-view>
 
-    @trigger('cockpit.content.fields.sources')
+    <form class="uk-form" onsubmit="{ submit }">
 
-@end('header')
+        <div class="uk-grid uk-grid-small">
 
-<div data-ng-controller="collection" data-id="{{ $id }}" ng-cloak>
+            <div class="uk-width-1-2">
+                <input class="uk-width-1-1 uk-form-large" type="text" name="name" bind="collection.name" placeholder="@lang('Name')" required>
+            </div>
 
-    <h1>
-        <a href="@route("/collections")">@lang('Collections')</a> /
-        <span class="uk-text-muted" ng-show="!collection.name">@lang('Collection')</span>
-        <span ng-show="collection.name">@@ collection.name @@</span>
-    </h1>
+            <div class="uk-width-1-2">
+                <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="collection.label" placeholder="@lang('Label')">
+            </div>
 
-    <form class="uk-form" data-ng-submit="save()" data-ng-show="collection">
+            <div class="uk-width-1-1 uk-grid-margin">
+                <textarea class="uk-width-1-1 uk-form-large" name="description" bind="collection.description" placeholder="@lang('Description')"></textarea>
+            </div>
 
-        <div class="uk-grid">
+        </div>
 
-            <div class="uk-width-3-4">
+        <div class="uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ !collection.fields.length && !reorder }">
 
-                    <div class="uk-form-row">
-                        <input class="uk-width-1-1 uk-form-large" type="text" placeholder="@lang('Name')" data-ng-model="collection.name" required>
-                        <div class="uk-margin-top">
-                            <input class="uk-width-1-1 uk-form-blank uk-text-muted" type="text" data-ng-model="collection.slug" app-slug="collection.name" placeholder="@lang('Slug...')" title="slug" data-uk-tooltip="{pos:'left'}">
-                        </div>
-                    </div>
+            <div class="uk-animation-fade">
 
-                    <div class="uk-form-row uk-margin uk-text-center" data-ng-show="!collection.fields || !collection.fields.length">
-                            <div class="app-panel">
-                                <h2>@lang('Fields')</h2>
-                                <p>
-                                    @lang('It seems you don\'t have any fields created.')
-                                </p>
-                            <button data-ng-click="addfield()" type="button" class="uk-button uk-button-success uk-button-large">@lang('Add field')</button>
-                        </div>
-                    </div>
+                <p class="uk-text-xlarge">
+                    <i class="uk-icon-list-alt"></i>
+                </p>
 
-                    <div class="uk-form-row uk-margin" data-ng-show="collection.fields && collection.fields.length">
-                        <strong>@lang('Fields')</strong>
-                    </div>
+                <hr>
 
-                    <div class="uk-form-row" data-ng-show="collection.fields && collection.fields.length">
-                        <ul class="uk-list">
-                            <li class="uk-margin-bottom uk-clearfix" data-ng-repeat="field in collection.fields">
+                @lang('No fields added yet'). <a onclick="{ addfield }">@lang('Add field').</a>
 
-                                <div class="uk-panel app-panel">
+            </div>
 
-                                    <div class="uk-grid uk-grid-small">
-                                        <div class="uk-width-3-4">
-                                            <input class="uk-width-1-1 uk-form-blank" type="text" data-ng-model="field.name" placeholder="@lang('Field name')" pattern="[a-zA-Z0-9_]+" required>
+        </div>
+
+        <div class="uk-form-row">
+
+            <div class="uk-margin-top" show="{ collection.fields.length }">
+
+                <h4>@lang('Fields')</h4>
+
+
+                <div name="fieldscontainer" class="uk-grid uk-grid-small uk-grid-gutter">
+
+                    <div class="uk-grid-margin uk-width-{field.width}" data-idx="{idx}" each="{ field,idx in collection.fields }">
+
+                        <div class="uk-panel uk-panel-box">
+
+                            <div class="uk-grid uk-grid-small">
+
+                                <div class="uk-flex-item-1 uk-flex">
+
+
+                                    <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="collection.fields[{idx}].name" placeholder="name" required>
+                                </div>
+
+                                <div class="uk-width-1-4">
+                                    <div class="uk-form-select" data-uk-form-select>
+                                        <div class="uk-form-icon">
+                                            <i class="uk-icon-arrows-h"></i>
+                                            <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.width }">
                                         </div>
-                                        <div class="uk-width-1-4 uk-text-right">
-                                            <a ng-click="toggleOptions($index)"><i class="uk-icon-cog"></i></a>
-                                            <a data-ng-click="remove(field)" class="uk-close"></a>
-                                        </div>
+                                        <select bind="collection.fields[{idx}].width">
+                                            <option value="1-1">1-1</option>
+                                            <option value="1-2">1-2</option>
+                                            <option value="1-3">1-3</option>
+                                            <option value="2-3">2-3</option>
+                                            <option value="1-4">1-4</option>
+                                            <option value="3-4">3-4</option>
+                                        </select>
                                     </div>
+                                </div>
 
-                                    <div id="options-field-@@ $index @@" class="app-panel-box docked-bottom uk-hidden">
+                                <div class="uk-text-right">
 
-                                        <div class="uk-grid uk-grid-small">
-                                            <div class="uk-width-1-3">
-                                                <label class="uk-text-small">@lang('Field type')</label>
-                                                <select class="uk-width-1-1" data-ng-model="field.type" title="@lang('Field type')" ng-options="f.name as f.label for f in contentfields"></select>
-                                            </div>
-                                            <div class="uk-width-1-3">
-                                                <label class="uk-text-small">@lang('Field label')</label>
-                                                <input class="uk-width-1-1" type="text" data-ng-model="field.label" placeholder="@lang('Field label')">
-                                            </div>
-                                            <div class="uk-width-1-3">
-                                                <label class="uk-text-small">@lang('Default value')</label>
-                                                <input type="text" class="uk-width-1-1" data-ng-model="field.default" placeholder="@lang('Default value')">
-                                            </div>
+                                    <div class="uk-button-group">
 
-                                            <div class="uk-width-1-1 uk-grid-margin">
+                                        <a class="uk-button uk-button-small uk-button-{ field.lst ? 'success':''}" onclick="{ parent.togglelist }">
+                                            <i class="uk-icon-list"></i>
+                                        </a>
 
-                                                <strong class="uk-text-small">Extra options</strong>
-                                                <hr>
-                                                <div class="uk-form uk-form-horizontal">
+                                        <span class="uk-button uk-button-primary uk-button-small" data-uk-dropdown="\{mode:'click'\}">
 
-                                                    <div class="uk-form-row">
-                                                        <label class="uk-form-label">@lang('Required')</label>
-                                                        <div class="uk-form-controls">
-                                                            <input type="checkbox" data-ng-model="field.required" />
-                                                        </div>
-                                                    </div>
+                                            <i class="uk-icon-cog"></i>
 
-                                                    <div class="uk-form-row" data-ng-if="field.type=='text'">
-                                                        <label class="uk-form-label">@lang('Slug')</label>
-                                                        <div class="uk-form-controls">
-                                                            <input type="checkbox" data-ng-model="field.slug" />
-                                                        </div>
-                                                    </div>
+                                            <div class="uk-dropdown uk-dropdown-center uk-text-left uk-dropdown-width-2">
 
-                                                    @if(count($locales))
-                                                    <div class="uk-form-row">
-                                                        <label class="uk-form-label">@lang('Localize')</label>
-                                                        <div class="uk-form-controls">
-                                                            <input type="checkbox" data-ng-model="field.localize" />
-                                                        </div>
-                                                    </div>
-                                                    @endif
-
-                                                    <div class="uk-form-row" data-ng-if="field.type=='select'">
-                                                        <label class="uk-form-label">@lang('Options')</label>
-                                                        <div class="uk-form-controls">
-                                                            <input class="uk-form-blank" type="text" data-ng-model="field.options" ng-list placeholder="@lang('options...')" title="@lang('Separate different options by comma')" data-uk-tooltip>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="uk-form-row" data-ng-if="field.type=='media'">
-                                                        <label class="uk-form-label">@lang('Extensions')</label>
-                                                        <div class="uk-form-controls">
-                                                            <input class="uk-form-blank" type="text" data-ng-model="field.allowed" placeholder="*.*" title="@lang('Allowed media types')" data-uk-tooltip>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="uk-form-row" data-ng-if="field.type=='code'">
-                                                        <label class="uk-form-label">@lang('Syntax')</label>
-                                                        <div class="uk-form-controls">
-                                                            <select data-ng-model="field.syntax" title="@lang('Code syntax')" data-uk-tooltip>
-                                                                <option value="text">Text</option>
-                                                                <option value="css">CSS</option>
-                                                                <option value="htmlmixed">Html</option>
-                                                                <option value="javascript">Javascript</option>
-                                                                <option value="markdown">Markdown</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="uk-form-row" data-ng-if="field.type=='link-collection'">
-                                                        <label class="uk-form-label">@lang('Collection')</label>
-                                                        <div class="uk-form-controls">
-                                                            <select ng-options="c._id as c.name for c in collections" data-ng-model="field.collection" title="@lang('Related collection')" data-uk-tooltip required></select>
-                                                            <input type="checkbox" data-ng-model="field.multiple"> @lang('multiple')
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="uk-form-row" data-ng-if="field.type=='multifield'">
-                                                        <label class="uk-form-label">@lang('Multi field')</label>
-                                                        <div class="uk-form-controls">
-                                                            <span class="uk-text-muted uk-text-small">@lang('Allowed fields'):</span>
-                                                            <div class="uk-scrollable-box uk-panel-box uk-margin-small-top">
-                                                                <div ng-repeat="cf in contentfields" ng-if="(['select', 'boolean', 'multifield'].indexOf(cf.name) == -1)">
-                                                                    <input type="checkbox" data-ng-model="field.allowedfields[cf.name]"> @@ cf.label @@
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    @trigger('cockpit.content.fields.settings')
-
+                                                <div class="uk-form-row uk-text-bold">
+                                                    { field.name || 'Field' }
                                                 </div>
+
+                                                <div class="uk-form-row">
+
+                                                    <div class="uk-form-select uk-width-1-1" data-uk-form-select>
+                                                        <div class="uk-form-icon uk-width-1-1">
+                                                            <i class="uk-icon-tag"></i>
+                                                            <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.type }">
+                                                        </div>
+                                                        <select class="uk-width-1-1" bind="collection.fields[{idx}].type">
+                                                            <option value="text">Text</option>
+                                                            <option value="longtext">Longtext</option>
+                                                            <option value="url">Url</option>
+                                                            <option value="email">Email</option>
+                                                            <option value="password">Password</option>
+                                                            <option value="number">Number</option>
+                                                            <option value="boolean">Boolean</option>
+                                                            <option value="variant">Misc.</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="uk-form-row">
+                                                    <input class="uk-width-1-1" type="text" bind="collection.fields[{idx}].label" placeholder="@lang('label')">
+                                                </div>
+
+                                                <div class="uk-form-row">
+                                                    <input class="uk-width-1-1" type="text" bind="collection.fields[{idx}].default" placeholder="@lang('default')">
+                                                </div>
+
+                                                <div class="uk-form-row">
+                                                    <input class="uk-width-1-1" type="text" bind="collection.fields[{idx}].info" placeholder="@lang('info')">
+                                                </div>
+
+                                                <div class="uk-form-row">
+                                                    <div class="uk-text-small uk-text-bold">@lang('Meta') <span class="uk-text-muted">JSON</span></div>
+                                                    <textarea class="uk-width-1-1" bind="collection.fields[{idx}].meta"></textarea>
+                                                </div>
+
+                                                <div class="uk-form-row">
+                                                    <input type="checkbox" bind="collection.fields[{idx}].required"> @lang('Required')
+                                                </div>
+
                                             </div>
-                                        </div>
+
+                                        </span>
+
+                                        <a class="uk-button uk-button-small uk-button-danger" onclick="{ parent.removefield }">
+                                            <i class="uk-icon-trash"></i>
+                                        </a>
+
                                     </div>
 
                                 </div>
-                            </li>
-                        </ul>
 
-                        <button data-ng-click="addfield()" type="button" class="uk-button uk-button-success"><i class="uk-icon-plus-circle" title="@lang('Add field')"></i></button>
-                    </div>
-                    <br>
-                    <br>
-
-                    <div class="uk-form-row" data-ng-show="collection.fields && collection.fields.length">
-                        <div class="uk-button-group">
-                            <button type="submit" class="uk-button uk-button-primary uk-button-large">@lang('Save Collection')</button>
-                            <a href="@route('/collections/entries')/@@ collection._id @@" class="uk-button uk-button-large" data-ng-show="collection._id"><i class="uk-icon-list"></i> @lang('Goto entries')</a>
-                        </div>
-                        &nbsp;
-                        <a href="@route('/collections')">@lang('Cancel')</a>
-                    </div>
-
-            </div>
-            <div class="uk-width-1-4" data-ng-show="collection.fields && collection.fields.length">
-
-                <strong>@lang('Settings')</strong>
-
-                <div class="uk-margin">
-                    <p>@lang("Group")</p>
-                    <div class="uk-form-controls uk-margin-small-top">
-                        <div class="uk-form-select">
-                            <i class="uk-icon-sitemap uk-margin-small-right"></i>
-                            <a>@@ collection.group || '- @lang("No group") -' @@</a>
-                            <select class="uk-width-1-1 uk-margin-small-top" data-ng-model="collection.group">
-                                <option ng-repeat="group in groups" value="@@ group @@">@@ group @@</option>
-                                <option value="">- @lang("No group") -</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="uk-margin">
-                    <p>
-                        @lang('Fields on entries list page'):
-                    </p>
-                    <ul id="fields-list" class="uk-nestable" data-uk-nestable="{maxDepth:1}">
-                        <li class="uk-nestable-list-item" data-ng-repeat="field in collection.fields">
-                            <div class="uk-nestable-item uk-nestable-item-table">
-                                <div class="uk-nestable-handle"></div>
-                                <input type="checkbox" data-ng-checked="field.lst" data-ng-model="field.lst">
-                                @@ field.name @@
                             </div>
-                        </li>
-                    </ul>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
-                <div class="uk-margin">
-                    <p>
-                        @lang('Order entries on list page'):
-                    </p>
-
-                    <select class="uk-width-1-1 uk-margin-bottom" data-ng-model="collection.sortfield"  ng-options="f.name as f.name for f in sortfields"></select>
-                    <select class="uk-width-1-1" data-ng-model="collection.sortorder">
-                        <option value="-1">@lang('descending')</option>
-                        <option value="1">@lang('ascending')</option>
-                    </select>
+                <div class="uk-margin-top">
+                    <a onclick="{ addfield }">@lang('Add field')</a>
                 </div>
 
             </div>
 
         </div>
 
+        <div class="uk-form-row" show="{ collection.fields.length }">
+
+            <div class="uk-button-group uk-margin-right">
+                <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
+                <a class="uk-button uk-button-large" href="@route('/collections/entries')/{ collection.name }" if="{ collection._id }"><i class="uk-icon-list"></i> @lang('Show entries')</a>
+            </div>
+
+            <a href="@route('/collections')">@lang('Cancel')</a>
+        </div>
+
     </form>
+
+    <script type="view/script">
+
+        var $this = this;
+
+        this.collection = {{ json_encode($collection) }};
+
+        stringifyFieldMeta();
+
+        riot.util.bindInputs(this);
+
+        this.one('mount', function(){
+
+            UIkit.sortable(this.fieldscontainer, {
+
+                dragCustomClass:'uk-form'
+
+            }).element.on("change.uk.sortable", function(e, sortable, ele){
+
+                if (App.$(e.target).is(':input')) {
+                    return;
+                }
+
+                ele = App.$(ele);
+
+                var fields = $this.collection.fields,
+                    cidx   = ele.index(),
+                    oidx   = ele.data('idx');
+
+                fields.splice(cidx, 0, fields.splice(oidx, 1)[0]);
+
+                // hack to force complete fields rebuild
+                console.log( $this.fieldscontainer.clientHeight)
+                $this.fieldscontainer.style.height = $this.fieldscontainer.clientHeight;
+                $this.collection.fields = [];
+                $this.reorder = true;
+                $this.update();
+
+                setTimeout(function() {
+                    $this.collection.fields = fields;
+                    $this.reorder = false;
+                    $this.update();
+                    $this.fieldscontainer.style.height = '';
+                }, 0)
+
+            });
+
+        });
+
+        this.on('update', function(){
+
+            // lock name if saved
+            if (this.collection._id) {
+                this.name.disabled = true;
+            }
+        });
+
+        addfield() {
+
+            this.collection.fields.push({
+                'name'    : '',
+                'label'   : '',
+                'type'    : 'text',
+                'default' : '',
+                'info'    : '',
+                'meta'    : '{}',
+                'width'   : '1-1',
+                'lst'     : true
+            });
+        }
+
+        togglelist(e) {
+            e.item.field.lst = !e.item.field.lst;
+        }
+
+        removefield(e) {
+            this.collection.fields.splice(e.item.idx, 1);
+        }
+
+        submit() {
+
+            var collection = this.collection;
+
+            collection.fields.forEach(function(field){
+                field.meta = App.Utils.str2json(field.meta) || {};
+            });
+
+            App.callmodule('collections:saveCollection', [this.collection.name, collection]).then(function(data) {
+
+                if (data.result) {
+
+                    App.UI.notify("Saving successfull", "success");
+                    $this.collection = data.result;
+
+                    stringifyFieldMeta();
+
+                    $this.update();
+
+                } else {
+
+                    App.UI.notify("Saving failed.", "danger");
+                }
+            });
+        }
+
+        function stringifyFieldMeta() {
+
+            $this.collection.fields.forEach(function(field){
+
+                field.meta = field.meta ? JSON.stringify(field.meta, true) : '{}';
+
+            });
+        }
+
+    </script>
+
 </div>

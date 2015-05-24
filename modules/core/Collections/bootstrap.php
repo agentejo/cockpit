@@ -1,306 +1,281 @@
 <?php
 
-// API
-
 $this->module("collections")->extend([
 
-    'get_collection' => function($name) use($app) {
+    'createCollection' => function($name, $data = []) {
 
-        static $collections;
-
-        if (null === $collections) {
-            $collections = [];
+        if (!trim($name)) {
+            return false;
         }
 
-        if (!isset($collections[$name])) {
-            $collections[$name] = $app->db->findOne('common/collections', ['name'=>$name]);
-        }
+        $configpath = $this->app->path('#storage:').'/collections';
 
-        return $collections[$name];
-    },
+        if (!$this->app->path('#storage:collections')) {
 
-
-    'collection' => function($name) use($app) {
-
-        $collection =  $this->get_collection($name);
-
-        if ($collection) {
-            $col        = 'collection'.$collection["_id"];
-            $collection = $app->db->getCollection("collections/{$col}");
-        }
-
-        return $collection ? $collection : null;
-    },
-
-    'collectionById' => function($colid) use($app) {
-
-        static $collections;
-
-        if (null === $collections) {
-            $collections = [];
-        }
-
-        if (!isset($collections[$colid])) {
-
-            $collection          = "collection{$colid}";
-            $collections[$colid] = $app->db->getCollection("collections/{$collection}");
-
-        }
-
-        return $collections[$colid];
-    },
-
-    'collections'=> function($options = []) use($app) {
-
-        $return      = [];
-        $collections = $app->db->find('common/collections', $options)->toArray();
-
-        foreach ($collections as $collection) {
-            $return[$collection['name']] = $this->collectionById($collection['_id']);
-        }
-
-        return $return;
-    },
-
-    'get_collection_by_slug' => function($slug) use($app) {
-
-        $collection = $app->db->findOne('common/collections', ['slug'=>$slug]);
-
-        if ($collection) {
-            $collection = "collection".$collection["_id"];
-            return $app->db->getCollection("collections/{$collection}");
-        }
-
-        return null;
-    },
-
-    'group' => function($group, $sort = null) use($app) {
-
-        return $this->collections(['filter' =>['group' => $group], 'sort'=> $sort]);
-    },
-
-    'populate' => function($collection, $resultset) use($app) {
-
-        static $cache;
-
-        if (null === $cache) {
-            $cache = [];
-        }
-
-        // check if resultset is a cursor object
-        if (is_object($resultset)) {
-            if (is_a($resultset, 'MongoLite\\Cursor')) $resultset = $resultset->toArray();
-            if (is_a($resultset, 'MongoCursor')) $resultset = iterator_to_array($resultset);
-        }
-
-        if (!count($resultset)) {
-            return $resultset;
-        }
-
-        $collection = $this->get_collection($collection);
-
-        if (!$collection) {
-            return $resultset;
-        }
-
-        $hasOne  = [];
-        $hasMany = [];
-
-        foreach($collection['fields'] as &$field) {
-
-            if ($field['type'] == 'link-collection') {
-
-                if (isset($field['multiple']) && $field['multiple']) {
-                    $hasMany[$field['name']] = $field['collection'];
-                } else {
-                    $hasOne[$field['name']] = $field['collection'];
-                }
+            if (!$this->app->helper('fs')->mkdir($configpath)) {
+                return false;
             }
         }
 
-
-        foreach ($resultset as &$doc) {
-
-            // resolve hasOne
-            foreach ($hasOne as $f => $colid) {
-
-                if (isset($doc[$f]) && $doc[$f]) {
-
-                    if (!isset($cache[$colid][$doc[$f]])) {
-                        $cache[$colid][$doc[$f]] = $this->collectionById($colid)->findOne(['_id' => $doc[$f]]);
-                    }
-
-                    $doc[$f] = $cache[$colid][$doc[$f]];
-                }
-            }
-
-            // resolve hasMany
-            foreach ($hasMany as $f => $colid) {
-
-                if (isset($doc[$f]) && $doc[$f] && is_array($doc[$f])) {
-
-                    $col = $this->collectionById($colid);
-
-                    foreach ($doc[$f] as $index => $_id) {
-
-                        if (!isset($cache[$colid][$_id])) {
-
-                            $cache[$colid][$_id] = $col->findOne(['_id' => $_id]);
-                        }
-
-                        $doc[$f][$index] = $cache[$colid][$_id];
-                    }
-                }
-            }
+        if ($this->exists($name)) {
+            return false;
         }
 
-        return $resultset;
-    },
+        $time = time();
 
-    'populateOne' => function($collection, $item) use($app) {
+        $collection = array_replace_recursive([
+            'name'      => $name,
+            'label'     => $name,
+            '_id'       => uniqid($name),
+            'fields'    => [],
+            '_created'  => $time,
+            '_modified' => $time
+        ], $data);
 
-        if (!$item) {
-            return $item;
+        $export = var_export($collection, true);
+
+        if (!$this->app->helper('fs')->write("#storage:collections/{$name}.collection.php", "<?php\n return {$export};")) {
+            return false;
         }
 
-        $item = $this->populate($collection, [$item]);
-
-        return $item[0];
+        return $collection;
     },
 
-    'getLinked' => function($colId, $itemId) {
+    'updateCollection' => function($name, $data) {
 
-        static $cache;
+        $metapath = $this->app->path("#storage:collections/{$name}.collection.php");
 
-        $result     = null;
-        $collection = $this->collectionById($colId);
-
-        if (!$collection) {
-            return $result;
+        if (!$metapath) {
+            return false;
         }
 
-        if (is_array($itemId)) {
+        $data['_modified'] = time();
 
-            $result = [];
+        $collection  = include($metapath);
+        $collection  = array_merge($collection, $data);
+        $export = var_export($collection, true);
 
-            foreach($itemId as &$id) {
-
-                if (!isset($cache[$colId][$id])) {
-
-                    $cache[$colId][$id] = $collection->findOne(['_id' => $id]);
-                }
-
-                $result[$id] = $cache[$colId][$id];
-            }
-
-
-        } else {
-
-            if (!isset($cache[$colId][$itemId])) {
-
-                $cache[$colId][$itemId] = $collection->findOne(['_id' => $itemId]);
-            }
-
-            $result = $cache[$colId][$itemId];
+        if (!$this->app->helper('fs')->write($metapath, "<?php\n return {$export};")) {
+            return false;
         }
 
-        return $result;
+        return $collection;
     },
 
-    'find' => function($collection, $options = []) {
+    'saveCollection' => function($name, $data) {
 
-        $collection = $this->get_collection($collection);
+        if (!trim($name)) {
+            return false;
+        }
 
-        if (!$collection) return false;
-
-        $col = "collection".$collection["_id"];
-
-        return $this->app->db->find("collections/{$col}", $options);
+        return isset($data['_id']) ? $this->updateCollection($name, $data) : $this->createCollection($name, $data);
     },
 
-    'findOne' => function($collection, $criteria = [], $projection = null) {
+    'removeCollection' => function($name) {
 
-        $collection = $this->get_collection($collection);
+        if ($collection = $this->collection($name)) {
 
-        if (!$collection) return false;
+            $collection = $collections["_id"];
 
-        $col = "collection".$collection["_id"];
+            $this->app->helper("fs")->delete("#storage:collections/{$name}.collection.php");
+            $this->app->storage->dropCollection("collections/{$collection}");
 
-        return $this->app->db->findOne("collections/{$col}", $criteria, $projection);
-    },
-
-    'save_entry' => function($collection, $data) {
-
-        $collection = $this->get_collection($collection);
-
-        if ($collection && $data) {
-
-            $data['modified'] = time();
-            $col              = 'collection'.$collection["_id"];
-
-            if (!isset($data["_id"])){
-
-                $data["created"] = $data["modified"];
-
-                if (isset($collection["fields"])) {
-                    foreach($collection["fields"] as $field) {
-
-                        if (!isset($data[$field['name']])) {
-                            $data[$field['name']] = isset($field['default']) ? $field['default'] : '';
-                        }
-                    }
-                }
-            }
-
-            return $this->app->db->save("collections/{$col}", $data);
+            return true;
         }
 
         return false;
     },
 
+    'collections' => function($extended = false) {
+
+        $stores = [];
+
+        foreach($this->app->helper("fs")->ls('*.collection.php', '#storage:collections') as $path) {
+
+            $store = include($path->getPathName());
+
+            if ($extended) {
+                $store['itemsCount'] = $this->count($store['name']);
+            }
+
+            $stores[$store['name']] = $store;
+        }
+
+        return $stores;
+    },
+
+    'exists' => function($name) {
+        return $this->app->path("#storage:collections/{$name}.collection.php");
+    },
+
+    'collection' => function($name) {
+
+        static $collections; // cache
+
+        if (is_null($collections)) {
+            $collections = [];
+        }
+
+        if (!is_string($name)) {
+            return false;
+        }
+
+        if (!isset($collections[$name])) {
+
+            $collections[$name] = false;
+
+            if ($path = $this->exists($name)) {
+                $collections[$name] = include($path);
+            }
+        }
+
+        return $collections[$name];
+    },
+
+    'entries' => function($name) use($app) {
+
+        $collections = $this->collection($name);
+
+        if (!$collections) return false;
+
+        $collection = $collections["_id"];
+
+        return $this->app->storage->getCollection("collections/{$collection}");
+    },
+
+    'find' => function($collection, $options = []) {
+
+        $collections = $this->collection($collection);
+
+        if (!$collections) return false;
+
+        $collection = $collections["_id"];
+
+        return (array)$this->app->storage->find("collections/{$collection}", $options);
+    },
+
+    'findOne' => function($collection, $criteria = [], $projection = null) {
+
+        $collections = $this->collection($collection);
+
+        if (!$collections) return false;
+
+        $collection = $collections["_id"];
+
+        return $this->app->storage->findOne("collections/{$collection}", $criteria, $projection);
+    },
+
+    'save' => function($collection, $data) {
+
+        $collections = $this->collection($collection);
+
+        if (!$collections) return false;
+
+        $collection = $collections["_id"];
+        $isUpdate   = isset($data["_id"]);
+
+        $data['_modified'] = time();
+
+        if (isset($collections['fields'])) {
+
+            foreach($collections['fields'] as $field) {
+
+                // skip missing fields on update
+                if (!isset($data[$field['name']]) && $isUpdate) {
+                    continue;
+                }
+
+                if (!isset($data[$field['name']])) {
+                    $value = isset($field['default']) ? $field['default'] : '';
+                } else {
+                    $value = $data[$field['name']];
+                }
+
+                switch($field['type']) {
+
+                    case 'string':
+                    case 'text':
+                        $value = (string)$value;
+                        break;
+
+                    case 'boolean':
+
+                        if ($value === 'true' || $value === 'false') {
+                            $value = $value === 'true' ? true:false;
+                        } else {
+                            $value = $value ? true:false;
+                        }
+
+                        break;
+
+                    case 'number':
+                        $value = is_numeric($value) ? $value:0;
+                        break;
+
+                    case 'url':
+                        $value = filter_var($value, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED) ? $value:null;
+                        break;
+
+                    case 'email':
+                        $value = filter_var($value, FILTER_VALIDATE_EMAIL) ? $value:null;
+                        break;
+
+                    case 'password':
+
+                        if ($value) {
+
+                            $value = $this->app->hash($value);
+                        }
+
+                        break;
+
+                }
+
+                if ($isUpdate && $field['type'] == 'password' && !$value && isset($data[$field['name']])) {
+                    unset($data[$field['name']]);
+                } else {
+                    $data[$field['name']] = $value;
+                }
+
+            }
+        }
+
+        if (!$isUpdate) {
+            $data["_created"] = $data["_modified"];
+        }
+
+        $ret = $this->app->storage->save("collections/{$collection}", $data);
+
+        return $ret ? $data : false;
+    },
+
     'remove' => function($collection, $criteria) {
 
-        $collection = $this->get_collection($collection);
+        $collections = $this->collection($collection);
 
-        if (!$collection) return false;
+        if (!$collections) return false;
 
-        $col = "collection".$collection["_id"];
+        $collection = $collections["_id"];
 
-        return $this->app->db->remove("collections/{$col}", $criteria);
+        return $this->app->storage->remove("collections/{$collection}", $criteria);
     },
 
     'count' => function($collection, $criteria = []) {
 
-        $collection = $this->get_collection($collection);
+        $collections = $this->collection($collection);
 
-        if (!$collection) return false;
+        if (!$collections) return false;
 
-        $col = "collection".$collection["_id"];
+        $collection = $collections["_id"];
 
-        return $this->app->db->count("collections/{$col}", $criteria);
+        return $this->app->storage->count("collections/{$collection}", $criteria);
     }
 ]);
 
-if (!function_exists('collection')) {
-    function collection($name) {
-        return cockpit('collections')->collection($name);
-    }
-}
 
-if (!function_exists('collection_populate')) {
-    function collection_populate($collection, $resultset) {
-        return cockpit('collections')->populate($collection, $resultset);
-    }
-
-    function collection_populate_one($collection, $item) {
-        return cockpit('collections')->populateOne($collection, $item);
-    }
-}
-
-// REST
-$app->on('cockpit.rest.init', function($routes) {
-    $routes["collections"] = 'Collections\\Controller\\RestApi';
-});
 
 // ADMIN
-if (COCKPIT_ADMIN && !COCKPIT_REST) include_once(__DIR__.'/admin.php');
+if (COCKPIT_ADMIN && !COCKPIT_REST) {
+
+    include_once(__DIR__.'/admin.php');
+}

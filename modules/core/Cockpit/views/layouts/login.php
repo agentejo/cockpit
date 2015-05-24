@@ -4,96 +4,69 @@
     <meta charset="UTF-8">
     <title>@lang('Authenticate Please!')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-    <link rel="icon" href="@base("/favicon.ico")" type="image/x-icon">
 
-    @assets($app['app.assets.base'], 'app.base', 'cache:assets', 30, $app['cockpit/version'])
-    {{ $app->assets(['assets:vendor/uikit/js/components/form-password.min.js'], $app['cockpit/version']) }}
+    {{ $app->assets($app['app.assets.base'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:lib/uikit/js/components/form-password.min.js'], $app['cockpit/version']) }}
 
-    <script>
-        $(function(){
-
-            var loginbox  = $(".app-login-box"),
-                container = loginbox.find(".app-login-box-container"),
-                profile   = $("#profile"),
-                form      = $("form").on("submit", function(e){
-                                e.preventDefault();
-
-                                loginbox.addClass("app-loading");
-
-                                $.post(form.attr("action"), form.serialize(), function(data){
-
-                                    setTimeout(function(){
-
-                                        loginbox.removeClass("app-loading");
-                                        container.removeClass("uk-animation-shake");
-
-                                        if (data && data.success) {
-
-                                            form.hide();
-                                            profile.find("img").attr("src", "//www.gravatar.com/avatar/"+data.avatar+"?d=mm&s=60");
-                                            profile.find("span").html(data.user.name);
-                                            profile.removeClass('uk-hidden');
-
-                                            setTimeout(function(){
-
-                                                container.addClass("uk-animation-slide-top uk-animation-reverse").width();
-
-                                                setTimeout(function(){
-                                                    location.href = $("html").data("route");
-                                                }, 500);
-
-                                            }, 550);
-
-                                        }else{
-
-                                            setTimeout(function(){
-                                                container.addClass("uk-animation-shake");
-                                                UIkit.notify("@lang('Login failed')", 'danger');
-                                            }, 50);
-                                        }
-
-                                    }, 450);
-
-                                }, 'json');
-                            });
-        });
-    </script>
 </head>
-<body>
-    <div class="uk-container uk-container-center">
-        <div class="uk-animation-fade app-login-box">
-            <div class="app-login-box-container">
+<body class="uk-height-viewport uk-flex uk-flex-middle">
 
-                <form class="uk-form" method="post" action="@route('/auth/check')">
+    <div class="uk-width-medium-1-2 uk-width-large-1-3 uk-container-center" riot-view>
 
-                    <p class="uk-text-center uk-margin-large-bottom app-login-logo" style="position:relative;">
-                        <i class="uk-icon-spinner uk-icon-spin"></i>
-                        <img src="@base('/assets/images/cockpit.png')" width="50" height="50" alt="logo">
-                    </p>
+        <div class="uk-container uk-container-center">
 
-                    <div class="uk-form-row">
+            <form class="uk-form" method="post" action="@route('/auth/check')" onsubmit="{ submit }">
 
-                        <input name="auth[user]" class="uk-form-large uk-width-1-1" type="text" placeholder="@lang('Username')">
-                    </div>
-                    <div class="uk-form-row">
-                        <div class="uk-form-password uk-width-1-1">
-                            <input name="auth[password]" class="uk-form-large uk-width-1-1" type="password" placeholder="@lang('Password')">
-                            <a href="" class="uk-form-password-toggle" data-uk-form-password>@lang('Show')</a>
-                        </div>
-                    </div>
-
-                    <div class="uk-form-row">
-                        <button class="uk-button uk-button-large uk-button-primary uk-width-1-1">@lang('Authenticate')</button>
-                    </div>
-                </form>
-                <div id="profile" class="uk-text-center uk-animation-fade uk-hidden">
-                    <p>
-                        <div class="uk-thumbnail uk-rounded"><img alt="avatar" width="60" height="60" style="width:60px;height:60px;"></div>
-                    </p>
-                    <p class="uk-text-large"><strong>@lang('Welcome back!')</strong></p>
+                <div class="uk-form-row">
+                    <input name="user" class="uk-form-large uk-width-1-1" type="text" placeholder="@lang('Username')" required>
                 </div>
-            </div>
+                <div class="uk-form-row">
+                    <div class="uk-form-password uk-width-1-1">
+                        <input name="password" class="uk-form-large uk-width-1-1" type="password" placeholder="@lang('Password')" required>
+                        <a href="#" class="uk-form-password-toggle" data-uk-form-password>@lang('Show')</a>
+                    </div>
+                </div>
+
+                <div class="uk-form-row">
+                    <button class="uk-button uk-button-large uk-button-primary uk-width-1-1">@lang('Authenticate')</button>
+                </div>
+
+                <div class="uk-alert uk-alert-danger uk-text-center uk-animation-shake" if="{ error }">
+                    { error }
+                </div>
+
+            </form>
+
         </div>
+
+        <script type="view/script">
+
+            this.error = false;
+
+            submit() {
+
+                this.error = false;
+
+                App.request('/auth/check', {"auth":{"user":this.user.value, "password":this.password.value}}).then(function(data){
+
+                    if (data && data.success) {
+
+                        App.reroute('/');
+
+                    } else {
+
+                        this.error = 'Login failed';
+                    }
+
+                    this.update();
+
+                }.bind(this));
+
+                return false;
+            }
+
+        </script>
     </div>
+
 </body>
 </html>

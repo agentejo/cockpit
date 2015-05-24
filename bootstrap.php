@@ -9,7 +9,6 @@ spl_autoload_register(function($class){
     if(file_exists($class_path)) include_once($class_path);
 });
 
-
 /*
  * Collect needed paths
  */
@@ -24,7 +23,7 @@ if (strpos($COCKPIT_DIR, $COCKPIT_DOCS_ROOT)!==0 && isset($_SERVER['SCRIPT_NAME'
 
 $COCKPIT_BASE        = trim(str_replace($COCKPIT_DOCS_ROOT, '', $COCKPIT_DIR), "/");
 $COCKPIT_BASE_URL    = strlen($COCKPIT_BASE) ? "/{$COCKPIT_BASE}": $COCKPIT_BASE;
-$COCKPIT_BASE_ROUTE  = isset($_SERVER['COCKPIT_URL_REWRITE']) && $_SERVER['COCKPIT_URL_REWRITE'] == 'On' ? $COCKPIT_BASE_URL : "{$COCKPIT_BASE_URL}/index.php";
+$COCKPIT_BASE_ROUTE  = $COCKPIT_BASE_URL;
 
 /*
  * SYSTEM DEFINES
@@ -35,15 +34,7 @@ if (!defined('COCKPIT_DIR'))         define('COCKPIT_DIR'        , $COCKPIT_DIR)
 if (!defined('COCKPIT_DOCS_ROOT'))   define('COCKPIT_DOCS_ROOT'  , $COCKPIT_DOCS_ROOT);
 if (!defined('COCKPIT_BASE_URL'))    define('COCKPIT_BASE_URL'   , $COCKPIT_BASE_URL);
 if (!defined('COCKPIT_BASE_ROUTE'))  define('COCKPIT_BASE_ROUTE' , $COCKPIT_BASE_ROUTE);
-if (!defined('COCKPIT_CONFIG_PATH')) define('COCKPIT_CONFIG_PATH', COCKPIT_DIR . '/custom/config.php');
-
-# admin route
-if (COCKPIT_ADMIN && !defined('COCKPIT_ADMIN_ROUTE')) {
-
-    $route = str_replace([COCKPIT_BASE_URL.'/index.php', COCKPIT_BASE_URL], '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
-
-    define('COCKPIT_ADMIN_ROUTE', $route == '' ? '/' : $route);
-}
+if (!defined('COCKPIT_CONFIG_PATH')) define('COCKPIT_CONFIG_PATH', COCKPIT_DIR . '/config/config.php');
 
 function cockpit($module = null) {
 
@@ -54,7 +45,7 @@ function cockpit($module = null) {
         // load config
         $config = array_replace_recursive([
 
-            'debug'        => false,
+            'debug'        => preg_match('/(localhost|::1|\.dev)$/', $_SERVER['SERVER_NAME']),
             'app.name'     => 'Cockpit',
             'base_url'     => COCKPIT_BASE_URL,
             'base_route'   => COCKPIT_BASE_ROUTE,
@@ -66,23 +57,23 @@ function cockpit($module = null) {
             'memory'       => [ "server" => "redislite://".(COCKPIT_DIR."/storage/data/cockpit.memory.sqlite"), "options" => [] ],
 
             'paths'        => [
-                '#root'   => COCKPIT_DIR,
-                'storage' => COCKPIT_DIR.'/storage',
-                '#backups'=> COCKPIT_DIR.'/storage/backups',
-                'data'    => COCKPIT_DIR.'/storage/data',
-                'cache'   => COCKPIT_DIR.'/storage/cache',
-                'tmp'     => COCKPIT_DIR.'/storage/cache/tmp',
-                'modules' => COCKPIT_DIR.'/modules',
-                'assets'  => COCKPIT_DIR.'/assets',
-                'custom'  => COCKPIT_DIR.'/custom',
-                'site'    => COCKPIT_DIR == COCKPIT_DOCS_ROOT ? COCKPIT_DIR : dirname(COCKPIT_DIR)
+                '#root'    => COCKPIT_DIR,
+                '#storage' => COCKPIT_DIR.'/storage',
+                '#data'    => COCKPIT_DIR.'/storage/data',
+                '#cache'   => COCKPIT_DIR.'/storage/cache',
+                '#tmp'     => COCKPIT_DIR.'/storage/tmp',
+                '#modules' => COCKPIT_DIR.'/modules',
+                '#uploads' => COCKPIT_DIR.'/uploads',
+                'assets'   => COCKPIT_DIR.'/assets',
+                'config'   => COCKPIT_DIR.'/config',
+                'site'     => COCKPIT_DIR == COCKPIT_DOCS_ROOT ? COCKPIT_DIR : dirname(COCKPIT_DIR)
             ]
 
         ], file_exists(COCKPIT_CONFIG_PATH) ? include(COCKPIT_CONFIG_PATH) : []);
 
         $app = new LimeExtra\App($config);
 
-        $app["app.config"] = $config;
+        $app["config"] = $config;
 
         // register paths
         foreach ($config['paths'] as $key => $path) {
@@ -90,7 +81,7 @@ function cockpit($module = null) {
         }
 
         // nosql storage
-        $app->service('db', function() use($config) {
+        $app->service('storage', function() use($config) {
             $client = new MongoHybrid\Client($config['database']['server'], $config['database']['options']);
             return $client;
         });
@@ -109,7 +100,7 @@ function cockpit($module = null) {
         });
 
         // set cache path
-        $tmppath = $app->path('cache:tmp');
+        $tmppath = $app->path('#tmp:');
         $app("cache")->setCachePath($tmppath);
         $app->renderer->setCachePath($tmppath);
 
@@ -122,8 +113,8 @@ function cockpit($module = null) {
             COCKPIT_DIR.'/modules/addons' # addons
         ]);
 
-        // load custom global bootstrap
-        if ($custombootfile = $app->path('custom:bootstrap.php')) {
+        // load config global bootstrap
+        if ($custombootfile = $app->path('config:bootstrap.php')) {
             include($custombootfile);
         }
 

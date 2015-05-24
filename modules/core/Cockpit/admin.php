@@ -1,115 +1,191 @@
 <?php
 
 // ACL
-$app("acl")->addResource("Cockpit", ['manage.backups']);
+$app('acl')->addResource('cockpit', [
+    'manage.backups',
+    'manage.media',
+]);
 
-$app["cockpit"] = json_decode($app->helper("fs")->read("#root:package.json"), true);
+// init acl groups + permissions
+$app('acl')->addGroup('admin', true);
 
-$assets = array_merge([
+if ($user = $app->module('cockpit')->getUser()) {
 
-    // misc
-    'assets:vendor/mousetrap.js',
+    $aclsettings = $app->retrieve('config/acl', []);
 
-    // angular
-    'assets:vendor/angular/angular.min.js',
-    'assets:vendor/angular/angular-sanitize.min.js',
+    foreach ($aclsettings as $group => $settings) {
+
+        $app('acl')->addGroup($group, $settings === true ? true:false);
+
+        if (is_array($settings)) {
+
+            foreach ($resources as $resource => $actions) {
+                foreach ($actions as $action => $value) {
+                    if ($value) $app('acl')->allow($group, $resource, $action);
+                }
+            }
+        }
+    }
+}
+
+// extend lexy parser
+$app->renderer->extend(function($content){
+    return preg_replace('/(\s*)@hasaccess\?\((.+?)\)/', '$1<?php if ($app->module("cockpit")->hasaccess($2)) { ?>', $content);
+});
+
+$app['cockpit'] = json_decode($app->helper('fs')->read('#root:package.json'), true);
+
+
+$app->on('admin.init', function() {
+
+    $this["user"] = $this->module('cockpit')->getUser();
+
+    // bind finder
+    $this->bind('/finder', function() {
+
+        $this->layout = 'cockpit:views/layouts/app.php';
+
+        return $this->view('cockpit:views/base/finder.php');
+
+    }, $this->module("cockpit")->hasaccess('cockpit', 'manage.media'));
+
+}, 0);
+
+
+/**
+ * register assets
+ */
+
+$app['app.assets.base'] = [
+
+    'assets:polyfills/es6-shim.js',
+    'assets:polyfills/object-observe.js',
+    'assets:lib/jquery.js',
+    'assets:lib/lodash.js',
+    'assets:lib/riot/riot.js',
+    'assets:lib/uikit/js/uikit.min.js',
+    'assets:lib/uikit/js/components/notify.min.js',
+    'assets:lib/uikit/js/components/tooltip.min.js',
+    'assets:lib/uikit/js/components/lightbox.min.js',
+    'assets:lib/uikit/js/components/sortable.min.js',
+    'assets:lib/storage.js',
+    'assets:app/js/app.js',
+    'assets:app/js/app.utils.js',
+    'cockpit:assets/cockpit.js',
+
+    'assets:app/css/style.css',
+];
+
+$app['app.assets.backend'] = new ArrayObject(array_merge($app['app.assets.base'], [
 
     // uikit components
-    'assets:vendor/uikit/js/components/autocomplete.min.js',
-    'assets:vendor/uikit/js/components/search.min.js',
-    'assets:vendor/uikit/js/components/form-select.min.js',
-    'assets:vendor/uikit/js/components/tooltip.min.js',
-    'assets:vendor/multipleselect.js',
+    'assets:lib/uikit/js/components/autocomplete.min.js',
+    'assets:lib/uikit/js/components/tooltip.min.js',
 
     // app related
-    'assets:js/app.js',
-    'assets:js/app.module.js',
-    'assets:js/bootstrap.js',
+    'assets:app/js/bootstrap.js'
 
-], $app->retrieve('app.config/app.assets.backend', []));
+], $app->retrieve('app.config/app.assets.backend', [])));
 
-$app['app.assets.backend'] = $assets;
 
-// helpers
-$app->helpers["admin"]    = 'Cockpit\\Helper\\Admin';
-$app->helpers["versions"] = 'Cockpit\\Helper\\Versions';
-$app->helpers["history"]  = 'Cockpit\\Helper\\HistoryLogger';
+/**
+ * web components
+ */
 
-$app->bind("/", function(){
-    return $this->invoke("Cockpit\\Controller\\Base", "dashboard");
+$app['app.assets.components'] = [
+
+    'cockpit:assets/components/cockpit-search.tag',
+    'cockpit:assets/components/cockpit-finder.tag',
+    'cockpit:assets/components/codemirror.tag',
+    'cockpit:assets/components/picoedit.tag',
+
+    // fields
+    'cockpit:assets/components/cockpit-field.tag'
+];
+
+/**
+ * admin menus
+ */
+
+$app['app.menu.modules'] = new ArrayObject([]);
+
+
+/**
+ * register routes
+ */
+
+$app->bind('/', function(){
+    return $this->invoke('Cockpit\\Controller\\Base', 'dashboard');
 });
 
-$app->bind("/dashboard", function(){
-    return $this->invoke("Cockpit\\Controller\\Base", "dashboard");
-});
+$app->bindClass('Cockpit\\Controller\\Base', 'cockpit');
+$app->bindClass('Cockpit\\Controller\\Settings', 'settings');
+$app->bindClass('Cockpit\\Controller\\Accounts', 'accounts');
+$app->bindClass('Cockpit\\Controller\\Auth', 'auth');
+$app->bindClass('Cockpit\\Controller\\Media', 'media');
 
-$app->bind("/settingspage", function(){
-    return $this->invoke("Cockpit\\Controller\\Base", "settings");
-});
+/**
+ * listen to app search to filter accounts
+ */
 
-$app->bindClass("Cockpit\\Controller\\Settings", "settings");
+$app->on('cockpit.search', function($search, $list) {
 
-//global search
-$app->bind("/cockpit-globalsearch", function(){
-
-    $query = $this->param("search", false);
-    $list  = new \ArrayObject([]);
-
-    if ($query) {
-        $this->trigger("cockpit.globalsearch", [$query, $list]);
+    if (!$this->module('cockpit')->userInGroup('admin')) {
+        return;
     }
 
-    return json_encode(["results"=>$list->getArrayCopy()]);
+    foreach ($this->storage->find('cockpit/accounts') as $a) {
+
+        if (strripos($a['name'].' '.$a['user'], $search)!==false){
+            $list[] = [
+                'icon'  => 'user',
+                'title' => $a['name'],
+                'url'   => $this->routeUrl('/accounts/account/'.$a['_id'])
+            ];
+        }
+    }
 });
 
 // dashboard widgets
 $app->on("admin.dashboard.main", function() {
     $title = $this("i18n")->get("Today");
-    $this->renderView("cockpit:views/dashboard/datetime.php with cockpit:views/layouts/dashboard.widget.php", compact('title'));
+    $this->renderView("cockpit:views/widgets/datetime.php", compact('title'));
 }, 100);
 
-$app->on("admin.dashboard.main", function() {
-    $this->renderView("cockpit:views/dashboard/history.php", ['history' => $this("history")->load()]);
-}, 5);
+/**
+ * handle error pages
+ */
+$app->on("after", function() {
 
+    switch ($this->response->status) {
+        case 500:
 
-// init admin menus
-$app['admin.menu.top']      = new \PriorityQueue();
-$app['admin.menu.dropdown'] = new \PriorityQueue();
+            if ($this['debug']) {
 
+                if ($this->req_is('ajax')) {
+                    $this->response->body = json_encode(['error' => json_decode($this->response->body, true)]);
+                } else {
+                    $this->response->body = $this->render("cockpit:views/errors/500-debug.php", ['error' => json_decode($this->response->body, true)]);
+                }
 
-// load i18n definition
-if ($user = $app("session")->read('cockpit.app.auth', null)) {
-    $app("i18n")->locale = isset($user['i18n']) ? $user['i18n'] : $app("i18n")->locale;
-}
+            } else {
 
-$locale = $app("i18n")->locale;
+                if ($this->req_is('ajax')) {
+                    $this->response->body = '{"error": "500", "message": "system error"}';
+                } else {
+                    $this->response->body = $this->view("cockpit:views/errors/500.php");
+                }
+            }
 
-$app("i18n")->load("custom:i18n/{$locale}.php", $locale);
+            break;
 
-$app->bind("/i18n-js", function() use($locale){
+        case 404:
 
-    $this->response->mime = "js";
-    $data = $this("i18n")->data($locale);
-
-    return 'if (i18n) { i18n.register('.(count($data) ? json_encode($data):'{}').'); }';
+            if ($this->req_is('ajax')) {
+                $this->response->body = '{"error": "404", "message":"File not found"}';
+            } else {
+                $this->response->body = $this->view("cockpit:views/errors/404.php");
+            }
+            break;
+    }
 });
-
-// register content fields
-$app->on("cockpit.content.fields.sources", function() {
-
-    echo $this->assets([
-        'assets:js/angular/fields/contentfield.js',
-        'assets:js/angular/fields/codearea.js',
-        'assets:js/angular/fields/wysiwyg.js',
-        'assets:js/angular/fields/gallery.js',
-        'assets:js/angular/fields/tags.js',
-        'assets:js/angular/fields/location.js',
-        'assets:js/angular/fields/multifield.js',
-        'collections:assets/field.linkcollection.js',
-        'mediamanager:assets/field.pathpicker.js',
-        'assets:js/angular/directives/mediapreview.js',
-        'assets:js/angular/fields/htmleditor.js'
-    ], $this['cockpit/version']);
-
-}, 100);

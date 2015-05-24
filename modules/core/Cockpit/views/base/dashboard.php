@@ -1,16 +1,14 @@
-@start('header')
+<div>
+    <ul class="uk-breadcrumb">
+        <li><span>@lang('Dashboard')</span></li>
+    </ul>
+</div>
 
-    <style>
+<div class="uk-margin">
+    @trigger('admin.dashboard.top')
+</div>
 
-        .app-dashboard-widget {
-            margin-bottom: 25px;
-        }
-
-    </style>
-
-@end('header')
-
-<div class="uk-grid" data-uk-grid-margin>
+<div class="uk-grid uk-margin" data-uk-grid-margin>
     <div class="uk-width-medium-1-2">
         @trigger('admin.dashboard.main')
     </div>
@@ -19,4 +17,8 @@
             @trigger('admin.dashboard.aside')
         </div>
     </div>
+</div>
+
+<div class="uk-margin">
+    @trigger('admin.dashboard.bottom')
 </div>

@@ -4,10 +4,12 @@ $sqlitesupport = false;
 
 // check whether sqlite is supported
 try {
-    if(extension_loaded('pdo')) {
+
+    if (extension_loaded('pdo')) {
         $test = new PDO('sqlite::memory:');
         $sqlitesupport = true;
     }
+
 } catch (Exception $e) { }
 
 // misc checks
@@ -21,7 +23,8 @@ $checks = array(
 );
 
 foreach($checks as $info => $check) {
-    if(!$check) {
+
+    if (!$check) {
         include(__DIR__."/fail.php");
         exit;
     }
@@ -33,22 +36,24 @@ $app = cockpit();
 
 // check whether cockpit is already installed
 try {
-    if ($app->db->getCollection("cockpit/accounts")->count()) {
+
+    if ($app->storage->getCollection("cockpit/accounts")->count()) {
         header('Location: '.$app->baseUrl('/'));
         exit;
     }
+
 } catch(Exception $e) { }
 
 $account = [
     "user"     => "admin",
     "name"     => "",
     "email"    => "test@test.de",
-    "active"   => 1,
+    "active"   => true,
     "group"    => "admin",
     "password" => $app->hash("admin"),
     "i18n"     => "en"
 ];
 
-$app->db->insert("cockpit/accounts", $account);
+$app->storage->insert("cockpit/accounts", $account);
 
 include(__DIR__."/success.php");

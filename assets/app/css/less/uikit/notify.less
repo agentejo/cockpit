@@ -1,0 +1,37 @@
+//
+// Component: Notify
+//
+// ========================================================================
+
+
+// Variables
+// ========================================================================
+
+@notify-z-index:                                @global-z-index + 40;
+
+@notify-message-font-size:                      @global-font-size;
+@notify-message-line-height:                    @global-line-height;
+
+
+// Component
+// ========================================================================
+
+.hook-notify() {}
+
+.hook-notify-message() {
+    border-radius: @global-border-radius;
+}
+
+.hook-notify-message-primary() {}
+
+.hook-notify-message-success() {}
+
+.hook-notify-message-warning() {}
+
+.hook-notify-message-danger() {}
+
+
+// Miscellaneous
+// ========================================================================
+
+.hook-notify-misc() {}

@@ -1209,7 +1209,7 @@ class App implements \ArrayAccess {
         return $this->registry["modules"][$name];
     }
 
-    public function loadModules($dirs, $autoload = true) {
+    public function loadModules($dirs, $autoload = true, $prefix = false) {
 
         $modules = [];
         $dirs    = (array)$dirs;
@@ -1218,12 +1218,16 @@ class App implements \ArrayAccess {
 
             if (file_exists($dir)){
 
+                $pfx = is_bool($prefix) ? strtolower(basename($dir)) : $prefix;
+
                 // load modules
                 foreach (new \DirectoryIterator($dir) as $module) {
 
-                    if($module->isFile() || $module->isDot()) continue;
+                    if ($module->isFile() || $module->isDot()) continue;
 
-                    $this->registerModule($module->getBasename(), $module->getRealPath());
+                    $name = $prefix ? "{$pfx}-".$module->getBasename() : $module->getBasename();
+
+                    $this->registerModule($name, $module->getRealPath());
 
                     $modules[] = strtolower($module);
                 }
@@ -1347,6 +1351,11 @@ class AppAware {
     public function __invoke($helper) {
 
         return $this->app->helper($helper);
+    }
+
+    // accces to services
+    public function __get($name) {
+        return $this->app[$name];
     }
 
 }

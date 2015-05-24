@@ -135,7 +135,7 @@ class Lexy {
 
     protected function get_cached_file($file, $sandbox) {
 
-        $cachedfile = $this->cachePath.'/'.md5($file).'.lexy.php';
+        $cachedfile = $this->cachePath.'/'.basename($file).'.'.md5($file).'.lexy.php';
 
         if (!file_exists($cachedfile)) {
             $cachedfile = $this->cache_file($file, $cachedfile, null, $sandbox);

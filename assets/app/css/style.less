@@ -1,0 +1,72 @@
+/*
+ * Run `lessc style.less > style.css -x`
+ */
+
+@import (less) "../../lib/codemirror/lib/codemirror.css";
+@import (less) "../../lib/codemirror/theme/dark.css";
+@import (less) "../../lib/codemirror/theme/light.css";
+@import "less/uikit/uikit.less";
+
+
+.uk-panel-framed {
+    display: block;
+    border: 1px @global-border solid;
+    border-radius: @global-border-radius;
+    padding: 20px;
+}
+
+.uk-grid-gutter {
+    margin-top: (-1 * @global-grid-gutter);
+}
+
+@media (min-width: @breakpoint-xlarge) {
+
+    .uk-grid-gutter {
+        margin-top: (-1 * @global-grid-gutter-large);
+    }
+}
+
+.uk-grid-small.uk-grid-gutter {
+    margin-top: (-1 * @grid-gutter-small-vertical);
+}
+
+.uk-selected {
+    background: @global-selected-background;
+}
+
+.app-header {
+
+    background-color: #fff;
+
+    .uk-navbar {
+
+        & > div > *:first-child {
+            margin-left: -15px;
+        }
+    }
+}
+
+.app-header-topbar {
+
+    background-color: @global-primary-background;
+    padding: 10px 0;
+    box-sizing: border-box;
+
+    a { text-decoration: none !important; }
+
+    .uk-contrast * {
+        color: @global-contrast-color;
+    }
+}
+
+.app-panel-dropdown {
+    margin-top: 20px;
+    border: none;
+    box-shadow: 0 0 1px 1px rgba(0,0,0,0.1);
+    width: 600px;
+    max-width: 85vw;
+}
+
+.app-main {
+    margin-top: @global-margin-large;
+}

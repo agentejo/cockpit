@@ -1,157 +1,344 @@
-@start('header')
+<div>
+    <ul class="uk-breadcrumb">
+        <li><a href="@route('/collections')">@lang('Collections')</a></li>
+        <li class="uk-active" data-uk-dropdown="{mode:'click'}">
 
-    {{ $app->assets(['collections:assets/collections.js','collections:assets/js/entries.js'], $app['cockpit/version']) }}
-    {{ $app->assets(['assets:js/angular/directives/mediapreview.js'], $app['cockpit/version']) }}
+            <a><i class="uk-icon-bars"></i> {{ @$collection['label'] ? $collection['label']:$collection['name'] }}</a>
 
-    @if($collection['sortfield'] == 'custom-order')
+            <div class="uk-dropdown">
+                <ul class="uk-nav uk-nav-dropdown">
+                    <li class="uk-nav-header">@lang('Collections')</li>
+                    <li><a href="@route('/collections/collection/'.$collection['name'])">@lang('Edit')</a></li>
+                </ul>
+            </div>
 
-        {{ $app->assets(['assets:vendor/uikit/js/components/sortable.min.js'], $app['cockpit/version']) }}
+        </li>
+    </ul>
 
-    @endif
+</div>
 
-    <style>
+@if($collection['description'])
+<div class="uk-text-muted uk-panel-box">
+    <i class="uk-icon-info-circle"></i> {{ $collection['description'] }}
+</div>
+@endif
 
-        td .uk-grid+.uk-grid { margin-top: 5px; }
+<div class="uk-margin-top" riot-view>
 
-        .type-media .media-url-preview {
-            border-radius: 50%;
-        }
-
-        .uk-sortable-dragged {
-            border: 1px #ccc dashed;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 2px;
-        }
-
-        .uk-sortable-dragged td {
-            display: none;
-        }
-
-    </style>
-
-    <script>
-        var COLLECTION = {{ json_encode($collection) }};
-    </script>
-
-@end('header')
+    <div show="{ ready }">
 
 
+        <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ !entries.length && !filter }">
 
-<div data-ng-controller="entries" ng-cloak>
+            <div class="uk-animation-fade">
 
-    <nav class="uk-navbar uk-margin-bottom">
-        <span class="uk-navbar-brand"><a href="@route("/collections")">@lang('Collections')</a> / {{ $collection['name'] }}</span>
-        <ul class="uk-navbar-nav">
-            @hasaccess?("Collections", 'manage.collections')
-            <li><a href="@route('/collections/collection/'.$collection["_id"])" title="@lang('Edit collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-pencil"></i></a></li>
-            <li><a class="uk-text-danger" ng-click="emptytable()" title="@lang('Empty collection')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-trash-o"></i></a></li>
-            @end
-            <li><a href="@route('/collections/entry/'.$collection["_id"])" title="@lang('Add entry')" data-uk-tooltip="{pos:'bottom'}"><i class="uk-icon-plus-circle"></i></a></li>
-        </ul>
+                <p class="uk-text-xlarge">
+                    <i class="uk-icon-list"></i>
+                </p>
 
-        @if($collection['sortfield'] != 'custom-order')
-        <div class="uk-navbar-content" data-ng-show="collection && collection.count">
-            <form class="uk-form uk-margin-remove uk-display-inline-block" method="get" action="?nc={{ time() }}">
-                <div class="uk-form-icon">
-                    <i class="uk-icon-filter"></i>
-                    <input type="text" placeholder="@lang('Filter entries...')" name="filter" value="{{ $app->param('filter', '') }}"> &nbsp;
-                    <a class="uk-text-small" href="@route('/collections/entries/'.$collection['_id'])" data-ng-show="filter"><i class="uk-icon-times"></i> @lang('Reset filter')</a>
-                </div>
-            </form>
-        </div>
-        @endif
+                <hr>
 
-        <div class="uk-navbar-flip">
-            @hasaccess?("Collections", 'manage.collections')
-            <ul class="uk-navbar-nav">
-                <li>
-                    <a href="@route('/api/collections/export/'.$collection['_id'])" download="{{ $collection['name'] }}.json" title="@lang('Export data')" data-uk-tooltip="{pos:'bottom'}">
-                        <i class="uk-icon-share-alt"></i>
-                    </a>
-                </li>
-            </ul>
-            @end
-        </div>
-    </nav>
-
-    <div class="app-panel uk-margin uk-text-center" data-ng-show="entries && !filter && !entries.length">
-        <h2><i class="uk-icon-list"></i></h2>
-        <p class="uk-text-large">
-            @lang('It seems you don\'t have any entries created.')
-        </p>
-        <a href="@route('/collections/entry/'.$collection["_id"])" class="uk-button uk-button-success uk-button-large">@lang('Add entry')</a>
-    </div>
-
-    <div class="app-panel uk-margin uk-text-center" data-ng-show="entries && filter && !entries.length">
-        <h2><i class="uk-icon-search"></i></h2>
-        <p class="uk-text-large">
-            @lang('No entries found.')
-        </p>
-    </div>
-
-    <div class="uk-grid" data-uk-grid-margin data-ng-show="entries && entries.length">
-
-        <div class="uk-width-1-1">
-            <div class="app-panel">
-                <table id="entries-table" class="uk-table uk-table-striped" multiple-select="{model:entries}">
-                    <thead>
-                        <tr>
-                            <th width="10"><input class="js-select-all" type="checkbox"></th>
-                            <th>
-                                @lang('Fields')
-                            </th>
-                            <th width="15%">@lang('Modified')</th>
-                            <th width="10%">&nbsp;</th>
-                        </tr>
-                    </thead>
-                    <tbody {{ $collection['sortfield'] == 'custom-order' ? 'data-uk-sortable="{animation:false}"':'' }}>
-                        <tr class="js-multiple-select" data-ng-repeat="entry in entries track by entry._id">
-                            <td><input class="js-select" type="checkbox"></td>
-                            <td>
-                                <div class="uk-grid uk-grid-preserve uk-text-small" data-ng-repeat="field in fields" data-ng-if="fields.length">
-                                    <div class="uk-width-medium-1-5">
-                                        <strong>@@ (field.label || field.name) @@</strong>
-                                    </div>
-                                    <div class="uk-width-medium-4-5">
-                                        <a class="uk-link-muted" href="@route('/collections/entry/'.$collection["_id"])/@@ entry._id @@" ng-switch="field.type">
-                                            <div class="type-media" ng-switch-when="media"><div style="width:30px;height:30px;" media-preview="@@ entry[field.name] @@"><i class="uk-icon-ellipsis-h"></i></div></div>
-                                            <div ng-switch-when="gallery">
-                                                <div class="uk-thumbnail uk-rounded uk-thumb-small uk-margin-small-right" data-ng-repeat="image in entry[field.name]" ng-if="$index < 6">
-                                                    <img ng-src="@route('/mediamanager/thumbnail')/@@ image.path|base64 @@/20/20" width="20" height="20" title="@@ image.path @@">
-                                                </div>
-                                            </div>
-                                            <span ng-switch-default>@@ entry[field.name] @@</span>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="uk-text-small" data-ng-if="!fields.length">
-                                    <a href="@route('/collections/entry/'.$collection["_id"])/@@ entry._id @@">@lang('Show entry')</a>
-                                </div>
-                            </td>
-                            <td>@@ entry.modified | fmtdate:'d M, Y' @@</td>
-                            <td class="uk-text-right">
-                                <div data-uk-dropdown>
-                                    <i class="uk-icon-bars"></i>
-                                    <div class="uk-dropdown uk-dropdown-flip uk-text-left">
-                                        <ul class="uk-nav uk-nav-dropdown uk-nav-parent-icon">
-                                            <li><a href="@route('/collections/entry/'.$collection["_id"])/@@ entry._id @@"><i class="uk-icon-pencil"></i> @lang('Edit entry')</a></li>
-                                            <li><a href="#" data-ng-click="remove($index, entry._id)"><i class="uk-icon-trash-o"></i> @lang('Delete entry')</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div class="uk-margin-top">
-                    @if($collection['sortfield'] != 'custom-order')
-                    <button class="uk-button uk-button-primary" data-ng-click="loadmore()" data-ng-show="entries && !nomore">@lang('Load more...')</button>
-                    @endif
-                    <button class="uk-button uk-button-danger" data-ng-click="removeSelected()" data-ng-show="selected"><i class="uk-icon-trash-o"></i> @lang('Delete entries')</button>
-                </div>
+                @lang('No entries'). <a href="@route('/collections/entry/'.$collection['name'])">@lang('Create an entry').</a>
 
             </div>
+
         </div>
+
+
+        <div if="{ entries.length || filter }">
+
+            <div class="uk-grid uk-grid-divider uk-grid-margin uk-animation-fade">
+
+                <div class="uk-width-medium-3-4">
+
+                    <div class="uk-margin">
+
+                        <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted">
+
+                            <i class="uk-icon-filter"></i>
+                            <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" name="txtfilter" placeholder="@lang('Filter items...')" onchange="{ updatefilter }">
+
+                        </div>
+
+                    </div>
+
+                    <div class="uk-alert" if="{ !entries.length && filter }">
+                        @lang('No entries found').
+                    </div>
+
+
+                    <table class="uk-table uk-table-striped uk-margin-top" if="{ entries.length }">
+                        <thead>
+                            <tr>
+                                <th width="20"><input type="checkbox" data-check="all"></th>
+                                <th each="{field,idx in fields}">
+                                    <a class="uk-link-muted { parent.sort[field.name] ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
+                                        <span if="{parent.sort[field.name]}" class="uk-animation-fade uk-icon-caret-{ parent.sort[field.name] == 1 ? 'up':'down'}"></span>
+                                        <span if="{!parent.sort[field.name]}" class="uk-icon-sort uk-text-muted"></span>
+                                        { field.label || field.name }
+                                    </a>
+                                </th>
+                                <th width="20"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr each="{entry,idx in entries}">
+                                <td><input type="checkbox" data-check data-id="{ entry._id }"></td>
+                                <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' }">
+                                    <a class="uk-link-muted" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
+                                        { String(parent.entry[field.name]) }
+                                    </a>
+                                </td>
+                                <td>{ (new Intl.DateTimeFormat()).format( new Date( 1000 * entry._modified )) }</td>
+                                <td>
+                                    <span class="uk-float-right" data-uk-dropdown="\{mode:'click'\}">
+
+                                        <a class="uk-icon-bars"></a>
+
+                                        <div class="uk-dropdown uk-dropdown-flip">
+                                            <ul class="uk-nav uk-nav-dropdown">
+                                                <li class="uk-nav-header">@lang('Actions')</li>
+                                                <li><a href="@route('/collections/entry/'.$collection['name'])/{ entry._id }">@lang('Edit')</a></li>
+                                                <li><a onclick="{ parent.remove }">@lang('Delete')</a></li>
+                                            </ul>
+                                        </div>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="uk-width-medium-1-4 uk-form">
+
+                    <div class="uk-margin">
+
+                        <ul class="uk-nav uk-nav-side">
+                            <li class="uk-nav-header">@lang('Actions')</li>
+                            <li><a href="@route('/collections/entry/'.$collection['name'])"><i class="uk-icon-justify uk-icon-plus"></i> @lang('Create entry')</a></li>
+                            <li><a href="@route('/collections/export/'.$collection['name'])" download="{{ $collection['name'] }}.json"><i class="uk-icon-justify uk-icon-download"></i> @lang('Export data')</a></li>
+                        </ul>
+
+                    </div>
+
+                    <div class="uk-margin uk-animation-fade" if="{ selected.length }">
+
+                        <ul class="uk-nav uk-nav-side">
+                            <li class="uk-nav-header">{ selected.length } @lang('Selected')</li>
+                            <li><a class="uk-text-danger" onclick="{ removeselected }"><i class="uk-icon-justify uk-icon-trash"></i> @lang('Delete')</a></li>
+                        </ul>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script type="view/script">
+
+        var $this = this, $root = App.$(this.root);
+
+        this.ready      = false;
+        this.collection = {{ json_encode($collection) }};
+        this.entries    = [];
+        this.fields     = this.collection.fields.filter(function(field){
+            return field.lst;
+        });
+
+        this.fields.push({name:'_modified', 'label':'@lang('Modified')'});
+
+        this.sort     = {'_created': -1};
+        this.selected = [];
+
+        this.on('mount', function(){
+
+            this.load();
+
+            $root.on('click', '[data-check]', function() {
+
+                if (this.getAttribute('data-check') == 'all') {
+                    $root.find('[data-check][data-id]').prop('checked', this.checked);
+                }
+
+                $this.checkselected();
+
+                $this.update();
+            });
+        });
+
+        remove(e, entry, idx) {
+
+            entry = e.item.entry
+            idx   = e.item.idx;
+
+            App.UI.confirm("Are you sure?", function() {
+
+                App.callmodule('collections:remove', [this.collection.name, {'_id':entry._id}]).then(function(data) {
+
+                    App.UI.notify("Entry removed", "success");
+
+                    $this.entries.splice(idx, 1);
+
+                    $this.update();
+
+                    $this.checkselected(true);
+                });
+
+            }.bind(this));
+        }
+
+        removeselected() {
+
+            if (this.selected.length) {
+
+                App.UI.confirm("Are you sure?", function() {
+
+                    var promises = [];
+
+                    this.entries = this.entries.filter(function(entry, yepp){
+
+                        yepp = ($this.selected.indexOf(entry._id) === -1);
+
+                        if (!yepp) {
+                            promises.push(App.callmodule('collections:remove', [$this.collection.name, {'_id':entry._id}]));
+                        }
+
+                        return yepp;
+                    });
+
+                    Promise.all(promises).then(function(){
+                        App.UI.notify("Entries removed", "success");
+                    });
+
+                    this.update();
+                    this.checkselected(true);
+
+                }.bind(this));
+            }
+        }
+
+        load() {
+
+            var options = {sort:this.sort};
+
+            if (this.filter) {
+                options.filter = this.filter;
+            }
+
+            return App.callmodule('collections:find', [this.collection.name, options]).then(function(data){
+
+                this.entries  = data.result;
+                this.ready    = true;
+
+                $this.checkselected();
+
+                this.update();
+
+            }.bind(this))
+        }
+
+        updatesort(e, field) {
+
+            field = e.target.getAttribute('data-sort');
+
+            if (!field) {
+                return;
+            }
+
+            if (!this.sort[field]) {
+                this.sort        = {};
+                this.sort[field] = 1;
+            } else {
+                this.sort[field] = this.sort[field] == 1 ? -1:1;
+            }
+
+            this.load();
+        }
+
+        checkselected(update) {
+
+            var checkboxes = $root.find('[data-check][data-id]'),
+                selected   = checkboxes.filter(':checked');
+
+            this.selected = [];
+
+            if (selected.length) {
+
+                selected.each(function(){
+                    $this.selected.push(App.$(this).attr('data-id'));
+                });
+            }
+
+            $root.find('[data-check="all"]').prop('checked', checkboxes.length === selected.length);
+
+            if (update) {
+                this.update();
+            }
+        }
+
+        updatefilter() {
+
+            var load = this.filter ? true:false;
+
+            this.filter = null;
+
+            if (this.txtfilter.value) {
+
+                var filter = this.txtfilter.value,
+                    criterias = [],
+                    allowedtypes = ['text', 'longtext','boolean','select'],
+                    criteria;
+
+                if (App.Utils.str2json('{'+filter+'}')) {
+
+                    filter = App.Utils.str2json('{'+filter+'}');
+
+                    var key, field;
+
+                    for (key in filter) {
+
+                        field = this.collection.fields[key] || {};
+
+                        if (allowedtypes.indexOf(field.type) !== -1) {
+
+                            criteria = {};
+                            criteria[key] = field.type == 'boolean' ? filter[key]: {'$regex':filter[key]};
+                            criterias.push(criteria);
+                        }
+                    }
+
+                    if (criterias.length) {
+                        this.filter = {'$and':criterias};
+                    }
+
+                } else {
+
+                    this.collection.fields.forEach(function(field){
+
+                       if (field.type != 'boolean' && allowedtypes.indexOf(field.type) !== -1) {
+                           criteria = {};
+                           criteria[field.name] = {'$regex':filter};
+                           criterias.push(criteria);
+                       }
+
+                    });
+
+                    if (criterias.length) {
+                        this.filter = {'$or':criterias};
+                    }
+                }
+
+            }
+
+
+            if (this.filter || load) {
+                this.load();
+            }
+        }
+
+    </script>
+
 </div>

@@ -6,7 +6,6 @@
 # Don't show directory listings
 Options -Indexes
 
-
 # URL rewrites
 <IfModule mod_rewrite.c>
 
@@ -21,10 +20,6 @@ Options -Indexes
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule .* index.php [L]
-
-    <IfModule mod_env.c>
-        SetEnv COCKPIT_URL_REWRITE On
-    </IfModule>
 
 </IfModule>
 

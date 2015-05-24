@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Page not found</title>
-    @assets($app['app.assets.base'], 'app.base', 'cache:assets', 0)
+    {{ $app->assets($app['app.assets.base'], $app['cockpit/version']) }}
 </head>
-<body>
-    <div class="app-wrapper uk-text-center uk-animation-slide-bottom" style="margin-top:100px;">
-        <h1><strong><i class="uk-icon-times"></i> 404</strong></h1>
+<body class="uk-height-viewport uk-flex uk-flex-middle">
+
+    <div class="uk-container uk-container-center uk-text-center uk-animation-slide-bottom">
+
+        <h1><strong>404</strong></h1>
 
         <p class="uk-text-large">Uuuups, Page not found.</p>
+
     </div>
+
 </body>
 </html>
