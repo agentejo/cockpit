@@ -14,12 +14,12 @@ try {
 
 // misc checks
 $checks = array(
-    "Php version >= 5.4.0"                             => (version_compare(PHP_VERSION, '5.4.0') >= 0),
-    "PDO extension loaded with Sqlite support"         => $sqlitesupport,
-    'Data  folder is writable: /storage/data'          => is_writable(__DIR__.'/../storage/data'),
-    'Cache folder is writable: /storage/cache'         => is_writable(__DIR__.'/../storage/cache'),
-    'Cache folder is writable: /storage/cache/assets'  => is_writable(__DIR__.'/../storage/cache/assets'),
-    'Cache folder is writable: /storage/cache/thumbs'  => is_writable(__DIR__.'/../storage/cache/thumbs'),
+    "Php version >= 5.4.0"                              => (version_compare(PHP_VERSION, '5.4.0') >= 0),
+    "PDO extension loaded with Sqlite support"          => $sqlitesupport,
+    'Data  folder is not writable: /storage/data'       => is_writable(__DIR__.'/../storage/data'),
+    'Cache folder is not writable: /storage/cache'      => is_writable(__DIR__.'/../storage/cache'),
+    'Temp folder is not writable: /storage/tmp'         => is_writable(__DIR__.'/../storage/tmp'),
+    'Uploads folder is not writable: /storage/uploads'  => is_writable(__DIR__.'/../storage/uploads'),
 );
 
 foreach($checks as $info => $check) {
