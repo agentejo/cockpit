@@ -142,7 +142,11 @@
         this.ready      = false;
         this.collection = {{ json_encode($collection) }};
         this.entries    = [];
+        this.fieldsidx  = {};
         this.fields     = this.collection.fields.filter(function(field){
+
+            $this.fieldsidx[field.name] = field;
+
             return field.lst;
         });
 
@@ -285,9 +289,9 @@
 
             if (this.txtfilter.value) {
 
-                var filter = this.txtfilter.value,
-                    criterias = [],
-                    allowedtypes = ['text', 'longtext','boolean','select'],
+                var filter       = this.txtfilter.value,
+                    criterias    = [],
+                    allowedtypes = ['text', 'longtext','boolean','select', 'boolean'],
                     criteria;
 
                 if (App.Utils.str2json('{'+filter+'}')) {
@@ -298,7 +302,7 @@
 
                     for (key in filter) {
 
-                        field = this.collection.fields[key] || {};
+                        field = this.fieldsidx[key] || {};
 
                         if (allowedtypes.indexOf(field.type) !== -1) {
 
