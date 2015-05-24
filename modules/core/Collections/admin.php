@@ -38,4 +38,12 @@ $app->on('admin.init', function() {
         }
     });
 
+
+    // dashboard widgets
+    $this->on("admin.dashboard.aside", function() {
+        $collections = $this->module("collections")->collections(true);
+        $this->renderView("collections:views/widgets/dashboard.php", compact('collections'));
+    }, 100);
+
+
 });

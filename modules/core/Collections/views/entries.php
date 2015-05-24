@@ -19,7 +19,7 @@
 
 </div>
 
-@if($collection['description'])
+@if(isset($collection['description']) && $collection['description'])
 <div class="uk-text-muted uk-panel-box">
     <i class="uk-icon-info-circle"></i> {{ $collection['description'] }}
 </div>
@@ -68,47 +68,50 @@
                         @lang('No entries found').
                     </div>
 
+                    <div class="uk-overflow-container">
 
-                    <table class="uk-table uk-table-striped uk-margin-top" if="{ entries.length }">
-                        <thead>
-                            <tr>
-                                <th width="20"><input type="checkbox" data-check="all"></th>
-                                <th each="{field,idx in fields}">
-                                    <a class="uk-link-muted { parent.sort[field.name] ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
-                                        <span if="{parent.sort[field.name]}" class="uk-animation-fade uk-icon-caret-{ parent.sort[field.name] == 1 ? 'up':'down'}"></span>
-                                        <span if="{!parent.sort[field.name]}" class="uk-icon-sort uk-text-muted"></span>
-                                        { field.label || field.name }
-                                    </a>
-                                </th>
-                                <th width="20"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr each="{entry,idx in entries}">
-                                <td><input type="checkbox" data-check data-id="{ entry._id }"></td>
-                                <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' }">
-                                    <a class="uk-link-muted" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
-                                        { String(parent.entry[field.name]) }
-                                    </a>
-                                </td>
-                                <td>{ (new Intl.DateTimeFormat()).format( new Date( 1000 * entry._modified )) }</td>
-                                <td>
-                                    <span class="uk-float-right" data-uk-dropdown="\{mode:'click'\}">
+                        <table class="uk-table uk-table-striped uk-margin-top" if="{ entries.length }">
+                            <thead>
+                                <tr>
+                                    <th width="20"><input type="checkbox" data-check="all"></th>
+                                    <th each="{field,idx in fields}">
+                                        <a class="uk-link-muted { parent.sort[field.name] ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
+                                            <span if="{parent.sort[field.name]}" class="uk-animation-fade uk-icon-caret-{ parent.sort[field.name] == 1 ? 'up':'down'}"></span>
+                                            <span if="{!parent.sort[field.name]}" class="uk-icon-sort uk-text-muted"></span>
+                                            { field.label || field.name }
+                                        </a>
+                                    </th>
+                                    <th width="20"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr each="{entry,idx in entries}">
+                                    <td><input type="checkbox" data-check data-id="{ entry._id }"></td>
+                                    <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' }">
+                                        <a class="uk-link-muted" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
+                                            { String(parent.entry[field.name]) }
+                                        </a>
+                                    </td>
+                                    <td>{ (new Intl.DateTimeFormat()).format( new Date( 1000 * entry._modified )) }</td>
+                                    <td>
+                                        <span class="uk-float-right" data-uk-dropdown="\{mode:'click'\}">
 
-                                        <a class="uk-icon-bars"></a>
+                                            <a class="uk-icon-bars"></a>
 
-                                        <div class="uk-dropdown uk-dropdown-flip">
-                                            <ul class="uk-nav uk-nav-dropdown">
-                                                <li class="uk-nav-header">@lang('Actions')</li>
-                                                <li><a href="@route('/collections/entry/'.$collection['name'])/{ entry._id }">@lang('Edit')</a></li>
-                                                <li><a onclick="{ parent.remove }">@lang('Delete')</a></li>
-                                            </ul>
-                                        </div>
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                            <div class="uk-dropdown uk-dropdown-flip">
+                                                <ul class="uk-nav uk-nav-dropdown">
+                                                    <li class="uk-nav-header">@lang('Actions')</li>
+                                                    <li><a href="@route('/collections/entry/'.$collection['name'])/{ entry._id }">@lang('Edit')</a></li>
+                                                    <li><a onclick="{ parent.remove }">@lang('Delete')</a></li>
+                                                </ul>
+                                            </div>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
 
                     <div class="uk margin" if="{ loadmore }">
                         <a class="uk-button uk-width-1-1" onclick="{ load }">
