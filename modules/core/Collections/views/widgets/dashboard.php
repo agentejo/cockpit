@@ -24,8 +24,13 @@
 
         @else
 
-            <div class="uk-margin">
+            <div class="uk-margin uk-text-center uk-text-muted">
 
+                <p class="uk-text-large">
+                    <i class="uk-icon-list"></i>
+                </p>
+
+                @lang('No collections'). <a href="@route('/collections/collection')">@lang('Create a collection')</a>.
 
             </div>
 
