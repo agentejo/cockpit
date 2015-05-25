@@ -1993,8 +1993,9 @@
     UI.component('gridMatchHeight', {
 
         defaults: {
-            "target" : false,
-            "row"    : true
+            "target"        : false,
+            "row"           : true,
+            "ignorestacked" : false
         },
 
         boot: function() {
@@ -2053,7 +2054,7 @@
 
             var stacked = Math.ceil(100 * parseFloat(firstvisible.css('width')) / parseFloat(firstvisible.parent().css('width'))) >= 100;
 
-            if (stacked) {
+            if (stacked && !this.options.ignorestacked) {
                 this.revert();
             } else {
                 UI.Utils.matchHeights(this.elements, this.options);
@@ -2409,10 +2410,12 @@
 
     UI.modal.alert = function(content, options) {
 
+        options = UI.$.extend(true, {bgclose:false, keyboard:false, modal:false, labels:UI.modal.labels}, options);
+
         var modal = UI.modal.dialog(([
             '<div class="uk-margin uk-modal-content">'+String(content)+'</div>',
-            '<div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-primary uk-modal-close">Ok</button></div>'
-        ]).join(""), UI.$.extend({bgclose:false, keyboard:false, modal:false}, options));
+            '<div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-primary uk-modal-close">'+options.labels.Ok+'</button></div>'
+        ]).join(""), options);
 
         modal.on('show.uk.modal', function(){
             setTimeout(function(){
@@ -2426,11 +2429,12 @@
     UI.modal.confirm = function(content, onconfirm, options) {
 
         onconfirm = UI.$.isFunction(onconfirm) ? onconfirm : function(){};
+        options   = UI.$.extend(true, {bgclose:false, keyboard:false, modal:false, labels:UI.modal.labels}, options);
 
         var modal = UI.modal.dialog(([
             '<div class="uk-margin uk-modal-content">'+String(content)+'</div>',
-            '<div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-primary js-modal-confirm">Ok</button> <button class="uk-button uk-modal-close">Cancel</button></div>'
-        ]).join(""), UI.$.extend({bgclose:false, keyboard:false, modal:false}, options));
+            '<div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-primary js-modal-confirm">'+options.labels.Ok+'</button> <button class="uk-button uk-modal-close">'+options.labels.Cancel+'</button></div>'
+        ]).join(""), options);
 
         modal.element.find(".js-modal-confirm").on("click", function(){
             onconfirm();
@@ -2449,12 +2453,13 @@
     UI.modal.prompt = function(text, value, onsubmit, options) {
 
         onsubmit = UI.$.isFunction(onsubmit) ? onsubmit : function(value){};
+        options  = UI.$.extend(true, {bgclose:false, keyboard:false, modal:false, labels:UI.modal.labels}, options);
 
         var modal = UI.modal.dialog(([
             text ? '<div class="uk-modal-content uk-form">'+String(text)+'</div>':'',
             '<div class="uk-margin-small-top uk-modal-content uk-form"><p><input type="text" class="uk-width-1-1"></p></div>',
-            '<div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-primary js-modal-ok">Ok</button> <button class="uk-button uk-modal-close">Cancel</button></div>'
-        ]).join(""), UI.$.extend({bgclose:false, keyboard:false, modal:false}, options)),
+            '<div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-primary js-modal-ok">'+options.labels.Ok+'</button> <button class="uk-button uk-modal-close">'+options.labels.Cancel+'</button></div>'
+        ]).join(""), options),
 
         input = modal.element.find("input[type='text']").val(value || '').on('keyup', function(e){
             if (e.keyCode == 13) {
@@ -2487,6 +2492,12 @@
         modal.show();
 
         return modal;
+    };
+
+
+    UI.modal.labels = {
+        'Ok': 'Ok',
+        'Cancel': 'Cancel'
     };
 
 
@@ -2562,7 +2573,7 @@
                     active = parent.hasClass("uk-active");
 
                 $ele.wrap('<div style="overflow:hidden;height:0;position:relative;"></div>');
-                parent.data("list-container", $ele.parent());
+                parent.data("list-container", $ele.parent()[active ? 'removeClass':'addClass']('uk-hidden'));
 
                 // Init ARIA
                 parent.attr('aria-expanded', parent.hasClass("uk-open"));
@@ -2574,7 +2585,7 @@
 
         open: function(li, noanimation) {
 
-            var $this = this, element = this.element, $li = UI.$(li);
+            var $this = this, element = this.element, $li = UI.$(li), $container = $li.data('list-container');
 
             if (!this.options.multiple) {
 
@@ -2584,7 +2595,7 @@
 
                     if (ele.data("list-container")) {
                         ele.data("list-container").stop().animate({height: 0}, function() {
-                            UI.$(this).parent().removeClass("uk-open");
+                            UI.$(this).parent().removeClass("uk-open").end().addClass('uk-hidden');
                         });
                     }
                 });
@@ -2595,15 +2606,32 @@
             // Update ARIA
             $li.attr('aria-expanded', $li.hasClass("uk-open"));
 
-            if ($li.data("list-container")) {
+            if ($container) {
+
+                if ($li.hasClass("uk-open")) {
+                    $container.removeClass('uk-hidden');
+                }
 
                 if (noanimation) {
-                    $li.data('list-container').stop().height($li.hasClass("uk-open") ? "auto" : 0);
+
+                    $container.stop().height($li.hasClass("uk-open") ? "auto" : 0);
+
+                    if (!$li.hasClass("uk-open")) {
+                        $container.addClass('uk-hidden');
+                    }
+
                     this.trigger("display.uk.check");
+
                 } else {
-                    $li.data('list-container').stop().animate({
-                        height: ($li.hasClass("uk-open") ? getHeight($li.data('list-container').find('ul:first')) : 0)
+
+                    $container.stop().animate({
+                        height: ($li.hasClass("uk-open") ? getHeight($container.find('ul:first')) : 0)
                     }, function() {
+
+                        if (!$li.hasClass("uk-open")) {
+                            $container.addClass('uk-hidden');
+                        }
+
                         $this.trigger("display.uk.check");
                     });
                 }

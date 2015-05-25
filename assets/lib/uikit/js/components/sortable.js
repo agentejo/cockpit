@@ -155,7 +155,11 @@
 
                 var $target = UI.$(e.target),
                     $link   = $target.is('a[href]') ? $target:$target.parents('a[href]');
-
+                
+                if ($target.is(':input')) {
+                    return;
+                }
+                
                 e.preventDefault();
 
                 if (!supportsTouch && $link.length) {
@@ -309,7 +313,7 @@
                 }
             }
 
-            if (target.is(':input') || target.is('.'+$this.options.noDragClass) || target.closest('.'+$this.options._noDragClass).length) {
+            if (target.is('.'+$this.options.noDragClass) || target.closest('.'+$this.options._noDragClass).length) {
                 return;
             }
 

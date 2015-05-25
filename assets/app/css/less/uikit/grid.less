@@ -19,4 +19,20 @@
 // Miscellaneous
 // ========================================================================
 
-.hook-grid-misc() {}
+.hook-grid-misc() {
+
+    .uk-grid-gutter {
+        margin-top: (-1 * @global-grid-gutter);
+    }
+
+    @media (min-width: @breakpoint-xlarge) {
+
+        .uk-grid-gutter {
+            margin-top: (-1 * @global-grid-gutter-large);
+        }
+    }
+
+    .uk-grid-small.uk-grid-gutter {
+        margin-top: (-1 * @grid-gutter-small-vertical);
+    }
+}

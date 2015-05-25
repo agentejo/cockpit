@@ -85,4 +85,24 @@
 // Miscellaneous
 // ========================================================================
 
-.hook-panel-misc() {}
+.hook-panel-misc() {
+
+    .uk-panel-framed {
+        display: block;
+        border: 1px @global-border solid;
+        border-radius: @global-border-radius;
+        padding: @panel-box-padding;
+    }
+
+    .uk-panel-box-header {
+        padding: @panel-box-padding;
+        margin: (-1 * @global-margin) (-1 * @global-margin) @global-margin (-1 * @global-margin);
+        border-bottom: 1px  @global-border dotted;
+    }
+
+    .uk-panel-box-footer {
+        padding: @panel-box-padding;
+        margin: @global-margin (-1 * @global-margin) (-1 * @global-margin) (-1 * @global-margin);
+        border-top: 1px  @global-border solid;
+    }
+}
