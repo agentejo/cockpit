@@ -1,21 +1,26 @@
 <cockpit-field>
 
-    <div name="fieldcontainer" type="{ opts.type }"></div>
+    <div name="fieldcontainer" type="{ field.type }"></div>
 
     <script>
 
-        var type  = opts.type || 'text',
-            field = 'field-'+type;
+        var field = opts.field || {},
+            type  = field.type || 'text',
+            meta  = field.meta || {},
+            fc    = 'field-'+type;
 
-        if (!riot.tags[field]) {
-            field = 'field-text';
+        this.field = field;
+        this.meta  = meta;
+
+        if (!riot.tags[fc]) {
+            fc = 'field-text';
         }
 
         if (opts.bind) {
             this.fieldcontainer.setAttribute('bind', opts.bind);
         }
 
-        riot.mount(this.fieldcontainer, field);
+        riot.mount(this.fieldcontainer, fc, meta);
 
     </script>
 
@@ -90,3 +95,34 @@
     </script>
 
 </field-longtext>
+
+<field-select>
+
+    <select name="input" class="uk-width-1-1 uk-form-large">
+        <option each="{ option,idx in options }" value="{ option }">{ option }</option>
+    </select>
+
+    <script>
+
+        console.log(opts);
+
+        this.options = opts.options || []
+
+        if (typeof(this.options) === 'string') {
+
+            var options = [];
+
+            this.options.split(',').forEach(function(option) {
+                options.push(option.trim());
+            });
+
+            this.options = options;
+        }
+
+        if (opts.bind) {
+            this.input.setAttribute('bind', opts.bind);
+        }
+
+    </script>
+
+</field-select>

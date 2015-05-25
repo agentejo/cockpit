@@ -112,7 +112,7 @@
                                                             <option value="password">Password</option>
                                                             <option value="number">Number</option>
                                                             <option value="boolean">Boolean</option>
-                                                            <option value="variant">Misc.</option>
+                                                            <option value="select">Select</option>
                                                         </select>
                                                     </div>
                                                 </div>

@@ -49,7 +49,7 @@
 
         <div if="{ entries.length || filter }">
 
-            <div class="uk-grid uk-grid-divider uk-grid-margin uk-animation-fade">
+            <div class="uk-grid uk-grid-divider uk-grid-margin">
 
                 <div class="uk-width-medium-3-4">
 
@@ -89,7 +89,7 @@
                                     <td><input type="checkbox" data-check data-id="{ entry._id }"></td>
                                     <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' }">
                                         <a class="uk-link-muted" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
-                                            { String(parent.entry[field.name]) }
+                                            { String(parent.entry[field.name] === undefined ? '': parent.entry[field.name]) }
                                         </a>
                                     </td>
                                     <td>{ (new Intl.DateTimeFormat()).format( new Date( 1000 * entry._modified )) }</td>
