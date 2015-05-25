@@ -99,12 +99,11 @@
 <field-select>
 
     <select name="input" class="uk-width-1-1 uk-form-large">
+        <option value=""></option>
         <option each="{ option,idx in options }" value="{ option }">{ option }</option>
     </select>
 
     <script>
-
-        console.log(opts);
 
         this.options = opts.options || []
 
