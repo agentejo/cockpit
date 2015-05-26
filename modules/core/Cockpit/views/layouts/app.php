@@ -21,9 +21,9 @@
 
                 <div class="uk-grid">
 
-                    <div class="uk-flex-item-1">
+                    <div>
 
-                        <div class="uk-position-inline-block" data-uk-dropdown="{delay: 200}">
+                        <div class="uk-position-inline-block" data-uk-dropdown>
 
                             <strong class="uk-contrast">
                                 <a href="#">

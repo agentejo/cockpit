@@ -106,7 +106,6 @@
         this.on('mount', function(){
 
 
-
             $root.on('click', '[data-check]', function() {
 
                 if (this.getAttribute('data-check') == 'all') {
@@ -125,8 +124,7 @@
 
                 UIkit.sortable(this.sortableroot, {
 
-                    dragCustomClass:'.js-sortable-handle',
-                    animarion: false
+                    animation: false
 
                 }).element.on("change.uk.sortable", function(e, sortable, ele){
 

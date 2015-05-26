@@ -105,7 +105,8 @@
                         } catch(e) { return {}; }
 
                     });
-                    
+
+                    input.trigger('bind-init', [input, component]);
                 });
 
             });

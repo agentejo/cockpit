@@ -9,21 +9,39 @@
 
     <form class="uk-form" onsubmit="{ submit }">
 
-        <div class="uk-grid uk-grid-small">
+        <div class="uk-grid uk-grid-divider">
 
-            <div class="uk-width-1-2">
-                <input class="uk-width-1-1 uk-form-large" type="text" name="name" bind="collection.name" placeholder="@lang('Name')" required>
+            <div class="uk-width-medium-2-3">
+
+                 <div class="uk-grid uk-grid-small">
+
+                    <div class="uk-width-1-2">
+                        <input class="uk-width-1-1 uk-form-large" type="text" name="name" bind="collection.name" placeholder="@lang('Name')" required>
+                    </div>
+
+                    <div class="uk-width-1-2">
+                        <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="collection.label" placeholder="@lang('Label')">
+                    </div>
+
+                    <div class="uk-width-1-1 uk-grid-margin">
+                        <textarea class="uk-width-1-1 uk-form-large" name="description" bind="collection.description" placeholder="@lang('Description')"></textarea>
+                    </div>
+
+                </div>
+
             </div>
 
-            <div class="uk-width-1-2">
-                <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="collection.label" placeholder="@lang('Label')">
-            </div>
+            <div class="uk-width-medium-1-3">
 
-            <div class="uk-width-1-1 uk-grid-margin">
-                <textarea class="uk-width-1-1 uk-form-large" name="description" bind="collection.description" placeholder="@lang('Description')"></textarea>
+                <div class="uk-margin">
+                    <field-boolean bind="collection.sortable" title="@lang('Sortable entries')" cls="uk-form-small"></field-boolean>
+                    <strong>@lang('Sortable entries')</strong>
+                </div>
+
             </div>
 
         </div>
+
 
         <div class="uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ !collection.fields.length && !reorder }">
 
@@ -41,11 +59,13 @@
 
         </div>
 
-        <div class="uk-form-row">
+        <div class="uk-form-row uk-margin-large-top">
 
             <div class="uk-margin-top" show="{ collection.fields.length }">
 
                 <h4>@lang('Fields')</h4>
+
+
 
 
                 <div name="fieldscontainer" class="uk-grid uk-grid-small uk-grid-gutter">
@@ -83,7 +103,7 @@
 
                                     <div class="uk-button-group">
 
-                                        <a class="uk-button uk-button-small uk-button-{ field.lst ? 'success':''}" onclick="{ parent.togglelist }">
+                                        <a class="uk-button uk-button-small uk-button-{ field.lst ? 'success':''}" onclick="{ parent.togglelist }" title="@lang('Show field on list view')">
                                             <i class="uk-icon-list"></i>
                                         </a>
 
@@ -160,14 +180,14 @@
                 </div>
 
                 <div class="uk-margin-top">
-                    <a onclick="{ addfield }">@lang('Add field')</a>
+                    <a onclick="{ addfield }"><i class="uk-icon-plus-circle"></i> @lang('Add field')</a>
                 </div>
 
             </div>
 
         </div>
 
-        <div class="uk-form-row" show="{ collection.fields.length }">
+        <div class="uk-margin-large-top" show="{ collection.fields.length }">
 
             <div class="uk-button-group uk-margin-right">
                 <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>

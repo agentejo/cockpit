@@ -20,6 +20,10 @@
             this.fieldcontainer.setAttribute('bind', opts.bind);
         }
 
+        if (opts.cls) {
+            this.fieldcontainer.setAttribute('cls', opts.cls);
+        }
+
         riot.mount(this.fieldcontainer, fc, meta);
 
     </script>
@@ -29,12 +33,16 @@
 
 <field-text>
 
-    <input name="input" class="uk-width-1-1 uk-form-large" type="{ opts.type || 'text' }">
+    <input name="input" class="uk-width-1-1" type="{ opts.type || 'text' }">
 
     <script>
 
         if (opts.bind) {
             this.input.setAttribute('bind', opts.bind);
+        }
+
+        if (opts.cls) {
+            App.$(this.input).addClass(opts.cls);
         }
 
         if (opts.required) {
@@ -49,7 +57,7 @@
 <field-password>
 
     <div class="uk-form-password uk-width-1-1">
-        <input name="input" class="uk-width-1-1 uk-form-large" type="password">
+        <input name="input" class="uk-width-1-1" type="password">
         <a href="" class="uk-form-password-toggle" data-uk-form-password>Show</a>
     </div>
 
@@ -57,6 +65,10 @@
 
         if (opts.bind) {
             this.input.setAttribute('bind', opts.bind);
+        }
+
+        if (opts.cls) {
+            App.$(this.input).addClass(opts.cls);
         }
 
         this.on('mount', function(){
@@ -74,12 +86,30 @@
 
 <field-boolean>
 
-    <input type="checkbox" name="input" class="uk-width-1-1">
+    <button type="button" name="button" class="uk-button uk-button-{ input.checked ? 'success':'default'}" onclick="{ toggle }"><i class="uk-icon-check"></i></button>
+
+    <input type="checkbox" name="input" class="uk-width-1-1 uk-hidden">
 
     <script>
 
+        var $this = this, $input =  App.$(this.input);
+
         if (opts.bind) {
             this.input.setAttribute('bind', opts.bind);
+        }
+
+        if (opts.cls) {
+            App.$(this.button).addClass(opts.cls.replace(/uk\-form\-/g, 'uk-button-'));
+        }
+
+        this.button.innerHTML = opts.label || '<i class="uk-icon-check"></i>';
+
+        $input.on('bind-init', function(){
+            $this.update();
+        });
+
+        toggle() {
+            $input.prop('checked', !this.input.checked).trigger('change', [$this]);
         }
 
     </script>
@@ -88,12 +118,16 @@
 
 <field-longtext>
 
-    <textarea name="input" class="uk-width-1-1 uk-form-large"></textarea>
+    <textarea name="input" class="uk-width-1-1"></textarea>
 
     <script>
 
         if (opts.bind) {
             this.input.setAttribute('bind', opts.bind);
+        }
+
+        if (opts.cls) {
+            App.$(this.input).addClass(opts.cls);
         }
 
         if (opts.required) {
@@ -106,7 +140,7 @@
 
 <field-select>
 
-    <select name="input" class="uk-width-1-1 uk-form-large">
+    <select name="input" class="uk-width-1-1">
         <option value=""></option>
         <option each="{ option,idx in options }" value="{ option }">{ option }</option>
     </select>
@@ -130,6 +164,10 @@
             this.input.setAttribute('bind', opts.bind);
         }
 
+        if (opts.cls) {
+            App.$(this.input).addClass(opts.cls);
+        }
+
         if (opts.required) {
             this.fieldcontainer.setAttribute('required', 'required');
         }
@@ -141,8 +179,8 @@
 <field-file>
 
     <div class="uk-flex">
-        <input class="uk-flex-item-1 uk-form-large uk-margin-small-right" type="text" name="input">
-        <button type="button" class="uk-button uk-button-large" name="picker"><i class="uk-icon-hand-o-up"></i></button>
+        <input class="uk-flex-item-1 uk-margin-small-right" type="text" name="input">
+        <button type="button" class="uk-button" name="picker"><i class="uk-icon-hand-o-up"></i></button>
     </div>
 
     <script>

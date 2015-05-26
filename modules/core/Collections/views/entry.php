@@ -24,7 +24,7 @@
                     <label class="uk-text-bold">{ field.label || field.name }</label>
 
                     <div class="uk-margin-small-top">
-                        <cockpit-field field="{ field }" bind="entry.{field.name}"></cockpit-field>
+                        <cockpit-field field="{ field }" bind="entry.{field.name}" cls="uk-form-large"></cockpit-field>
                     </div>
 
                     <div class="uk-margin-small-top uk-text-small uk-text-muted">
