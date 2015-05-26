@@ -37,6 +37,10 @@
             this.input.setAttribute('bind', opts.bind);
         }
 
+        if (opts.required) {
+            this.fieldcontainer.setAttribute('required', 'required');
+        }
+
     </script>
 
 </field-text>
@@ -92,6 +96,10 @@
             this.input.setAttribute('bind', opts.bind);
         }
 
+        if (opts.required) {
+            this.fieldcontainer.setAttribute('required', 'required');
+        }
+
     </script>
 
 </field-longtext>
@@ -120,6 +128,10 @@
 
         if (opts.bind) {
             this.input.setAttribute('bind', opts.bind);
+        }
+
+        if (opts.required) {
+            this.fieldcontainer.setAttribute('required', 'required');
         }
 
     </script>

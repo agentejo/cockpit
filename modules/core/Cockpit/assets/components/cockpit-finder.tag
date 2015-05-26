@@ -290,6 +290,11 @@
 
         open(evt) {
 
+            if (opts.previewfiles === false) {
+                this.select(evt, true);
+                return;
+            }
+
             var file = evt.item.file,
                 name = file.name.toLowerCase();
 
@@ -321,9 +326,9 @@
             });
         }
 
-        select(e) {
+        select(e, force) {
 
-            if (e && e.item && !e.target.classList.contains('js-no-item-select') && !App.$(e.target).parents('.js-no-item-select').length) {
+            if (e && e.item && force || !e.target.classList.contains('js-no-item-select') && !App.$(e.target).parents('.js-no-item-select').length) {
 
                 // remove any text selection
                 try {
@@ -373,6 +378,10 @@
                 }
 
                 this.selected.count = Object.keys(this.selected.paths).length;
+
+                if (opts.onChangeSelect) {
+                    opts.onChangeSelect(this.selected);
+                }
             }
         }
 
@@ -549,6 +558,10 @@
             }
 
             this.selected  = {count:0, paths:{}};
+
+            if (opts.onChangeSelect) {
+                opts.onChangeSelect(this.selected);
+            }
         }
 
         getIconCls(file) {

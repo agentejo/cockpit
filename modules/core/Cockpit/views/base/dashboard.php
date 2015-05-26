@@ -13,7 +13,7 @@
         @trigger('admin.dashboard.main')
     </div>
     <div class="uk-width-medium-1-2">
-        <div class="uk-grid uk-grid-width-medium-1-2" data-uk-grid-match="{target:'.app-panel'}">
+        <div class="uk-grid uk-grid-gutter uk-grid-width-medium-1-2">
             @trigger('admin.dashboard.aside')
         </div>
     </div>

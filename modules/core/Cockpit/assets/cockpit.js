@@ -29,11 +29,81 @@
             });
 
             return req;
+        },
+
+        media: {
+
+            select: function(callback, options) {
+
+                callback = callback || function(){};
+
+                options  = App.$.extend({
+                    previewfiles: false,
+                    pattern  : '*',
+                    selected : []
+                }, options)
+
+                var selected = [], dialog = UIkit.modal.dialog([
+                    '<div>',
+                        '<div class="uk-modal-header uk-text-large">Select file</div>',
+                        '<cockpit-finder></cockpit-finder>',
+                        '<div class="uk-modal-footer uk-text-right">',
+                            '<button class="uk-button uk-button-primary uk-margin-right uk-button-large uk-hidden js-select-button"><span></span> selected</button>',
+                            '<button class="uk-button uk-button-large uk-modal-close">Close</button>',
+                        '</div>',
+                    '</div>'
+                ].join(''), {modal:false});
+
+                dialog.dialog.addClass('uk-modal-dialog-large');
+
+                var selectbtn   = dialog.dialog.find('.js-select-button'),
+                    selectcount = selectbtn.find('span');
+
+                options.onChangeSelect = function(s) {
+
+                    selected = [];
+
+                    if (s.count) {
+
+                        Object.keys(s.paths).forEach(function(path) {
+
+                            if (matchName(options.pattern, path)) {
+                                selected.push(path);
+                            }
+                        });
+                    }
+
+                    selectbtn[selected.length ? 'removeClass':'addClass']('uk-hidden');
+                    selectcount.text(selected.length);
+                };
+
+                riot.mount(dialog.element[0], '*', options);
+
+                selectbtn.on('click', function() {
+                    callback(selected);
+                    dialog.hide();
+                });
+
+                dialog.show();
+            }
         }
     };
 
     App.$.extend(true, App, Cockpit);
 
     window.Cockpit = Cockpit;
+
+
+    function matchName(pattern, path) {
+
+        var parsedPattern = '^' + pattern.replace(/\//g, '\\/').
+            replace(/\*\*/g, '(\\/[^\\/]+)*').
+            replace(/\*/g, '[^\\/]+').
+            replace(/((?!\\))\?/g, '$1.') + '$';
+
+        parsedPattern = '^' + parsedPattern + '$';
+
+        return (path.match(new RegExp(parsedPattern)) !== null);
+    }
 
 })(jQuery);
