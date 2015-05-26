@@ -113,6 +113,7 @@
                                                             <option value="number">Number</option>
                                                             <option value="boolean">Boolean</option>
                                                             <option value="select">Select</option>
+                                                            <option value="file">File</option>
                                                         </select>
                                                     </div>
                                                 </div>

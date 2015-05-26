@@ -67,7 +67,7 @@
 
                         Object.keys(s.paths).forEach(function(path) {
 
-                            if (matchName(options.pattern, path)) {
+                            if (options.pattern == '*' || matchName(options.pattern, path)) {
                                 selected.push(path);
                             }
                         });
