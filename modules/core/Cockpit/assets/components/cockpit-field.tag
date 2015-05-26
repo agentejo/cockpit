@@ -18,6 +18,7 @@
 
         if (opts.bind) {
             this.fieldcontainer.setAttribute('bind', opts.bind);
+            this.root.removeAttribute('bind');
         }
 
         if (opts.cls) {
@@ -39,6 +40,7 @@
 
         if (opts.bind) {
             this.input.setAttribute('bind', opts.bind);
+            this.root.removeAttribute('bind');
         }
 
         if (opts.cls) {
@@ -65,6 +67,7 @@
 
         if (opts.bind) {
             this.input.setAttribute('bind', opts.bind);
+            this.root.removeAttribute('bind');
         }
 
         if (opts.cls) {
@@ -86,17 +89,9 @@
 
 <field-boolean>
 
-    <button type="button" name="button" class="uk-button uk-button-{ input.checked ? 'success':'default'}" onclick="{ toggle }"><i class="uk-icon-check"></i></button>
-
-    <input type="checkbox" name="input" class="uk-width-1-1 uk-hidden">
+    <button type="button" name="button" class="uk-button uk-button-{ checked ? 'success':'default'}" onclick="{ toggle }"><i class="uk-icon-check"></i></button>
 
     <script>
-
-        var $this = this, $input =  App.$(this.input);
-
-        if (opts.bind) {
-            this.input.setAttribute('bind', opts.bind);
-        }
 
         if (opts.cls) {
             App.$(this.button).addClass(opts.cls.replace(/uk\-form\-/g, 'uk-button-'));
@@ -104,12 +99,21 @@
 
         this.button.innerHTML = opts.label || '<i class="uk-icon-check"></i>';
 
-        $input.on('bind-init', function(){
-            $this.update();
-        });
+        this.root.$updateValue = function(value) {
+
+            if (this.checked != value) {
+
+                this.checked = value;
+                this.update();
+            }
+
+        }.bind(this);
 
         toggle() {
-            $input.prop('checked', !this.input.checked).trigger('change', [$this]);
+
+            if (this.root.$setValue) {
+                this.root.$setValue(!this.checked);
+            }
         }
 
     </script>
@@ -124,6 +128,7 @@
 
         if (opts.bind) {
             this.input.setAttribute('bind', opts.bind);
+            this.root.removeAttribute('bind');
         }
 
         if (opts.cls) {
@@ -162,6 +167,7 @@
 
         if (opts.bind) {
             this.input.setAttribute('bind', opts.bind);
+            this.root.removeAttribute('bind');
         }
 
         if (opts.cls) {
@@ -189,6 +195,7 @@
 
         if (opts.bind) {
             this.input.setAttribute('bind', opts.bind);
+            this.root.removeAttribute('bind');
         }
 
         App.$([this.picker, this.input]).on('click', function() {

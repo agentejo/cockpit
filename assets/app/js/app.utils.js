@@ -45,7 +45,10 @@
 
         if (!riot) return;
 
-        // overrid tag method to know which tags exist
+        /**
+         * override tag method to know which tags exist
+         */
+
         riot.tag  = (function(_tag) {
 
             riot.tags = {};
@@ -59,54 +62,83 @@
 
         })(riot.tag);
 
+
+        /**
+         * simple two way data-binding
+         */
+
         riot.util.bindInputs = function(component, attr) {
 
             attr = attr || 'bind';
 
-            var $root = App.$(component.root), update = function(input) {
-                try {
-
-                    if (input.is('[type="checkbox"]')) {
-                        (new Function('comp', 'input', 'if(comp.'+input.attr(attr)+'!==input.prop("checked")) input.prop("checked", comp.'+input.attr(attr)+');'))(component, input);
-                    } else {
-                        (new Function('comp', 'input', 'if(comp.'+input.attr(attr)+'!==input.val()) input.val(comp.'+input.attr(attr)+');'))(component, input);
-                    }
-
-                } catch(e) {}
-            };
+            var $root = App.$(component.root);
 
             // init values
-            component.on('mount updated', function(){
+            component.on('mount updated', function() {
 
-                $root.find(':input['+attr+']').each(function() {
+                $root.find('['+attr+']').each(function() {
 
-                    var input = App.$(this);
 
-                    update(input);
+                    if (!this.$setValue) {
 
-                    if (input.data('riot-bind')) {
-                        return;
+                        this.$setValue = function(value) {
+
+                            try {
+
+                                (new Function('comp', 'val', 'comp.'+this.getAttribute(attr)+' = val;comp.update(); '))(component, value);
+
+                            } catch(e) {}
+
+                        }.bind(this);
                     }
 
-                    input.data('riot-bind', function() {
-                        update(input);
-                    }).on(input.attr(attr+'-event') || 'change', function() {
 
-                        try {
+                    if (!this.$updateValue) {
 
-                            if (input.is('[type="checkbox"]')) {
-                                (new Function('comp', 'input', 'comp.'+input.attr(attr)+' = input.prop("checked");'))(component, input);
-                            } else {
-                                (new Function('comp', 'input', 'comp.'+input.attr(attr)+' = input.val();'))(component, input);
+                        var ele = App.$(this);
+
+                        this.$updateValue = function(value) {}
+
+                        if (ele.is(':input')) {
+
+                            ele.on(ele.attr(attr+'-event') || 'change', function() {
+
+                                try {
+
+                                    if (ele.is('[type="checkbox"]')) {
+                                        this.$setValue(ele.prop("checked"));
+                                    } else {
+                                        this.$setValue(ele.val());
+                                    }
+
+                                } catch(e) { return {}; }
+
+                            });
+
+                            this.$updateValue = function(value) {
+
+                                try {
+
+                                    if (ele.is('[type="checkbox"]')) {
+                                        (new Function('input', 'val', 'if(val!==input.prop("checked")) input.prop("checked", val);'))(ele, value);
+                                    } else {
+                                        (new Function('input', 'val', 'if(val!==input.val()) input.val(val);'))(ele, value);
+                                    }
+
+                                } catch(e) {}
                             }
+                        }
 
-                            component.update();
+                        ele.trigger('mount-data-binding', [ele, component]);
+                    }
 
-                        } catch(e) { return {}; }
+                    try {
 
-                    });
+                        var value = (new Function('comp', 'return comp.'+this.getAttribute(attr)+';'))(component);
 
-                    input.trigger('bind-init', [input, component]);
+                        this.$updateValue(value);
+
+                    } catch(e) {}
                 });
 
             });
