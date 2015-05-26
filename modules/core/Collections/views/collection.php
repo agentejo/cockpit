@@ -210,7 +210,6 @@
                 fields.splice(cidx, 0, fields.splice(oidx, 1)[0]);
 
                 // hack to force complete fields rebuild
-                console.log( $this.fieldscontainer.clientHeight)
                 $this.fieldscontainer.style.height = $this.fieldscontainer.clientHeight;
                 $this.collection.fields = [];
                 $this.reorder = true;

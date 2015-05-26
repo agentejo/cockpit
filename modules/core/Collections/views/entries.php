@@ -27,6 +27,7 @@
 
 <div class="uk-margin-top" riot-view>
 
+
     <div show="{ ready }">
 
 
@@ -53,71 +54,8 @@
 
                 <div class="uk-width-medium-3-4">
 
-                    <div class="uk-margin">
+                    @render('collections:views/partials/entries'.($collection['sortable'] ? '.sortable':'').'.php', compact('collection'))
 
-                        <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted">
-
-                            <i class="uk-icon-filter"></i>
-                            <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" name="txtfilter" placeholder="@lang('Filter items...')" onchange="{ updatefilter }">
-
-                        </div>
-
-                    </div>
-
-                    <div class="uk-alert" if="{ !entries.length && filter }">
-                        @lang('No entries found').
-                    </div>
-
-                    <div class="uk-overflow-container">
-
-                        <table class="uk-table uk-table-striped uk-margin-top" if="{ entries.length }">
-                            <thead>
-                                <tr>
-                                    <th width="20"><input type="checkbox" data-check="all"></th>
-                                    <th each="{field,idx in fields}">
-                                        <a class="uk-link-muted { parent.sort[field.name] ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
-                                            <span if="{parent.sort[field.name]}" class="uk-animation-fade uk-icon-caret-{ parent.sort[field.name] == 1 ? 'up':'down'}"></span>
-                                            <span if="{!parent.sort[field.name]}" class="uk-icon-sort uk-text-muted"></span>
-                                            { field.label || field.name }
-                                        </a>
-                                    </th>
-                                    <th width="20"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr each="{entry,idx in entries}">
-                                    <td><input type="checkbox" data-check data-id="{ entry._id }"></td>
-                                    <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' }">
-                                        <a class="uk-link-muted" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
-                                            { String(parent.entry[field.name] === undefined ? '': parent.entry[field.name]) }
-                                        </a>
-                                    </td>
-                                    <td>{ (new Intl.DateTimeFormat()).format( new Date( 1000 * entry._modified )) }</td>
-                                    <td>
-                                        <span class="uk-float-right" data-uk-dropdown="\{mode:'click'\}">
-
-                                            <a class="uk-icon-bars"></a>
-
-                                            <div class="uk-dropdown uk-dropdown-flip">
-                                                <ul class="uk-nav uk-nav-dropdown">
-                                                    <li class="uk-nav-header">@lang('Actions')</li>
-                                                    <li><a href="@route('/collections/entry/'.$collection['name'])/{ entry._id }">@lang('Edit')</a></li>
-                                                    <li><a onclick="{ parent.remove }">@lang('Delete')</a></li>
-                                                </ul>
-                                            </div>
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                    </div>
-
-                    <div class="uk margin" if="{ loadmore }">
-                        <a class="uk-button uk-width-1-1" onclick="{ load }">
-                            @lang('Load more..')
-                        </a>
-                    </div>
                 </div>
                 <div class="uk-width-medium-1-4 uk-form">
 
@@ -167,7 +105,7 @@
 
         this.on('mount', function(){
 
-            this.load();
+
 
             $root.on('click', '[data-check]', function() {
 
@@ -179,6 +117,39 @@
 
                 $this.update();
             });
+
+
+            if (this.collection.sortable) {
+
+                this.sort = {'_order': 1};
+
+                UIkit.sortable(this.sortableroot, {
+
+                    dragCustomClass:'.js-sortable-handle',
+                    animarion: false
+
+                }).element.on("change.uk.sortable", function(e, sortable, ele){
+
+                    var updates = [];
+
+                    App.$($this.sortableroot).children().each(function(idx) {
+
+                        updates.push({'_id':this.getAttribute('data-id'),'_order':idx});
+
+                    });
+
+                    if (updates.length) {
+
+                        App.callmodule('collections:save',[$this.collection.name, updates]).then(function(){
+                            App.ui.notify("Entries reordered", "success");
+                        });
+                    }
+
+                });
+            }
+
+            this.load();
+
         });
 
         remove(e, entry, idx) {
@@ -234,12 +205,17 @@
 
         load() {
 
-            var limit = 25;
+            var limit = 50;
 
-            var options = {sort:this.sort, limit: limit, skip: this.entries.length || 0 };
+            var options = { sort:this.sort };
 
             if (this.filter) {
                 options.filter = this.filter;
+            }
+
+            if (!this.collection.sortable) {
+                options.limit = limit;
+                options.skip  = this.entries.length || 0;
             }
 
             return App.callmodule('collections:find', [this.collection.name, options]).then(function(data){

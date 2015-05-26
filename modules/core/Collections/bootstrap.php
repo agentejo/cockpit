@@ -151,6 +151,11 @@ $this->module("collections")->extend([
 
         $collection = $collections["_id"];
 
+        // sort by custom order if collection is sortable
+        if (isset($collections['sortable']) && $collections['sortable'] && !isset($options['sort'])) {
+            $options['sort'] = ['_order' => 1];
+        }
+
         return (array)$this->app->storage->find("collections/{$collection}", $options);
     },
 
@@ -172,81 +177,90 @@ $this->module("collections")->extend([
         if (!$collections) return false;
 
         $collection = $collections["_id"];
-        $isUpdate   = isset($data["_id"]);
+        $data       = isset($data[0]) ? $data : [$data];
+        $return     = [];
+        $modified   = time();
 
-        $data['_modified'] = time();
+        foreach($data as $entry) {
 
-        if (isset($collections['fields'])) {
+            $isUpdate = isset($entry["_id"]);
 
-            foreach($collections['fields'] as $field) {
+            $entry['_modified'] = $modified;
 
-                // skip missing fields on update
-                if (!isset($data[$field['name']]) && $isUpdate) {
-                    continue;
+            if (isset($collections['fields'])) {
+
+                foreach($collections['fields'] as $field) {
+
+                    // skip missing fields on update
+                    if (!isset($entry[$field['name']]) && $isUpdate) {
+                        continue;
+                    }
+
+                    if (!isset($entry[$field['name']])) {
+                        $value = isset($field['default']) ? $field['default'] : '';
+                    } else {
+                        $value = $entry[$field['name']];
+                    }
+
+                    switch($field['type']) {
+
+                        case 'string':
+                        case 'text':
+                            $value = (string)$value;
+                            break;
+
+                        case 'boolean':
+
+                            if ($value === 'true' || $value === 'false') {
+                                $value = $value === 'true' ? true:false;
+                            } else {
+                                $value = $value ? true:false;
+                            }
+
+                            break;
+
+                        case 'number':
+                            $value = is_numeric($value) ? $value:0;
+                            break;
+
+                        case 'url':
+                            $value = filter_var($value, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED) ? $value:null;
+                            break;
+
+                        case 'email':
+                            $value = filter_var($value, FILTER_VALIDATE_EMAIL) ? $value:null;
+                            break;
+
+                        case 'password':
+
+                            if ($value) {
+
+                                $value = $this->app->hash($value);
+                            }
+
+                            break;
+
+                    }
+
+                    if ($isUpdate && $field['type'] == 'password' && !$value && isset($entry[$field['name']])) {
+                        unset($entry[$field['name']]);
+                    } else {
+                        $entry[$field['name']] = $value;
+                    }
+
                 }
-
-                if (!isset($data[$field['name']])) {
-                    $value = isset($field['default']) ? $field['default'] : '';
-                } else {
-                    $value = $data[$field['name']];
-                }
-
-                switch($field['type']) {
-
-                    case 'string':
-                    case 'text':
-                        $value = (string)$value;
-                        break;
-
-                    case 'boolean':
-
-                        if ($value === 'true' || $value === 'false') {
-                            $value = $value === 'true' ? true:false;
-                        } else {
-                            $value = $value ? true:false;
-                        }
-
-                        break;
-
-                    case 'number':
-                        $value = is_numeric($value) ? $value:0;
-                        break;
-
-                    case 'url':
-                        $value = filter_var($value, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED) ? $value:null;
-                        break;
-
-                    case 'email':
-                        $value = filter_var($value, FILTER_VALIDATE_EMAIL) ? $value:null;
-                        break;
-
-                    case 'password':
-
-                        if ($value) {
-
-                            $value = $this->app->hash($value);
-                        }
-
-                        break;
-
-                }
-
-                if ($isUpdate && $field['type'] == 'password' && !$value && isset($data[$field['name']])) {
-                    unset($data[$field['name']]);
-                } else {
-                    $data[$field['name']] = $value;
-                }
-
             }
+
+            if (!$isUpdate) {
+                $entry["_created"] = $entry["_modified"];
+            }
+
+            $ret = $this->app->storage->save("collections/{$collection}", $entry);
+
+            $return[] = $ret ? $entry : false;
         }
 
-        if (!$isUpdate) {
-            $data["_created"] = $data["_modified"];
-        }
-
-        $ret = $this->app->storage->save("collections/{$collection}", $data);
-
-        return $ret ? $data : false;
+        return count($return) == 1 ? $return[0] : $return;
     },
 
     'remove' => function($collection, $criteria) {

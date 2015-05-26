@@ -26,18 +26,33 @@ class App extends \Lime\App {
             //register app helper functions
             $renderer->extend(function($content){
 
-                $content = preg_replace('/(\s*)@extend\((.+?)\)/' , '$1<?php $extend($2); ?>', $content);
-                $content = preg_replace('/(\s*)@base\((.+?)\)/'   , '$1<?php $app->base($2); ?>', $content);
-                $content = preg_replace('/(\s*)@route\((.+?)\)/'  , '$1<?php $app->route($2); ?>', $content);
-                $content = preg_replace('/(\s*)@scripts\((.+?)\)/', '$1<?php echo $app->assets($2); ?>', $content);
-                $content = preg_replace('/(\s*)@render\((.+?)\)/' , '$1<?php echo $app->view($2); ?>', $content);
-                $content = preg_replace('/(\s*)@trigger\((.+?)\)/', '$1<?php $app->trigger($2); ?>', $content);
-                $content = preg_replace('/(\s*)@lang\((.+?)\)/'   , '$1<?php echo $app("i18n")->get($2); ?>', $content);
+                $replace = [
+                    'extend'   => '<?php $extend(expr); ?>',
+                    'base'     => '<?php $app->base(expr); ?>',
+                    'route'    => '<?php $app->route(expr); ?>',
+                    'trigger'  => '<?php $app->trigger(expr); ?>',
+                    'assets'   => '<?php echo $app->assets(expr); ?>',
+                    'start'    => '<?php $app->start(expr); ?>',
+                    'end'      => '<?php $app->end(expr); ?>',
+                    'block'    => '<?php $app->block(expr); ?>',
+                    'url'      => '<?php echo $app->pathToUrl(expr); ?>',
+                    'view'     => '<?php echo $app->view(expr); ?>',
+                    'render'   => '<?php echo $app->view(expr); ?>',
+                    'include'  => '<?php echo include($app->path(expr)); ?>',
+                    'lang'     => '<?php echo $app("i18n")->get(expr); ?>',
+                ];
 
-                $content = preg_replace('/(\s*)@start\((.+?)\)/'   , '$1<?php $app->start($2); ?>', $content);
-                $content = preg_replace('/(\s*)@end\((.+?)\)/'     , '$1<?php $app->end($2); ?>', $content);
-                $content = preg_replace('/(\s*)@block\((.+?)\)/'   , '$1<?php $app->block($2); ?>', $content);
-                $content = preg_replace('/(\s*)@include\((.+?)\)/' , '$1<?php @include($app->path($2)); ?>', $content);
+
+                $content = preg_replace_callback('/\B@(\w+)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \))?/x', function($match) use($replace) {
+
+                    if (isset($match[3]) && trim($match[1]) && isset($replace[$match[1]])) {
+                        return str_replace('(expr)', $match[3], $replace[$match[1]]);
+                    }
+
+                    return $match[0];
+
+                }, $content);
+
 
                 return $content;
             });

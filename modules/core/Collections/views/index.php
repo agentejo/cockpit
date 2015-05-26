@@ -15,7 +15,7 @@
             <div class="uk-animation-fade">
 
                 <p class="uk-text-xlarge">
-                    <i class="uk-icon-database"></i>
+                    <i class="uk-icon-list"></i>
                 </p>
 
                 <hr>
