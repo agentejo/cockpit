@@ -4,13 +4,10 @@
 
     <script>
 
-        var field = opts.field || {},
-            type  = field.type || 'text',
-            meta  = field.meta || {},
-            fc    = 'field-'+type;
-
-        this.field = field;
-        this.meta  = meta;
+        var field   = opts.field || {},
+            type    = field.type || 'text',
+            options = field.options || {},
+            fc      = 'field-'+type;
 
         if (!riot.tags[fc]) {
             fc = 'field-text';
@@ -25,7 +22,7 @@
             this.fieldcontainer.setAttribute('cls', opts.cls);
         }
 
-        riot.mount(this.fieldcontainer, fc, meta);
+        riot.mount(this.fieldcontainer, fc, options);
 
     </script>
 

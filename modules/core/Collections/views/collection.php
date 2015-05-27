@@ -151,8 +151,8 @@
                                                 </div>
 
                                                 <div class="uk-form-row">
-                                                    <div class="uk-text-small uk-text-bold">@lang('Meta') <span class="uk-text-muted">JSON</span></div>
-                                                    <textarea class="uk-width-1-1" bind="collection.fields[{idx}].meta"></textarea>
+                                                    <div class="uk-text-small uk-text-bold">@lang('Options') <span class="uk-text-muted">JSON</span></div>
+                                                    <textarea class="uk-width-1-1" bind="collection.fields[{idx}].options"></textarea>
                                                 </div>
 
                                                 <div class="uk-form-row">
@@ -205,7 +205,7 @@
 
         this.collection = {{ json_encode($collection) }};
 
-        stringifyFieldMeta();
+        stringifyOptionsField();
 
         riot.util.bindInputs(this);
 
@@ -262,7 +262,7 @@
                 'type'    : 'text',
                 'default' : '',
                 'info'    : '',
-                'meta'    : '{}',
+                'options' : '{}',
                 'width'   : '1-1',
                 'lst'     : true
             });
@@ -281,7 +281,7 @@
             var collection = this.collection;
 
             collection.fields.forEach(function(field){
-                field.meta = App.Utils.str2json(field.meta) || {};
+                field.options = App.Utils.str2json(field.options) || {};
             });
 
             App.callmodule('collections:saveCollection', [this.collection.name, collection]).then(function(data) {
@@ -291,7 +291,7 @@
                     App.ui.notify("Saving successfull", "success");
                     $this.collection = data.result;
 
-                    stringifyFieldMeta();
+                    stringifyOptionsField();
 
                     $this.update();
 
@@ -302,12 +302,17 @@
             });
         }
 
-        function stringifyFieldMeta() {
+        function stringifyOptionsField() {
 
-            $this.collection.fields.forEach(function(field){
+            $this.collection.fields.forEach(function(field, options){
 
-                field.meta = field.meta ? JSON.stringify(field.meta, true) : '{}';
+                options = field.options ? JSON.stringify(field.options, true) : '{}';
 
+                if (options == '[]') {
+                    options = '{}';
+                }
+
+                field.options = options;
             });
         }
 

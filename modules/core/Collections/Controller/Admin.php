@@ -43,7 +43,13 @@ class Admin extends \Cockpit\AuthController {
 
         ], $collection);
 
-        return $this->render('collections:views/entries.php', compact('collection', 'count'));
+        $view = 'collections:views/entries.php';
+
+        if ($override = $this->app->path('config:collections/'.$collection['name'].'views/entries.php')) {
+            $view = $path;
+        }
+
+        return $this->render($view, compact('collection', 'count'));
     }
 
     public function entry($collection, $id = null) {
@@ -64,7 +70,13 @@ class Admin extends \Cockpit\AuthController {
             }
         }
 
-        return $this->render('collections:views/entry.php', compact('collection', 'entry'));
+        $view = 'collections:views/entry.php';
+
+        if ($override = $this->app->path('config:collections/'.$collection['name'].'views/entry.php')) {
+            $view = $override;
+        }
+
+        return $this->render($view, compact('collection', 'entry'));
     }
 
     public function export($collection) {

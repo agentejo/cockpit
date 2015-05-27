@@ -77,11 +77,11 @@
 
                     var value = null;
 
-                    if (!this.taginstance) {
+                    if (!this.$boundTo) {
                         init(this);
                     }
 
-                    if (this.taginstance !== component ) {
+                    if (this.$boundTo !== component ) {
                         return;
                     }
 
@@ -148,11 +148,11 @@
                     }
                 }
 
-                ele.taginstance = component;
+                ele.$boundTo = component;
             }
 
             // init values
-            component.on('mount updated', function() {
+            component.on('mount updated bind', function() {
                 update();
             });
         };
