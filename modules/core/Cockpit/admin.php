@@ -49,6 +49,21 @@ $app->on('admin.init', function() {
 
     }, $this->module("cockpit")->hasaccess('cockpit', 'manage.media'));
 
+    // export some data to the frontend
+    $this->on('app.layout.footer', function() {
+    ?>
+    <script>
+
+        (function(){
+
+          App.$user = <?php echo json_encode($this["user"]); ?>;
+
+        })();
+
+    </script>
+    <?php
+    });
+
 }, 0);
 
 
