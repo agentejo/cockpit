@@ -49,21 +49,6 @@ $app->on('admin.init', function() {
 
     }, $this->module("cockpit")->hasaccess('cockpit', 'manage.media'));
 
-    // export some data to the frontend
-    $this->on('app.layout.footer', function() {
-    ?>
-    <script>
-
-        (function(){
-
-          App.$user = <?php echo json_encode($this["user"]); ?>;
-
-        })();
-
-    </script>
-    <?php
-    });
-
 }, 0);
 
 
@@ -114,13 +99,11 @@ if ($app->path('config:style.css')) {
 
 $app['app.assets.components'] = [
 
+    'cockpit:assets/components/cockpit-components.tag',
     'cockpit:assets/components/cockpit-search.tag',
     'cockpit:assets/components/cockpit-finder.tag',
     'cockpit:assets/components/codemirror.tag',
     'cockpit:assets/components/picoedit.tag',
-
-    // fields
-    'cockpit:assets/components/cockpit-field.tag'
 ];
 
 /**

@@ -21,9 +21,10 @@
             <th width="20"><input type="checkbox" data-check="all"></th>
             <th each="{field,idx in fields}">
                 <a class="uk-link-muted { parent.sort[field.name] ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
-                    <span if="{parent.sort[field.name]}" class="uk-animation-fade uk-icon-caret-{ parent.sort[field.name] == 1 ? 'up':'down'}"></span>
-                    <span if="{!parent.sort[field.name]}" class="uk-icon-sort uk-text-muted"></span>
+
                     { field.label || field.name }
+
+                    <span if="{parent.sort[field.name]}" class="uk-animation-fade uk-icon-long-arrow-{ parent.sort[field.name] == 1 ? 'up':'down'}"></span>
                 </a>
             </th>
             <th width="20"></th>

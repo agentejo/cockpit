@@ -84,6 +84,98 @@
 
 </field-password>
 
+
+<field-html>
+
+    <textarea name="input"></textarea>
+
+    <script>
+
+        if (opts.bind) {
+            this.input.setAttribute('bind', opts.bind);
+            this.root.removeAttribute('bind');
+        }
+
+        if (opts.cls) {
+            App.$(this.input).addClass(opts.cls);
+        }
+
+        this.on('mount', function(){
+
+            App.assets.require([
+
+                '/assets/lib/codemirror/lib/codemirror.js',
+                '/assets/lib/uikit/js/components/htmleditor.js'
+
+            ], function() {
+
+                UIkit.htmleditor(this.input, opts);
+
+            }.bind(this));
+        });
+
+    </script>
+
+</field-html>
+
+
+<field-date>
+
+    <input name="input" class="uk-width-1-1" type="text">
+
+    <script>
+
+        if (opts.bind) {
+            this.input.setAttribute('bind', opts.bind);
+            this.root.removeAttribute('bind');
+        }
+
+        if (opts.cls) {
+            App.$(this.input).addClass(opts.cls);
+        }
+
+        this.on('mount', function(){
+
+            App.assets.require(['/assets/lib/uikit/js/components/datepicker.js'], function() {
+
+                UIkit.datepicker(this.input, opts);
+
+            }.bind(this));
+        });
+
+    </script>
+
+</field-date>
+
+<field-time>
+
+    <input name="input" class="uk-width-1-1" type="text">
+
+    <script>
+
+        if (opts.bind) {
+            this.input.setAttribute('bind', opts.bind);
+            this.root.removeAttribute('bind');
+        }
+
+        if (opts.cls) {
+            App.$(this.input).addClass(opts.cls);
+        }
+
+        this.on('mount', function(){
+
+            App.assets.require(['/assets/lib/uikit/js/components/timepicker.js'], function() {
+
+                UIkit.timepicker(this.input, opts);
+
+            }.bind(this));
+        });
+
+    </script>
+
+</field-time>
+
+
 <field-boolean>
 
     <button type="button" name="button" class="uk-button uk-button-{ checked ? 'success':'default'}" onclick="{ toggle }"><i class="uk-icon-check"></i></button>
@@ -130,6 +222,10 @@
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
+        }
+
+        if (opts.rows) {
+            this.input.setAttribute('rows', opts.rows);
         }
 
         if (opts.required) {

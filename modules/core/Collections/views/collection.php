@@ -101,73 +101,82 @@
 
                                 <div class="uk-text-right">
 
-                                    <div class="uk-button-group">
+                                    <ul class="uk-subnav">
 
-                                        <a class="uk-button uk-button-small uk-button-{ field.lst ? 'success':''}" onclick="{ parent.togglelist }" title="@lang('Show field on list view')">
-                                            <i class="uk-icon-list"></i>
-                                        </a>
+                                        <li>
+                                            <a class="uk-text-{ field.lst ? 'success':'muted'}" onclick="{ parent.togglelist }" title="@lang('Show field on list view')">
+                                                <i class="uk-icon-list"></i>
+                                            </a>
+                                        </li>
 
-                                        <span class="uk-button uk-button-primary uk-button-small" data-uk-dropdown="\{mode:'click'\}">
+                                        <li>
 
-                                            <i class="uk-icon-cog"></i>
+                                            <a data-uk-dropdown="\{mode:'click'\}">
 
-                                            <div class="uk-dropdown uk-dropdown-center uk-text-left uk-dropdown-width-2">
+                                                <i class="uk-icon-cog uk-text-primary"></i>
 
-                                                <div class="uk-form-row uk-text-bold">
-                                                    { field.name || 'Field' }
-                                                </div>
+                                                <div class="uk-dropdown uk-dropdown-center uk-text-left uk-dropdown-width-2">
 
-                                                <div class="uk-form-row">
-
-                                                    <div class="uk-form-select uk-width-1-1" data-uk-form-select>
-                                                        <div class="uk-form-icon uk-width-1-1">
-                                                            <i class="uk-icon-tag"></i>
-                                                            <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.type }">
-                                                        </div>
-                                                        <select class="uk-width-1-1" bind="collection.fields[{idx}].type">
-                                                            <option value="text">Text</option>
-                                                            <option value="longtext">Longtext</option>
-                                                            <option value="url">Url</option>
-                                                            <option value="email">Email</option>
-                                                            <option value="password">Password</option>
-                                                            <option value="number">Number</option>
-                                                            <option value="boolean">Boolean</option>
-                                                            <option value="select">Select</option>
-                                                            <option value="file">File</option>
-                                                        </select>
+                                                    <div class="uk-form-row uk-text-bold">
+                                                        { field.name || 'Field' }
                                                     </div>
+
+                                                    <div class="uk-form-row">
+
+                                                        <div class="uk-form-select uk-width-1-1" data-uk-form-select>
+                                                            <div class="uk-form-icon uk-width-1-1">
+                                                                <i class="uk-icon-tag"></i>
+                                                                <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.type }">
+                                                            </div>
+                                                            <select class="uk-width-1-1" bind="collection.fields[{idx}].type">
+                                                                <option value="text">Text</option>
+                                                                <option value="longtext">Longtext</option>
+                                                                <option value="url">Url</option>
+                                                                <option value="email">Email</option>
+                                                                <option value="password">Password</option>
+                                                                <option value="number">Number</option>
+                                                                <option value="boolean">Boolean</option>
+                                                                <option value="select">Select</option>
+                                                                <option value="file">File</option>
+                                                                <option value="date">Date</option>
+                                                                <option value="time">Time</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="uk-form-row">
+                                                        <input class="uk-width-1-1" type="text" bind="collection.fields[{idx}].label" placeholder="@lang('label')">
+                                                    </div>
+
+                                                    <div class="uk-form-row">
+                                                        <input class="uk-width-1-1" type="text" bind="collection.fields[{idx}].default" placeholder="@lang('default')">
+                                                    </div>
+
+                                                    <div class="uk-form-row">
+                                                        <input class="uk-width-1-1" type="text" bind="collection.fields[{idx}].info" placeholder="@lang('info')">
+                                                    </div>
+
+                                                    <div class="uk-form-row">
+                                                        <div class="uk-text-small uk-text-bold">@lang('Options') <span class="uk-text-muted">JSON</span></div>
+                                                        <textarea class="uk-width-1-1" bind="collection.fields[{idx}].options" rows="6"></textarea>
+                                                    </div>
+
+                                                    <div class="uk-form-row">
+                                                        <input type="checkbox" bind="collection.fields[{idx}].required"> @lang('Required')
+                                                    </div>
+
                                                 </div>
 
-                                                <div class="uk-form-row">
-                                                    <input class="uk-width-1-1" type="text" bind="collection.fields[{idx}].label" placeholder="@lang('label')">
-                                                </div>
+                                            </a>
+                                        </li>
 
-                                                <div class="uk-form-row">
-                                                    <input class="uk-width-1-1" type="text" bind="collection.fields[{idx}].default" placeholder="@lang('default')">
-                                                </div>
+                                        <li>
+                                            <a class="uk-text-danger" onclick="{ parent.removefield }">
+                                                <i class="uk-icon-trash"></i>
+                                            </a>
+                                        </li>
 
-                                                <div class="uk-form-row">
-                                                    <input class="uk-width-1-1" type="text" bind="collection.fields[{idx}].info" placeholder="@lang('info')">
-                                                </div>
-
-                                                <div class="uk-form-row">
-                                                    <div class="uk-text-small uk-text-bold">@lang('Options') <span class="uk-text-muted">JSON</span></div>
-                                                    <textarea class="uk-width-1-1" bind="collection.fields[{idx}].options"></textarea>
-                                                </div>
-
-                                                <div class="uk-form-row">
-                                                    <input type="checkbox" bind="collection.fields[{idx}].required"> @lang('Required')
-                                                </div>
-
-                                            </div>
-
-                                        </span>
-
-                                        <a class="uk-button uk-button-small uk-button-danger" onclick="{ parent.removefield }">
-                                            <i class="uk-icon-trash"></i>
-                                        </a>
-
-                                    </div>
+                                    </ul>
 
                                 </div>
 

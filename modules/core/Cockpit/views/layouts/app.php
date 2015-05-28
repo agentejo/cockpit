@@ -7,6 +7,18 @@
 
     {{ $app->assets($app['app.assets.backend'], $app['cockpit/version']) }}
 
+    <script>
+
+        (function(App){
+
+            App = App || {};
+
+            App.$user = {{ json_encode($app["user"]) }};
+
+        })(App);
+
+    </script>
+
     @trigger('app.layout.header')
     @block('app.layout.header')
 
