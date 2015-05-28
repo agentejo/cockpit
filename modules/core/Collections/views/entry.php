@@ -60,7 +60,7 @@
         this.fields.forEach(function(field){
 
             if ($this.entry[field.name] === undefined) {
-                $this.entry[field.name] = field.default || null;
+                $this.entry[field.name] = field.options && field.options.default || null;
             }
 
             if (field.type == 'password') {

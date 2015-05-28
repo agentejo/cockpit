@@ -24,7 +24,7 @@
 
                     { field.label || field.name }
 
-                    <span if="{parent.sort[field.name]}" class="uk-animation-fade uk-icon-long-arrow-{ parent.sort[field.name] == 1 ? 'up':'down'}"></span>
+                    <span if="{parent.sort[field.name]}" class="uk-icon-long-arrow-{ parent.sort[field.name] == 1 ? 'up':'down'}"></span>
                 </a>
             </th>
             <th width="20"></th>

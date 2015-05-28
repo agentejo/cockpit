@@ -45,7 +45,7 @@
         }
 
         if (opts.required) {
-            this.fieldcontainer.setAttribute('required', 'required');
+            this.input.setAttribute('required', 'required');
         }
 
     </script>
@@ -91,14 +91,6 @@
 
     <script>
 
-        if (opts.bind) {
-            this.input.setAttribute('bind', opts.bind);
-            this.root.removeAttribute('bind');
-        }
-
-        if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
-        }
 
         this.on('mount', function(){
 
@@ -134,6 +126,10 @@
             App.$(this.input).addClass(opts.cls);
         }
 
+        if (opts.required) {
+            this.input.setAttribute('required', 'required');
+        }
+
         this.on('mount', function(){
 
             App.assets.require(['/assets/lib/uikit/js/components/datepicker.js'], function() {
@@ -160,6 +156,10 @@
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
+        }
+
+        if (opts.required) {
+            this.input.setAttribute('required', 'required');
         }
 
         this.on('mount', function(){
@@ -229,12 +229,78 @@
         }
 
         if (opts.required) {
-            this.fieldcontainer.setAttribute('required', 'required');
+            this.input.setAttribute('required', 'required');
+        }
+
+        if (opts.allowtabs) {
+
+            this.input.onkeydown = function(e) {
+                if (e.keyCode === 9) {
+                    var val = this.value, start = this.selectionStart, end = this.selectionEnd;
+                    this.value = val.substring(0, start) + '\t' + val.substring(end);
+                    this.selectionStart = this.selectionEnd = start + 1;
+                    return false;
+                }
+            };
+
+            this.input.style.tabSize = opts.allowtabs;
         }
 
     </script>
 
 </field-longtext>
+
+<field-object>
+
+    <textarea name="input" class="uk-width-1-1" onchange="{ change }"></textarea>
+
+    <script>
+
+        this.value = {};
+
+        if (opts.cls) {
+            App.$(this.input).addClass(opts.cls);
+        }
+
+        this.input.setAttribute('rows', opts.rows || 5);
+        this.input.setAttribute('style', 'font-family: monospace;tab-size:2;');
+
+        if (opts.required) {
+            this.input.setAttribute('required', 'required');
+        }
+
+        this.input.onkeydown = function(e) {
+
+            if (e.keyCode === 9) {
+                var val = this.value, start = this.selectionStart, end = this.selectionEnd;
+                this.value = val.substring(0, start) + '\t' + val.substring(end);
+                this.selectionStart = this.selectionEnd = start + 1;
+                return false;
+            }
+        };
+
+        this.root.$updateValue = function(value) {
+
+            if (JSON.stringify(this.value) != JSON.stringify(value)) {
+
+                this.value = value;
+                this.update();
+            }
+
+        }.bind(this);
+
+        change() {
+            this.root.$setValue(App.Utils.str2json(this.input.value) || this.value);
+        }
+
+        this.on('update', function() {
+            this.input.value = JSON.stringify(this.value, null, 2);
+        });
+
+
+    </script>
+
+</field-object>
 
 <field-select>
 
@@ -289,6 +355,11 @@
         if (opts.bind) {
             this.input.setAttribute('bind', opts.bind);
             this.root.removeAttribute('bind');
+        }
+
+        if (opts.cls) {
+            App.$(this.input).addClass(opts.cls);
+            App.$(this.picker).addClass(opts.cls);
         }
 
         App.$([this.picker, this.input]).on('click', function() {

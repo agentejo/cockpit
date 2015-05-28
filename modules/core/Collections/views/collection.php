@@ -24,7 +24,7 @@
                     </div>
 
                     <div class="uk-width-1-1 uk-grid-margin">
-                        <textarea class="uk-width-1-1 uk-form-large" name="description" bind="collection.description" placeholder="@lang('Description')"></textarea>
+                        <textarea class="uk-width-1-1 uk-form-large" name="description" bind="collection.description" placeholder="@lang('Description')" rows="5"></textarea>
                     </div>
 
                 </div>
@@ -140,6 +140,7 @@
                                                                 <option value="file">File</option>
                                                                 <option value="date">Date</option>
                                                                 <option value="time">Time</option>
+                                                                <option value="object">Object</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -149,16 +150,12 @@
                                                     </div>
 
                                                     <div class="uk-form-row">
-                                                        <input class="uk-width-1-1" type="text" bind="collection.fields[{idx}].default" placeholder="@lang('default')">
-                                                    </div>
-
-                                                    <div class="uk-form-row">
                                                         <input class="uk-width-1-1" type="text" bind="collection.fields[{idx}].info" placeholder="@lang('info')">
                                                     </div>
 
                                                     <div class="uk-form-row">
                                                         <div class="uk-text-small uk-text-bold">@lang('Options') <span class="uk-text-muted">JSON</span></div>
-                                                        <textarea class="uk-width-1-1" bind="collection.fields[{idx}].options" rows="6"></textarea>
+                                                        <field-longtext cls="uk-width-1-1" bind="collection.fields[{idx}].options" rows="6" allowtabs="2"></field-longtext>
                                                     </div>
 
                                                     <div class="uk-form-row">
@@ -315,7 +312,7 @@
 
             $this.collection.fields.forEach(function(field, options){
 
-                options = field.options ? JSON.stringify(field.options, true) : '{}';
+                options = field.options ? JSON.stringify(field.options, null, 2) : '{}';
 
                 if (options == '[]') {
                     options = '{}';
