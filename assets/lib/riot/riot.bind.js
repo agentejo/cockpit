@@ -1,51 +1,46 @@
-// riot enhancments
-(function(riot, $){
 
+/**
+ * simple two way data-binding for riot
+ */
 
-    /**
-     * simple two way data-binding for riot
-     */
+(function(riot){
 
     riot.util.bind = function(tag, namespace) {
 
-        var bind = this,
-            root = this.root,
+        var root = tag.root,
             attr = (namespace ? namespace+'-':'')+'bind',
-            attrSelector = '['+attr+']',
-            $root = $(tag.root).attr('bind-root', true);
+            attrSelector = '['+attr+']';
 
         function update() {
 
-            $root.find(attrSelector).each(function() {
+            Array.prototype.forEach.call(root.querySelectorAll(attrSelector), function(ele) {
 
                 var value = null;
 
-                if (!this.$boundTo) {
-                    init(this);
+                if (!ele.$boundTo) {
+                    init(ele);
                 }
 
-                if (this.$boundTo !== tag ) {
+                if (ele.$boundTo !== tag ) {
                     return;
                 }
 
                  try {
 
-                    value = (new Function('tag', 'return tag.'+this.getAttribute(attr)+';'))(tag);
+                    value = (new Function('tag', 'return tag.'+ele.getAttribute(attr)+';'))(tag);
 
                 } catch(e) {}
 
 
-                if (JSON.stringify(this.$value) !== JSON.stringify(value)) {
-                    this.$value = value;
-                    this.$updateValue(value);
+                if (JSON.stringify(ele.$value) !== JSON.stringify(value)) {
+                    ele.$value = value;
+                    ele.$updateValue(value);
                 }
             });
         }
 
 
         function init(ele) {
-
-            var $ele = $(ele);
 
             ele.$boundTo = tag;
 
@@ -60,30 +55,30 @@
             ele.$updateValue = function(value) {};
 
 
-            if ($ele.is(':input')) {
+            if (['input', 'select', 'textarea'].indexOf(ele.nodeName.toLowerCase()) !== -1) {
 
-                $ele.on($ele.attr('bind-event') || 'change', function() {
+                ele.addEventListener(ele.getAttribute('bind-event') || 'change', function() {
 
                     try {
 
-                        if ($ele.is('[type="checkbox"]')) {
-                            ele.$setValue($ele.prop("checked"));
+                        if (ele.getAttribute('type') == 'checkbox') {
+                            ele.$setValue(ele.checked);
                         } else {
-                            ele.$setValue($ele.val());
+                            ele.$setValue(ele.value);
                         }
 
                     } catch(e) {}
 
-                });
+                }, false);
 
                 ele.$updateValue = function(value) {
 
                     try {
 
-                        if ($ele.is('[type="checkbox"]')) {
-                            (new Function('input', 'val', 'input.prop("checked", val);'))($ele, value);
+                        if (ele.getAttribute('type') == 'checkbox') {
+                            (new Function('input', 'val', 'input.checked = val ? true:false;'))(ele, value);
                         } else {
-                            (new Function('input', 'val', 'input.val(val);'))($ele, value);
+                            (new Function('input', 'val', 'input.value = val;'))(ele, value);
                         }
 
                     } catch(e) {}
@@ -115,4 +110,4 @@
         });
     };
 
-})(riot, jQuery);
+})(riot);
