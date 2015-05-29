@@ -63,6 +63,8 @@ $app['app.assets.base'] = [
     'assets:lib/jquery.js',
     'assets:lib/lodash.js',
     'assets:lib/riot/riot.js',
+    'assets:lib/riot/riot.bind.js',
+    'assets:lib/riot/riot.view.js',
     'assets:lib/uikit/js/uikit.min.js',
     'assets:lib/uikit/js/components/notify.min.js',
     'assets:lib/uikit/js/components/tooltip.min.js',

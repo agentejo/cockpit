@@ -125,7 +125,7 @@
 
         this.account = {{ json_encode($account) }};
 
-        riot.util.bindInputs(this);
+        riot.util.bind(this);
 
         this.on('mount', function(){
             this.root.classList.remove('uk-invisible');

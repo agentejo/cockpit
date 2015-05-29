@@ -49,7 +49,7 @@
 
         var $this = this;
 
-        riot.util.bindInputs(this);
+        riot.util.bind(this);
 
         this.collection   = {{ json_encode($collection) }};
         this.fields  = this.collection.fields;

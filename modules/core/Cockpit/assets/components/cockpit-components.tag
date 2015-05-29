@@ -188,7 +188,7 @@
 
         this.button.innerHTML = opts.label || '<i class="uk-icon-check"></i>';
 
-        this.root.$updateValue = function(value) {
+        this.$updateValue = function(value) {
 
             if (this.checked != value) {
 
@@ -199,10 +199,7 @@
         }.bind(this);
 
         toggle() {
-
-            if (this.root.$setValue) {
-                this.root.$setValue(!this.checked);
-            }
+            this.$setValue(!this.checked);
         }
 
     </script>
@@ -279,7 +276,7 @@
             }
         };
 
-        this.root.$updateValue = function(value) {
+        this.$updateValue = function(value) {
 
             if (JSON.stringify(this.value) != JSON.stringify(value)) {
 
@@ -290,7 +287,7 @@
         }.bind(this);
 
         change() {
-            this.root.$setValue(App.Utils.str2json(this.input.value) || this.value);
+            this.$setValue(App.Utils.str2json(this.input.value) || this.value);
         }
 
         this.on('update', function() {

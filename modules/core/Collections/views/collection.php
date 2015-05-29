@@ -213,7 +213,7 @@
 
         stringifyOptionsField();
 
-        riot.util.bindInputs(this);
+        riot.util.bind(this);
 
         this.one('mount', function(){
 
