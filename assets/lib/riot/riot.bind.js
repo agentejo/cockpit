@@ -44,12 +44,17 @@
 
             ele.$boundTo = tag;
 
-            ele.$setValue = function(value) {
+            ele.$setValue = (function(fn, body) {
 
-                try {
-                    (new Function('tag', 'val', 'tag.'+ele.getAttribute(attr)+' = val;tag.update(); '))(tag, value);
-                } catch(e) {}
-            };
+                body = 'try{ tag.'+ele.getAttribute(attr)+' = val;tag.update(); return true;}catch(e){ return false; }';
+
+                fn = new Function('tag', 'val', body);
+
+                return function(value) {
+                    return fn(tag, value);
+                };
+
+            })();
 
 
             ele.$updateValue = function(value) {};
@@ -57,11 +62,13 @@
 
             if (['input', 'select', 'textarea'].indexOf(ele.nodeName.toLowerCase()) !== -1) {
 
+                var isCheckbox = (ele.nodeName == 'INPUT' && ele.getAttribute('type') == 'checkbox');
+
                 ele.addEventListener(ele.getAttribute('bind-event') || 'change', function() {
 
                     try {
 
-                        if (ele.getAttribute('type') == 'checkbox') {
+                        if (isCheckbox) {
                             ele.$setValue(ele.checked);
                         } else {
                             ele.$setValue(ele.value);
@@ -71,19 +78,21 @@
 
                 }, false);
 
-                ele.$updateValue = function(value) {
+                ele.$updateValue = (function(fn, body) {
 
-                    try {
+                    if (isCheckbox) {
+                        body = 'input.checked = val ? true:false;';
+                    } else {
+                        body = 'input.value = val;';
+                    }
 
-                        if (ele.getAttribute('type') == 'checkbox') {
-                            (new Function('input', 'val', 'input.checked = val ? true:false;'))(ele, value);
-                        } else {
-                            (new Function('input', 'val', 'input.value = val;'))(ele, value);
-                        }
+                    fn = new Function('input', 'val', 'try{'+body+'}catch(e){}');
 
-                    } catch(e) {}
-                };
+                    return function(value) {
+                        fn(ele, value);
+                    };
 
+                })();
 
             } else {
 
