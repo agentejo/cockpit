@@ -43,7 +43,7 @@
                         <div class="uk-form-row">
                             <label class="uk-text-small">@lang('New Password')</label>
                             <div class="uk-form-password uk-width-1-1">
-                                <input class="uk-form-large uk-width-1-1" type="password" placeholder="@lang('Password')" bind="account.passwort" autocomplete="off">
+                                <input class="uk-form-large uk-width-1-1" type="password" placeholder="@lang('Password')" bind="account.password" autocomplete="off">
                                 <a href="" class="uk-form-password-toggle" data-uk-form-password>@lang('Show')</a>
                             </div>
                             <div class="uk-alert">
