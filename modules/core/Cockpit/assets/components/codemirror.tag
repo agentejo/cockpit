@@ -19,7 +19,22 @@
 
                 editor = CodeMirror.fromTextArea($textarea[0], App.$.extend({
                     lineNumbers: true,
-                    theme: 'light'
+                    theme: 'light',
+                    indentUnit: 2,
+                    indentWithTabs: false,
+                    smartIndent: false,
+                    tabSize: 2,
+                    autoCloseBrackets: true,
+                    keyMap: "sublime",
+                    matchBrackets: true,
+                    matchTags: true,
+                    showCursorWhenSelecting: true,
+                    extraKeys: {
+                        Tab: function(cm) {
+                            var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+                            cm.replaceSelection(spaces);
+                        }
+                    }
                 }, opts || {}));
 
                 root.editor = editor;

@@ -131,6 +131,8 @@
                                                             <select class="uk-width-1-1" bind="collection.fields[{idx}].type">
                                                                 <option value="text">Text</option>
                                                                 <option value="longtext">Longtext</option>
+                                                                <option value="html">HTML</option>
+                                                                <option value="markdown">Markdown</option>
                                                                 <option value="url">Url</option>
                                                                 <option value="email">Email</option>
                                                                 <option value="password">Password</option>

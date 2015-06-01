@@ -87,21 +87,41 @@
 
 <field-html>
 
-    <textarea name="input"></textarea>
+    <textarea name="input" class="uk-visibility-hidden"></textarea>
 
     <script>
+
+        var $this = this;
+
+        this.value = null;
+
+        this.$updateValue = function(value) {
+
+            if (this.value != value) {
+
+                this.value = value;
+            }
+
+        }.bind(this);
 
 
         this.on('mount', function(){
 
             App.assets.require([
 
+                '/assets/lib/marked.js',
                 '/assets/lib/codemirror/lib/codemirror.js',
                 '/assets/lib/uikit/js/components/htmleditor.js'
 
             ], function() {
 
-                UIkit.htmleditor(this.input, opts);
+                $this.input.value = $this.value;
+
+                var editor = UIkit.htmleditor(this.input, opts);
+
+                editor.on('input', function() {
+                    $this.$setValue(editor.editor.getValue());
+                });
 
             }.bind(this));
         });
@@ -109,6 +129,21 @@
     </script>
 
 </field-html>
+
+<field-markdown>
+
+    <field-html name="input" markdown="true"></field-html>
+
+    <script>
+
+        if (opts.bind) {
+            this.input.setAttribute('bind', opts.bind);
+            this.root.removeAttribute('bind');
+        }
+
+    </script>
+
+</field-markdown>
 
 
 <field-date>
@@ -178,7 +213,10 @@
 
 <field-boolean>
 
-    <button type="button" name="button" class="uk-button uk-button-{ checked ? 'success':'default'}" onclick="{ toggle }"><i class="uk-icon-check"></i></button>
+    <button type="button" name="button" class="uk-button uk-button-{ checked ? 'success':'default'}" onclick="{ toggle }">
+        <i if="{parent.checked}" class="uk-icon-check"></i>
+        <i if="{!parent.checked}" class="uk-icon-times"></i>
+    </button>
 
     <script>
 
