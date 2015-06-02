@@ -1,6 +1,6 @@
 <div class="uk-grid-margin uk-width-1-1">
 
-    <div class="uk-panel-box">
+    <div class="uk-panel-box uk-panel-card">
 
         <div class="uk-panel-box-header">
             <strong>@lang('Collections')</strong> <span class="uk-badge">{{ count($collections) }}</span>

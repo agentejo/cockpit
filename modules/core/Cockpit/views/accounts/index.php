@@ -26,7 +26,7 @@
 
         <div class="uk-grid-margin" each="{account, $index in accounts}" if="{ parent.infilter(account) }">
 
-            <div class="uk-panel uk-panel-box">
+            <div class="uk-panel uk-panel-box uk-panel-card">
 
                 <div class="uk-grid">
 

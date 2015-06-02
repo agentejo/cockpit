@@ -48,7 +48,7 @@
 
                     <div class="uk-grid-margin" each="{ collection, meta in collections }" if="{ parent.infilter(meta) }">
 
-                        <div class="uk-panel uk-panel-box">
+                        <div class="uk-panel uk-panel-box uk-panel-card">
 
                             <div class="uk-grid uk-grid-small">
 
