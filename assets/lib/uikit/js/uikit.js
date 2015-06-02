@@ -1,4 +1,4 @@
-/*! UIkit 2.20.3 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.21.0 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(core) {
 
     if (typeof define == "function" && define.amd) { // AMD
@@ -44,7 +44,7 @@
 
     var UI = {}, _UI = global.UIkit ? Object.create(global.UIkit) : undefined;
 
-    UI.version = '2.20.3';
+    UI.version = '2.21.0';
 
     UI.noConflict = function() {
         // restore UIkit version
@@ -926,9 +926,7 @@
 
             var $this = this;
 
-            this.columns = this.element.children();
-
-            if (!this.columns.length) return;
+            this.columns = [];
 
             UI.$win.on('resize orientationchange', (function() {
 
@@ -945,12 +943,10 @@
             })());
 
             UI.$html.on("changed.uk.dom", function(e) {
-                $this.columns  = $this.element.children();
                 $this.process();
             });
 
             this.on("display.uk.check", function(e) {
-                $this.columns = $this.element.children();
                 if (this.element.is(":visible")) this.process();
             }.bind(this));
 
@@ -959,7 +955,7 @@
 
         process: function() {
 
-            var $this = this;
+            this.columns = this.element.children();
 
             UI.Utils.stackMargin(this.columns, this.options);
 
@@ -1077,6 +1073,62 @@
                 }
             }
         });
+    };
+
+    UI.Utils.matchHeights = function(elements, options) {
+
+        elements = UI.$(elements).css('min-height', '');
+        options  = UI.$.extend({ row : true }, options);
+
+        var matchHeights = function(group){
+
+            if (group.length < 2) return;
+
+            var max = 0;
+
+            group.each(function() {
+                max = Math.max(max, UI.$(this).outerHeight());
+            }).each(function() {
+
+                var element = UI.$(this),
+                    height  = max - (element.css('box-sizing') == 'border-box' ? 0 : (element.outerHeight() - element.height()));
+
+                element.css('min-height', height + 'px');
+            });
+        };
+
+        if (options.row) {
+
+            elements.first().width(); // force redraw
+
+            setTimeout(function(){
+
+                var lastoffset = false, group = [];
+
+                elements.each(function() {
+
+                    var ele = UI.$(this), offset = ele.offset().top;
+
+                    if (offset != lastoffset && group.length) {
+
+                        matchHeights(UI.$(group));
+                        group  = [];
+                        offset = ele.offset().top;
+                    }
+
+                    group.push(ele);
+                    lastoffset = offset;
+                });
+
+                if (group.length) {
+                    matchHeights(UI.$(group));
+                }
+
+            }, 0);
+
+        } else {
+            matchHeights(elements);
+        }
     };
 
 })(UIkit);
@@ -1772,7 +1824,7 @@
 
                     } else {
 
-                        if ($target.is("a:not(.js-uk-prevent)") || $target.is(".uk-dropdown-close") || !$this.dropdown.find(e.target).length) {
+                        if (!$this.dropdown.find(e.target).length || $target.is(".uk-dropdown-close") || $target.parents(".uk-dropdown-close").length) {
                             $this.hide();
                         }
                     }
@@ -1892,7 +1944,7 @@
 
                     var $target = UI.$(e.target);
 
-                    if (active == $this && ($target.is("a:not(.js-uk-prevent)") || $target.is(".uk-dropdown-close") || !$this.dropdown.find(e.target).length)) {
+                    if (active == $this && !$this.element.find(e.target).length) {
                         $this.hide();
                         UI.$html.off("click.outer.dropdown");
                     }
@@ -2095,65 +2147,6 @@
             var stackMargin = UI.stackMargin(this.element, this.options);
         }
     });
-
-    // helper
-
-    UI.Utils.matchHeights = function(elements, options) {
-
-        elements = UI.$(elements).css('min-height', '');
-        options  = UI.$.extend({ row : true }, options);
-
-        var matchHeights = function(group){
-
-            if(group.length < 2) return;
-
-            var max = 0;
-
-            group.each(function() {
-                max = Math.max(max, UI.$(this).outerHeight());
-            }).each(function() {
-
-                var element = UI.$(this),
-                    height  = max - (element.css('box-sizing') == 'border-box' ? 0 : (element.outerHeight() - element.height()));
-
-
-                element.css('min-height', height + 'px');
-            });
-        };
-
-        if(options.row) {
-
-            elements.first().width(); // force redraw
-
-            setTimeout(function(){
-
-                var lastoffset = false, group = [];
-
-                elements.each(function() {
-
-                    var ele = UI.$(this), offset = ele.offset().top;
-
-                    if(offset != lastoffset && group.length) {
-
-                        matchHeights(UI.$(group));
-                        group  = [];
-                        offset = ele.offset().top;
-                    }
-
-                    group.push(ele);
-                    lastoffset = offset;
-                });
-
-                if(group.length) {
-                    matchHeights(UI.$(group));
-                }
-
-            }, 0);
-
-        } else {
-            matchHeights(elements);
-        }
-    };
 
 })(UIkit);
 
@@ -2589,50 +2582,52 @@
 
             if (!this.options.multiple) {
 
-                element.children(".uk-open").not(li).each(function() {
+                element.children('.uk-open').not(li).each(function() {
 
                     var ele = UI.$(this);
 
-                    if (ele.data("list-container")) {
-                        ele.data("list-container").stop().animate({height: 0}, function() {
-                            UI.$(this).parent().removeClass("uk-open").end().addClass('uk-hidden');
+                    if (ele.data('list-container')) {
+                        ele.data('list-container').stop().animate({height: 0}, function() {
+                            UI.$(this).parent().removeClass('uk-open').end().addClass('uk-hidden');
                         });
                     }
                 });
             }
 
-            $li.toggleClass("uk-open");
+            $li.toggleClass('uk-open');
 
             // Update ARIA
-            $li.attr('aria-expanded', $li.hasClass("uk-open"));
+            $li.attr('aria-expanded', $li.hasClass('uk-open'));
 
             if ($container) {
 
-                if ($li.hasClass("uk-open")) {
+                if ($li.hasClass('uk-open')) {
                     $container.removeClass('uk-hidden');
                 }
 
                 if (noanimation) {
 
-                    $container.stop().height($li.hasClass("uk-open") ? "auto" : 0);
+                    $container.stop().height($li.hasClass('uk-open') ? 'auto' : 0);
 
-                    if (!$li.hasClass("uk-open")) {
+                    if (!$li.hasClass('uk-open')) {
                         $container.addClass('uk-hidden');
                     }
 
-                    this.trigger("display.uk.check");
+                    this.trigger('display.uk.check');
 
                 } else {
 
                     $container.stop().animate({
-                        height: ($li.hasClass("uk-open") ? getHeight($container.find('ul:first')) : 0)
+                        height: ($li.hasClass('uk-open') ? getHeight($container.find('ul:first')) : 0)
                     }, function() {
 
-                        if (!$li.hasClass("uk-open")) {
+                        if (!$li.hasClass('uk-open')) {
                             $container.addClass('uk-hidden');
+                        } else {
+                            $container.css('height', '');
                         }
 
-                        $this.trigger("display.uk.check");
+                        $this.trigger('display.uk.check');
                     });
                 }
             }
