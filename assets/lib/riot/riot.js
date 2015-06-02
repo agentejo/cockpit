@@ -1,34 +1,1618 @@
-/* Riot v2.1.x, @license MIT, (c) 2015 Muut Inc. + contributors */
-(function(t){function K(a){var b={val:a};a=a.split(/\s+in\s+/);a[1]&&(b.val=n(0)+a[1],a=a[0].slice(n(0).length).trim().split(/,\s*/),b.key=a[0],b.pos=a[1]);return b}function D(a,b,e){var h={};h[a.key]=b;a.pos&&(h[a.pos]=e);return h}function P(a,b,e){function h(c,d,a){f.splice(c,0,d);l.splice(c,0,a)}a.removeAttribute("each");var c=a.outerHTML,d=a.previousSibling,g=a.parentNode,f=[],l=[],y;e=K(e);b.one("update",function(){g.removeChild(a)}).one("premount",function(){g.stub&&(g=b.root)}).on("update",
-function(){var a=v(e.val,b);if(a){if(!Array.isArray(a)){var m=JSON.stringify(a);if(m==y)return;y=m;k(l,function(c){c.unmount()});f=[];l=[];a=Object.keys(a).map(function(c){return D(e,c,a[c])})}k(f,function(c){if(c instanceof Object){if(-1<a.indexOf(c))return}else{var d=z(a,c),g=z(f,c);if(d.length>=g.length)return}c=f.indexOf(c);if(d=l[c])return d.unmount(),f.splice(c,1),l.splice(c,1),!1});var n=[].indexOf.call(g.childNodes,d)+1;k(a,function(d,m){var k=a.indexOf(d,m),r=f.indexOf(d,m);0>k&&(k=a.lastIndexOf(d,
-m));0>r&&(r=f.lastIndexOf(d,m));if(!(d instanceof Object)){var p=z(a,d),X=z(f,d);p.length>X.length&&(r=-1)}p=g.childNodes;if(0>r){if(!y&&e.key)var Y=D(e,d,k);r=new F({tmpl:c},{before:p[n+k],parent:b,root:g,item:Y||d});r.mount();h(k,d,r);return!0}e.pos&&l[r][e.pos]!=k&&(l[r].one("update",function(c){c[e.pos]=k}),l[r].update());if(k!=r)return g.insertBefore(p[n+r],p[n+(k>r?k+1:k)]),h(k,f.splice(r,1)[0],l.splice(r,1)[0])});f=a.slice()}}).one("updated",function(){x(g,function(c){k(c.attributes,function(d){/^(name|id)$/.test(d.name)&&
-(b[d.value]=c)})})})}function R(a,b,e){x(a,function(a){if(1==a.nodeType){a.isLoop=0;a.parentNode&&a.parentNode.isLoop&&(a.isLoop=1);a.getAttribute("each")&&(a.isLoop=1);var c=G(a);if(c&&!a.isLoop){for(var d=new F(c,{root:a,parent:b},a.innerHTML),g=a.getAttribute("name"),c=g&&0>g.indexOf(n(0))?g:c.name,g=b,f;!G(g.root)&&g.parent;)g=g.parent;d.parent=g;(f=g.tags[c])?(Array.isArray(f)||(g.tags[c]=[f]),g.tags[c].push(d)):g.tags[c]=d;a.innerHTML="";e.push(d)}a.isLoop||k(a.attributes,function(c){/^(name|id)$/.test(c.name)&&
-(b[c.value]=a)})}})}function L(a,b,e){function h(c,a,g){0<=a.indexOf(n(0))&&e.push(u({dom:c,expr:a},g))}x(a,function(c){var a=c.nodeType;3==a&&"STYLE"!=c.parentNode.tagName&&h(c,c.nodeValue);if(1==a){if(a=c.getAttribute("each"))return P(c,b,a),!1;k(c.attributes,function(a){var d=a.name,b=d.split("__")[1];h(c,a.value,{attr:b||d,bool:b});if(b)return c.removeAttribute(d),!1});if(G(c))return!1}})}function F(a,b,e){function h(){k(m.attributes,function(a){g[a.name]=v(a.value,l||d)});k(Object.keys(Q),function(a){g[a]=
-v(Q[a],l||d)})}function c(a){k(W,function(c){c[a?"mount":"unmount"]()});if(l){var c=a?"on":"off";l[c]("update",d.update)[c]("unmount",d.unmount)}}var d=p.observable(this),g=S(b.opts)||{},f=T(a.tmpl),l=b.parent,y=[],W=[],m=b.root,q=b.item,E=a.fn,w=m.tagName.toLowerCase(),Q={},r,t=/([\w\-]+)\s?=\s?['"]([^'"]+)["']/gim;E&&m._tag&&m._tag.unmount(!0);a.attrs&&(a=a.attrs.match(t),k(a,function(a){a=a.split(/\s?=\s?/);m.setAttribute(a[0],a[1].replace(/['"]/g,""))}));m._tag=this;this._id=H(~~((new Date).getTime()*
-Math.random()));u(this,{parent:l,root:m,opts:g,tags:{}},q);k(m.attributes,function(a){var c=a.value;n(/\{.*\}/).test(c)&&(Q[a.name]=c)});!f.innerHTML||/select/.test(w)||/tbody/.test(w)||/tr/.test(w)||(f.innerHTML=f.innerHTML.replace(/<(yield)\/?>(<\/\1>)?/gim,e||""));this.update=function(a,c){u(d,a,q);h();d.trigger("update",q);I(y,d,q);d.trigger("updated")};this.mixin=function(){k(arguments,function(a){a="string"==typeof a?p.mixin(a):a;k(Object.keys(a),function(c){"init"!=c&&(d[c]="function"==typeof a[c]?
-a[c].bind(d):a[c])});a.init&&a.init.bind(d)()})};this.mount=function(){h();E&&E.call(d,g);c(!0);L(f,d,y);d.parent||d.update();d.trigger("premount");if(E)for(;f.firstChild;)m.appendChild(f.firstChild);else r=f.firstChild,m.insertBefore(r,b.before||null);m.stub&&(d.root=m=l.root);if(d.parent)d.parent.one("mount",function(){d.trigger("mount")});else d.trigger("mount")};this.unmount=function(a){var f=E?m:r,b=f.parentNode;if(b){if(l)Array.isArray(l.tags[w])?k(l.tags[w],function(a,c){a._id==d._id&&l.tags[w].splice(c,
-1)}):l.tags[w]=void 0;else for(;f.firstChild;)f.removeChild(f.firstChild);a||b.removeChild(f)}d.trigger("unmount");c();d.off("*");m._tag=null};R(f,this,W)}function U(a,b,e,h,c){e[a]=function(a){a=a||t.event;a.which=a.which||a.charCode||a.keyCode;a.target=a.target||a.srcElement;a.currentTarget=e;a.item=c;!0===b.call(h,a)||/radio|check/.test(e.type)||(a.preventDefault&&a.preventDefault(),a.returnValue=!1);a.preventUpdate||(c?h.parent:h).update()}}function I(a,b,e){k(a,function(a,c){var d=a.dom,g=a.attr,
-f=v(a.expr,b),l=a.dom.parentNode;null==f&&(f="");l&&"TEXTAREA"==l.tagName&&(f=f.replace(/riot-/g,""));if(a.value!==f){a.value=f;if(!g)return d.nodeValue=f.toString();d.removeAttribute(g);if("function"==typeof f)U(g,f,d,b,e);else if("if"==g)if(g=a.stub,f)g&&(f=g.parentNode)&&(f.insertBefore(d,g),f.removeChild(g));else{if(g=a.stub=g||document.createTextNode(""),f=d.parentNode)f.insertBefore(g,d),f.removeChild(d)}else if(/^(show|hide)$/.test(g))"hide"==g&&(f=!f),d.style.display=f?"":"none";else if("value"==
-g)d.value=f;else if("riot-"==g.slice(0,5))g=g.slice(5),f?d.setAttribute(g,f):d.removeAttribute(g);else{if(a.bool){d[g]=f;if(!f)return;f=g}"object"!=typeof f&&d.setAttribute(g,f)}}})}function k(a,b){for(var e=0,h=(a||[]).length,c;e<h;e++)c=a[e],null!=c&&!1===b(c,e)&&e--;return a}function H(a){return(a^a>>31)-(a>>31)}function u(a,b,e){b&&k(Object.keys(b),function(e){a[e]=b[e]});return e?u(a,e):a}function M(){if(t){var a=navigator.userAgent,b=a.indexOf("MSIE ");return 0<b?parseInt(a.substring(b+5,a.indexOf(".",
-b)),10):0}}function N(a,b){var e=document.createElement("option"),h=b.match(/value=[\"'](.+?)[\"']/),c=b.match(/selected=[\"'](.+?)[\"']/);e.innerHTML=b;h&&(e.value=h[1]);c&&e.setAttribute("riot-selected",c[1]);a.appendChild(e)}function O(a,b,e){var h=document.createElement("div");h.innerHTML="<table>"+b+"</table>";/td|th/.test(e)?a.appendChild(h.firstChild.firstChild.firstChild.firstChild):a.appendChild(h.firstChild.firstChild.firstChild)}function T(a){var b=a.trim().slice(1,3).toLowerCase(),e=/td|th/.test(b)?
-"tr":"tr"==b?"tbody":"div",h=document.createElement(e);h.stub=!0;"op"===b&&A&&10>A?N(h,a):("tbody"===e||"tr"===e)&&A&&10>A?O(h,a,b):h.innerHTML=a;return h}function x(a,b){if(a)if(!1===b(a))x(a.nextSibling,b);else for(a=a.firstChild;a;)x(a,b),a=a.nextSibling}function J(a,b){b=b||document;return b.querySelectorAll(a)}function z(a,b){return a.filter(function(a){return a===b})}function S(a){function b(){}b.prototype=a;return new b}function M(){if(t){var a=navigator.userAgent,b=a.indexOf("MSIE ");return 0<
-b?parseInt(a.substring(b+5,a.indexOf(".",b)),10):0}}function O(a,b,e){var h=document.createElement("div");e=/td|th/.test(e)?3:2;h.innerHTML="<table>"+b+"</table>";for(b=h.firstChild;e--;)b=b.firstChild;a.appendChild(b)}function N(a,b){var e=document.createElement("option"),h=/value=[\"'](.+?)[\"']/,c=/selected=[\"'](.+?)[\"']/,h=b.match(h),c=b.match(c);e.innerHTML=b;h&&(e.value=h[1]);c&&e.setAttribute("riot-selected",c[1]);a.appendChild(e)}function G(a){return B[a.getAttribute("riot-tag")||a.tagName.toLowerCase()]}
-function V(a,b,e){var h=B[b];b=a.innerHTML;a.innerHTML="";h&&a&&(h=new F(h,{root:a,opts:e},b));if(h&&h.mount)return h.mount(),C.push(h),h.on("unmount",function(){C.splice(C.indexOf(h),1)})}var p={version:"WIP",settings:{},observable:function(a){a=a||{};var b={},e=0;a.on=function(h,c){"function"==typeof c&&(c._id="undefined"==typeof c._id?e++:c._id,h.replace(/\S+/g,function(a,g){(b[a]=b[a]||[]).push(c);c.typed=0<g}));return a};a.off=function(e,c){"*"==e?b={}:e.replace(/\S+/g,function(a){if(c){a=b[a];
-for(var g=0,f;f=a&&a[g];++g)f._id==c._id&&(a.splice(g,1),g--)}else b[a]=[]});return a};a.one=function(b,c){function d(){a.off(b,d);c.apply(a,arguments)}return a.on(b,d)};a.trigger=function(e){for(var c=[].slice.call(arguments,1),d=b[e]||[],g=0,f;f=d[g];++g)f.busy||(f.busy=1,f.apply(a,f.typed?[e].concat(c):c),d[g]!==f&&g--,f.busy=0);b.all&&"all"!=e&&a.trigger.apply(a,["all",e].concat(c));return a};return a}};p.mixin=function(){var a={};return function(b,e){if(e)a[b]=e;else return a[b]}}();(function(a,
-b,e){function h(a){return a.split("/")}function c(a){a.type&&(a=d.href.split("#")[1]||"");a!=l&&(g.trigger.apply(null,["H"].concat(h(a))),l=a)}if(e){var d=e.location,g=a.observable(),f=!1,l;a=a.route=function(a){if(a[0])d.hash=a,c(a);else g.on("H",a)};a.exec=function(a){a.apply(null,h(d.href.split("#")[1]||""))};a.parser=function(a){h=a};a.stop=function(){f&&(e.removeEventListener?e.removeEventListener(b,c,!1):e.detachEvent("on"+b,c),g.off("*"),f=!1)};a.start=function(){f||(e.addEventListener?e.addEventListener(b,
-c,!1):e.attachEvent("on"+b,c),f=!0)};a.start()}})(p,"hashchange",t);var n=function(a){var b,e,h,c=/[{}]/g;return function(d){var g=p.settings.brackets||a;b!==g&&(b=g,h=g.split(" "),e=h.map(function(a){return a.replace(/(?=.)/g,"\\")}));return d instanceof RegExp?g===a?d:new RegExp(d.source.replace(c,function(a){return e[~~("}"===a)]}),d.global?"g":""):h[d]}}("{ }"),v=function(){function a(a,d){a=(a||n(0)+n(1)).replace(n(/\\{/g),"\ufff0").replace(n(/\\}/g),"\ufff1");d=h(a,c(a,n(/{/),n(/}/)));return new Function("d",
-"return "+(d[0]||d[2]||d[3]?"["+d.map(function(a,c){return c%2?b(a,!0):'"'+a.replace(/\n/g,"\\n").replace(/"/g,'\\"')+'"'}).join(",")+'].join("")':b(d[1])).replace(/\uFFF0/g,n(0)).replace(/\uFFF1/g,n(1))+";")}function b(a,d){a=a.replace(/\n/g," ").replace(n(/^[{ ]+|[ }]+$|\/\*.+?\*\//g),"");return/^\s*[\w- "']+ *:/.test(a)?"["+c(a,/["' ]*[\w- ]+["' ]*:/,/,(?=["' ]*[\w- ]+["' ]*:)|}|$/).map(function(a){return a.replace(/^[ "']*(.+?)[ "']*: *(.+?),? *$/,function(a,c,d){return d.replace(/[^&|=!><]+/g,
-e)+'?"'+c+'":"",'})}).join("")+'].join(" ").trim()':e(a,d)}function e(a,c){return(a=a.trim())?"(function(v){try{v="+(a.replace(g,function(a,c,d){return d?"(d."+d+"===undefined?"+("undefined"==typeof t?"global.":"window.")+d+":d."+d+")":a})||"x")+"}catch(e){}finally{return "+(!0===c?'!v&&v!==0?"":v':"v")+"}}).call(d)":""}function h(a,c){var d=[];c.map(function(c,b){b=a.indexOf(c);d.push(a.slice(0,b),c);a=a.slice(b+c.length)});return d.concat(a)}function c(a,c,d){var b,g=0,e=[];a.replace(new RegExp("("+
-c.source+")|("+d.source+")","g"),function(c,d,h,l){!g&&d&&(b=l);(g+=d?1:-1)||null==h||e.push(a.slice(b,l+h.length))});return e}var d={},g=/(['"\/]).*?[^\\]\1|\.\w*|\w*:|\b(?:(?:new|typeof|in|instanceof) |(?:this|true|false|null|undefined)\b|function *\()|([a-z_$]\w*)/gi;return function(c,b){return c&&(d[c]=d[c]||a(c))(b)}}(),A=M(),C=[],B={},q;p.tag=function(a,b,e,h,c){"function"==typeof h&&(c=h,/^[\w\-]+\s?=/.test(e)?(h=e,e=""):h="");"function"==typeof e?c=e:e&&(q=q||document.createElement("style"),
-document.head&&(q.styleSheet?q.styleSheet.cssText+=e:q.innerHTML+=e,q._rendered||(q.styleSheet?document.body.appendChild(q):document.head.appendChild(q)),q._rendered=!0));B[a]={name:a,tmpl:b,attrs:h,fn:c};return a};p.mount=function(a,b,e){function h(a){b&&!a.getAttribute("riot-tag")&&a.setAttribute("riot-tag",b);var c=b||a.getAttribute("riot-tag")||a.tagName.toLowerCase();(a=V(a,c,e))&&f.push(a)}var c,d=function(){var a=Object.keys(B),c=a.join(", ");k(a,function(a){c+=', *[riot-tag="'+a.trim()+'"]'});
-return c},g,f=[];"object"==typeof b&&(e=b,b=0);"string"==typeof a?("*"==a?a=g=d():a.split(",").map(function(c){a+=', *[riot-tag="'+c.trim()+'"]'}),c=J(a)):c=a;if("*"==b){b=g||d();if(c.tagName)c=J(b,c);else{var l=[];k(c,function(a){l=J(b,a)});c=l}b=0}c.tagName?h(a):k(c,h);return f};p.update=function(){return k(C,function(a){a.update()})};p.mountTo=p.mount;p.util={brackets:n,tmpl:v};"object"===typeof exports?module.exports=p:"function"===typeof define&&define.amd?define(function(){return p}):t.riot=
-p})("undefined"!=typeof window?window:void 0);
-(function(t){function K(a,d,b,f,e){return"riot.tag('"+a+"', '"+d+"'"+(b?", '"+b+"'":"")+(f?", '"+f.replace(/'/g,"\\'")+"'":"")+", function(opts) {"+e+"\n});"}function D(a,d,b){var f=riot.util.brackets;a=a.replace(f(J),'="$1"$2');a=d.whitespace?a.replace(/\n/g,"\\n"):a.replace(/\s+/g," ");a=a.trim().replace(A,"");a=a.replace(z,function(a,c,d,b){0<=b.indexOf(f(0))&&(c=c.toLowerCase(),0<=T.indexOf(c)?c="riot-"+c:0<=N.indexOf(c)&&(c="__"+c));return c+'="'+b+'"'});d.expr&&(a=a.replace(f(S),function(a,
-c){var e=L(c,d,b).trim().replace(/\r?\n|\r/g,"").trim();";"==e.slice(-1)&&(e=e.slice(0,-1));return f(0)+e+f(1)}));a=a.replace(C,function(a,c,d){a="<"+c+(d?" "+d.trim():"")+">";-1==O.indexOf(c.toLowerCase())&&(a+="</"+c+">");return a});a=a.replace(/'/g,"\\'");a=a.replace(f(/\\{|\\}/g),"\\$&");d.compact&&(a=a.replace(/> </g,"><"));return a}function P(a){a=a.replace(B,"").replace(q,"");var d=a.split("\n"),b="";d.forEach(function(a,c){var e=a.trim();if("}"!=e[0]&&0<e.indexOf("(")&&-1==e.indexOf("function")){var h=
-/[{}]/.exec(e.slice(-1)),m=h&&/(\s+)([\w]+)\s*\(([\w,\s]*)\)\s*\{/.exec(a);m&&!/^(if|while|switch|for|catch)$/.test(m[2])&&(d[c]=m[1]+"this."+m[2]+" = function("+m[3]+") {","}"==h[0]?d[c]+=" "+e.slice(m[0].length-1,-1)+"}.bind(this)":b=m[1])}a.slice(0,b.length+1)==b+"}"&&(d[c]=b+"}.bind(this);",b="")});return d.join("\n")}function R(a,d,b){return d.replace(v,"").replace(n,function(d,b,e){return b+" "+e.split(/\s*,\s*/g).map(function(d){var b=d.replace(/:scope\s*/,"");return"@"==d[0]?d:a+" "+b+', [riot-tag="'+
-a+'"] '+b}).join(",")}).trim()}function L(a,d,b){var e=d.parser||(b?riot.parsers.js[b]:P);if(!e)throw Error('Parser not found "'+b+'"');return e(a,d)}function F(a,d){var b=riot.parsers.html[a];if(!b)throw Error('Template parser not found "'+a+'"');return b(d)}function U(a,d,b){"scoped-css"==b?a=R(d,a):riot.parsers.css[b]&&(a=riot.parsers.css[b](d,a));return a.replace(/\s+/g," ").replace(/\\/g,"\\\\").replace(/'/g,"\\'").trim()}function I(a,d){d=d||{};d.brackets&&(riot.settings.brackets=d.brackets);
-d.template&&(a=F(d.template,a));a=a.replace(x,function(a,c,b){return K(c,D(b,d),"","","")});return a.replace(G,function(a,c,b,e,h){e=e||"";var k=d.type;h.trim()||(e=e.replace(V,function(a,c,d,b){d&&(k=d.replace("text/",""));h=b;return""}));var n="css",q="";e=e.replace(p,function(a,c,d,b){c&&"scoped"==c.trim()?n="scoped-css":d&&(n=d.replace("text/",""));q=b;return""});return K(c,D(e,d,k),U(q,c,n),b,L(h,d,k))})}function k(a,d){var b=new XMLHttpRequest;b.onreadystatechange=function(){4==b.readyState&&
-200==b.status&&d(b.responseText)};b.open("GET",a,!0);b.send("")}function H(a){var b=/[ \t]+/.exec(a);b&&(a=a.replace(new RegExp("^"+b[0],"gm"),""));return a}function u(c){var b=a.createElement("script"),e=a.documentElement;b.text=I(c);e.appendChild(b);e.removeChild(b)}function M(c){function d(){b.trigger("ready");e=!0;c&&c()}var g=a.querySelectorAll('script[type="riot/tag"]'),f=g.length;f?[].map.call(g,function(a){function c(a){u(a);f--;f||d()}var b=a.getAttribute("src");return b?k(b,c):c(H(a.innerHTML))}):
-d()}riot.parsers={html:{},css:{},js:{coffee:function(a){return CoffeeScript.compile(a,{bare:!0})},es6:function(a){return babel.transform(a,{blacklist:["useStrict"]}).code},none:function(a){return a}}};var N="allowfullscreen async autofocus autoplay checked compact controls declare default defaultchecked defaultmuted defaultselected defer disabled draggable enabled formnovalidate hidden indeterminate inert ismap itemscope loop multiple muted nohref noresize noshade novalidate nowrap open pauseonexit readonly required reversed scoped seamless selected sortable spellcheck translate truespeed typemustmatch visible".split(" "),
-O="area base br col command embed hr img input keygen link meta param source track wbr".split(" "),T=["style","src","d"],x=/^<([\w\-]+)>(.*)<\/\1>/gim,J=/=({[^}]+})([\s\/\>])/g,z=/([\w\-]+)=(["'])([^\2]+?)\2/g,S=/{\s*([^}]+)\s*}/g,G=/^<([\w\-]+)\s?([^>]*)>([^\x00]*[\w\/}"']>$)?([^\x00]*?)^<\/\1>/gim,V=/<script(\s+type=['"]?([^>'"]+)['"]?)?>([^\x00]*?)<\/script>/gm,p=/<style(\s+type=['"]?([^>'"]+)['"]?|\s+scoped)?>([^\x00]*?)<\/style>/gm,n=/(^|\}|\{)\s*([^\{\}]+)\s*(?=\{)/g,v=/\/\*[^\x00]*?\*\//gm,
-A=/\x3c!--.*?--\x3e/g,C=/<([\w\-]+)([^>]*)\/\s*>/g,B=/^\s*\/\/.*$/gm,q=/\/\*[^\x00]*?\*\//gm,a=t.document,b,e;riot.compile=function(a,d){if("string"==typeof a){if("<"==a.trim()[0]){var g=H(I(a));d||u(g);return g}return k(a,function(a){var b=H(I(a));u(b);d&&d(b,a)})}"function"!=typeof a&&(a=void 0);if(e)return a&&a();b?a&&b.on("ready",a):(b=riot.observable(),M(a))};var h=riot.mount;riot.mount=function(a,b,e){var f;riot.compile(function(){f=h(a,b,e)});return f};riot.mountTo=riot.mount})(this);
+/* Riot WIP, @license MIT, (c) 2015 Muut Inc. + contributors */
+
+;(function(window) {
+  'use strict'
+  var riot = { version: 'WIP', settings: {} }
+
+
+riot.observable = function(el) {
+
+  el = el || {}
+
+  var callbacks = {},
+      _id = 0
+
+  el.on = function(events, fn) {
+    if (typeof fn == 'function') {
+      fn._id = typeof fn._id == 'undefined' ? _id++ : fn._id
+
+      events.replace(/\S+/g, function(name, pos) {
+        (callbacks[name] = callbacks[name] || []).push(fn)
+        fn.typed = pos > 0
+      })
+    }
+    return el
+  }
+
+  el.off = function(events, fn) {
+    if (events == '*') callbacks = {}
+    else {
+      events.replace(/\S+/g, function(name) {
+        if (fn) {
+          var arr = callbacks[name]
+          for (var i = 0, cb; (cb = arr && arr[i]); ++i) {
+            if (cb._id == fn._id) { arr.splice(i, 1); i-- }
+          }
+        } else {
+          callbacks[name] = []
+        }
+      })
+    }
+    return el
+  }
+
+  // only single event supported
+  el.one = function(name, fn) {
+    function on() {
+      el.off(name, on)
+      fn.apply(el, arguments)
+    }
+    return el.on(name, on)
+  }
+
+  el.trigger = function(name) {
+    var args = [].slice.call(arguments, 1),
+        fns = callbacks[name] || []
+
+    for (var i = 0, fn; (fn = fns[i]); ++i) {
+      if (!fn.busy) {
+        fn.busy = 1
+        fn.apply(el, fn.typed ? [name].concat(args) : args)
+        if (fns[i] !== fn) { i-- }
+        fn.busy = 0
+      }
+    }
+
+    if (callbacks.all && name != 'all') {
+      el.trigger.apply(el, ['all', name].concat(args))
+    }
+
+    return el
+  }
+
+  return el
+
+}
+riot.mixin = (function() {
+  var mixins = {}
+
+  return function(name, mixin) {
+    if (!mixin) return mixins[name]
+    mixins[name] = mixin
+  }
+
+})()
+
+;(function(riot, evt, window) {
+
+  // browsers only
+  if (!window) return
+
+  var loc = window.location,
+      fns = riot.observable(),
+      win = window,
+      started = false,
+      current
+
+  function hash() {
+    return loc.href.split('#')[1] || ''
+  }
+
+  function parser(path) {
+    return path.split('/')
+  }
+
+  function emit(path) {
+    if (path.type) path = hash()
+
+    if (path != current) {
+      fns.trigger.apply(null, ['H'].concat(parser(path)))
+      current = path
+    }
+  }
+
+  var r = riot.route = function(arg) {
+    // string
+    if (arg[0]) {
+      loc.hash = arg
+      emit(arg)
+
+    // function
+    } else {
+      fns.on('H', arg)
+    }
+  }
+
+  r.exec = function(fn) {
+    fn.apply(null, parser(hash()))
+  }
+
+  r.parser = function(fn) {
+    parser = fn
+  }
+
+  r.stop = function () {
+    if (!started) return
+    win.removeEventListener ? win.removeEventListener(evt, emit, false) : win.detachEvent('on' + evt, emit)
+    fns.off('*')
+    started = false
+  }
+
+  r.start = function () {
+    if (started) return
+    win.addEventListener ? win.addEventListener(evt, emit, false) : win.attachEvent('on' + evt, emit)
+    started = true
+  }
+
+  // autostart the router
+  r.start()
+
+})(riot, 'hashchange', window)
+/*
+
+//// How it works?
+
+
+Three ways:
+
+1. Expressions: tmpl('{ value }', data).
+   Returns the result of evaluated expression as a raw object.
+
+2. Templates: tmpl('Hi { name } { surname }', data).
+   Returns a string with evaluated expressions.
+
+3. Filters: tmpl('{ show: !done, highlight: active }', data).
+   Returns a space separated list of trueish keys (mainly
+   used for setting html classes), e.g. "show highlight".
+
+
+// Template examples
+
+tmpl('{ title || "Untitled" }', data)
+tmpl('Results are { results ? "ready" : "loading" }', data)
+tmpl('Today is { new Date() }', data)
+tmpl('{ message.length > 140 && "Message is too long" }', data)
+tmpl('This item got { Math.round(rating) } stars', data)
+tmpl('<h1>{ title }</h1>{ body }', data)
+
+
+// Falsy expressions in templates
+
+In templates (as opposed to single expressions) all falsy values
+except zero (undefined/null/false) will default to empty string:
+
+tmpl('{ undefined } - { false } - { null } - { 0 }', {})
+// will return: " - - - 0"
+
+*/
+
+
+var brackets = (function(orig) {
+
+  var cachedBrackets,
+      r,
+      b,
+      re = /[{}]/g
+
+  return function(x) {
+
+    // make sure we use the current setting
+    var s = riot.settings.brackets || orig
+
+    // recreate cached vars if needed
+    if (cachedBrackets !== s) {
+      cachedBrackets = s
+      b = s.split(' ')
+      r = b.map(function (e) { return e.replace(/(?=.)/g, '\\') })
+    }
+
+    // if regexp given, rewrite it with current brackets (only if differ from default)
+    return x instanceof RegExp ? (
+        s === orig ? x :
+        new RegExp(x.source.replace(re, function(b) { return r[~~(b === '}')] }), x.global ? 'g' : '')
+      ) :
+      // else, get specific bracket
+      b[x]
+  }
+})('{ }')
+
+
+var tmpl = (function() {
+
+  var cache = {},
+      reVars = /(['"\/]).*?[^\\]\1|\.\w*|\w*:|\b(?:(?:new|typeof|in|instanceof) |(?:this|true|false|null|undefined)\b|function *\()|([a-z_$]\w*)/gi
+              // [ 1               ][ 2  ][ 3 ][ 4                                                                                  ][ 5       ]
+              // find variable names:
+              // 1. skip quoted strings and regexps: "a b", 'a b', 'a \'b\'', /a b/
+              // 2. skip object properties: .name
+              // 3. skip object literals: name:
+              // 4. skip javascript keywords
+              // 5. match var name
+
+  // build a template (or get it from cache), render with data
+  return function(str, data) {
+    return str && (cache[str] = cache[str] || tmpl(str))(data)
+  }
+
+
+  // create a template instance
+
+  function tmpl(s, p) {
+
+    // default template string to {}
+    s = (s || (brackets(0) + brackets(1)))
+
+      // temporarily convert \{ and \} to a non-character
+      .replace(brackets(/\\{/g), '\uFFF0')
+      .replace(brackets(/\\}/g), '\uFFF1')
+
+    // split string to expression and non-expresion parts
+    p = split(s, extract(s, brackets(/{/), brackets(/}/)))
+
+    return new Function('d', 'return ' + (
+
+      // is it a single expression or a template? i.e. {x} or <b>{x}</b>
+      !p[0] && !p[2] && !p[3]
+
+        // if expression, evaluate it
+        ? expr(p[1])
+
+        // if template, evaluate all expressions in it
+        : '[' + p.map(function(s, i) {
+
+            // is it an expression or a string (every second part is an expression)
+          return i % 2
+
+              // evaluate the expressions
+              ? expr(s, true)
+
+              // process string parts of the template:
+              : '"' + s
+
+                  // preserve new lines
+                  .replace(/\n/g, '\\n')
+
+                  // escape quotes
+                  .replace(/"/g, '\\"')
+
+                + '"'
+
+        }).join(',') + '].join("")'
+      )
+
+      // bring escaped { and } back
+      .replace(/\uFFF0/g, brackets(0))
+      .replace(/\uFFF1/g, brackets(1))
+
+    + ';')
+
+  }
+
+
+  // parse { ... } expression
+
+  function expr(s, n) {
+    s = s
+
+      // convert new lines to spaces
+      .replace(/\n/g, ' ')
+
+      // trim whitespace, brackets, strip comments
+      .replace(brackets(/^[{ ]+|[ }]+$|\/\*.+?\*\//g), '')
+
+    // is it an object literal? i.e. { key : value }
+    return /^\s*[\w- "']+ *:/.test(s)
+
+      // if object literal, return trueish keys
+      // e.g.: { show: isOpen(), done: item.done } -> "show done"
+      ? '[' +
+
+          // extract key:val pairs, ignoring any nested objects
+          extract(s,
+
+              // name part: name:, "name":, 'name':, name :
+              /["' ]*[\w- ]+["' ]*:/,
+
+              // expression part: everything upto a comma followed by a name (see above) or end of line
+              /,(?=["' ]*[\w- ]+["' ]*:)|}|$/
+              ).map(function(pair) {
+
+                // get key, val parts
+                return pair.replace(/^[ "']*(.+?)[ "']*: *(.+?),? *$/, function(_, k, v) {
+
+                  // wrap all conditional parts to ignore errors
+                  return v.replace(/[^&|=!><]+/g, wrap) + '?"' + k + '":"",'
+
+                })
+
+              }).join('')
+
+        + '].join(" ").trim()'
+
+      // if js expression, evaluate as javascript
+      : wrap(s, n)
+
+  }
+
+
+  // execute js w/o breaking on errors or undefined vars
+
+  function wrap(s, nonull) {
+    s = s.trim()
+    return !s ? '' : '(function(v){try{v='
+
+        // prefix vars (name => data.name)
+        + (s.replace(reVars, function(s, _, v) { return v ? '(d.'+v+'===undefined?'+(typeof window == 'undefined' ? 'global.' : 'window.')+v+':d.'+v+')' : s })
+
+          // break the expression if its empty (resulting in undefined value)
+          || 'x')
+      + '}catch(e){'
+      + '}finally{return '
+
+        // default to empty string for falsy values except zero
+        + (nonull === true ? '!v&&v!==0?"":v' : 'v')
+
+      + '}}).call(d)'
+  }
+
+
+  // split string by an array of substrings
+
+  function split(str, substrings) {
+    var parts = []
+    substrings.map(function(sub, i) {
+
+      // push matched expression and part before it
+      i = str.indexOf(sub)
+      parts.push(str.slice(0, i), sub)
+      str = str.slice(i + sub.length)
+    })
+
+    // push the remaining part
+    return parts.concat(str)
+  }
+
+
+  // match strings between opening and closing regexp, skipping any inner/nested matches
+
+  function extract(str, open, close) {
+
+    var start,
+        level = 0,
+        matches = [],
+        re = new RegExp('('+open.source+')|('+close.source+')', 'g')
+
+    str.replace(re, function(_, open, close, pos) {
+
+      // if outer inner bracket, mark position
+      if(!level && open) start = pos
+
+      // in(de)crease bracket level
+      level += open ? 1 : -1
+
+      // if outer closing bracket, grab the match
+      if(!level && close != null) matches.push(str.slice(start, pos+close.length))
+
+    })
+
+    return matches
+  }
+
+})()
+
+// { key, i in items} -> { key, i, items }
+function loopKeys(expr) {
+  var ret = { val: expr },
+      els = expr.split(/\s+in\s+/)
+
+  if (els[1]) {
+    ret.val = brackets(0) + els[1]
+    els = els[0].slice(brackets(0).length).trim().split(/,\s*/)
+    ret.key = els[0]
+    ret.pos = els[1]
+  }
+
+  return ret
+}
+
+function mkitem(expr, key, val) {
+  var item = {}
+  item[expr.key] = key
+  if (expr.pos) item[expr.pos] = val
+  return item
+}
+
+
+/* Beware: heavy stuff */
+function _each(dom, parent, expr) {
+
+  remAttr(dom, 'each')
+
+  var template = dom.outerHTML,
+      prev = dom.previousSibling,
+      root = dom.parentNode,
+      placeholder = document.createComment('riot placeholder'),
+      tags = [],
+      cachedItems = [],
+      checksum
+
+  root.insertBefore(placeholder, dom)
+
+  expr = loopKeys(expr)
+
+  // clean template code
+  parent
+    .one('premount', function() {
+      if (root.stub) root = parent.root
+      // remove the original DOM node
+      dom.parentNode.removeChild(dom)
+    })
+    .on('update', function() {
+      var items = tmpl(expr.val, parent),
+          batch = [],
+          frag = document.createDocumentFragment()
+
+      if (!items) items = []
+
+      // object loop. any changes cause full redraw
+      if (!Array.isArray(items)) {
+        var testsum = JSON.stringify(items)
+
+        if (testsum == checksum) return
+        checksum = testsum
+
+        items = Object.keys(items).map(function(key) {
+          return mkitem(expr, key, items[key])
+        })
+
+      }
+
+      each(items, function(item, i) {
+        // start index search from position based on the current i
+        var _item = !checksum && expr.key ? mkitem(expr, item, i) : item
+
+        if (!tags[i]) {
+          // mount new
+          var tag = new Tag({ tmpl: template }, {
+            parent: parent,
+            frag: frag,
+            root: root,
+            item: _item
+          })
+
+          batch.push(function() {
+            tag.mount()
+            tag.update(_item)
+            tags.push(tag)
+          })
+
+          return true
+
+        } else {
+          batch.push(function() {
+            tags[i].update(_item)
+          })
+        }
+
+      })
+
+      if(cachedItems.length > items.length) {
+        var i =  cachedItems.length - items.length
+        while (i--) {
+          tags[tags.length - 1].unmount()
+          tags.splice(tags.length - 1, 1)
+        }
+      }
+
+      each(batch, function(action) { action() })
+
+      root.insertBefore(frag, placeholder)
+
+      cachedItems = items.slice()
+
+    }).one('updated', function() {
+      var keys = Object.keys(parent)// only set new values
+      walk(root, function(dom) {
+        setNamed(dom, parent, keys)
+      })
+    })
+
+}
+
+
+function parseNamedElements(root, parent, childTags) {
+
+  walk(root, function(dom) {
+    if (dom.nodeType == 1) {
+      dom.isLoop = 0
+      if(dom.parentNode && dom.parentNode.isLoop) dom.isLoop = 1
+      if(dom.getAttribute('each')) dom.isLoop = 1
+      // custom child tag
+      var child = getTag(dom)
+
+      if (child && !dom.isLoop) {
+        var tag = new Tag(child, { root: dom, parent: parent }, dom.innerHTML),
+            namedTag = dom.getAttribute('name'),
+            tagName = namedTag && namedTag.indexOf(brackets(0)) < 0 ? namedTag : child.name,
+            ptag = parent,
+            cachedTag
+
+        while(!getTag(ptag.root)) {
+          if(!ptag.parent) break
+          ptag = ptag.parent
+        }
+
+        // fix for the parent attribute in the looped elements
+        tag.parent = ptag
+
+        cachedTag = ptag.tags[tagName]
+
+        // if there are multiple children tags having the same name
+        if (cachedTag) {
+          // if the parent tags property is not yet an array
+          // create it adding the first cached tag
+          if (!Array.isArray(cachedTag))
+            ptag.tags[tagName] = [cachedTag]
+          // add the new nested tag to the array
+          ptag.tags[tagName].push(tag)
+        } else {
+          ptag.tags[tagName] = tag
+        }
+
+        // empty the child node once we got its template
+        // to avoid that its children get compiled multiple times
+        dom.innerHTML = ''
+        childTags.push(tag)
+      }
+
+      if(!dom.isLoop)
+        setNamed(dom, parent, [])
+    }
+
+  })
+
+}
+
+function parseExpressions(root, tag, expressions) {
+
+  function addExpr(dom, val, extra) {
+    if (val.indexOf(brackets(0)) >= 0) {
+      var expr = { dom: dom, expr: val }
+      expressions.push(extend(expr, extra))
+    }
+  }
+
+  walk(root, function(dom) {
+    var type = dom.nodeType
+
+    // text node
+    if (type == 3 && dom.parentNode.tagName != 'STYLE') addExpr(dom, dom.nodeValue)
+    if (type != 1) return
+
+    /* element */
+
+    // loop
+    var attr = dom.getAttribute('each')
+
+    if (attr) { _each(dom, tag, attr); return false }
+
+    // attribute expressions
+    each(dom.attributes, function(attr) {
+      var name = attr.name,
+        bool = name.split('__')[1]
+
+      addExpr(dom, attr.value, { attr: bool || name, bool: bool })
+      if (bool) { remAttr(dom, name); return false }
+
+    })
+
+    // skip custom tags
+    if (getTag(dom)) return false
+
+  })
+
+}
+function Tag(impl, conf, innerHTML) {
+
+  var self = riot.observable(this),
+      opts = inherit(conf.opts) || {},
+      dom = mkdom(impl.tmpl),
+      item = conf.item,
+      parent = conf.parent,
+      frag = conf.frag,
+      expressions = [],
+      childTags = [],
+      root = conf.root,
+      fn = impl.fn,
+      tagName = root.tagName.toLowerCase(),
+      attr = {},
+      loopDom,
+      TAG_ATTRIBUTES = /([\w\-]+)\s?=\s?['"]([^'"]+)["']/gim
+
+
+  if (fn && root._tag) {
+    root._tag.unmount(true)
+  }
+
+  if(impl.attrs) {
+    var attrs = impl.attrs.match(TAG_ATTRIBUTES)
+
+    each(attrs, function(a) {
+      var kv = a.split(/\s?=\s?/)
+      root.setAttribute(kv[0], kv[1].replace(/['"]/g, ''))
+    })
+
+  }
+  // keep a reference to the tag just created
+  // so we will be able to mount this tag multiple times
+  root._tag = this
+
+  // create a unique id to this tag
+  // it could be handy to use it also to improve the virtual dom rendering speed
+  this._id = fastAbs(~~(new Date().getTime() * Math.random()))
+
+  extend(this, { parent: parent, root: root, opts: opts, tags: {} }, item)
+
+  // grab attributes
+  each(root.attributes, function(el) {
+    var val = el.value
+    // remember attributes with expressions only
+    if (brackets(/\{.*\}/).test(val)) attr[el.name] = val
+  })
+
+
+  if (dom.innerHTML && !/select/.test(tagName) && !/optgroup/.test(tagName) && !/tbody/.test(tagName) && !/tr/.test(tagName))
+    // replace all the yield tags with the tag inner html
+    dom.innerHTML = replaceYield(dom.innerHTML, innerHTML)
+
+
+  // options
+  function updateOpts() {
+    // update opts from current DOM attributes
+    each(root.attributes, function(el) {
+      opts[el.name] = tmpl(el.value, parent || self)
+    })
+    // recover those with expressions
+    each(Object.keys(attr), function(name) {
+      opts[name] = tmpl(attr[name], parent || self)
+    })
+  }
+
+  this.update = function(data) {
+    item = data
+    extend(self, data)
+    updateOpts()
+    self.trigger('update', item)
+    update(expressions, self, data)
+    self.trigger('updated')
+  }
+
+  this.mixin = function() {
+    each(arguments, function(mix) {
+      mix = 'string' == typeof mix ? riot.mixin(mix) : mix
+      each(Object.keys(mix), function(key) {
+        // bind methods to self
+        if ('init' != key)
+          self[key] = 'function' == typeof mix[key] ? mix[key].bind(self) : mix[key]
+      })
+      // init method will be called automatically
+      if (mix.init) mix.init.bind(self)()
+    })
+  }
+
+  this.mount = function() {
+
+    updateOpts()
+
+    // initialiation
+    fn && fn.call(self, opts)
+
+    toggle(true)
+
+
+    // parse layout after init. fn may calculate args for nested custom tags
+    parseExpressions(dom, self, expressions)
+
+    if (!self.parent) self.update()
+
+    // internal use only, fixes #403
+    self.trigger('premount')
+
+    if (frag) {
+      loopDom = dom.firstChild
+      frag.appendChild(loopDom)
+    } else {
+      while (dom.firstChild) root.appendChild(dom.firstChild)
+    }
+
+    if (root.stub) self.root = root = parent.root
+
+    // if it's not a child tag we can trigger its mount event
+    if (!self.parent) self.trigger('mount')
+    // otherwise we need to wait that the parent event gets triggered
+    else self.parent.one('mount', function() { self.trigger('mount') })
+  }
+
+
+  this.unmount = function(keepRootTag) {
+    var el = loopDom || root,
+        p = el.parentNode
+
+    if (p) {
+
+      if (parent) {
+        // remove this tag from the parent tags object
+        // if there are multiple nested tags with same name..
+        // remove this element form the array
+        if (Array.isArray(parent.tags[tagName])) {
+          each(parent.tags[tagName], function(tag, i) {
+            if (tag._id == self._id)
+              parent.tags[tagName].splice(i, 1)
+          })
+        } else
+          // otherwise just delete the tag instance
+          parent.tags[tagName] = undefined
+      } else {
+        while (el.firstChild) el.removeChild(el.firstChild)
+      }
+
+      if (!keepRootTag)
+        p.removeChild(el)
+
+    }
+
+
+    self.trigger('unmount')
+    toggle()
+    self.off('*')
+    // somehow ie8 does not like `delete root._tag`
+    root._tag = null
+
+  }
+
+  function toggle(isMount) {
+
+    // mount/unmount children
+    each(childTags, function(child) { child[isMount ? 'mount' : 'unmount']() })
+
+    // listen/unlisten parent (events flow one way from parent to children)
+    if (parent) {
+      var evt = isMount ? 'on' : 'off'
+
+      // the loop tags will be always in sync with the parent automatically
+      if (frag)
+        parent[evt]('unmount', self.unmount)
+      else
+        parent[evt]('update', self.update)[evt]('unmount', self.unmount)
+    }
+  }
+
+  // named elements available for fn
+  parseNamedElements(dom, this, childTags)
+
+
+}
+
+function setEventHandler(name, handler, dom, tag, item) {
+
+  dom[name] = function(e) {
+
+    // cross browser event fix
+    e = e || window.event
+
+    if (!e.which) e.which = e.charCode || e.keyCode
+    if (!e.target) e.target = e.srcElement
+
+    // ignore error on some browsers
+    try {
+      e.currentTarget = dom
+    } catch (ignored) { '' }
+
+    e.item = item
+
+    // prevent default behaviour (by default)
+    if (handler.call(tag, e) !== true && !/radio|check/.test(dom.type)) {
+      e.preventDefault && e.preventDefault()
+      e.returnValue = false
+    }
+
+    if (!e.preventUpdate) {
+      var el = item ? tag.parent : tag
+      el.update()
+    }
+
+  }
+
+}
+
+// used by if- attribute
+function insertTo(root, node, before) {
+  if (root) {
+    root.insertBefore(before, node)
+    root.removeChild(node)
+  }
+}
+
+// item = currently looped item
+function update(expressions, tag, item) {
+
+  each(expressions, function(expr, i) {
+
+    var dom = expr.dom,
+        attrName = expr.attr,
+        value = tmpl(expr.expr, tag),
+        parent = expr.dom.parentNode
+
+    if (value == null) value = ''
+
+    // leave out riot- prefixes from strings inside textarea
+    if (parent && parent.tagName == 'TEXTAREA') value = value.replace(/riot-/g, '')
+
+    // no change
+    if (expr.value === value) return
+    expr.value = value
+
+    // text node
+    if (!attrName) return dom.nodeValue = value.toString()
+
+    // remove original attribute
+    remAttr(dom, attrName)
+
+    // event handler
+    if (typeof value == 'function') {
+      setEventHandler(attrName, value, dom, tag, item)
+
+    // if- conditional
+    } else if (attrName == 'if') {
+      var stub = expr.stub
+
+      // add to DOM
+      if (value) {
+        stub && insertTo(stub.parentNode, stub, dom)
+
+      // remove from DOM
+      } else {
+        stub = expr.stub = stub || document.createTextNode('')
+        insertTo(dom.parentNode, dom, stub)
+      }
+
+    // show / hide
+    } else if (/^(show|hide)$/.test(attrName)) {
+      if (attrName == 'hide') value = !value
+      dom.style.display = value ? '' : 'none'
+
+    // field value
+    } else if (attrName == 'value') {
+      dom.value = value
+
+    // <img src="{ expr }">
+    } else if (attrName.slice(0, 5) == 'riot-') {
+      attrName = attrName.slice(5)
+      value ? dom.setAttribute(attrName, value) : remAttr(dom, attrName)
+
+    } else {
+      if (expr.bool) {
+        dom[attrName] = value
+        if (!value) return
+        value = attrName
+      }
+
+      if (typeof value != 'object') dom.setAttribute(attrName, value)
+
+    }
+
+  })
+
+}
+
+function each(els, fn) {
+  for (var i = 0, len = (els || []).length, el; i < len; i++) {
+    el = els[i]
+    // return false -> remove current item during loop
+    if (el != null && fn(el, i) === false) i--
+  }
+  return els
+}
+
+function remAttr(dom, name) {
+  dom.removeAttribute(name)
+}
+
+function fastAbs(nr) {
+  return (nr ^ (nr >> 31)) - (nr >> 31)
+}
+
+function extend() {
+  var args = [].slice.call(arguments),
+      src = args[0]
+
+  args.splice(0, 1)
+
+  each(args, function(obj) {
+    for (var key in obj) {
+      src[key] = obj[key]
+    }
+  })
+
+  return src
+}
+
+function mkdom(template) {
+  var tagName = template.trim().slice(1, 3).toLowerCase(),
+      rootTag = /td|th/.test(tagName) ? 'tr' : tagName == 'tr' ? 'tbody' : 'div',
+      el = mkEl(rootTag)
+
+  el.stub = true
+
+  if (template.trim().slice(1, 9).toLowerCase() === 'optgroup' && ieVersion && ieVersion < 10) {
+    optgroupInnerHTML(el, template)
+  } else if (tagName === 'op' && ieVersion && ieVersion < 10) {
+    optionInnerHTML(el, template)
+  } else if ((rootTag === 'tbody' || rootTag === 'tr') && ieVersion && ieVersion < 10) {
+    tbodyInnerHTML(el, template, tagName)
+  } else
+    el.innerHTML = template
+
+  return el
+}
+
+function walk(dom, fn) {
+  if (dom) {
+    if (fn(dom) === false) walk(dom.nextSibling, fn)
+    else {
+      dom = dom.firstChild
+
+      while (dom) {
+        walk(dom, fn)
+        dom = dom.nextSibling
+      }
+    }
+  }
+}
+
+function mkEl(name) {
+  return document.createElement(name)
+}
+
+function replaceYield (tmpl, innerHTML) {
+  return tmpl.replace(/<(yield)\/?>(<\/\1>)?/gim, innerHTML || '')
+}
+
+function $$(selector, ctx) {
+  ctx = ctx || document
+  return ctx.querySelectorAll(selector)
+}
+
+function inherit(parent) {
+  function Child() {}
+  Child.prototype = parent
+  return new Child()
+}
+
+function setNamed(dom, parent, keys) {
+  each(dom.attributes, function(attr) {
+
+    if(keys.indexOf(attr.value) > -1) return
+    if (/^(name|id)$/.test(attr.name)) {
+      if(parent[attr.value]) {
+        if(Array.isArray(parent[attr.value])) parent[attr.value].push(dom)
+        else parent[attr.value] = [parent[attr.value], dom]
+      }
+      else parent[attr.value] = dom
+    }
+  })
+}
+/**
+ *
+ * Hacks needed for the old internet explorer versions [lower than IE10]
+ *
+ */
+
+var ieVersion = checkIE()
+
+function checkIE() {
+  if (window) {
+    var ua = navigator.userAgent
+    var msie = ua.indexOf('MSIE ')
+    if (msie > 0) {
+      return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10)
+    }
+    else {
+      return 0
+    }
+  }
+}
+
+function tbodyInnerHTML(el, html, tagName) {
+  var div = mkEl('div'),
+      loops = /td|th/.test(tagName) ? 3 : 2,
+      child
+
+  div.innerHTML = '<table>' + html + '</table>'
+  child = div.firstChild
+
+  while(loops--) {
+    child = child.firstChild
+  }
+
+  el.appendChild(child)
+
+}
+
+function optionInnerHTML(el, html) {
+  var opt = mkEl('option'),
+      valRegx = /value=[\"'](.+?)[\"']/,
+      selRegx = /selected=[\"'](.+?)[\"']/,
+      eachRegx = /each=[\"'](.+?)[\"']/,
+      ifRegx = /if=[\"'](.+?)[\"']/,
+      innerRegx = />([^<]*)</,
+      valuesMatch = html.match(valRegx),
+      selectedMatch = html.match(selRegx),
+      innerValue = html.match(innerRegx),
+      eachMatch = html.match(eachRegx),
+      ifMatch = html.match(ifRegx)
+
+  if (innerValue) {
+    opt.innerHTML = innerValue[1]
+  } else {
+    opt.innerHTML = html
+  }
+
+  if (valuesMatch) {
+    opt.value = valuesMatch[1]
+  }
+
+  if (selectedMatch) {
+    opt.setAttribute('riot-selected', selectedMatch[1])
+  }
+
+  if (eachMatch) {
+    opt.setAttribute('each', eachMatch[1])
+  }
+
+  if (ifMatch) {
+    opt.setAttribute('if', ifMatch[1])
+  }
+
+  el.appendChild(opt)
+}
+
+function optgroupInnerHTML(el, html) {
+  var opt = mkEl('optgroup'),
+      labelRegx = /label=[\"'](.+?)[\"']/,
+      elementRegx = /^<([^>]*)>/,
+      tagRegx = /^<([^ \>]*)/,
+      labelMatch = html.match(labelRegx),
+      elementMatch = html.match(elementRegx),
+      tagMatch = html.match(tagRegx),
+      innerContent = html
+
+  if (elementMatch) {
+    var options = html.slice(elementMatch[1].length+2, -tagMatch[1].length-3).trim()
+    innerContent = options
+  }
+
+  if (labelMatch) {
+    opt.setAttribute('riot-label', labelMatch[1])
+  }
+
+  if (innerContent) {
+    var innerOpt = mkEl('div')
+
+    optionInnerHTML(innerOpt, innerContent)
+
+    opt.appendChild(innerOpt.firstChild)
+  }
+
+  el.appendChild(opt)
+}
+
+/*
+ Virtual dom is an array of custom tags on the document.
+ Updates and unmounts propagate downwards from parent to children.
+*/
+
+var virtualDom = [],
+    tagImpl = {},
+    styleNode
+
+
+function getTag(dom) {
+  return tagImpl[dom.getAttribute('riot-tag') || dom.tagName.toLowerCase()]
+}
+
+function injectStyle(css) {
+
+  styleNode = styleNode || mkEl('style')
+
+  if (!document.head) return
+
+  if(styleNode.styleSheet)
+    styleNode.styleSheet.cssText += css
+  else
+    styleNode.innerHTML += css
+
+  if (!styleNode._rendered)
+    if (styleNode.styleSheet)
+      document.body.appendChild(styleNode)
+    else
+      document.head.appendChild(styleNode)
+
+  styleNode._rendered = true
+
+}
+
+function mountTo(root, tagName, opts) {
+  var tag = tagImpl[tagName],
+      innerHTML = root.innerHTML
+
+  // clear the inner html
+  root.innerHTML = ''
+
+  if (tag && root) tag = new Tag(tag, { root: root, opts: opts }, innerHTML)
+
+  if (tag && tag.mount) {
+    tag.mount()
+    virtualDom.push(tag)
+    return tag.on('unmount', function() {
+      virtualDom.splice(virtualDom.indexOf(tag), 1)
+    })
+  }
+
+}
+
+riot.tag = function(name, html, css, attrs, fn) {
+  if (typeof attrs == 'function') {
+    fn = attrs
+    if(/^[\w\-]+\s?=/.test(css)) {attrs = css; css = ''} else attrs = ''
+  }
+  if (typeof css == 'function') fn = css
+  else if (css) injectStyle(css)
+  tagImpl[name] = { name: name, tmpl: html, attrs: attrs, fn: fn }
+  return name
+}
+
+riot.mount = function(selector, tagName, opts) {
+
+  var el,
+      selctAllTags = function() {
+        var keys = Object.keys(tagImpl)
+        var list = keys.join(', ')
+        each(keys, function(t) {
+          list += ', *[riot-tag="'+ t.trim() + '"]'
+        })
+        return list
+      },
+      allTags,
+      tags = []
+
+  if (typeof tagName == 'object') { opts = tagName; tagName = 0 }
+
+  // crawl the DOM to find the tag
+  if(typeof selector == 'string') {
+    if (selector == '*') {
+      // select all the tags registered
+      // and also the tags found with the riot-tag attribute set
+      selector = allTags = selctAllTags()
+    } else {
+      selector.split(',').map(function(t) {
+        selector += ', *[riot-tag="'+ t.trim() + '"]'
+      })
+
+    }
+    // or just the ones named like the selector
+    el = $$(selector)
+  }
+  // probably you have passed already a tag or a NodeList
+  else
+    el = selector
+
+  // select all the registered and mount them inside their root elements
+  if (tagName == '*') {
+    // get all custom tags
+    tagName = allTags || selctAllTags()
+    // if the root el it's just a single tag
+    if (el.tagName) {
+      el = $$(tagName, el)
+    } else {
+      var nodeList = []
+      // select all the children for all the different root elements
+      each(el, function(tag) {
+        nodeList = $$(tagName, tag)
+      })
+      el = nodeList
+    }
+    // get rid of the tagName
+    tagName = 0
+  }
+
+  function push(root) {
+    if(tagName && !root.getAttribute('riot-tag')) root.setAttribute('riot-tag', tagName)
+
+    var name = tagName || root.getAttribute('riot-tag') || root.tagName.toLowerCase(),
+        tag = mountTo(root, name, opts)
+
+    if (tag) tags.push(tag)
+  }
+
+  // DOM node
+  if (el.tagName)
+    push(selector)
+  // selector or NodeList
+  else
+    each(el, push)
+
+  return tags
+
+}
+
+// update everything
+riot.update = function() {
+  return each(virtualDom, function(tag) {
+    tag.update()
+  })
+}
+
+// @deprecated
+riot.mountTo = riot.mount
+
+
+  // share methods for other riot parts, e.g. compiler
+  riot.util = { brackets: brackets, tmpl: tmpl }
+
+  // support CommonJS, AMD & browser
+  if (typeof exports === 'object')
+    module.exports = riot
+  else if (typeof define === 'function' && define.amd)
+    define(function() { return riot })
+  else
+    window.riot = riot
+
+})(typeof window != 'undefined' ? window : undefined);
+;(function(window) {
+riot.parsers = {
+  html: {},
+  css: {},
+  js: {
+    coffee: function(js) {
+      return CoffeeScript.compile(js, { bare: true })
+    },
+    es6: function(js) {
+      return babel.transform(js, { blacklist: ['useStrict'] }).code
+    },
+    none: function(js) {
+      return js
+    }
+  }
+}
+
+
+var BOOL_ATTR = ('allowfullscreen,async,autofocus,autoplay,checked,compact,controls,declare,default,'+
+  'defaultchecked,defaultmuted,defaultselected,defer,disabled,draggable,enabled,formnovalidate,hidden,'+
+  'indeterminate,inert,ismap,itemscope,loop,multiple,muted,nohref,noresize,noshade,novalidate,nowrap,open,'+
+  'pauseonexit,readonly,required,reversed,scoped,seamless,selected,sortable,spellcheck,translate,truespeed,'+
+  'typemustmatch,visible').split(','),
+  // these cannot be auto-closed
+  VOID_TAGS = 'area,base,br,col,command,embed,hr,img,input,keygen,link,meta,param,source,track,wbr'.split(','),
+  /*
+    Following attributes give error when parsed on browser with { exrp_values }
+
+    'd' describes the SVG <path>, Chrome gives error if the value is not valid format
+    https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
+  */
+  PREFIX_ATTR = ['style', 'src', 'd'],
+
+  LINE_TAG = /^<([\w\-]+)>(.*)<\/\1>/gim,
+  QUOTE = /=({[^}]+})([\s\/\>])/g,
+  SET_ATTR = /([\w\-]+)=(["'])([^\2]+?)\2/g,
+  EXPR = /{\s*([^}]+)\s*}/g,
+  // (tagname) (html) (javascript) endtag
+  CUSTOM_TAG = /^<([\w\-]+)\s?([^>]*)>([^\x00]*[\w\/}"']>$)?([^\x00]*?)^<\/\1>/gim,
+  SCRIPT = /<script(\s+type=['"]?([^>'"]+)['"]?)?>([^\x00]*?)<\/script>/gm,
+  STYLE = /<style(\s+type=['"]?([^>'"]+)['"]?|\s+scoped)?>([^\x00]*?)<\/style>/gm,
+  CSS_SELECTOR = /(^|\}|\{)\s*([^\{\}]+)\s*(?=\{)/g,
+  CSS_COMMENT = /\/\*[^\x00]*?\*\//gm,
+  HTML_COMMENT = /<!--.*?-->/g,
+  CLOSED_TAG = /<([\w\-]+)([^>]*)\/\s*>/g,
+  LINE_COMMENT = /^\s*\/\/.*$/gm,
+  JS_COMMENT = /\/\*[^\x00]*?\*\//gm
+
+function mktag(name, html, css, attrs, js) {
+  return 'riot.tag(\''
+    + name + '\', \''
+    + html + '\''
+    + (css ? ', \'' + css + '\'' : '')
+    + (attrs ? ', \'' + attrs.replace(/'/g, "\\'") + '\'' : '')
+    + ', function(opts) {' + js + '\n});'
+}
+
+function compileHTML(html, opts, type) {
+
+  var brackets = riot.util.brackets
+
+  // foo={ bar } --> foo="{ bar }"
+  html = html.replace(brackets(QUOTE), '="$1"$2')
+
+  // whitespace
+  html = opts.whitespace ? html.replace(/\n/g, '\\n') : html.replace(/\s+/g, ' ')
+
+  // strip comments
+  html = html.trim().replace(HTML_COMMENT, '')
+
+  // alter special attribute names
+  html = html.replace(SET_ATTR, function(full, name, _, expr) {
+    if (expr.indexOf(brackets(0)) >= 0) {
+      name = name.toLowerCase()
+
+      if (PREFIX_ATTR.indexOf(name) >= 0) name = 'riot-' + name
+
+      // IE8 looses boolean attr values: `checked={ expr }` --> `__checked={ expr }`
+      else if (BOOL_ATTR.indexOf(name) >= 0) name = '__' + name
+    }
+
+    return name + '="' + expr + '"'
+  })
+
+  // run expressions trough parser
+  if (opts.expr) {
+    html = html.replace(brackets(EXPR), function(_, expr) {
+      var ret = compileJS(expr, opts, type).trim().replace(/\r?\n|\r/g, '').trim()
+      if (ret.slice(-1) == ';') ret = ret.slice(0, -1)
+      return brackets(0) + ret + brackets(1)
+    })
+  }
+
+  // <foo/> -> <foo></foo>
+  html = html.replace(CLOSED_TAG, function(_, name, attr) {
+    var tag = '<' + name + (attr ? ' ' + attr.trim() : '') + '>'
+
+    // Do not self-close HTML5 void tags
+    if (VOID_TAGS.indexOf(name.toLowerCase()) == -1) tag += '</' + name + '>'
+    return tag
+  })
+
+  // escape single quotes
+  html = html.replace(/'/g, "\\'")
+
+  // \{ jotain \} --> \\{ jotain \\}
+  html = html.replace(brackets(/\\{|\\}/g), '\\$&')
+
+  // compact: no whitespace between tags
+  if (opts.compact) html = html.replace(/> </g, '><')
+
+  return html
+
+}
+
+
+function riotjs(js) {
+
+  // strip comments
+  js = js.replace(LINE_COMMENT, '').replace(JS_COMMENT, '')
+
+  // ES6 method signatures
+  var lines = js.split('\n'),
+      es6Ident = ''
+
+  lines.forEach(function(line, i) {
+    var l = line.trim()
+
+    // method start
+    if (l[0] != '}' && l.indexOf('(') > 0 && l.indexOf('function') == -1) {
+      var end = /[{}]/.exec(l.slice(-1)),
+          m = end && /(\s+)([\w]+)\s*\(([\w,\s]*)\)\s*\{/.exec(line)
+
+      if (m && !/^(if|while|switch|for|catch)$/.test(m[2])) {
+        lines[i] = m[1] + 'this.' + m[2] + ' = function(' + m[3] + ') {'
+
+        // foo() { }
+        if (end[0] == '}') {
+          lines[i] += ' ' + l.slice(m[0].length - 1, -1) + '}.bind(this)'
+
+        } else {
+          es6Ident = m[1]
+        }
+      }
+
+    }
+
+    // method end
+    if (line.slice(0, es6Ident.length + 1) == es6Ident + '}') {
+      lines[i] = es6Ident + '}.bind(this);'
+      es6Ident = ''
+    }
+
+  })
+
+  return lines.join('\n')
+
+}
+
+function scopedCSS (tag, style, type) {
+  return style.replace(CSS_COMMENT, '').replace(CSS_SELECTOR, function (m, p1, p2) {
+    return p1 + ' ' + p2.split(/\s*,\s*/g).map(function(sel) {
+      var s = sel.trim().replace(/:scope\s*/, '')
+      return s[0] == '@' || s == 'from' || s == 'to' || /%$/.test(s) ? s :
+        tag + ' ' + s + ', [riot-tag="' + tag + '"] ' + s
+    }).join(',')
+  }).trim()
+}
+
+function compileJS(js, opts, type) {
+  var parser = opts.parser || (type ? riot.parsers.js[type] : riotjs)
+  if (!parser) throw new Error('Parser not found "' + type + '"')
+  return parser(js, opts)
+}
+
+function compileTemplate(lang, html) {
+  var parser = riot.parsers.html[lang]
+  if (!parser) throw new Error('Template parser not found "' + lang + '"')
+  return parser(html)
+}
+
+function compileCSS(style, tag, type) {
+  if (type == 'scoped-css') style = scopedCSS(tag, style)
+  else if (riot.parsers.css[type]) style = riot.parsers.css[type](tag, style)
+  return style.replace(/\s+/g, ' ').replace(/\\/g, '\\\\').replace(/'/g, "\\'").trim()
+}
+
+function compile(src, opts) {
+
+  opts = opts || {}
+
+  if (opts.brackets) riot.settings.brackets = opts.brackets
+
+  if (opts.template) src = compileTemplate(opts.template, src)
+
+  src = src.replace(LINE_TAG, function(_, tagName, html) {
+    return mktag(tagName, compileHTML(html, opts), '', '', '')
+  })
+
+  return src.replace(CUSTOM_TAG, function(_, tagName, attrs, html, js) {
+
+    html = html || ''
+
+    // js wrapped inside <script> tag
+    var type = opts.type
+
+    if (!js.trim()) {
+      html = html.replace(SCRIPT, function(_, fullType, _type, script) {
+        if (_type) type = _type.replace('text/', '')
+        js = script
+        return ''
+      })
+    }
+
+    // styles in <style> tag
+    var styleType = 'css',
+        style = ''
+
+    html = html.replace(STYLE, function(_, fullType, _type, _style) {
+      if (fullType && 'scoped' == fullType.trim()) styleType = 'scoped-css'
+        else if (_type) styleType = _type.replace('text/', '')
+      style = _style
+      return ''
+    })
+
+    return mktag(
+      tagName,
+      compileHTML(html, opts, type),
+      compileCSS(style, tagName, styleType),
+      attrs,
+      compileJS(js, opts, type)
+    )
+
+  })
+
+}
+var doc = window.document,
+    promise,
+    ready
+
+
+function GET(url, fn) {
+  var req = new XMLHttpRequest()
+
+  req.onreadystatechange = function() {
+    if (req.readyState == 4 && req.status == 200) fn(req.responseText)
+  }
+  req.open('GET', url, true)
+  req.send('')
+}
+
+function unindent(src) {
+  var ident = /[ \t]+/.exec(src)
+  if (ident) src = src.replace(new RegExp('^' + ident[0], 'gm'), '')
+  return src
+}
+
+function globalEval(js) {
+  var node = doc.createElement('script'),
+      root = doc.documentElement
+
+  node.text = compile(js)
+  root.appendChild(node)
+  root.removeChild(node)
+}
+
+function compileScripts(fn) {
+  var scripts = doc.querySelectorAll('script[type="riot/tag"]'),
+      scriptsAmount = scripts.length
+
+  function done() {
+    promise.trigger('ready')
+    ready = true
+    fn && fn()
+  }
+
+  if(!scriptsAmount) {
+    done()
+  } else {
+    ;[].map.call(scripts, function(script) {
+      var url = script.getAttribute('src')
+
+      function compileTag(source) {
+        globalEval(source)
+        scriptsAmount--
+        if (!scriptsAmount) {
+          done()
+        }
+      }
+
+      return url ? GET(url, compileTag) : compileTag(unindent(script.innerHTML))
+    })
+  }
+}
+
+
+riot.compile = function(arg, fn) {
+
+  // string
+  if (typeof arg == 'string') {
+
+    // compile & return
+    if (arg.trim()[0] == '<') {
+      var js = unindent(compile(arg))
+      if (!fn) globalEval(js)
+      return js
+
+    // URL
+    } else {
+      return GET(arg, function(str) {
+        var js = unindent(compile(str))
+        globalEval(js)
+        fn && fn(js, str)
+      })
+    }
+  }
+
+  // must be a function
+  if (typeof arg != 'function') arg = undefined
+
+  // all compiled
+  if (ready) return arg && arg()
+
+  // add to queue
+  if (promise) {
+    arg && promise.on('ready', arg)
+
+  // grab riot/tag elements + load & execute them
+  } else {
+    promise = riot.observable()
+    compileScripts(arg)
+  }
+
+}
+
+// reassign mount methods
+var mount = riot.mount
+
+riot.mount = function(a, b, c) {
+  var ret
+  riot.compile(function() { ret = mount(a, b, c) })
+  return ret
+}
+
+// @deprecated
+riot.mountTo = riot.mount
+})(this)
