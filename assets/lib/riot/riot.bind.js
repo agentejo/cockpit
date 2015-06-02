@@ -46,11 +46,41 @@
 
             ele.$setValue = (function(fn, body) {
 
-                body = 'try{ tag.'+ele.getAttribute(attr)+' = val;tag.update(); return true;}catch(e){ return false; }';
+                var field      = ele.getAttribute(attr),
+                    segments   = field.split('.'),
+                    initilized = false;
+
+                body = 'try{ tag.'+field+' = val;tag.update(); return true;}catch(e){ return false; }';
 
                 fn = new Function('tag', 'val', body);
 
                 return function(value) {
+
+                    if (!initilized) {
+
+                        var current = tag;
+
+                        try {
+
+                            for (var i = 0, current;i<segments.length;i++) {
+
+                                if (current[segments[i]] === undefined ) {
+
+                                    if (segments[ i + 1 ]) {
+                                        current[segments[i]] = {};
+                                    } else {
+                                        current[segments[i]] = null;
+                                    }
+                                }
+
+                                current = current[segments[i]];
+                            }
+
+                        }catch(e){};
+
+                        initilized = true;
+                    }
+
                     return fn(tag, value);
                 };
 
