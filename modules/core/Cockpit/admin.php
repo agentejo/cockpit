@@ -73,6 +73,7 @@ $app['app.assets.base'] = [
     'assets:lib/storage.js',
     'assets:app/js/app.js',
     'assets:app/js/app.utils.js',
+    'cockpit:assets/components.js',
     'cockpit:assets/cockpit.js',
 
     'assets:app/css/style.css',
@@ -99,14 +100,7 @@ if ($app->path('config:style.css')) {
  * web components
  */
 
-$app['app.assets.components'] = [
-
-    'cockpit:assets/components/cockpit-components.tag',
-    'cockpit:assets/components/cockpit-search.tag',
-    'cockpit:assets/components/cockpit-finder.tag',
-    'cockpit:assets/components/codemirror.tag',
-    'cockpit:assets/components/picoedit.tag',
-];
+$app['app.assets.components'] = [];
 
 /**
  * admin menus

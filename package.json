@@ -1,6 +1,17 @@
 {
-    "name"            : "Cockpit",
-    "version"         : "0.13.0",
-    "check_url"       : "https://raw.github.com/aheinze/cockpit/master/package.json",
-    "release_zip_url" : "https://github.com/aheinze/cockpit/archive/%version%.zip"
+    "name"            : "cockpit-next",
+    "version"         : "0.1.0",
+
+    "scripts": {
+
+        "build": "npm run build-style && npm run build-components",
+
+        "build-style": "lessc assets/app/css/style.less > assets/app/css/style.css -x",
+        "build-components": "riot modules/core/Cockpit/assets/components modules/core/Cockpit/assets/components.js",
+
+        "watch": "npm run watch-style & npm run watch-components",
+
+        "watch-style": "watch-run -i -p 'assets/app/css/**/*.less' npm run build-style",
+        "watch-components": "watch-run -i -p 'modules/core/Cockpit/assets/components/*.tag' npm run build-components"
+    }
 }
