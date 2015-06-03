@@ -8,16 +8,18 @@
 <div class="uk-margin-top" riot-view>
 
     @if($app["user"]["group"]=="admin")
-    <div class="uk-form">
+    <div class="uk-form uk-clearfix">
 
         <span class="uk-form-icon">
             <i class="uk-icon-filter"></i>
-            <input type="text" placeholder="@lang('Filter by name...')" onkeyup="{ updatefilter }">
+            <input type="text" class="uk-form-large uk-form-blank" placeholder="@lang('Filter by name...')" onkeyup="{ updatefilter }">
         </span>
 
-        <a class="uk-button uk-button-primary uk-margin-small-right" href="@route('/accounts/create')" title="@lang('Create account')">
-            <i class="uk-icon-plus"></i>
-        </a>
+        <div class="uk-float-right">
+            <a class="uk-button uk-button-primary uk-button-large" href="@route('/accounts/create')">
+                @lang('Create account')
+            </a>
+        </div>
 
     </div>
     @endif
