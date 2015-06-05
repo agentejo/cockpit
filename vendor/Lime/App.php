@@ -878,7 +878,11 @@ class App implements \ArrayAccess {
 
             $self->trigger("after");
 
-            echo $self->response->flush();
+            $self->response->flush();
+
+            if ($self->response->gzip) {
+                ob_flush();
+            }
 
             $self->trigger("shutdown");
         });
