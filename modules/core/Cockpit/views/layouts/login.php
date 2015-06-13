@@ -15,7 +15,12 @@
 
         <div class="uk-container uk-container-center">
 
-            <form class="uk-form" method="post" action="@route('/auth/check')" onsubmit="{ submit }">
+            <form class="uk-form uk-panel-box uk-panel-space uk-panel-card uk-animation-scale" method="post" action="@route('/auth/check')" onsubmit="{ submit }">
+
+                <div class="uk-panel-box-header">
+
+
+                </div>
 
                 <div class="uk-form-row">
                     <input name="user" class="uk-form-large uk-width-1-1" type="text" placeholder="@lang('Username')" required>
@@ -27,12 +32,12 @@
                     </div>
                 </div>
 
-                <div class="uk-form-row">
+                <div class="uk-form-row uk-margin-large-top">
                     <button class="uk-button uk-button-large uk-button-primary uk-width-1-1">@lang('Authenticate')</button>
                 </div>
 
-                <div class="uk-alert uk-alert-danger uk-text-center uk-animation-shake" if="{ error }">
-                    { error }
+                <div class="uk-text-muted uk-animation-shake uk-margin-top" if="{ error }">
+                    <strong>{ error }</strong>
                 </div>
 
             </form>
@@ -56,6 +61,8 @@
                     } else {
 
                         this.error = 'Login failed';
+
+                        document.body.classList.add('uk-bg-danger');
                     }
 
                     this.update();

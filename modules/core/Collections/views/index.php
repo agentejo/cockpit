@@ -10,23 +10,7 @@
 
     <div if="{ ready }">
 
-        <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ !App.Utils.count(collections) }">
-
-            <div class="uk-animation-fade">
-
-                <p class="uk-text-xlarge">
-                    <i class="uk-icon-list"></i>
-                </p>
-
-                <hr>
-
-                No Collections. <a href="@route('/collections/collection')">Create a Collection.</a>
-
-            </div>
-
-        </div>
-
-        <div class="uk-margin uk-clearfix">
+        <div class="uk-margin uk-clearfix" if="{ App.Utils.count(collections) }">
 
             <div class="uk-form-icon uk-form uk-text-muted">
 
@@ -38,6 +22,22 @@
             <div class="uk-float-right">
 
                 <a class="uk-button uk-button-large uk-button-primary uk-width-1-1" href="@route('/collections/collection')">@lang('Create a Collection')</a>
+
+            </div>
+
+        </div>
+
+        <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ !App.Utils.count(collections) }">
+
+            <div class="uk-animation-fade">
+
+                <p class="uk-text-xlarge">
+                    <i class="uk-icon-list"></i>
+                </p>
+
+                <hr>
+
+                No Collections. <a href="@route('/collections/collection')">Create a Collection.</a>
 
             </div>
 

@@ -104,9 +104,19 @@
         border-bottom: 1px  @global-border dotted;
     }
 
+    .uk-panel-space .uk-panel-box-header {
+        padding: @panel-space-padding;
+        margin: (-1 *  @panel-space-padding) (-1 *  @panel-space-padding)  @panel-space-padding (-1 *  @panel-space-padding);
+    }
+
     .uk-panel-box-footer {
         padding: @panel-box-padding;
         margin: @global-margin (-1 * @global-margin) (-1 * @global-margin) (-1 * @global-margin);
         border-top: 1px  @global-border solid;
+    }
+
+    .uk-panel-space .uk-panel-box-footer {
+        padding: @panel-space-padding;
+        margin: @panel-space-padding (-1 * @panel-space-padding) (-1 * @panel-space-padding) (-1 * @panel-space-padding);
     }
 }

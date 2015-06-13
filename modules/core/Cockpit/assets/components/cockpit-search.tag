@@ -9,7 +9,7 @@
         </style>
 
         <i class="uk-icon-search"></i>
-        <input class="uk-width-1-1" type="text">
+        <input class="uk-width-1-1 uk-form-blank" type="text">
 
         <script>
 

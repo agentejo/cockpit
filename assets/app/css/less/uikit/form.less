@@ -9,10 +9,11 @@
 
 @form-height:                                   @global-height;
 @form-border:                                   @global-border;
-@form-background:                               @global-background;
+@form-background:                               none;
 @form-color:                                    @global-color;
 
 @form-focus-color:                              @global-color;
+@form-focus-background:                         @form-background;
 
 @form-disabled-border:                          @global-border;
 @form-disabled-color:                           @global-muted-color;
@@ -40,7 +41,9 @@
 // ========================================================================
 
 .hook-form() {
-    border-radius: @global-border-radius;
+    border-radius: none;
+    border: none;
+    border-bottom: @form-border-width solid @form-border;
 }
 
 // Focus state
@@ -72,9 +75,13 @@
 // Style modifiers
 // ========================================================================
 
-.hook-form-blank() {}
+.hook-form-blank() {
+    border: none !important;
+}
 
-.hook-form-blank-focus() {}
+.hook-form-blank-focus() {
+    border: none !important;
+}
 
 
 // Sub-object: `uk-form-label`

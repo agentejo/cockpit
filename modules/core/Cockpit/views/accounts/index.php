@@ -36,12 +36,16 @@
                         <a class="uk-link-muted" href="@route('/accounts/account')/{ account._id }" title="@lang('Edit account')">
                             <img class="uk-border-circle" riot-src="//www.gravatar.com/avatar/{ account.md5email }?d=mm&s=50" width="50" height="50" alt="gravatar">
                         </a>
+
+                        <div class="uk-text-center uk-margin-small-top">
+                            <span class="{ account.active ? 'uk-icon-circle uk-text-success':'uk-icon-circle-o uk-text-danger' }"></span>
+                        </div>
                     </div>
 
                     <div class="uk-flex-item-1">
 
                         <div class="uk-text-truncate">
-                            <span class="{ account.active ? 'uk-icon-circle uk-text-success':'uk-icon-circle-o uk-text-danger' }"></span>
+
                             <strong>{ account.name || account.user }</strong>
                         </div>
                         <div class="uk-badge uk-margin-small-top">{ account.group }</div>

@@ -13,31 +13,32 @@
         <div class="uk-clearfix" data-uk-margin>
             <div class="uk-float-left">
 
-
                 <span class="uk-button uk-button-primary uk-margin-small-right uk-form-file">
                     <input class="js-upload-select" type="file" multiple="true" title="">
                     <i class="uk-icon-upload"></i>
                 </span>
 
-                <span class="uk-position-relative uk-margin-small-right" data-uk-dropdown="{\mode:'click'\}">
 
-                    <span class="uk-button">
+                <span class="uk-button-group">
+
+                    <span class="uk-position-relative uk-button" data-uk-dropdown="{\mode:'click'\}">
+
                         <i class="uk-icon-magic"></i>
+
+                        <div class="uk-dropdown uk-text-left">
+                            <ul class="uk-nav uk-nav-dropdown">
+                                <li class="uk-nav-header">Create</li>
+                                <li><a onclick="{ createfolder }"><i class="uk-icon-folder-o uk-icon-justify"></i> Folder</a></li>
+                                <li><a onclick="{ createfile }"><i class="uk-icon-file-o uk-icon-justify"></i> File</a></li>
+                            </ul>
+                        </div>
+
                     </span>
 
-                    <div class="uk-dropdown">
-                        <ul class="uk-nav uk-nav-dropdown">
-                            <li class="uk-nav-header">Create</li>
-                            <li><a onclick="{ createfolder }"><i class="uk-icon-folder-o uk-icon-justify"></i> Folder</a></li>
-                            <li><a onclick="{ createfile }"><i class="uk-icon-file-o uk-icon-justify"></i> File</a></li>
-                        </ul>
-                    </div>
-
+                    <button class="uk-button" onclick="{ refresh }">
+                        <i class="uk-icon-refresh"></i>
+                    </button>
                 </span>
-
-                <button class="uk-button uk-margin-small-right" onclick="{ refresh }">
-                    <i class="uk-icon-refresh"></i>
-                </button>
 
                 <span if="{ selected.count }" data-uk-dropdown="\{mode:'click'\}">
                     <span class="uk-button"><strong>Batch:</strong> { selected.count } selected &nbsp;<i class="uk-icon-caret-down"></i></span>

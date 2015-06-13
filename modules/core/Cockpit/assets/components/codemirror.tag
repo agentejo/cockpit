@@ -25,10 +25,6 @@
                     smartIndent: false,
                     tabSize: 2,
                     autoCloseBrackets: true,
-                    keyMap: "sublime",
-                    matchBrackets: true,
-                    matchTags: true,
-                    showCursorWhenSelecting: true,
                     extraKeys: {
                         Tab: function(cm) {
                             var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");

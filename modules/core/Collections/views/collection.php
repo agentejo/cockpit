@@ -16,15 +16,18 @@
                  <div class="uk-grid uk-grid-small">
 
                     <div class="uk-width-1-2">
-                        <input class="uk-width-1-1 uk-form-large" type="text" name="name" bind="collection.name" placeholder="@lang('Name')" required>
+                        <label class="uk-text-small">@lang('Name')</label>
+                        <input class="uk-width-1-1 uk-form-large" type="text" name="name" bind="collection.name" required>
                     </div>
 
                     <div class="uk-width-1-2">
-                        <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="collection.label" placeholder="@lang('Label')">
+                        <label class="uk-text-small">@lang('Label')</label>
+                        <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="collection.label">
                     </div>
 
                     <div class="uk-width-1-1 uk-grid-margin">
-                        <textarea class="uk-width-1-1 uk-form-large" name="description" bind="collection.description" placeholder="@lang('Description')" rows="5"></textarea>
+                        <label class="uk-text-small">@lang('Description')</label>
+                        <textarea class="uk-width-1-1 uk-form-large" name="description" bind="collection.description" rows="5"></textarea>
                     </div>
 
                 </div>

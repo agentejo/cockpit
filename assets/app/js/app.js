@@ -92,6 +92,7 @@
         },
 
         trigger: function(name, params) {
+
             if (!this._events[name]) return;
 
             var event = {"name":name, "params": params};
@@ -132,7 +133,7 @@
                 note = JSON.stringify(note);
             }
 
-            UIkit.notify(note, {"status":(type || 'primary'), "pos": pos, "timeout": 2000});
+            UIkit.notify(App.i18n.get(note), {"status":(type || 'primary'), "pos": pos, "timeout": 2000});
         },
 
         block: function(content) {
@@ -147,19 +148,19 @@
         },
 
         dialog: function(content, options) {
-            UIkit.modal.dialog(content, options);
+            UIkit.modal.dialog(App.i18n.get(content), options);
         },
 
         alert: function(content, options) {
-            UIkit.modal.alert(content, options);
+            UIkit.modal.alert(App.i18n.get(content), options);
         },
 
         confirm: function(content, onconfirm, options){
-            UIkit.modal.confirm(content, onconfirm, options);
+            UIkit.modal.confirm(App.i18n.get(content), onconfirm, options);
         },
 
         prompt: function(text, value, clb, options){
-            UIkit.modal.prompt(text, value, clb, options);
+            UIkit.modal.prompt(App.i18n.get(text), value, clb, options);
         }
     };
 
@@ -167,7 +168,10 @@
 
         _ress: {},
 
-        require: function(ress, callback, failcallback) {
+        require: function(ress, onSuccess, onError) {
+
+            onSuccess = onSuccess || function(){};
+            onError = onError ||  function(){};
 
             var req  = [],
                 ress = Array.isArray(ress) ? ress:[ress];
@@ -178,74 +182,78 @@
 
                 if (!this._ress[ress[i]]) {
 
-                    if (ress[i].match(/\.js$/)) {
+                    if (ress[i].match(/\.js$/i)) {
                         this._ress[ress[i]] = this.getScript(ress[i]);
-                    } else if(ress[i].match(/\.tag$/)) {
-                        this._ress[ress[i]] = this.getTag(ress[i]);
-                    } else {
+                    } else if(ress[i].match(/\.(jpg|jpeg|gif|png)$/i)) {
+                        this._ress[ress[i]] = this.getImage(ress[i]);
+                    } else if(ress[i].match(/\.css$/i)) {
                         this._ress[ress[i]] = this.getCss(ress[i]);
+                    } else {
+                        continue;
                     }
                 }
+
                 req.push(this._ress[ress[i]]);
             }
 
-            return $.when.apply($, req).done(callback).fail(function(){
-                failcallback ? failcallback() : $.error("Require failed: \n"+ress.join(",\n"));
+            return Promise.all(req).then(onSuccess).catch(function(){
+                onError.apply(self, [e]);
             });
         },
 
-        getScript: function(url, callback) {
+        getScript: function(url) {
 
-            var d = $.Deferred(), script = document.createElement('script');
+            return new Promise(function(resolve, reject) {
 
-            script.async = true;
+                var script = document.createElement('script');
 
-            script.onload = function() {
-                d.resolve();
-                if (callback) { callback(script); }
-            };
+                script.async = true;
 
-            script.onerror = function() {
-                d.reject(url);
-            };
-
-            script.src = (url.match(/^http/) ? url : App.base(url))+'?v='+App.version;
-
-            document.getElementsByTagName('head')[0].appendChild(script);
-
-            return d.promise();
-        },
-
-        getCss: function(url, callback){
-
-            var d         = $.Deferred(),
-                link      = document.createElement('link');
-                link.type = 'text/css';
-                link.rel  = 'stylesheet';
-                link.href = (url.match(/^http/) ? url : App.base(url))+'?v='+App.version;
-
-            document.getElementsByTagName('head')[0].appendChild(link);
-
-            var img = document.createElement('img');
-                img.onerror = function(){
-                    d.resolve();
-                    if (callback) callback(link);
+                script.onload = function() {
+                    resolve(url);
                 };
-                img.src = link.href+'?v='+App.version;
 
-            return d.promise();
+                script.onerror = function() {
+                    reject(url);
+                };
+
+                script.src = (url.match(/^http/) ? url : App.base(url))+'?v='+App.version;
+
+                document.getElementsByTagName('head')[0].appendChild(script);
+
+            });
         },
 
-        getTag: function(url, callback){
+        getCss: function(url){
 
-            var d     = $.Deferred(),
-                link  = (url.match(/^http/) ? url : App.base(url))+'?v='+App.version;
+          return new Promise(function(resolve, reject) {
 
-            riot.compile(link, function(){
-                d.resolve();
+              var link      = document.createElement('link');
+                  link.type = 'text/css';
+                  link.rel  = 'stylesheet';
+                  link.href = (url.match(/^http/) ? url : App.base(url))+'?v='+App.version;
+
+              document.getElementsByTagName('head')[0].appendChild(link);
+
+              var img = document.createElement('img');
+                  img.onerror = function(){
+                      resolve(url);
+                  };
+                  img.src = link.href+'?v='+App.version;
             });
+        },
 
-            return d.promise();
+        getImage: function(url){
+
+            return new Promise(function(resolve, reject) {
+
+                var img = document.createElement('img');
+
+                img.onload  = function(){ resolve(url); };
+                img.onerror = function(){ reject(url); };
+
+                img.src = url;
+            });
         }
     };
 
@@ -256,7 +264,6 @@
     App.i18n    = g.i18n || null;
 
     g.App = App;
-
 
     $(function() {
         App.trigger("app-init");
