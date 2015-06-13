@@ -281,7 +281,7 @@
 
                 var filter       = this.txtfilter.value,
                     criterias    = [],
-                    allowedtypes = ['text', 'longtext','boolean','select', 'boolean'],
+                    allowedtypes = ['text','longtext','boolean','select','html','wysiwyg','markdown'],
                     criteria;
 
                 if (App.Utils.str2json('{'+filter+'}')) {

@@ -64,7 +64,7 @@ riot.tag('field-repeater', '', function(opts) {
     
 });
 
-riot.tag('cockpit-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-margin> <div class="uk-float-left"> <span class="uk-button uk-button-primary uk-margin-small-right uk-form-file"> <input class="js-upload-select" type="file" multiple="true" title=""> <i class="uk-icon-upload"></i> </span> <span class="uk-button-group"> <span class="uk-position-relative uk-button" data-uk-dropdown="{\mode:\'click\'\\}"> <i class="uk-icon-magic"></i> <div class="uk-dropdown uk-text-left"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">Create</li> <li><a onclick="{ createfolder }"><i class="uk-icon-folder-o uk-icon-justify"></i> Folder</a></li> <li><a onclick="{ createfile }"><i class="uk-icon-file-o uk-icon-justify"></i> File</a></li> </ul> </div> </span> <button class="uk-button" onclick="{ refresh }"> <i class="uk-icon-refresh"></i> </button> </span> <span if="{ selected.count }" data-uk-dropdown="\\{mode:\'click\'\\}"> <span class="uk-button"><strong>Batch:</strong> { selected.count } selected &nbsp;<i class="uk-icon-caret-down"></i></span> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">Batch action</li> <li><a onclick="{ removeSelected }">Delete</a></li> </ul> </div> </span> </div> <div class="uk-float-right"> <div class="uk-form uk-form-icon uk-width-1-1"> <i class="uk-icon-filter"></i> <input name="filter" type="text" onkeyup="{ updatefilter }"> </div> </div> </div> <div class="uk-grid uk-grid-divider uk-margin-large-top" data-uk-grid-margin> <div class="uk-width-medium-1-4"> <div class="uk-panel"> <ul class="uk-nav uk-nav-side"> <li class="uk-nav-header">Display</li> <li class="{ !typefilter ? \'uk-active\':\'\' }"><a data-type="" onclick="{ settypefilter }"><i class="uk-icon-circle-o uk-icon-justify"></i> All</a></li> <li class="{ typefilter==\'images\' ? \'uk-active\':\'\' }"><a data-type="images" onclick="{ settypefilter }"><i class="uk-icon-image uk-icon-justify"></i> Images</a></li> <li class="{ typefilter==\'video\' ? \'uk-active\':\'\' }"><a data-type="video" onclick="{ settypefilter }"><i class="uk-icon-video-camera uk-icon-justify"></i> Video</a></li> <li class="{ typefilter==\'audio\' ? \'uk-active\':\'\' }"><a data-type="audio" onclick="{ settypefilter }"><i class="uk-icon-volume-up uk-icon-justify"></i> Audio</a></li> <li class="{ typefilter==\'documents\' ? \'uk-active\':\'\' }"><a data-type="documents" onclick="{ settypefilter }"><i class="uk-icon-paper-plane uk-icon-justify"></i> Documents</a></li> <li class="{ typefilter==\'archive\' ? \'uk-active\':\'\' }"><a data-type="archive" onclick="{ settypefilter }"><i class="uk-icon-archive uk-icon-justify"></i> Archive</a></li> </ul> </div> </div> <div class="uk-width-medium-3-4"> <div class="uk-panel"> <ul class="uk-breadcrumb"> <li onclick="{ changedir }"><a title="Change dir to root"><i class="uk-icon-home"></i></a></li> <li each="{folder, idx in breadcrumbs}"><a onclick="{ parent.changedir }" title="Change dir to @@ folder.name @@">{ folder.name }</a></li> </ul> </div> <div name="uploadprogress" class="uk-margin uk-hidden"> <div class="uk-progress"> <div name="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div> </div> </div> <div class="uk-alert uk-text-center uk-margin" if="{ (this.typefilter || this.filter.value) && (data.folders.length || data.files.length) }"> Filter is active </div> <div class="uk-alert uk-text-center uk-margin" if="{ (!data.folders.length && !data.files.length) }"> This is an empty folder </div> <div> <div class="uk-margin-top" if="{data.folders.length}"> <strong class="uk-text-small uk-text-muted" if="{ !(this.filter.value) }"><i class="uk-icon-folder-o uk-margin-small-right"></i> { data.folders.length } Folders</strong> <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4"> <li class="uk-grid-margin" each="{folder, idx in data.folders}" onclick="{ parent.select }" if="{ parent.infilter(folder) }"> <div class="uk-panel uk-panel-box { folder.selected ? \'uk-selected\':\'\' }"> <div class="uk-flex"> <div> <span class="uk-margin-small-right" data-uk-dropdown="\\{mode:\'click\'\\}"> <i class="uk-icon-folder-o uk-text-muted js-no-item-select"></i> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header uk-text-truncate">{ folder.name }</li> <li><a onclick="{ parent.rename }">Rename</a></li> <li><a onclick="{ parent.remove }">Delete</a></li> </ul> </div> </span> </div> <div class="uk-flex-item-1 uk-text-truncate"> <a class="uk-link-muted" onclick="{ parent.changedir }"><strong>{ folder.name }</strong></a> </div> </div> </div> </li> </ul> </div> <div class="uk-margin-top" if="{data.files.length}"> <strong class="uk-text-small uk-text-muted" if="{ !(this.typefilter || this.filter.value) }"><i class="uk-icon-file-o uk-margin-small-right"></i> { data.files.length } Files</strong> <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4"> <li class="uk-grid-margin" each="{file, idx in data.files}" onclick="{ parent.select }" if="{ parent.infilter(file) }"> <div class="uk-panel uk-panel-box { file.selected ? \'uk-selected\':\'\' }"> <div class="uk-flex"> <div> <span class="uk-margin-small-right" data-uk-dropdown="\\{mode:\'click\'\\}"> <i class="uk-icon-{ parent.getIconCls(file) } uk-text-muted js-no-item-select"></i> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header uk-text-truncate">{ file.name }</li> <li><a onclick="{ parent.rename }">Rename</a></li> <li if="{ file.ext == \'zip\' }"><a onclick="{ parent.unzip }">Unzip</a></li> <li class="uk-nav-divider"></li> <li><a onclick="{ parent.remove }">Delete</a></li> </ul> </div> </span> </div> <div class="uk-flex-item-1 uk-text-truncate"> <a class="uk-link-muted js-no-item-select" onclick="{ parent.open }">{ file.name }</a> <div class="uk-margin-small-top uk-text-small uk-text-muted"> { file.size } </div> </div> </div> </div> </li> </ul> </div> </div> </div> </div> <div name="editor" class="uk-offcanvas"> <div class="uk-offcanvas-bar uk-width-3-4"> <picoedit></picoedit> </div> </div> </div>', '.uk-offcanvas[name=editor] .CodeMirror { height: auto; }', function(opts) {
+riot.tag('cockpit-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-margin> <div class="uk-float-left"> <span class="uk-button uk-button-primary uk-margin-small-right uk-form-file"> <input class="js-upload-select" type="file" multiple="true" title=""> <i class="uk-icon-upload"></i> </span> <span class="uk-button-group uk-margin-small-right"> <span class="uk-position-relative uk-button" data-uk-dropdown="{\mode:\'click\'\\}"> <i class="uk-icon-magic"></i> <div class="uk-dropdown uk-text-left"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">Create</li> <li><a onclick="{ createfolder }"><i class="uk-icon-folder-o uk-icon-justify"></i> Folder</a></li> <li><a onclick="{ createfile }"><i class="uk-icon-file-o uk-icon-justify"></i> File</a></li> </ul> </div> </span> <button class="uk-button" onclick="{ refresh }"> <i class="uk-icon-refresh"></i> </button> </span> <span class="uk-button" if="{ selected.count }" data-uk-dropdown="\\{mode:\'click\'\\}"> <strong>Batch:</strong> { selected.count } selected &nbsp;<i class="uk-icon-caret-down"></i> <div class="uk-dropdown uk-text-left"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">Batch action</li> <li><a onclick="{ removeSelected }">Delete</a></li> </ul> </div> </span> </div> <div class="uk-float-right"> <div class="uk-form uk-form-icon uk-width-1-1"> <i class="uk-icon-filter"></i> <input name="filter" type="text" onkeyup="{ updatefilter }"> </div> </div> </div> <div class="uk-grid uk-grid-divider uk-margin-large-top" data-uk-grid-margin> <div class="uk-width-medium-1-4"> <div class="uk-panel"> <ul class="uk-nav uk-nav-side"> <li class="uk-nav-header">Display</li> <li class="{ !typefilter ? \'uk-active\':\'\' }"><a data-type="" onclick="{ settypefilter }"><i class="uk-icon-circle-o uk-icon-justify"></i> All</a></li> <li class="{ typefilter==\'images\' ? \'uk-active\':\'\' }"><a data-type="images" onclick="{ settypefilter }"><i class="uk-icon-image uk-icon-justify"></i> Images</a></li> <li class="{ typefilter==\'video\' ? \'uk-active\':\'\' }"><a data-type="video" onclick="{ settypefilter }"><i class="uk-icon-video-camera uk-icon-justify"></i> Video</a></li> <li class="{ typefilter==\'audio\' ? \'uk-active\':\'\' }"><a data-type="audio" onclick="{ settypefilter }"><i class="uk-icon-volume-up uk-icon-justify"></i> Audio</a></li> <li class="{ typefilter==\'documents\' ? \'uk-active\':\'\' }"><a data-type="documents" onclick="{ settypefilter }"><i class="uk-icon-paper-plane uk-icon-justify"></i> Documents</a></li> <li class="{ typefilter==\'archive\' ? \'uk-active\':\'\' }"><a data-type="archive" onclick="{ settypefilter }"><i class="uk-icon-archive uk-icon-justify"></i> Archive</a></li> </ul> </div> </div> <div class="uk-width-medium-3-4"> <div class="uk-panel"> <ul class="uk-breadcrumb"> <li onclick="{ changedir }"><a title="Change dir to root"><i class="uk-icon-home"></i></a></li> <li each="{folder, idx in breadcrumbs}"><a onclick="{ parent.changedir }" title="Change dir to @@ folder.name @@">{ folder.name }</a></li> </ul> </div> <div name="uploadprogress" class="uk-margin uk-hidden"> <div class="uk-progress"> <div name="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div> </div> </div> <div class="uk-alert uk-text-center uk-margin" if="{ (this.typefilter || this.filter.value) && (data.folders.length || data.files.length) }"> Filter is active </div> <div class="uk-alert uk-text-center uk-margin" if="{ (!data.folders.length && !data.files.length) }"> This is an empty folder </div> <div> <div class="uk-margin-top" if="{data.folders.length}"> <strong class="uk-text-small uk-text-muted" if="{ !(this.filter.value) }"><i class="uk-icon-folder-o uk-margin-small-right"></i> { data.folders.length } Folders</strong> <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4"> <li class="uk-grid-margin" each="{folder, idx in data.folders}" onclick="{ parent.select }" if="{ parent.infilter(folder) }"> <div class="uk-panel uk-panel-box { folder.selected ? \'uk-selected\':\'\' }"> <div class="uk-flex"> <div> <span class="uk-margin-small-right" data-uk-dropdown="\\{mode:\'click\'\\}"> <i class="uk-icon-folder-o uk-text-muted js-no-item-select"></i> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header uk-text-truncate">{ folder.name }</li> <li><a onclick="{ parent.rename }">Rename</a></li> <li><a onclick="{ parent.remove }">Delete</a></li> </ul> </div> </span> </div> <div class="uk-flex-item-1 uk-text-truncate"> <a class="uk-link-muted" onclick="{ parent.changedir }"><strong>{ folder.name }</strong></a> </div> </div> </div> </li> </ul> </div> <div class="uk-margin-top" if="{data.files.length}"> <strong class="uk-text-small uk-text-muted" if="{ !(this.typefilter || this.filter.value) }"><i class="uk-icon-file-o uk-margin-small-right"></i> { data.files.length } Files</strong> <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4"> <li class="uk-grid-margin" each="{file, idx in data.files}" onclick="{ parent.select }" if="{ parent.infilter(file) }"> <div class="uk-panel uk-panel-box { file.selected ? \'uk-selected\':\'\' }"> <div class="uk-flex"> <div> <span class="uk-margin-small-right" data-uk-dropdown="\\{mode:\'click\'\\}"> <i class="uk-icon-{ parent.getIconCls(file) } uk-text-muted js-no-item-select"></i> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header uk-text-truncate">{ file.name }</li> <li><a onclick="{ parent.rename }">Rename</a></li> <li if="{ file.ext == \'zip\' }"><a onclick="{ parent.unzip }">Unzip</a></li> <li class="uk-nav-divider"></li> <li><a onclick="{ parent.remove }">Delete</a></li> </ul> </div> </span> </div> <div class="uk-flex-item-1 uk-text-truncate"> <a class="uk-link-muted js-no-item-select" onclick="{ parent.open }">{ file.name }</a> <div class="uk-margin-small-top uk-text-small uk-text-muted"> { file.size } </div> </div> </div> </div> </li> </ul> </div> </div> </div> </div> <div name="editor" class="uk-offcanvas"> <div class="uk-offcanvas-bar uk-width-3-4"> <picoedit></picoedit> </div> </div> </div>', '.uk-offcanvas[name=editor] .CodeMirror { height: auto; }', function(opts) {
 
         var $this = this,
             typefilters = {
@@ -474,7 +474,7 @@ riot.tag('cockpit-finder', '<div show="{ data }"> <div class="uk-clearfix" data-
     
 });
 
-riot.tag('cockpit-search', '<div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form app-search"> <i class="uk-icon-search"></i> <input class="uk-width-1-1 uk-form-blank" type="text"> </div>', 'cockpit-search .uk-dropdown { min-width: 25vw; }', function(opts) {
+riot.tag('cockpit-search', '<div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form app-search"> <i class="uk-icon-search"></i> <input class="uk-width-1-1 uk-form-blank" type="text" placeholder="{ App.i18n.get(\'Search...\') }"> </div>', 'cockpit-search .uk-dropdown { min-width: 25vw; }', function(opts) {
 
             this.on('mount', function(){
 
@@ -788,6 +788,53 @@ riot.tag('field-file', '<div class="uk-flex"> <input class="uk-flex-item-1 uk-ma
     
 });
 
+riot.tag('field-gallery', '<div class="uk-panel uk-panel-box"> <div class="uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" if="{ data.images && data.images.length }"> <div class="uk-grid-margin" each="{ img,idx in data.images }"> <div class="uk-panel uk-panel-card"> <figure class="uk-display-block uk-overlay uk-overlay-hover"> <img riot-src="{ (SITE_URL+img.path) }"> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{ parent.title }"><i class="uk-icon-tag"></i></a></li> <li><a onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{ img.title }</p> </figcaption> </figure> </div> </div> </div> <div class="{data.images && data.images.length ? \'uk-margin-top\':\'\' }"> <span if="{ data.images && !data.images.length }">{ App.i18n.get(\'Gallery is empty\') }.</span> <a onclick="{ selectimages }">{ App.i18n.get(\'Add images\') }</a> </div> </div>', function(opts) {
+
+        var $this = this;
+
+        this.data = { images: [] };
+
+        this.$updateValue = function(value) {
+
+            if (this.data.images !== value && Array.isArray(value)) {
+                this.data.images = value;
+                this.update();
+            }
+
+        }.bind(this);
+
+
+        this.selectimages = function() {
+
+            App.media.select(function(selected) {
+
+                var images = [];
+
+                selected.forEach(function(path){
+                    images.push({title:'', path:path});
+                });
+
+                $this.$setValue($this.data.images.concat(images));
+
+            }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
+        }.bind(this);
+
+        this.remove = function(e) {
+            this.data.images.splice(e.item.idx, 1);
+            this.$setValue(this.data.images);
+        }.bind(this);
+
+        this.title = function(e) {
+
+            App.ui.prompt('Title', this.data.images[e.item.idx].title, function(value) {
+                $this.data.images[e.item.idx].title = value;
+                $this.$setValue($this.data.images);
+            });
+        }.bind(this);
+
+    
+});
+
 riot.tag('field-html', '<textarea name="input" class="uk-visibility-hidden"></textarea>', function(opts) {
 
         var $this = this;
@@ -1008,6 +1055,59 @@ riot.tag('field-time', '<input name="input" class="uk-width-1-1" type="text">', 
             App.assets.require(['/assets/lib/uikit/js/components/timepicker.js'], function() {
 
                 UIkit.timepicker(this.input, opts);
+
+            }.bind(this));
+        });
+
+    
+});
+
+riot.tag('field-wysiwyg', '<textarea name="input" style="visibility:hidden;"></textarea>', function(opts) {
+
+        var $this = this,
+            lang  = document.documentElement.getAttribute('lang') || 'en';
+
+        this.value = null;
+
+        this.$updateValue = function(value) {
+
+            if (this.value != value) {
+                this.value = value;
+            }
+
+        }.bind(this);
+
+
+        this.on('mount', function(){
+
+            var assets = [
+                '/assets/lib/redactor/redactor.min.js',
+                '/assets/lib/redactor/redactor.css',
+
+                '/assets/lib/redactor/plugins/fullscreen/fullscreen.js',
+                '/assets/lib/redactor/plugins/fontcolor/fontcolor.js',
+                '/assets/lib/redactor/plugins/fontsize/fontsize.js',
+                '/assets/lib/redactor/plugins/textdirection/textdirection.js',
+                '/assets/lib/redactor/plugins/table/table.js',
+                '/assets/lib/redactor/plugins/video/video.js'
+            ];
+
+            if (lang != 'en') {
+                assets.push('/assets/lib/redactor/lang/'+lang+'.js');
+            }
+
+            App.assets.require(assets, function() {
+
+                this.input.value = $this.value;
+
+
+                App.$($this.input).redactor({
+                    lang: lang,
+                    plugins: ['table','textdirection','fontcolor','fontsize','video','fullscreen'],
+                    changeCallback: function() {
+                        $this.$setValue(this.code.get());
+                    }
+                });
 
             }.bind(this));
         });

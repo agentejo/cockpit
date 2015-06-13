@@ -19,7 +19,7 @@
     <thead>
         <tr>
             <th width="20"><input type="checkbox" data-check="all"></th>
-            <th each="{field,idx in fields}">
+            <th class="uk-text-small" each="{field,idx in fields}">
                 <a class="uk-link-muted { parent.sort[field.name] ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
 
                     { field.label || field.name }

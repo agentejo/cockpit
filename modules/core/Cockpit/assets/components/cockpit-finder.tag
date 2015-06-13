@@ -19,7 +19,7 @@
                 </span>
 
 
-                <span class="uk-button-group">
+                <span class="uk-button-group uk-margin-small-right">
 
                     <span class="uk-position-relative uk-button" data-uk-dropdown="{\mode:'click'\}">
 
@@ -40,9 +40,9 @@
                     </button>
                 </span>
 
-                <span if="{ selected.count }" data-uk-dropdown="\{mode:'click'\}">
-                    <span class="uk-button"><strong>Batch:</strong> { selected.count } selected &nbsp;<i class="uk-icon-caret-down"></i></span>
-                    <div class="uk-dropdown">
+                <span class="uk-button" if="{ selected.count }" data-uk-dropdown="\{mode:'click'\}">
+                    <strong>Batch:</strong> { selected.count } selected &nbsp;<i class="uk-icon-caret-down"></i>
+                    <div class="uk-dropdown uk-text-left">
                         <ul class="uk-nav uk-nav-dropdown">
                             <li class="uk-nav-header">Batch action</li>
                             <li><a onclick="{ removeSelected }">Delete</a></li>

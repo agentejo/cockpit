@@ -6,7 +6,6 @@
     }
 
     d.writeln('<style>[riot-view]{display:none}</style>');
-    d.writeln('<script type="riot/tag"></script>');
 
     riot.util.initViews = (function(views, view, vid, tag, ele, i) {
 

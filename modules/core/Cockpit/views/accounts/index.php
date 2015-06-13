@@ -24,7 +24,7 @@
     </div>
     @endif
 
-    <div class="uk-grid uk-grid-match uk-grid-width-1-1 uk-grid-width-medium-1-4">
+    <div class="uk-grid uk-grid-match uk-grid-width-1-1 uk-grid-width-medium-1-3">
 
         <div class="uk-grid-margin" each="{account, $index in accounts}" if="{ parent.infilter(account) }">
 

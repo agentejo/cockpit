@@ -15,29 +15,33 @@
 
         <div class="uk-container uk-container-center">
 
-            <form class="uk-form uk-panel-box uk-panel-space uk-panel-card uk-animation-scale" method="post" action="@route('/auth/check')" onsubmit="{ submit }">
+            <form class="uk-form" method="post" action="@route('/auth/check')" onsubmit="{ submit }">
 
-                <div class="uk-panel-box-header">
+                <div class="uk-panel-box uk-panel-space uk-panel-card uk-animation-scale">
+
+                    <div class="uk-panel-box-header">
 
 
-                </div>
-
-                <div class="uk-form-row">
-                    <input name="user" class="uk-form-large uk-width-1-1" type="text" placeholder="@lang('Username')" required>
-                </div>
-                <div class="uk-form-row">
-                    <div class="uk-form-password uk-width-1-1">
-                        <input name="password" class="uk-form-large uk-width-1-1" type="password" placeholder="@lang('Password')" required>
-                        <a href="#" class="uk-form-password-toggle" data-uk-form-password>@lang('Show')</a>
                     </div>
-                </div>
 
-                <div class="uk-form-row uk-margin-large-top">
-                    <button class="uk-button uk-button-large uk-button-primary uk-width-1-1">@lang('Authenticate')</button>
-                </div>
+                    <div class="uk-form-row">
+                        <input name="user" class="uk-form-large uk-width-1-1" type="text" placeholder="@lang('Username')" required>
+                    </div>
 
-                <div class="uk-text-muted uk-animation-shake uk-margin-top" if="{ error }">
-                    <strong>{ error }</strong>
+                    <div class="uk-form-row">
+                        <div class="uk-form-password uk-width-1-1">
+                            <input name="password" class="uk-form-large uk-width-1-1" type="password" placeholder="@lang('Password')" required>
+                            <a href="#" class="uk-form-password-toggle" data-uk-form-password>@lang('Show')</a>
+                        </div>
+                    </div>
+
+                    <div class="uk-text-muted uk-animation-shake uk-margin-top" if="{ error }">
+                        <strong>{ error }</strong>
+                    </div>
+
+                    <div class="uk-panel-box-footer uk-bg-light">
+                        <button class="uk-button uk-button-large uk-button-primary uk-width-1-1">@lang('Authenticate')</button>
+                    </div>
                 </div>
 
             </form>

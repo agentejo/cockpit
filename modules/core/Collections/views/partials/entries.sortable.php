@@ -4,7 +4,7 @@
         <tr>
             <th width="20"></th>
             <th width="20"><input type="checkbox" data-check="all"></th>
-            <th each="{field,idx in fields}">
+            <th class="uk-text-small" each="{field,idx in fields}">
                 { field.label || field.name }
             </th>
             <th width="20"></th>
