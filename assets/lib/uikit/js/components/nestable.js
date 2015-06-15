@@ -24,7 +24,7 @@
         html         = UI.$html,
         touchedlists = [],
         $win         = UI.$win,
-        draggingElement, dragSource;
+        draggingElement;
 
     var eStart  = hasTouch ? 'touchstart'  : 'mousedown',
         eMove   = hasTouch ? 'touchmove'   : 'mousemove',
@@ -516,12 +516,14 @@
                 }
                 // decrease horizontal level
                 if (mouse.distX < 0) {
+
                     // we can't decrease a level if an item preceeds the current one
-                    next = this.placeEl.next('li');
+                    next = this.placeEl.next(opt._listItemClass);
                     if (!next.length) {
                         parent = this.placeEl.parent();
                         this.placeEl.closest(opt._listItemClass).after(this.placeEl);
-                        if (!parent.children().length) {
+                        if (!parent.children().not(this.placeEl).length) {
+                            parent.parent().after(this.placeEl);
                             this.unsetParent(parent.parent());
                         }
                     }
@@ -562,7 +564,7 @@
             // find parent list of item under cursor
             var pointElRoot = this.element,
                 tmpRoot     = this.pointEl.closest(this.options._listBaseClass),
-                isNewRoot   = pointElRoot[0] !== this.pointEl.closest(this.options._listBaseClass)[0];
+                isNewRoot   = pointElRoot[0] != tmpRoot[0];
 
             /**
              * move vertical
