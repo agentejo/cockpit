@@ -898,6 +898,125 @@ riot.tag('field-html', '<textarea name="input" class="uk-visibility-hidden"></te
     
 });
 
+riot.tag('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-small-bottom uk-width-1-1"> <i class="uk-icon-search"></i><input name="autocomplete" class="uk-width-1-1"> </div> <div name="map" style="min-height:300px;"> Loading map... </div> <div class="uk-text-small uk-margin-small-top"> LAT: <span class="uk-text-muted">{ latlng.lat }</span> LNG: <span class="uk-text-muted">{ latlng.lng }</span> </div> </div>', function(opts) {
+
+        var loadApi = (function(){
+
+            var p, fn = function(){
+
+                if (!p) {
+
+                    p = new Promise(function(resolve){
+
+                        var script = document.createElement('script');
+
+                        script.async = true;
+
+                        script.onload = function() {
+
+                            google.load("maps", "3", {other_params:'sensor=false&libraries=places', callback: function(){
+                              if (google && google.maps.places) resolve();
+                            }});
+                        };
+
+                        script.onerror = function() {
+                            alert('Failed loading google maps api.');
+                        };
+
+                        script.src = 'https://www.google.com/jsapi';
+
+                        document.getElementsByTagName('head')[0].appendChild(script);
+                    });
+                }
+
+                return p;
+            };
+
+            return fn;
+        })();
+
+        var $this = this;
+
+        this.latlng = {lat:53.55909862554551, lng:9.998652343749995};
+
+        this.$updateValue = function(value) {
+
+            if (value && this.latlng != value) {
+                this.latlng = value;
+                this.update();
+            }
+
+        }.bind(this);
+
+        this.on('mount', function(){
+
+            loadApi().then(function(){
+
+                var map, marker, point = new google.maps.LatLng($this.latlng.lat, $this.latlng.lng), input, autocomplete;
+
+                map = new google.maps.Map($this.map, {
+                    zoom   : 6,
+                    center : point
+                });
+
+                marker = new google.maps.Marker({
+                    position  : point,
+                    map       : map,
+                    draggable : true
+                });
+
+                google.maps.event.addListener(marker, 'dragend', function() {
+                    var point = marker.getPosition();
+                    $this.$setValue({lat: point.lat(), lng:point.lng()} );
+                    input.value = "";
+                });
+
+                App.$(window).on('resize', function(){
+                    google.maps.event.trigger(map,'resize');
+                    map.setCenter(marker.getPosition());
+                });
+
+
+                input = $this.autocomplete;
+
+                autocomplete = new google.maps.places.Autocomplete(input);
+                autocomplete.bindTo('bounds', map);
+
+                google.maps.event.addListener(autocomplete, 'place_changed', function(e) {
+
+                    var place = autocomplete.getPlace();
+
+                    if (!place.geometry) {
+                      return;
+                    }
+
+                    if (place.geometry.viewport) {
+                      map.fitBounds(place.geometry.viewport);
+                    } else {
+                      map.setCenter(place.geometry.location);
+                    }
+
+                    marker.setPosition(place.geometry.location);
+                    input.value = "";
+
+                    var point = marker.getPosition();
+                    $this.$setValue({lat: point.lat(), lng:point.lng()} );
+                });
+
+                google.maps.event.addDomListener(input, 'keydown', function(e) {
+                    if (e.keyCode == 13) {
+                        e.preventDefault();
+                    }
+                });
+
+
+            });
+
+        });
+
+
+    
+});
 riot.tag('field-longtext', '<textarea name="input" class="uk-width-1-1"></textarea>', function(opts) {
 
         if (opts.bind) {
@@ -1127,10 +1246,18 @@ riot.tag('field-time', '<input name="input" class="uk-width-1-1" type="text">', 
     
 });
 
-riot.tag('field-wysiwyg', '<textarea name="input" style="visibility:hidden;"></textarea>', function(opts) {
+riot.tag('field-wysiwyg', '<textarea name="input" style="visibility:hidden;" class="uk-width-1-1" rows="5"></textarea>', function(opts) {
 
         var $this = this,
             lang  = document.documentElement.getAttribute('lang') || 'en';
+
+        if (opts.cls) {
+            App.$(this.input).addClass(opts.cls);
+        }
+
+        if (opts.rows) {
+            this.input.setAttribute('rows', opts.rows);
+        }
 
         this.value = null;
 
@@ -1138,6 +1265,7 @@ riot.tag('field-wysiwyg', '<textarea name="input" style="visibility:hidden;"></t
 
             if (this.value != value) {
                 this.value = value;
+                this.update();
             }
 
         }.bind(this);
@@ -1161,9 +1289,10 @@ riot.tag('field-wysiwyg', '<textarea name="input" style="visibility:hidden;"></t
                 assets.push('/assets/lib/redactor/lang/'+lang+'.js');
             }
 
+
             App.assets.require(assets, function() {
 
-                this.input.value = $this.value;
+                this.input.value = this.value;
 
 
                 App.$($this.input).redactor({
@@ -1172,6 +1301,15 @@ riot.tag('field-wysiwyg', '<textarea name="input" style="visibility:hidden;"></t
                     changeCallback: function() {
                         $this.$setValue(this.code.get());
                     }
+                });
+
+            }.bind(this)).catch(function(){
+
+
+                this.input.value = this.value;
+
+                App.$(this.input).css('visibility','').on('change', function() {
+                    $this.$setValue(this.value);
                 });
 
             }.bind(this));

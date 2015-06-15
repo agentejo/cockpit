@@ -121,6 +121,7 @@
                                                                             <option value="tags">Tags</option>
                                                                             <option value="date">Date</option>
                                                                             <option value="time">Time</option>
+                                                                            <option value="location">Location</option>
                                                                             <option value="object">Object</option>
                                                                         </select>
                                                                     </div>
