@@ -47,35 +47,26 @@
 
         </div>
 
+        <div class="uk-clearfix uk-margin-large-top">
 
-        <div if="{ entries.length || filter }">
+            <div class="uk-float-left uk-animation-fade uk-text-large uk-text-muted" if="{ selected.length }">
 
-            <div class="uk-grid uk-grid-divider uk-grid-margin">
+                { selected.length } @lang('item(s) selected')
+                <a class="uk-text-danger" onclick="{ removeselected }" title="@lang('Delete')"><i class="uk-icon-justify uk-icon-trash"></i></a>
 
-                <div class="uk-width-medium-3-4">
-
-                    @render('collections:views/partials/entries'.($collection['sortable'] ? '.sortable':'').'.php', compact('collection'))
-
-                </div>
-                <div class="uk-width-medium-1-4 uk-form">
-
-                    <div class="uk-margin">
-
-                        <a class="uk-button uk-button-large uk-button-primary uk-width-1-1" href="@route('/collections/entry/'.$collection['name'])">@lang('Add entry')</a>
-
-                    </div>
-
-                    <div class="uk-margin uk-animation-fade" if="{ selected.length }">
-
-                        <ul class="uk-nav uk-nav-side">
-                            <li class="uk-nav-header">{ selected.length } @lang('Selected')</li>
-                            <li><a class="uk-text-danger" onclick="{ removeselected }"><i class="uk-icon-justify uk-icon-trash"></i> @lang('Delete')</a></li>
-                        </ul>
-
-                    </div>
-
-                </div>
             </div>
+
+            <div class="uk-float-right">
+
+                <a class="uk-button uk-button-large uk-button-primary uk-width-1-1" href="@route('/collections/entry/'.$collection['name'])">@lang('Add entry')</a>
+
+            </div>
+        </div>
+
+
+        <div class="uk-margin-top" if="{ entries.length || filter }">
+
+            @render('collections:views/partials/entries'.($collection['sortable'] ? '.sortable':'').'.php', compact('collection'))
 
         </div>
 

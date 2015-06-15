@@ -858,6 +858,7 @@ riot.tag('field-gallery', '<div class="uk-panel uk-panel-box"> <div name="images
             App.ui.prompt('Title', this.data.images[e.item.idx].title, function(value) {
                 $this.data.images[e.item.idx].title = value;
                 $this.$setValue($this.data.images);
+                $this.update();
             });
         }.bind(this);
 
