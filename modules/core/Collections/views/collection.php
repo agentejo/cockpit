@@ -223,7 +223,7 @@
 
                 dragCustomClass:'uk-form'
 
-            }).element.on("change.uk.sortable", function(e, sortable, ele){
+            }).element.on("change.uk.sortable", function(e, sortable, ele) {
 
                 if (App.$(e.target).is(':input')) {
                     return;

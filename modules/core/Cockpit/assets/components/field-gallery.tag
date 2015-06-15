@@ -2,8 +2,8 @@
 
     <div class="uk-panel uk-panel-box">
 
-        <div class="uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" if="{ data.images && data.images.length }">
-            <div class="uk-grid-margin" each="{ img,idx in data.images }">
+        <div name="imagescontainer" class="uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ data.images && data.images.length }">
+            <div class="uk-grid-margin" data-idx="{ idx }" each="{ img,idx in data.images }">
                 <div class="uk-panel uk-panel-card">
                     <figure class="uk-display-block uk-overlay uk-overlay-hover">
                         <img riot-src="{ (SITE_URL+img.path) }">
@@ -24,7 +24,10 @@
 
         <div class="{data.images && data.images.length ? 'uk-margin-top':'' }">
             <span if="{ data.images && !data.images.length }">{ App.i18n.get('Gallery is empty') }.</span>
-            <a onclick="{ selectimages }">{ App.i18n.get('Add images') }</a>
+            <a class="uk-button uk-button-link" onclick="{ selectimages }">
+                <i class="uk-icon-plus-circle"></i>
+                { App.i18n.get('Add images') }
+            </a>
         </div>
 
     </div>
@@ -34,6 +37,29 @@
         var $this = this;
 
         this.data = { images: [] };
+
+        this.on('mount', function() {
+
+            UIkit.sortable(this.imagescontainer, {
+
+                dragCustomClass:'uk-form'
+
+            }).element.on("change.uk.sortable", function(e, sortable, ele) {
+
+                ele = App.$(ele);
+
+                var images = $this.data.images,
+                    cidx   = ele.index(),
+                    oidx   = ele.data('idx');
+
+                images.splice(cidx, 0, images.splice(oidx, 1)[0]);
+
+                $this.data.images = images;
+                $this.update();
+
+            });
+
+        });
 
         this.$updateValue = function(value) {
 
