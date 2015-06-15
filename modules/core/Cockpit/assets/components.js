@@ -476,22 +476,22 @@ riot.tag('cockpit-finder', '<div show="{ data }"> <div class="uk-clearfix" data-
 
 riot.tag('cockpit-search', '<div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form app-search"> <i class="uk-icon-search"></i> <input class="uk-width-1-1 uk-form-blank" type="text" placeholder="{ App.i18n.get(\'Search...\') }"> </div>', 'cockpit-search .uk-dropdown { min-width: 25vw; }', function(opts) {
 
-            this.on('mount', function(){
+        this.on('mount', function(){
 
-                UIkit.autocomplete(this.autocomplete, {
-                    source: App.route('/cockpit/search'),
-                    template: '<ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">{{~items}}<li data-value="" data-url="{{$item.url}}"><a><i class="uk-icon-{{ ($item.icon || "cube") }}"></i> {{$item.title}}</a></li>{{/items}}</ul>'
-                });
+            UIkit.autocomplete(this.autocomplete, {
+                source: App.route('/cockpit/search'),
+                template: '<ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">{{~items}}<li data-value="" data-url="{{$item.url}}"><a><i class="uk-icon-{{ ($item.icon || "cube") }}"></i> {{$item.title}}</a></li>{{/items}}</ul>'
             });
+        });
 
-            App.$(this.root).on("selectitem.uk.autocomplete", function(e, data) {
+        App.$(this.root).on("selectitem.uk.autocomplete", function(e, data) {
 
-                if (data.url) {
-                    location.href = data.url;
-                }
-            });
+            if (data.url) {
+                location.href = data.url;
+            }
+        });
 
-        
+    
 });
 
 riot.tag('codemirror', '', function(opts) {
@@ -1013,6 +1013,48 @@ riot.tag('field-select', '<select name="input" class="uk-width-1-1"> <option val
         if (opts.required) {
             this.fieldcontainer.setAttribute('required', 'required');
         }
+
+    
+});
+
+riot.tag('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form"> <i class="uk-icon-tag"></i> <input name="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{ App.i18n.get(\'Add Tag...\') }"> </div> <div class="uk-margin uk-panel uk-panel-box" if="{ tags && tags.length }"> <span class="uk-margin-small-right uk-margin-small-top" each="{tag,idx in tags}"> <a onclick="{ parent.remove }"><i class="uk-icon-close"></i></a> {{ tag }} </span> </div> </div>', function(opts) {
+
+        var $this = this;
+
+        this.tags = [];
+
+        this.on('mount', function(){
+
+            App.$(this.input).on('keydown', function(e) {
+
+                if (e.keyCode == 13 && $this.input.value.trim()) {
+
+                    e.stopImmediatePropagation();
+                    e.stopPropagation();
+
+                    $this.tags.push($this.input.value);
+                    $this.input.value = "";
+                    $this.$setValue($this.tags)
+                    $this.update();
+
+                    return false;
+                }
+            });
+        });
+
+        this.$updateValue = function(value) {
+
+            if (this.tags !== value && Array.isArray(value)) {
+                this.tags = value;
+                this.update();
+            }
+
+        }.bind(this);
+
+        this.remove = function(e) {
+            this.tags.splice(e.item.idx, 1);
+            this.$setValue(this.tags);
+        }.bind(this);
 
     
 });

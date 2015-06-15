@@ -118,6 +118,7 @@
                                                                             <option value="select">Select</option>
                                                                             <option value="file">File</option>
                                                                             <option value="gallery">Gallery</option>
+                                                                            <option value="tags">Tags</option>
                                                                             <option value="date">Date</option>
                                                                             <option value="time">Time</option>
                                                                             <option value="object">Object</option>
