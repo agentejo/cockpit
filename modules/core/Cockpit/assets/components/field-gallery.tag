@@ -42,6 +42,7 @@
 
             UIkit.sortable(this.imagescontainer, {
 
+                animation: false,
                 dragCustomClass:'uk-form'
 
             }).element.on("change.uk.sortable", function(e, sortable, ele) {
@@ -54,8 +55,13 @@
 
                 images.splice(cidx, 0, images.splice(oidx, 1)[0]);
 
-                $this.data.images = images;
+                $this.data.images = [];
                 $this.update();
+
+                setTimeout(function() {
+                    $this.data.images = images;
+                    $this.update();
+                }, 0);
 
             });
 

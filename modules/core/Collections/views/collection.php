@@ -249,7 +249,7 @@
                     $this.reorder = false;
                     $this.update();
                     $this.fieldscontainer.style.height = '';
-                }, 0)
+                }, 0);
 
             });
 
