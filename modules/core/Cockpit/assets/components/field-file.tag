@@ -1,8 +1,8 @@
 <field-file>
 
     <div class="uk-flex">
-        <input class="uk-flex-item-1 uk-margin-small-right" type="text" name="input">
-        <button type="button" class="uk-button" name="picker"><i class="uk-icon-hand-o-up"></i></button>
+        <input class="uk-flex-item-1 uk-margin-small-right" type="text" name="input" placeholder="{ App.i18n.get('No file selected...') }" disabled>
+        <button type="button" class="uk-button" name="picker"><i class="uk-icon-paperclip"></i></button>
     </div>
 
     <script>
@@ -19,10 +19,10 @@
             App.$(this.picker).addClass(opts.cls);
         }
 
-        App.$([this.picker, this.input]).on('click', function() {
+        App.$(this.picker).on('click', function() {
 
             App.media.select(function(selected) {
-                $input.val(selected[0]).trigger('change');
+                $this.input.$setValue(selected[0]);
             });
         });
 

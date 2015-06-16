@@ -4,6 +4,8 @@
 
     <script>
 
+        var $this = this;
+
         if (opts.bind) {
             this.input.setAttribute('bind', opts.bind);
             this.root.removeAttribute('bind');
@@ -21,7 +23,9 @@
 
             App.assets.require(['/assets/lib/uikit/js/components/datepicker.js'], function() {
 
-                UIkit.datepicker(this.input, opts);
+                UIkit.datepicker(this.input, opts).element.on('change', function() {
+                    $this.input.$setValue($this.input.value);
+                });
 
             }.bind(this));
         });

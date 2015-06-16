@@ -25,12 +25,11 @@
                     return;
                 }
 
-                 try {
+                try {
 
                     value = (new Function('tag', 'return tag.'+ele.getAttribute(attr)+';'))(tag);
 
                 } catch(e) {}
-
 
                 if (JSON.stringify(ele.$value) !== JSON.stringify(value)) {
                     ele.$value = value;
@@ -50,7 +49,7 @@
                     segments   = field.split('.'),
                     initilized = false;
 
-                body = 'try{ tag.'+field+' = val;tag.update(); return true;}catch(e){ return false; }';
+                body = 'try{ tag.'+field+' = val;tag.update(); tag.trigger("bindingupdated", ["'+field+'", val]);return true;}catch(e){ return false; }';
 
                 fn = new Function('tag', 'val', body);
 
@@ -133,13 +132,17 @@
 
                     ele.$updateValue = function(value) {
 
-                        if (ele._tag && ele._tag.$updateValue) {
+                        if (ele._tag.$updateValue) {
 
                             ele._tag.$updateValue.apply(ele._tag, [value]);
                         }
                     };
-                }
 
+                    if (ele._tag.$initBind) {
+                        ele._tag.$initBind.apply(ele._tag, [tag]);
+                    }
+
+                }
             }
         }
 
@@ -147,6 +150,10 @@
         tag.on('mount updated bind', function() {
             update();
         });
+
+        tag.$bindUpdate = function() {
+            update();
+        };
     };
 
 })(riot);
