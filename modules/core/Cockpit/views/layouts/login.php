@@ -9,7 +9,7 @@
     {{ $app->assets(['assets:lib/uikit/js/components/form-password.min.js'], $app['cockpit/version']) }}
 
 </head>
-<body class="uk-height-viewport uk-flex uk-flex-middle">
+<body class="uk-height-viewport uk-flex uk-flex-middle uk-bg-light-radial">
 
     <div class="uk-width-medium-1-2 uk-width-large-1-3 uk-container-center" riot-view>
 
@@ -19,9 +19,13 @@
 
                 <div class="uk-panel-box uk-panel-space uk-panel-card uk-animation-scale">
 
-                    <div class="uk-panel-box-header">
+                    <div name="header" class="uk-panel-box-header uk-text-bold uk-text-center">
 
+                        <h2 class="uk-text-bold">{{ $app['app.name'] }}</h2>
 
+                        <div class="uk-animation-shake uk-margin-top" if="{ error }">
+                            <strong>{ error }</strong>
+                        </div>
                     </div>
 
                     <div class="uk-form-row">
@@ -35,11 +39,7 @@
                         </div>
                     </div>
 
-                    <div class="uk-text-muted uk-animation-shake uk-margin-top" if="{ error }">
-                        <strong>{ error }</strong>
-                    </div>
-
-                    <div class="uk-panel-box-footer uk-bg-light">
+                    <div class="uk-margin-large-top">
                         <button class="uk-button uk-button-large uk-button-primary uk-width-1-1">@lang('Authenticate')</button>
                     </div>
                 </div>
@@ -66,7 +66,7 @@
 
                         this.error = 'Login failed';
 
-                        document.body.classList.add('uk-bg-danger');
+                        App.$(this.header).addClass('uk-bg-danger uk-contrast');
                     }
 
                     this.update();
