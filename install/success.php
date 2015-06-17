@@ -7,7 +7,7 @@
     <script src="../assets/lib/uikit/js/uikit.min.js"></script>
     <link rel="stylesheet" href="../assets/app/css/style.css">
 </head>
-<body>
+<body class="uk-bg-light-radial">
 
     <div class="uk-container uk-container-center uk-text-center uk-animation-slide-fade">
 

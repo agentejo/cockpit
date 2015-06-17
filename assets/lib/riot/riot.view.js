@@ -5,6 +5,33 @@
         return;
     }
 
+    // small DOM pimping
+
+    document.find = document.querySelectorAll.bind(document)
+
+    HTMLElement.prototype.find = function(selector){
+        return this.querySelectorAll(selector);
+    };
+
+    Node.prototype.on = window.on = function (name, fn) {
+        this.addEventListener(name, fn)
+    };
+
+    NodeList.prototype.forEach = Array.prototype.forEach;
+
+    Node.prototype.on = window.on = function (name, delegate, fn) {
+
+        if (arguments.length !== 3) {
+            return this.addEventListener(name, arguments[1]);
+        }
+
+        return this.addEventListener(name, function (e) {
+            if(e.target.matches(delegate)){
+                return fn.apply(e.target, arguments);
+            }
+        });
+    };
+
     d.writeln('<style>[riot-view]{display:none}</style>');
 
     riot.util.initViews = (function(views, view, vid, tag, ele, i) {
