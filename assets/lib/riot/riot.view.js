@@ -13,10 +13,6 @@
         return this.querySelectorAll(selector);
     };
 
-    Node.prototype.on = window.on = function (name, fn) {
-        this.addEventListener(name, fn)
-    };
-
     NodeList.prototype.forEach = Array.prototype.forEach;
 
     Node.prototype.on = window.on = function (name, delegate, fn) {

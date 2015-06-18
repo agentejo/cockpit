@@ -25,16 +25,15 @@
 
         </div>
 
-        <div class="uk-width-medium-1-1 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-middle uk-flex-center" if="{ !App.Utils.count(collections) }">
+        <div class="uk-width-medium-1-1 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle uk-flex-center" if="{ !App.Utils.count(collections) }">
 
-            <div class="uk-width-medium-1-3 uk-panel-box uk-panel-space uk-animation-scale">
+            <div class="uk-width-medium-1-3 uk-animation-scale">
 
-
-                <h3>@lang('No Collections')</h3>
-
-                <p>
-                    <a href="@route('/collections/collection')">Create a Collection.</a>
+                <p class="uk-text-xlarge">
+                    <i class="uk-icon-list"></i>
                 </p>
+
+                <h3>@lang('No Collections'). <a href="@route('/collections/collection')">Create a Collection.</a></h3>
 
             </div>
 

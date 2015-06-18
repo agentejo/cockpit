@@ -47,7 +47,7 @@
 
         </div>
 
-        <div class="uk-clearfix uk-margin-large-top">
+        <div class="uk-clearfix uk-margin-large-top" if="{ entries.length }">
 
             <div class="uk-float-left uk-animation-fade uk-text-large uk-text-muted" if="{ selected.length }">
 

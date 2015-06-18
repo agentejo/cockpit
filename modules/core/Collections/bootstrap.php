@@ -239,7 +239,6 @@ $this->module("collections")->extend([
                             }
 
                             break;
-
                     }
 
                     if ($isUpdate && $field['type'] == 'password' && !$value && isset($entry[$field['name']])) {

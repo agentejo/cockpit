@@ -9,7 +9,7 @@
 
         // App constants
 
-        var SITE_URL = '{{ $app->pathToUrl('site:') }}'; 
+        var SITE_URL = '{{ $app->pathToUrl('site:') }}';
 
     </script>
 
@@ -82,7 +82,7 @@
                                     <div class="uk-grid-margin uk-width-medium-2-3">
 
                                         @if($app['app.menu.modules']->count())
-                                        <div class="uk-grid uk-grid-gutter uk-grid-width-1-2 uk-grid-width-medium-1-3 uk-text-center">
+                                        <div class="uk-grid uk-grid-small uk-grid-gutter uk-grid-width-1-2 uk-grid-width-medium-1-3 uk-text-center">
 
                                             @foreach($app['app.menu.modules'] as $item)
                                             <div class="uk-grid-margin">
