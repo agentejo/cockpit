@@ -54,12 +54,12 @@
 
                             <div class="uk-dropdown app-panel-dropdown">
 
-                                <div class="uk-grid uk-grid-gutter uk-grid-divider">
+                                <div class="uk-grid uk-grid-gutter uk-grid-small uk-grid-divider">
 
                                     <div class="uk-grid-margin uk-width-medium-1-3">
 
-                                        <div class="uk-margin uk-text-small uk-text-bold">
-                                            {{ $app['app.name'] }}
+                                        <div class="uk-margin">
+                                            <span class="uk-badge uk-badge-primary">@lang('System')</span>
                                         </div>
 
                                         <ul class="uk-nav uk-nav-dropdown">
@@ -81,6 +81,10 @@
 
                                     <div class="uk-grid-margin uk-width-medium-2-3">
 
+                                        <div class="uk-margin">
+                                            <span class="uk-badge uk-badge-primary">@lang('Modules')</span>
+                                        </div>
+
                                         @if($app['app.menu.modules']->count())
                                         <div class="uk-grid uk-grid-small uk-grid-gutter uk-grid-width-1-2 uk-grid-width-medium-1-3 uk-text-center">
 
@@ -94,13 +98,13 @@
                                                 </a>
                                             </div>
                                             @endforeach
-
+                                            
                                         </div>
                                         @endif
 
                                     </div>
-                                </div>
 
+                                </div>
 
                             </div>
 

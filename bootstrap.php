@@ -101,6 +101,7 @@ function cockpit($module = null) {
 
         // set cache path
         $tmppath = $app->path('#tmp:');
+        
         $app("cache")->setCachePath($tmppath);
         $app->renderer->setCachePath($tmppath);
 

@@ -42,11 +42,28 @@
 }
 
 .app-panel-dropdown {
-    margin-top: 20px;
+    margin-top: 10px;
     border: none;
-    box-shadow: 0 0 1px 1px rgba(0,0,0,0.1);
     width: 600px;
     max-width: 85vw;
+    border-left: 1px #efefef solid;
+    border-right: 1px #efefef solid;
+    border-bottom: 1px #efefef solid;
+
+    &:after {
+    	bottom: 100%;
+    	left: 30px;
+    	border: solid transparent;
+    	content: " ";
+    	height: 0;
+    	width: 0;
+    	position: absolute;
+    	pointer-events: none;
+    	border-color: none;
+    	border-bottom-color: @global-background;
+    	border-width: 8px;
+    	margin-left: -8px;
+    }
 }
 
 .app-main {
