@@ -88,7 +88,7 @@
                                             <div class="uk-grid-margin">
                                                 <a class="uk-panel-framed" href="@route($item['route'])">
                                                     <div class="uk-text-large">
-                                                        <i class="uk-icon-cube"></i>
+                                                        <i class="uk-icon-{{ isset($item['icon']) ? $item['icon']:'cube' }}"></i>
                                                     </div>
                                                     <div class="uk-text-truncate uk-text-small uk-margin-small-top">@lang($item['label'])</div>
                                                 </a>

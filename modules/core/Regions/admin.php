@@ -17,6 +17,7 @@ $app->on('admin.init', function() {
     // add to modules menu
     $this['app.menu.modules']->append([
         'label' => 'Regions',
+        'icon'  => 'th',
         'route' => '/regions'
     ]);
 
@@ -30,7 +31,7 @@ $app->on('admin.init', function() {
             if (stripos($region, $search)!==false || stripos($meta['label'], $search)!==false) {
 
                 $list[] = [
-                    'icon'  => 'database',
+                    'icon'  => 'th',
                     'title' => $meta['label'] ? $meta['label'] : $meta['name'],
                     'url'   => $this->routeUrl('/regions/region/'.$meta['name'])
                 ];

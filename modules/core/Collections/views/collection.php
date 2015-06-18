@@ -13,7 +13,6 @@
 
             <div class="uk-width-medium-1-4">
 
-
                <div class="uk-margin">
                    <label class="uk-text-small">@lang('Name')</label>
                    <input class="uk-width-1-1 uk-form-large" type="text" name="name" bind="collection.name" required>

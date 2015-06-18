@@ -17,6 +17,7 @@ $app->on('admin.init', function() {
     // add to modules menu
     $this['app.menu.modules']->append([
         'label' => 'Collections',
+        'icon'  => 'database',
         'route' => '/collections'
     ]);
 
