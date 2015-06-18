@@ -17,6 +17,9 @@
                <div class="uk-margin">
                    <label class="uk-text-small">@lang('Name')</label>
                    <input class="uk-width-1-1 uk-form-large" type="text" name="name" bind="region.name" pattern="[a-zA-Z0-9_]+" required>
+                   <p class="uk-text-small uk-text-muted" if="{!region._id}">
+                       @lang('Only alpha nummeric value is allowed')
+                   </p>
                </div>
 
                <div class="uk-margin">
