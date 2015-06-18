@@ -14,6 +14,7 @@
 @subnav-line-border:                            @global-border;
 
 @subnav-pill-hover-color:                       @global-color;
+@subnav-pill-hover-background:                  @global-background;
 @subnav-pill-active-background:                 @global-primary-background;
 @subnav-pill-active-color:                      @global-contrast-color;
 
@@ -39,7 +40,9 @@
 // Modifier: `uk-subnav-pill'
 // ========================================================================
 
-.hook-subnav-pill() {}
+.hook-subnav-pill() {
+    border-radius: @global-border-radius;
+}
 
 .hook-subnav-pill-hover() {}
 

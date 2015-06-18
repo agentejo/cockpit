@@ -1,4 +1,5 @@
 <div>
+
     <ul class="uk-breadcrumb">
         <li><a href="@route('/regions')">@lang('Regions')</a></li>
         <li class="uk-active" data-uk-dropdown="{mode:'click'}">
@@ -15,6 +16,11 @@
         </li>
     </ul>
 
+    @if(isset($region['description']) && $region['description'])
+    <div class="uk-text-muted uk-margin uk-panel-box">
+        <i class="uk-icon-info-circle"></i> {{ $region['description'] }}
+    </div>
+    @endif
 
     <div class="uk-margin-top-large" riot-view>
 
@@ -48,7 +54,7 @@
 
             <div class="uk-margin-top">
                 <button class="uk-button uk-button-large uk-button-primary uk-margin-right">@lang('Save')</button>
-                <a href="@route('/regions/entries/'.$region['name'])">@lang('Cancel')</a>
+                <a href="@route('/regions')">@lang('Cancel')</a>
             </div>
 
         </form>

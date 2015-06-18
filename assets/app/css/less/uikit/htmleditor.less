@@ -9,6 +9,7 @@
 
 @htmleditor-navbar-nav-color:                 @global-color;
 
+@htmleditor-navbar-background:                @global-background;
 @htmleditor-navbar-nav-hover-color:           @global-color;
 @htmleditor-navbar-nav-onclick-color:         @global-color;
 @htmleditor-navbar-nav-active-color:          @global-color;
@@ -18,13 +19,19 @@
 
 @htmleditor-fullscreen-z-index:               @global-z-index - 10;
 
+@htmleditor-navbar-nav-hover-background:      #f5f5f5;
+
 
 // Component
 // ========================================================================
 
 .hook-htmleditor() {}
 
-.hook-htmleditor-navbar() {}
+.hook-htmleditor-navbar() {
+    border-left: 1px solid @htmleditor-content-border;
+    border-right: 1px solid @htmleditor-content-border;
+    border-top: 1px solid @htmleditor-content-border;
+}
 
 .hook-htmleditor-navbar-nav() {}
 
