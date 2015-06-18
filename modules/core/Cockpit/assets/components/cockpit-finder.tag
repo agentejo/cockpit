@@ -18,7 +18,6 @@
                     <i class="uk-icon-upload"></i>
                 </span>
 
-
                 <span class="uk-button-group uk-margin-small-right">
 
                     <span class="uk-position-relative uk-button" data-uk-dropdown="{\mode:'click'\}">
@@ -145,28 +144,37 @@
 
                             <li class="uk-grid-margin" each="{file, idx in data.files}" onclick="{ parent.select }" if="{ parent.infilter(file) }">
                                 <div class="uk-panel uk-panel-box { file.selected ? 'uk-selected':'' }">
-                                    <div class="uk-flex">
-                                        <div>
-                                            <span class="uk-margin-small-right" data-uk-dropdown="\{mode:'click'\}">
-                                                <i class="uk-icon-{ parent.getIconCls(file) } uk-text-muted js-no-item-select"></i>
-                                                <div class="uk-dropdown">
-                                                    <ul class="uk-nav uk-nav-dropdown">
-                                                        <li class="uk-nav-header uk-text-truncate">{ file.name }</li>
-                                                        <li><a onclick="{ parent.rename }">Rename</a></li>
-                                                        <li if="{ file.ext == 'zip' }"><a onclick="{ parent.unzip }">Unzip</a></li>
-                                                        <li class="uk-nav-divider"></li>
-                                                        <li><a onclick="{ parent.remove }">Delete</a></li>
-                                                    </ul>
-                                                </div>
-                                            </span>
-                                        </div>
-                                        <div class="uk-flex-item-1 uk-text-truncate">
 
-                                            <a class="uk-link-muted js-no-item-select" onclick="{ parent.open }">{ file.name }</a>
+                                    <div class="uk-panel-teaser uk-position-relative">
 
-                                            <div class="uk-margin-small-top uk-text-small uk-text-muted">
-                                                { file.size }
+                                        <div class="uk-position-cover">
+
+                                            <div class="uk-panel uk-panel-box">
+                                                <span class="uk-margin-small-right" data-uk-dropdown="\{mode:'click'\}">
+                                                    <a><i class="uk-icon-{ parent.getIconCls(file) } js-no-item-select"></i>
+                                                    <div class="uk-dropdown">
+                                                        <ul class="uk-nav uk-nav-dropdown">
+                                                            <li class="uk-nav-header uk-text-truncate">{ file.name }</li>
+                                                            <li> <a class="uk-link-muted js-no-item-select" onclick="{ parent.open }">Open</a></li>
+                                                            <li><a onclick="{ parent.rename }">Rename</a></li>
+                                                            <li if="{ file.ext == 'zip' }"><a onclick="{ parent.unzip }">Unzip</a></li>
+                                                            <li class="uk-nav-divider"></li>
+                                                            <li><a onclick="{ parent.remove }">Delete</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </span>
                                             </div>
+
+                                        </div>
+                                        <canvas class="uk-responsive-width uk-display-block" width="400" height="200"></canvas>
+                                    </div>
+
+                                    <div class="uk-flex-item-1 uk-text-truncate">
+
+                                        <a class="uk-link-muted js-no-item-select" onclick="{ parent.open }">{ file.name }</a>
+
+                                        <div class="uk-margin-small-top uk-text-small uk-text-muted">
+                                            { file.size }
                                         </div>
                                     </div>
 
