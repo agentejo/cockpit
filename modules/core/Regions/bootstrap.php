@@ -129,11 +129,43 @@ $this->module("regions")->extend([
         return $regions[$name];
     },
 
-    'render' => function($name) {
+    'getRegionFieldValue' => function($region, $fieldname, $key = null, $default = null) {
 
+        $region = $this->region($region);
+
+        return ($region && isset($region['data'][$fieldname])) ? $region['data'][$fieldname] : $default;
     },
 
+    'render' => function($name, $params = []) {
+
+        $region = $this->region($name);
+
+        if (!$region) {
+            return null;
+        }
+
+        $renderer = $this->app->renderer;
+
+        $_fields  = isset($region['fields']) ? $region['fields'] : [];
+
+        $fields = array_merge($region['data'], $params);
+
+        $app->trigger('regions.before.render', [$name, $region['template'], $fields]);
+
+        $output = $renderer->execute($region['tpl'], $fields);
+
+        $app->trigger('regions.after.render', [$name, $output]);
+
+        return $output;
+    }
+
 ]);
+
+// extend app lexy parser
+$app->renderer->extend(function($content){
+    $content = preg_replace('/(\s*)@region\((.+?)\)/', '$1<?php echo cockpit("regions")->render($2); ?>', $content);
+    return $content;
+});
 
 // ADMIN
 if (COCKPIT_ADMIN && !COCKPIT_REST) {

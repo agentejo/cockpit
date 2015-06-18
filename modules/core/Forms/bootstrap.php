@@ -134,7 +134,7 @@ $this->module("forms")->extend([
         return $forms[$name];
     },
 
-    'entries' => function($name) use($app) {
+    'entries' => function($name) {
 
         $forms = $this->form($name);
 
@@ -221,8 +221,103 @@ $this->module("forms")->extend([
         $form = $forms["_id"];
 
         return $this->app->storage->count("forms/{$form}", $criteria);
-    }
+    },
+
+    'open' => function($name, $options = []) {
+
+        $options = array_merge(array(
+            "id"    => uniqid("form"),
+            "class" => "",
+            "csrf"  => $this->app->hash($name)
+        ), $options);
+
+        $this->app->renderView("forms:views/api/form.php", compact('name', 'options'));
+    },
 ]);
+
+
+$this->bind("/api/forms/submit/:form", function($params) {
+
+    $formname = $params["form"];
+
+    // Security check
+    if ($formhash = $this->param("__csrf", false)) {
+
+        if ($formhash != $this->hash($formname)) {
+            return false;
+        }
+
+    } else {
+        return false;
+    }
+
+    $frm = $this->app->module('forms')->form($formname);
+
+    if (!$frm) {
+        return false;
+    }
+
+    if ($formdata = $this->param("form", false)) {
+
+        // custom form validation
+
+        if ($this->path("config:forms/{$form}.php") && false===include($this->path("config:forms/{$form}.php"))) {
+            return false;
+        }
+
+        if (isset($frm["email_forward"]) && $frm["email_forward"]) {
+
+            $emails          = array_map('trim', explode(',', $frm['email_forward']));
+            $filtered_emails = [];
+
+            foreach($emails as $to){
+
+                // Validate each email address individually, push if valid
+                if (filter_var($to, FILTER_VALIDATE_EMAIL)){
+                    $filtered_emails[] = $to;
+                }
+            }
+
+            if (count($filtered_emails)) {
+
+                $frm['email_forward'] = implode(',', $filtered_emails);
+
+                // There is an email template available
+                if ($template = $this->path("config:forms/emails/{$form}.php")) {
+
+                    $body = $this->renderer->file($template, $formdata, false);
+
+                // Prepare template manually
+                } else {
+
+                    $body = [];
+
+                    foreach ($formdata as $key => $value) {
+                        $body[] = "<b>{$key}:</b>\n<br>";
+                        $body[] = (is_string($value) ? $value:json_encode($value))."\n<br>";
+                    }
+
+                    $body = implode("\n<br>", $body);
+                }
+
+                $options = $this->param('form_options', []);
+                $this->mailer->mail($frm['email_forward'], $this->param("__mailsubject", "New form data for: ".$formname), $body, $options);
+            }
+        }
+
+        if (isset($frm['save_entry']) && $frm['save_entry']) {
+
+            $entry = ['data' => $formdata];
+            $this->app->module('forms')->save($entry);
+        }
+
+        return json_encode($formdata);
+
+    } else {
+        return "false";
+    }
+});
+
 
 
 
