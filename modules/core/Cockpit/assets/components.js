@@ -490,6 +490,10 @@ riot.tag('codemirror', '', function(opts) {
 
                 init();
 
+                if (opts.syntax) {
+                    editor.setOption("mode", CodeMirror.findModeByName(opts.syntax).mode || 'text');
+                }
+
                 this.trigger('ready');
 
             }.bind(this));
@@ -695,6 +699,43 @@ riot.tag('field-boolean', '<button type="button" name="button" class="uk-button 
     
 });
 
+riot.tag('field-code', '<codemirror name="codemirror" syntx="{ opts.syntax || \'text\' }"></codemirror>', 'field-code .CodeMirror { height: auto; }', function(opts) {
+
+        var $this = this, editor;
+
+        this.value = null;
+
+        this.ready = new Promise(function(resolve){
+
+            $this.tags.codemirror.on('ready', function(){
+                editor = $this.codemirror.editor;
+                $this.isReady = true;
+                resolve();
+            });
+        });
+
+        this.$updateValue = function(value) {
+
+            if (this.value != value) {
+
+                this.value = value;
+            }
+
+        }.bind(this);
+
+        this.on('mount', function(){
+
+            this.ready.then(function(){
+                editor.setValue($this.value || '');
+            });
+
+            this.codemirror.on('input', function() {
+                $this.$setValue($this.codemirror.editor.getValue());
+            });
+        });
+
+    
+});
 riot.tag('field-date', '<input name="input" class="uk-width-1-1" type="text">', function(opts) {
 
         var $this = this;

@@ -19,7 +19,7 @@
 
             <div class="uk-float-right">
 
-                <a class="uk-button uk-button-large uk-button-primary uk-width-1-1" href="@route('/collections/collection')">@lang('Create a Collection')</a>
+                <a class="uk-button uk-button-large uk-button-primary uk-width-1-1" href="@route('/collections/collection')">@lang('Create a collection')</a>
 
             </div>
 
@@ -33,7 +33,7 @@
                     <i class="uk-icon-list"></i>
                 </p>
 
-                <h3>@lang('No Collections'). <a href="@route('/collections/collection')">Create a Collection.</a></h3>
+                <h3>@lang('No Collections'). <a href="@route('/collections/collection')">Create a collection.</a></h3>
 
             </div>
 

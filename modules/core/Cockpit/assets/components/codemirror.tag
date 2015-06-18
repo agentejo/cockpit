@@ -38,6 +38,10 @@
 
                 init();
 
+                if (opts.syntax) {
+                    editor.setOption("mode", CodeMirror.findModeByName(opts.syntax).mode || 'text');
+                }
+
                 this.trigger('ready');
 
             }.bind(this));
