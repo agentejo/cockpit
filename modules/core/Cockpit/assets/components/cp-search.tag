@@ -1,9 +1,9 @@
-<cockpit-search>
+<cp-search>
 
     <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form app-search">
 
         <style>
-            cockpit-search .uk-dropdown {
+            cp-search .uk-dropdown {
                 min-width: 25vw;
             }
         </style>
@@ -32,4 +32,4 @@
 
     </script>
 
-</cockpit-search>
+</cp-search>

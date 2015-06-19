@@ -5,5 +5,5 @@
 </div>
 
 <div riot-view>
-    <cockpit-finder></cockpit-finder>
+    <cp-finder></cp-finder>
 </div>

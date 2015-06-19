@@ -1,4 +1,4 @@
-<cockpit-field>
+<cp-field>
 
     <div name="fieldcontainer" type="{ field.type }"></div>
 
@@ -26,4 +26,4 @@
 
     </script>
 
-</cockpit-field>
+</cp-field>

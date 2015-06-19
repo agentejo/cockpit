@@ -8,7 +8,7 @@
 
         <div class="uk-margin" each="{field,idx in fields}">
             <label><span class="uk-badge">{ field.label || field.name || ''}</span></label>
-            <cockpit-field class="uk-width-1-1" field="{field}" bind="{parent.bind}.{field.name}"></cockpit-field>
+            <cp-field class="uk-width-1-1" field="{field}" bind="{parent.bind}.{field.name}"></cp-field>
         </div>
 
     </div>

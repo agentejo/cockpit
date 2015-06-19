@@ -2,6 +2,7 @@
 
 namespace Lime\Helper;
 
+use abeautifulsite\SimpleImage;
 
 class Image extends \Lime\Helper {
 
@@ -20,7 +21,7 @@ class Img {
 
     public function __construct($img) {
 
-        $this->image = new \SimpleImage($img);
+        $this->image = new SimpleImage($img);
     }
 
     public function negative() {

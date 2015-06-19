@@ -123,7 +123,7 @@
             <div class="uk-container uk-container-center">
 
                 <div class="uk-navbar-content uk-hidden-small" riot-mount>
-                    <cockpit-search></cockpit-search>
+                    <cp-search></cp-search>
                 </div>
 
                 <div class="uk-navbar-flip">

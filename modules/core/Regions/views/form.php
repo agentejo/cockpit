@@ -39,7 +39,7 @@
                         <label class="uk-text-bold uk-text-small">{ field.label || field.name }</label>
 
                         <div class="uk-margin-small-top">
-                            <cockpit-field field="{ field }" bind="data.{field.name}" cls="uk-form-large"></cockpit-field>
+                            <cp-field field="{ field }" bind="data.{field.name}" cls="uk-form-large"></cp-field>
                         </div>
 
                         <div class="uk-margin-small-top uk-text-small uk-text-muted">

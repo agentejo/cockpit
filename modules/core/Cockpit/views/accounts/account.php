@@ -12,7 +12,13 @@
 
     <div class="uk-width-medium-2-4">
 
-        <h3>@lang('Profile')</h3>
+        <h3>@lang('General')</h3>
+
+        <div class="uk-panel uk-panel-space uk-panel-box uk-panel-card uk-text-center">
+
+            <cp-gravatar email="{ account.email }" size="100"></cp-gravatar>
+
+        </div>
 
         <div class="uk-panel">
 

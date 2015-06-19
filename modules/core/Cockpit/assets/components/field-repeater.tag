@@ -2,7 +2,7 @@
 
     <div class="uk-margin" each="{ item,idx in items }">
 
-        <cockpit-field class="uk-width-1-1" field="{ parent.field }" options="{ opts.options }" bind="items[{ idx }].value"></cockpit-field>
+        <cp-field class="uk-width-1-1" field="{ parent.field }" options="{ opts.options }" bind="items[{ idx }].value"></cp-field>
 
         <div class="uk-margin-small-top">
             <a class="uk-button uk-button-link" onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a>

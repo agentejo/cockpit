@@ -46,7 +46,7 @@
                 var selected = [], dialog = UIkit.modal.dialog([
                     '<div>',
                         '<div class="uk-modal-header uk-text-large">Select file</div>',
-                        '<cockpit-finder></cockpit-finder>',
+                        '<cp-finder></cp-finder>',
                         '<div class="uk-modal-footer uk-text-right">',
                             '<button class="uk-button uk-button-primary uk-margin-right uk-button-large uk-hidden js-select-button">Select: <span></span> item(s)</button>',
                             '<button class="uk-button uk-button-large uk-modal-close">Close</button>',

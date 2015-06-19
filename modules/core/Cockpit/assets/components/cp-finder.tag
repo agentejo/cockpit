@@ -1,4 +1,4 @@
-<cockpit-finder>
+<cp-finder>
 
     <style>
 
@@ -609,4 +609,4 @@
 
     </script>
 
-</cockpit-finder>
+</cp-finder>
