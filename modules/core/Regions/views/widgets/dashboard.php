@@ -1,9 +1,12 @@
-<div class="uk-grid-margin uk-width-1-1">
+<div class="uk-grid-margin">
 
     <div class="uk-panel-box uk-panel-card">
 
         <div class="uk-panel-box-header">
-            <strong>@lang('Regions')</strong> <span class="uk-badge">{{ count($regions) }}</span>
+            <strong>@lang('Regions')</strong>
+            @if(count($regions))
+            <span class="uk-badge">{{ count($regions) }}</span>
+            @endif
         </div>
 
         @if(count($regions))
@@ -27,7 +30,7 @@
             <div class="uk-margin uk-text-center uk-text-muted">
 
                 <p class="uk-text-large">
-                    <i class="uk-icon-list"></i>
+                    <i class="uk-icon-th"></i>
                 </p>
 
                 @lang('No regions'). <a href="@route('/regions/region')">@lang('Create a region')</a>.

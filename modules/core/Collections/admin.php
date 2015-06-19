@@ -15,10 +15,11 @@ $app->on('admin.init', function() {
     $this->bindClass('Collections\\Controller\\Admin', 'collections');
 
     // add to modules menu
-    $this['app.menu.modules']->append([
+    $this['admin.menu.modules']->append([
         'label' => 'Collections',
         'icon'  => 'database',
-        'route' => '/collections'
+        'route' => '/collections',
+        'active' => strpos($this['route'], '/collections') === 0
     ]);
 
     /**

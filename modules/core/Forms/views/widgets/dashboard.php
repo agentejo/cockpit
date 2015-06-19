@@ -1,9 +1,12 @@
-<div class="uk-grid-margin uk-width-1-1">
+<div class="uk-grid-margin">
 
     <div class="uk-panel-box uk-panel-card">
 
         <div class="uk-panel-box-header">
-            <strong>@lang('Forms')</strong> <span class="uk-badge">{{ count($forms) }}</span>
+            <strong>@lang('Forms')</strong>
+            @if(count($forms))
+            <span class="uk-badge">{{ count($forms) }}</span>
+            @endif
         </div>
 
         @if(count($forms))
@@ -27,7 +30,7 @@
             <div class="uk-margin uk-text-center uk-text-muted">
 
                 <p class="uk-text-large">
-                    <i class="uk-icon-list"></i>
+                    <i class="uk-icon-inbox"></i>
                 </p>
 
                 @lang('No forms'). <a href="@route('/forms/form')">@lang('Create a form')</a>.

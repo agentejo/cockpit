@@ -15,10 +15,11 @@ $app->on('admin.init', function() {
     $this->bindClass('Regions\\Controller\\Admin', 'regions');
 
     // add to modules menu
-    $this['app.menu.modules']->append([
+    $this['admin.menu.modules']->append([
         'label' => 'Regions',
         'icon'  => 'th',
-        'route' => '/regions'
+        'route' => '/regions',
+        'active' => strpos($this['route'], '/regions') === 0
     ]);
 
     /**

@@ -70,9 +70,8 @@
                                             <li><a href="@route('/finder')"><i class="uk-icon-justify uk-icon-folder"></i> Finder</a></li>
                                             @end
 
-                                            <li class="uk-nav-divider"></li>
-
                                             @hasaccess?('cockpit', 'manage.settings')
+                                            <li class="uk-nav-divider"></li>
                                             <li><a href="@route('/settings')"><i class="uk-icon-justify uk-icon-cog"></i> Settings</a></li>
                                             @end
                                         </ul>
@@ -85,21 +84,21 @@
                                             <span class="uk-badge uk-badge-primary">@lang('Modules')</span>
                                         </div>
 
-                                        @if($app['app.menu.modules']->count())
-                                        <div class="uk-grid uk-grid-small uk-grid-gutter uk-grid-width-1-2 uk-grid-width-medium-1-3 uk-text-center">
+                                        @if($app['admin.menu.modules']->count())
+                                        <ul class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-text-center" data-uk-sortable>
 
-                                            @foreach($app['app.menu.modules'] as $item)
-                                            <div class="uk-grid-margin">
-                                                <a class="uk-panel-framed" href="@route($item['route'])">
+                                            @foreach($app['admin.menu.modules'] as $item)
+                                            <li class="uk-grid-margin uk-width-1-2 uk-width-medium-1-3">
+                                                <a class="uk-display-block uk-panel-box {{ (@$item['active']) ? 'uk-bg-primary uk-contrast':'uk-panel-framed' }}" href="@route($item['route'])">
                                                     <div class="uk-text-large">
                                                         <i class="uk-icon-{{ isset($item['icon']) ? $item['icon']:'cube' }}"></i>
                                                     </div>
                                                     <div class="uk-text-truncate uk-text-small uk-margin-small-top">@lang($item['label'])</div>
                                                 </a>
-                                            </div>
+                                            </li>
                                             @endforeach
-                                            
-                                        </div>
+
+                                        </ul>
                                         @endif
 
                                     </div>

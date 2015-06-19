@@ -107,7 +107,7 @@ $app['app.assets.components'] = [];
  * admin menus
  */
 
-$app['app.menu.modules'] = new ArrayObject([]);
+$app['admin.menu.modules'] = new ArrayObject([]);
 
 
 /**

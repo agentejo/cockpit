@@ -14,10 +14,11 @@ $app->on('admin.init', function() {
     $this->bindClass('forms\\Controller\\Admin', 'forms');
 
     // add to modules menu
-    $this['app.menu.modules']->append([
+    $this['admin.menu.modules']->append([
         'label' => 'Forms',
         'icon'  => 'inbox',
-        'route' => '/forms'
+        'route' => '/forms',
+        'active' => strpos($this['route'], '/forms') === 0
     ]);
 
     /**

@@ -4,16 +4,14 @@
     </ul>
 </div>
 
-<div class="uk-margin">
-    @trigger('admin.dashboard.top')
-</div>
-
 <div class="uk-grid uk-margin" data-uk-grid-margin>
     <div class="uk-width-medium-1-2">
+        <div class="uk-sortable uk-grid uk-grid-gutter uk-grid-width-1-1" data-uk-sortable="{group:'dashboard'}">
         @trigger('admin.dashboard.main')
+        </div>
     </div>
     <div class="uk-width-medium-1-2">
-        <div class="uk-grid uk-grid-gutter uk-grid-width-medium-1-2">
+        <div class="uk-sortable uk-grid uk-grid-gutter uk-grid-width-medium-1-2" data-uk-sortable="{group:'dashboard'}">
             @trigger('admin.dashboard.aside')
         </div>
     </div>
