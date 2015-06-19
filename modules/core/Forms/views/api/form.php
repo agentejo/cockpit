@@ -16,8 +16,6 @@
                 } else {
                     alert("@lang('Form submission was successfull.')");
                 }
-
-                disableForm(false);
             },
             fail        = function(){
                 if (msgfail) {
@@ -25,36 +23,48 @@
                 } else {
                     alert("@lang('Form submission failed.')");
                 }
-
-                disableForm(false);
             };
 
         if (msgsuccess) msgsuccess.style.display = "none";
         if (msgfail)    msgfail.style.display = "none";
 
-        form.addEventListener("submit", function(e) {
-
-            e.preventDefault();
+        var submit = function() {
 
             if (msgsuccess) msgsuccess.style.display = "none";
             if (msgfail)    msgfail.style.display = "none";
 
             var xhr = new XMLHttpRequest(), data = new FormData(form);
 
-            xhr.onload = function(){
+            xhr.onload = function(_success, _fail){
+
+                _success = _success || success;
+                _fail    = _fail || fail;
 
                 if (this.status == 200 && this.responseText!='false') {
-                    success();
+                    _success();
                     form.reset();
                 } else {
-                    fail();
+                    _fail();
                 }
+
+                disableForm(false);
             };
 
             disableForm(true);
 
             xhr.open('POST', "@route('/api/forms/submit/'.$name)", true);
             xhr.send(data);
+        };
+
+        form.addEventListener("submit", function(e) {
+
+            e.preventDefault();
+
+            var callback = window['beforeSubmit{{ $name }}'] || function() {
+                submit();
+            }
+
+            callback();
 
         }, false);
 
