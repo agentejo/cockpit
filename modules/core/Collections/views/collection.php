@@ -146,6 +146,10 @@
                                                                     <input type="checkbox" bind="collection.fields[{idx}].required"> @lang('Required')
                                                                 </div>
 
+                                                                <div class="uk-form-row">
+                                                                    <input type="checkbox" bind="collection.fields[{idx}].localize"> @lang('Localize')
+                                                                </div>
+
                                                             </div>
 
                                                         </a>
@@ -273,6 +277,7 @@
                 'type'    : 'text',
                 'default' : '',
                 'info'    : '',
+                'localize': false,
                 'options' : '{}',
                 'width'   : '1-1',
                 'lst'     : true
