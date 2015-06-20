@@ -158,8 +158,8 @@
     @block('app.layout.footer')
 
 
-    <!-- WEB COMPONENTS -->
-    @foreach($app->retrieve('app.assets.components', []) as $component)
+    <!-- RIOT COMPONENTS -->
+    @foreach($app('admin')->data['components'] as $component)
     <script type="riot/tag" src="@base($component)"></script>
     @endforeach
 
