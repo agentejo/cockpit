@@ -109,7 +109,7 @@
                                                                         </div>
                                                                         <select class="uk-width-1-1" bind="region.fields[{idx}].type">
                                                                             <option value="text">Text</option>
-                                                                            <option value="longtext">Longtext</option>
+                                                                            <option value="textarea">Textarea</option>
                                                                             <option value="html">HTML</option>
                                                                             <option value="markdown">Markdown</option>
                                                                             <option value="wysiwyg">WYSIWYG</option>

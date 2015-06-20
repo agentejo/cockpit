@@ -31,7 +31,7 @@
 
             if (JSON.stringify(this.value) != JSON.stringify(value)) {
 
-                this.value = value;
+                this.value = value || {};
                 this.input.value = JSON.stringify(this.value, null, 2);
             }
 

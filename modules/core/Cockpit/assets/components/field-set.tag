@@ -8,7 +8,7 @@
 
         <div class="uk-margin" each="{field,idx in fields}">
             <label><span class="uk-badge">{ field.label || field.name || ''}</span></label>
-            <cp-field class="uk-width-1-1" field="{field}" bind="{parent.bind}.{field.name}"></cp-field>
+            <cp-field class="uk-width-1-1" field="{field}" bind="{opts.bind}.{field.name}"></cp-field>
         </div>
 
     </div>
@@ -17,12 +17,6 @@
 
         this.set    = opts.multiple ? []:{};
         this.fields = opts.fields || [];
-
-        this.bind = opts.bind || '';
-
-        if (opts.bind) {
-            this.root.removeAttribute('bind');
-        }
 
     </script>
 

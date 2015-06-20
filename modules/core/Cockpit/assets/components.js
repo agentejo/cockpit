@@ -724,18 +724,23 @@ riot.tag('field-code', '<codemirror name="codemirror" syntx="{ opts.syntax || \'
             });
         });
 
-        this.$updateValue = function(value) {
+        this.$updateValue = function(value, field) {
 
             if (this.value != value) {
 
                 this.value = value;
+
+                if (editor && field != editor._field) {
+                    editor.setValue($this.value || '');
+                    editor._field = field;
+                }
             }
 
         }.bind(this);
 
         this.on('mount', function(){
 
-            this.ready.then(function(){
+            this.ready.then(function() {
                 editor.setValue($this.value || '');
             });
 
@@ -746,14 +751,10 @@ riot.tag('field-code', '<codemirror name="codemirror" syntx="{ opts.syntax || \'
 
     
 });
-riot.tag('field-date', '<input name="input" class="uk-width-1-1" type="text">', function(opts) {
+
+riot.tag('field-date', '<input name="input" class="uk-width-1-1" bind="{ opts.bind }" type="text">', function(opts) {
 
         var $this = this;
-
-        if (opts.bind) {
-            this.input.setAttribute('bind', opts.bind);
-            this.root.removeAttribute('bind');
-        }
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -777,14 +778,9 @@ riot.tag('field-date', '<input name="input" class="uk-width-1-1" type="text">', 
     
 });
 
-riot.tag('field-file', '<div class="uk-flex"> <input class="uk-flex-item-1 uk-margin-small-right" type="text" name="input" placeholder="{ App.i18n.get(\'No file selected...\') }" disabled> <button type="button" class="uk-button" name="picker"><i class="uk-icon-paperclip"></i></button> </div>', function(opts) {
+riot.tag('field-file', '<div class="uk-flex"> <input class="uk-flex-item-1 uk-margin-small-right" type="text" name="input" bind="{ opts.bind }" placeholder="{ App.i18n.get(\'No file selected...\') }" disabled> <button type="button" class="uk-button" name="picker"><i class="uk-icon-paperclip"></i></button> </div>', function(opts) {
 
         var $this = this, $input = App.$(this.input);
-
-        if (opts.bind) {
-            this.input.setAttribute('bind', opts.bind);
-            this.root.removeAttribute('bind');
-        }
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -806,6 +802,7 @@ riot.tag('field-gallery', '<div class="uk-panel uk-panel-box"> <div name="images
         var $this = this;
 
         this.data = { images: [] };
+        this._field = null;
 
         this.on('mount', function() {
 
@@ -836,9 +833,13 @@ riot.tag('field-gallery', '<div class="uk-panel uk-panel-box"> <div name="images
 
         });
 
-        this.$updateValue = function(value) {
+        this.$updateValue = function(value, field) {
 
-            if (this.data.images !== value && Array.isArray(value)) {
+            if (!Array.isArray(value)) {
+                value = [];
+            }
+
+            if (this.data.images !== value) {
                 this.data.images = value;
                 this.update();
             }
@@ -880,15 +881,20 @@ riot.tag('field-gallery', '<div class="uk-panel uk-panel-box"> <div name="images
 
 riot.tag('field-html', '<textarea name="input" class="uk-visibility-hidden"></textarea>', function(opts) {
 
-        var $this = this;
+        var $this = this, editor;
 
         this.value = null;
 
-        this.$updateValue = function(value) {
+        this.$updateValue = function(value, field) {
 
             if (this.value != value) {
 
                 this.value = value;
+
+                if (editor && editor._field != field) {
+                    editor.editor.setValue(value || '');
+                    editor._field = field;
+                }
             }
 
         }.bind(this);
@@ -906,7 +912,7 @@ riot.tag('field-html', '<textarea name="input" class="uk-visibility-hidden"></te
 
                 $this.input.value = $this.value;
 
-                var editor = UIkit.htmleditor(this.input, opts);
+                editor = UIkit.htmleditor(this.input, opts);
 
                 editor.on('input', function() {
                     $this.$setValue(editor.editor.getValue());
@@ -919,6 +925,8 @@ riot.tag('field-html', '<textarea name="input" class="uk-visibility-hidden"></te
 });
 
 riot.tag('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-small-bottom uk-width-1-1"> <i class="uk-icon-search"></i><input name="autocomplete" class="uk-width-1-1"> </div> <div name="map" style="min-height:300px;"> Loading map... </div> <div class="uk-text-small uk-margin-small-top"> LAT: <span class="uk-text-muted">{ latlng.lat }</span> LNG: <span class="uk-text-muted">{ latlng.lng }</span> </div> </div>', function(opts) {
+
+        var map, marker;
 
         var loadApi = (function(){
 
@@ -961,8 +969,17 @@ riot.tag('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-sma
 
         this.$updateValue = function(value) {
 
-            if (value && this.latlng != value) {
+            if (!value) {
+                value = {lat:53.55909862554551, lng:9.998652343749995};
+            }
+
+            if (this.latlng != value) {
                 this.latlng = value;
+
+                if (marker) {
+                    marker.setPosition(new google.maps.LatLng(this.latlng.lat, this.latlng.lng));
+                }
+
                 this.update();
             }
 
@@ -972,7 +989,7 @@ riot.tag('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-sma
 
             loadApi().then(function(){
 
-                var map, marker, point = new google.maps.LatLng($this.latlng.lat, $this.latlng.lng), input, autocomplete;
+                var point = new google.maps.LatLng($this.latlng.lat, $this.latlng.lng), input, autocomplete;
 
                 map = new google.maps.Map($this.map, {
                     zoom   : 6,
@@ -1037,48 +1054,8 @@ riot.tag('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-sma
 
     
 });
-riot.tag('field-longtext', '<textarea name="input" class="uk-width-1-1"></textarea>', function(opts) {
 
-        if (opts.bind) {
-            this.input.setAttribute('bind', opts.bind);
-            this.root.removeAttribute('bind');
-        }
-
-        if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
-        }
-
-        if (opts.rows) {
-            this.input.setAttribute('rows', opts.rows);
-        }
-
-        if (opts.required) {
-            this.input.setAttribute('required', 'required');
-        }
-
-        if (opts.allowtabs) {
-
-            this.input.onkeydown = function(e) {
-                if (e.keyCode === 9) {
-                    var val = this.value, start = this.selectionStart, end = this.selectionEnd;
-                    this.value = val.substring(0, start) + '\t' + val.substring(end);
-                    this.selectionStart = this.selectionEnd = start + 1;
-                    return false;
-                }
-            };
-
-            this.input.style.tabSize = opts.allowtabs;
-        }
-
-    
-});
-
-riot.tag('field-markdown', '<field-html name="input" markdown="true"></field-html>', function(opts) {
-
-        if (opts.bind) {
-            this.input.setAttribute('bind', opts.bind);
-            this.root.removeAttribute('bind');
-        }
+riot.tag('field-markdown', '<field-html name="input" markdown="true" bind="{ opts.bind }"></field-html>', function(opts) {
 
     
 });
@@ -1112,7 +1089,7 @@ riot.tag('field-object', '<textarea name="input" class="uk-width-1-1" onchange="
 
             if (JSON.stringify(this.value) != JSON.stringify(value)) {
 
-                this.value = value;
+                this.value = value || {};
                 this.input.value = JSON.stringify(this.value, null, 2);
             }
 
@@ -1125,12 +1102,7 @@ riot.tag('field-object', '<textarea name="input" class="uk-width-1-1" onchange="
     
 });
 
-riot.tag('field-password', '<div class="uk-form-password uk-width-1-1"> <input name="input" class="uk-width-1-1" type="password"> <a href="" class="uk-form-password-toggle" data-uk-form-password>Show</a> </div>', function(opts) {
-
-        if (opts.bind) {
-            this.input.setAttribute('bind', opts.bind);
-            this.root.removeAttribute('bind');
-        }
+riot.tag('field-password', '<div class="uk-form-password uk-width-1-1"> <input name="input" class="uk-width-1-1" bind="{ opts.bind }" type="password"> <a href="" class="uk-form-password-toggle" data-uk-form-password>Show</a> </div>', function(opts) {
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -1161,7 +1133,11 @@ riot.tag('field-repeater', '<div class="uk-margin" each="{ item,idx in items }">
 
         this.$updateValue = function(value) {
 
-            if (Array.isArray(value) && JSON.stringify(this.items) != JSON.stringify(value)) {
+            if (!Array.isArray(value)) {
+                value = [];
+            }
+
+            if (JSON.stringify(this.items) != JSON.stringify(value)) {
                 this.items = value;
                 this.update();
             }
@@ -1183,7 +1159,7 @@ riot.tag('field-repeater', '<div class="uk-margin" each="{ item,idx in items }">
     
 });
 
-riot.tag('field-select', '<select name="input" class="uk-width-1-1"> <option value=""></option> <option each="{ option,idx in options }" value="{ option }">{ option }</option> </select>', function(opts) {
+riot.tag('field-select', '<select name="input" class="uk-width-1-1" bind="{ opts.bind }"> <option value=""></option> <option each="{ option,idx in options }" value="{ option }">{ option }</option> </select>', function(opts) {
 
         this.options = opts.options || []
 
@@ -1198,35 +1174,25 @@ riot.tag('field-select', '<select name="input" class="uk-width-1-1"> <option val
             this.options = options;
         }
 
-        if (opts.bind) {
-            this.input.setAttribute('bind', opts.bind);
-            this.root.removeAttribute('bind');
-        }
-
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
         }
 
         if (opts.required) {
-            this.fieldcontainer.setAttribute('required', 'required');
+            this.input.setAttribute('required', 'required');
         }
 
     
 });
 
-riot.tag('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> { App.i18n.get(\'Fields definition is missing\') } </div> <div class="uk-margin" each="{field,idx in fields}"> <label><span class="uk-badge">{ field.label || field.name || \'\'}</span></label> <cp-field class="uk-width-1-1" field="{field}" bind="{parent.bind}.{field.name}"></cp-field> </div> </div>', function(opts) {
+riot.tag('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> { App.i18n.get(\'Fields definition is missing\') } </div> <div class="uk-margin" each="{field,idx in fields}"> <label><span class="uk-badge">{ field.label || field.name || \'\'}</span></label> <cp-field class="uk-width-1-1" field="{field}" bind="{opts.bind}.{field.name}"></cp-field> </div> </div>', function(opts) {
 
         this.set    = opts.multiple ? []:{};
         this.fields = opts.fields || [];
 
-        this.bind = opts.bind || '';
-
-        if (opts.bind) {
-            this.root.removeAttribute('bind');
-        }
-
     
 });
+
 riot.tag('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form"> <i class="uk-icon-tag"></i> <input name="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{ App.i18n.get(\'Add Tag...\') }"> </div> <div class="uk-margin uk-panel uk-panel-box" if="{ tags && tags.length }"> <span class="uk-margin-small-right uk-margin-small-top" each="{tag,idx in tags}"> <a onclick="{ parent.remove }"><i class="uk-icon-close"></i></a> {{ tag }} </span> </div> </div>', function(opts) {
 
         var $this = this;
@@ -1254,7 +1220,11 @@ riot.tag('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete uk
 
         this.$updateValue = function(value) {
 
-            if (this.tags !== value && Array.isArray(value)) {
+            if (!Array.isArray(value)) {
+                value = [];
+            }
+
+            if (this.tags !== value) {
                 this.tags = value;
                 this.update();
             }
@@ -1269,12 +1239,7 @@ riot.tag('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete uk
     
 });
 
-riot.tag('field-text', '<input name="input" class="uk-width-1-1" type="{ opts.type || \'text\' }">', function(opts) {
-
-        if (opts.bind) {
-            this.input.setAttribute('bind', opts.bind);
-            this.root.removeAttribute('bind');
-        }
+riot.tag('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="{ opts.type || \'text\' }">', function(opts) {
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -1287,14 +1252,40 @@ riot.tag('field-text', '<input name="input" class="uk-width-1-1" type="{ opts.ty
     
 });
 
-riot.tag('field-time', '<input name="input" class="uk-width-1-1" type="text">', function(opts) {
+riot.tag('field-textarea', '<textarea name="input" class="uk-width-1-1" bind="{opts.bind}"></textarea>', function(opts) {
+
+        if (opts.cls) {
+            App.$(this.input).addClass(opts.cls);
+        }
+
+        if (opts.rows) {
+            this.input.setAttribute('rows', opts.rows);
+        }
+
+        if (opts.required) {
+            this.input.setAttribute('required', 'required');
+        }
+
+        if (opts.allowtabs) {
+
+            this.input.onkeydown = function(e) {
+                if (e.keyCode === 9) {
+                    var val = this.value, start = this.selectionStart, end = this.selectionEnd;
+                    this.value = val.substring(0, start) + '\t' + val.substring(end);
+                    this.selectionStart = this.selectionEnd = start + 1;
+                    return false;
+                }
+            };
+
+            this.input.style.tabSize = opts.allowtabs;
+        }
+
+    
+});
+
+riot.tag('field-time', '<input name="input" class="uk-width-1-1" bind="{ opts.bind }" type="text">', function(opts) {
 
         var $this = this;
-
-        if (opts.bind) {
-            this.input.setAttribute('bind', opts.bind);
-            this.root.removeAttribute('bind');
-        }
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -1321,7 +1312,8 @@ riot.tag('field-time', '<input name="input" class="uk-width-1-1" type="text">', 
 riot.tag('field-wysiwyg', '<textarea name="input" style="visibility:hidden;" class="uk-width-1-1" rows="5"></textarea>', function(opts) {
 
         var $this = this,
-            lang  = document.documentElement.getAttribute('lang') || 'en';
+            lang  = document.documentElement.getAttribute('lang') || 'en',
+            redactor;
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -1333,11 +1325,16 @@ riot.tag('field-wysiwyg', '<textarea name="input" style="visibility:hidden;" cla
 
         this.value = null;
 
-        this.$updateValue = function(value) {
+        this.$updateValue = function(value, field) {
 
             if (this.value != value) {
+
                 this.value = value;
-                this.update();
+
+                if (redactor && redactor._field != field) {
+                    redactor.code.set(this.value || '');
+                    redactor._field = field;
+                }
             }
 
         }.bind(this);
@@ -1366,10 +1363,12 @@ riot.tag('field-wysiwyg', '<textarea name="input" style="visibility:hidden;" cla
 
                 this.input.value = this.value;
 
-
                 App.$($this.input).redactor({
                     lang: lang,
-                    plugins: ['table','textdirection','fontcolor','fontsize','video','fullscreen'],
+                    plugins: opts.plugins ||  ['table','textdirection','fontcolor','fontsize','video','fullscreen'],
+                    initCallback: function() {
+                        redactor = this;
+                    },
                     changeCallback: function() {
                         $this.$setValue(this.code.get());
                     }

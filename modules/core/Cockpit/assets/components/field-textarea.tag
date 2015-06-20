@@ -1,13 +1,8 @@
-<field-longtext>
+<field-textarea>
 
-    <textarea name="input" class="uk-width-1-1"></textarea>
+    <textarea name="input" class="uk-width-1-1" bind="{opts.bind}"></textarea>
 
     <script>
-
-        if (opts.bind) {
-            this.input.setAttribute('bind', opts.bind);
-            this.root.removeAttribute('bind');
-        }
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -37,4 +32,4 @@
 
     </script>
 
-</field-longtext>
+</field-textarea>

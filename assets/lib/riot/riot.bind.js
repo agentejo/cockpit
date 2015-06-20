@@ -13,7 +13,11 @@
 
         function update() {
 
+            var field;
+
             Array.prototype.forEach.call(root.querySelectorAll(attrSelector), function(ele) {
+
+                field = ele.getAttribute(attr);
 
                 var value = null;
 
@@ -33,7 +37,7 @@
 
                 if (JSON.stringify(ele.$value) !== JSON.stringify(value)) {
                     ele.$value = value;
-                    ele.$updateValue(value);
+                    ele.$updateValue(value, field);
                 }
             });
         }
@@ -45,17 +49,15 @@
 
             ele.$setValue = (function(fn, body) {
 
-                var field      = ele.getAttribute(attr),
-                    segments   = field.split('.'),
-                    initilized = false;
-
-                body = 'try{ tag.'+field+' = val;tag.update(); tag.trigger("bindingupdated", ["'+field+'", val]);return true;}catch(e){ return false; }';
-
-                fn = new Function('tag', 'val', body);
+                var field, segments, body, cache = {};
 
                 return function(value) {
 
-                    if (!initilized) {
+                    field = ele.getAttribute(attr);
+
+                    if (!cache[field]) {
+
+                        segments = field.split('.')
 
                         var current = tag;
 
@@ -77,8 +79,12 @@
 
                         }catch(e){};
 
-                        initilized = true;
+                        cache[field] = true;
                     }
+
+                    body = 'try{ tag.'+field+' = val;tag.update(); tag.trigger("bindingupdated", ["'+field+'", val]);return true;}catch(e){ return false; }';
+
+                    fn = new Function('tag', 'val', body);
 
                     return fn(tag, value);
                 };
@@ -112,7 +118,7 @@
                     if (isCheckbox) {
                         body = 'input.checked = val ? true:false;';
                     } else {
-                        body = 'input.value = val;';
+                        body = 'input.value = val || "";';
                     }
 
                     fn = new Function('input', 'val', 'try{'+body+'}catch(e){}');
@@ -130,11 +136,11 @@
                     ele._tag.$setValue = ele.$setValue;
                     ele._tag.$boundTo  = tag;
 
-                    ele.$updateValue = function(value) {
+                    ele.$updateValue = function(value, field) {
 
                         if (ele._tag.$updateValue) {
 
-                            ele._tag.$updateValue.apply(ele._tag, [value]);
+                            ele._tag.$updateValue.apply(ele._tag, arguments);
                         }
                     };
 

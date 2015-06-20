@@ -24,7 +24,11 @@
 
         this.$updateValue = function(value) {
 
-            if (Array.isArray(value) && JSON.stringify(this.items) != JSON.stringify(value)) {
+            if (!Array.isArray(value)) {
+                value = [];
+            }
+
+            if (JSON.stringify(this.items) != JSON.stringify(value)) {
                 this.items = value;
                 this.update();
             }

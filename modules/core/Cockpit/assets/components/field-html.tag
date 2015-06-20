@@ -4,15 +4,20 @@
 
     <script>
 
-        var $this = this;
+        var $this = this, editor;
 
         this.value = null;
 
-        this.$updateValue = function(value) {
+        this.$updateValue = function(value, field) {
 
             if (this.value != value) {
 
                 this.value = value;
+
+                if (editor && editor._field != field) {
+                    editor.editor.setValue(value || '');
+                    editor._field = field;
+                }
             }
 
         }.bind(this);
@@ -30,7 +35,7 @@
 
                 $this.input.value = $this.value;
 
-                var editor = UIkit.htmleditor(this.input, opts);
+                editor = UIkit.htmleditor(this.input, opts);
 
                 editor.on('input', function() {
                     $this.$setValue(editor.editor.getValue());

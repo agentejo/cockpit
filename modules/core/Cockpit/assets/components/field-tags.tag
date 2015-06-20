@@ -43,7 +43,11 @@
 
         this.$updateValue = function(value) {
 
-            if (this.tags !== value && Array.isArray(value)) {
+            if (!Array.isArray(value)) {
+                value = [];
+            }
+
+            if (this.tags !== value) {
                 this.tags = value;
                 this.update();
             }

@@ -25,18 +25,23 @@
             });
         });
 
-        this.$updateValue = function(value) {
+        this.$updateValue = function(value, field) {
 
             if (this.value != value) {
 
                 this.value = value;
+
+                if (editor && field != editor._field) {
+                    editor.setValue($this.value || '');
+                    editor._field = field;
+                }
             }
 
         }.bind(this);
 
         this.on('mount', function(){
 
-            this.ready.then(function(){
+            this.ready.then(function() {
                 editor.setValue($this.value || '');
             });
 

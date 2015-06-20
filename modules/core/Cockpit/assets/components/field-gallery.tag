@@ -37,6 +37,7 @@
         var $this = this;
 
         this.data = { images: [] };
+        this._field = null;
 
         this.on('mount', function() {
 
@@ -67,9 +68,13 @@
 
         });
 
-        this.$updateValue = function(value) {
+        this.$updateValue = function(value, field) {
 
-            if (this.data.images !== value && Array.isArray(value)) {
+            if (!Array.isArray(value)) {
+                value = [];
+            }
+
+            if (this.data.images !== value) {
                 this.data.images = value;
                 this.update();
             }

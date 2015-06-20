@@ -16,6 +16,8 @@
 
     <script>
 
+        var map, marker;
+
         var loadApi = (function(){
 
             var p, fn = function(){
@@ -57,8 +59,17 @@
 
         this.$updateValue = function(value) {
 
-            if (value && this.latlng != value) {
+            if (!value) {
+                value = {lat:53.55909862554551, lng:9.998652343749995};
+            }
+
+            if (this.latlng != value) {
                 this.latlng = value;
+
+                if (marker) {
+                    marker.setPosition(new google.maps.LatLng(this.latlng.lat, this.latlng.lng));
+                }
+
                 this.update();
             }
 
@@ -68,7 +79,7 @@
 
             loadApi().then(function(){
 
-                var map, marker, point = new google.maps.LatLng($this.latlng.lat, $this.latlng.lng), input, autocomplete;
+                var point = new google.maps.LatLng($this.latlng.lat, $this.latlng.lng), input, autocomplete;
 
                 map = new google.maps.Map($this.map, {
                     zoom   : 6,

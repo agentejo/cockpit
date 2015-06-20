@@ -1,6 +1,6 @@
 <field-select>
 
-    <select name="input" class="uk-width-1-1">
+    <select name="input" class="uk-width-1-1" bind="{ opts.bind }">
         <option value=""></option>
         <option each="{ option,idx in options }" value="{ option }">{ option }</option>
     </select>
@@ -20,17 +20,12 @@
             this.options = options;
         }
 
-        if (opts.bind) {
-            this.input.setAttribute('bind', opts.bind);
-            this.root.removeAttribute('bind');
-        }
-
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
         }
 
         if (opts.required) {
-            this.fieldcontainer.setAttribute('required', 'required');
+            this.input.setAttribute('required', 'required');
         }
 
     </script>

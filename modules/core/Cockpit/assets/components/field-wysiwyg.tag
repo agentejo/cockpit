@@ -5,7 +5,8 @@
     <script>
 
         var $this = this,
-            lang  = document.documentElement.getAttribute('lang') || 'en';
+            lang  = document.documentElement.getAttribute('lang') || 'en',
+            redactor;
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -17,11 +18,16 @@
 
         this.value = null;
 
-        this.$updateValue = function(value) {
+        this.$updateValue = function(value, field) {
 
             if (this.value != value) {
+
                 this.value = value;
-                this.update();
+
+                if (redactor && redactor._field != field) {
+                    redactor.code.set(this.value || '');
+                    redactor._field = field;
+                }
             }
 
         }.bind(this);
@@ -51,10 +57,12 @@
 
                 this.input.value = this.value;
 
-
                 App.$($this.input).redactor({
                     lang: lang,
-                    plugins: ['table','textdirection','fontcolor','fontsize','video','fullscreen'],
+                    plugins: opts.plugins ||  ['table','textdirection','fontcolor','fontsize','video','fullscreen'],
+                    initCallback: function() {
+                        redactor = this;
+                    },
                     changeCallback: function() {
                         $this.$setValue(this.code.get());
                     }
