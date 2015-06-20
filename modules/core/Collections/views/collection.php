@@ -101,31 +101,13 @@
 
                                                                 <div class="uk-form-row">
 
-                                                                    <div class="uk-form-select uk-width-1-1" data-uk-form-select>
+                                                                    <div class="uk-form-select uk-width-1-1">
                                                                         <div class="uk-form-icon uk-width-1-1">
                                                                             <i class="uk-icon-tag"></i>
-                                                                            <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.type }">
+                                                                            <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.type.toUpperCase() }">
                                                                         </div>
                                                                         <select class="uk-width-1-1" bind="collection.fields[{idx}].type">
-                                                                            <option value="text">Text</option>
-                                                                            <option value="textarea">Textarea</option>
-                                                                            <option value="html">HTML</option>
-                                                                            <option value="markdown">Markdown</option>
-                                                                            <option value="wysiwyg">WYSIWYG</option>
-                                                                            <option value="code">Code</option>
-                                                                            <option value="url">Url</option>
-                                                                            <option value="email">Email</option>
-                                                                            <option value="password">Password</option>
-                                                                            <option value="number">Number</option>
-                                                                            <option value="boolean">Boolean</option>
-                                                                            <option value="select">Select</option>
-                                                                            <option value="file">File</option>
-                                                                            <option value="gallery">Gallery</option>
-                                                                            <option value="tags">Tags</option>
-                                                                            <option value="date">Date</option>
-                                                                            <option value="time">Time</option>
-                                                                            <option value="location">Location</option>
-                                                                            <option value="object">Object</option>
+                                                                            <option each="{type,typeidx in parent.fieldtypes}" value="{type.value}">{type.name}</option>
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -217,13 +199,28 @@
 
     <script type="view/script">
 
-        var $this = this;
+        var $this = this, f;
 
         this.collection = {{ json_encode($collection) }};
 
         stringifyOptionsField();
 
         riot.util.bind(this);
+
+        // get all available fields
+
+        this.fieldtypes = [];
+
+        for (var tag in riot.tags) {
+
+            if(tag.indexOf('field-')==0) {
+
+                f = tag.replace('field-', '');
+
+                this.fieldtypes.push({name:f.toUpperCase(), value:f});
+            }
+        }
+        // --
 
         this.one('mount', function(){
 

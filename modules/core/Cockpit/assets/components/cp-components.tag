@@ -8,8 +8,6 @@
 
             if (opts.bind != this._field) {
 
-                console.log(opts.bind)
-
                 App.$(this.root).children('div').remove();
 
                 var container = App.$('<div name="fieldcontainer" type="{ field.type }"></div>').appendTo(this.root);

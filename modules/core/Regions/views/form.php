@@ -28,36 +28,65 @@
             @lang('No fields defined'). <a href="@route('/regions/region')/{ region.name }">@lang('Define region fields').</a>
         </div>
 
-        <form class="uk-form uk-width-medium-2-3" if="{ fields.length }" onsubmit="{ submit }">
+        <div class="uk-grid">
 
-            <div class="uk-grid uk-grid-match uk-grid-small uk-grid-gutter">
+            <div class="uk-width-medium-2-3">
 
-                <div class="uk-width-medium-{field.width} uk-grid-margin" each="{field,idx in fields}">
+                <h3>{ region.label || region.name }</h3>
 
-                    <div class="uk-panel">
+                <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
 
-                        <label class="uk-text-bold uk-text-small">{ field.label || field.name }</label>
+                    <div class="uk-grid uk-grid-match uk-grid-small uk-grid-gutter">
 
-                        <div class="uk-margin-small-top">
-                            <cp-field field="{ field }" bind="data.{field.name}" cls="uk-form-large"></cp-field>
+                        <div class="uk-width-medium-{field.width} uk-grid-margin" each="{field,idx in fields}">
+
+                            <div class="uk-panel">
+
+                                <label class="uk-text-bold uk-text-small">{ field.label || field.name }</label>
+
+                                <div class="uk-margin-small-top">
+                                    <cp-field field="{ field }" bind="data.{field.localize && parent.lang ? (parent.lang+'_'+field.name):field.name }" cls="uk-form-large"></cp-field>
+                                </div>
+
+                                <div class="uk-margin-small-top uk-text-small uk-text-muted">
+                                    { field.info || ' ' }
+                                </div>
+
+                            </div>
+
                         </div>
 
-                        <div class="uk-margin-small-top uk-text-small uk-text-muted">
-                            { field.info || ' ' }
-                        </div>
+                    </div>
 
+                    <div class="uk-margin-top">
+                        <button class="uk-button uk-button-large uk-button-primary uk-margin-right">@lang('Save')</button>
+                        <a href="@route('/regions')">@lang('Cancel')</a>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="uk-width-medium-1-4">
+
+                <div class="uk-margin uk-form" if="{ languages.length }">
+
+                    <div class="uk-width-1-1 uk-form-select">
+
+                        <label class="uk-text-small">@lang('Language')</label>
+
+                        <input class="uk-width-1-1" type="text" value="{ lang || 'Default' }">
+
+                        <select bind="lang">
+                            <option value="">@lang('Default')</option>
+                            <option each="{language,idx in languages}" value="{language}">{language}</option>
+                        </select>
                     </div>
 
                 </div>
 
             </div>
 
-            <div class="uk-margin-top">
-                <button class="uk-button uk-button-large uk-button-primary uk-margin-right">@lang('Save')</button>
-                <a href="@route('/regions')">@lang('Cancel')</a>
-            </div>
-
-        </form>
+        </div>
 
 
         <script type="view/script">
@@ -66,10 +95,12 @@
 
             riot.util.bind(this);
 
-            this.region   = {{ json_encode($region) }};
-            this.fields  = this.region.fields;
+            this.region    = {{ json_encode($region) }};
+            this.fields    = this.region.fields;
 
-            this.data   = this.region.data || {};
+            this.data      = this.region.data || {};
+
+            this.languages = App.$data.languages;
 
             // fill with default values
             this.fields.forEach(function(field){
