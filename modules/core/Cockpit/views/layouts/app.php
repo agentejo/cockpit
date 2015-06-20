@@ -13,7 +13,7 @@
 
     </script>
 
-    {{ $app->assets($app['app.assets.backend'], $app['cockpit/version']) }}
+    {{ $app->assets($app('admin')->data->get('assets'), $app['cockpit/version']) }}
 
     <script>
 
@@ -21,7 +21,7 @@
 
             App = App || {};
 
-            App.$user = {{ json_encode($app["user"]) }};
+            App.$data = {{ json_encode($app('admin')->data->get('extract')) }};
 
         })(App);
 
@@ -84,10 +84,10 @@
                                             <span class="uk-badge uk-badge-primary">@lang('Modules')</span>
                                         </div>
 
-                                        @if($app['admin.menu.modules']->count())
+                                        @if($app('admin')->data['menu.modules']->count())
                                         <ul class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-text-center" data-uk-sortable>
 
-                                            @foreach($app['admin.menu.modules'] as $item)
+                                            @foreach($app('admin')->data['menu.modules'] as $item)
                                             <li class="uk-grid-margin uk-width-1-2 uk-width-medium-1-3">
                                                 <a class="uk-display-block uk-panel-box {{ (@$item['active']) ? 'uk-bg-primary uk-contrast':'uk-panel-framed' }}" href="@route($item['route'])">
                                                     <div class="uk-text-large">

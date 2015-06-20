@@ -1,10 +1,21 @@
 <?php
 
+// because auto-load not ready yet
+include(__DIR__.'/Helper/Admin.php');
+
 // ACL
 $app('acl')->addResource('cockpit', [
     'manage.backups',
     'manage.media',
 ]);
+
+
+/**
+ * Helpers
+ */
+
+$app->helpers['admin']  = 'Cockpit\\Helper\\Admin';
+
 
 // init acl groups + permissions
 $app('acl')->addGroup('admin', true);
@@ -28,17 +39,8 @@ if ($user = $app->module('cockpit')->getUser()) {
     }
 }
 
-// extend lexy parser
-$app->renderer->extend(function($content){
-    return preg_replace('/(\s*)@hasaccess\?\((.+?)\)/', '$1<?php if ($app->module("cockpit")->hasaccess($2)) { ?>', $content);
-});
-
-$app['cockpit'] = json_decode($app->helper('fs')->read('#root:package.json'), true);
-
 
 $app->on('admin.init', function() {
-
-    $this["user"] = $this->module('cockpit')->getUser();
 
     // bind finder
     $this->bind('/finder', function() {
@@ -80,34 +82,10 @@ $app['app.assets.base'] = [
     'assets:app/css/style.css',
 ];
 
-$app['app.assets.backend'] = new ArrayObject(array_merge($app['app.assets.base'], [
-
-    // uikit components
-    'assets:lib/uikit/js/components/autocomplete.min.js',
-    'assets:lib/uikit/js/components/tooltip.min.js',
-
-    // app related
-    'assets:app/js/bootstrap.js'
-
-], $app->retrieve('app.config/app.assets.backend', [])));
-
 // load custom css style
 if ($app->path('config:style.css')) {
-    $app['app.assets.backend']->append('config:style.css');
+    $app['app.assets.backend']->append('config:cockpit/style.css');
 }
-
-
-/**
- * web components
- */
-
-$app['app.assets.components'] = [];
-
-/**
- * admin menus
- */
-
-$app['admin.menu.modules'] = new ArrayObject([]);
 
 
 /**
@@ -189,3 +167,7 @@ $app->on("after", function() {
             break;
     }
 });
+
+
+// init app helper
+$app('admin')->init();

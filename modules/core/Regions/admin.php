@@ -15,7 +15,7 @@ $app->on('admin.init', function() {
     $this->bindClass('Regions\\Controller\\Admin', 'regions');
 
     // add to modules menu
-    $this['admin.menu.modules']->append([
+    $this('admin')->addMenuItem('modules', [
         'label' => 'Regions',
         'icon'  => 'th',
         'route' => '/regions',

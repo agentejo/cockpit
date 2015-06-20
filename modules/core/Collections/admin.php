@@ -15,7 +15,7 @@ $app->on('admin.init', function() {
     $this->bindClass('Collections\\Controller\\Admin', 'collections');
 
     // add to modules menu
-    $this['admin.menu.modules']->append([
+    $this('admin')->addMenuItem('modules', [
         'label' => 'Collections',
         'icon'  => 'database',
         'route' => '/collections',
@@ -46,6 +46,4 @@ $app->on('admin.init', function() {
         $collections = $this->module("collections")->collections(true);
         $this->renderView("collections:views/widgets/dashboard.php", compact('collections'));
     }, 100);
-
-
 });

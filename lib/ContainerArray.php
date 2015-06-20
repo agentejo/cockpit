@@ -1,6 +1,6 @@
 <?php
 
-class ContainerArray implements  ArrayAccess, Countable, IteratorAggregate {
+class ContainerArray implements  ArrayAccess, Countable, IteratorAggregate, JsonSerializable {
 
     protected $props  = array();
     protected $bindTo = array();
@@ -388,6 +388,10 @@ class ContainerArray implements  ArrayAccess, Countable, IteratorAggregate {
             }
         }
         return true;
+    }
+
+    public function jsonSerialize() {
+        return $this->props;
     }
 
 }

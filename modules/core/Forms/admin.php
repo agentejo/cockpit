@@ -14,7 +14,7 @@ $app->on('admin.init', function() {
     $this->bindClass('forms\\Controller\\Admin', 'forms');
 
     // add to modules menu
-    $this['admin.menu.modules']->append([
+    $this('admin')->addMenuItem('modules', [
         'label' => 'Forms',
         'icon'  => 'inbox',
         'route' => '/forms',
