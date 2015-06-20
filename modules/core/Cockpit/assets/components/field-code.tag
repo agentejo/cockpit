@@ -14,7 +14,8 @@
 
         var $this = this, editor;
 
-        this.value = null;
+        this.value  = null;
+        this._field = null;
 
         this.ready = new Promise(function(resolve){
 
@@ -31,11 +32,12 @@
 
                 this.value = value;
 
-                if (editor && field != editor._field) {
+                if (editor && field != this._field) {
                     editor.setValue($this.value || '');
-                    editor._field = field;
                 }
             }
+
+            this._field = field;
 
         }.bind(this);
 

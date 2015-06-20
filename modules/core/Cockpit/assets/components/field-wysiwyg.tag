@@ -17,6 +17,7 @@
         }
 
         this.value = null;
+        this._field = null;
 
         this.$updateValue = function(value, field) {
 
@@ -24,11 +25,12 @@
 
                 this.value = value;
 
-                if (redactor && redactor._field != field) {
+                if (redactor && this._field != field) {
                     redactor.code.set(this.value || '');
-                    redactor._field = field;
                 }
             }
+
+            this._field = field;
 
         }.bind(this);
 

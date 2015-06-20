@@ -112,6 +112,7 @@
                                                                             <option value="html">HTML</option>
                                                                             <option value="markdown">Markdown</option>
                                                                             <option value="wysiwyg">WYSIWYG</option>
+                                                                            <option value="code">Code</option>
                                                                             <option value="url">Url</option>
                                                                             <option value="email">Email</option>
                                                                             <option value="password">Password</option>

@@ -6,7 +6,9 @@
 
         var $this = this, editor;
 
-        this.value = null;
+        this.value = '';
+
+        this._field = null;
 
         this.$updateValue = function(value, field) {
 
@@ -14,11 +16,12 @@
 
                 this.value = value;
 
-                if (editor && editor._field != field) {
+                if (editor && this._field != field) {
                     editor.editor.setValue(value || '');
-                    editor._field = field;
                 }
             }
+
+            this._field = field;
 
         }.bind(this);
 
@@ -36,7 +39,6 @@
                 $this.input.value = $this.value;
 
                 editor = UIkit.htmleditor(this.input, opts);
-
                 editor.on('input', function() {
                     $this.$setValue(editor.editor.getValue());
                 });

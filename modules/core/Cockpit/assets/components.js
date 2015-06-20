@@ -729,7 +729,8 @@ riot.tag('field-code', '<codemirror name="codemirror" syntx="{ opts.syntax || \'
 
         var $this = this, editor;
 
-        this.value = null;
+        this.value  = null;
+        this._field = null;
 
         this.ready = new Promise(function(resolve){
 
@@ -746,11 +747,12 @@ riot.tag('field-code', '<codemirror name="codemirror" syntx="{ opts.syntax || \'
 
                 this.value = value;
 
-                if (editor && field != editor._field) {
+                if (editor && field != this._field) {
                     editor.setValue($this.value || '');
-                    editor._field = field;
                 }
             }
+
+            this._field = field;
 
         }.bind(this);
 
@@ -899,7 +901,9 @@ riot.tag('field-html', '<textarea name="input" class="uk-visibility-hidden"></te
 
         var $this = this, editor;
 
-        this.value = null;
+        this.value = '';
+
+        this._field = null;
 
         this.$updateValue = function(value, field) {
 
@@ -907,11 +911,12 @@ riot.tag('field-html', '<textarea name="input" class="uk-visibility-hidden"></te
 
                 this.value = value;
 
-                if (editor && editor._field != field) {
+                if (editor && this._field != field) {
                     editor.editor.setValue(value || '');
-                    editor._field = field;
                 }
             }
+
+            this._field = field;
 
         }.bind(this);
 
@@ -929,7 +934,6 @@ riot.tag('field-html', '<textarea name="input" class="uk-visibility-hidden"></te
                 $this.input.value = $this.value;
 
                 editor = UIkit.htmleditor(this.input, opts);
-
                 editor.on('input', function() {
                     $this.$setValue(editor.editor.getValue());
                 });
@@ -1340,6 +1344,7 @@ riot.tag('field-wysiwyg', '<textarea name="input" style="visibility:hidden;" cla
         }
 
         this.value = null;
+        this._field = null;
 
         this.$updateValue = function(value, field) {
 
@@ -1347,11 +1352,12 @@ riot.tag('field-wysiwyg', '<textarea name="input" style="visibility:hidden;" cla
 
                 this.value = value;
 
-                if (redactor && redactor._field != field) {
+                if (redactor && this._field != field) {
                     redactor.code.set(this.value || '');
-                    redactor._field = field;
                 }
             }
+
+            this._field = field;
 
         }.bind(this);
 
