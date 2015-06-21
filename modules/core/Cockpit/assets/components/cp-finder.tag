@@ -6,6 +6,11 @@
             height: auto;
         }
 
+        .uk-offcanvas[name=editor] .picoedit-toolbar {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
     </style>
 
     <div show="{ data }">

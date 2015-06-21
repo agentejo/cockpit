@@ -7,7 +7,6 @@ class Settings extends \Cockpit\AuthController {
 
     public function index() {
 
-
         return $this->render('cockpit:views/settings/index.php');
     }
 
@@ -25,5 +24,16 @@ class Settings extends \Cockpit\AuthController {
         $info["mailer"]        = $this->app->retrieve("config/mailer", false);
 
         return $this->render('cockpit:views/settings/info.php', compact('info'));
+    }
+
+    public function edit() {
+
+        if ($this->app['user']['group'] !== 'admin') {
+            return false;
+        }
+
+        $configexists = $this->app->path('#root:config/config.php');
+
+        return $this->render('cockpit:views/settings/edit.php', compact('configexists'));
     }
 }

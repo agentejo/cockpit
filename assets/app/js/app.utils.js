@@ -20,7 +20,16 @@
     App.Utils.isObject    = function(val){ return null!==val && "object"===typeof val; };
 
     App.Utils.dateformat  = function(date) {
-        return (new Intl.DateTimeFormat()).format(date);
+
+        var str;
+
+        if (window.Intl && Intl.DateTimeFormat) {
+            str = (new Intl.DateTimeFormat()).format(date);
+        } else {
+            str = date.toDateString();
+        }
+
+        return str;
     };
 
     App.Utils.count = function(value) {

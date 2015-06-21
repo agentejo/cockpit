@@ -3,7 +3,8 @@
     <style>
 
         .picoedit-toolbar {
-            padding: 15px;
+            padding-top: 15px;
+            padding-bottom: 15px;
         }
 
     </style>
@@ -49,6 +50,14 @@
         root.picoedit = this;
 
         this.path = null;
+
+        this.on('mount', function() {
+
+            if (opts.path) {
+
+                this.open(opts.path);
+            }
+        });
 
         open(path) {
 
