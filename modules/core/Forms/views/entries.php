@@ -25,11 +25,11 @@
 </div>
 @endif
 
-<div class="uk-margin-top" riot-view>
+<div riot-view>
 
     <div show="{ ready }">
 
-        <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-middle">
+        <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ready && !entries.length}">
 
             <div class="uk-animation-fade uk-width-1-1">
 
@@ -56,11 +56,23 @@
 
         </div>
 
+        <table class="uk-table uk-table-striped uk-margin-top" if="{ entries.length }">
+            <tbody>
+                <tr each="{entry,idx in entries}">
+                    <td><input type="checkbox" data-check data-id="{ entry._id }"></td>
+                    <td>
 
-        <div class="uk-margin-top" if="{ entries.length || filter }">
+                        <h5 class="uk-text-muted">
+                            <i class="uk-icon-calendar"></i>
+                            <span class="uk-margin-small-right">{ App.Utils.dateformat( new Date( 1000 * entry._modified )) }</span>
+                            <a class="uk-text-danger" onclick="{ parent.remove }" title="@lang('Delete')"><i class="uk-icon-trash-o"></i></a>
+                        </h5>
 
-
-        </div>
+                        { JSON.stringify(entry) }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
     </div>
 
@@ -146,7 +158,7 @@
 
         load() {
 
-            var options = { sort: {'_created': -1}, limit: 50, skip: (this.entries.length || 0) };
+            var limit=50, options = { sort: {'_created': -1}, limit: limit, skip: (this.entries.length || 0) };
 
             return App.callmodule('forms:find', [this.form.name, options]).then(function(data){
 

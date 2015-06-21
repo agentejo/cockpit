@@ -31,6 +31,8 @@ class Media extends \Cockpit\AuthController {
             '.ds_store', '.thumb', '.idea'
         ];
 
+        $cpfolder = $this->app->path('#root:');
+
         if ($path = $this->param("path", false)){
 
             $dir = $this->root.'/'.trim($path, '/');
@@ -41,6 +43,7 @@ class Media extends \Cockpit\AuthController {
                foreach (new \DirectoryIterator($dir) as $file) {
 
                     if ($file->isDot()) continue;
+                    if ($file->isDir() && $file->getRealPath() == $cpfolder && $this->app['user']['group'] != 'admin' ) continue;
 
                     $filename = $file->getFilename();
 

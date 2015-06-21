@@ -28,17 +28,17 @@
         if (msgsuccess) msgsuccess.style.display = "none";
         if (msgfail)    msgfail.style.display = "none";
 
-        var submit = function() {
+        var submit = function(_success, _fail) {
+
+            _success = _success || success;
+            _fail    = _fail || fail;
 
             if (msgsuccess) msgsuccess.style.display = "none";
             if (msgfail)    msgfail.style.display = "none";
 
             var xhr = new XMLHttpRequest(), data = new FormData(form);
 
-            xhr.onload = function(_success, _fail){
-
-                _success = _success || success;
-                _fail    = _fail || fail;
+            xhr.onload = function(){
 
                 if (this.status == 200 && this.responseText!='false') {
                     _success();
@@ -60,11 +60,11 @@
 
             e.preventDefault();
 
-            var callback = window['beforeSubmit{{ $name }}'] || function() {
+            var callback = window['beforeSubmit{{ $name }}'] || function(submit) {
                 submit();
             }
 
-            callback();
+            callback(submit);
 
         }, false);
 

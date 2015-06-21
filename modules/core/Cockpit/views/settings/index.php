@@ -16,7 +16,7 @@
     </div>
     @endif
 
-    @if($app['user']['group']=='admin')
+    @hasaccess?('cockpit', 'manage.accounts')
     <div>
         <div class="uk-panel uk-panel-box">
             <div class="uk-text-truncate">
@@ -37,3 +37,5 @@
     @endif
 
 </div>
+
+@trigger('cockpit.view.settings')

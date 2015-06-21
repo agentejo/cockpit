@@ -8,6 +8,7 @@
 /storage/*
 /config/*
 /modules/addons/*/*
+/tests/*
 
 !.gitignore
 !.gitkeep

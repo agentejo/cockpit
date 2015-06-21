@@ -251,7 +251,7 @@ $this->bind("/api/forms/submit/:form", function($params) {
         return false;
     }
 
-    $frm = $this->app->module('forms')->form($formname);
+    $frm = $this->module('forms')->form($formname);
 
     if (!$frm) {
         return false;
@@ -308,7 +308,7 @@ $this->bind("/api/forms/submit/:form", function($params) {
         if (isset($frm['save_entry']) && $frm['save_entry']) {
 
             $entry = ['data' => $formdata];
-            $this->app->module('forms')->save($entry);
+            $this->module('forms')->save($formname, $entry);
         }
 
         return json_encode($formdata);
