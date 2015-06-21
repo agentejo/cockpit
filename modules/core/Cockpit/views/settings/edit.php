@@ -11,7 +11,7 @@
     @if ($configexists)
 
         @if (is_writable($configexists))
-        <picoedit path="{{ basename(dirname(dirname($configexists))) }}/config/config.php"></picoedit>
+        <picoedit path="{{ basename(dirname(dirname($configexists))) }}/config/config.yaml"></picoedit>
         @else
         <div class="uk-alert uk-alert-danger">
             @lang('Custom config file is not writable').
@@ -25,3 +25,12 @@
     @endif
 
 </div>
+
+
+<style>
+
+    picoedit .CodeMirror {
+        height: auto;
+    }
+
+</style>

@@ -34,13 +34,19 @@ if (!defined('COCKPIT_DIR'))         define('COCKPIT_DIR'        , $COCKPIT_DIR)
 if (!defined('COCKPIT_DOCS_ROOT'))   define('COCKPIT_DOCS_ROOT'  , $COCKPIT_DOCS_ROOT);
 if (!defined('COCKPIT_BASE_URL'))    define('COCKPIT_BASE_URL'   , $COCKPIT_BASE_URL);
 if (!defined('COCKPIT_BASE_ROUTE'))  define('COCKPIT_BASE_ROUTE' , $COCKPIT_BASE_ROUTE);
-if (!defined('COCKPIT_CONFIG_PATH')) define('COCKPIT_CONFIG_PATH', COCKPIT_DIR . '/config/config.php');
+if (!defined('COCKPIT_CONFIG_PATH')) define('COCKPIT_CONFIG_PATH', COCKPIT_DIR . '/config/config.yaml');
 
 function cockpit($module = null) {
 
     static $app;
 
     if (!$app) {
+
+        $customconfig = [];
+
+        if (file_exists(COCKPIT_CONFIG_PATH)) {
+            $customconfig = Spyc::YAMLLoad(COCKPIT_CONFIG_PATH);
+        }
 
         // load config
         $config = array_replace_recursive([
@@ -69,7 +75,7 @@ function cockpit($module = null) {
                 'site'     => COCKPIT_DIR == COCKPIT_DOCS_ROOT ? COCKPIT_DIR : dirname(COCKPIT_DIR)
             ]
 
-        ], file_exists(COCKPIT_CONFIG_PATH) ? include(COCKPIT_CONFIG_PATH) : []);
+        ], is_array($customconfig) ? $customconfig : []);
 
         $app = new LimeExtra\App($config);
 
@@ -101,7 +107,7 @@ function cockpit($module = null) {
 
         // set cache path
         $tmppath = $app->path('#tmp:');
-        
+
         $app("cache")->setCachePath($tmppath);
         $app->renderer->setCachePath($tmppath);
 

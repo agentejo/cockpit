@@ -32,7 +32,7 @@ class Settings extends \Cockpit\AuthController {
             return false;
         }
 
-        $configexists = $this->app->path('#root:config/config.php');
+        $configexists = $this->app->path('#root:config/config.yaml');
 
         return $this->render('cockpit:views/settings/edit.php', compact('configexists'));
     }
