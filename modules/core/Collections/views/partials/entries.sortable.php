@@ -2,7 +2,6 @@
 <table class="uk-table uk-table-striped uk-margin-top" if="{ entries.length }">
     <thead>
         <tr>
-            <th width="20"></th>
             <th width="20"><input type="checkbox" data-check="all"></th>
             <th class="uk-text-small" each="{field,idx in fields}">
                 { field.label || field.name }
@@ -11,8 +10,7 @@
         </tr>
     </thead>
     <tbody name="sortableroot">
-        <tr each="{entry,idx in entries}" data-id="{ entry._id }">
-            <td class="js-sortable-handle"><i class="uk-icon-arrows"></i></td>
+        <tr class="uk-visible-hover" each="{entry,idx in entries}" data-id="{ entry._id }">
             <td><input type="checkbox" data-check data-id="{ entry._id }"></td>
             <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' }">
                 <a class="uk-link-muted" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
@@ -33,6 +31,15 @@
                         </ul>
                     </div>
                 </span>
+            </td>
+        </tr>
+    </tbody>
+    <tbody>
+        <tr>
+            <td colspan="{ (2+fields.length ) }">
+                <div class="uk-alert uk-text-small uk-margin-remove">
+                    @lang('Drag rows to reorder')
+                </div>
             </td>
         </tr>
     </tbody>
