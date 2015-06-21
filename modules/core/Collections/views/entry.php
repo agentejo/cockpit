@@ -80,7 +80,7 @@
 
         var $this = this;
 
-        riot.util.bind(this);
+        this.mixin(RiotBindMixin);
 
         this.collection   = {{ json_encode($collection) }};
         this.fields       = this.collection.fields;

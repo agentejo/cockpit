@@ -3,7 +3,7 @@
  * simple two way data-binding for riot
  */
 
-(function(riot){
+(function(riot, global){
 
     riot.util.bind = function(tag, namespace) {
 
@@ -162,4 +162,12 @@
         };
     };
 
-})(riot);
+    var Mixin = {
+        init: function() {
+            riot.util.bind(this);
+        }
+    };
+
+    global.RiotBindMixin = Mixin;
+
+})(riot, this);

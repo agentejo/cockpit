@@ -201,11 +201,11 @@
 
         var $this = this, f;
 
+        this.mixin(RiotBindMixin);
+
         this.collection = {{ json_encode($collection) }};
 
         stringifyOptionsField();
-
-        riot.util.bind(this);
 
         // get all available fields
 

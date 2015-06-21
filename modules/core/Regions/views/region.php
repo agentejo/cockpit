@@ -204,6 +204,8 @@
 
         var $this = this;
 
+        this.mixin(RiotBindMixin);
+
         this.view = 'template';
 
         // get all available fields
@@ -224,8 +226,6 @@
         this.region = {{ json_encode($region) }};
 
         stringifyOptionsField();
-
-        riot.util.bind(this);
 
         this.one('mount', function(){
 

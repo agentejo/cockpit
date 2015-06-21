@@ -127,9 +127,9 @@
 
         var $this = this;
 
-        this.account = {{ json_encode($account) }};
+        this.mixin(RiotBindMixin);
 
-        riot.util.bind(this);
+        this.account = {{ json_encode($account) }};
 
         this.on('mount', function(){
             this.root.classList.remove('uk-invisible');

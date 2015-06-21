@@ -93,7 +93,7 @@
 
             var $this = this;
 
-            riot.util.bind(this);
+            this.mixin(RiotBindMixin);
 
             this.region    = {{ json_encode($region) }};
             this.fields    = this.region.fields;

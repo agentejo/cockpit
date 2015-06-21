@@ -65,9 +65,9 @@
 
         var $this = this;
 
-        this.form = {{ json_encode($form) }};
+        this.mixin(RiotBindMixin);
 
-        riot.util.bind(this);
+        this.form = {{ json_encode($form) }};
 
         this.on('update', function(){
 
