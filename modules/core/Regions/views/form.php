@@ -42,7 +42,10 @@
 
                             <div class="uk-panel">
 
-                                <label class="uk-text-bold uk-text-small">{ field.label || field.name }</label>
+                                <label class="uk-text-bold uk-text-small">
+                                    { field.label || field.name }
+                                    <span if="{ field.localize }" class="uk-icon-globe" title="@lang('Localized field')" data-uk-tooltip="\{pos:'right'\}"></span>
+                                </label>
 
                                 <div class="uk-margin-small-top">
                                     <cp-field field="{ field }" bind="data.{field.localize && parent.lang ? (parent.lang+'_'+field.name):field.name }" cls="uk-form-large"></cp-field>
