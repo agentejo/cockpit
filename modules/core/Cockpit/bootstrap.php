@@ -104,15 +104,22 @@ $this->module("cockpit")->extend([
         return false;
     },
 
+    "getGroups" => function() use($app) {
+
+        $groups = array_merge(['admin'], array_keys($app->retrieve("config/acl", [])));
+
+        return array_unique($groups);
+    },
+
     "getGroupSetting" => function($setting, $default = null) use($app) {
 
         if ($user = $this->getUser()) {
 
-            if (isset($user["group"])) {
+            if (isset($user["group"]) && $user["group"]) {
 
-                $settings = $app["cockpit.acl.groups.settings"];
+                $group = $user["group"];
 
-                return isset($settings[$user["group"]][$setting]) ? $settings[$user["group"]][$setting] : $default;
+                return $app->retrieve("config/acl/{$group}/settings/{$setting}", $default);
             }
         }
 

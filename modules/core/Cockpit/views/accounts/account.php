@@ -112,7 +112,7 @@
             <div class="uk-form-controls uk-margin-small-top">
                 <div class="uk-form-select">
                     <a>{ account.group }</a>
-                    <select class="uk-width-1-1 uk-form-large" name="group">
+                    <select class="uk-width-1-1 uk-form-large" name="group" bind="account.group">
                         @foreach($groups as $group)
                         <option value="{{ $group }}">{{ $group }}</option>
                         @endforeach

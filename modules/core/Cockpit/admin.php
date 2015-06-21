@@ -17,7 +17,8 @@ $app('acl')->addResource('cockpit', [
 $app->helpers['admin']  = 'Cockpit\\Helper\\Admin';
 
 
-// init acl groups + permissions
+// init acl groups + permissions + settings
+// -----------------------------------------------------------------------------
 $app('acl')->addGroup('admin', true);
 
 if ($user = $app->module('cockpit')->getUser()) {
@@ -30,14 +31,20 @@ if ($user = $app->module('cockpit')->getUser()) {
 
         if (is_array($settings)) {
 
-            foreach ($resources as $resource => $actions) {
-                foreach ($actions as $action => $value) {
-                    if ($value) $app('acl')->allow($group, $resource, $action);
+            if (isset($settings['allow']) && is_array($settings['allow'])) {
+
+                foreach ($settings['allow'] as $resource => $actions) {
+
+                    foreach ((array)$actions as $action) {
+                        $app('acl')->allow($group, $resource, $action);
+                    }
                 }
             }
         }
     }
 }
+
+// -----------------------------------------------------------------------------
 
 
 $app->on('admin.init', function() {
