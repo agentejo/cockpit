@@ -51,8 +51,7 @@
 
             <div class="uk-float-left uk-animation-fade uk-text-large uk-text-muted" if="{ selected.length }">
 
-                { selected.length } @lang('item(s) selected')
-                <a class="uk-text-danger" onclick="{ removeselected }" title="@lang('Delete')"><i class="uk-icon-justify uk-icon-trash"></i></a>
+                <a class="uk-text-danger" onclick="{ removeselected }"><i class="uk-icon-trash"></i> @lang('Delete') ({ selected.length })</a>
 
             </div>
 

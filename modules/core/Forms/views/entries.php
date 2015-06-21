@@ -47,10 +47,9 @@
 
         <div class="uk-clearfix uk-margin-large-top" if="{ entries.length }">
 
-            <div class="uk-float-left uk-animation-fade uk-text-large uk-text-muted" if="{ selected.length }">
+            <div class="uk-float-left uk-animation-fade uk-text-muted" if="{ selected.length }">
 
-                { selected.length } @lang('item(s) selected')
-                <a class="uk-text-danger" onclick="{ removeselected }" title="@lang('Delete')"><i class="uk-icon-justify uk-icon-trash"></i></a>
+                <a class="uk-text-danger" onclick="{ removeselected }"><i class="uk-icon-trash"></i> @lang('Delete') ({ selected.length })</a>
 
             </div>
 
@@ -59,7 +58,7 @@
         <table class="uk-table uk-table-striped uk-margin-top" if="{ entries.length }">
             <tbody>
                 <tr each="{entry,idx in entries}">
-                    <td><input type="checkbox" data-check data-id="{ entry._id }"></td>
+                    <td width="20"><input type="checkbox" data-check data-id="{ entry._id }"></td>
                     <td>
 
                         <h5 class="uk-text-muted">
@@ -68,7 +67,12 @@
                             <a class="uk-text-danger" onclick="{ parent.remove }" title="@lang('Delete')"><i class="uk-icon-trash-o"></i></a>
                         </h5>
 
-                        { JSON.stringify(entry) }
+                        <div class="uk-text-small uk-margin-small-top" each="{ name, value in entry.data }">
+                            <strong>{name}:</strong>
+                            <div>
+                                {value}
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </tbody>
