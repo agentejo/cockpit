@@ -38,7 +38,7 @@
                     { String(parent.entry[field.name] === undefined ? '': parent.entry[field.name]) }
                 </a>
             </td>
-            <td>{ (new Intl.DateTimeFormat()).format( new Date( 1000 * entry._modified )) }</td>
+            <td>{ App.Utils.dateformat( new Date( 1000 * entry._modified )) }</td>
             <td>
                 <span class="uk-float-right" data-uk-dropdown="\{mode:'click'\}">
 

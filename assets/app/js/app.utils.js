@@ -19,6 +19,10 @@
     App.Utils.isDefined   = function(val){ return "undefined"!==typeof val; };
     App.Utils.isObject    = function(val){ return null!==val && "object"===typeof val; };
 
+    App.Utils.dateformat  = function(date) {
+        return (new Intl.DateTimeFormat()).format(date);
+    };
+
     App.Utils.count = function(value) {
 
         var length = 0, key;
@@ -61,7 +65,7 @@
             };
 
         })(riot.tag);
-        
+
     })(riot);
 
 

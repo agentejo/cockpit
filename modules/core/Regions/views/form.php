@@ -30,7 +30,7 @@
 
         <div class="uk-grid">
 
-            <div class="uk-width-medium-2-3">
+            <div class="uk-width-medium-3-4">
 
                 <h3>{ region.label || region.name }</h3>
 
@@ -68,18 +68,26 @@
 
             <div class="uk-width-medium-1-4">
 
-                <div class="uk-margin uk-form" if="{ languages.length }">
+                <div class="uk-panel">
 
-                    <div class="uk-width-1-1 uk-form-select">
+                    <div class="uk-margin uk-form" if="{ languages.length }">
 
-                        <label class="uk-text-small">@lang('Language')</label>
+                        <div class="uk-width-1-1 uk-form-select">
 
-                        <input class="uk-width-1-1" type="text" value="{ lang || 'Default' }">
+                            <label class="uk-text-small">@lang('Language')</label>
+                            <div class="uk-margin-small-top">{ lang || 'Default' }</div>
 
-                        <select bind="lang">
-                            <option value="">@lang('Default')</option>
-                            <option each="{language,idx in languages}" value="{language}">{language}</option>
-                        </select>
+                            <select bind="lang">
+                                <option value="">@lang('Default')</option>
+                                <option each="{language,idx in languages}" value="{language}">{language}</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="uk-margin">
+                        <label class="uk-text-small">@lang('Last Modified')</label>
+                        <div class="uk-margin-small-top">{  App.Utils.dateformat( new Date( 1000 * region._modified )) }</div>
                     </div>
 
                 </div>
