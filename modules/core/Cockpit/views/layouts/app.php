@@ -62,23 +62,23 @@
                                             <span class="uk-badge uk-badge-primary">@lang('System')</span>
                                         </div>
 
-                                        <ul class="uk-nav uk-nav-dropdown">
+                                        <ul class="uk-nav uk-nav-side uk-nav-dropdown">
 
-                                            <li><a href="@route('/')"><i class="uk-icon-justify uk-icon-dashboard"></i> @lang('Dashboard')</a></li>
+                                            <li class="{{ $app['route'] == '/' ? 'uk-active':'' }}"><a href="@route('/')"><i class="uk-icon-justify uk-icon-dashboard"></i> @lang('Dashboard')</a></li>
 
                                             @hasaccess?('cockpit', 'manage.accounts')
-                                            <li><a href="@route('/accounts')"><i class="uk-icon-justify uk-icon-users"></i> @lang('Accounts')</a></li>
+                                            <li class="{{ strpos($app['route'],'/accounts')===0 ? 'uk-active':'' }}"><a href="@route('/accounts')"><i class="uk-icon-justify uk-icon-users"></i> @lang('Accounts')</a></li>
                                             @end
 
                                             @hasaccess?('cockpit', 'manage.media')
-                                            <li><a href="@route('/finder')"><i class="uk-icon-justify uk-icon-folder"></i> @lang('Finder')</a></li>
+                                            <li class="{{ strpos($app['route'],'/finder')===0 ? 'uk-active':'' }}"><a href="@route('/finder')"><i class="uk-icon-justify uk-icon-folder"></i> @lang('Finder')</a></li>
                                             @end
 
                                             @hasaccess?('cockpit', 'manage.settings')
                                             <li class="uk-nav-divider"></li>
-                                            <li><a href="@route('/settings')"><i class="uk-icon-justify uk-icon-cog"></i> @lang('Settings')</a></li>
+                                            <li class="{{ strpos($app['route'],'/settings')===0 ? 'uk-active':'' }}"><a href="@route('/settings')"><i class="uk-icon-justify uk-icon-cog"></i> @lang('Settings')</a></li>
                                             @end
-                                            
+
                                         </ul>
 
                                     </div>
