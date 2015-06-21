@@ -261,7 +261,7 @@ $this->bind("/api/forms/submit/:form", function($params) {
 
         // custom form validation
 
-        if ($this->path("config:forms/{$form}.php") && false===include($this->path("config:forms/{$form}.php"))) {
+        if ($this->path("config:forms/{$formname}.php") && false===include($this->path("config:forms/{$formname}.php"))) {
             return false;
         }
 
@@ -283,7 +283,7 @@ $this->bind("/api/forms/submit/:form", function($params) {
                 $frm['email_forward'] = implode(',', $filtered_emails);
 
                 // There is an email template available
-                if ($template = $this->path("config:forms/emails/{$form}.php")) {
+                if ($template = $this->path("config:forms/emails/{$formname}.php")) {
 
                     $body = $this->renderer->file($template, $formdata, false);
 

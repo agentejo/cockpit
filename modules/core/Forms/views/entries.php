@@ -56,6 +56,12 @@
         </div>
 
         <table class="uk-table uk-table-striped uk-margin-top" if="{ entries.length }">
+            <thead>
+                <tr>
+                    <th width="20"><input type="checkbox" data-check="all"></th>
+                    <th>@lang('Entry')</th>
+                </tr>
+            </thead>
             <tbody>
                 <tr each="{entry,idx in entries}">
                     <td width="20"><input type="checkbox" data-check data-id="{ entry._id }"></td>
