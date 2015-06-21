@@ -61,13 +61,15 @@
                                     <li><a href="@route('/collections/collection')/{ collection }">@lang('Edit')</a></li>
                                     <li><a onclick="{ parent.remove }">@lang('Delete')</a></li>
                                     <li class="uk-nav-divider"></li>
-                                    <li class="uk-text-truncate"><a href="@route('/collections/export')/{ meta.name }" download="{ meta.name }.json">@lang('Export entries')</a></li>
+                                    <li class="uk-text-truncate"><a href="@route('/collections/export')/{ meta.name }" download="{ meta.name }.collection.json">@lang('Export entries')</a></li>
                                 </ul>
                             </div>
                         </div>
 
                         <a class="uk-text-bold uk-flex-item-1 uk-link-muted" href="@route('/collections/entries')/{collection}">{ meta.label || collection }</a>
-
+                        <div>
+                            <span class="uk-badge">{ meta.itemsCount }</span>
+                        </div>
                     </div>
 
                 </div>

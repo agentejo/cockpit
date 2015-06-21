@@ -10,7 +10,7 @@
                     <li class="uk-nav-header">@lang('Actions')</li>
                     <li><a href="@route('/forms/form/'.$form['name'])">@lang('Edit')</a></li>
                     <li class="uk-nav-divider"></li>
-                    <li class="uk-text-truncate"><a href="@route('/forms/export/'.$form['name'])" download="{{ $form['name'] }}.json">@lang('Export entries')</a></li>
+                    <li class="uk-text-truncate"><a href="@route('/forms/export/'.$form['name'])" download="{{ $form['name'] }}.form.json">@lang('Export entries')</a></li>
                 </ul>
             </div>
 

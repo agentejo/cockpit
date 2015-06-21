@@ -60,13 +60,16 @@
                                     <li><a href="@route('/forms/form')/{ form }">@lang('Edit')</a></li>
                                     <li><a onclick="{ parent.remove }">@lang('Delete')</a></li>
                                     <li class="uk-nav-divider"></li>
-                                    <li class="uk-text-truncate"><a href="@route('/forms/export')/{ meta.name }" download="{ meta.name }.json">@lang('Export entries')</a></li>
+                                    <li class="uk-text-truncate"><a href="@route('/forms/export')/{ meta.name }" download="{ meta.name }.form.json">@lang('Export entries')</a></li>
                                 </ul>
                             </div>
                         </div>
 
                         <a class="uk-text-bold uk-flex-item-1 uk-link-muted" href="@route('/forms/entries')/{form}">{ meta.label || form }</a>
 
+                        <div>
+                            <span class="uk-badge">{ meta.itemsCount }</span>
+                        </div>
                     </div>
 
                 </div>
