@@ -7,11 +7,21 @@
 
 
 <div class="uk-margin-top" riot-view>
+
     @if ($configexists)
-    <picoedit path="{{ basename(dirname(dirname($configexists))) }}/config/config.php"></picoedit>
+
+        @if (is_writable($configexists))
+        <picoedit path="{{ basename(dirname(dirname($configexists))) }}/config/config.php"></picoedit>
+        @else
+        <div class="uk-alert uk-alert-danger">
+            @lang('Custom config file is not writable').
+        </div>
+        @endif
+
     @else
     <div class="uk-alert">
         @lang('Custom config file does not exist').
     </div>
     @endif
+
 </div>

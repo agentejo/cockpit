@@ -15,7 +15,7 @@
 
                 <ul class="uk-list uk-margin-top">
                     @foreach(array_slice($forms, 0, count($forms) > 5 ? 5: count($forms)) as $form)
-                    <li><a href="@route('/forms/entries/'.$form['name'])"><i class="uk-icon-justify uk-icon-list"></i> {{ @$form['label'] ? $form['label'] : $form['name'] }}</a></li>
+                    <li><a href="@route('/forms/entries/'.$form['name'])"><i class="uk-icon-justify uk-icon-inbox"></i> {{ @$form['label'] ? $form['label'] : $form['name'] }}</a></li>
                     @endforeach
                 </ul>
 

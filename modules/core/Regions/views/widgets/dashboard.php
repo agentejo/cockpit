@@ -15,7 +15,7 @@
 
                 <ul class="uk-list uk-margin-top">
                     @foreach(array_slice($regions, 0, count($regions) > 5 ? 5: count($regions)) as $region)
-                    <li><a href="@route('/regions/region/'.$region['name'])"><i class="uk-icon-justify uk-icon-list"></i> {{ @$region['label'] ? $region['label'] : $region['name'] }}</a></li>
+                    <li><a href="@route('/regions/region/'.$region['name'])"><i class="uk-icon-justify uk-icon-th"></i> {{ @$region['label'] ? $region['label'] : $region['name'] }}</a></li>
                     @endforeach
                 </ul>
 
