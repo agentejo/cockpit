@@ -123,7 +123,7 @@
 
                                                                 <div class="uk-form-row">
                                                                     <div class="uk-text-small uk-text-bold">@lang('Options') <span class="uk-text-muted">JSON</span></div>
-                                                                    <field-longtext cls="uk-width-1-1" bind="region.fields[{idx}].options" rows="6" allowtabs="2"></field-longtext>
+                                                                    <field-textarea cls="uk-width-1-1" bind="region.fields[{idx}].options" rows="6" allowtabs="2"></field-textarea>
                                                                 </div>
 
                                                                 <div class="uk-form-row">
