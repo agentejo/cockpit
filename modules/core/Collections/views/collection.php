@@ -26,7 +26,7 @@
                    <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="collection.label">
                </div>
 
-               <div class="uk-grid-margin">
+               <div class="uk-margin">
                    <label class="uk-text-small">@lang('Description')</label>
                    <textarea class="uk-width-1-1 uk-form-large" name="description" bind="collection.description" rows="5"></textarea>
                </div>
@@ -34,6 +34,11 @@
                 <div class="uk-margin">
                     <field-boolean bind="collection.sortable" title="@lang('Sortable entries')" cls="uk-form-small"></field-boolean>
                     <strong>@lang('Sortable entries')</strong>
+                </div>
+
+                <div class="uk-margin">
+                    <field-boolean bind="collection.in_menu" title="@lang('Show in system menu')" cls="uk-form-small"></field-boolean>
+                    <strong>@lang('Show in system menu')</strong>
                 </div>
 
             </div>

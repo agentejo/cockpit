@@ -81,6 +81,8 @@
 
                                         </ul>
 
+                                        @trigger('cockpit.menu.aside')
+
                                     </div>
 
                                     <div class="uk-grid-margin uk-width-medium-2-3">
@@ -105,6 +107,8 @@
 
                                         </ul>
                                         @endif
+
+                                        @trigger('cockpit.menu.main')
 
                                     </div>
 

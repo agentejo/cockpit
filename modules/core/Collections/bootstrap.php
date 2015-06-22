@@ -28,6 +28,8 @@ $this->module("collections")->extend([
             'label'     => $name,
             '_id'       => uniqid($name),
             'fields'    => [],
+            'sortable'  => false,
+            'in_menu'   => false,
             '_created'  => $time,
             '_modified' => $time
         ], $data);

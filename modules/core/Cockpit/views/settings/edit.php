@@ -21,6 +21,7 @@
     @else
     <div class="uk-alert">
         @lang('Custom config file does not exist').
+        <a class="uk-button uk-button-link" href="@route('/settings/edit/true')"><i class="uk-icon-magic"></i> @lang('Create config file')</a>
     </div>
     @endif
 

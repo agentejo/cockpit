@@ -26,10 +26,16 @@ class Settings extends \Cockpit\AuthController {
         return $this->render('cockpit:views/settings/info.php', compact('info'));
     }
 
-    public function edit() {
+    public function edit($createconfig = false) {
 
         if ($this->app['user']['group'] !== 'admin') {
             return false;
+        }
+
+        if ($createconfig && !$this->app->path('#root:config/config.yaml')) {
+            if ($this->app->helper('fs')->mkdir('#root:config')) {
+                $this->app->helper('fs')->write('#root:config/config.yaml', "# Cockpit settings\n");
+            }
         }
 
         $configexists = $this->app->path('#root:config/config.yaml');

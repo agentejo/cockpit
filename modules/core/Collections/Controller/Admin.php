@@ -13,7 +13,7 @@ class Admin extends \Cockpit\AuthController {
 
     public function collection($name = null) {
 
-        $collection = [ 'name'=>'', 'fields'=>[], 'sortable' => false ];
+        $collection = [ 'name'=>'', 'label' => '', 'fields'=>[], 'sortable' => false, 'in_menu' => false ];
 
         if ($name) {
 

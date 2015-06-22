@@ -29,6 +29,7 @@ $this->module("forms")->extend([
             'name'      => $name,
             'label'     => $name,
             'save_entry' => true,
+            'in_menu'   => false,
             'email_forward' => '',
             '_created'  => $time,
             '_modified' => $time

@@ -11,7 +11,7 @@ class Admin extends \Cockpit\AuthController {
 
     public function form($name = null) {
 
-        $form = [ 'name'=>'' ];
+        $form = [ 'name'=>'', 'in_menu' => false ];
 
         if ($name) {
 

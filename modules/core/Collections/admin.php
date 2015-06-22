@@ -40,6 +40,19 @@ $app->on('admin.init', function() {
         }
     });
 
+    $this->on('cockpit.menu.main', function() {
+
+        $cols        = $this->module('collections')->collections();
+        $collections = [];
+
+        foreach($cols as $collection) {
+            if ($collection['in_menu']) $collections[] = $collection;
+        }
+
+        if (count($collections)) {
+            $this->renderView("collections:views/partials/menu.php", compact('collections'));
+        }
+    });
 
     // dashboard widgets
     $this->on("admin.dashboard.aside", function() {

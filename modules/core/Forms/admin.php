@@ -21,14 +21,28 @@ $app->on('admin.init', function() {
         'active' => strpos($this['route'], '/forms') === 0
     ]);
 
+    $this->on('cockpit.menu.main', function() {
+
+        $frms  = $this->module('forms')->forms();
+        $forms = [];
+
+        foreach($frms as $form) {
+            if ($form['in_menu']) $forms[] = $form;
+        }
+
+        if (count($forms)) {
+            $this->renderView("forms:views/partials/menu.php", compact('forms'));
+        }
+    });
+
     /**
      * listen to app search to filter forms
      */
     $this->on('cockpit.search', function($search, $list) {
 
-        foreach ($this->module('forms')->forms() as $collection => $meta) {
+        foreach ($this->module('forms')->forms() as $form => $meta) {
 
-            if (stripos($collection, $search)!==false || stripos($meta['label'], $search)!==false) {
+            if (stripos($form, $search)!==false || stripos($meta['label'], $search)!==false) {
 
                 $list[] = [
                     'icon'  => 'inbox',
