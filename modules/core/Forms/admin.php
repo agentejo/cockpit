@@ -11,7 +11,7 @@ $app->on('admin.init', function() {
     }
 
     // bind admin routes /forms/*
-    $this->bindClass('forms\\Controller\\Admin', 'forms');
+    $this->bindClass('Forms\\Controller\\Admin', 'forms');
 
     // add to modules menu
     $this('admin')->addMenuItem('modules', [
