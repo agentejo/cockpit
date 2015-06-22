@@ -14,7 +14,7 @@ class Settings extends \Cockpit\AuthController {
 
         $info                  = [];
 
-        $info["app"]           = $this->app['cockpit'];
+        $info["app"]           = $this->app->helper('admin')->data['cockpit'];
 
         $info['system']        = php_uname();
         $info['phpversion']    = phpversion();
