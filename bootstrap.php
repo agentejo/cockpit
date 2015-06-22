@@ -34,6 +34,7 @@ if (!defined('COCKPIT_DIR'))         define('COCKPIT_DIR'        , $COCKPIT_DIR)
 if (!defined('COCKPIT_DOCS_ROOT'))   define('COCKPIT_DOCS_ROOT'  , $COCKPIT_DOCS_ROOT);
 if (!defined('COCKPIT_BASE_URL'))    define('COCKPIT_BASE_URL'   , $COCKPIT_BASE_URL);
 if (!defined('COCKPIT_BASE_ROUTE'))  define('COCKPIT_BASE_ROUTE' , $COCKPIT_BASE_ROUTE);
+if (!defined('COCKPIT_STORAGE_FOLDER'))  define('COCKPIT_STORAGE_FOLDER' , COCKPIT_DIR . '/storage');
 if (!defined('COCKPIT_CONFIG_PATH')) define('COCKPIT_CONFIG_PATH', COCKPIT_DIR . '/config/config.yaml');
 
 function cockpit($module = null) {
@@ -64,10 +65,10 @@ function cockpit($module = null) {
 
             'paths'        => [
                 '#root'    => COCKPIT_DIR,
-                '#storage' => COCKPIT_DIR.'/storage',
-                '#data'    => COCKPIT_DIR.'/storage/data',
-                '#cache'   => COCKPIT_DIR.'/storage/cache',
-                '#tmp'     => COCKPIT_DIR.'/storage/tmp',
+                '#storage' => COCKPIT_STORAGE_FOLDER,
+                '#data'    => COCKPIT_STORAGE_FOLDER.'/data',
+                '#cache'   => COCKPIT_STORAGE_FOLDER.'/cache',
+                '#tmp'     => COCKPIT_STORAGE_FOLDER.'/tmp',
                 '#modules' => COCKPIT_DIR.'/modules',
                 '#uploads' => COCKPIT_DIR.'/uploads',
                 'assets'   => COCKPIT_DIR.'/assets',
