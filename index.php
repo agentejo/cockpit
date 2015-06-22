@@ -15,7 +15,7 @@ require(__DIR__.'/bootstrap.php');
 
 # admin route
 if (COCKPIT_ADMIN && !defined('COCKPIT_ADMIN_ROUTE')) {
-    $route = str_replace(COCKPIT_BASE_URL, '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+    $route = preg_replace('#'.COCKPIT_BASE_URL.'#', '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), 1);
     define('COCKPIT_ADMIN_ROUTE', $route == '' ? '/' : $route);
 }
 
