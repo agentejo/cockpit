@@ -21,7 +21,7 @@ $app->on('admin.init', function() {
         'active' => strpos($this['route'], '/forms') === 0
     ]);
 
-    $this->on('cockpit.menu.main', function() {
+    $this->on('cockpit.menu.aside', function() {
 
         $frms  = $this->module('forms')->forms();
         $forms = [];

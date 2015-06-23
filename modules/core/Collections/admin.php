@@ -40,7 +40,7 @@ $app->on('admin.init', function() {
         }
     });
 
-    $this->on('cockpit.menu.main', function() {
+    $this->on('cockpit.menu.aside', function() {
 
         $cols        = $this->module('collections')->collections();
         $collections = [];
