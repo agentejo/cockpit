@@ -1,12 +1,14 @@
 <field-gallery>
 
-    <div class="uk-panel uk-panel-box">
+    <div class="uk-panel">
 
         <div name="imagescontainer" class="uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ data.images && data.images.length }">
             <div class="uk-grid-margin" data-idx="{ idx }" each="{ img,idx in data.images }">
                 <div class="uk-panel uk-panel-card">
                     <figure class="uk-display-block uk-overlay uk-overlay-hover">
-                        <img riot-src="{ (SITE_URL+img.path) }">
+                        <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;">
+                            <img riot-src="{ (SITE_URL+img.path) }">
+                        </div>
                         <figcaption class="uk-overlay-panel uk-overlay-background">
 
                             <ul class="uk-subnav">
@@ -23,7 +25,7 @@
         </div>
 
         <div class="{data.images && data.images.length ? 'uk-margin-top':'' }">
-            <span if="{ data.images && !data.images.length }">{ App.i18n.get('Gallery is empty') }.</span>
+            <div class="uk-alert" if="{ data.images && !data.images.length }">{ App.i18n.get('Gallery is empty') }.</div>
             <a class="uk-button uk-button-link" onclick="{ selectimages }">
                 <i class="uk-icon-plus-circle"></i>
                 { App.i18n.get('Add images') }

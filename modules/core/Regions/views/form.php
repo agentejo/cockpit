@@ -63,7 +63,7 @@
 
                     <div class="uk-margin-top">
                         <button class="uk-button uk-button-large uk-button-primary uk-margin-right">@lang('Save')</button>
-                        <a href="@route('/regions')">@lang('Cancel')</a>
+                        <a href="@route('/regions')">@lang('Close')</a>
                     </div>
 
                 </form>

@@ -51,7 +51,7 @@
 
                             <h4>@lang('Fields')</h4>
 
-                            <div name="fieldscontainer" class="uk-grid uk-grid-small uk-grid-gutter">
+                            <div name="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter">
 
                                 <div class="uk-grid-margin uk-width-{field.width}" data-idx="{idx}" each="{ field,idx in collection.fields }">
 
@@ -60,7 +60,6 @@
                                         <div class="uk-grid uk-grid-small">
 
                                             <div class="uk-flex-item-1 uk-flex">
-
 
                                                 <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="collection.fields[{idx}].name" placeholder="name" required>
                                             </div>
@@ -192,7 +191,10 @@
                             <a class="uk-button uk-button-large" href="@route('/collections/entries')/{ collection.name }" if="{ collection._id }"><i class="uk-icon-list"></i> @lang('Show entries')</a>
                         </div>
 
-                        <a href="@route('/collections')">@lang('Cancel')</a>
+                        <a href="@route('/collections')">
+                            <span show="{ !collection._id }">@lang('Cancel')</span>
+                            <span show="{ collection._id }">@lang('Close')</span>
+                        </a>
                     </div>
 
             </div>

@@ -17,9 +17,10 @@
 @button-small-line-height:                      @global-height-small;
 @button-large-line-height:                      @global-height-large;
 
+@button-font-size:                              round(@global-font-size * 0.8);
 @button-mini-font-size:                         round((@global-font-size * 0.78)); // 11px / 12px
 @button-small-font-size:                        round((@global-font-size * 0.85)); // 12px / 14px
-@button-large-font-size:                        round((@global-font-size * 1.14)); // 16px / 18px
+@button-large-font-size:                        @global-font-size;
 
 @button-color:                                  @global-color;
 @button-hover-color:                            @global-color;
@@ -54,6 +55,7 @@
 
 .hook-button() {
     border-radius: @global-border-radius;
+    font-weight: @global-font-weight;
 }
 
 .hook-button-hover() {}

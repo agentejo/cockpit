@@ -813,7 +813,7 @@ riot.tag('field-file', '<div class="uk-flex"> <input class="uk-flex-item-1 uk-ma
     
 });
 
-riot.tag('field-gallery', '<div class="uk-panel uk-panel-box"> <div name="imagescontainer" class="uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ data.images && data.images.length }"> <div class="uk-grid-margin" data-idx="{ idx }" each="{ img,idx in data.images }"> <div class="uk-panel uk-panel-card"> <figure class="uk-display-block uk-overlay uk-overlay-hover"> <img riot-src="{ (SITE_URL+img.path) }"> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{ parent.title }"><i class="uk-icon-tag"></i></a></li> <li><a onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{ img.title }</p> </figcaption> </figure> </div> </div> </div> <div class="{data.images && data.images.length ? \'uk-margin-top\':\'\' }"> <span if="{ data.images && !data.images.length }">{ App.i18n.get(\'Gallery is empty\') }.</span> <a class="uk-button uk-button-link" onclick="{ selectimages }"> <i class="uk-icon-plus-circle"></i> { App.i18n.get(\'Add images\') } </a> </div> </div>', function(opts) {
+riot.tag('field-gallery', '<div class="uk-panel"> <div name="imagescontainer" class="uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ data.images && data.images.length }"> <div class="uk-grid-margin" data-idx="{ idx }" each="{ img,idx in data.images }"> <div class="uk-panel uk-panel-card"> <figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;"> <img riot-src="{ (SITE_URL+img.path) }"> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{ parent.title }"><i class="uk-icon-tag"></i></a></li> <li><a onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{ img.title }</p> </figcaption> </figure> </div> </div> </div> <div class="{data.images && data.images.length ? \'uk-margin-top\':\'\' }"> <div class="uk-alert" if="{ data.images && !data.images.length }">{ App.i18n.get(\'Gallery is empty\') }.</div> <a class="uk-button uk-button-link" onclick="{ selectimages }"> <i class="uk-icon-plus-circle"></i> { App.i18n.get(\'Add images\') } </a> </div> </div>', function(opts) {
 
         var $this = this;
 
@@ -942,6 +942,47 @@ riot.tag('field-html', '<textarea name="input" class="uk-visibility-hidden"></te
     
 });
 
+riot.tag('field-image', '<figure class="uk-overlay uk-overlay-hover"> <div class="uk-placeholder uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;min-width:120px;"> <img riot-src="{ (SITE_URL+image.path) }" show="{ image.path }"> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{ selectimage }" title="{ App.i18n.get(\'Select image\') }" data-uk-tooltip><i class="uk-icon-image"></i></a></li> <li><a onclick="{ title }" title="{ App.i18n.get(\'Set title\') }" data-uk-tooltip><i class="uk-icon-tag"></i></a></li> <li><a onclick="{ remove }" title="{ App.i18n.get(\'Reset\') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{ image.title }</p> </figcaption> </figure>', function(opts) {
+
+        var $this = this;
+
+        this.image = {path:'', title:''};
+
+        this.$updateValue = function(value, field) {
+
+            if (value && this.image !== value) {
+                this.image = value;
+                this.update();
+            }
+
+        }.bind(this);
+
+        this.selectimage = function() {
+
+            App.media.select(function(selected) {
+
+                $this.image.path = selected[0];
+                $this.$setValue($this.image);
+                $this.update();
+
+            }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
+        }.bind(this);
+
+        this.remove = function() {
+            this.image = {path:'', title:''};
+        }.bind(this);
+
+        this.title = function() {
+
+            App.ui.prompt('Title', this.image.title, function(value) {
+                $this.image.title = value;
+                $this.$setValue($this.image);
+                $this.update();
+            });
+        }.bind(this);
+
+    
+});
 riot.tag('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-small-bottom uk-width-1-1"> <i class="uk-icon-search"></i><input name="autocomplete" class="uk-width-1-1"> </div> <div name="map" style="min-height:300px;"> Loading map... </div> <div class="uk-text-small uk-margin-small-top"> LAT: <span class="uk-text-muted">{ latlng.lat }</span> LNG: <span class="uk-text-muted">{ latlng.lng }</span> </div> </div>', function(opts) {
 
         var map, marker;
@@ -1080,6 +1121,8 @@ riot.tag('field-markdown', '<field-html name="input" markdown="true" bind="{ opt
 
 riot.tag('field-object', '<textarea name="input" class="uk-width-1-1" onchange="{ change }"></textarea>', function(opts) {
 
+        var $this = this, editor;
+
         this.value = {};
 
         if (opts.cls) {
@@ -1093,15 +1136,28 @@ riot.tag('field-object', '<textarea name="input" class="uk-width-1-1" onchange="
             this.input.setAttribute('required', 'required');
         }
 
-        this.input.onkeydown = function(e) {
+        this.on('mount', function(){
 
-            if (e.keyCode === 9) {
-                var val = this.value, start = this.selectionStart, end = this.selectionEnd;
-                this.value = val.substring(0, start) + '\t' + val.substring(end);
-                this.selectionStart = this.selectionEnd = start + 1;
-                return false;
-            }
-        };
+            App.assets.require([
+
+                '/assets/lib/behave.js'
+
+            ], function() {
+
+                editor = new Behave({
+                    textarea: $this.input,
+                    replaceTab: true,
+                    softTabs: true,
+                    tabSize: 2,
+                    autoOpen: true,
+                    overwrite: true,
+                    autoStrip: true,
+                    autoIndent: true,
+                    fence: false
+                });
+
+            }.bind(this));
+        });
 
         this.$updateValue = function(value) {
 

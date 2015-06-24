@@ -19,7 +19,7 @@
 
             <div class="uk-float-right">
 
-                <a class="uk-button uk-button-large uk-button-primary uk-width-1-1" href="@route('/collections/collection')">@lang('Create a collection')</a>
+                <a class="uk-button uk-button-large uk-button-primary uk-width-1-1" href="@route('/collections/collection')"><i class="uk-icon-plus-circle uk-icon-justify"></i>  @lang('Collection')</a>
 
             </div>
 

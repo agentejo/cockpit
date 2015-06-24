@@ -4,6 +4,8 @@
 
     <script>
 
+        var $this = this, editor;
+
         this.value = {};
 
         if (opts.cls) {
@@ -17,15 +19,28 @@
             this.input.setAttribute('required', 'required');
         }
 
-        this.input.onkeydown = function(e) {
+        this.on('mount', function(){
 
-            if (e.keyCode === 9) {
-                var val = this.value, start = this.selectionStart, end = this.selectionEnd;
-                this.value = val.substring(0, start) + '\t' + val.substring(end);
-                this.selectionStart = this.selectionEnd = start + 1;
-                return false;
-            }
-        };
+            App.assets.require([
+
+                '/assets/lib/behave.js'
+
+            ], function() {
+
+                editor = new Behave({
+                    textarea: $this.input,
+                    replaceTab: true,
+                    softTabs: true,
+                    tabSize: 2,
+                    autoOpen: true,
+                    overwrite: true,
+                    autoStrip: true,
+                    autoIndent: true,
+                    fence: false
+                });
+
+            }.bind(this));
+        });
 
         this.$updateValue = function(value) {
 

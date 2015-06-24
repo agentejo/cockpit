@@ -49,7 +49,10 @@
 
                 <div class="uk-margin-top">
                     <button class="uk-button uk-button-large uk-button-primary uk-margin-right">@lang('Save')</button>
-                    <a href="@route('/collections/entries/'.$collection['name'])">@lang('Cancel')</a>
+                    <a href="@route('/collections/entries/'.$collection['name'])">
+                        <span show="{ !entry._id }">@lang('Cancel')</span>
+                        <span show="{ entry._id }">@lang('Close')</span>
+                    </a>
                 </div>
 
             </form>

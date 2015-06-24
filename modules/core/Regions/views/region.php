@@ -38,16 +38,16 @@
 
                 <div class="uk-form-row">
 
-                    <ul class="uk-subnav uk-subnav-pill uk-flex-right">
+                    <ul class="uk-tab uk-flex uk-flex-right uk-margin">
                         <li class="{ view==='template' ? 'uk-active':'' }"><a onclick="{ toggleview }">Template</a></li>
                         <li class="{ view==='fields' ? 'uk-active':'' }"><a onclick="{ toggleview }">Fields</a></li>
                     </ul>
 
-                    <div show="{ view==='fields' && region.fields.length }">
+                    <div class="uk-margin-large-top" show="{ view==='fields' && region.fields.length }">
 
                             <h4>@lang('Fields')</h4>
 
-                            <div name="fieldscontainer" class="uk-grid uk-grid-small uk-grid-gutter">
+                            <div name="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter">
 
                                 <div class="uk-grid-margin uk-width-{field.width}" data-idx="{idx}" each="{ field,idx in region.fields }">
 
@@ -56,7 +56,6 @@
                                         <div class="uk-grid uk-grid-small">
 
                                             <div class="uk-flex-item-1 uk-flex">
-
 
                                                 <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="region.fields[{idx}].name" placeholder="name" required>
                                             </div>
@@ -179,7 +178,7 @@
 
                         </div>
 
-                        <div show="{ view==='template'}">
+                        <div class="uk-margin-large-top" show="{ view==='template'}">
                             <h4>@lang('Template')</h4>
                             <field-code bind="region.template" syntax="php"></field-code>
                         </div>
@@ -191,7 +190,10 @@
                                 <a class="uk-button uk-button-large" href="@route('/regions/form')/{ region.name }" if="{ region._id }"><i class="uk-icon-eye"></i> @lang('Show form')</a>
                             </div>
 
-                            <a href="@route('/regions')">@lang('Cancel')</a>
+                            <a href="@route('/regions')">
+                                <span show="{ !region._id }">@lang('Cancel')</span>
+                                <span show="{ region._id }">@lang('Close')</span>
+                            </a>
                         </div>
 
                     </div>
