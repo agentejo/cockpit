@@ -17,7 +17,7 @@
 
         <div class="uk-float-right">
             <a class="uk-button uk-button-primary uk-button-large" href="@route('/accounts/create')">
-                @lang('Create account')
+                <i class="uk-icon-plus-circle uk-icon-justify"></i> @lang('Account')
             </a>
         </div>
 
