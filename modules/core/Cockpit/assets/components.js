@@ -232,7 +232,7 @@ riot.tag('cp-field', '', function(opts) {
 
                 var container = App.$('<div name="fieldcontainer" type="{ field.type }"></div>').appendTo(this.root);
 
-                var field   = opts.field || {},
+                var field   = typeof(opts.field) == 'string' ? {type:opts.field} : ( opts.field || {}),
                     type    = field.type || 'text',
                     options = field.options || {},
                     fc      = 'field-'+type;
@@ -1119,7 +1119,7 @@ riot.tag('field-markdown', '<field-html name="input" markdown="true" bind="{ opt
     
 });
 
-riot.tag('field-object', '<textarea name="input" class="uk-width-1-1" onchange="{ change }"></textarea>', function(opts) {
+riot.tag('field-object', '<textarea name="input" class="uk-width-1-1" onchange="{ change }">{}</textarea>', function(opts) {
 
         var $this = this, editor;
 
@@ -1161,8 +1161,11 @@ riot.tag('field-object', '<textarea name="input" class="uk-width-1-1" onchange="
 
         this.$updateValue = function(value) {
 
-            if (JSON.stringify(this.value) != JSON.stringify(value)) {
+            if (typeof(value) != 'object') {
+                value = {};
+            }
 
+            if (JSON.stringify(this.value) != JSON.stringify(value)) {
                 this.value = value || {};
                 this.input.value = JSON.stringify(this.value, null, 2);
             }

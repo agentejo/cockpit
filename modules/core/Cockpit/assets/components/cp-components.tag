@@ -12,7 +12,7 @@
 
                 var container = App.$('<div name="fieldcontainer" type="{ field.type }"></div>').appendTo(this.root);
 
-                var field   = opts.field || {},
+                var field   = typeof(opts.field) == 'string' ? {type:opts.field} : ( opts.field || {}),
                     type    = field.type || 'text',
                     options = field.options || {},
                     fc      = 'field-'+type;

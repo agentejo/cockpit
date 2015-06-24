@@ -126,7 +126,7 @@
 
                                                                 <div class="uk-form-row">
                                                                     <div class="uk-text-small uk-text-bold">@lang('Options') <span class="uk-text-muted">JSON</span></div>
-                                                                    <field-textarea cls="uk-width-1-1" bind="collection.fields[{idx}].options" rows="6" allowtabs="2"></field-textarea>
+                                                                    <field-object cls="uk-width-1-1" bind="collection.fields[{idx}].options" rows="6" allowtabs="2"></field-object>
                                                                 </div>
 
                                                                 <div class="uk-form-row">
@@ -201,7 +201,6 @@
 
         </div>
 
-
     </form>
 
     <script type="view/script">
@@ -211,8 +210,6 @@
         this.mixin(RiotBindMixin);
 
         this.collection = {{ json_encode($collection) }};
-
-        stringifyOptionsField();
 
         // get all available fields
 
@@ -283,7 +280,7 @@
                 'default' : '',
                 'info'    : '',
                 'localize': false,
-                'options' : '{}',
+                'options' : {},
                 'width'   : '1-1',
                 'lst'     : true
             });
@@ -301,39 +298,18 @@
 
             var collection = this.collection;
 
-            collection.fields.forEach(function(field){
-                field.options = App.Utils.str2json(field.options) || {};
-            });
-
             App.callmodule('collections:saveCollection', [this.collection.name, collection]).then(function(data) {
 
                 if (data.result) {
 
                     App.ui.notify("Saving successfull", "success");
                     $this.collection = data.result;
-
-                    stringifyOptionsField();
-
                     $this.update();
 
                 } else {
 
                     App.ui.notify("Saving failed.", "danger");
                 }
-            });
-        }
-
-        function stringifyOptionsField() {
-
-            $this.collection.fields.forEach(function(field, options){
-
-                options = field.options ? JSON.stringify(field.options, null, 2) : '{}';
-
-                if (options == '[]') {
-                    options = '{}';
-                }
-
-                field.options = options;
             });
         }
 

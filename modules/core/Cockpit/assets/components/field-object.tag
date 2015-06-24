@@ -1,6 +1,6 @@
 <field-object>
 
-    <textarea name="input" class="uk-width-1-1" onchange="{ change }"></textarea>
+    <textarea name="input" class="uk-width-1-1" onchange="{ change }">{}</textarea>
 
     <script>
 
@@ -44,8 +44,11 @@
 
         this.$updateValue = function(value) {
 
-            if (JSON.stringify(this.value) != JSON.stringify(value)) {
+            if (typeof(value) != 'object') {
+                value = {};
+            }
 
+            if (JSON.stringify(this.value) != JSON.stringify(value)) {
                 this.value = value || {};
                 this.input.value = JSON.stringify(this.value, null, 2);
             }

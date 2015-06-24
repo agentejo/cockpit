@@ -122,7 +122,7 @@
 
                                                                 <div class="uk-form-row">
                                                                     <div class="uk-text-small uk-text-bold">@lang('Options') <span class="uk-text-muted">JSON</span></div>
-                                                                    <field-textarea cls="uk-width-1-1" bind="region.fields[{idx}].options" rows="6" allowtabs="2"></field-textarea>
+                                                                    <field-object cls="uk-width-1-1" bind="region.fields[{idx}].options" rows="6" allowtabs="2"></field-object>
                                                                 </div>
 
                                                                 <div class="uk-form-row">
@@ -227,8 +227,6 @@
 
         this.region = {{ json_encode($region) }};
 
-        stringifyOptionsField();
-
         this.one('mount', function(){
 
             UIkit.sortable(this.fieldscontainer, {
@@ -301,19 +299,12 @@
 
             var region = this.region;
 
-            region.fields.forEach(function(field){
-                field.options = App.Utils.str2json(field.options) || {};
-            });
-
             App.callmodule('regions:saveRegion', [this.region.name, region]).then(function(data) {
 
                 if (data.result) {
 
                     App.ui.notify("Saving successfull", "success");
                     $this.region = data.result;
-
-                    stringifyOptionsField();
-
                     $this.update();
 
                 } else {
@@ -325,20 +316,6 @@
 
         toggleview() {
             this.view = this.view=='template' ? 'fields':'template';
-        }
-
-        function stringifyOptionsField() {
-
-            $this.region.fields.forEach(function(field, options){
-
-                options = field.options ? JSON.stringify(field.options, null, 2) : '{}';
-
-                if (options == '[]') {
-                    options = '{}';
-                }
-
-                field.options = options;
-            });
         }
 
     </script>
