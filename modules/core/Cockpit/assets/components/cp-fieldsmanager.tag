@@ -41,54 +41,7 @@
                             </li>
 
                             <li>
-
-                                <a data-uk-dropdown="\{mode:'click'\}">
-
-                                    <i class="uk-icon-cog uk-text-primary"></i>
-
-                                    <div class="uk-dropdown uk-dropdown-center uk-text-left uk-dropdown-width-2">
-
-                                        <div class="uk-form-row uk-text-bold">
-                                            { field.name || 'Field' }
-                                        </div>
-
-                                        <div class="uk-form-row">
-
-                                            <div class="uk-form-select uk-width-1-1">
-                                                <div class="uk-form-icon uk-width-1-1">
-                                                    <i class="uk-icon-tag"></i>
-                                                    <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.type.toUpperCase() }">
-                                                </div>
-                                                <select class="uk-width-1-1" bind="fields[{idx}].type">
-                                                    <option each="{type,typeidx in parent.fieldtypes}" value="{type.value}">{type.name}</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="uk-form-row">
-                                            <input class="uk-width-1-1" type="text" bind="fields[{idx}].label" placeholder="{ App.i18n.get('label') }">
-                                        </div>
-
-                                        <div class="uk-form-row">
-                                            <input class="uk-width-1-1" type="text" bind="fields[{idx}].info" placeholder="{ App.i18n.get('info') }">
-                                        </div>
-
-                                        <div class="uk-form-row">
-                                            <div class="uk-text-small uk-text-bold">{ App.i18n.get('Options') } <span class="uk-text-muted">JSON</span></div>
-                                            <field-object cls="uk-width-1-1" bind="fields[{idx}].options" rows="6" allowtabs="2"></field-object>
-                                        </div>
-
-                                        <div class="uk-form-row">
-                                            <input type="checkbox" bind="fields[{idx}].required"> { App.i18n.get('Required') }
-                                        </div>
-
-                                        <div class="uk-form-row">
-                                            <input type="checkbox" bind="fields[{idx}].localize"> { App.i18n.get('Localize') }
-                                        </div>
-
-                                    </div>
-
-                                </a>
+                                <a onclick="UIkit.modal('#field-{idx}').show()"><i class="uk-icon-cog uk-text-primary"></i></a>
                             </li>
 
                             <li>
@@ -103,6 +56,52 @@
 
                 </div>
 
+            </div>
+
+            <div class="uk-modal" id="field-{idx}">
+                <div class="uk-modal-dialog">
+
+                    <div class="uk-form-row uk-text-bold">
+                        { field.name || 'Field' }
+                    </div>
+
+                    <div class="uk-form-row">
+
+                        <div class="uk-form-select uk-width-1-1">
+                            <div class="uk-form-icon uk-width-1-1">
+                                <i class="uk-icon-tag"></i>
+                                <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.type.toUpperCase() }">
+                            </div>
+                            <select class="uk-width-1-1" bind="fields[{idx}].type">
+                                <option each="{type,typeidx in parent.fieldtypes}" value="{type.value}">{type.name}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="uk-form-row">
+                        <input class="uk-width-1-1" type="text" bind="fields[{idx}].label" placeholder="{ App.i18n.get('label') }">
+                    </div>
+
+                    <div class="uk-form-row">
+                        <input class="uk-width-1-1" type="text" bind="fields[{idx}].info" placeholder="{ App.i18n.get('info') }">
+                    </div>
+
+                    <div class="uk-form-row">
+                        <div class="uk-text-small uk-text-bold">{ App.i18n.get('Options') } <span class="uk-text-muted">JSON</span></div>
+                        <field-object cls="uk-width-1-1" bind="fields[{idx}].options" rows="6" allowtabs="2"></field-object>
+                    </div>
+
+                    <div class="uk-form-row">
+                        <input type="checkbox" bind="fields[{idx}].required"> { App.i18n.get('Required') }
+                    </div>
+
+                    <div class="uk-form-row">
+                        <input type="checkbox" bind="fields[{idx}].localize"> { App.i18n.get('Localize') }
+                    </div>
+
+                    <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{ App.i18n.get('Close') }</button></div>
+
+                </div>
             </div>
 
         </div>
@@ -212,6 +211,10 @@
         removefield(e) {
             this.fields.splice(e.item.idx, 1);
             $this.$setValue(this.fields);
+        }
+
+        togglelist(e) {
+            e.item.field.lst = !e.item.field.lst;
         }
 
     </script>

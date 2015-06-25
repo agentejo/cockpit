@@ -40,7 +40,9 @@
                 });
 
             }.bind(this));
+
         });
+
 
         this.$updateValue = function(value) {
 
