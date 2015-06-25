@@ -942,7 +942,7 @@ riot.tag('field-gallery', '<div class="uk-panel"> <div name="imagescontainer" cl
                 $this.update();
 
                 setTimeout(function() {
-                    this.$setValue(images);
+                    $this.$setValue(images);
                 }, 0);
 
             });

@@ -62,7 +62,7 @@
                 $this.update();
 
                 setTimeout(function() {
-                    this.$setValue(images);
+                    $this.$setValue(images);
                 }, 0);
 
             });
