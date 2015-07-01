@@ -49,7 +49,7 @@
 
             ele.$setValue = (function(fn, body) {
 
-                var field, segments, body, cache = {};
+                var field, segments, cache = {};
 
                 return function(value) {
 
@@ -57,13 +57,15 @@
 
                     if (!cache[field]) {
 
-                        segments = field.split('.')
+                        segments = field.split('.');
 
                         var current = tag;
 
                         try {
 
-                            for (var i = 0, current;i<segments.length;i++) {
+                            for (var i = 0;i<segments.length;i++) {
+
+                                if (segments[i].idexOf('[')!=-1) break;
 
                                 if (current[segments[i]] === undefined ) {
 
@@ -77,7 +79,7 @@
                                 current = current[segments[i]];
                             }
 
-                        }catch(e){};
+                        }catch(e){}
 
                         cache[field] = true;
                     }
