@@ -1069,7 +1069,7 @@ riot.tag('field-html', '<textarea name="input" class="uk-visibility-hidden"></te
     
 });
 
-riot.tag('field-image', '<figure class="uk-overlay uk-overlay-hover"> <div class="uk-placeholder uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;min-width:120px;"> <img riot-src="{ (SITE_URL+image.path) }" show="{ image.path }"> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{ selectimage }" title="{ App.i18n.get(\'Select image\') }" data-uk-tooltip><i class="uk-icon-image"></i></a></li> <li><a onclick="{ title }" title="{ App.i18n.get(\'Set title\') }" data-uk-tooltip><i class="uk-icon-tag"></i></a></li> <li><a onclick="{ remove }" title="{ App.i18n.get(\'Reset\') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{ image.title }</p> </figcaption> </figure>', function(opts) {
+riot.tag('field-image', '<figure class="uk-overlay uk-overlay-hover"> <div class="uk-placeholder uk-flex uk-flex-middle uk-flex-center uk-text-muted" style="min-height:120px;min-width:120px;"> <img riot-src="{ (SITE_URL+image.path) }" show="{ image.path }"> <i class="uk-icon-image" show="{ !image.path }"></i> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{ selectimage }" title="{ App.i18n.get(\'Select image\') }" data-uk-tooltip><i class="uk-icon-image"></i></a></li> <li><a onclick="{ title }" title="{ App.i18n.get(\'Set title\') }" data-uk-tooltip><i class="uk-icon-tag"></i></a></li> <li><a onclick="{ remove }" title="{ App.i18n.get(\'Reset\') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{ image.title }</p> </figcaption> </figure>', function(opts) {
 
         var $this = this;
 
@@ -1096,7 +1096,7 @@ riot.tag('field-image', '<figure class="uk-overlay uk-overlay-hover"> <div class
         }.bind(this);
 
         this.remove = function() {
-            this.image = {path:'', title:''};
+            this.$setValue({path:'', title:''});
         }.bind(this);
 
         this.title = function() {
@@ -1110,6 +1110,7 @@ riot.tag('field-image', '<figure class="uk-overlay uk-overlay-hover"> <div class
 
     
 });
+
 riot.tag('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-small-bottom uk-width-1-1"> <i class="uk-icon-search"></i><input name="autocomplete" class="uk-width-1-1"> </div> <div name="map" style="min-height:300px;"> Loading map... </div> <div class="uk-text-small uk-margin-small-top"> LAT: <span class="uk-text-muted">{ latlng.lat }</span> LNG: <span class="uk-text-muted">{ latlng.lng }</span> </div> </div>', function(opts) {
 
         var map, marker;

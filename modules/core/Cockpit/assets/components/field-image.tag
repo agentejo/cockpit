@@ -2,8 +2,9 @@
 
     <figure class="uk-overlay uk-overlay-hover">
 
-        <div class="uk-placeholder uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;min-width:120px;">
+        <div class="uk-placeholder uk-flex uk-flex-middle uk-flex-center uk-text-muted" style="min-height:120px;min-width:120px;">
             <img riot-src="{ (SITE_URL+image.path) }" show="{ image.path }">
+            <i class="uk-icon-image" show="{ !image.path }"></i>
         </div>
 
         <figcaption class="uk-overlay-panel uk-overlay-background">
@@ -46,7 +47,7 @@
         }
 
         remove() {
-            this.image = {path:'', title:''};
+            this.$setValue({path:'', title:''});
         }
 
         title() {
