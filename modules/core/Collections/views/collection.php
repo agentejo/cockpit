@@ -47,31 +47,11 @@
 
                 <div class="uk-form-row">
 
-                    <div show="{ collection.fields.length }">
 
-                            <h4>@lang('Fields')</h4>
+                    <h4>@lang('Fields')</h4>
 
-                            <cp-fieldsmanager bind="collection.fields"></cp-fieldsmanager>
+                    <cp-fieldsmanager bind="collection.fields"></cp-fieldsmanager>
 
-                        </div>
-
-                    </div>
-
-                    <div class="uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ !collection.fields.length && !reorder }">
-
-                        <div class="uk-animation-fade">
-
-                            <p class="uk-text-xlarge">
-                                <i class="uk-icon-list-alt"></i>
-                            </p>
-
-                            <hr>
-
-                            @lang('No fields added yet'). <a onclick="{ addfield }">@lang('Add field').</a>
-
-                        </div>
-
-                    </div>
 
                     <div class="uk-margin-large-top" show="{ collection.fields.length }">
 
@@ -85,6 +65,8 @@
                             <span show="{ collection._id }">@lang('Close')</span>
                         </a>
                     </div>
+
+                </div>
 
             </div>
 
@@ -107,10 +89,6 @@
                 this.name.disabled = true;
             }
         });
-
-        addfield() {
-            this.tags['cp-fieldsmanager'].addfield();
-        }
 
         submit() {
 

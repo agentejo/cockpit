@@ -18,7 +18,7 @@
 
         <div class="uk-panel uk-panel-space uk-panel-box uk-panel-card uk-text-center">
 
-            <cp-gravatar email="{ account.email }" size="100"></cp-gravatar>
+            <cp-gravatar email="{ account.email }" size="100" alt="{ account.name || account.user }"></cp-gravatar>
 
         </div>
 

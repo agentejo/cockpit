@@ -258,13 +258,14 @@ riot.tag('cp-field', '', function(opts) {
     
 });
 
-riot.tag('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form"> <div class="uk-grid-margin uk-width-{field.width}" data-idx="{idx}" each="{ field,idx in fields }"> <div class="uk-panel uk-panel-box uk-panel-card"> <div class="uk-grid uk-grid-small"> <div class="uk-flex-item-1 uk-flex"> <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="fields[{idx}].name" placeholder="name" required> </div> <div class="uk-width-1-4"> <div class="uk-form-select" data-uk-form-select> <div class="uk-form-icon"> <i class="uk-icon-arrows-h"></i> <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.width }"> </div> <select bind="fields[{idx}].width"> <option value="1-1">1-1</option> <option value="1-2">1-2</option> <option value="1-3">1-3</option> <option value="2-3">2-3</option> <option value="1-4">1-4</option> <option value="3-4">3-4</option> </select> </div> </div> <div class="uk-text-right"> <ul class="uk-subnav"> <li> <a class="uk-text-{ field.lst ? \'success\':\'muted\'}" onclick="{ parent.togglelist }" title="{ App.i18n.get(\'Show field on list view\') }"> <i class="uk-icon-list"></i> </a> </li> <li> <a onclick="UIkit.modal(\'#field-{idx}\').show()"><i class="uk-icon-cog uk-text-primary"></i></a> </li> <li> <a class="uk-text-danger" onclick="{ parent.removefield }"> <i class="uk-icon-trash"></i> </a> </li> </ul> </div> </div> </div> <div class="uk-modal" id="field-{idx}"> <div class="uk-modal-dialog"> <div class="uk-form-row uk-text-bold"> { field.name || \'Field\' } </div> <div class="uk-form-row"> <div class="uk-form-select uk-width-1-1"> <div class="uk-form-icon uk-width-1-1"> <i class="uk-icon-tag"></i> <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.type.toUpperCase() }"> </div> <select class="uk-width-1-1" bind="fields[{idx}].type"> <option each="{type,typeidx in parent.fieldtypes}" value="{type.value}">{type.name}</option> </select> </div> </div> <div class="uk-form-row"> <input class="uk-width-1-1" type="text" bind="fields[{idx}].label" placeholder="{ App.i18n.get(\'label\') }"> </div> <div class="uk-form-row"> <input class="uk-width-1-1" type="text" bind="fields[{idx}].info" placeholder="{ App.i18n.get(\'info\') }"> </div> <div class="uk-form-row"> <div class="uk-text-small uk-text-bold">{ App.i18n.get(\'Options\') } <span class="uk-text-muted">JSON</span></div> <field-object cls="uk-width-1-1" bind="fields[{idx}].options" rows="6" allowtabs="2"></field-object> </div> <div class="uk-form-row"> <input type="checkbox" bind="fields[{idx}].required"> { App.i18n.get(\'Required\') } </div> <div class="uk-form-row"> <input type="checkbox" bind="fields[{idx}].localize"> { App.i18n.get(\'Localize\') } </div> <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{ App.i18n.get(\'Close\') }</button></div> </div> </div> </div> <div class="uk-margin-top"> <a class="uk-button uk-button-link" onclick="{ addfield }"><i class="uk-icon-plus-circle"></i> { App.i18n.get(\'Add field\') }</a> </div> </div>', function(opts) {
+riot.tag('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form" show="{fields.length}"> <div class="uk-grid-margin uk-width-{field.width}" data-idx="{idx}" each="{ field,idx in fields }"> <div class="uk-panel uk-panel-box uk-panel-card"> <div class="uk-grid uk-grid-small"> <div class="uk-flex-item-1 uk-flex"> <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="fields[{idx}].name" placeholder="name" required> </div> <div class="uk-width-1-4"> <div class="uk-form-select" data-uk-form-select> <div class="uk-form-icon"> <i class="uk-icon-arrows-h"></i> <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.width }"> </div> <select bind="fields[{idx}].width"> <option value="1-1">1-1</option> <option value="1-2">1-2</option> <option value="1-3">1-3</option> <option value="2-3">2-3</option> <option value="1-4">1-4</option> <option value="3-4">3-4</option> </select> </div> </div> <div class="uk-text-right"> <ul class="uk-subnav"> <li> <a class="uk-text-{ field.lst ? \'success\':\'muted\'}" onclick="{ parent.togglelist }" title="{ App.i18n.get(\'Show field on list view\') }"> <i class="uk-icon-list"></i> </a> </li> <li> <a onclick="UIkit.modal(\'#field-{idx}\').show()"><i class="uk-icon-cog uk-text-primary"></i></a> </li> <li> <a class="uk-text-danger" onclick="{ parent.removefield }"> <i class="uk-icon-trash"></i> </a> </li> </ul> </div> </div> </div> <div class="uk-modal" id="field-{idx}"> <div class="uk-modal-dialog"> <div class="uk-form-row uk-text-bold"> { field.name || \'Field\' } </div> <div class="uk-form-row"> <div class="uk-form-select uk-width-1-1"> <div class="uk-form-icon uk-width-1-1"> <i class="uk-icon-tag"></i> <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.type.toUpperCase() }"> </div> <select class="uk-width-1-1" bind="fields[{idx}].type"> <option each="{type,typeidx in parent.fieldtypes}" value="{type.value}">{type.name}</option> </select> </div> </div> <div class="uk-form-row"> <input class="uk-width-1-1" type="text" bind="fields[{idx}].label" placeholder="{ App.i18n.get(\'label\') }"> </div> <div class="uk-form-row"> <input class="uk-width-1-1" type="text" bind="fields[{idx}].info" placeholder="{ App.i18n.get(\'info\') }"> </div> <div class="uk-form-row"> <div class="uk-text-small uk-text-bold">{ App.i18n.get(\'Options\') } <span class="uk-text-muted">JSON</span></div> <field-object cls="uk-width-1-1" bind="fields[{idx}].options" rows="6" allowtabs="2"></field-object> </div> <div class="uk-form-row"> <input type="checkbox" bind="fields[{idx}].required"> { App.i18n.get(\'Required\') } </div> <div class="uk-form-row"> <input type="checkbox" bind="fields[{idx}].localize"> { App.i18n.get(\'Localize\') } </div> <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{ App.i18n.get(\'Close\') }</button></div> </div> </div> </div> <div class="uk-margin-top"> <a class="uk-button uk-button-link" onclick="{ addfield }"><i class="uk-icon-plus-circle"></i> { App.i18n.get(\'Add field\') }</a> </div> </div> <div class="uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ !fields.length && !reorder }"> <div class="uk-animation-fade"> <p class="uk-text-xlarge"> <i class="uk-icon-list-alt"></i> </p> <hr> { App.i18n.get(\'No fields added yet\') }. <a onclick="{ addfield }">{ App.i18n.get(\'Add field\') }.</a> </div> </div>', function(opts) {
 
         this.mixin(RiotBindMixin);
 
         var $this = this;
 
-        this.fields = [];
+        this.fields  = [];
+        this.reorder = false;
 
 
         this.fieldtypes = [];
@@ -773,11 +774,32 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
     
 });
 
-riot.tag('cp-gravatar', '<img name="image" class="uk-border-circle" riot-src="//www.gravatar.com/avatar/{ md5(email) }?d=mm&s={ size }" width="{ size }" height="{ size }" alt="avatar">', function(opts) {
+riot.tag('cp-gravatar', '<img name="image" class="uk-border-circle" riot-src="{ url }" width="{ size }" height="{ size }" alt="{ opts.alt }">', function(opts) {
+
+        this.url = '';
 
         this.on('update', function() {
+
             this.size  = opts.size || 100;
             this.email = opts.email || '';
+
+            var img = new Image(), url;
+
+            url = '//www.gravatar.com/avatar/'+md5(this.email)+'?d=404&s='+this.size;
+
+            img.onload = function() {
+                this.image.src = url;
+                this.image.style.visibility = '';
+            }.bind(this);
+
+            img.onerror = function() {
+                this.image.src = App.Utils.letterAvatar(opts.alt || '', this.size);
+                this.image.style.visibility = '';
+            }.bind(this);
+
+            this.image.style.visibility = 'hidden';
+            img.src = url;
+
         });
 
     
@@ -918,36 +940,37 @@ riot.tag('field-file', '<div class="uk-flex"> <input class="uk-flex-item-1 uk-ma
     
 });
 
-riot.tag('field-gallery', '<div class="uk-panel"> <div name="imagescontainer" class="uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ data.images && data.images.length }"> <div class="uk-grid-margin" data-idx="{ idx }" each="{ img,idx in data.images }"> <div class="uk-panel uk-panel-card"> <figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;"> <img riot-src="{ (SITE_URL+img.path) }"> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{ parent.title }"><i class="uk-icon-tag"></i></a></li> <li><a onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{ img.title }</p> </figcaption> </figure> </div> </div> </div> <div class="{data.images && data.images.length ? \'uk-margin-top\':\'\' }"> <div class="uk-alert" if="{ data.images && !data.images.length }">{ App.i18n.get(\'Gallery is empty\') }.</div> <a class="uk-button uk-button-link" onclick="{ selectimages }"> <i class="uk-icon-plus-circle"></i> { App.i18n.get(\'Add images\') } </a> </div> </div>', function(opts) {
+riot.tag('field-gallery', '<div class="uk-panel"> <div name="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ images && images.length }"> <div class="uk-grid-margin" data-idx="{ idx }" each="{ img,idx in images }"> <div class="uk-panel uk-panel-card"> <figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;"> <img riot-src="{ (SITE_URL+img.path) }"> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{ parent.title }" title="{ App.i18n.get(\'Set title\') }" data-uk-tooltip><i class="uk-icon-tag"></i></a></li> <li><a onclick="{ parent.remove }" title="{ App.i18n.get(\'Remove image\') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{ img.title }</p> </figcaption> </figure> </div> </div> </div> <div class="{images && images.length ? \'uk-margin-top\':\'\' }"> <div class="uk-alert" if="{ images && !images.length }">{ App.i18n.get(\'Gallery is empty\') }.</div> <a class="uk-button uk-button-link" onclick="{ selectimages }"> <i class="uk-icon-plus-circle"></i> { App.i18n.get(\'Add images\') } </a> </div> </div>', function(opts) {
 
         var $this = this;
 
-        this.data = { images: [] };
+        this.images = [];
         this._field = null;
 
         this.on('mount', function() {
 
             UIkit.sortable(this.imagescontainer, {
 
-                animation: false,
-                dragCustomClass:'uk-form'
+                animation: false
 
             }).element.on("change.uk.sortable", function(e, sortable, ele) {
 
                 ele = App.$(ele);
 
-                var images = $this.data.images,
+                var images = $this.images,
                     cidx   = ele.index(),
                     oidx   = ele.data('idx');
 
                 images.splice(cidx, 0, images.splice(oidx, 1)[0]);
 
-                $this.data.images = [];
+                $this.images = [];
                 $this.update();
 
                 setTimeout(function() {
+                    $this.images = images;
                     $this.$setValue(images);
-                }, 0);
+                    $this.update();
+                }, 10);
 
             });
 
@@ -959,8 +982,8 @@ riot.tag('field-gallery', '<div class="uk-panel"> <div name="imagescontainer" cl
                 value = [];
             }
 
-            if (this.data.images !== value) {
-                this.data.images = value;
+            if (this.images !== value) {
+                this.images = value;
                 this.update();
             }
 
@@ -977,21 +1000,21 @@ riot.tag('field-gallery', '<div class="uk-panel"> <div name="imagescontainer" cl
                     images.push({title:'', path:path});
                 });
 
-                $this.$setValue($this.data.images.concat(images));
+                $this.$setValue($this.images.concat(images));
 
             }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
         }.bind(this);
 
         this.remove = function(e) {
-            this.data.images.splice(e.item.idx, 1);
-            this.$setValue(this.data.images);
+            this.images.splice(e.item.idx, 1);
+            this.$setValue(this.images);
         }.bind(this);
 
         this.title = function(e) {
 
-            App.ui.prompt('Title', this.data.images[e.item.idx].title, function(value) {
-                $this.data.images[e.item.idx].title = value;
-                $this.$setValue($this.data.images);
+            App.ui.prompt('Title', this.images[e.item.idx].title, function(value) {
+                $this.images[e.item.idx].title = value;
+                $this.$setValue($this.images);
                 $this.update();
             });
         }.bind(this);
@@ -1242,36 +1265,28 @@ riot.tag('field-object', '<textarea name="input" class="uk-width-1-1" onchange="
 
         this.on('mount', function(){
 
+            App.assets.require([
+
+                '/assets/lib/behave.js'
+
+            ], function() {
+
+                editor = new Behave({
+                    textarea: $this.input,
+                    replaceTab: true,
+                    softTabs: true,
+                    tabSize: 2,
+                    autoOpen: true,
+                    overwrite: true,
+                    autoStrip: true,
+                    autoIndent: true,
+                    fence: false
+                });
+
+            }.bind(this));
 
         });
 
-        this.on('updated', function() {
-
-            if(!editor) {
-
-                editor = true;
-
-                App.assets.require([
-
-                    '/assets/lib/behave.js'
-
-                ], function() {
-
-                    editor = new Behave({
-                        textarea: $this.input,
-                        replaceTab: true,
-                        softTabs: true,
-                        tabSize: 2,
-                        autoOpen: true,
-                        overwrite: true,
-                        autoStrip: true,
-                        autoIndent: true,
-                        fence: false
-                    });
-
-                }.bind(this));
-            }
-        })
 
         this.$updateValue = function(value) {
 

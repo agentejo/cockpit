@@ -30,31 +30,41 @@
 
             <div class="uk-panel uk-panel-box uk-panel-card">
 
-                <div class="uk-grid">
+                <div class="uk-grid uk-grid-small uk-flex-middle">
 
                     <div>
                         <a class="uk-link-muted" href="@route('/accounts/account')/{ account._id }" title="@lang('Edit account')">
-                            <img class="uk-border-circle" riot-src="//www.gravatar.com/avatar/{ account.md5email }?d=mm&s=50" width="50" height="50" alt="gravatar">
+                            <cp-gravatar email="{ account.md5email }" size="30" alt="{ account.name || account.user }"></cp-gravatar>
                         </a>
-
-                        <div class="uk-text-center uk-margin-small-top">
-                            <span class="{ account.active ? 'uk-icon-circle uk-text-success':'uk-icon-circle-o uk-text-danger' }"></span>
-                        </div>
                     </div>
 
-                    <div class="uk-flex-item-1">
+                    <div class="uk-flex-item-1 { account.active ? '':'uk-text-danger' }">
 
                         <div class="uk-text-truncate">
-
-                            <strong>{ account.name || account.user }</strong>
+                            <a class="uk-link-muted" href="@route('/accounts/account')/{ account._id }" title="@lang('Edit account')">
+                                <strong>{ account.name || account.user }</strong>
+                            </a>
                         </div>
-                        <div class="uk-badge uk-margin-small-top">{ account.group }</div>
 
-                        <ul class="uk-subnav uk-subnav-line uk-text-small uk-margin-small-top">
-                            <li><a href="@route('/accounts/account')/{ account._id }">@lang('Edit')</a></li>
-                            <li><a class="uk-text-danger" onclick="{ parent.remove }" href="#">@lang('Delete')</a></li>
-                        </ul>
+                    </div>
 
+                    <div>
+                        <span class="uk-badge">{ account.group }</span>
+                    </div>
+
+                    <div>
+                        <div data-uk-dropdown="\{mode:'click'\}">
+
+                            <a class="uk-icon-bars"></a>
+
+                            <div class="uk-dropdown">
+                                <ul class="uk-nav uk-nav-dropdown">
+                                    <li class="uk-nav-header">@lang('Actions')</li>
+                                    <li><a href="@route('/accounts/account')/{ account._id }">@lang('Edit')</a></li>
+                                    <li><a onclick="{ parent.remove }" href="#">@lang('Delete')</a></li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

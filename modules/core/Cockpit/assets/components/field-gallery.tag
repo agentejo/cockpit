@@ -2,8 +2,8 @@
 
     <div class="uk-panel">
 
-        <div name="imagescontainer" class="uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ data.images && data.images.length }">
-            <div class="uk-grid-margin" data-idx="{ idx }" each="{ img,idx in data.images }">
+        <div name="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ images && images.length }">
+            <div class="uk-grid-margin" data-idx="{ idx }" each="{ img,idx in images }">
                 <div class="uk-panel uk-panel-card">
                     <figure class="uk-display-block uk-overlay uk-overlay-hover">
                         <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;">
@@ -12,8 +12,8 @@
                         <figcaption class="uk-overlay-panel uk-overlay-background">
 
                             <ul class="uk-subnav">
-                                <li><a onclick="{ parent.title }"><i class="uk-icon-tag"></i></a></li>
-                                <li><a onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a></li>
+                                <li><a onclick="{ parent.title }" title="{ App.i18n.get('Set title') }" data-uk-tooltip><i class="uk-icon-tag"></i></a></li>
+                                <li><a onclick="{ parent.remove }" title="{ App.i18n.get('Remove image') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
                             </ul>
 
                             <p class="uk-text-small uk-text-truncate">{ img.title }</p>
@@ -24,8 +24,8 @@
             </div>
         </div>
 
-        <div class="{data.images && data.images.length ? 'uk-margin-top':'' }">
-            <div class="uk-alert" if="{ data.images && !data.images.length }">{ App.i18n.get('Gallery is empty') }.</div>
+        <div class="{images && images.length ? 'uk-margin-top':'' }">
+            <div class="uk-alert" if="{ images && !images.length }">{ App.i18n.get('Gallery is empty') }.</div>
             <a class="uk-button uk-button-link" onclick="{ selectimages }">
                 <i class="uk-icon-plus-circle"></i>
                 { App.i18n.get('Add images') }
@@ -38,32 +38,33 @@
 
         var $this = this;
 
-        this.data = { images: [] };
+        this.images = [];
         this._field = null;
 
         this.on('mount', function() {
 
             UIkit.sortable(this.imagescontainer, {
 
-                animation: false,
-                dragCustomClass:'uk-form'
+                animation: false
 
             }).element.on("change.uk.sortable", function(e, sortable, ele) {
 
                 ele = App.$(ele);
 
-                var images = $this.data.images,
+                var images = $this.images,
                     cidx   = ele.index(),
                     oidx   = ele.data('idx');
 
                 images.splice(cidx, 0, images.splice(oidx, 1)[0]);
 
-                $this.data.images = [];
+                $this.images = [];
                 $this.update();
 
                 setTimeout(function() {
+                    $this.images = images;
                     $this.$setValue(images);
-                }, 0);
+                    $this.update();
+                }, 10);
 
             });
 
@@ -75,8 +76,8 @@
                 value = [];
             }
 
-            if (this.data.images !== value) {
-                this.data.images = value;
+            if (this.images !== value) {
+                this.images = value;
                 this.update();
             }
 
@@ -93,21 +94,21 @@
                     images.push({title:'', path:path});
                 });
 
-                $this.$setValue($this.data.images.concat(images));
+                $this.$setValue($this.images.concat(images));
 
             }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
         }
 
         remove(e) {
-            this.data.images.splice(e.item.idx, 1);
-            this.$setValue(this.data.images);
+            this.images.splice(e.item.idx, 1);
+            this.$setValue(this.images);
         }
 
         title(e) {
 
-            App.ui.prompt('Title', this.data.images[e.item.idx].title, function(value) {
-                $this.data.images[e.item.idx].title = value;
-                $this.$setValue($this.data.images);
+            App.ui.prompt('Title', this.images[e.item.idx].title, function(value) {
+                $this.images[e.item.idx].title = value;
+                $this.$setValue($this.images);
                 $this.update();
             });
         }

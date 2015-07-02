@@ -1,6 +1,6 @@
 <cp-fieldsmanager>
 
-    <div name="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form">
+    <div name="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form" show="{fields.length}">
 
         <div class="uk-grid-margin uk-width-{field.width}" data-idx="{idx}" each="{ field,idx in fields }">
 
@@ -112,6 +112,22 @@
 
     </div>
 
+    <div class="uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ !fields.length && !reorder }">
+
+        <div class="uk-animation-fade">
+
+            <p class="uk-text-xlarge">
+                <i class="uk-icon-list-alt"></i>
+            </p>
+
+            <hr>
+
+            { App.i18n.get('No fields added yet') }. <a onclick="{ addfield }">{ App.i18n.get('Add field') }.</a>
+
+        </div>
+
+    </div>
+
 
     <script>
 
@@ -119,7 +135,8 @@
 
         var $this = this;
 
-        this.fields = [];
+        this.fields  = [];
+        this.reorder = false;
 
         // get all available fields
 

@@ -43,27 +43,11 @@
                         <li class="{ view==='fields' ? 'uk-active':'' }"><a onclick="{ toggleview }">Fields</a></li>
                     </ul>
 
-                    <div class="uk-margin-large-top" show="{ view==='fields' && region.fields.length }">
+                    <div class="uk-margin-large-top" show="{ view==='fields'}">
 
                         <h4>@lang('Fields')</h4>
 
                         <cp-fieldsmanager bind="region.fields"></cp-fieldsmanager>
-
-                    </div>
-
-                    <div class="uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ view==='fields' && !region.fields.length && !reorder }">
-
-                        <div class="uk-animation-fade">
-
-                            <p class="uk-text-xlarge">
-                                <i class="uk-icon-list-alt"></i>
-                            </p>
-
-                            <hr>
-
-                            @lang('No fields added yet'). <a onclick="{ addfield }">@lang('Add field').</a>
-
-                        </div>
 
                     </div>
 
@@ -130,10 +114,6 @@
 
         toggleview() {
             this.view = this.view=='template' ? 'fields':'template';
-        }
-
-        addfield() {
-            this.tags['cp-fieldsmanager'].addfield();
         }
 
     </script>

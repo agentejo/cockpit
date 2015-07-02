@@ -46,8 +46,8 @@ try {
 
 $account = [
     "user"     => "admin",
-    "name"     => "",
-    "email"    => "test@test.de",
+    "name"     => "Admin",
+    "email"    => "admin@yourdomain.de",
     "active"   => true,
     "group"    => "admin",
     "password" => $app->hash("admin"),

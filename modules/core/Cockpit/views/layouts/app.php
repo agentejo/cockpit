@@ -139,7 +139,9 @@
 
                     <div class="uk-navbar-content" data-uk-dropdown="{delay:150}">
 
-                        <a href="@route('/accounts/account')"><img class="uk-border-circle uk-margin-right" src="{{ $app('utils')->gravatar($app['user']['email'], 30) }}" width="30" height="30" alt="avatar"></a>
+                        <a href="@route('/accounts/account')" riot-mount>
+                            <cp-gravatar email="{{ $app['user']['email'] }}" size="30" alt="{{ $app["user"]["name"] ? $app["user"]["name"] : $app["user"]["user"] }}"></cp-gravatar>
+                        </a>
 
                         <div class="uk-dropdown uk-dropdown-navbar uk-dropdown-flip">
                             <ul class="uk-nav uk-nav-navbar">

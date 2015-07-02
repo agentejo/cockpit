@@ -96,6 +96,8 @@
 
     function matchName(pattern, path) {
 
+        path = path.split('/').pop();
+
         var parsedPattern = '^' + pattern.replace(/\//g, '\\/').
             replace(/\*\*/g, '(\\/[^\\/]+)*').
             replace(/\*/g, '[^\\/]+').
