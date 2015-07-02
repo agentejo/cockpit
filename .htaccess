@@ -68,7 +68,6 @@ AddType application/x-shockwave-flash   swf
 <IfModule mod_expires.c>
     ExpiresActive On
 
-    ExpiresByType application/json              "access plus 1 year"
     ExpiresByType application/pdf               "access plus 1 year"
     ExpiresByType application/x-shockwave-flash "access plus 1 year"
     ExpiresByType image/bmp                     "access plus 1 year"
