@@ -79,6 +79,7 @@ $app['app.assets.base'] = [
     'assets:lib/uikit/js/components/tooltip.min.js',
     'assets:lib/uikit/js/components/lightbox.min.js',
     'assets:lib/uikit/js/components/sortable.min.js',
+    'assets:lib/uikit/js/components/sticky.min.js',
     'assets:lib/storage.js',
     'assets:lib/i18n.js',
     'assets:app/js/app.js',

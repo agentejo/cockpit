@@ -1516,11 +1516,11 @@ riot.tag('field-time', '<input name="input" class="uk-width-1-1" bind="{ opts.bi
     
 });
 
-riot.tag('field-wysiwyg', '<textarea name="input" style="visibility:hidden;" class="uk-width-1-1" rows="5"></textarea>', function(opts) {
+riot.tag('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5"></textarea>', function(opts) {
 
         var $this = this,
             lang  = document.documentElement.getAttribute('lang') || 'en',
-            redactor;
+            wysiwyg;
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -1539,8 +1539,8 @@ riot.tag('field-wysiwyg', '<textarea name="input" style="visibility:hidden;" cla
 
                 this.value = value;
 
-                if (redactor && this._field != field) {
-                    redactor.code.set(this.value || '');
+                if (wysiwyg && this._field != field) {
+                    wysiwyg.html(this.value || '');
                 }
             }
 
@@ -1552,36 +1552,24 @@ riot.tag('field-wysiwyg', '<textarea name="input" style="visibility:hidden;" cla
         this.on('mount', function(){
 
             var assets = [
-                '/assets/lib/redactor/redactor.min.js',
-                '/assets/lib/redactor/redactor.css',
-
-                '/assets/lib/redactor/plugins/fullscreen/fullscreen.js',
-                '/assets/lib/redactor/plugins/fontcolor/fontcolor.js',
-                '/assets/lib/redactor/plugins/fontsize/fontsize.js',
-                '/assets/lib/redactor/plugins/textdirection/textdirection.js',
-                '/assets/lib/redactor/plugins/table/table.js',
-                '/assets/lib/redactor/plugins/video/video.js'
+                '/assets/lib/trumbowyg/trumbowyg.min.js',
+                '/assets/lib/trumbowyg/ui/trumbowyg.min.css',
             ];
 
             if (lang != 'en') {
-                assets.push('/assets/lib/redactor/lang/'+lang+'.js');
+                assets.push('/assets/lib/trumbowyg/langs/'+lang+'.js');
             }
-
 
             App.assets.require(assets, function() {
 
                 this.input.value = this.value;
 
-                App.$($this.input).redactor({
+                wysiwyg = App.$($this.input).trumbowyg({
                     lang: lang,
-                    plugins: opts.plugins ||  ['table','textdirection','fontcolor','fontsize','video','fullscreen'],
-                    initCallback: function() {
-                        redactor = this;
-                    },
-                    changeCallback: function() {
-                        $this.$setValue(this.code.get());
-                    }
-                });
+                    autogrow: true
+                }).on('tbwchange', function()  {
+                    $this.$setValue(wysiwyg.html());
+                }).data('trumbowyg');
 
             }.bind(this)).catch(function(){
 
