@@ -53,7 +53,7 @@ $app->on('admin.init', function() {
     $this->bind('/finder', function() {
 
         $this->layout = 'cockpit:views/layouts/app.php';
-
+        $this["user"] = $this->module('cockpit')->getUser();
         return $this->view('cockpit:views/base/finder.php');
 
     }, $this->module("cockpit")->hasaccess('cockpit', 'manage.media'));
