@@ -474,8 +474,10 @@ function _each(dom, parent, expr) {
           j = items.length
 
       // unmount leftover items
-      while (i > j) tags[--i].unmount()
-      tags.length = j
+      while (i > j) {
+        tags[--i].unmount()
+        tags.splice(i, 1)
+      }
 
       test = !checksum && !!expr.key
       for (i = 0; i < j; ++i) {

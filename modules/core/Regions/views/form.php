@@ -49,7 +49,7 @@
                                 </label>
 
                                 <div class="uk-margin-small-top">
-                                    <cp-field field="{ field }" bind="data.{field.localize && parent.lang ? (parent.lang+'_'+field.name):field.name }" cls="uk-form-large"></cp-field>
+                                    <cp-field field="{ field }" bind="data.{field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" cls="uk-form-large"></cp-field>
                                 </div>
 
                                 <div class="uk-margin-small-top uk-text-small uk-text-muted">
