@@ -543,6 +543,9 @@ function parseNamedElements(root, parent, childTags) {
 
         // fix for the parent attribute in the looped elements
         tag.parent = ptag
+        // cache the real parent
+        // _loopParent and parent could be the same element
+        tag._loopParent = parent
 
         cachedTag = ptag.tags[tagName]
 
@@ -712,7 +715,7 @@ function Tag(impl, conf, innerHTML) {
     extend(self, data)
     updateOpts()
     self.trigger('update', data)
-    update(expressions, self, data)
+    update(expressions, self)
     self.trigger('updated')
   }
 
@@ -829,9 +832,18 @@ function Tag(impl, conf, innerHTML) {
 
 }
 
-function setEventHandler(name, handler, dom, tag, item) {
+function setEventHandler(name, handler, dom, tag) {
 
   dom[name] = function(e) {
+
+    var item = tag._item,
+        ptag = tag._loopParent
+
+    if (!item)
+      while (ptag) {
+        item = ptag._item
+        ptag = item ? false : ptag._loopParent
+      }
 
     // cross browser event fix
     e = e || window.event
@@ -843,7 +855,7 @@ function setEventHandler(name, handler, dom, tag, item) {
       e.currentTarget = dom
     } catch (ignored) { '' }
 
-    e.item = tag._item ? tag._item : item
+    e.item = item
 
     // prevent default behaviour (by default)
     if (handler.call(tag, e) !== true && !/radio|check/.test(dom.type)) {
@@ -868,8 +880,7 @@ function insertTo(root, node, before) {
   }
 }
 
-// item = currently looped item
-function update(expressions, tag, item) {
+function update(expressions, tag) {
 
   each(expressions, function(expr, i) {
 
@@ -895,7 +906,7 @@ function update(expressions, tag, item) {
 
     // event handler
     if (typeof value == 'function') {
-      setEventHandler(attrName, value, dom, tag, item)
+      setEventHandler(attrName, value, dom, tag)
 
     // if- conditional
     } else if (attrName == 'if') {
