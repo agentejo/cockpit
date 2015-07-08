@@ -1,8 +1,8 @@
 <field-boolean>
-
+    
     <button type="button" name="button" class="uk-button uk-button-{ checked ? 'success':'default'}" onclick="{ toggle }">
-        <i if="{parent.checked}" class="uk-icon-check"></i>
-        <i if="{!parent.checked}" class="uk-icon-times"></i>
+        <i show="{checked}" class="uk-icon-check-circle"></i>
+        <i show="{!checked}" class="uk-icon-circle-o"></i>
     </button>
 
     <script>
@@ -11,7 +11,9 @@
             App.$(this.button).addClass(opts.cls.replace(/uk\-form\-/g, 'uk-button-'));
         }
 
-        this.button.innerHTML = opts.label || '<i class="uk-icon-check"></i>';
+        if (opts.label) {
+            this.button.innerHTML = opts.label;
+        }
 
         this.$updateValue = function(value) {
 

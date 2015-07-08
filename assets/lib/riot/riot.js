@@ -436,7 +436,12 @@ function _each(dom, parent, expr) {
 
   remAttr(dom, 'each')
 
-  var template = dom.outerHTML,
+  var tagName = getTagName(dom),
+      template = dom.outerHTML,
+      hasImpl = !!tagImpl[tagName],
+      impl = tagImpl[tagName] || {
+        tmpl: template
+      },
       root = dom.parentNode,
       placeholder = document.createComment('riot placeholder'),
       tags = [],
@@ -455,8 +460,7 @@ function _each(dom, parent, expr) {
       dom.parentNode.removeChild(dom)
     })
     .on('update', function () {
-      var items = tmpl(expr.val, parent),
-          test
+      var items = tmpl(expr.val, parent)
 
       // object loop. any changes cause full redraw
       if (!isArray(items)) {
@@ -479,24 +483,23 @@ function _each(dom, parent, expr) {
         tags.splice(i, 1)
       }
 
-      test = !checksum && !!expr.key
       for (i = 0; i < j; ++i) {
-        var _item = test ? mkitem(expr, items[i], i) : items[i]
+        var _item = !checksum && !!expr.key ? mkitem(expr, items[i], i) : items[i]
 
         if (!tags[i]) {
           // mount new
-          (tags[i] = new Tag({ tmpl: template }, {
+          (tags[i] = new Tag(impl, {
               parent: parent,
               isLoop: true,
-              root: root,
+              hasImpl: hasImpl,
+              root: hasImpl ? dom.cloneNode() : root,
               item: _item
-            })
+            }, dom.innerHTML)
           ).mount()
 
           frag.appendChild(tags[i].root)
-        } else {
+        } else
           tags[i].update(_item)
-        }
 
         tags[i]._item = _item
 
@@ -504,7 +507,7 @@ function _each(dom, parent, expr) {
 
       root.insertBefore(frag, placeholder)
 
-      if (child) parent.tags[getTagName(dom)] = tags
+      if (child) parent.tags[tagName] = tags
 
     }).one('updated', function() {
       var keys = Object.keys(parent)// only set new values
@@ -525,7 +528,7 @@ function parseNamedElements(root, parent, childTags) {
 
   walk(root, function(dom) {
     if (dom.nodeType == 1) {
-      dom.isLoop = (dom.parentNode && dom.parentNode.isLoop || dom.getAttribute('each')) ? 1 : 0
+      dom.isLoop = dom.isLoop || (dom.parentNode && dom.parentNode.isLoop || dom.getAttribute('each')) ? 1 : 0
 
       // custom child tag
       var child = getTag(dom)
@@ -543,9 +546,6 @@ function parseNamedElements(root, parent, childTags) {
 
         // fix for the parent attribute in the looped elements
         tag.parent = ptag
-        // cache the real parent
-        // _loopParent and parent could be the same element
-        tag._loopParent = parent
 
         cachedTag = ptag.tags[tagName]
 
@@ -621,6 +621,7 @@ function Tag(impl, conf, innerHTML) {
       dom = mkdom(impl.tmpl),
       parent = conf.parent,
       isLoop = conf.isLoop,
+      hasImpl = conf.hasImpl,
       item = conf.item,
       expressions = [],
       childTags = [],
@@ -639,6 +640,7 @@ function Tag(impl, conf, innerHTML) {
 
   // not yet mounted
   this.isMounted = false
+  root.isLoop = isLoop
 
   if (impl.attrs) {
     var attrs = impl.attrs.match(TAG_ATTRIBUTES)
@@ -673,13 +675,14 @@ function Tag(impl, conf, innerHTML) {
 
   // options
   function updateOpts() {
+    var ctx = hasImpl && isLoop ? self : parent || self
     // update opts from current DOM attributes
     each(root.attributes, function(el) {
-      opts[el.name] = tmpl(el.value, parent || self)
+      opts[el.name] = tmpl(el.value, ctx)
     })
     // recover those with expressions
     each(Object.keys(attr), function(name) {
-      opts[name] = tmpl(attr[name], parent || self)
+      opts[name] = tmpl(attr[name], ctx)
     })
   }
 
@@ -750,9 +753,10 @@ function Tag(impl, conf, innerHTML) {
     // internal use only, fixes #403
     self.trigger('premount')
 
-    if (isLoop) {
+    if (isLoop && !hasImpl) {
       // update the root attribute for the looped elements
       self.root = root = loopDom = dom.firstChild
+
     } else {
       while (dom.firstChild) root.appendChild(dom.firstChild)
       if (root.stub) self.root = root = parent.root
@@ -837,12 +841,12 @@ function setEventHandler(name, handler, dom, tag) {
   dom[name] = function(e) {
 
     var item = tag._item,
-        ptag = tag._loopParent
+        ptag = tag.parent
 
     if (!item)
       while (ptag) {
         item = ptag._item
-        ptag = item ? false : ptag._loopParent
+        ptag = item ? false : ptag.parent
       }
 
     // cross browser event fix
@@ -850,9 +854,9 @@ function setEventHandler(name, handler, dom, tag) {
 
     // ignore error on some browsers
     try {
-      if (!e.which) e.which = e.charCode || e.keyCode
-      if (!e.target) e.target = e.srcElement
       e.currentTarget = dom
+      if (!e.target) e.target = e.srcElement
+      if (!e.which) e.which = e.charCode || e.keyCode
     } catch (ignored) { '' }
 
     e.item = item
@@ -981,10 +985,15 @@ function fastAbs(nr) {
   return (nr ^ (nr >> 31)) - (nr >> 31)
 }
 
+function getTag(dom) {
+  var tagName = dom.tagName.toLowerCase()
+  return tagImpl[dom.getAttribute(RIOT_TAG) || tagName]
+}
+
 function getTagName(dom) {
   var child = getTag(dom),
     namedTag = dom.getAttribute('name'),
-    tagName = namedTag && namedTag.indexOf(brackets(0)) < 0 ? namedTag : child.name
+    tagName = namedTag && namedTag.indexOf(brackets(0)) < 0 ? namedTag : child ? child.name : dom.tagName.toLowerCase()
 
   return tagName
 }
@@ -1058,6 +1067,10 @@ function replaceYield (tmpl, innerHTML) {
 
 function $$(selector, ctx) {
   return (ctx || document).querySelectorAll(selector)
+}
+
+function $(selector, ctx) {
+  return (ctx || document).querySelector(selector)
 }
 
 function inherit(parent) {
@@ -1165,10 +1178,6 @@ var virtualDom = [],
 
 var RIOT_TAG = 'riot-tag'
 
-function getTag(dom) {
-  return tagImpl[dom.getAttribute(RIOT_TAG) || dom.tagName.toLowerCase()]
-}
-
 function injectStyle(css) {
 
   styleNode = styleNode || mkEl('style')
@@ -1184,7 +1193,7 @@ function injectStyle(css) {
     if (styleNode.styleSheet) {
       document.body.appendChild(styleNode)
     } else {
-      var rs = $$('style[type=riot]')[0]
+      var rs = $('style[type=riot]')
       if (rs) {
         rs.parentNode.insertBefore(styleNode, rs)
         rs.parentNode.removeChild(rs)
