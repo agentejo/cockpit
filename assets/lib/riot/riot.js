@@ -1,6 +1,6 @@
 /* Riot WIP, @license MIT, (c) 2015 Muut Inc. + contributors */
 
-;(function(window) {
+;(function(window, undefined) {
   'use strict'
   var riot = { version: 'WIP', settings: {} }
 
@@ -8,7 +8,8 @@
 
   // for typeof == '' comparisons
   var T_STRING = 'string',
-      T_OBJECT = 'object'
+      T_OBJECT = 'object',
+      T_UNDEF  = 'undefined'
 
   // for IE8 and rest of the world
   var isArray = Array.isArray || (function () {
@@ -18,8 +19,8 @@
 
   // Version# for IE 8-11, 0 for others
   var ieVersion = (function (win) {
-    return (win && win.document || {}).documentMode | 0
-  })(window)
+    return (window && window.document || {}).documentMode | 0
+  })()
 
 riot.observable = function(el) {
 
@@ -30,7 +31,7 @@ riot.observable = function(el) {
 
   el.on = function(events, fn) {
     if (isFunction(fn)) {
-      fn._id = typeof fn._id == 'undefined' ? _id++ : fn._id
+      if (typeof fn.id === T_UNDEF) fn._id = _id++
 
       events.replace(/\S+/g, function(name, pos) {
         (callbacks[name] = callbacks[name] || []).push(fn)
@@ -47,7 +48,7 @@ riot.observable = function(el) {
         if (fn) {
           var arr = callbacks[name]
           for (var i = 0, cb; (cb = arr && arr[i]); ++i) {
-            if (cb._id == fn._id) { arr.splice(i, 1); i-- }
+            if (cb._id == fn._id) arr.splice(i--, 1)
           }
         } else {
           callbacks[name] = []
@@ -99,14 +100,13 @@ riot.mixin = (function() {
 
 })()
 
-;(function(riot, evt, window) {
+;(function(riot, evt, win) {
 
   // browsers only
-  if (!window) return
+  if (!win) return
 
-  var loc = window.location,
+  var loc = win.location,
       fns = riot.observable(),
-      win = window,
       started = false,
       current
 
@@ -492,7 +492,7 @@ function _each(dom, parent, expr) {
               parent: parent,
               isLoop: true,
               hasImpl: hasImpl,
-              root: hasImpl ? dom.cloneNode() : root,
+              root: dom.cloneNode(),
               item: _item
             }, dom.innerHTML)
           ).mount()
@@ -688,7 +688,7 @@ function Tag(impl, conf, innerHTML) {
 
   function normalizeData(data) {
     for (var key in item) {
-      if (typeof self[key] != 'undefined')
+      if (typeof self[key] !== T_UNDEF)
         self[key] = data[key]
     }
   }
@@ -698,7 +698,7 @@ function Tag(impl, conf, innerHTML) {
     each(Object.keys(self.parent), function(k) {
       // some properties must be always in sync with the parent tag
       var mustSync = ~propsInSyncWithParent.indexOf(k)
-      if (typeof self[k] == 'undefined' || mustSync) {
+      if (typeof self[k] === T_UNDEF || mustSync) {
         // track the property to keep in sync
         // so we can keep it updated
         if (!mustSync) propsInSyncWithParent.push(k)
@@ -711,10 +711,11 @@ function Tag(impl, conf, innerHTML) {
     // inherit properties from the parent
     inheritFromParent()
     // normalize the tag properties in case an item object was initially passed
-    if ((typeof item == T_OBJECT || isArray(item)) && JSON.stringify(item) != JSON.stringify(data)) {
+    if (typeof item === T_OBJECT || isArray(item)) {
       normalizeData(data)
       item = data
     }
+
     extend(self, data)
     updateOpts()
     self.trigger('update', data)
@@ -724,11 +725,11 @@ function Tag(impl, conf, innerHTML) {
 
   this.mixin = function() {
     each(arguments, function(mix) {
-      mix = typeof mix == 'string' ? riot.mixin(mix) : mix
+      mix = typeof mix === T_STRING ? riot.mixin(mix) : mix
       each(Object.keys(mix), function(key) {
         // bind methods to self
         if (key != 'init')
-          self[key] = typeof mix[key] == 'function' ? mix[key].bind(self) : mix[key]
+          self[key] = isFunction(mix[key]) ? mix[key].bind(self) : mix[key]
       })
       // init method will be called automatically
       if (mix.init) mix.init.bind(self)()
@@ -747,6 +748,7 @@ function Tag(impl, conf, innerHTML) {
 
     // parse layout after init. fn may calculate args for nested custom tags
     parseExpressions(dom, self, expressions)
+    if (!self.parent) parseExpressions(self.root, self, expressions) // top level before update, empty root
 
     if (!self.parent || isLoop) self.update(item)
 
@@ -909,7 +911,7 @@ function update(expressions, tag) {
     remAttr(dom, attrName)
 
     // event handler
-    if (typeof value == 'function') {
+    if (isFunction(value)) {
       setEventHandler(attrName, value, dom, tag)
 
     // if- conditional
@@ -956,7 +958,7 @@ function update(expressions, tag) {
         value = attrName
       }
 
-      if (typeof value != 'object') dom.setAttribute(attrName, value)
+      if (typeof value !== T_OBJECT) dom.setAttribute(attrName, value)
 
     }
 
@@ -1646,7 +1648,7 @@ function compileScripts(fn) {
 riot.compile = function(arg, fn) {
 
   // string
-  if (typeof arg == 'string') {
+  if (typeof arg === T_STRING) {
 
     // compile & return
     if (arg.trim()[0] == '<') {
@@ -1665,7 +1667,7 @@ riot.compile = function(arg, fn) {
   }
 
   // must be a function
-  if (typeof arg != 'function') arg = undefined
+  if (typeof arg !== 'function') arg = undefined
 
   // all compiled
   if (ready) return arg && arg()
@@ -1698,7 +1700,7 @@ riot.mountTo = riot.mount
   riot.util = { brackets: brackets, tmpl: tmpl }
 
   // support CommonJS, AMD & browser
-  if (typeof exports === 'object')
+  if (typeof exports === T_OBJECT)
     module.exports = riot
   else if (typeof define === 'function' && define.amd)
     define(function() { return window.riot = riot })

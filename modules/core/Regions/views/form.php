@@ -42,18 +42,18 @@
 
                             <div class="uk-panel">
 
-                                <label class="uk-text-bold">
+                                <label>
                                     <i class="uk-icon-ellipsis-v"></i>
                                     { field.label || field.name }
                                     <span if="{ field.localize }" class="uk-icon-globe" title="@lang('Localized field')" data-uk-tooltip="\{pos:'right'\}"></span>
                                 </label>
 
-                                <div class="uk-margin-small-top">
-                                    <cp-field field="{ field }" bind="data.{field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" cls="uk-form-large"></cp-field>
+                                 <div class="uk-margin uk-text-small uk-text-muted">
+                                    { field.info || ' ' }
                                 </div>
 
-                                <div class="uk-margin-small-top uk-text-small uk-text-muted">
-                                    { field.info || ' ' }
+                                <div class="uk-margin">
+                                    <cp-field field="{ field }" bind="data.{field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" cls="uk-form-large"></cp-field>
                                 </div>
 
                             </div>
