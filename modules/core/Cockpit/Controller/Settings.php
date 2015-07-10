@@ -50,7 +50,22 @@ class Settings extends \Cockpit\Controller {
                 $email = $this->param("email", false);
 
                 if ($email) {
-                    $ret = $this->app->mailer->mail($email, "Test Email", "It seems your Server can send Emails with the current mailer settings.");
+                    try {
+                        $ret = $this->app->mailer->mail(
+                            $email, 
+                            "Test Email", 
+                            "It seems your Server can send Emails with the current mailer settings.",
+                            [],
+                            // Enable throwing exceptions
+                            true
+                        );
+                    // Catch phpmailerException
+                    } catch (\Exception $e) {
+                        return json_encode([
+                            'status' => false,
+                            'exception' => $e->getMessage(),
+                        ]);
+                    }
                 } else {
                     $ret = false;
                 }

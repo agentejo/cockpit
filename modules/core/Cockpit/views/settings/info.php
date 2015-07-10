@@ -27,6 +27,7 @@
                                 <td width="30%">Data size</td>
                                 <td><a id="vacuumdata" href="#vacuumdata" title="Click to optimize data" data-uk-tooltip>{{ $info['sizeData']=='n/a' ? '0 KB':$info['sizeData'] }}</a></td>
                             </tr>
+                        </tbody>
                     </table>
 
                     <script>
@@ -78,7 +79,12 @@
                             if (email && email.match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
 
                                 App.request('/settings/test/email', {"email":email}, function(data){
-                                    App.notify(data.status ? 'Email was sent. Please check your mailbox.': 'Sending email failed.', data.status ? 'info':'danger');
+                                    App.notify(
+                                        data.status ? 
+                                            'Email was sent. Please check your mailbox.' : 
+                                            'Sending email failed' + (data.exception ? '<br /><code>' + data.exception + '</code>': '.'),
+                                        data.status ? 'info':'danger'
+                                    );
                                 }, "json");
 
                             } else {

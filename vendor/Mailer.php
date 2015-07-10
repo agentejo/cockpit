@@ -15,13 +15,16 @@ class Mailer {
         $this->options = $options;
     }
 
-    public function mail($to, $subject, $message, $options = []) {
+    public function mail($to, $subject, $message, $options = [], $debug = false) {
 
         $options = array_merge($this->options, is_array($options) ? $options: []);
 
-        $message = $this->createMessage($to, $subject, $message);
+        $message = $this->createMessage($to, $subject, $message, $debug);
 
-        $message->setFrom(isset($options['from']) ? $options['from'] : 'mailer@'.(isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : 'localhost'));
+        $message->setFrom(
+            isset($options['from']) ? $options['from'] : 'mailer@'.(isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : 'localhost'),
+            isset($options['fromName']) ? $options['fromName'] : false
+        );
 
         if(isset($options['reply_to'])) {
             $message->addReplyTo($options['reply_to']);
@@ -30,9 +33,9 @@ class Mailer {
         return $message->send();
     }
 
-    public function createMessage($to, $subject, $message) {
+    public function createMessage($to, $subject, $message, $debug = false) {
 
-        $mail = new PHPMailer();
+        $mail = new PHPMailer($debug);
 
         $mail->PluginDir = __DIR__.'/PHPMailer/';
         $mail->Mailer    = $this->transport;
