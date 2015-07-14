@@ -13,7 +13,11 @@
 
                 // default values
                 if (!entry["_id"] && field["default"]) {
-                    entry[field.name] = field["default"];
+                    if (field.type === "boolean" && (field["default"] === 1 || field['default'].toLowerCase() === "true")) {
+                      entry[field.name] = true;
+                    } else {
+                      entry[field.name] = field["default"];
+                    }
                 }
 
                 // localize fields
