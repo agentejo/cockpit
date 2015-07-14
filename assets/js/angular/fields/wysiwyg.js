@@ -19,7 +19,8 @@
                 "code fullscreen media",
                 "table contextmenu paste"
             ],
-            height: 350
+            height: 350,
+            relative_urls: false
         };
 
         return {
