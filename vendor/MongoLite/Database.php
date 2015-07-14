@@ -260,6 +260,11 @@ class UtilArrayQuery {
                 $r = $a != $b;
                 break;
             case '$gte' :
+                if (is_numeric($a) && is_numeric($b)) {
+                    $r = $a >= $b;
+                }
+                break;
+
             case '$gt' :
                 if (is_numeric($a) && is_numeric($b)) {
                     $r = $a > $b;
@@ -267,6 +272,11 @@ class UtilArrayQuery {
                 break;
 
             case '$lte' :
+                if (is_numeric($a) && is_numeric($b)) {
+                    $r = $a <= $b;
+                }
+                break;
+
             case '$lt' :
                 if (is_numeric($a) && is_numeric($b)) {
                     $r = $a < $b;
