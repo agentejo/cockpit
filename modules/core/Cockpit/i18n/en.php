@@ -170,6 +170,8 @@ return [
     'Entry removed' => '',
     'Entry saved!' => '',
     'Load more...' => '',
+    'Unique' => '',
+    'There is already an entry in this collection with the same unique field \'%s\'.',
 
     // Mediamanager
     'Mediamanager' => '',

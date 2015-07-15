@@ -175,6 +175,25 @@ class Api extends \Cockpit\Controller {
 
             $col = "collection".$collection["_id"];
 
+            // Check for uniqueeness of fields set as unique
+            foreach ($collection['fields'] as $fieldDefinition) {
+                
+                $fieldName = $fieldDefinition['name'];
+
+                if (
+                    $fieldDefinition['unique'] && 
+                    isset($entry[$fieldName]) && 
+                    $this->app->db->findOne("collections/{$col}", [$fieldName => $entry[$fieldName]])
+                ) {
+                    $this->app->response->status = 409;
+
+                    return sprintf(
+                        $this->app->helper('i18n')->get("There is already an entry in this collection with the same unique field '%s'."),
+                        $fieldName
+                    );
+                }
+            }
+
             if (!isset($entry["_id"])){
                 $entry["created"] = $entry["modified"];
             } else {
