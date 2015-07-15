@@ -188,7 +188,7 @@ class Api extends \Cockpit\Controller {
                     $this->app->response->status = 409;
 
                     return sprintf(
-                        $this->app->helper('i18n')->get("There is already an entry in this collection with the same unique field '%s'."),
+                        $this->app->helper('i18n')->get("There is already an entry in this collection with this slug for field '%s'."),
                         $fieldName
                     );
                 }
