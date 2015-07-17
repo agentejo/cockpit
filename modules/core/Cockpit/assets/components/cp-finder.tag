@@ -150,11 +150,11 @@
                             <li class="uk-grid-margin" each="{file, idx in data.files}" onclick="{ parent.select }" if="{ parent.infilter(file) }">
                                 <div class="uk-panel uk-panel-box { file.selected ? 'uk-selected':'' }">
 
-                                    <div class="uk-panel-teaser uk-position-relative">
+                                    <div class="uk-panel-teaser uk-cover-background uk-position-relative" style="background-image: { parent.getIconCls(file) == 'image' ? 'url('+file.url+')': 'none' }">
 
                                         <div class="uk-position-cover">
 
-                                            <div class="uk-panel uk-panel-box">
+                                            <div class="uk-panel uk-panel-box uk-panel-box-trans">
                                                 <span class="uk-margin-small-right" data-uk-dropdown="\{mode:'click'\}">
                                                     <a><i class="uk-icon-{ parent.getIconCls(file) } js-no-item-select"></i>
                                                     <div class="uk-dropdown">
@@ -288,7 +288,6 @@
                 UIkit.init(this.root);
             });
         });
-
 
         changedir(e, path) {
 

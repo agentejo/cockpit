@@ -4,7 +4,7 @@
 
         <div name="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ images && images.length }">
             <div class="uk-grid-margin" data-idx="{ idx }" each="{ img,idx in images }">
-                <div class="uk-panel uk-panel-card">
+                <div class="uk-panel uk-panel-box uk-panel-card">
                     <figure class="uk-display-block uk-overlay uk-overlay-hover">
                         <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;">
                             <img riot-src="{ (SITE_URL+img.path) }">

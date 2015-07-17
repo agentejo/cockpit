@@ -165,6 +165,12 @@
         </div>
     </div>
 
+    <div class="app-footer">
+        <div class="uk-container uk-container-center">
+
+        </div>
+    </div>
+
     @trigger('app.layout.footer')
     @block('app.layout.footer')
 
