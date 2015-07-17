@@ -30,6 +30,7 @@
             animation    : '',
             clsinit      : 'uk-sticky-init',
             clsactive    : 'uk-active',
+            clsinactive  : '',
             getWidthFrom : '',
             showup      : false,
             boundary     : false,
@@ -124,7 +125,7 @@
                             var topElement = UI.$(this.options.top).first();
 
                             if (topElement.length && topElement.is(':visible')) {
-                                top = -1 * (topElement.offset().top - this.wrapper.offset().top);
+                                top = -1 * ((topElement.offset().top + topElement.outerHeight()) - this.wrapper.offset().top);
                             }
                         }
 
@@ -139,6 +140,7 @@
                     var finalize = function() {
                         this.element.css({"position":"", "top":"", "width":"", "left":"", "margin":"0"});
                         this.element.removeClass([this.options.animation, 'uk-animation-reverse', this.options.clsactive].join(' '));
+                        this.element.addClass(this.options.clsinactive);
 
                         this.currentTop = null;
                         this.animate    = false;
@@ -219,9 +221,9 @@
         computeWrapper: function() {
 
             this.wrapper.css({
-                'height' : this.element.css('position') != 'absolute' ? this.element.outerHeight() : '',
-                'float'  : this.element.css("float") != "none" ? this.element.css("float") : '',
-                'margin' : this.element.css("margin")
+                'height' : ['absolute','fixed'].indexOf(this.element.css('position')) == -1 ? this.element.outerHeight() : '',
+                'float'  : this.element.css('float') != 'none' ? this.element.css('float') : '',
+                'margin' : this.element.css('margin')
             });
         }
     });
@@ -319,10 +321,10 @@
                         }
                     }
 
-                    sticky.element.addClass(sticky.options.clsactive);
+                    sticky.element.addClass(sticky.options.clsactive).removeClass(sticky.options.clsinactive);
                     sticky.element.css('margin', '');
 
-                    if (sticky.options.animation && sticky.init) {
+                    if (sticky.options.animation && sticky.init && !UI.Utils.isInView(sticky.wrapper)) {
                         sticky.element.addClass(sticky.options.animation);
                     }
 
