@@ -170,6 +170,8 @@ return [
     'Entry removed' => '',
     'Entry saved!' => '',
     'Load more...' => '',
+    'Unique' => '',
+    'There is already an entry in this collection with this slug for field \'%s\'.',
 
     // Mediamanager
     'Mediamanager' => '',

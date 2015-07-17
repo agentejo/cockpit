@@ -94,6 +94,13 @@
                                                         </div>
                                                     </div>
 
+                                                    <div class="uk-form-row" data-ng-if="field.slug">
+                                                        <label class="uk-form-label">@lang('Unique')</label>
+                                                        <div class="uk-form-controls">
+                                                            <input type="checkbox" data-ng-model="field.unique" />
+                                                        </div>
+                                                    </div>
+
                                                     @if(count($locales))
                                                     <div class="uk-form-row">
                                                         <label class="uk-form-label">@lang('Localize')</label>
