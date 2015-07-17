@@ -178,11 +178,11 @@ class Api extends \Cockpit\Controller {
             // Check for uniqueeness of fields set as unique
             foreach ($collection["fields"] as $fieldDefinition) {
 
-                $fieldName = $fieldDefinition["name"] . "_slug";
+                $slugName = $fieldDefinition["name"] . "_slug";
 
-                if ($fieldDefinition["slug"] && $fieldDefinition["unique"] && isset($entry[$fieldName])) {
+                if (!empty($fieldDefinition["slug"]) && !empty($fieldDefinition["unique"]) && isset($entry[$slugName])) {
 
-                    $collision = $this->app->db->findOne("collections/{$col}", [$fieldName => $entry[$fieldName]]);
+                    $collision = $this->app->db->findOne("collections/{$col}", [$slugName => $entry[$slugName]]);
 
                     if (!$collision) {
                         continue;
