@@ -58,4 +58,8 @@
 // Miscellaneous
 // ========================================================================
 
-.hook-subnav-misc() {}
+.hook-subnav-misc() {
+    .uk-subnav > li:not(:first-child) {
+        margin-left: @subnav-margin-horizontal;
+    }
+}

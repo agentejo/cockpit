@@ -41,7 +41,7 @@
 
                 <div class="uk-grid">
 
-                    <div>
+                    <div  class="uk-flex-item-1">
 
                         <div class="uk-position-inline-block" data-uk-dropdown>
 
@@ -118,6 +118,22 @@
 
                         </div>
 
+                    </div>
+
+                    <div>
+                        @if($app('admin')->data['menu.modules']->count())
+                        <ul class="uk-subnav">
+
+                            @foreach($app('admin')->data['menu.modules'] as $item)
+                            <li>
+                                <a class="{{ (@$item['active']) ? 'uk-bg-primary uk-contrast':'uk-contrast' }}" href="@route($item['route'])">
+                                    <i class="uk-icon-{{ isset($item['icon']) ? $item['icon']:'cube' }}"></i>
+                                </a>
+                            </li>
+                            @endforeach
+
+                        </ul>
+                        @endif
                     </div>
 
                 </div>
