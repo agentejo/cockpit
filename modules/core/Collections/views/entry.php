@@ -22,7 +22,7 @@
 
                 <h3>{ entry._id ? 'Edit':'Add' } @lang('Entry')</h3>
 
-                <div class="uk-grid uk-grid-match uk-grid-small uk-grid-gutter">
+                <div class="uk-grid uk-grid-match uk-grid-gutter">
 
                     <div class="uk-width-medium-{field.width} uk-grid-margin" each="{field,idx in fields}">
 

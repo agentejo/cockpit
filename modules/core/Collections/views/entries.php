@@ -49,15 +49,13 @@
 
         <div class="uk-clearfix uk-margin-large-top" if="{ entries.length }">
 
-            <div class="uk-float-left uk-animation-fade uk-text-large uk-text-muted" if="{ selected.length }">
-
-                <a class="uk-text-danger" onclick="{ removeselected }"><i class="uk-icon-trash"></i> @lang('Delete') ({ selected.length })</a>
-
-            </div>
-
             <div class="uk-float-right">
 
-                <a class="uk-button uk-button-large uk-button-primary uk-width-1-1" href="@route('/collections/entry/'.$collection['name'])">@lang('Add entry')</a>
+                <a class="uk-button uk-button-large uk-button-danger" onclick="{ removeselected }"  if="{ selected.length }">
+                    <i class="uk-icon-trash"></i> @lang('Delete') ({ selected.length })
+                </a>
+
+                <a class="uk-button uk-button-large uk-button-primary" href="@route('/collections/entry/'.$collection['name'])">@lang('Add entry')</a>
 
             </div>
         </div>

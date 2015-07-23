@@ -910,7 +910,7 @@ riot.tag('field-date', '<input name="input" class="uk-width-1-1" bind="{ opts.bi
 
         this.on('mount', function(){
 
-            App.assets.require(['/assets/lib/uikit/js/components/datepicker.js'], function() {
+            App.assets.require(['/assets/lib/uikit/js/components/datepicker.js', '/assets/lib/uikit/js/components/form-select.js'], function() {
 
                 UIkit.datepicker(this.input, opts).element.on('change', function() {
                     $this.input.$setValue($this.input.value);
@@ -1248,6 +1248,62 @@ riot.tag('field-markdown', '<field-html name="input" markdown="true" bind="{ opt
     
 });
 
+riot.tag('field-multipleselect', '<div class="uk-grid-gutter"> <div name="container" class="uk-grid uk-grid-match uk-grid-width-medium-1-6"> <div class="uk-grid-margin" each="{option in options}"> <a data-value="{ option }" class="{ parent.selected.indexOf(option)!==-1 ? \'uk-link-muted\':\'uk-text-muted\' }" onclick="{ toggle }" title="{ option }"> <i class="uk-icon-{ parent.selected.indexOf(option)!==-1 ? \'circle\':\'circle-o\' }"></i> { option } </a> </div> </div> </div>', function(opts) {
+
+        var $this = this;
+
+        this.selected   = [];
+        this.options = opts.options || []
+
+        if (typeof(this.options) === 'string') {
+
+            var options = [];
+
+            this.options.split(',').forEach(function(option) {
+                options.push(option.trim());
+            });
+
+            this.options = options;
+        }
+
+        this.on('mount', function() {
+
+        });
+
+        this.$initBind = function() {
+            this.root.$value = this.selected;
+        };
+
+        this.$updateValue = function(value, field) {
+
+            if (!Array.isArray(value)) {
+                value = [];
+            }
+
+            if (JSON.stringify(this.selected) != JSON.stringify(value)) {
+                this.selected = value;
+                this.update();
+            }
+
+        }.bind(this);
+
+        this.toggle = function(e) {
+
+            var option = e.item.option,
+                index  = this.selected.indexOf(option);
+
+            if (index == -1) {
+                this.selected.push(option);
+            } else {
+                this.selected.splice(index, 1);
+            }
+
+            this.$setValue(this.selected);
+        }.bind(this);
+
+    
+});
+
 riot.tag('field-object', '<textarea name="input" class="uk-width-1-1" onchange="{ change }">{}</textarea>', function(opts) {
 
         var $this = this, editor;
@@ -1328,7 +1384,7 @@ riot.tag('field-password', '<div class="uk-form-password uk-width-1-1"> <input n
     
 });
 
-riot.tag('field-repeater', '<div class="uk-margin" each="{ item,idx in items }"> <cp-field class="uk-width-1-1" field="{ parent.field }" options="{ opts.options }" bind="items[{ idx }].value"></cp-field> <div class="uk-margin-small-top"> <a class="uk-button uk-button-link" onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a> </div> </div> <a class="uk-button uk-button-link" onclick="{ add }"><i class="uk-icon-plus-circle"></i> { App.i18n.get(\'Add item\') }</a>', function(opts) {
+riot.tag('field-repeater', '<div class="uk-alert" show="{ !items.length }"> { App.i18n.get(\'No items\') }. </div> <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }"> <cp-field class="uk-width-1-1" field="{ parent.field }" options="{ opts.options }" bind="items[{ idx }].value"></cp-field> <div class="uk-panel-box-footer uk-bg-light"> <a onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a> </div> </div> <a class="uk-button" onclick="{ add }"><i class="uk-icon-plus-circle"></i> { App.i18n.get(\'Add item\') }</a>', function(opts) {
 
         riot.util.bind(this);
 
@@ -1393,10 +1449,47 @@ riot.tag('field-select', '<select name="input" class="uk-width-1-1" bind="{ opts
     
 });
 
-riot.tag('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> { App.i18n.get(\'Fields definition is missing\') } </div> <div class="uk-margin" each="{field,idx in fields}"> <label><span class="uk-badge">{ field.label || field.name || \'\'}</span></label> <cp-field class="uk-width-1-1" field="{field}" bind="{opts.bind}.{field.name}"></cp-field> </div> </div>', function(opts) {
+riot.tag('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> { App.i18n.get(\'Fields definition is missing\') } </div> <div class="uk-margin" each="{field,idx in fields}"> <label><span class="uk-badge">{ field.label || field.name || \'\'}</span></label> <cp-field class="uk-width-1-1" field="{field}" bind="value.{field.name}"></cp-field> </div> </div>', function(opts) {
+
+        var $this = this;
+
+        this._field = null;
+
+        riot.util.bind(this);
 
         this.set    = opts.multiple ? []:{};
         this.fields = opts.fields || [];
+        this.value  = {};
+
+        this.bind = opts.bind || '';
+
+        this.$initBind = function() {
+            this.root.$value = this.value;
+        };
+
+        this.$updateValue = function(value, field) {
+
+            if (!App.Utils.isObject(value) || Array.isArray(value)) {
+
+                value = {};
+
+                this.fields.forEach(function(field){
+                    value[field.name] = null;
+                });
+            }
+
+            if (JSON.stringify(this.value) != JSON.stringify(value)) {
+                this.value = value;
+                this.update();
+            }
+
+            this._field = field;
+
+        }.bind(this);
+
+        this.on('bindingupdated', function() {
+            this.$setValue(this.value);
+        });
 
     
 });
@@ -1408,6 +1501,10 @@ riot.tag('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete uk
         this.tags = [];
 
         this.on('mount', function(){
+
+            if (opts.autocomplete) {
+                UIkit.autocomplete(this.autocomplete, {source: opts.autocomplete});
+            }
 
             App.$(this.input).on('keydown', function(e) {
 

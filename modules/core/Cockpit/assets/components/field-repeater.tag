@@ -1,15 +1,19 @@
 <field-repeater>
 
-    <div class="uk-margin" each="{ item,idx in items }">
+    <div class="uk-alert" show="{ !items.length }">
+        { App.i18n.get('No items') }.
+    </div>
+
+    <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }">
 
         <cp-field class="uk-width-1-1" field="{ parent.field }" options="{ opts.options }" bind="items[{ idx }].value"></cp-field>
 
-        <div class="uk-margin-small-top">
-            <a class="uk-button uk-button-link" onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a>
+        <div class="uk-panel-box-footer uk-bg-light">
+            <a onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a>
         </div>
     </div>
 
-    <a class="uk-button uk-button-link" onclick="{ add }"><i class="uk-icon-plus-circle"></i> { App.i18n.get('Add item') }</a>
+    <a class="uk-button" onclick="{ add }"><i class="uk-icon-plus-circle"></i> { App.i18n.get('Add item') }</a>
 
     <script>
 
