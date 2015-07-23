@@ -148,13 +148,13 @@ $this->module("regions")->extend([
 
         $_fields  = isset($region['fields']) ? $region['fields'] : [];
 
-        $fields = array_merge($region['data'], $params);
+        $fields = array_merge(isset($region['data']) && is_array($region['data']) ? $region['data']:[] , $params);
 
-        $app->trigger('regions.before.render', [$name, $region['template'], $fields]);
+        $this->app->trigger('regions.before.render', [$name, $region['template'], $fields]);
 
-        $output = $renderer->execute($region['tpl'], $fields);
+        $output = $renderer->execute($region['template'], $fields);
 
-        $app->trigger('regions.after.render', [$name, $output]);
+        $this->app->trigger('regions.after.render', [$name, $output]);
 
         return $output;
     }
