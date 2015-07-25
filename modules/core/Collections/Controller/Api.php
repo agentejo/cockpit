@@ -175,6 +175,32 @@ class Api extends \Cockpit\Controller {
 
             $col = "collection".$collection["_id"];
 
+            // Check for uniqueeness of fields set as unique
+            foreach ($collection["fields"] as $fieldDefinition) {
+
+                $slugName = $fieldDefinition["name"] . "_slug";
+
+                if (!empty($fieldDefinition["slug"]) && !empty($fieldDefinition["unique"]) && isset($entry[$slugName])) {
+
+                    $collision = $this->app->db->findOne("collections/{$col}", [$slugName => $entry[$slugName]]);
+
+                    if (!$collision) {
+                        continue;
+                    }
+
+                    // New and colliding or other entry
+                    if (!isset($entry["_id"]) || $entry["_id"] != $collision["_id"]) {
+
+                        $this->app->response->status = 409;
+
+                        return sprintf(
+                            $this->app->helper("i18n")->get("There is already an entry in this collection with this slug for field '%s'."),
+                            $fieldDefinition["label"]
+                        );
+                    }
+                }
+            }
+
             if (!isset($entry["_id"])){
                 $entry["created"] = $entry["modified"];
             } else {
