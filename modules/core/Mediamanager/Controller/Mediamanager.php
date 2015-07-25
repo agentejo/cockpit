@@ -104,8 +104,16 @@ class Mediamanager extends \Cockpit\Controller {
 
                 // clean filename
                 $clean = preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $files['name'][$i]));
+                $savepath = $targetpath.'/'.$clean;
 
-                if (!$files['error'][$i] && move_uploaded_file($files['tmp_name'][$i], $targetpath.'/'.$clean)) {
+                if (!$files['error'][$i] && move_uploaded_file($files['tmp_name'][$i], $savepath)) {
+                    $exif = function_exists('exif_read_data') ? @exif_read_data($savepath) : [];
+
+                    if (isset($exif['Orientation'])) {
+
+
+                    }
+
                     $uploaded[] = $files['name'][$i];
                 } else {
                     $failed[] = $files['name'][$i];
