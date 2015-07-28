@@ -80,6 +80,11 @@ Please visit and contribute to https://github.com/aheinze/cockpit-i18n
 Google group: [CockpitCMS](https://groups.google.com/d/forum/cockpitcms)
 
 
+### Credits
+
+- [BrowserStack](https://www.browserstack.com) - Enable cross-browser testing (thanks for sponsoring!).
+
+
 ### Copyright and license
 
 Copyright 2013 [Agentejo](http://www.agentejo.com) under the MIT license.
