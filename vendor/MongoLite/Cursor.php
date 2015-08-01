@@ -5,7 +5,7 @@ namespace MongoLite;
 /**
  * Cursor object.
  */
-class Cursor implements \Iterator{
+class Cursor implements \Iterator, \Countable {
 
     /**
      * @var boolean|integer
