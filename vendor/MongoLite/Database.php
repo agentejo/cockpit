@@ -256,32 +256,27 @@ class UtilArrayQuery {
             case '$eq' :
                 $r = $a == $b;
                 break;
+
             case '$not' :
                 $r = $a != $b;
                 break;
+
             case '$gte' :
-                if (is_numeric($a) && is_numeric($b)) {
-                    $r = $a >= $b;
-                }
+                $r = $a >= $b;
                 break;
 
             case '$gt' :
-                if (is_numeric($a) && is_numeric($b)) {
-                    $r = $a > $b;
-                }
+                $r = $a > $b;
                 break;
 
             case '$lte' :
-                if (is_numeric($a) && is_numeric($b)) {
-                    $r = $a <= $b;
-                }
+                $r = $a <= $b;
                 break;
 
             case '$lt' :
-                if (is_numeric($a) && is_numeric($b)) {
-                    $r = $a < $b;
-                }
+                $r = $a < $b;
                 break;
+
             case '$in' :
                 if (! is_array($b))
                     throw new \InvalidArgumentException('Invalid argument for $in option must be array');
