@@ -283,11 +283,23 @@ class UtilArrayQuery {
                 $r = in_array($a, $b);
                 break;
 
+            case '$nin' :
+                if (! is_array($b))
+                    throw new \InvalidArgumentException('Invalid argument for $nin option must be array');
+                $r = !in_array($a, $b);
+                break;
+
             case '$has' :
                 if (is_array($b))
                     throw new \InvalidArgumentException('Invalid argument for $has array not supported');
                 #$a = @json_decode($a, true) ?  : array();
                 $r = in_array($b, $a);
+                break;
+
+            case '$nhas' :
+                if (is_array($b))
+                    throw new \InvalidArgumentException('Invalid argument for $nhas array not supported');
+                $r = !in_array($b, $a);
                 break;
 
             case '$all' :
