@@ -32,8 +32,9 @@ class Filesystem extends \Lime\Helper {
 
         foreach (new \DirectoryIterator($dir) as $file) {
 
-            if($file->isDot()) continue;
-            if($pattern && !fnmatch($pattern, $file->getBasename())) continue;
+            if (!$file->isFile()) continue;
+
+            if ($pattern && !fnmatch($pattern, $file->getBasename())) continue;
 
             $lst[] = new \SplFileObject($file->getRealPath());
         }
