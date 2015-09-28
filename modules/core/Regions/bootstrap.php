@@ -129,7 +129,7 @@ $this->module("regions")->extend([
         return $regions[$name];
     },
 
-    'getRegionFieldValue' => function($region, $fieldname, $key = null, $default = null) {
+    'getRegionFieldValue' => function($region, $fieldname, $default = null) {
 
         $region = $this->region($region);
 
