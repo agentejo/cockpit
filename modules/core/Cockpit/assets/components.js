@@ -1618,7 +1618,7 @@ riot.tag('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5">
 
         var $this = this,
             lang  = document.documentElement.getAttribute('lang') || 'en',
-            wysiwyg;
+            redactor;
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -1637,8 +1637,8 @@ riot.tag('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5">
 
                 this.value = value;
 
-                if (wysiwyg && this._field != field) {
-                    wysiwyg.html(this.value || '');
+                if (redactor && this._field != field) {
+                    redactor.code.set(this.value || '');
                 }
             }
 
@@ -1650,24 +1650,37 @@ riot.tag('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5">
         this.on('mount', function(){
 
             var assets = [
-                '/assets/lib/trumbowyg/trumbowyg.min.js',
-                '/assets/lib/trumbowyg/ui/trumbowyg.min.css',
+                '/assets/lib/redactor/redactor.min.js',
+                '/assets/lib/redactor/redactor.css',
+
+                '/assets/lib/redactor/plugins/fullscreen/fullscreen.js',
+                '/assets/lib/redactor/plugins/fontcolor/fontcolor.js',
+                '/assets/lib/redactor/plugins/fontsize/fontsize.js',
+                '/assets/lib/redactor/plugins/textdirection/textdirection.js',
+                '/assets/lib/redactor/plugins/table/table.js',
+                '/assets/lib/redactor/plugins/video/video.js'
             ];
 
             if (lang != 'en') {
-                assets.push('/assets/lib/trumbowyg/langs/'+lang+'.js');
+                assets.push('/assets/lib/redactor/lang/'+lang+'.js');
             }
 
             App.assets.require(assets, function() {
 
+                initPlugins();
+
                 this.input.value = this.value;
 
-                wysiwyg = App.$($this.input).trumbowyg({
+                App.$($this.input).redactor({
                     lang: lang,
-                    autogrow: true
-                }).on('tbwchange', function()  {
-                    $this.$setValue(wysiwyg.html());
-                }).data('trumbowyg');
+                    plugins: opts.plugins ||  ['table','textdirection','fontcolor','fontsize','video','fullscreen','imagepicker'],
+                    initCallback: function() {
+                        redactor = this;
+                    },
+                    changeCallback: function() {
+                        $this.$setValue(this.code.get());
+                    }
+                });
 
             }.bind(this)).catch(function(){
 
@@ -1680,6 +1693,36 @@ riot.tag('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5">
 
             }.bind(this));
         });
+
+
+        function initPlugins() {
+
+            $.Redactor.prototype.imagepicker = function() {
+                return {
+        			init: function() {
+        				var button = this.button.add('image', 'Image Picker');
+                        this.button.addCallback(button, this.imagepicker.select);
+        			},
+        			select: function() {
+
+                        var $this = this;
+
+                        App.media.select(function(selected) {
+
+                            $this.image.insert('<img src="' + SITE_URL+selected + '" alt="">');
+
+                        }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
+
+
+
+        			},
+        			insert: function(e) {
+
+        			}
+        		};
+        	};
+
+        }
 
     
 });
