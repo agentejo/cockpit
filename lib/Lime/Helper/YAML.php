@@ -37,6 +37,10 @@ class YAML extends \Lime\Helper {
      */
     public function fromFile($file) {
 
+        if (strpos($file, ':') !== false) {
+            $file = $this->app->path($file);
+        }
+
         if ($this->cachePath) {
 
             $cachedfile = $this->get_cached_file($file);
@@ -48,6 +52,14 @@ class YAML extends \Lime\Helper {
         }
 
         return Spyc::YAMLLoad($file);
+    }
+
+    public function toYAML($array) {
+        return Spyc::YAMLDump((array)$array, false, false, true);
+    }
+
+    public function toFile($file, $array) {
+        return file_put_contents($file, $this->toYAML($array));
     }
 
     /**

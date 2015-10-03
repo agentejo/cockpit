@@ -35,7 +35,8 @@ class Filesystem extends \Lime\Helper {
             if($file->isDot()) continue;
             if($pattern && !fnmatch($pattern, $file->getBasename())) continue;
 
-            $lst[] = new \SplFileObject($file->getRealPath());
+            $lst[] = $file->isDir() ? clone $file : new \SplFileObject($file->getRealPath());
+
         }
 
         return $lst;
