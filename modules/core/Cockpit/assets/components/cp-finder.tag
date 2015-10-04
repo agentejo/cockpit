@@ -215,7 +215,9 @@
                 'text'      : /\.(txt|htm|html|php|css|less|js|json|md|markdown|yaml|xml)$/i
             };
 
-        this.currentpath = '/';
+        opts.root = opts.root || '/';
+
+        this.currentpath = opts.root;
 
         this.data;
         this.breadcrumbs = [];
@@ -295,7 +297,7 @@
                 e.stopPropagation();
                 path = e.item.folder.path;
             } else {
-                path = '/';
+                path = opts.root;
             }
 
             this.loadPath(path);
@@ -514,7 +516,7 @@
                 $this.selected    = {};
                 $this.selectAll   = false;
 
-                if ($this.currentpath && $this.currentpath != '/' && $this.currentpath != '.'){
+                if ($this.currentpath && $this.currentpath != opts.root && $this.currentpath != '.'){
                     var parts   = $this.currentpath.split('/'),
                         tmppath = [],
                         crumbs  = [];

@@ -376,7 +376,9 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
                 'text'      : /\.(txt|htm|html|php|css|less|js|json|md|markdown|yaml|xml)$/i
             };
 
-        this.currentpath = '/';
+        opts.root = opts.root || '/';
+
+        this.currentpath = opts.root;
 
         this.data;
         this.breadcrumbs = [];
@@ -455,7 +457,7 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
                 e.stopPropagation();
                 path = e.item.folder.path;
             } else {
-                path = '/';
+                path = opts.root;
             }
 
             this.loadPath(path);
@@ -673,7 +675,7 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
                 $this.selected    = {};
                 $this.selectAll   = false;
 
-                if ($this.currentpath && $this.currentpath != '/' && $this.currentpath != '.'){
+                if ($this.currentpath && $this.currentpath != opts.root && $this.currentpath != '.'){
                     var parts   = $this.currentpath.split('/'),
                         tmppath = [],
                         crumbs  = [];
