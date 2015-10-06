@@ -65,7 +65,7 @@ $app->on('admin.init', function() {
  * register assets
  */
 
-$app['app.assets.base'] = [
+$assets = [
 
     'assets:polyfills/es6-shim.js',
     'assets:polyfills/object-observe.js',
@@ -92,8 +92,10 @@ $app['app.assets.base'] = [
 
 // load custom css style
 if ($app->path('config:style.css')) {
-    $app['app.assets.backend']->append('config:cockpit/style.css');
+    $assets[] = 'config:cockpit/style.css';
 }
+
+$app['app.assets.base'] = $assets;
 
 
 /**
