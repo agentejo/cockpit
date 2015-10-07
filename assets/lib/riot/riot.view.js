@@ -32,9 +32,10 @@
 
     riot.util.initViews = (function(views, view, vid, tag, ele, i) {
 
-        return function(root) {
+        return function(root, opts, clb) {
 
             root  = root || d;
+            opts  = opts || {};
             views = root.querySelectorAll('[riot-view]');
 
             for (i=0;i<views.length;i++) {
@@ -49,8 +50,10 @@
 
                 view.parentNode.insertBefore(ele, view);
                 view.parentNode.removeChild(view);
-                riot.mount(ele, vid);
+                riot.mount(ele, vid, opts);
             }
+
+            if (clb) clb();
         };
 
     })();
