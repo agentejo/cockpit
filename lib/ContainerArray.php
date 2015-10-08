@@ -45,6 +45,10 @@ class ContainerArray implements  ArrayAccess, Countable, IteratorAggregate, Json
         return count($this->props);
     }
 
+    public function toArray() {
+        return $this->props;
+    }
+
     public function getIterator() {
         return clone $this->props;
     }
