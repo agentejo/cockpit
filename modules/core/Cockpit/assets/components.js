@@ -438,7 +438,7 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
                             }
 
                             if (!response) {
-                                App.ui.notify("Soething went wrong.", "danger");
+                                App.ui.notify("Something went wrong.", "danger");
                             }
 
                         }
@@ -491,7 +491,7 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
                 this.tags.picoedit.open(file.path);
 
             } else {
-                App.ui.notify("Filetype nor supported");
+                App.ui.notify("Filetype not supported");
             }
         }.bind(this);
 

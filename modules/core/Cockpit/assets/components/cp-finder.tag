@@ -331,7 +331,7 @@
                 this.tags.picoedit.open(file.path);
 
             } else {
-                App.ui.notify("Filetype nor supported");
+                App.ui.notify("Filetype not supported");
             }
         }
 
