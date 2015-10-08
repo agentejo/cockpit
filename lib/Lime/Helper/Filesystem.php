@@ -73,6 +73,11 @@ class Filesystem extends \Lime\Helper {
             $args[0] = $this->app->path("{$namespace}:").$additional;
         }
 
+        // create file path
+        if (!file_exists($args[0])) {
+            $this->mkdir(dirname($args[0]));
+        }
+
         return call_user_func_array('file_put_contents', $args);
     }
 
