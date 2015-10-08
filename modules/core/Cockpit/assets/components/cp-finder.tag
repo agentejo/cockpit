@@ -278,7 +278,7 @@
                             }
 
                             if (!response) {
-                                App.ui.notify("Soething went wrong.", "danger");
+                                App.ui.notify("Something went wrong.", "danger");
                             }
 
                         }
