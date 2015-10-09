@@ -177,7 +177,9 @@
 
     <div class="app-main">
         <div class="uk-container uk-container-center">
+            @trigger('app.layout.contentbefore')
             {{ $content_for_layout }}
+            @trigger('app.layout.contentafter')
         </div>
     </div>
 
