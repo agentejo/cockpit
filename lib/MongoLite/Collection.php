@@ -74,7 +74,7 @@ class Collection {
 
         $table           = $this->name;
         $document["_id"] = uniqid().'doc'.rand();
-        $data            = array("document" => json_encode($document, JSON_NUMERIC_CHECK));
+        $data            = array("document" => json_encode($document, JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE));
 
         $fields = array();
         $values = array();
@@ -127,7 +127,7 @@ class Collection {
 
             $document = array_merge(json_decode($doc["document"], true), $data);
 
-            $sql = "UPDATE ".$this->name." SET document=".$this->database->connection->quote(json_encode($document,JSON_NUMERIC_CHECK))." WHERE id=".$doc["id"];
+            $sql = "UPDATE ".$this->name." SET document=".$this->database->connection->quote(json_encode($document,JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE))." WHERE id=".$doc["id"];
 
             $this->database->connection->exec($sql);
         }
