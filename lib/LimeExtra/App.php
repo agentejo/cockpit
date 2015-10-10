@@ -2,8 +2,15 @@
 
 namespace LimeExtra;
 
+/**
+ * Class App
+ * @package LimeExtra
+ */
 class App extends \Lime\App {
 
+    /**
+     * @param array $settings
+     */
     public function __construct ($settings = []) {
 
         $settings["helpers"]  = array_merge([
@@ -121,6 +128,8 @@ class App extends \Lime\App {
 
     /**
      * Outputs view content result
+     * @param $template
+     * @param array $slots
      */
     public function renderView($template, $slots = []) {
         echo $this->view($template, $slots);

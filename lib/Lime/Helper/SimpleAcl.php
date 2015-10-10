@@ -2,88 +2,133 @@
 
 namespace Lime\Helper;
 
-
-class SimpleAcl {
-
-
-  protected $resources = array();
-  protected $groups     = array();
-  protected $rights    = array();
-
-
-  public function addResource($resource, $actions = array()){
-    $this->resources[$resource] = $actions;
-  }
+/**
+ * Class SimpleAcl
+ * @package Lime\Helper
+ */
+class SimpleAcl
+{
 
 
-  public function addGroup($name, $isSuperAdmin = false){
-    $this->groups[$name] = $isSuperAdmin;
-  }
+    protected $resources = array();
+    protected $groups = array();
+    protected $rights = array();
 
-  public function hasGroup($group) {
-    return isset($this->groups[$group]);
-  }
 
-  public function getGroups() {
-    return $this->groups;
-  }
-
-  public function getResources() {
-    return $this->resources;
-  }
-
-  public function allow($group, $resource, $actions = array()){
-
-    $actions = (array)$actions;
-
-    if(!count($actions)){
-        $actions = $this->resources[$resource];
+    /**
+     * @param $resource
+     * @param array $actions
+     */
+    public function addResource($resource, $actions = array())
+    {
+        $this->resources[$resource] = $actions;
     }
 
-    foreach($actions as &$action){
-      $this->rights[$group][$resource][$action] = true;
+    /**
+     * @param $name
+     * @param bool|false $isSuperAdmin
+     */
+    public function addGroup($name, $isSuperAdmin = false)
+    {
+        $this->groups[$name] = $isSuperAdmin;
     }
 
-  }
+    /**
+     * @param $group
+     * @return bool
+     */
+    public function hasGroup($group)
+    {
+        return isset($this->groups[$group]);
+    }
 
-  public function deny($group, $resource, $actions = array()){
+    /**
+     * @return array
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
 
-      $actions = (array)$actions;
+    /**
+     * @return array
+     */
+    public function getResources()
+    {
+        return $this->resources;
+    }
 
-      if(!count($actions)){
-          $actions = $this->resources[$resource];
-      }
+    /**
+     * @param $group
+     * @param $resource
+     * @param array $actions
+     */
+    public function allow($group, $resource, $actions = array())
+    {
 
-      foreach($actions as &$action){
-          if(isset($this->rights[$group][$resource][$action])){
-              unset($this->rights[$group][$resource][$action]);
-          }
-      }
+        $actions = (array)$actions;
 
-  }
+        if (!count($actions)) {
+            $actions = $this->resources[$resource];
+        }
 
-  public function hasaccess($groups, $resource, $actions){
+        foreach ($actions as &$action) {
+            $this->rights[$group][$resource][$action] = true;
+        }
 
-    $groups  = (array) $groups;
-    $actions = (array) $actions;
+    }
 
-    if(!isset($this->resources[$resource])){
+    /**
+     * @param $group
+     * @param $resource
+     * @param array $actions
+     */
+    public function deny($group, $resource, $actions = array())
+    {
+
+        $actions = (array)$actions;
+
+        if (!count($actions)) {
+            $actions = $this->resources[$resource];
+        }
+
+        foreach ($actions as &$action) {
+            if (isset($this->rights[$group][$resource][$action])) {
+                unset($this->rights[$group][$resource][$action]);
+            }
+        }
+
+    }
+
+    /**
+     * @param $groups
+     * @param $resource
+     * @param $actions
+     * @return bool
+     */
+    public function hasaccess($groups, $resource, $actions)
+    {
+
+        $groups = (array)$groups;
+        $actions = (array)$actions;
+
+        if (!isset($this->resources[$resource])) {
+            return false;
+        }
+
+        foreach ($groups as $g) {
+
+            if (!isset($this->groups[$g])) continue;
+            if ($this->groups[$g] == true) return true; // isSuperAdmin
+
+            foreach ($actions as $action) {
+                if (isset($this->rights[$g][$resource][$action])) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
-
-    foreach($groups as $g){
-
-        if(!isset($this->groups[$g])) continue;
-        if($this->groups[$g]==true) return true; // isSuperAdmin
-
-        foreach($actions as $action){
-          if(isset($this->rights[$g][$resource][$action])) {
-              return true;
-          }
-        }
-    }
-
-    return false;
-  }
 
 }

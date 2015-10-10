@@ -5,6 +5,9 @@ namespace Lime\Helper;
 
 class Filesystem extends \Lime\Helper {
 
+    /**
+     * @return array
+     */
     public function ls() {
         $pattern = null;
         $dir     = null;
@@ -42,6 +45,9 @@ class Filesystem extends \Lime\Helper {
         return $lst;
     }
 
+    /**
+     * @return bool|mixed
+     */
     public function read() {
 
         $args = func_get_args();
@@ -55,6 +61,9 @@ class Filesystem extends \Lime\Helper {
         return call_user_func_array('file_get_contents', $args);
     }
 
+    /**
+     * @return bool|mixed
+     */
     public function write() {
 
         $args = func_get_args();
@@ -81,6 +90,11 @@ class Filesystem extends \Lime\Helper {
         return call_user_func_array('file_put_contents', $args);
     }
 
+    /**
+     * @param $path
+     * @param int $mode
+     * @return bool
+     */
     public function mkdir($path, $mode = 0755) {
 
         if (strpos($path, ':') !== false) {
@@ -97,7 +111,10 @@ class Filesystem extends \Lime\Helper {
         return true;
     }
 
-
+    /**
+     * @param $path
+     * @throws \Exception
+     */
     public function delete($path) {
 
         $path = $this->app->path($path);
@@ -117,6 +134,12 @@ class Filesystem extends \Lime\Helper {
         }
     }
 
+    /**
+     * @param $path
+     * @param $dest
+     * @param bool|true $_init
+     * @return bool
+     */
     public function copy($path, $dest, $_init = true) {
 
         if ($_init) {
@@ -152,6 +175,13 @@ class Filesystem extends \Lime\Helper {
         return false;
     }
 
+    /**
+     * @param $path
+     * @param $newpath
+     * @param bool|true $overwrite
+     * @return bool
+     * @throws \Exception
+     */
     public function rename($path, $newpath, $overwrite = true) {
 
         $path = $this->app->path($path);
@@ -173,6 +203,10 @@ class Filesystem extends \Lime\Helper {
         return true;
     }
 
+    /**
+     * @param $dir
+     * @return int
+     */
     public function getDirSize($dir) {
 
         $size = 0;
@@ -192,7 +226,11 @@ class Filesystem extends \Lime\Helper {
         return $size;
     }
 
-
+    /**
+     * @param $dir
+     * @param bool|false $selfremove
+     * @return bool
+     */
     public function removeEmptySubFolders($dir, $selfremove = false) {
 
         if ($path = $this->app->path($dir)) {

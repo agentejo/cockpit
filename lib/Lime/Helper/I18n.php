@@ -530,7 +530,9 @@ class I18n extends \Lime\Helper {
         'ZWD' => 'Z$'
     );
 
-
+    /**
+     * @inherit
+     */
     public function initialize(){
 
         $this->locale = $this->app->getClientLang();

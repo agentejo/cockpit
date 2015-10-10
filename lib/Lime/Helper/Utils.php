@@ -2,17 +2,35 @@
 
 namespace Lime\Helper;
 
+/**
+ * Class Utils
+ * @package Lime\Helper
+ */
 class Utils extends \Lime\Helper {
 
+    /**
+     * @param $email
+     * @param int $size
+     * @return string
+     */
 	public function gravatar($email, $size=40) {
 		return "//www.gravatar.com/avatar/".md5($email)."?d=mm&s=".$size;
 	}
 
+    /**
+     * @param $size
+     * @return string
+     */
     public function formatSize($size) {
       $sizes = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB");
       return ($size == 0) ? "n/a" : (round($size/pow(1024, ($i = floor(log($size, 1024)))), 2) . $sizes[$i]);
     }
 
+    /**
+     * @param $content
+     * @param string $base
+     * @return mixed
+     */
     public function fixRelativeUrls($content, $base = '/'){
 
         $protocols = '[a-zA-Z0-9\-]+:';
@@ -28,6 +46,12 @@ class Utils extends \Lime\Helper {
 
     }
 
+    /**
+     * @param $string
+     * @param string $replacement
+     * @param bool|true $tolower
+     * @return mixed|string
+     */
     public function sluggify($string, $replacement = '-', $tolower = true) {
         $quotedReplacement = preg_quote($replacement, '/');
 

@@ -5,7 +5,8 @@ namespace Lime\Helper;
 use Spyc;
 
 /**
- *
+ * Class YAML
+ * @package Lime\Helper
  */
 class YAML extends \Lime\Helper {
 
@@ -13,17 +14,15 @@ class YAML extends \Lime\Helper {
     protected $cachePath = false;
 
     /**
-     * [setCachePath description]
-     * @param [type] $path [description]
+     * @param $path
      */
     public function setCachePath($path){
         $this->cachePath = is_string($path) ? rtrim($path, "/\\") : $path;
     }
 
     /**
-     * [fromString description]
-     * @param  [type] $string [description]
-     * @return [type]         [description]
+     * @param $string
+     * @return array
      */
     public static function fromString($string) {
 
@@ -31,9 +30,8 @@ class YAML extends \Lime\Helper {
     }
 
     /**
-     * [fromFile description]
-     * @param  [type] $file [description]
-     * @return [type]       [description]
+     * @param $file
+     * @return array|mixed
      */
     public function fromFile($file) {
 
@@ -54,18 +52,26 @@ class YAML extends \Lime\Helper {
         return Spyc::YAMLLoad($file);
     }
 
+    /**
+     * @param $array
+     * @return string
+     */
     public function toYAML($array) {
         return Spyc::YAMLDump((array)$array, false, false, true);
     }
 
+    /**
+     * @param $file
+     * @param $array
+     * @return int
+     */
     public function toFile($file, $array) {
         return file_put_contents($file, $this->toYAML($array));
     }
 
     /**
-     * [get_cached_file description]
-     * @param  [type] $file [description]
-     * @return [type]       [description]
+     * @param $file
+     * @return bool|string
      */
     protected function get_cached_file($file) {
 
@@ -90,11 +96,10 @@ class YAML extends \Lime\Helper {
     }
 
     /**
-     * [cache_file description]
-     * @param  [type] $file       [description]
-     * @param  [type] $cachedfile [description]
-     * @param  [type] $filemtime  [description]
-     * @return [type]             [description]
+     * @param $file
+     * @param $cachedfile
+     * @param null $filemtime
+     * @return bool
      */
     protected function cache_file($file, $cachedfile, $filemtime = null) {
 
