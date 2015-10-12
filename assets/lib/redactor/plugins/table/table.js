@@ -59,20 +59,6 @@
 									}
 								};
 
-				dropdown.insert_row_below = {
-									title: this.lang.get('insert_row_below'),
-									func: this.table.addRowBelow,
-									observe: {
-										element: 'table',
-										out: {
-											attr: {
-												'class': 'redactor-dropdown-link-inactive',
-												'aria-disabled': true,
-											}
-										}
-									}
-								};
-
 				dropdown.insert_column_left = {
 									title: this.lang.get('insert_column_left'),
 									func: this.table.addColumnLeft,
@@ -157,7 +143,7 @@
 									}
 								};
 
-				dropdown.delete_row = {
+				dropdown.delete_table = {
 									title: this.lang.get('delete_table'),
 									func: this.table.deleteTable,
 									observe: {

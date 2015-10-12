@@ -1,6 +1,6 @@
 /*
-	Redactor 10.2.4
-	Updated: September 25, 2015
+	Redactor 10.2.5
+	Updated: October 1, 2015
 
 	http://imperavi.com/redactor/
 
@@ -92,7 +92,7 @@
 
 	// Functionality
 	$.Redactor = Redactor;
-	$.Redactor.VERSION = '10.2.4';
+	$.Redactor.VERSION = '10.2.5';
 	$.Redactor.modules = ['alignment', 'autosave', 'block', 'buffer', 'build', 'button',
 						  'caret', 'clean', 'code', 'core', 'dropdown', 'file', 'focus',
 						  'image', 'indent', 'inline', 'insert', 'keydown', 'keyup',
@@ -720,7 +720,6 @@
 						return;
 					}
 
-
 					var block = this.block.blocks[0];
 					if (block === false) return;
 
@@ -789,6 +788,7 @@
 				setMultiple: function(tag)
 				{
 					var block = this.block.blocks[0];
+
 					var isContainerTable = (this.block.containerTag  == 'TD' || this.block.containerTag  == 'TH');
 
 					if (block !== false && this.block.blocksSize === 1)
@@ -1241,6 +1241,8 @@
 		build: function()
 		{
 			return {
+				focused: false,
+				blured: true,
 				run: function()
 				{
 					this.build.createContainerBox();
@@ -1432,7 +1434,13 @@
 					// focus
 					this.$editor.on('focus.redactor', $.proxy(function(e)
 					{
-						if ($.isFunction(this.opts.focusCallback)) this.core.setCallback('focus', e);
+						if ($.isFunction(this.opts.focusCallback))
+						{
+							this.core.setCallback('focus', e);
+						}
+
+						this.build.focused = true;
+						this.build.blured = false;
 
 						if (this.selection.getCurrent() === false)
 						{
@@ -1458,7 +1466,13 @@
 						}
 
 						this.utils.disableSelectAll();
-						if ($.isFunction(this.opts.blurCallback)) this.core.setCallback('blur', e);
+						if (!this.build.blured && $.isFunction(this.opts.blurCallback))
+						{
+							this.core.setCallback('blur', e);
+						}
+
+						this.build.focused = false;
+						this.build.blured = true;
 
 					}, this));
 
@@ -1958,7 +1972,7 @@
 					var node, offset = 0;
 					var walker = document.createTreeWalker(this.$editor[0], NodeFilter.SHOW_TEXT, null, null);
 
-					while (node == walker.nextNode())
+					while (node = walker.nextNode())
 					{
 						offset += node.nodeValue.length;
 						if (offset > start)
@@ -2621,6 +2635,8 @@
 				getPlainText: function(html, paragraphize)
 				{
 					html = this.clean.getTextFromHtml(html);
+					html = html.replace(/\n\s*\n/g, "\n");
+					html = html.replace(/\n\n/g, "\n");
 					html = html.replace(/\n/g, '<br />');
 
 					if (this.opts.paragraphize && typeof paragraphize == 'undefined' && !this.utils.browser('mozilla'))
@@ -2883,7 +2899,7 @@
 					var html = this.$editor.html();
 
 					// is there a need to synchronize
-					if (this.code.syncCode && this.code.syncCode == html)
+					if (this.code.syncCode && this.code.syncCode == html || (this.start && html == '' ))
 					{
 						// do not sync
 						return;
@@ -3625,13 +3641,7 @@
 				},
 				isFocused: function()
 				{
-					var focusNode = document.getSelection().focusNode;
-					if (focusNode === null) return false;
-
-					if (this.opts.linebreaks && $(focusNode.parentNode).hasClass('redactor-linebreaks')) return true;
-					else if (!this.utils.isRedactorParent(focusNode.parentNode)) return false;
-
-					return this.$editor.is(':focus');
+					return this.$editor[0] === document.activeElement;
 				}
 			};
 		},
@@ -4856,6 +4866,7 @@
 				{
 					node = node[0] || node;
 
+					var offset = this.caret.getOffset();
 					var html = this.utils.getOuterHtml(node);
 					html = this.clean.setVerified(html);
 
@@ -4874,6 +4885,8 @@
 					this.range.insertNode(node);
 					this.range.collapse(false);
 					this.selection.addRange();
+
+					this.caret.setOffset(offset);
 
 					return node;
 				},
@@ -5544,7 +5557,9 @@
 							space.innerHTML = '&#x200b;';
 
 							$(br1).after(space);
-							this.caret.setAfter(space);
+
+							this.range.setStartAfter(space);
+							this.range.setEndAfter(space);
 							$(space).remove();
 						}
 						else
@@ -5555,7 +5570,6 @@
 							var selection = window.getSelection();
 							selection.removeAllRanges();
 							selection.addRange(range);
-
 						}
 					}
 
@@ -5970,6 +5984,7 @@
 					// mailto
 					if (link.search('@') != -1 && /(http|ftp|https):\/\//i.test(link) === false)
 					{
+						link = link.replace('mailto:', '');
 						link = 'mailto:' + link;
 					}
 					// url, not anchor
@@ -7292,19 +7307,18 @@
 					else
 					{
 						// bootstrap modal
-						if ($('.modal-body:visible').length > 0)
+						var $visibleModals = $('.modal-body:visible');
+						if ($visibleModals.length > 0)
 						{
-
-							$('.modal.in .modal-body:visible').append(this.$pasteBox);
+							$visibleModals.append(this.$pasteBox);
 						}
 						else
 						{
 							$('body').append(this.$pasteBox);
 						}
-
 					}
 
-					this.$pasteBox.focus();
+					this.$pasteBox.get(0).focus();
 				},
 				insert: function(html)
 				{
@@ -7538,17 +7552,11 @@
 
 					var blocks = [];
 					nodes = (typeof nodes == 'undefined') ? this.selection.getNodes() : nodes;
+
 					$.each(nodes, $.proxy(function(i,node)
 					{
-						var parent = $(node).parent();
-						if (i === 0 && this.utils.isBlock(parent))
+						if (this.utils.isBlock(node))
 						{
-							this.selection.lastBlock = parent[0];
-							blocks.push(parent[0]);
-						}
-						else if (this.utils.isBlock(node))
-						{
-							this.selection.lastBlock = node;
 							blocks.push(node);
 						}
 
