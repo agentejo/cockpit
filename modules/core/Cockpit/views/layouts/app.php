@@ -6,25 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
     <script>
-
         // App constants
-        
         var SITE_URL = '{{ rtrim($app->pathToUrl('site:'), '/') }}';
-
     </script>
 
     {{ $app->assets($app('admin')->data->get('assets'), $app['cockpit/version']) }}
 
     <script>
-
-        (function(App){
-
-            App = App || {};
-
-            App.$data = {{ json_encode($app('admin')->data->get('extract')) }};
-
-        })(App);
-
+        App.$data = {{ json_encode($app('admin')->data->get('extract')) }};
     </script>
 
     @trigger('app.layout.header')
