@@ -8,8 +8,8 @@
     <script>
 
         // App constants
-
-        var SITE_URL = '{{ $app->pathToUrl('site:') }}';
+        
+        var SITE_URL = '{{ rtrim($app->pathToUrl('site:'), '/') }}';
 
     </script>
 
