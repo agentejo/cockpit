@@ -64,7 +64,7 @@
 
                                         <ul class="uk-nav uk-nav-side uk-nav-dropdown">
 
-                                            <li class="{{ $app['route'] == '/' ? 'uk-active':'' }}"><a href="@route('/')"><i class="uk-icon-justify uk-icon-dashboard"></i> @lang('Dashboard')</a></li>
+                                            <li class="{{ $app['route'] == '/cockpit/dashboard' ? 'uk-active':'' }}"><a href="@route('/cockpit/dashboard')"><i class="uk-icon-justify uk-icon-dashboard"></i> @lang('Dashboard')</a></li>
 
                                             @hasaccess?('cockpit', 'manage.accounts')
                                             <li class="{{ strpos($app['route'],'/accounts')===0 ? 'uk-active':'' }}"><a href="@route('/accounts')"><i class="uk-icon-justify uk-icon-users"></i> @lang('Accounts')</a></li>

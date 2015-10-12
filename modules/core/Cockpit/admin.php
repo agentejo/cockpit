@@ -103,6 +103,11 @@ $app['app.assets.base'] = $assets;
  */
 
 $app->bind('/', function(){
+
+    if ($this['cockpit.start']) {
+        $this->reroute($this['cockpit.start']);
+    }
+
     return $this->invoke('Cockpit\\Controller\\Base', 'dashboard');
 });
 
