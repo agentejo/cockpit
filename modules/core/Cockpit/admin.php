@@ -91,7 +91,7 @@ $assets = [
 ];
 
 // load custom css style
-if ($app->path('config:style.css')) {
+if ($app->path('config:cockpit/style.css')) {
     $assets[] = 'config:cockpit/style.css';
 }
 
