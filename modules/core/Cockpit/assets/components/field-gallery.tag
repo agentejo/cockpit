@@ -7,7 +7,7 @@
                 <div class="uk-panel uk-panel-box uk-panel-card">
                     <figure class="uk-display-block uk-overlay uk-overlay-hover">
                         <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;">
-                            <img riot-src="{ (SITE_URL+img.path) }">
+                            <img riot-src="{ (SITE_URL+'/'+img.path) }">
                         </div>
                         <figcaption class="uk-overlay-panel uk-overlay-background">
 

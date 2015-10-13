@@ -3,7 +3,7 @@
     <figure class="uk-display-block uk-overlay uk-overlay-hover">
 
         <div class="uk-placeholder uk-flex uk-flex-middle uk-flex-center uk-text-muted" style="min-height:120px;">
-            <img riot-src="{ (SITE_URL+image.path) }" show="{ image.path }">
+            <img riot-src="{ (SITE_URL+'/'+image.path) }" show="{ image.path }">
             <i class="uk-icon-image" show="{ !image.path }"></i>
         </div>
 

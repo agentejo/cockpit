@@ -99,7 +99,7 @@
 
                         App.media.select(function(selected) {
 
-                            $this.image.insert('<img src="' + SITE_URL+selected + '" alt="">');
+                            $this.image.insert('<img src="' + SITE_URL+'/'+selected + '" alt="">');
 
                         }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
         				//$(img).click($.proxy(this.imagemanager.insert, this));

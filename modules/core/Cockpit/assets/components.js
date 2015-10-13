@@ -943,7 +943,7 @@ riot.tag('field-file', '<div class="uk-flex"> <input class="uk-flex-item-1 uk-ma
     
 });
 
-riot.tag('field-gallery', '<div class="uk-panel"> <div name="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ images && images.length }"> <div class="uk-grid-margin" data-idx="{ idx }" each="{ img,idx in images }"> <div class="uk-panel uk-panel-box uk-panel-card"> <figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;"> <img riot-src="{ (SITE_URL+img.path) }"> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{ parent.title }" title="{ App.i18n.get(\'Set title\') }" data-uk-tooltip><i class="uk-icon-tag"></i></a></li> <li><a onclick="{ parent.remove }" title="{ App.i18n.get(\'Remove image\') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{ img.title }</p> </figcaption> </figure> </div> </div> </div> <div class="{images && images.length ? \'uk-margin-top\':\'\' }"> <div class="uk-alert" if="{ images && !images.length }">{ App.i18n.get(\'Gallery is empty\') }.</div> <a class="uk-button uk-button-link" onclick="{ selectimages }"> <i class="uk-icon-plus-circle"></i> { App.i18n.get(\'Add images\') } </a> </div> </div>', function(opts) {
+riot.tag('field-gallery', '<div class="uk-panel"> <div name="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ images && images.length }"> <div class="uk-grid-margin" data-idx="{ idx }" each="{ img,idx in images }"> <div class="uk-panel uk-panel-box uk-panel-card"> <figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;"> <img riot-src="{ (SITE_URL+\'/\'+img.path) }"> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{ parent.title }" title="{ App.i18n.get(\'Set title\') }" data-uk-tooltip><i class="uk-icon-tag"></i></a></li> <li><a onclick="{ parent.remove }" title="{ App.i18n.get(\'Remove image\') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{ img.title }</p> </figcaption> </figure> </div> </div> </div> <div class="{images && images.length ? \'uk-margin-top\':\'\' }"> <div class="uk-alert" if="{ images && !images.length }">{ App.i18n.get(\'Gallery is empty\') }.</div> <a class="uk-button uk-button-link" onclick="{ selectimages }"> <i class="uk-icon-plus-circle"></i> { App.i18n.get(\'Add images\') } </a> </div> </div>', function(opts) {
 
         var $this = this;
 
@@ -1072,7 +1072,7 @@ riot.tag('field-html', '<textarea name="input" class="uk-visibility-hidden"></te
     
 });
 
-riot.tag('field-image', '<figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-placeholder uk-flex uk-flex-middle uk-flex-center uk-text-muted" style="min-height:120px;"> <img riot-src="{ (SITE_URL+image.path) }" show="{ image.path }"> <i class="uk-icon-image" show="{ !image.path }"></i> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{ selectimage }" title="{ App.i18n.get(\'Select image\') }" data-uk-tooltip><i class="uk-icon-image"></i></a></li> <li><a onclick="{ title }" title="{ App.i18n.get(\'Set title\') }" data-uk-tooltip><i class="uk-icon-tag"></i></a></li> <li><a onclick="{ remove }" title="{ App.i18n.get(\'Reset\') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{ image.title }</p> </figcaption> </figure>', function(opts) {
+riot.tag('field-image', '<figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-placeholder uk-flex uk-flex-middle uk-flex-center uk-text-muted" style="min-height:120px;"> <img riot-src="{ (SITE_URL+\'/\'+image.path) }" show="{ image.path }"> <i class="uk-icon-image" show="{ !image.path }"></i> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{ selectimage }" title="{ App.i18n.get(\'Select image\') }" data-uk-tooltip><i class="uk-icon-image"></i></a></li> <li><a onclick="{ title }" title="{ App.i18n.get(\'Set title\') }" data-uk-tooltip><i class="uk-icon-tag"></i></a></li> <li><a onclick="{ remove }" title="{ App.i18n.get(\'Reset\') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{ image.title }</p> </figcaption> </figure>', function(opts) {
 
         var $this = this;
 
@@ -1711,7 +1711,7 @@ riot.tag('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5">
 
                         App.media.select(function(selected) {
 
-                            $this.image.insert('<img src="' + SITE_URL+selected + '" alt="">');
+                            $this.image.insert('<img src="' + SITE_URL+'/'+selected + '" alt="">');
 
                         }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
 
