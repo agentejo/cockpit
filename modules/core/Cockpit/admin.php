@@ -104,7 +104,7 @@ $app['app.assets.base'] = $assets;
 
 $app->bind('/', function(){
 
-    if ($this['cockpit.start']) {
+    if ($this['cockpit.start'] && $this->module('cockpit')->getUser()) {
         $this->reroute($this['cockpit.start']);
     }
 
