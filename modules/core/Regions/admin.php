@@ -41,7 +41,7 @@ $app->on('admin.init', function() {
     });
 
     // dashboard widgets
-    $this->on("admin.dashboard.aside", function() {
+    $this->on("admin.dashboard.aside-right", function() {
         $regions = $this->module("regions")->regions(true);
         $this->renderView("regions:views/widgets/dashboard.php", compact('regions'));
     }, 100);

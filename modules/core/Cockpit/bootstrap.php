@@ -131,6 +131,22 @@ $this->module("cockpit")->extend([
         $user = $this->getUser();
 
         return (isset($user["group"]) && in_array($user["group"], (array)$groups));
+    },
+
+    "updateUserOption" => function($key, $value) use($app) {
+
+        if ($user = $this->getUser()) {
+
+            $data = isset($user['data']) && is_array($user['data']) ? $user['data'] : [];
+
+            $data[$key] = $value;
+
+            $app->storage->update('cockpit/accounts', ['_id' => $user['_id']], ['data' => $data]);
+
+            return $value;
+        }
+
+        return false;
     }
 ]);
 

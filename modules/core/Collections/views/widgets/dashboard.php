@@ -1,4 +1,4 @@
-<div class="uk-grid-margin">
+<div class="uk-grid-margin" data-widget="collections">
 
     <div class="uk-panel-box uk-panel-card">
 

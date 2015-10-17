@@ -5,15 +5,20 @@ namespace Cockpit\Helper;
 use ArrayObject;
 
 /**
- * Assets class.
+ * Admin Helper class.
  */
 class Admin extends \Lime\Helper {
 
     public $data;
+    public $options;
+    public $user;
 
     public function initialize(){
 
         $this->data =  new \ContainerArray();
+        $this->options = [];
+        $this->user = $this->app->module('cockpit')->getUser();
+        $this->user['data'] = new \ContainerArray(isset($this->user['data']) && is_array($this->user['data']) ? $this->user['data']:[]);
     }
 
 
@@ -56,7 +61,7 @@ class Admin extends \Lime\Helper {
              * extract to App.$data
              */
             'extract' => [
-                'user'      => $this->app->module('cockpit')->getUser(),
+                'user'      => $this->user,
                 'locale'    => $this->app('i18n')->locale,
                 'site_url'  => $this->app->pathToUrl('site:'),
                 'languages' => $this->app->retrieve('config/languages', [])
@@ -74,5 +79,35 @@ class Admin extends \Lime\Helper {
         ], $data));
 
         return $this;
+    }
+
+    public function getOption($key, $default = null) {
+
+        if (!isset($this->options[$key])) {
+
+            $this->options[$key] = $this->app->storage->getKey("cockpit/options", $key, $default);
+        }
+
+        return $this->options[$key];
+    }
+
+    public function setOption($key, $value) {
+
+        $this->options[$key] = $value;
+        $this->app->storage->setKey("cockpit/options", $key, $value);
+
+        return $value;
+    }
+
+    public function getUserOption($key, $default = null) {
+
+        return $this->user['data']->get($key, $default);
+    }
+
+    public function setUserOption($key, $value) {
+
+        $this->user['data']->set($key, $value);
+
+        return $this->app->module('cockpit')->updateUserOption($key, $value);
     }
 }
