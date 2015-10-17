@@ -111,11 +111,11 @@
 
                     <div>
                         @if($app('admin')->data['menu.modules']->count())
-                        <ul class="uk-subnav uk-hidden-small">
+                        <ul class="uk-subnav app-modulesbar uk-hidden-small">
 
                             @foreach($app('admin')->data['menu.modules'] as $item)
                             <li>
-                                <a class="{{ (@$item['active']) ? 'uk-bg-primary uk-contrast':'uk-contrast' }}" href="@route($item['route'])" title="@lang($item['label'])" data-uk-tooltip="{offset:10}">
+                                <a class="{{ (@$item['active']) ? 'uk-active':'uk-contrast' }}" href="@route($item['route'])" title="@lang($item['label'])" data-uk-tooltip="{offset:10}">
                                     <i class="uk-icon-{{ isset($item['icon']) ? $item['icon']:'cube' }}"></i>
                                 </a>
                             </li>
