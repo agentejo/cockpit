@@ -1066,6 +1066,21 @@ riot.tag('field-html', '<textarea name="input" class="uk-visibility-hidden"></te
                     $this.$setValue(editor.editor.getValue());
                 });
 
+                editor.off('action.image').on('action.image', function() {
+
+                    App.media.select(function(selected) {
+
+                        if (editor.getCursorMode() == 'markdown') {
+                            editor['replaceSelection']('![title]('+SITE_URL+'/'+selected[0]+')');
+                        } else {
+                            editor['replaceSelection']('<img src="'+SITE_URL+'/'+selected[0]+'">');
+                        }
+
+
+                    }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
+
+                });
+
             }.bind(this));
         });
 
