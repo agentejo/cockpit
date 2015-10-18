@@ -8,17 +8,17 @@
 
     <div class="uk-grid uk-margin" data-uk-grid-margin>
         <div class="uk-width-medium-1-2" data-area="main">
-            <div class="uk-sortable uk-grid uk-grid-gutter uk-grid-width-1-1" data-uk-sortable="{group:'dashboard'}">
+            <div class="uk-sortable uk-grid uk-grid-gutter uk-grid-width-1-1" data-uk-sortable="{group:'dashboard',animation:false}">
             @trigger('admin.dashboard.main')
             </div>
         </div>
         <div class="uk-width-medium-1-4" data-area="aside-left">
-            <div class="uk-sortable uk-grid uk-grid-gutter uk-grid-width-medium-1-1" data-uk-sortable="{group:'dashboard'}">
+            <div class="uk-sortable uk-grid uk-grid-gutter uk-grid-width-medium-1-1" data-uk-sortable="{group:'dashboard',animation:false}">
                 @trigger('admin.dashboard.aside-left')
             </div>
         </div>
         <div class="uk-width-medium-1-4" data-area="aside-right">
-            <div class="uk-sortable uk-grid uk-grid-gutter uk-grid-width-medium-1-1" data-uk-sortable="{group:'dashboard'}">
+            <div class="uk-sortable uk-grid uk-grid-gutter uk-grid-width-medium-1-1" data-uk-sortable="{group:'dashboard',animation:false}">
                 @trigger('admin.dashboard.aside-right')
             </div>
         </div>
