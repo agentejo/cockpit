@@ -1,6 +1,6 @@
 <div class="uk-grid-margin uk-width-1-1" data-widget="datetime">
 
-    <div class="uk-panel" riot-view>
+    <div class="uk-panel-box uk-panel-card" riot-view>
 
         <?php
             $i18ndata = $app("i18n")->data($app("i18n")->locale);
@@ -25,14 +25,14 @@
 
         </style>
 
+        <div class="uk-panel-box-header">
+            <strong>{{ date('d. M Y') }}</strong>
+        </div>
+
 
         <div id="{{ $uid }}" class="uk-grid">
 
             <div class="uk-width-medium-1-1">
-
-                <div class="uk-text-small uk-text-bold">
-                    <span>{{ date('d. M Y') }}</span>
-                </div>
 
                 <div name="weekdays" class="uk-text-small uk-text-muted uk-margin uk-text-uppercase date-widget-weekdays uk-margin">
                     <span data-day="1">{{ $weekdays[0] }}</span>
