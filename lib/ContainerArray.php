@@ -7,7 +7,7 @@ class ContainerArray implements  ArrayAccess, Countable, IteratorAggregate, Json
 
     public function __construct($array = [], $bindTo = null) {
 
-        $this->props  = new \ArrayObject($array);
+        $this->props  = new \ArrayObject(is_array($array) ? $array:[]);
         $this->bindTo = $bindTo ? $bindTo : $this;
     }
 
