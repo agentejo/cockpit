@@ -1,8 +1,21 @@
-<!doctype html>
+<?php
+
+    $modules = new \SplPriorityQueue();
+    $menuorder = $app->storage->getKey('cockpit/options', 'app.menu.order.'.$app["user"]["_id"], []);
+
+    if ($app('admin')->data['menu.modules']->count()) {
+
+        foreach($app('admin')->data['menu.modules'] as &$item) {
+            $modules->insert($item, -1* intval(\Lime\fetch_from_array($menuorder, $item['route'], 0)));
+        }
+    }
+
+?><!doctype html>
 <html lang="{{ $app('i18n')->locale }}" data-base="@base('/')" data-route="@route('/')" data-version="{{ $app['cockpit/version'] }}" data-locale="{{ $app('i18n')->locale }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ $app['app.name'] }}</title>
+    <link rel="icon" href="@base('/favicon.ico')" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
     <script>
@@ -81,10 +94,10 @@
                                         </div>
 
                                         @if($app('admin')->data['menu.modules']->count())
-                                        <ul class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-text-center" data-uk-sortable>
+                                        <ul class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-text-center" data-modules-menu data-uk-sortable>
 
-                                            @foreach($app('admin')->data['menu.modules'] as $item)
-                                            <li class="uk-grid-margin uk-width-1-2 uk-width-medium-1-3">
+                                            @foreach(clone $modules as $item)
+                                            <li class="uk-grid-margin uk-width-1-2 uk-width-medium-1-3" data-route="{{ $item['route'] }}">
                                                 <a class="uk-display-block uk-panel-box {{ (@$item['active']) ? 'uk-bg-primary uk-contrast':'uk-panel-framed' }}" href="@route($item['route'])">
                                                     <div class="uk-text-large">
                                                         <i class="uk-icon-{{ isset($item['icon']) ? $item['icon']:'cube' }}"></i>
@@ -113,7 +126,7 @@
                         @if($app('admin')->data['menu.modules']->count())
                         <ul class="uk-subnav app-modulesbar uk-hidden-small">
 
-                            @foreach($app('admin')->data['menu.modules'] as $item)
+                            @foreach($modules as $item)
                             <li>
                                 <a class="{{ (@$item['active']) ? 'uk-active':'uk-contrast' }}" href="@route($item['route'])" title="@lang($item['label'])" data-uk-tooltip="{offset:10}">
                                     <i class="uk-icon-{{ isset($item['icon']) ? $item['icon']:'cube' }}"></i>

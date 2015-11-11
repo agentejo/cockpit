@@ -11,6 +11,11 @@
             padding-right: 15px;
         }
 
+        .uk-modal .uk-panel-box.finder-folder,
+        .uk-modal .uk-panel-box.finder-file {
+            border: 1px rgba(0,0,0,0.1) solid;
+        }
+
     </style>
 
     <div show="{ data }">
@@ -25,7 +30,7 @@
 
                 <span class="uk-button-group uk-margin-small-right">
 
-                    <span class="uk-position-relative uk-button" data-uk-dropdown="{\mode:'click'\}">
+                    <span class="uk-position-relative uk-button" data-uk-dropdown="\{mode:'click'\}">
 
                         <i class="uk-icon-magic"></i>
 
@@ -74,11 +79,11 @@
                     <ul class="uk-nav uk-nav-side">
                         <li class="uk-nav-header">Display</li>
                         <li class="{ !typefilter ? 'uk-active':'' }"><a data-type="" onclick="{ settypefilter }"><i class="uk-icon-circle-o uk-icon-justify"></i> All</a></li>
-                        <li class="{ typefilter=='images' ? 'uk-active':'' }"><a data-type="images" onclick="{ settypefilter }"><i class="uk-icon-image uk-icon-justify"></i> Images</a></li>
+                        <li class="{ typefilter=='image' ? 'uk-active':'' }"><a data-type="image" onclick="{ settypefilter }"><i class="uk-icon-image uk-icon-justify"></i> Images</a></li>
                         <li class="{ typefilter=='video' ? 'uk-active':'' }"><a data-type="video" onclick="{ settypefilter }"><i class="uk-icon-video-camera uk-icon-justify"></i> Video</a></li>
                         <li class="{ typefilter=='audio' ? 'uk-active':'' }"><a data-type="audio" onclick="{ settypefilter }"><i class="uk-icon-volume-up uk-icon-justify"></i> Audio</a></li>
-                        <li class="{ typefilter=='documents' ? 'uk-active':'' }"><a data-type="documents" onclick="{ settypefilter }"><i class="uk-icon-paper-plane uk-icon-justify"></i> Documents</a></li>
-                        <li class="{ typefilter=='archive' ? 'uk-active':'' }"><a data-type="archive" onclick="{ settypefilter }"><i class="uk-icon-archive uk-icon-justify"></i> Archive</a></li>
+                        <li class="{ typefilter=='document' ? 'uk-active':'' }"><a data-type="document" onclick="{ settypefilter }"><i class="uk-icon-paper-plane uk-icon-justify"></i> Documents</a></li>
+                        <li class="{ typefilter=='archive' ? 'uk-active':'' }"><a data-type="archive" onclick="{ settypefilter }"><i class="uk-icon-archive uk-icon-justify"></i> Archives</a></li>
                     </ul>
                 </div>
 
@@ -116,7 +121,7 @@
                         <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4">
 
                             <li class="uk-grid-margin" each="{folder, idx in data.folders}" onclick="{ parent.select }" if="{ parent.infilter(folder) }">
-                                <div class="uk-panel uk-panel-box { folder.selected ? 'uk-selected':'' }">
+                                <div class="uk-panel uk-panel-box finder-folder { folder.selected ? 'uk-selected':'' }">
                                     <div class="uk-flex">
                                         <div>
                                             <span class="uk-margin-small-right" data-uk-dropdown="\{mode:'click'\}">
@@ -148,11 +153,11 @@
                         <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4">
 
                             <li class="uk-grid-margin" each="{file, idx in data.files}" onclick="{ parent.select }" if="{ parent.infilter(file) }">
-                                <div class="uk-panel uk-panel-box { file.selected ? 'uk-selected':'' }">
+                                <div class="uk-panel uk-panel-box finder-file { file.selected ? 'uk-selected':'' }">
 
-                                    <div class="uk-panel-teaser uk-cover-background uk-position-relative" style="background-image: { parent.getIconCls(file) == 'image' ? 'url('+file.url+')': 'none' }">
+                                    <div class="uk-panel-teaser uk-cover-background uk-position-relative">
 
-                                        <div class="uk-position-cover">
+                                        <div class="uk-position-cover uk-position-z-index">
 
                                             <div class="uk-panel uk-panel-box uk-panel-box-trans">
                                                 <span class="uk-margin-small-right" data-uk-dropdown="\{mode:'click'\}">
@@ -171,7 +176,8 @@
                                             </div>
 
                                         </div>
-                                        <canvas class="uk-responsive-width uk-display-block" width="400" height="200"></canvas>
+                                        <canvas class="uk-responsive-width uk-display-block" width="400" height="300" if="{ parent.getIconCls(file) != 'image' }"></canvas>
+                                        <cp-thumbnail src="{file.url}" width="400" height="300" if="{ parent.getIconCls(file) == 'image' }"></cp-thumbnail>
                                     </div>
 
                                     <div class="uk-flex-item-1 uk-text-truncate">
@@ -207,24 +213,24 @@
 
         var $this = this,
             typefilters = {
-                'images'    : /\.(jpg|jpeg|png|gif|svg)$/i,
-                'video'     : /\.(mp4|mov|ogv|webv|flv|avi)$/i,
-                'audio'     : /\.(mp3|weba|ogg|wav|flac)$/i,
-                'archive'   : /\.(zip|rar|7zip|gz)$/i,
-                'documents' : /\.(htm|html|pdf)$/i,
-                'text'      : /\.(txt|htm|html|php|css|less|js|json|md|markdown|yaml|xml)$/i
+                'image'    : /\.(jpg|jpeg|png|gif|svg)$/i,
+                'video'    : /\.(mp4|mov|ogv|webv|flv|avi)$/i,
+                'audio'    : /\.(mp3|weba|ogg|wav|flac)$/i,
+                'archive'  : /\.(zip|rar|7zip|gz)$/i,
+                'document' : /\.(htm|html|pdf|md)$/i,
+                'text'     : /\.(txt|htm|html|php|css|less|js|json|md|markdown|yaml|xml|htaccess)$/i
             };
 
         opts.root = opts.root || '/';
 
-        this.currentpath = opts.root;
+        this.currentpath = opts.path || App.session.get('app.finder.path', opts.root);
 
         this.data;
         this.breadcrumbs = [];
         this.selected    = {count:0, paths:{}};
         this.bookmarks   = {"folders":[], "files":[]};
 
-        this.viewfilter = 'all';
+        this.typefilter = opts.typefilter || '';
         this.namefilter = '';
 
         this.mode       = 'table';
@@ -313,7 +319,7 @@
             var file = evt.item.file,
                 name = file.name.toLowerCase();
 
-            if (name.match(typefilters.images)) {
+            if (name.match(typefilters.image)) {
 
                 UIkit.lightbox.create([
                     {'source': file.url, 'type':'image'}
@@ -394,9 +400,7 @@
 
                 this.selected.count = Object.keys(this.selected.paths).length;
 
-                if (opts.onChangeSelect) {
-                    opts.onChangeSelect(this.selected);
-                }
+                App.$(this.root).trigger('selectionchange', [this.selected]);
             }
         }
 
@@ -522,12 +526,15 @@
                         crumbs  = [];
 
                     for(var i=0;i<parts.length;i++){
+                        if(!parts[i]) continue;
                         tmppath.push(parts[i]);
                         crumbs.push({'name':parts[i],'path':tmppath.join("/")});
                     }
 
                     $this.breadcrumbs = crumbs;
                 }
+
+                App.session.set('app.finder.path', path);
 
                 defer.resolve(data);
 
@@ -583,7 +590,7 @@
 
             var name = file.name.toLowerCase();
 
-            if (name.match(typefilters.images)) {
+            if (name.match(typefilters.image)) {
 
                 return 'image';
 

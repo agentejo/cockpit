@@ -127,7 +127,7 @@
          * override tag method to know which tags exist
          */
 
-        riot.tag  = (function(_tag) {
+        riot.tag = riot.tag2 = (function(_tag) {
 
             riot.tags = {};
 

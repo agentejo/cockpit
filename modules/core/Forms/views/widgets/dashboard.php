@@ -1,11 +1,11 @@
-<div class="uk-grid-margin" data-widget="forms">
+<div>
 
     <div class="uk-panel-box uk-panel-card">
 
-        <div class="uk-panel-box-header">
-            <strong>@lang('Forms')</strong>
+        <div class="uk-panel-box-header uk-flex">
+            <strong class="uk-flex-item-1">@lang('Forms')</strong>
             @if(count($forms))
-            <span class="uk-badge">{{ count($forms) }}</span>
+            <span class="uk-badge uk-flex uk-flex-middle"><span>{{ count($forms) }}</span></span>
             @endif
         </div>
 

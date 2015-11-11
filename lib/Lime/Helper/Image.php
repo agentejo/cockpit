@@ -21,7 +21,7 @@ class Img {
 
     public function __construct($img) {
 
-        $this->image = new \SimpleImage($img);
+        $this->image = new SimpleImage($img);
     }
 
     public function negative() {

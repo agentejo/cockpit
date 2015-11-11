@@ -96,7 +96,7 @@
 
                 $this.$setValue($this.images.concat(images));
 
-            }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
+            }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
         }
 
         remove(e) {

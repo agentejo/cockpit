@@ -40,8 +40,9 @@
             var assets = [
                 '/assets/lib/redactor/redactor.min.js',
                 '/assets/lib/redactor/redactor.css',
+            ];
 
-                // load plugins
+            var plugins = [
                 '/assets/lib/redactor/plugins/fullscreen/fullscreen.js',
                 '/assets/lib/redactor/plugins/fontcolor/fontcolor.js',
                 '/assets/lib/redactor/plugins/fontsize/fontsize.js',
@@ -56,20 +57,24 @@
 
             App.assets.require(assets, function() {
 
-                initPlugins();
+                App.assets.require(plugins, function() {
 
-                this.input.value = this.value;
+                    initPlugins();
 
-                App.$($this.input).redactor({
-                    lang: lang,
-                    plugins: opts.plugins ||  ['table','textdirection','fontcolor','fontsize','video','fullscreen','imagepicker'],
-                    initCallback: function() {
-                        redactor = this;
-                    },
-                    changeCallback: function() {
-                        $this.$setValue(this.code.get());
-                    }
-                });
+                    this.input.value = this.value;
+
+                    App.$($this.input).redactor({
+                        lang: lang,
+                        plugins: opts.plugins ||  ['table','textdirection','fontcolor','fontsize','video','fullscreen','imagepicker'],
+                        initCallback: function() {
+                            redactor = this;
+                        },
+                        changeCallback: function() {
+                            $this.$setValue(this.code.get());
+                        }
+                    });
+
+                }.bind(this));
 
             }.bind(this)).catch(function(){
 
@@ -101,7 +106,7 @@
 
                             $this.image.insert('<img src="' + SITE_URL+'/'+selected + '" alt="">');
 
-                        }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
+                        }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
         				//$(img).click($.proxy(this.imagemanager.insert, this));
 
 

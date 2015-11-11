@@ -111,6 +111,7 @@ $app->bind('/', function(){
     return $this->invoke('Cockpit\\Controller\\Base', 'dashboard');
 });
 
+$app->bindClass('Cockpit\\Controller\\Utils', 'cockpit/utils');
 $app->bindClass('Cockpit\\Controller\\Base', 'cockpit');
 $app->bindClass('Cockpit\\Controller\\Settings', 'settings');
 $app->bindClass('Cockpit\\Controller\\Accounts', 'accounts');
@@ -140,9 +141,18 @@ $app->on('cockpit.search', function($search, $list) {
 });
 
 // dashboard widgets
-$app->on("admin.dashboard.main", function() {
-    $title = $this("i18n")->get("Today");
-    $this->renderView("cockpit:views/widgets/datetime.php", compact('title'));
+
+
+$app->on("admin.dashboard.widgets", function($widgets) {
+
+    $title   = $this("i18n")->get("Today");
+
+    $widgets[] = [
+        "name"    => "time",
+        "content" => $this->view("cockpit:views/widgets/datetime.php", compact('title')),
+        "area"    => 'main'
+    ];
+
 }, 100);
 
 /**

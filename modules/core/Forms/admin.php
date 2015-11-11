@@ -55,9 +55,16 @@ $app->on('admin.init', function() {
 
 
     // dashboard widgets
-    $this->on("admin.dashboard.aside-left", function() {
+    $this->on("admin.dashboard.widgets", function($widgets) {
+
         $forms = $this->module("forms")->forms(true);
-        $this->renderView("forms:views/widgets/dashboard.php", compact('forms'));
+
+        $widgets[] = [
+            "name"    => "forms",
+            "content" => $this->view("forms:views/widgets/dashboard.php", compact('forms')),
+            "area"    => 'aside-left'
+        ];
+
     }, 100);
 
 

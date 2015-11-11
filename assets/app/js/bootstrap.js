@@ -80,5 +80,18 @@
         modal.show();
     };
 
+    $(document).on('stop.uk.sortable', '[data-modules-menu]', function(){
+
+        var order = {};
+
+        $(this).children().each(function(idx){
+            order[this.getAttribute('data-route')] = idx+1;
+        });
+
+        App.request('/cockpit/savemenu',{order:order}).then(function(){
+
+        });
+    });
+
 
 })(jQuery, UIkit);

@@ -55,8 +55,15 @@ $app->on('admin.init', function() {
     });
 
     // dashboard widgets
-    $this->on("admin.dashboard.aside-left", function() {
+    $this->on("admin.dashboard.widgets", function($widgets) {
+
         $collections = $this->module("collections")->collections(true);
-        $this->renderView("collections:views/widgets/dashboard.php", compact('collections'));
+
+        $widgets[] = [
+            "name"    => "collections",
+            "content" => $this->view("collections:views/widgets/dashboard.php", compact('collections')),
+            "area"    => 'aside-left'
+        ];
+
     }, 100);
 });

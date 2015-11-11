@@ -25,12 +25,17 @@
         this.on('mount', function(){
 
             if (opts.autocomplete) {
+
                 UIkit.autocomplete(this.autocomplete, {source: opts.autocomplete});
             }
 
-            App.$(this.input).on('keydown', function(e) {
+            App.$(this.input).on('keydown change', function(e) {
 
-                if (e.keyCode == 13 && $this.input.value.trim()) {
+                if (e.type=='keydown' && e.keyCode != 13) {
+                    return;
+                }
+
+                if ($this.input.value.trim()) {
 
                     e.stopImmediatePropagation();
                     e.stopPropagation();

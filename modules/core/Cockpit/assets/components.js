@@ -1,4 +1,4 @@
-riot.tag('codemirror', '', function(opts) {
+riot.tag2('codemirror', '', '', '', function(opts) {
 
         var $this = this,
             root  = this.root,
@@ -216,11 +216,9 @@ riot.tag('codemirror', '', function(opts) {
               };
         }
 
-
-    
 });
 
-riot.tag('cp-field', '', function(opts) {
+riot.tag2('cp-field', '', '', '', function(opts) {
 
         this._field = null;
 
@@ -255,10 +253,9 @@ riot.tag('cp-field', '', function(opts) {
             }
         })
 
-    
 });
 
-riot.tag('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form" show="{fields.length}"> <div class="uk-grid-margin uk-width-{field.width}" data-idx="{idx}" each="{ field,idx in fields }"> <div class="uk-panel uk-panel-box uk-panel-card"> <div class="uk-grid uk-grid-small"> <div class="uk-flex-item-1 uk-flex"> <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="fields[{idx}].name" placeholder="name" required> </div> <div class="uk-width-1-4"> <div class="uk-form-select" data-uk-form-select> <div class="uk-form-icon"> <i class="uk-icon-arrows-h"></i> <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.width }"> </div> <select bind="fields[{idx}].width"> <option value="1-1">1-1</option> <option value="1-2">1-2</option> <option value="1-3">1-3</option> <option value="2-3">2-3</option> <option value="1-4">1-4</option> <option value="3-4">3-4</option> </select> </div> </div> <div class="uk-text-right"> <ul class="uk-subnav"> <li> <a class="uk-text-{ field.lst ? \'success\':\'muted\'}" onclick="{ parent.togglelist }" title="{ App.i18n.get(\'Show field on list view\') }"> <i class="uk-icon-list"></i> </a> </li> <li> <a onclick="UIkit.modal(\'#field-{idx}\').show()"><i class="uk-icon-cog uk-text-primary"></i></a> </li> <li> <a class="uk-text-danger" onclick="{ parent.removefield }"> <i class="uk-icon-trash"></i> </a> </li> </ul> </div> </div> </div> <div class="uk-modal" id="field-{idx}"> <div class="uk-modal-dialog"> <div class="uk-form-row uk-text-bold"> { field.name || \'Field\' } </div> <div class="uk-form-row"> <div class="uk-form-select uk-width-1-1"> <div class="uk-form-icon uk-width-1-1"> <i class="uk-icon-tag"></i> <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.type.toUpperCase() }"> </div> <select class="uk-width-1-1" bind="fields[{idx}].type"> <option each="{type,typeidx in parent.fieldtypes}" value="{type.value}">{type.name}</option> </select> </div> </div> <div class="uk-form-row"> <input class="uk-width-1-1" type="text" bind="fields[{idx}].label" placeholder="{ App.i18n.get(\'label\') }"> </div> <div class="uk-form-row"> <input class="uk-width-1-1" type="text" bind="fields[{idx}].info" placeholder="{ App.i18n.get(\'info\') }"> </div> <div class="uk-form-row"> <div class="uk-text-small uk-text-bold">{ App.i18n.get(\'Options\') } <span class="uk-text-muted">JSON</span></div> <field-object cls="uk-width-1-1" bind="fields[{idx}].options" rows="6" allowtabs="2"></field-object> </div> <div class="uk-form-row"> <input type="checkbox" bind="fields[{idx}].required"> { App.i18n.get(\'Required\') } </div> <div class="uk-form-row"> <input type="checkbox" bind="fields[{idx}].localize"> { App.i18n.get(\'Localize\') } </div> <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{ App.i18n.get(\'Close\') }</button></div> </div> </div> </div> <div class="uk-margin-top"> <a class="uk-button uk-button-link" onclick="{ addfield }"><i class="uk-icon-plus-circle"></i> { App.i18n.get(\'Add field\') }</a> </div> </div> <div class="uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ !fields.length && !reorder }"> <div class="uk-animation-fade"> <p class="uk-text-xlarge"> <i class="uk-icon-list-alt"></i> </p> <hr> { App.i18n.get(\'No fields added yet\') }. <a onclick="{ addfield }">{ App.i18n.get(\'Add field\') }.</a> </div> </div>', function(opts) {
+riot.tag2('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form" show="{fields.length}"> <div class="uk-grid-margin uk-width-{field.width}" data-idx="{idx}" each="{field,idx in fields}"> <div class="uk-panel uk-panel-box uk-panel-card"> <div class="uk-grid uk-grid-small"> <div class="uk-flex-item-1 uk-flex"> <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="fields[{idx}].name" placeholder="name" required> </div> <div class="uk-width-1-4"> <div class="uk-form-select" data-uk-form-select> <div class="uk-form-icon"> <i class="uk-icon-arrows-h"></i> <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{field.width}"> </div> <select bind="fields[{idx}].width"> <option value="1-1">1-1</option> <option value="1-2">1-2</option> <option value="1-3">1-3</option> <option value="2-3">2-3</option> <option value="1-4">1-4</option> <option value="3-4">3-4</option> </select> </div> </div> <div class="uk-text-right"> <ul class="uk-subnav"> <li> <a class="uk-text-{field.lst ? \'success\':\'muted\'}" onclick="{parent.togglelist}" title="{App.i18n.get(\'Show field on list view\')}"> <i class="uk-icon-list"></i> </a> </li> <li> <a onclick="UIkit.modal(\'#field-{idx}\').show()"><i class="uk-icon-cog uk-text-primary"></i></a> </li> <li> <a class="uk-text-danger" onclick="{parent.removefield}"> <i class="uk-icon-trash"></i> </a> </li> </ul> </div> </div> </div> <div class="uk-modal" id="field-{idx}"> <div class="uk-modal-dialog"> <div class="uk-form-row uk-text-bold"> {field.name || \'Field\'} </div> <div class="uk-form-row"> <div class="uk-form-select uk-width-1-1"> <div class="uk-form-icon uk-width-1-1"> <i class="uk-icon-tag"></i> <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{field.type.toUpperCase()}"> </div> <select class="uk-width-1-1" bind="fields[{idx}].type"> <option each="{type,typeidx in parent.fieldtypes}" value="{type.value}">{type.name}</option> </select> </div> </div> <div class="uk-form-row"> <input class="uk-width-1-1" type="text" bind="fields[{idx}].label" placeholder="{App.i18n.get(\'label\')}"> </div> <div class="uk-form-row"> <input class="uk-width-1-1" type="text" bind="fields[{idx}].info" placeholder="{App.i18n.get(\'info\')}"> </div> <div class="uk-form-row"> <div class="uk-text-small uk-text-bold">{App.i18n.get(\'Options\')} <span class="uk-text-muted">JSON</span></div> <field-object cls="uk-width-1-1" bind="fields[{idx}].options" rows="6" allowtabs="2"></field-object> </div> <div class="uk-form-row"> <input type="checkbox" bind="fields[{idx}].required"> {App.i18n.get(\'Required\')} </div> <div class="uk-form-row"> <input type="checkbox" bind="fields[{idx}].localize"> {App.i18n.get(\'Localize\')} </div> <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{App.i18n.get(\'Close\')}</button></div> </div> </div> </div> <div class="uk-margin-top"> <a class="uk-button uk-button-link" onclick="{addfield}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add field\')}</a> </div> </div> <div class="uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{!fields.length && !reorder}"> <div class="uk-animation-fade"> <p class="uk-text-xlarge"> <i class="uk-icon-list-alt"></i> </p> <hr> {App.i18n.get(\'No fields added yet\')}. <a onclick="{addfield}">{App.i18n.get(\'Add field\')}.</a> </div> </div>', '', '', function(opts) {
 
         this.mixin(RiotBindMixin);
 
@@ -266,7 +263,6 @@ riot.tag('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk-
 
         this.fields  = [];
         this.reorder = false;
-
 
         this.fieldtypes = [];
 
@@ -279,7 +275,6 @@ riot.tag('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk-
                 this.fieldtypes.push({name:f.toUpperCase(), value:f});
             }
         }
-
 
         this.$updateValue = function(value, field) {
 
@@ -350,48 +345,46 @@ riot.tag('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk-
             });
 
             $this.$setValue(this.fields);
-        }.bind(this);
+        }.bind(this)
 
         this.removefield = function(e) {
             this.fields.splice(e.item.idx, 1);
             $this.$setValue(this.fields);
-        }.bind(this);
+        }.bind(this)
 
         this.togglelist = function(e) {
             e.item.field.lst = !e.item.field.lst;
-        }.bind(this);
+        }.bind(this)
 
-    
-});
+}, '{ }');
 
-riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-margin> <div class="uk-float-left"> <span class="uk-button uk-button-primary uk-margin-small-right uk-form-file"> <input class="js-upload-select" type="file" multiple="true" title=""> <i class="uk-icon-upload"></i> </span> <span class="uk-button-group uk-margin-small-right"> <span class="uk-position-relative uk-button" data-uk-dropdown="{\mode:\'click\'\\}"> <i class="uk-icon-magic"></i> <div class="uk-dropdown uk-text-left"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">Create</li> <li><a onclick="{ createfolder }"><i class="uk-icon-folder-o uk-icon-justify"></i> Folder</a></li> <li><a onclick="{ createfile }"><i class="uk-icon-file-o uk-icon-justify"></i> File</a></li> </ul> </div> </span> <button class="uk-button" onclick="{ refresh }"> <i class="uk-icon-refresh"></i> </button> </span> <span class="uk-button" if="{ selected.count }" data-uk-dropdown="\\{mode:\'click\'\\}"> <strong>Batch:</strong> { selected.count } selected &nbsp;<i class="uk-icon-caret-down"></i> <div class="uk-dropdown uk-text-left"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">Batch action</li> <li><a onclick="{ removeSelected }">Delete</a></li> </ul> </div> </span> </div> <div class="uk-float-right"> <div class="uk-form uk-form-icon uk-width-1-1"> <i class="uk-icon-filter"></i> <input name="filter" type="text" onkeyup="{ updatefilter }"> </div> </div> </div> <div class="uk-grid uk-grid-divider uk-margin-large-top" data-uk-grid-margin> <div class="uk-width-medium-1-4"> <div class="uk-panel"> <ul class="uk-nav uk-nav-side"> <li class="uk-nav-header">Display</li> <li class="{ !typefilter ? \'uk-active\':\'\' }"><a data-type="" onclick="{ settypefilter }"><i class="uk-icon-circle-o uk-icon-justify"></i> All</a></li> <li class="{ typefilter==\'images\' ? \'uk-active\':\'\' }"><a data-type="images" onclick="{ settypefilter }"><i class="uk-icon-image uk-icon-justify"></i> Images</a></li> <li class="{ typefilter==\'video\' ? \'uk-active\':\'\' }"><a data-type="video" onclick="{ settypefilter }"><i class="uk-icon-video-camera uk-icon-justify"></i> Video</a></li> <li class="{ typefilter==\'audio\' ? \'uk-active\':\'\' }"><a data-type="audio" onclick="{ settypefilter }"><i class="uk-icon-volume-up uk-icon-justify"></i> Audio</a></li> <li class="{ typefilter==\'documents\' ? \'uk-active\':\'\' }"><a data-type="documents" onclick="{ settypefilter }"><i class="uk-icon-paper-plane uk-icon-justify"></i> Documents</a></li> <li class="{ typefilter==\'archive\' ? \'uk-active\':\'\' }"><a data-type="archive" onclick="{ settypefilter }"><i class="uk-icon-archive uk-icon-justify"></i> Archive</a></li> </ul> </div> </div> <div class="uk-width-medium-3-4"> <div class="uk-panel"> <ul class="uk-breadcrumb"> <li onclick="{ changedir }"><a title="Change dir to root"><i class="uk-icon-home"></i></a></li> <li each="{folder, idx in breadcrumbs}"><a onclick="{ parent.changedir }" title="Change dir to @@ folder.name @@">{ folder.name }</a></li> </ul> </div> <div name="uploadprogress" class="uk-margin uk-hidden"> <div class="uk-progress"> <div name="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div> </div> </div> <div class="uk-alert uk-text-center uk-margin" if="{ (this.typefilter || this.filter.value) && (data.folders.length || data.files.length) }"> Filter is active </div> <div class="uk-alert uk-text-center uk-margin" if="{ (!data.folders.length && !data.files.length) }"> This is an empty folder </div> <div> <div class="uk-margin-top" if="{data.folders.length}"> <strong class="uk-text-small uk-text-muted" if="{ !(this.filter.value) }"><i class="uk-icon-folder-o uk-margin-small-right"></i> { data.folders.length } Folders</strong> <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4"> <li class="uk-grid-margin" each="{folder, idx in data.folders}" onclick="{ parent.select }" if="{ parent.infilter(folder) }"> <div class="uk-panel uk-panel-box { folder.selected ? \'uk-selected\':\'\' }"> <div class="uk-flex"> <div> <span class="uk-margin-small-right" data-uk-dropdown="\\{mode:\'click\'\\}"> <i class="uk-icon-folder-o uk-text-muted js-no-item-select"></i> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header uk-text-truncate">{ folder.name }</li> <li><a onclick="{ parent.rename }">Rename</a></li> <li><a onclick="{ parent.remove }">Delete</a></li> </ul> </div> </span> </div> <div class="uk-flex-item-1 uk-text-truncate"> <a class="uk-link-muted" onclick="{ parent.changedir }"><strong>{ folder.name }</strong></a> </div> </div> </div> </li> </ul> </div> <div class="uk-margin-top" if="{data.files.length}"> <strong class="uk-text-small uk-text-muted" if="{ !(this.typefilter || this.filter.value) }"><i class="uk-icon-file-o uk-margin-small-right"></i> { data.files.length } Files</strong> <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4"> <li class="uk-grid-margin" each="{file, idx in data.files}" onclick="{ parent.select }" if="{ parent.infilter(file) }"> <div class="uk-panel uk-panel-box { file.selected ? \'uk-selected\':\'\' }"> <div class="uk-panel-teaser uk-cover-background uk-position-relative" riot-style="background-image: { parent.getIconCls(file) == \'image\' ? \'url(\'+file.url+\')\': \'none\' }"> <div class="uk-position-cover"> <div class="uk-panel uk-panel-box uk-panel-box-trans"> <span class="uk-margin-small-right" data-uk-dropdown="\\{mode:\'click\'\\}"> <a><i class="uk-icon-{ parent.getIconCls(file) } js-no-item-select"></i> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header uk-text-truncate">{ file.name }</li> <li> <a class="uk-link-muted js-no-item-select" onclick="{ parent.open }">Open</a></li> <li><a onclick="{ parent.rename }">Rename</a></li> <li if="{ file.ext == \'zip\' }"><a onclick="{ parent.unzip }">Unzip</a></li> <li class="uk-nav-divider"></li> <li><a onclick="{ parent.remove }">Delete</a></li> </ul> </div> </span> </div> </div> <canvas class="uk-responsive-width uk-display-block" width="400" height="200"></canvas> </div> <div class="uk-flex-item-1 uk-text-truncate"> <a class="uk-link-muted js-no-item-select" onclick="{ parent.open }">{ file.name }</a> <div class="uk-margin-small-top uk-text-small uk-text-muted"> { file.size } </div> </div> </div> </li> </ul> </div> </div> </div> </div> <div name="editor" class="uk-offcanvas"> <div class="uk-offcanvas-bar uk-width-3-4"> <picoedit></picoedit> </div> </div> </div>', '.uk-offcanvas[name=editor] .CodeMirror { height: auto; } .uk-offcanvas[name=editor] .picoedit-toolbar { padding-left: 15px; padding-right: 15px; }', function(opts) {
+riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-margin> <div class="uk-float-left"> <span class="uk-button uk-button-primary uk-margin-small-right uk-form-file"> <input class="js-upload-select" type="file" multiple="true" title=""> <i class="uk-icon-upload"></i> </span> <span class="uk-button-group uk-margin-small-right"> <span class="uk-position-relative uk-button" data-uk-dropdown="\\{mode:\'click\'\\}"> <i class="uk-icon-magic"></i> <div class="uk-dropdown uk-text-left"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">Create</li> <li><a onclick="{createfolder}"><i class="uk-icon-folder-o uk-icon-justify"></i> Folder</a></li> <li><a onclick="{createfile}"><i class="uk-icon-file-o uk-icon-justify"></i> File</a></li> </ul> </div> </span> <button class="uk-button" onclick="{refresh}"> <i class="uk-icon-refresh"></i> </button> </span> <span class="uk-button" if="{selected.count}" data-uk-dropdown="\\{mode:\'click\'\\}"> <strong>Batch:</strong> {selected.count} selected &nbsp;<i class="uk-icon-caret-down"></i> <div class="uk-dropdown uk-text-left"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">Batch action</li> <li><a onclick="{removeSelected}">Delete</a></li> </ul> </div> </span> </div> <div class="uk-float-right"> <div class="uk-form uk-form-icon uk-width-1-1"> <i class="uk-icon-filter"></i> <input name="filter" type="text" onkeyup="{updatefilter}"> </div> </div> </div> <div class="uk-grid uk-grid-divider uk-margin-large-top" data-uk-grid-margin> <div class="uk-width-medium-1-4"> <div class="uk-panel"> <ul class="uk-nav uk-nav-side"> <li class="uk-nav-header">Display</li> <li class="{!typefilter ? \'uk-active\':\'\'}"><a data-type="" onclick="{settypefilter}"><i class="uk-icon-circle-o uk-icon-justify"></i> All</a></li> <li class="{typefilter==\'image\' ? \'uk-active\':\'\'}"><a data-type="image" onclick="{settypefilter}"><i class="uk-icon-image uk-icon-justify"></i> Images</a></li> <li class="{typefilter==\'video\' ? \'uk-active\':\'\'}"><a data-type="video" onclick="{settypefilter}"><i class="uk-icon-video-camera uk-icon-justify"></i> Video</a></li> <li class="{typefilter==\'audio\' ? \'uk-active\':\'\'}"><a data-type="audio" onclick="{settypefilter}"><i class="uk-icon-volume-up uk-icon-justify"></i> Audio</a></li> <li class="{typefilter==\'document\' ? \'uk-active\':\'\'}"><a data-type="document" onclick="{settypefilter}"><i class="uk-icon-paper-plane uk-icon-justify"></i> Documents</a></li> <li class="{typefilter==\'archive\' ? \'uk-active\':\'\'}"><a data-type="archive" onclick="{settypefilter}"><i class="uk-icon-archive uk-icon-justify"></i> Archives</a></li> </ul> </div> </div> <div class="uk-width-medium-3-4"> <div class="uk-panel"> <ul class="uk-breadcrumb"> <li onclick="{changedir}"><a title="Change dir to root"><i class="uk-icon-home"></i></a></li> <li each="{folder, idx in breadcrumbs}"><a onclick="{parent.changedir}" title="Change dir to @@ folder.name @@">{folder.name}</a></li> </ul> </div> <div name="uploadprogress" class="uk-margin uk-hidden"> <div class="uk-progress"> <div name="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div> </div> </div> <div class="uk-alert uk-text-center uk-margin" if="{(this.typefilter || this.filter.value) && (data.folders.length || data.files.length)}"> Filter is active </div> <div class="uk-alert uk-text-center uk-margin" if="{(!data.folders.length && !data.files.length)}"> This is an empty folder </div> <div> <div class="uk-margin-top" if="{data.folders.length}"> <strong class="uk-text-small uk-text-muted" if="{!(this.filter.value)}"><i class="uk-icon-folder-o uk-margin-small-right"></i> {data.folders.length} Folders</strong> <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4"> <li class="uk-grid-margin" each="{folder, idx in data.folders}" onclick="{parent.select}" if="{parent.infilter(folder)}"> <div class="uk-panel uk-panel-box finder-folder {folder.selected ? \'uk-selected\':\'\'}"> <div class="uk-flex"> <div> <span class="uk-margin-small-right" data-uk-dropdown="\\{mode:\'click\'\\}"> <i class="uk-icon-folder-o uk-text-muted js-no-item-select"></i> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header uk-text-truncate">{folder.name}</li> <li><a onclick="{parent.rename}">Rename</a></li> <li><a onclick="{parent.remove}">Delete</a></li> </ul> </div> </span> </div> <div class="uk-flex-item-1 uk-text-truncate"> <a class="uk-link-muted" onclick="{parent.changedir}"><strong>{folder.name}</strong></a> </div> </div> </div> </li> </ul> </div> <div class="uk-margin-top" if="{data.files.length}"> <strong class="uk-text-small uk-text-muted" if="{!(this.typefilter || this.filter.value)}"><i class="uk-icon-file-o uk-margin-small-right"></i> {data.files.length} Files</strong> <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4"> <li class="uk-grid-margin" each="{file, idx in data.files}" onclick="{parent.select}" if="{parent.infilter(file)}"> <div class="uk-panel uk-panel-box finder-file {file.selected ? \'uk-selected\':\'\'}"> <div class="uk-panel-teaser uk-cover-background uk-position-relative"> <div class="uk-position-cover uk-position-z-index"> <div class="uk-panel uk-panel-box uk-panel-box-trans"> <span class="uk-margin-small-right" data-uk-dropdown="\\{mode:\'click\'\\}"> <a><i class="uk-icon-{parent.getIconCls(file)} js-no-item-select"></i> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header uk-text-truncate">{file.name}</li> <li> <a class="uk-link-muted js-no-item-select" onclick="{parent.open}">Open</a></li> <li><a onclick="{parent.rename}">Rename</a></li> <li if="{file.ext == \'zip\'}"><a onclick="{parent.unzip}">Unzip</a></li> <li class="uk-nav-divider"></li> <li><a onclick="{parent.remove}">Delete</a></li> </ul> </div> </span> </div> </div> <canvas class="uk-responsive-width uk-display-block" width="400" height="300" if="{parent.getIconCls(file) != \'image\'}"></canvas> <cp-thumbnail riot-src="{file.url}" width="400" height="300" if="{parent.getIconCls(file) == \'image\'}"></cp-thumbnail> </div> <div class="uk-flex-item-1 uk-text-truncate"> <a class="uk-link-muted js-no-item-select" onclick="{parent.open}">{file.name}</a> <div class="uk-margin-small-top uk-text-small uk-text-muted"> {file.size} </div> </div> </div> </li> </ul> </div> </div> </div> </div> <div name="editor" class="uk-offcanvas"> <div class="uk-offcanvas-bar uk-width-3-4"> <picoedit></picoedit> </div> </div> </div>', '.uk-offcanvas[name=editor] .CodeMirror { height: auto; } .uk-offcanvas[name=editor] .picoedit-toolbar { padding-left: 15px; padding-right: 15px; } .uk-modal .uk-panel-box.finder-folder, .uk-modal .uk-panel-box.finder-file { border: 1px rgba(0,0,0,0.1) solid; }', '', function(opts) {
 
         var $this = this,
             typefilters = {
-                'images'    : /\.(jpg|jpeg|png|gif|svg)$/i,
-                'video'     : /\.(mp4|mov|ogv|webv|flv|avi)$/i,
-                'audio'     : /\.(mp3|weba|ogg|wav|flac)$/i,
-                'archive'   : /\.(zip|rar|7zip|gz)$/i,
-                'documents' : /\.(htm|html|pdf)$/i,
-                'text'      : /\.(txt|htm|html|php|css|less|js|json|md|markdown|yaml|xml)$/i
+                'image'    : /\.(jpg|jpeg|png|gif|svg)$/i,
+                'video'    : /\.(mp4|mov|ogv|webv|flv|avi)$/i,
+                'audio'    : /\.(mp3|weba|ogg|wav|flac)$/i,
+                'archive'  : /\.(zip|rar|7zip|gz)$/i,
+                'document' : /\.(htm|html|pdf|md)$/i,
+                'text'     : /\.(txt|htm|html|php|css|less|js|json|md|markdown|yaml|xml|htaccess)$/i
             };
 
         opts.root = opts.root || '/';
 
-        this.currentpath = opts.root;
+        this.currentpath = opts.path || App.session.get('app.finder.path', opts.root);
 
         this.data;
         this.breadcrumbs = [];
         this.selected    = {count:0, paths:{}};
         this.bookmarks   = {"folders":[], "files":[]};
 
-        this.viewfilter = 'all';
+        this.typefilter = opts.typefilter || '';
         this.namefilter = '';
 
         this.mode       = 'table';
         this.dirlist    = false;
         this.selected   = {};
-
 
         App.$(this.editor).on('click', function(e){
 
@@ -461,7 +454,7 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
             }
 
             this.loadPath(path);
-        }.bind(this);
+        }.bind(this)
 
         this.open = function(evt) {
 
@@ -473,7 +466,7 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
             var file = evt.item.file,
                 name = file.name.toLowerCase();
 
-            if (name.match(typefilters.images)) {
+            if (name.match(typefilters.image)) {
 
                 UIkit.lightbox.create([
                     {'source': file.url, 'type':'image'}
@@ -493,13 +486,13 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
             } else {
                 App.ui.notify("Filetype not supported");
             }
-        }.bind(this);
+        }.bind(this)
 
         this.refresh = function() {
             this.loadPath().then(function(){
                 App.ui.notify('Folder reloaded');
             });
-        }.bind(this);
+        }.bind(this)
 
         this.select = function(e, force) {
 
@@ -553,11 +546,9 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
 
                 this.selected.count = Object.keys(this.selected.paths).length;
 
-                if (opts.onChangeSelect) {
-                    opts.onChangeSelect(this.selected);
-                }
+                App.$(this.root).trigger('selectionchange', [this.selected]);
             }
-        }.bind(this);
+        }.bind(this)
 
         this.rename = function(e, item) {
 
@@ -566,7 +557,6 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
             item = e.item.folder || e.item.file;
 
             App.ui.prompt("Please enter a name:", item.name, function(name){
-
 
                 if (name!=item.name && name.trim()) {
 
@@ -578,7 +568,7 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
                 }
 
             });
-        }.bind(this);
+        }.bind(this)
 
         this.unzip = function(e, item) {
 
@@ -600,7 +590,7 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
                 $this.loadPath();
 
             });
-        }.bind(this);
+        }.bind(this)
 
         this.remove = function(e, item, index) {
 
@@ -621,7 +611,7 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
                     $this.update();
                 });
             });
-        }.bind(this);
+        }.bind(this)
 
         this.removeSelected = function() {
 
@@ -637,7 +627,7 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
                     });
                 });
             }
-        }.bind(this);
+        }.bind(this)
 
         this.createfolder = function() {
 
@@ -649,7 +639,7 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
                     });
                 }
             });
-        }.bind(this);
+        }.bind(this)
 
         this.createfile = function() {
 
@@ -661,7 +651,7 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
                     });
                 }
             });
-        }.bind(this);
+        }.bind(this)
 
         this.loadPath = function(path, defer) {
 
@@ -681,12 +671,15 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
                         crumbs  = [];
 
                     for(var i=0;i<parts.length;i++){
+                        if(!parts[i]) continue;
                         tmppath.push(parts[i]);
                         crumbs.push({'name':parts[i],'path':tmppath.join("/")});
                     }
 
                     $this.breadcrumbs = crumbs;
                 }
+
+                App.session.set('app.finder.path', path);
 
                 defer.resolve(data);
 
@@ -698,16 +691,16 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
             });
 
             return defer;
-        }.bind(this);
+        }.bind(this)
 
         this.settypefilter = function(evt) {
             this.typefilter = evt.target.dataset.type;
             this.resetselected();
-        }.bind(this);
+        }.bind(this)
 
         this.updatefilter = function(evt) {
             this.resetselected();
-        }.bind(this);
+        }.bind(this)
 
         this.infilter = function(item) {
 
@@ -721,7 +714,7 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
             }
 
             return (!this.filter.value || (name && name.indexOf(this.filter.value.toLowerCase()) !== -1));
-        }.bind(this);
+        }.bind(this)
 
         this.resetselected = function() {
 
@@ -736,13 +729,13 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
             if (opts.onChangeSelect) {
                 opts.onChangeSelect(this.selected);
             }
-        }.bind(this);
+        }.bind(this)
 
         this.getIconCls = function(file) {
 
             var name = file.name.toLowerCase();
 
-            if (name.match(typefilters.images)) {
+            if (name.match(typefilters.image)) {
 
                 return 'image';
 
@@ -761,8 +754,7 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
             } else {
                 return 'file-o';
             }
-        }.bind(this);
-
+        }.bind(this)
 
         function requestapi(data, fn, type) {
 
@@ -771,11 +763,9 @@ riot.tag('cp-finder', '<div show="{ data }"> <div class="uk-clearfix" data-uk-ma
             App.request('/media/api', data).then(fn);
         }
 
+}, '{ }');
 
-    
-});
-
-riot.tag('cp-gravatar', '<img name="image" class="uk-border-circle" riot-src="{ url }" width="{ size }" height="{ size }" alt="{ opts.alt }">', function(opts) {
+riot.tag2('cp-gravatar', '<img name="image" class="uk-border-circle" riot-src="{url}" width="{size}" height="{size}" alt="{opts.alt}">', '', '', function(opts) {
 
         this.url = '';
 
@@ -803,10 +793,9 @@ riot.tag('cp-gravatar', '<img name="image" class="uk-border-circle" riot-src="{ 
 
         });
 
-    
-});
+}, '{ }');
 
-riot.tag('cp-search', '<div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form app-search"> <i class="uk-icon-search"></i> <input class="uk-width-1-1 uk-form-blank" type="text" placeholder="{ App.i18n.get(\'Search...\') }"> </div>', 'cp-search .uk-dropdown { min-width: 25vw; }', function(opts) {
+riot.tag2('cp-search', '<div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form app-search"> <i class="uk-icon-search"></i> <input class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(\'Search...\')}"> </div>', 'cp-search .uk-dropdown { min-width: 25vw; }', '', function(opts) {
 
         this.on('mount', function(){
 
@@ -823,10 +812,33 @@ riot.tag('cp-search', '<div name="autocomplete" class="uk-autocomplete uk-form-i
             }
         });
 
-    
-});
+}, '{ }');
 
-riot.tag('field-boolean', '<button type="button" name="button" class="uk-button uk-button-{ checked ? \'success\':\'default\'}" onclick="{ toggle }"> <i show="{checked}" class="uk-icon-check-circle"></i> <i show="{!checked}" class="uk-icon-circle-o"></i> </button>', function(opts) {
+riot.tag2('cp-thumbnail', '<span class="uk-position-relative"> <i name="spinner" class="uk-icon-spinner uk-icon-spin uk-position-absolute"></i> <canvas name="canvas" class="uk-responsive-width" width="{opts.width || \'\'}" height="{opts.height || \'\'}"></canvas> </span>', '', '', function(opts) {
+
+        var $this = this;
+
+        this.on('mount', function(){
+
+            opts.src = opts.src || opts['riot-src'] || opts['riotSrc'];
+
+            App.request('/cockpit/utils/thumb_url', {src:opts.src,w:opts.width,h:opts.height}, 'text').then(function(url){
+
+                var img = new Image();
+
+                img.onload = function() {
+
+                    $this.canvas.getContext("2d").drawImage(img,0,0);
+                    $this.spinner.classList.add('uk-hidden');
+                };
+
+                img.src = url;
+            });
+        });
+
+}, '{ }');
+
+riot.tag2('field-boolean', '<button type="button" name="button" class="uk-button uk-button-{checked ? \'success\':\'default\'}" onclick="{toggle}"> <i show="{checked}" class="uk-icon-check-circle"></i> <i show="{!checked}" class="uk-icon-circle-o"></i> </button>', '', '', function(opts) {
 
         if (opts.cls) {
             App.$(this.button).addClass(opts.cls.replace(/uk\-form\-/g, 'uk-button-'));
@@ -848,12 +860,11 @@ riot.tag('field-boolean', '<button type="button" name="button" class="uk-button 
 
         this.toggle = function() {
             this.$setValue(!this.checked);
-        }.bind(this);
+        }.bind(this)
 
-    
-});
+}, '{ }');
 
-riot.tag('field-code', '<codemirror name="codemirror" syntx="{ opts.syntax || \'text\' }"></codemirror>', 'field-code .CodeMirror { height: auto; }', function(opts) {
+riot.tag2('field-code', '<codemirror name="codemirror" syntx="{opts.syntax || \'text\'}"></codemirror>', 'field-code .CodeMirror { height: auto; }', '', function(opts) {
 
         var $this = this, editor;
 
@@ -895,10 +906,9 @@ riot.tag('field-code', '<codemirror name="codemirror" syntx="{ opts.syntax || \'
             });
         });
 
-    
-});
+}, '{ }');
 
-riot.tag('field-date', '<input name="input" class="uk-width-1-1" bind="{ opts.bind }" type="text">', function(opts) {
+riot.tag2('field-date', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="text">', '', '', function(opts) {
 
         var $this = this;
 
@@ -921,10 +931,9 @@ riot.tag('field-date', '<input name="input" class="uk-width-1-1" bind="{ opts.bi
             }.bind(this));
         });
 
-    
-});
+}, '{ }');
 
-riot.tag('field-file', '<div class="uk-flex"> <input class="uk-flex-item-1 uk-margin-small-right" type="text" name="input" bind="{ opts.bind }" placeholder="{ App.i18n.get(\'No file selected...\') }" disabled> <button type="button" class="uk-button" name="picker"><i class="uk-icon-paperclip"></i></button> </div>', function(opts) {
+riot.tag2('field-file', '<div class="uk-flex"> <input class="uk-flex-item-1 uk-margin-small-right" type="text" name="input" bind="{opts.bind}" placeholder="{App.i18n.get(\'No file selected...\')}" disabled> <button type="button" class="uk-button" name="picker"><i class="uk-icon-paperclip"></i></button> </div>', '', '', function(opts) {
 
         var $this = this, $input = App.$(this.input);
 
@@ -940,10 +949,9 @@ riot.tag('field-file', '<div class="uk-flex"> <input class="uk-flex-item-1 uk-ma
             });
         });
 
-    
-});
+}, '{ }');
 
-riot.tag('field-gallery', '<div class="uk-panel"> <div name="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ images && images.length }"> <div class="uk-grid-margin" data-idx="{ idx }" each="{ img,idx in images }"> <div class="uk-panel uk-panel-box uk-panel-card"> <figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;"> <img riot-src="{ (SITE_URL+\'/\'+img.path) }"> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{ parent.title }" title="{ App.i18n.get(\'Set title\') }" data-uk-tooltip><i class="uk-icon-tag"></i></a></li> <li><a onclick="{ parent.remove }" title="{ App.i18n.get(\'Remove image\') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{ img.title }</p> </figcaption> </figure> </div> </div> </div> <div class="{images && images.length ? \'uk-margin-top\':\'\' }"> <div class="uk-alert" if="{ images && !images.length }">{ App.i18n.get(\'Gallery is empty\') }.</div> <a class="uk-button uk-button-link" onclick="{ selectimages }"> <i class="uk-icon-plus-circle"></i> { App.i18n.get(\'Add images\') } </a> </div> </div>', function(opts) {
+riot.tag2('field-gallery', '<div class="uk-panel"> <div name="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{images && images.length}"> <div class="uk-grid-margin" data-idx="{idx}" each="{img,idx in images}"> <div class="uk-panel uk-panel-box uk-panel-card"> <figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;"> <img riot-src="{(SITE_URL+\'/\'+img.path)}"> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{parent.title}" title="{App.i18n.get(\'Set title\')}" data-uk-tooltip><i class="uk-icon-tag"></i></a></li> <li><a onclick="{parent.remove}" title="{App.i18n.get(\'Remove image\')}" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{img.title}</p> </figcaption> </figure> </div> </div> </div> <div class="{images && images.length ? \'uk-margin-top\':\'\'}"> <div class="uk-alert" if="{images && !images.length}">{App.i18n.get(\'Gallery is empty\')}.</div> <a class="uk-button uk-button-link" onclick="{selectimages}"> <i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add images\')} </a> </div> </div>', '', '', function(opts) {
 
         var $this = this;
 
@@ -992,7 +1000,6 @@ riot.tag('field-gallery', '<div class="uk-panel"> <div name="imagescontainer" cl
 
         }.bind(this);
 
-
         this.selectimages = function() {
 
             App.media.select(function(selected) {
@@ -1005,13 +1012,13 @@ riot.tag('field-gallery', '<div class="uk-panel"> <div name="imagescontainer" cl
 
                 $this.$setValue($this.images.concat(images));
 
-            }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
-        }.bind(this);
+            }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
+        }.bind(this)
 
         this.remove = function(e) {
             this.images.splice(e.item.idx, 1);
             this.$setValue(this.images);
-        }.bind(this);
+        }.bind(this)
 
         this.title = function(e) {
 
@@ -1020,12 +1027,11 @@ riot.tag('field-gallery', '<div class="uk-panel"> <div name="imagescontainer" cl
                 $this.$setValue($this.images);
                 $this.update();
             });
-        }.bind(this);
+        }.bind(this)
 
-    
-});
+}, '{ }');
 
-riot.tag('field-html', '<textarea name="input" class="uk-visibility-hidden"></textarea>', function(opts) {
+riot.tag2('field-html', '<textarea name="input" class="uk-visibility-hidden"></textarea>', '', '', function(opts) {
 
         var $this = this, editor;
 
@@ -1047,7 +1053,6 @@ riot.tag('field-html', '<textarea name="input" class="uk-visibility-hidden"></te
             this._field = field;
 
         }.bind(this);
-
 
         this.on('mount', function(){
 
@@ -1076,7 +1081,6 @@ riot.tag('field-html', '<textarea name="input" class="uk-visibility-hidden"></te
                             editor['replaceSelection']('<img src="'+SITE_URL+'/'+selected[0]+'">');
                         }
 
-
                     }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
 
                 });
@@ -1084,10 +1088,9 @@ riot.tag('field-html', '<textarea name="input" class="uk-visibility-hidden"></te
             }.bind(this));
         });
 
-    
 });
 
-riot.tag('field-image', '<figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-placeholder uk-flex uk-flex-middle uk-flex-center uk-text-muted" style="min-height:120px;"> <img riot-src="{ (SITE_URL+\'/\'+image.path) }" show="{ image.path }"> <i class="uk-icon-image" show="{ !image.path }"></i> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{ selectimage }" title="{ App.i18n.get(\'Select image\') }" data-uk-tooltip><i class="uk-icon-image"></i></a></li> <li><a onclick="{ title }" title="{ App.i18n.get(\'Set title\') }" data-uk-tooltip><i class="uk-icon-tag"></i></a></li> <li><a onclick="{ remove }" title="{ App.i18n.get(\'Reset\') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{ image.title }</p> </figcaption> </figure>', function(opts) {
+riot.tag2('field-image', '<figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-placeholder uk-flex uk-flex-middle uk-flex-center uk-text-muted" style="min-height:120px;"> <img riot-src="{(SITE_URL+\'/\'+image.path)}" show="{image.path}"> <i class="uk-icon-image" show="{!image.path}"></i> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{selectimage}" title="{App.i18n.get(\'Select image\')}" data-uk-tooltip><i class="uk-icon-image"></i></a></li> <li><a onclick="{title}" title="{App.i18n.get(\'Set title\')}" data-uk-tooltip><i class="uk-icon-tag"></i></a></li> <li><a onclick="{remove}" title="{App.i18n.get(\'Reset\')}" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{image.title}</p> </figcaption> </figure>', '', '', function(opts) {
 
         var $this = this;
 
@@ -1110,12 +1113,12 @@ riot.tag('field-image', '<figure class="uk-display-block uk-overlay uk-overlay-h
                 $this.$setValue($this.image);
                 $this.update();
 
-            }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
-        }.bind(this);
+            }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
+        }.bind(this)
 
         this.remove = function() {
             this.$setValue({path:'', title:''});
-        }.bind(this);
+        }.bind(this)
 
         this.title = function() {
 
@@ -1124,12 +1127,11 @@ riot.tag('field-image', '<figure class="uk-display-block uk-overlay uk-overlay-h
                 $this.$setValue($this.image);
                 $this.update();
             });
-        }.bind(this);
+        }.bind(this)
 
-    
-});
+}, '{ }');
 
-riot.tag('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-small-bottom uk-width-1-1"> <i class="uk-icon-search"></i><input name="autocomplete" class="uk-width-1-1"> </div> <div name="map" style="min-height:300px;"> Loading map... </div> <div class="uk-text-small uk-margin-small-top"> LAT: <span class="uk-text-muted">{ latlng.lat }</span> LNG: <span class="uk-text-muted">{ latlng.lng }</span> </div> </div>', function(opts) {
+riot.tag2('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-small-bottom uk-width-1-1"> <i class="uk-icon-search"></i><input name="autocomplete" class="uk-width-1-1"> </div> <div name="map" style="min-height:300px;"> Loading map... </div> <div class="uk-text-small uk-margin-small-top"> LAT: <span class="uk-text-muted">{latlng.lat}</span> LNG: <span class="uk-text-muted">{latlng.lng}</span> </div> </div>', '', '', function(opts) {
 
         var map, marker;
 
@@ -1218,7 +1220,6 @@ riot.tag('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-sma
                     map.setCenter(marker.getPosition());
                 });
 
-
                 input = $this.autocomplete;
 
                 autocomplete = new google.maps.places.Autocomplete(input);
@@ -1251,21 +1252,16 @@ riot.tag('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-sma
                     }
                 });
 
-
             });
 
         });
 
+}, '{ }');
 
-    
-});
+riot.tag2('field-markdown', '<field-html name="input" markdown="true" bind="{opts.bind}"></field-html>', '', '', function(opts) {
+}, '{ }');
 
-riot.tag('field-markdown', '<field-html name="input" markdown="true" bind="{ opts.bind }"></field-html>', function(opts) {
-
-    
-});
-
-riot.tag('field-multipleselect', '<div class="uk-grid-gutter"> <div name="container" class="uk-grid uk-grid-match uk-grid-width-medium-1-6"> <div class="uk-grid-margin" each="{option in options}"> <a data-value="{ option }" class="{ parent.selected.indexOf(option)!==-1 ? \'uk-link-muted\':\'uk-text-muted\' }" onclick="{ toggle }" title="{ option }"> <i class="uk-icon-{ parent.selected.indexOf(option)!==-1 ? \'circle\':\'circle-o\' }"></i> { option } </a> </div> </div> </div>', function(opts) {
+riot.tag2('field-multipleselect', '<div class="uk-grid-gutter"> <div name="container" class="uk-grid uk-grid-match uk-grid-width-medium-1-6"> <div class="uk-grid-margin" each="{option in options}"> <a data-value="{option}" class="{parent.selected.indexOf(option)!==-1 ? \'uk-link-muted\':\'uk-text-muted\'}" onclick="{toggle}" title="{option}"> <i class="uk-icon-{parent.selected.indexOf(option)!==-1 ? \'circle\':\'circle-o\'}"></i> {option} </a> </div> </div> </div>', '', '', function(opts) {
 
         var $this = this;
 
@@ -1316,12 +1312,11 @@ riot.tag('field-multipleselect', '<div class="uk-grid-gutter"> <div name="contai
             }
 
             this.$setValue(this.selected);
-        }.bind(this);
+        }.bind(this)
 
-    
-});
+}, '{ }');
 
-riot.tag('field-object', '<textarea name="input" class="uk-width-1-1" onchange="{ change }">{}</textarea>', function(opts) {
+riot.tag2('field-object', '<textarea name="input" class="uk-width-1-1" onchange="{change}">{}</textarea>', '', '', function(opts) {
 
         var $this = this, editor;
 
@@ -1362,7 +1357,6 @@ riot.tag('field-object', '<textarea name="input" class="uk-width-1-1" onchange="
 
         });
 
-
         this.$updateValue = function(value) {
 
             if (typeof(value) != 'object') {
@@ -1378,12 +1372,11 @@ riot.tag('field-object', '<textarea name="input" class="uk-width-1-1" onchange="
 
         this.change = function() {
             this.$setValue(App.Utils.str2json(this.input.value) || this.value);
-        }.bind(this);
+        }.bind(this)
 
-    
-});
+}, '{ }');
 
-riot.tag('field-password', '<div class="uk-form-password uk-width-1-1"> <input name="input" class="uk-width-1-1" bind="{ opts.bind }" type="password"> <a href="" class="uk-form-password-toggle" data-uk-form-password>Show</a> </div>', function(opts) {
+riot.tag2('field-password', '<div class="uk-form-password uk-width-1-1"> <input name="input" class="uk-width-1-1" bind="{opts.bind}" type="password"> <a href="" class="uk-form-password-toggle" data-uk-form-password>Show</a> </div>', '', '', function(opts) {
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -1398,15 +1391,17 @@ riot.tag('field-password', '<div class="uk-form-password uk-width-1-1"> <input n
             }.bind(this));
         });
 
-    
-});
+}, '{ }');
 
-riot.tag('field-repeater', '<div class="uk-alert" show="{ !items.length }"> { App.i18n.get(\'No items\') }. </div> <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }"> <cp-field class="uk-width-1-1" field="{ parent.field }" options="{ opts.options }" bind="items[{ idx }].value"></cp-field> <div class="uk-panel-box-footer uk-bg-light"> <a onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a> </div> </div> <a class="uk-button" onclick="{ add }"><i class="uk-icon-plus-circle"></i> { App.i18n.get(\'Add item\') }</a>', function(opts) {
+riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.i18n.get(\'No items\')}. </div> <div show="{mode==\'edit\' && items.length}"> <div class="uk-margin uk-panel-box uk-panel-card" each="{item,idx in items}" data-idx="{idx}"> <cp-field class="uk-width-1-1" field="{parent.field}" options="{opts.options}" bind="items[{idx}].value"></cp-field> <div class="uk-panel-box-footer uk-bg-light"> <a onclick="{parent.remove}"><i class="uk-icon-trash-o"></i></a> </div> </div> </div> <div name="itemscontainer" class="uk-sortable" show="{mode==\'reorder\' && items.length}"> <div class="uk-margin uk-panel-box uk-panel-card" each="{item,idx in items}" data-idx="{idx}"> <i class="uk-icon-bars"></i> Item {(idx+1)} </div> </div> <div class="uk-margin"> <a class="uk-button" onclick="{add}" show="{mode==\'edit\'}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add item\')}</a> <a class="uk-button" onclick="{updateorder}" show="{mode==\'reorder\'}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Update order\')}</a> <a class="uk-button" onclick="{switchreorder}" show="{items.length > 1}"> <span show="{mode==\'edit\'}"><i class="uk-icon-arrows"></i> {App.i18n.get(\'Reorder\')}</span> <span show="{mode==\'reorder\'}">{App.i18n.get(\'Cancel\')}</span> </a> </div>', '', '', function(opts) {
+
+        var $this = this;
 
         riot.util.bind(this);
 
         this.items = [];
         this.field = opts.field || {type:'text'};
+        this.mode  = 'edit';
 
         this.$initBind = function() {
             this.root.$value = this.items;
@@ -1429,18 +1424,48 @@ riot.tag('field-repeater', '<div class="uk-alert" show="{ !items.length }"> { Ap
             this.$setValue(this.items);
         });
 
+        this.on('mount', function() {
+
+            UIkit.sortable(this.itemscontainer, {
+                animation: false
+            });
+
+        });
+
         this.add = function() {
             this.items.push({type:this.field.type, value:''});
-        }.bind(this);
+        }.bind(this)
 
         this.remove = function(e) {
             this.items.splice(e.item.idx, 1);
-        }.bind(this);
+        }.bind(this)
 
-    
-});
+        this.switchreorder = function() {
+            $this.mode = $this.mode == 'edit' ? 'reorder':'edit';
+        }.bind(this)
 
-riot.tag('field-select', '<select name="input" class="uk-width-1-1" bind="{ opts.bind }"> <option value=""></option> <option each="{ option,idx in options }" value="{ option }">{ option }</option> </select>', function(opts) {
+        this.updateorder = function() {
+
+            var items = [];
+
+            App.$(this.itemscontainer).children().each(function(){
+                items.push($this.items[Number(this.getAttribute('data-idx'))]);
+            });
+
+            $this.items = [];
+            $this.update();
+
+            setTimeout(function() {
+                $this.mode = 'edit'
+                $this.items = items;
+                $this.$setValue(items);
+                $this.update();
+            }, 10);
+        }.bind(this)
+
+}, '{ }');
+
+riot.tag2('field-select', '<select name="input" class="uk-width-1-1" bind="{opts.bind}"> <option value=""></option> <option each="{option,idx in options}" value="{option}">{option}</option> </select>', '', '', function(opts) {
 
         this.options = opts.options || []
 
@@ -1463,10 +1488,9 @@ riot.tag('field-select', '<select name="input" class="uk-width-1-1" bind="{ opts
             this.input.setAttribute('required', 'required');
         }
 
-    
-});
+}, '{ }');
 
-riot.tag('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> { App.i18n.get(\'Fields definition is missing\') } </div> <div class="uk-margin" each="{field,idx in fields}"> <label><span class="uk-badge">{ field.label || field.name || \'\'}</span></label> <cp-field class="uk-width-1-1" field="{field}" bind="value.{field.name}"></cp-field> </div> </div>', function(opts) {
+riot.tag2('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> {App.i18n.get(\'Fields definition is missing\')} </div> <div class="uk-margin" each="{field,idx in fields}"> <label><span class="uk-badge">{field.label || field.name || \'\'}</span></label> <cp-field class="uk-width-1-1" field="{field}" bind="value.{field.name}"></cp-field> </div> </div>', '', '', function(opts) {
 
         var $this = this;
 
@@ -1508,10 +1532,9 @@ riot.tag('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> { App.
             this.$setValue(this.value);
         });
 
-    
-});
+}, '{ }');
 
-riot.tag('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form"> <i class="uk-icon-tag"></i> <input name="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{ App.i18n.get(\'Add Tag...\') }"> </div> <div class="uk-margin uk-panel uk-panel-box" if="{ tags && tags.length }"> <span class="uk-margin-small-right uk-margin-small-top" each="{tag,idx in tags}"> <a onclick="{ parent.remove }"><i class="uk-icon-close"></i></a> {{ tag }} </span> </div> </div>', function(opts) {
+riot.tag2('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form"> <i class="uk-icon-tag"></i> <input name="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(\'Add Tag...\')}"> </div> <div class="uk-margin uk-panel uk-panel-box" if="{tags && tags.length}"> <span class="uk-margin-small-right uk-margin-small-top" each="{tag,idx in tags}"> <a onclick="{parent.remove}"><i class="uk-icon-close"></i></a> {{ tag }} </span> </div> </div>', '', '', function(opts) {
 
         var $this = this;
 
@@ -1520,12 +1543,17 @@ riot.tag('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete uk
         this.on('mount', function(){
 
             if (opts.autocomplete) {
+
                 UIkit.autocomplete(this.autocomplete, {source: opts.autocomplete});
             }
 
-            App.$(this.input).on('keydown', function(e) {
+            App.$(this.input).on('keydown change', function(e) {
 
-                if (e.keyCode == 13 && $this.input.value.trim()) {
+                if (e.type=='keydown' && e.keyCode != 13) {
+                    return;
+                }
+
+                if ($this.input.value.trim()) {
 
                     e.stopImmediatePropagation();
                     e.stopPropagation();
@@ -1556,12 +1584,11 @@ riot.tag('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete uk
         this.remove = function(e) {
             this.tags.splice(e.item.idx, 1);
             this.$setValue(this.tags);
-        }.bind(this);
+        }.bind(this)
 
-    
-});
+}, '{ }');
 
-riot.tag('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="{ opts.type || \'text\' }">', function(opts) {
+riot.tag2('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}">', '', '', function(opts) {
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -1571,10 +1598,9 @@ riot.tag('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bin
             this.input.setAttribute('required', 'required');
         }
 
-    
-});
+}, '{ }');
 
-riot.tag('field-textarea', '<textarea name="input" class="uk-width-1-1" bind="{opts.bind}"></textarea>', function(opts) {
+riot.tag2('field-textarea', '<textarea name="input" class="uk-width-1-1" bind="{opts.bind}"></textarea>', '', '', function(opts) {
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -1602,10 +1628,9 @@ riot.tag('field-textarea', '<textarea name="input" class="uk-width-1-1" bind="{o
             this.input.style.tabSize = opts.allowtabs;
         }
 
-    
-});
+}, '{ }');
 
-riot.tag('field-time', '<input name="input" class="uk-width-1-1" bind="{ opts.bind }" type="text">', function(opts) {
+riot.tag2('field-time', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="text">', '', '', function(opts) {
 
         var $this = this;
 
@@ -1628,10 +1653,9 @@ riot.tag('field-time', '<input name="input" class="uk-width-1-1" bind="{ opts.bi
             }.bind(this));
         });
 
-    
-});
+}, '{ }');
 
-riot.tag('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5"></textarea>', function(opts) {
+riot.tag2('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5"></textarea>', '', '', function(opts) {
 
         var $this = this,
             lang  = document.documentElement.getAttribute('lang') || 'en',
@@ -1663,13 +1687,14 @@ riot.tag('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5">
 
         }.bind(this);
 
-
         this.on('mount', function(){
 
             var assets = [
                 '/assets/lib/redactor/redactor.min.js',
                 '/assets/lib/redactor/redactor.css',
+            ];
 
+            var plugins = [
                 '/assets/lib/redactor/plugins/fullscreen/fullscreen.js',
                 '/assets/lib/redactor/plugins/fontcolor/fontcolor.js',
                 '/assets/lib/redactor/plugins/fontsize/fontsize.js',
@@ -1684,23 +1709,26 @@ riot.tag('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5">
 
             App.assets.require(assets, function() {
 
-                initPlugins();
+                App.assets.require(plugins, function() {
 
-                this.input.value = this.value;
+                    initPlugins();
 
-                App.$($this.input).redactor({
-                    lang: lang,
-                    plugins: opts.plugins ||  ['table','textdirection','fontcolor','fontsize','video','fullscreen','imagepicker'],
-                    initCallback: function() {
-                        redactor = this;
-                    },
-                    changeCallback: function() {
-                        $this.$setValue(this.code.get());
-                    }
-                });
+                    this.input.value = this.value;
+
+                    App.$($this.input).redactor({
+                        lang: lang,
+                        plugins: opts.plugins ||  ['table','textdirection','fontcolor','fontsize','video','fullscreen','imagepicker'],
+                        initCallback: function() {
+                            redactor = this;
+                        },
+                        changeCallback: function() {
+                            $this.$setValue(this.code.get());
+                        }
+                    });
+
+                }.bind(this));
 
             }.bind(this)).catch(function(){
-
 
                 this.input.value = this.value;
 
@@ -1710,7 +1738,6 @@ riot.tag('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5">
 
             }.bind(this));
         });
-
 
         function initPlugins() {
 
@@ -1728,9 +1755,7 @@ riot.tag('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5">
 
                             $this.image.insert('<img src="' + SITE_URL+'/'+selected + '" alt="">');
 
-                        }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
-
-
+                        }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
 
         			},
         			insert: function(e) {
@@ -1741,10 +1766,9 @@ riot.tag('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5">
 
         }
 
-    
 });
 
-riot.tag('picoedit', '<div class="picoedit"> <div class="picoedit-toolbar uk-flex" if="{path}"> <div class="uk-flex-item-1 uk-text-truncate"> <strong class="uk-text-small"><i class="uk-icon-pencil uk-margin-small-right"></i> { path }</strong> </div> <div> <button type="button" class="uk-button uk-button-primary" onclick="{ save }"><i class="uk-icon-save"></i></button> </div> </div> <codemirror name="codemirror"></codemirror> </div>', '.picoedit-toolbar { padding-top: 15px; padding-bottom: 15px; }', function(opts) {
+riot.tag2('picoedit', '<div class="picoedit"> <div class="picoedit-toolbar uk-flex" if="{path}"> <div class="uk-flex-item-1 uk-text-truncate"> <strong class="uk-text-small"><i class="uk-icon-pencil uk-margin-small-right"></i> {path}</strong> </div> <div> <button type="button" class="uk-button uk-button-primary" onclick="{save}"><i class="uk-icon-save"></i></button> </div> </div> <codemirror name="codemirror"></codemirror> </div>', '.picoedit-toolbar { padding-top: 15px; padding-bottom: 15px; }', '', function(opts) {
 
         var root  = this.root,
             $this = this,
@@ -1801,7 +1825,7 @@ riot.tag('picoedit', '<div class="picoedit"> <div class="picoedit-toolbar uk-fle
                 }.bind(this), "text");
 
             }.bind(this));
-        }.bind(this);
+        }.bind(this)
 
         this.save = function() {
 
@@ -1812,7 +1836,7 @@ riot.tag('picoedit', '<div class="picoedit"> <div class="picoedit-toolbar uk-fle
                 App.ui.notify("File saved", "success");
 
             }, "text");
-        }.bind(this);
+        }.bind(this)
 
         function requestapi(data, fn, type) {
 
@@ -1821,5 +1845,4 @@ riot.tag('picoedit', '<div class="picoedit"> <div class="picoedit-toolbar uk-fle
             return App.request('/media/api', data, type).then(fn);
         }
 
-    
-});
+}, '{ }');

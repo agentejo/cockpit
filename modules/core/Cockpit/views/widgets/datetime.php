@@ -1,4 +1,4 @@
-<div class="uk-grid-margin uk-width-1-1" data-widget="datetime">
+<div>
 
     <div class="uk-panel-box uk-panel-card" riot-view>
 

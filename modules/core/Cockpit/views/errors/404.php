@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Page not found</title>
+    <link rel="icon" href="@base('/favicon.ico')" type="image/x-icon">
     {{ $app->assets($app['app.assets.base'], $app['cockpit/version']) }}
 </head>
 <body class="uk-height-viewport uk-flex uk-flex-middle">

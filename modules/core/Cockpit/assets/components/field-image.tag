@@ -43,7 +43,7 @@
                 $this.$setValue($this.image);
                 $this.update();
 
-            }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
+            }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
         }
 
         remove() {

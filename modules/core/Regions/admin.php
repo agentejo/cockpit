@@ -41,9 +41,15 @@ $app->on('admin.init', function() {
     });
 
     // dashboard widgets
-    $this->on("admin.dashboard.aside-right", function() {
-        $regions = $this->module("regions")->regions(true);
-        $this->renderView("regions:views/widgets/dashboard.php", compact('regions'));
-    }, 100);
+    $this->on("admin.dashboard.widgets", function($widgets) {
 
+        $regions = $this->module("regions")->regions(true);
+
+        $widgets[] = [
+            "name"    => "regions",
+            "content" => $this->view("regions:views/widgets/dashboard.php", compact('regions')),
+            "area"    => 'aside-right'
+        ];
+
+    }, 100);
 });

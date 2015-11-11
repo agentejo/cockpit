@@ -40,13 +40,15 @@
                 options  = App.$.extend({
                     previewfiles: false,
                     pattern  : '*',
+                    typefilter: '',
+                    path: false,
                     selected : []
                 }, options)
 
                 var selected = [], dialog = UIkit.modal.dialog([
                     '<div>',
                         '<div class="uk-modal-header uk-text-large">Select file</div>',
-                        '<cp-finder></cp-finder>',
+                        '<cp-finder path="'+(options.path || '')+'" typefilter="'+(options.typefilter || '')+'"></cp-finder>',
                         '<div class="uk-modal-footer uk-text-right">',
                             '<button class="uk-button uk-button-primary uk-margin-right uk-button-large uk-hidden js-select-button">Select: <span></span> item(s)</button>',
                             '<button class="uk-button uk-button-large uk-modal-close">Close</button>',
@@ -59,7 +61,14 @@
                 var selectbtn   = dialog.dialog.find('.js-select-button'),
                     selectcount = selectbtn.find('span');
 
-                options.onChangeSelect = function(s) {
+                riot.mount(dialog.element[0], '*', options);
+
+                selectbtn.on('click', function() {
+                    callback(selected);
+                    dialog.hide();
+                });
+
+                dialog.on('selectionchange', function(e, s) {
 
                     selected = [];
 
@@ -75,13 +84,6 @@
 
                     selectbtn[selected.length ? 'removeClass':'addClass']('uk-hidden');
                     selectcount.text(selected.length);
-                };
-
-                riot.mount(dialog.element[0], '*', options);
-
-                selectbtn.on('click', function() {
-                    callback(selected);
-                    dialog.hide();
                 });
 
                 dialog.show();
@@ -105,7 +107,7 @@
 
         parsedPattern = '^' + parsedPattern + '$';
 
-        return (path.match(new RegExp(parsedPattern)) !== null);
+        return (path.match(new RegExp(parsedPattern, 'i')) !== null);
     }
 
 })(jQuery);

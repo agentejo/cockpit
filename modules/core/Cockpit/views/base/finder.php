@@ -5,5 +5,5 @@
 </div>
 
 <div riot-view>
-    <cp-finder></cp-finder>
+    <cp-finder path="/"></cp-finder>
 </div>

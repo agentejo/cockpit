@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Cockpit start time
+ */
+define('COCKPIT_START_TIME', microtime(true));
+
 /*
  * Autoload from lib folder (PSR-0)
  */

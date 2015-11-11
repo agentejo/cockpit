@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     SimpleImage class
- * @version     2.5.5
+ * @version     2.6.0
  * @author      Cory LaViska for A Beautiful Site, LLC (http://www.abeautifulsite.net/)
  * @author      Nazar Mokrynskyi <nazar@mokrynskyi.com> - merging of forks, namespace support, PhpDoc editing, adaptive_resize() method, other fixes
  * @license     This software is licensed under the MIT license: http://opensource.org/licenses/MIT
@@ -56,7 +56,7 @@ class SimpleImage {
      *
      */
     function __destruct() {
-        if( get_resource_type($this->image) === 'gd' ) {
+        if( $this->image !== null && get_resource_type($this->image) === 'gd' ) {
             imagedestroy($this->image);
         }
     }
@@ -88,40 +88,42 @@ class SimpleImage {
      */
     function auto_orient() {
 
-        switch ($this->original_info['exif']['Orientation']) {
-            case 1:
-                // Do nothing
-                break;
-            case 2:
-                // Flip horizontal
-                $this->flip('x');
-                break;
-            case 3:
-                // Rotate 180 counterclockwise
-                $this->rotate(-180);
-                break;
-            case 4:
-                // vertical flip
-                $this->flip('y');
-                break;
-            case 5:
-                // Rotate 90 clockwise and flip vertically
-                $this->flip('y');
-                $this->rotate(90);
-                break;
-            case 6:
-                // Rotate 90 clockwise
-                $this->rotate(90);
-                break;
-            case 7:
-                // Rotate 90 clockwise and flip horizontally
-                $this->flip('x');
-                $this->rotate(90);
-                break;
-            case 8:
-                // Rotate 90 counterclockwise
-                $this->rotate(-90);
-                break;
+        if(isset($this->original_info['exif']['Orientation'])) {
+            switch ($this->original_info['exif']['Orientation']) {
+                case 1:
+                    // Do nothing
+                    break;
+                case 2:
+                    // Flip horizontal
+                    $this->flip('x');
+                    break;
+                case 3:
+                    // Rotate 180 counterclockwise
+                    $this->rotate(-180);
+                    break;
+                case 4:
+                    // vertical flip
+                    $this->flip('y');
+                    break;
+                case 5:
+                    // Rotate 90 clockwise and flip vertically
+                    $this->flip('y');
+                    $this->rotate(90);
+                    break;
+                case 6:
+                    // Rotate 90 clockwise
+                    $this->rotate(90);
+                    break;
+                case 7:
+                    // Rotate 90 clockwise and flip horizontally
+                    $this->flip('x');
+                    $this->rotate(90);
+                    break;
+                case 8:
+                    // Rotate 90 counterclockwise
+                    $this->rotate(-90);
+                    break;
+            }
         }
 
         return $this;
@@ -637,6 +639,7 @@ class SimpleImage {
                 imagegif($this->image);
                 break;
             case 'image/jpeg':
+                imageinterlace($this->image, true);
                 imagejpeg($this->image, null, round($quality));
                 break;
             case 'image/png':
@@ -951,23 +954,35 @@ class SimpleImage {
      * @param string        $text
      * @param string        $font_file
      * @param float|int     $font_size
-     * @param string        $color
+     * @param string|array  $color
      * @param string        $position
      * @param int           $x_offset
      * @param int           $y_offset
+     * @param string|array  $stroke_color
+     * @param string        $stroke_size
+     * @param string        $alignment
+     * @param int           $letter_spacing
      *
      * @return SimpleImage
      * @throws Exception
      *
      */
-    function text($text, $font_file, $font_size = 12, $color = '#000000', $position = 'center', $x_offset = 0, $y_offset = 0) {
+    function text($text, $font_file, $font_size = 12, $color = '#000000', $position = 'center', $x_offset = 0, $y_offset = 0, $stroke_color = null, $stroke_size = null, $alignment = null, $letter_spacing = 0) {
 
         // todo - this method could be improved to support the text angle
         $angle = 0;
 
         // Determine text color
-        $rgba = $this->normalize_color($color);
-        $color = imagecolorallocatealpha($this->image, $rgba['r'], $rgba['g'], $rgba['b'], $rgba['a']);
+        if(is_array($color)) {
+            foreach($color as $var) {
+                $rgba = $this->normalize_color($var);
+                $color_arr[] = imagecolorallocatealpha($this->image, $rgba['r'], $rgba['g'], $rgba['b'], $rgba['a']);
+            }
+        } else {
+            $rgba = $this->normalize_color($color);
+            $color_arr[] = imagecolorallocatealpha($this->image, $rgba['r'], $rgba['g'], $rgba['b'], $rgba['a']);
+        }
+
 
         // Determine textbox size
         $box = imagettfbbox($font_size, $angle, $font_file, $text);
@@ -1018,10 +1033,98 @@ class SimpleImage {
                 break;
         }
 
+        if($alignment === "left") {
+            // Left aligned text
+            $x = -($x * 2);
+        } else if($alignment === "right") {
+            // Right aligned text
+            $dimensions = imagettfbbox($font_size, $angle, $font_file, $text);
+            $alignment_offset = abs($dimensions[4] - $dimensions[0]);
+            $x = -(($x * 2) + $alignment_offset);
+        }
+
         // Add the text
         imagesavealpha($this->image, true);
         imagealphablending($this->image, true);
-        imagettftext($this->image, $font_size, $angle, $x, $y, $color, $font_file, $text);
+
+        if(isset($stroke_color) && isset($stroke_size)) {
+
+            // Text with stroke
+            if(is_array($color) || is_array($stroke_color)) {
+                // Multi colored text and/or multi colored stroke
+
+                if(is_array($stroke_color)) {
+                    foreach($stroke_color as $key => $var) {
+                        $rgba = $this->normalize_color($stroke_color[$key]);
+                        $stroke_color[$key] = imagecolorallocatealpha($this->image, $rgba['r'], $rgba['g'], $rgba['b'], $rgba['a']);
+                    }
+                } else {
+                    $rgba = $this->normalize_color($stroke_color);
+                    $stroke_color = imagecolorallocatealpha($this->image, $rgba['r'], $rgba['g'], $rgba['b'], $rgba['a']);
+                }
+
+                $array_of_letters = str_split($text, 1);
+
+                foreach($array_of_letters as $key => $var) {
+
+                    if($key > 0) {
+                        $dimensions = imagettfbbox($font_size, $angle, $font_file, $array_of_letters[$key - 1]);
+                        $x += abs($dimensions[4] - $dimensions[0]) + $letter_spacing;
+                    }
+
+                    // If the next letter is empty, we just move forward to the next letter
+                    if($var !== " ") {
+                        $this->imagettfstroketext($this->image, $font_size, $angle, $x, $y, current($color_arr), current($stroke_color), $stroke_size, $font_file, $var);
+
+                       // #000 is 0, black will reset the array so we write it this way
+                        if(next($color_arr) === false) {
+                            reset($color_arr);
+                        }
+
+                        // #000 is 0, black will reset the array so we write it this way
+                        if(next($stroke_color) === false) {
+                            reset($stroke_color);
+                        }
+                    }
+                }
+
+            } else {
+                $rgba = $this->normalize_color($stroke_color);
+                $stroke_color = imagecolorallocatealpha($this->image, $rgba['r'], $rgba['g'], $rgba['b'], $rgba['a']);
+                $this->imagettfstroketext($this->image, $font_size, $angle, $x, $y, $color_arr[0], $stroke_color, $stroke_size, $font_file, $text);
+            }
+
+        } else {
+
+            // Text without stroke
+
+            if(is_array($color)) {
+                // Multi colored text
+
+                $array_of_letters = str_split($text, 1);
+
+                foreach($array_of_letters as $key => $var) {
+
+                    if($key > 0) {
+                        $dimensions = imagettfbbox($font_size, $angle, $font_file, $array_of_letters[$key - 1]);
+                        $x += abs($dimensions[4] - $dimensions[0]) + $letter_spacing;
+                    }
+
+                    // If the next letter is empty, we just move forward to the next letter
+                    if($var !== " ") {
+                        imagettftext($this->image, $font_size, $angle, $x, $y, current($color_arr), $font_file, $var);
+
+                        // #000 is 0, black will reset the array so we write it this way
+                        if(next($color_arr) === false) {
+                            reset($color_arr);
+                        }
+                    }
+                }
+
+            } else {
+                imagettftext($this->image, $font_size, $angle, $x, $y, $color_arr[0], $font_file, $text);
+            }
+        }
 
         return $this;
 
@@ -1197,6 +1300,32 @@ class SimpleImage {
         imagealphablending($src_im, true);
         imagecopy($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h);
 
+    }
+
+    /**
+     *  Same as imagettftext(), but allows for a stroke color and size
+     *
+     * @param  object &$image       A GD image object
+     * @param  float $size          The font size
+     * @param  float $angle         The angle in degrees
+     * @param  int $x               X-coordinate of the starting position
+     * @param  int $y               Y-coordinate of the starting position
+     * @param  int &$textcolor      The color index of the text
+     * @param  int &$stroke_color   The color index of the stroke
+     * @param  int $stroke_size     The stroke size in pixels
+     * @param  string $fontfile     The path to the font to use
+     * @param  string $text         The text to output
+     *
+     * @return array                This method has the same return values as imagettftext()
+     *
+     */
+    protected function imagettfstroketext(&$image, $size, $angle, $x, $y, &$textcolor, &$strokecolor, $stroke_size, $fontfile, $text) {
+        for( $c1 = ($x - abs($stroke_size)); $c1 <= ($x + abs($stroke_size)); $c1++ ) {
+            for($c2 = ($y - abs($stroke_size)); $c2 <= ($y + abs($stroke_size)); $c2++) {
+                $bg = imagettftext($image, $size, $angle, $c1, $c2, $strokecolor, $fontfile, $text);
+            }
+        }
+        return imagettftext($image, $size, $angle, $x, $y, $textcolor, $fontfile, $text);
     }
 
     /**
