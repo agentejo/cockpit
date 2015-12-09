@@ -224,7 +224,7 @@ riot.tag2('cp-field', '', '', '', function(opts) {
 
         this.on('update', function() {
 
-            if (opts.bind != this._field) {
+            if (opts.bind && opts.bind != this._field) {
 
                 App.$(this.root).children('div').remove();
 
@@ -358,7 +358,7 @@ riot.tag2('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk
 
 }, '{ }');
 
-riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-margin> <div class="uk-float-left"> <span class="uk-button uk-button-primary uk-margin-small-right uk-form-file"> <input class="js-upload-select" type="file" multiple="true" title=""> <i class="uk-icon-upload"></i> </span> <span class="uk-button-group uk-margin-small-right"> <span class="uk-position-relative uk-button" data-uk-dropdown="\\{mode:\'click\'\\}"> <i class="uk-icon-magic"></i> <div class="uk-dropdown uk-text-left"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">Create</li> <li><a onclick="{createfolder}"><i class="uk-icon-folder-o uk-icon-justify"></i> Folder</a></li> <li><a onclick="{createfile}"><i class="uk-icon-file-o uk-icon-justify"></i> File</a></li> </ul> </div> </span> <button class="uk-button" onclick="{refresh}"> <i class="uk-icon-refresh"></i> </button> </span> <span class="uk-button" if="{selected.count}" data-uk-dropdown="\\{mode:\'click\'\\}"> <strong>Batch:</strong> {selected.count} selected &nbsp;<i class="uk-icon-caret-down"></i> <div class="uk-dropdown uk-text-left"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">Batch action</li> <li><a onclick="{removeSelected}">Delete</a></li> </ul> </div> </span> </div> <div class="uk-float-right"> <div class="uk-form uk-form-icon uk-width-1-1"> <i class="uk-icon-filter"></i> <input name="filter" type="text" onkeyup="{updatefilter}"> </div> </div> </div> <div class="uk-grid uk-grid-divider uk-margin-large-top" data-uk-grid-margin> <div class="uk-width-medium-1-4"> <div class="uk-panel"> <ul class="uk-nav uk-nav-side"> <li class="uk-nav-header">Display</li> <li class="{!typefilter ? \'uk-active\':\'\'}"><a data-type="" onclick="{settypefilter}"><i class="uk-icon-circle-o uk-icon-justify"></i> All</a></li> <li class="{typefilter==\'image\' ? \'uk-active\':\'\'}"><a data-type="image" onclick="{settypefilter}"><i class="uk-icon-image uk-icon-justify"></i> Images</a></li> <li class="{typefilter==\'video\' ? \'uk-active\':\'\'}"><a data-type="video" onclick="{settypefilter}"><i class="uk-icon-video-camera uk-icon-justify"></i> Video</a></li> <li class="{typefilter==\'audio\' ? \'uk-active\':\'\'}"><a data-type="audio" onclick="{settypefilter}"><i class="uk-icon-volume-up uk-icon-justify"></i> Audio</a></li> <li class="{typefilter==\'document\' ? \'uk-active\':\'\'}"><a data-type="document" onclick="{settypefilter}"><i class="uk-icon-paper-plane uk-icon-justify"></i> Documents</a></li> <li class="{typefilter==\'archive\' ? \'uk-active\':\'\'}"><a data-type="archive" onclick="{settypefilter}"><i class="uk-icon-archive uk-icon-justify"></i> Archives</a></li> </ul> </div> </div> <div class="uk-width-medium-3-4"> <div class="uk-panel"> <ul class="uk-breadcrumb"> <li onclick="{changedir}"><a title="Change dir to root"><i class="uk-icon-home"></i></a></li> <li each="{folder, idx in breadcrumbs}"><a onclick="{parent.changedir}" title="Change dir to @@ folder.name @@">{folder.name}</a></li> </ul> </div> <div name="uploadprogress" class="uk-margin uk-hidden"> <div class="uk-progress"> <div name="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div> </div> </div> <div class="uk-alert uk-text-center uk-margin" if="{(this.typefilter || this.filter.value) && (data.folders.length || data.files.length)}"> Filter is active </div> <div class="uk-alert uk-text-center uk-margin" if="{(!data.folders.length && !data.files.length)}"> This is an empty folder </div> <div> <div class="uk-margin-top" if="{data.folders.length}"> <strong class="uk-text-small uk-text-muted" if="{!(this.filter.value)}"><i class="uk-icon-folder-o uk-margin-small-right"></i> {data.folders.length} Folders</strong> <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4"> <li class="uk-grid-margin" each="{folder, idx in data.folders}" onclick="{parent.select}" if="{parent.infilter(folder)}"> <div class="uk-panel uk-panel-box finder-folder {folder.selected ? \'uk-selected\':\'\'}"> <div class="uk-flex"> <div> <span class="uk-margin-small-right" data-uk-dropdown="\\{mode:\'click\'\\}"> <i class="uk-icon-folder-o uk-text-muted js-no-item-select"></i> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header uk-text-truncate">{folder.name}</li> <li><a onclick="{parent.rename}">Rename</a></li> <li><a onclick="{parent.remove}">Delete</a></li> </ul> </div> </span> </div> <div class="uk-flex-item-1 uk-text-truncate"> <a class="uk-link-muted" onclick="{parent.changedir}"><strong>{folder.name}</strong></a> </div> </div> </div> </li> </ul> </div> <div class="uk-margin-top" if="{data.files.length}"> <strong class="uk-text-small uk-text-muted" if="{!(this.typefilter || this.filter.value)}"><i class="uk-icon-file-o uk-margin-small-right"></i> {data.files.length} Files</strong> <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4"> <li class="uk-grid-margin" each="{file, idx in data.files}" onclick="{parent.select}" if="{parent.infilter(file)}"> <div class="uk-panel uk-panel-box finder-file {file.selected ? \'uk-selected\':\'\'}"> <div class="uk-panel-teaser uk-cover-background uk-position-relative"> <div class="uk-position-cover uk-position-z-index"> <div class="uk-panel uk-panel-box uk-panel-box-trans"> <span class="uk-margin-small-right" data-uk-dropdown="\\{mode:\'click\'\\}"> <a><i class="uk-icon-{parent.getIconCls(file)} js-no-item-select"></i> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header uk-text-truncate">{file.name}</li> <li> <a class="uk-link-muted js-no-item-select" onclick="{parent.open}">Open</a></li> <li><a onclick="{parent.rename}">Rename</a></li> <li if="{file.ext == \'zip\'}"><a onclick="{parent.unzip}">Unzip</a></li> <li class="uk-nav-divider"></li> <li><a onclick="{parent.remove}">Delete</a></li> </ul> </div> </span> </div> </div> <canvas class="uk-responsive-width uk-display-block" width="400" height="300" if="{parent.getIconCls(file) != \'image\'}"></canvas> <cp-thumbnail riot-src="{file.url}" width="400" height="300" if="{parent.getIconCls(file) == \'image\'}"></cp-thumbnail> </div> <div class="uk-flex-item-1 uk-text-truncate"> <a class="uk-link-muted js-no-item-select" onclick="{parent.open}">{file.name}</a> <div class="uk-margin-small-top uk-text-small uk-text-muted"> {file.size} </div> </div> </div> </li> </ul> </div> </div> </div> </div> <div name="editor" class="uk-offcanvas"> <div class="uk-offcanvas-bar uk-width-3-4"> <picoedit></picoedit> </div> </div> </div>', '.uk-offcanvas[name=editor] .CodeMirror { height: auto; } .uk-offcanvas[name=editor] .picoedit-toolbar { padding-left: 15px; padding-right: 15px; } .uk-modal .uk-panel-box.finder-folder, .uk-modal .uk-panel-box.finder-file { border: 1px rgba(0,0,0,0.1) solid; }', '', function(opts) {
+riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-margin> <div class="uk-float-left"> <span class="uk-button uk-button-primary uk-margin-small-right uk-form-file"> <input class="js-upload-select" type="file" multiple="true" title=""> <i class="uk-icon-upload"></i> </span> <span class="uk-button-group uk-margin-small-right"> <span class="uk-position-relative uk-button" data-uk-dropdown="\\{mode:\'click\'\\}"> <i class="uk-icon-magic"></i> <div class="uk-dropdown uk-text-left"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">Create</li> <li><a onclick="{createfolder}"><i class="uk-icon-folder-o uk-icon-justify"></i> Folder</a></li> <li><a onclick="{createfile}"><i class="uk-icon-file-o uk-icon-justify"></i> File</a></li> </ul> </div> </span> <button class="uk-button" onclick="{refresh}"> <i class="uk-icon-refresh"></i> </button> </span> <span class="uk-button" if="{selected.count}" data-uk-dropdown="\\{mode:\'click\'\\}"> <strong>Batch:</strong> {selected.count} selected &nbsp;<i class="uk-icon-caret-down"></i> <div class="uk-dropdown uk-text-left"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">Batch action</li> <li><a onclick="{removeSelected}">Delete</a></li> </ul> </div> </span> </div> <div class="uk-float-right"> <div class="uk-form uk-form-icon uk-width-1-1"> <i class="uk-icon-filter"></i> <input name="filter" type="text" onkeyup="{updatefilter}"> </div> </div> </div> <div class="uk-grid uk-grid-divider uk-margin-large-top" data-uk-grid-margin> <div class="uk-width-medium-1-4"> <div class="uk-panel"> <ul class="uk-nav uk-nav-side"> <li class="uk-nav-header">Display</li> <li class="{!typefilter ? \'uk-active\':\'\'}"><a data-type="" onclick="{settypefilter}"><i class="uk-icon-circle-o uk-icon-justify"></i> All</a></li> <li class="{typefilter==\'image\' ? \'uk-active\':\'\'}"><a data-type="image" onclick="{settypefilter}"><i class="uk-icon-image uk-icon-justify"></i> Images</a></li> <li class="{typefilter==\'video\' ? \'uk-active\':\'\'}"><a data-type="video" onclick="{settypefilter}"><i class="uk-icon-video-camera uk-icon-justify"></i> Video</a></li> <li class="{typefilter==\'audio\' ? \'uk-active\':\'\'}"><a data-type="audio" onclick="{settypefilter}"><i class="uk-icon-volume-up uk-icon-justify"></i> Audio</a></li> <li class="{typefilter==\'document\' ? \'uk-active\':\'\'}"><a data-type="document" onclick="{settypefilter}"><i class="uk-icon-paper-plane uk-icon-justify"></i> Documents</a></li> <li class="{typefilter==\'archive\' ? \'uk-active\':\'\'}"><a data-type="archive" onclick="{settypefilter}"><i class="uk-icon-archive uk-icon-justify"></i> Archives</a></li> </ul> </div> </div> <div class="uk-width-medium-3-4"> <div class="uk-panel"> <ul class="uk-breadcrumb"> <li onclick="{changedir}"><a title="Change dir to root"><i class="uk-icon-home"></i></a></li> <li each="{folder, idx in breadcrumbs}"><a onclick="{parent.changedir}" title="Change dir to @@ folder.name @@">{folder.name}</a></li> </ul> </div> <div name="uploadprogress" class="uk-margin uk-hidden"> <div class="uk-progress"> <div name="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div> </div> </div> <div class="uk-alert uk-text-center uk-margin" if="{(this.typefilter || this.filter.value) && (data.folders.length || data.files.length)}"> Filter is active </div> <div class="uk-alert uk-text-center uk-margin" if="{(!data.folders.length && !data.files.length)}"> This is an empty folder </div> <div class="{modal ? \'uk-overflow-container\':\'\'}"> <div class="uk-margin-top" if="{data.folders.length}"> <strong class="uk-text-small uk-text-muted" if="{!(this.filter.value)}"><i class="uk-icon-folder-o uk-margin-small-right"></i> {data.folders.length} Folders</strong> <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4"> <li class="uk-grid-margin" each="{folder, idx in data.folders}" onclick="{parent.select}" if="{parent.infilter(folder)}"> <div class="uk-panel uk-panel-box finder-folder {folder.selected ? \'uk-selected\':\'\'}"> <div class="uk-flex"> <div> <span class="uk-margin-small-right" data-uk-dropdown="\\{mode:\'click\'\\}"> <i class="uk-icon-folder-o uk-text-muted js-no-item-select"></i> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header uk-text-truncate">{folder.name}</li> <li><a onclick="{parent.rename}">Rename</a></li> <li><a onclick="{parent.remove}">Delete</a></li> </ul> </div> </span> </div> <div class="uk-flex-item-1 uk-text-truncate"> <a class="uk-link-muted" onclick="{parent.changedir}"><strong>{folder.name}</strong></a> </div> </div> </div> </li> </ul> </div> <div class="uk-margin-top" if="{data.files.length}"> <strong class="uk-text-small uk-text-muted" if="{!(this.typefilter || this.filter.value)}"><i class="uk-icon-file-o uk-margin-small-right"></i> {data.files.length} Files</strong> <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4"> <li class="uk-grid-margin" each="{file, idx in data.files}" onclick="{parent.select}" if="{parent.infilter(file)}"> <div class="uk-panel uk-panel-box finder-file {file.selected ? \'uk-selected\':\'\'}"> <div class="uk-panel-teaser uk-cover-background uk-position-relative"> <div class="uk-position-cover uk-position-z-index"> <div class="uk-panel uk-panel-box uk-panel-box-trans"> <span class="uk-margin-small-right" data-uk-dropdown="\\{mode:\'click\'\\}"> <a><i class="uk-icon-{parent.getIconCls(file)} js-no-item-select"></i> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header uk-text-truncate">{file.name}</li> <li> <a class="uk-link-muted js-no-item-select" onclick="{parent.open}">Open</a></li> <li><a onclick="{parent.rename}">Rename</a></li> <li if="{file.ext == \'zip\'}"><a onclick="{parent.unzip}">Unzip</a></li> <li class="uk-nav-divider"></li> <li><a onclick="{parent.remove}">Delete</a></li> </ul> </div> </span> </div> </div> <canvas class="uk-responsive-width uk-display-block" width="400" height="300" if="{parent.getIconCls(file) != \'image\'}"></canvas> <cp-thumbnail riot-src="{file.url}" width="400" height="300" if="{parent.getIconCls(file) == \'image\'}"></cp-thumbnail> </div> <div class="uk-flex-item-1 uk-text-truncate"> <a class="uk-link-muted js-no-item-select" onclick="{parent.open}">{file.name}</a> <div class="uk-margin-small-top uk-text-small uk-text-muted"> {file.size} </div> </div> </div> </li> </ul> </div> </div> </div> </div> <div name="editor" class="uk-offcanvas"> <div class="uk-offcanvas-bar uk-width-3-4"> <picoedit></picoedit> </div> </div> </div>', '.uk-offcanvas[name=editor] .CodeMirror { height: auto; } .uk-offcanvas[name=editor] .picoedit-toolbar { padding-left: 15px; padding-right: 15px; } .uk-modal .uk-panel-box.finder-folder, .uk-modal .uk-panel-box.finder-file { border: 1px rgba(0,0,0,0.1) solid; }', '', function(opts) {
 
         var $this = this,
             typefilters = {
@@ -394,6 +394,8 @@ riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-mar
         });
 
         this.on('mount', function(){
+
+            this.modal = App.$(this.root).closest('.uk-modal').length ? UIkit.modal(App.$(this.root).closest('.uk-modal')):false;
 
             this.loadPath()
 
@@ -688,6 +690,11 @@ riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-mar
                 $this.resetselected();
                 $this.update();
 
+                if ($this.modal) {
+                    setTimeout(function(){
+                        $this.modal.resize();
+                    }, 100);
+                }
             });
 
             return defer;
@@ -765,7 +772,7 @@ riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-mar
 
 }, '{ }');
 
-riot.tag2('cp-gravatar', '<img name="image" class="uk-border-circle" riot-src="{url}" width="{size}" height="{size}" alt="{opts.alt}">', '', '', function(opts) {
+riot.tag2('cp-gravatar', '<canvas name="image" class="uk-responsive-width uk-border-circle" width="{size}" height="{size}"></canvas>', '', '', function(opts) {
 
         this.url = '';
 
@@ -779,30 +786,51 @@ riot.tag2('cp-gravatar', '<img name="image" class="uk-border-circle" riot-src="{
             url = '//www.gravatar.com/avatar/'+md5(this.email)+'?d=404&s='+this.size;
 
             img.onload = function() {
-                this.image.src = url;
-                this.image.style.visibility = '';
+                this.image.getContext("2d").drawImage(img,0,0);
             }.bind(this);
 
             img.onerror = function() {
-                this.image.src = App.Utils.letterAvatar(opts.alt || '', this.size);
-                this.image.style.visibility = '';
+                img.src = App.Utils.letterAvatar(opts.alt || '', this.size);
+                this.image.getContext("2d").drawImage(img,0,0);
             }.bind(this);
 
-            this.image.style.visibility = 'hidden';
             img.src = url;
 
         });
 
 }, '{ }');
 
-riot.tag2('cp-search', '<div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form app-search"> <i class="uk-icon-search"></i> <input class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(\'Search...\')}"> </div>', 'cp-search .uk-dropdown { min-width: 25vw; }', '', function(opts) {
+riot.tag2('cp-search', '<div name="autocomplete" class="uk-autocomplete uk-form uk-form-icon app-search"> <i class="uk-icon-search"></i> <input class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(\'Search...\')}"> </div>', 'cp-search .uk-dropdown { min-width: 25vw; }', '', function(opts) {
 
         this.on('mount', function(){
+
+            var txtSearch = App.$("input[type='text']", this.autocomplete);
 
             UIkit.autocomplete(this.autocomplete, {
                 source: App.route('/cockpit/search'),
                 template: '<ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">{{~items}}<li data-value="" data-url="{{$item.url}}"><a><i class="uk-icon-{{ ($item.icon || "cube") }}"></i> {{$item.title}}</a></li>{{/items}}</ul>'
             });
+
+            UIkit.$doc.on("keydown", function(e) {
+
+                if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+                if (e.target.tagName && e.target.tagName.toLowerCase()=='body' && (e.keyCode>=65 && e.keyCode<=90)) {
+                    txtSearch.focus();
+                }
+            });
+
+            Mousetrap.bindGlobal(['alt+f'], function(e) {
+
+                if (e.preventDefault) {
+                    e.preventDefault();
+                } else {
+                    e.returnValue = false;
+                }
+                txtSearch.focus();
+                return false;
+            });
+
         });
 
         App.$(this.root).on("selectitem.uk.autocomplete", function(e, data) {
@@ -838,28 +866,26 @@ riot.tag2('cp-thumbnail', '<span class="uk-position-relative"> <i name="spinner"
 
 }, '{ }');
 
-riot.tag2('field-boolean', '<button type="button" name="button" class="uk-button uk-button-{checked ? \'success\':\'default\'}" onclick="{toggle}"> <i show="{checked}" class="uk-icon-check-circle"></i> <i show="{!checked}" class="uk-icon-circle-o"></i> </button>', '', '', function(opts) {
+riot.tag2('field-boolean', '<button type="button" name="button" class="uk-button uk-button-{value ? \'success\':\'default\'}" onclick="{toggle}"> <span show="{value}">{opts.label || \'On\'}</span> <span show="{!value}">{opts.label || \'Off\'}</span> </button>', '', '', function(opts) {
 
         if (opts.cls) {
             App.$(this.button).addClass(opts.cls.replace(/uk\-form\-/g, 'uk-button-'));
         }
 
-        if (opts.label) {
-            this.button.innerHTML = opts.label;
-        }
+        this.value = opts.default || false;
 
         this.$updateValue = function(value) {
 
-            if (this.checked != value) {
+            if (this.value != value) {
 
-                this.checked = value;
+                this.value = value;
                 this.update();
             }
 
         }.bind(this);
 
         this.toggle = function() {
-            this.$setValue(!this.checked);
+            this.$setValue(!this.value);
         }.bind(this)
 
 }, '{ }');
@@ -908,7 +934,7 @@ riot.tag2('field-code', '<codemirror name="codemirror" syntx="{opts.syntax || \'
 
 }, '{ }');
 
-riot.tag2('field-date', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="text">', '', '', function(opts) {
+riot.tag2('field-date', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="text" placeholder="{opts.placeholder}">', '', '', function(opts) {
 
         var $this = this;
 
@@ -933,7 +959,7 @@ riot.tag2('field-date', '<input name="input" class="uk-width-1-1" bind="{opts.bi
 
 }, '{ }');
 
-riot.tag2('field-file', '<div class="uk-flex"> <input class="uk-flex-item-1 uk-margin-small-right" type="text" name="input" bind="{opts.bind}" placeholder="{App.i18n.get(\'No file selected...\')}" disabled> <button type="button" class="uk-button" name="picker"><i class="uk-icon-paperclip"></i></button> </div>', '', '', function(opts) {
+riot.tag2('field-file', '<div class="uk-flex"> <input class="uk-flex-item-1 uk-margin-small-right" type="text" name="input" bind="{opts.bind}" placeholder="{opts.placeholder || App.i18n.get(\'No file selected...\')}" disabled> <button type="button" class="uk-button" name="picker"><i class="uk-icon-paperclip"></i></button> </div>', '', '', function(opts) {
 
         var $this = this, $input = App.$(this.input);
 
@@ -1046,7 +1072,7 @@ riot.tag2('field-html', '<textarea name="input" class="uk-visibility-hidden"></t
                 this.value = value;
 
                 if (editor && this._field != field) {
-                    editor.editor.setValue(value || '');
+                    editor.editor.setValue(value || '', true);
                 }
             }
 
@@ -1081,9 +1107,11 @@ riot.tag2('field-html', '<textarea name="input" class="uk-visibility-hidden"></t
                             editor['replaceSelection']('<img src="'+SITE_URL+'/'+selected[0]+'">');
                         }
 
-                    }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
+                    }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
 
                 });
+
+                App.$(document).trigger('init-html-editor', [editor]);
 
             }.bind(this));
         });
@@ -1316,7 +1344,7 @@ riot.tag2('field-multipleselect', '<div class="uk-grid-gutter"> <div name="conta
 
 }, '{ }');
 
-riot.tag2('field-object', '<textarea name="input" class="uk-width-1-1" onchange="{change}">{}</textarea>', '', '', function(opts) {
+riot.tag2('field-object', '<textarea name="input" class="uk-width-1-1" onchange="{change}" placeholder="{opts.placeholder}">{}</textarea>', '', '', function(opts) {
 
         var $this = this, editor;
 
@@ -1534,7 +1562,7 @@ riot.tag2('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> {App.
 
 }, '{ }');
 
-riot.tag2('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form"> <i class="uk-icon-tag"></i> <input name="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(\'Add Tag...\')}"> </div> <div class="uk-margin uk-panel uk-panel-box" if="{tags && tags.length}"> <span class="uk-margin-small-right uk-margin-small-top" each="{tag,idx in tags}"> <a onclick="{parent.remove}"><i class="uk-icon-close"></i></a> {{ tag }} </span> </div> </div>', '', '', function(opts) {
+riot.tag2('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form"> <i class="uk-icon-tag"></i> <input name="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(opts.placeholder || \'Add Tag...\')}"> </div> <div class="uk-margin uk-panel uk-panel-box" show="{tags && tags.length}"> <div class="uk-margin-small-right uk-margin-small-top" each="{tag,idx in tags}"> <a onclick="{parent.remove}"><i class="uk-icon-close"></i></a> {tag} </div> </div> </div>', '', '', function(opts) {
 
         var $this = this;
 
@@ -1547,23 +1575,30 @@ riot.tag2('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete u
                 UIkit.autocomplete(this.autocomplete, {source: opts.autocomplete});
             }
 
-            App.$(this.input).on('keydown change', function(e) {
+            App.$(this.root).on({
 
-                if (e.type=='keydown' && e.keyCode != 13) {
-                    return;
-                }
+                'selectitem.uk.autocomplete keydown': function(e, data) {
 
-                if ($this.input.value.trim()) {
+                    var value = e.type=='keydown' ? $this.input.value : data.value;
 
-                    e.stopImmediatePropagation();
-                    e.stopPropagation();
+                    if (e.type=='keydown' && e.keyCode != 13) {
+                        return;
+                    }
 
-                    $this.tags.push($this.input.value);
-                    $this.input.value = "";
-                    $this.$setValue($this.tags)
-                    $this.update();
+                    if (value.trim()) {
 
-                    return false;
+                        $this.input.value = value;
+
+                        e.stopImmediatePropagation();
+                        e.stopPropagation();
+                        e.preventDefault();
+                        $this.tags.push($this.input.value);
+                        $this.input.value = "";
+                        $this.$setValue(_.uniq($this.tags));
+                        $this.update();
+
+                        return false;
+                    }
                 }
             });
         });
@@ -1588,7 +1623,7 @@ riot.tag2('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete u
 
 }, '{ }');
 
-riot.tag2('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}">', '', '', function(opts) {
+riot.tag2('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" placeholder="{opts.placeholder}">', '', '', function(opts) {
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -1600,7 +1635,7 @@ riot.tag2('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bi
 
 }, '{ }');
 
-riot.tag2('field-textarea', '<textarea name="input" class="uk-width-1-1" bind="{opts.bind}"></textarea>', '', '', function(opts) {
+riot.tag2('field-textarea', '<textarea name="input" class="uk-width-1-1" bind="{opts.bind}" placeholder="{opts.placeholder}"></textarea>', '', '', function(opts) {
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -1655,11 +1690,12 @@ riot.tag2('field-time', '<input name="input" class="uk-width-1-1" bind="{opts.bi
 
 }, '{ }');
 
-riot.tag2('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5"></textarea>', '', '', function(opts) {
+riot.tag2('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5" style="height:350px;visibility:hidden;"></textarea>', '', '', function(opts) {
 
-        var $this = this,
-            lang  = document.documentElement.getAttribute('lang') || 'en',
-            redactor;
+        var $this     = this,
+            lang      = document.documentElement.getAttribute('lang') || 'en',
+            languages = ['ar','az','ba','bg','by','ca','cs','da','de','el','eo','es_ar','es','fa','fi','fr','ge','he','hr','hu','id','it','ja','ko','lt','lv','mk','nl','no_NB','pl','pt_br','pt_pt','ro','ru','sl','sq','sr-cir','sr-lat','sv','th','tr','ua','vi','zh_cn','zh_tw'],
+            editor;
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -1678,8 +1714,8 @@ riot.tag2('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5"
 
                 this.value = value;
 
-                if (redactor && this._field != field) {
-                    redactor.code.set(this.value || '');
+                if (editor && this._field != field) {
+                    editor.setContent(this.value || '');
                 }
             }
 
@@ -1689,23 +1725,15 @@ riot.tag2('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5"
 
         this.on('mount', function(){
 
-            var assets = [
-                '/assets/lib/redactor/redactor.min.js',
-                '/assets/lib/redactor/redactor.css',
-            ];
-
-            var plugins = [
-                '/assets/lib/redactor/plugins/fullscreen/fullscreen.js',
-                '/assets/lib/redactor/plugins/fontcolor/fontcolor.js',
-                '/assets/lib/redactor/plugins/fontsize/fontsize.js',
-                '/assets/lib/redactor/plugins/textdirection/textdirection.js',
-                '/assets/lib/redactor/plugins/table/table.js',
-                '/assets/lib/redactor/plugins/video/video.js'
-            ];
-
-            if (lang != 'en') {
-                assets.push('/assets/lib/redactor/lang/'+lang+'.js');
+            if (!this.input.id) {
+                this.input.id = 'wysiwyg-'+parseInt(Math.random()*10000000, 10);
             }
+
+            var assets = [
+                '/assets/lib/tinymce/tinymce.min.js'
+            ];
+
+            var plugins = [];
 
             App.assets.require(assets, function() {
 
@@ -1715,16 +1743,37 @@ riot.tag2('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5"
 
                     this.input.value = this.value;
 
-                    App.$($this.input).redactor({
-                        lang: lang,
-                        plugins: opts.plugins ||  ['table','textdirection','fontcolor','fontsize','video','fullscreen','imagepicker'],
-                        initCallback: function() {
-                            redactor = this;
-                        },
-                        changeCallback: function() {
-                            $this.$setValue(this.code.get());
-                        }
-                    });
+                    tinymce.init(App.$.extend(true, {
+                        resize: true,
+                        height: 350,
+                        menubar: 'edit insert view format table tools',
+                        plugins: [
+                            "link image lists preview hr anchor",
+                            "code fullscreen media mediapath",
+                            "table contextmenu paste"
+                        ],
+                        relative_urls: false
+                    },opts.editor || {}, {
+
+                      selector: '#'+this.input.id,
+                      setup: function (ed) {
+
+                          ed.on('ExecCommand', function (e) {
+                             ed.save();
+                             $this.$setValue($this.input.value, true);
+                          });
+
+                          ed.on('KeyUp', function (e) {
+                             ed.save();
+                             $this.$setValue($this.input.value, true);
+                          });
+
+                          editor = ed;
+
+                          App.$(document).trigger('init-wysiwyg-editor', [editor]);
+                      }
+
+                    }));
 
                 }.bind(this));
 
@@ -1741,30 +1790,28 @@ riot.tag2('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5"
 
         function initPlugins() {
 
-            $.Redactor.prototype.imagepicker = function() {
-                return {
-        			init: function() {
-        				var button = this.button.add('image', 'Image Picker');
-                        this.button.addCallback(button, this.imagepicker.select);
-        			},
-        			select: function() {
+            if (initPlugins.done) return;
 
-                        var $this = this;
+            tinymce.PluginManager.add('mediapath', function(editor) {
+
+                editor.addMenuItem('mediapath', {
+                    icon: 'image',
+                    text: 'Insert image (Finder)',
+                    onclick: function(){
 
                         App.media.select(function(selected) {
-
-                            $this.image.insert('<img src="' + SITE_URL+'/'+selected + '" alt="">');
-
+                            editor.insertContent('<img src="' + SITE_URL+'/'+selected + '" alt="">');
                         }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
+                    },
+                    context: 'insert',
+                    prependToContext: true
+                });
+            });
 
-        			},
-        			insert: function(e) {
-
-        			}
-        		};
-        	};
-
+            initPlugins.done = true;
         }
+
+        initPlugins.done = false;
 
 });
 

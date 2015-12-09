@@ -51,7 +51,7 @@
 
                 var field, segments, cache = {};
 
-                return function(value) {
+                return function(value, silent) {
 
                     field = ele.getAttribute(attr);
 
@@ -84,11 +84,11 @@
                         cache[field] = true;
                     }
 
-                    body = 'try{ tag.'+field+' = val;tag.update(); tag.trigger("bindingupdated", ["'+field+'", val]);return true;}catch(e){ return false; }';
+                    body = 'try{ tag.'+field+' = val; if(!silent) { tag.update(); } tag.trigger("bindingupdated", ["'+field+'", val]);return true;}catch(e){ return false; }';
 
-                    fn = new Function('tag', 'val', body);
+                    fn = new Function('tag', 'val', 'silent', body);
 
-                    return fn(tag, value);
+                    return fn(tag, value, silent);
                 };
 
             })();

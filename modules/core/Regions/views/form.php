@@ -34,16 +34,17 @@
 
                 <h3>{ region.label || region.name }</h3>
 
+                <br>
+
                 <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
 
-                    <div class="uk-grid uk-grid-match uk-grid-small uk-grid-gutter">
+                    <div class="uk-grid uk-grid-match uk-grid-gutter">
 
-                        <div class="uk-width-medium-{field.width} uk-grid-margin" each="{field,idx in fields}">
+                        <div class="uk-width-medium-{field.width} uk-grid-margin" each="{field,idx in fields}" no-reorder>
 
                             <div class="uk-panel">
 
-                                <label>
-                                    <i class="uk-icon-ellipsis-v"></i>
+                                <label class="uk-text-bold">
                                     { field.label || field.name }
                                     <span if="{ field.localize }" class="uk-icon-globe" title="@lang('Localized field')" data-uk-tooltip="\{pos:'right'\}"></span>
                                 </label>
@@ -126,13 +127,28 @@
                 }
             });
 
+            this.on('mount', function(){
+
+                // bind clobal command + save
+                Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
+
+                    if (e.preventDefault) {
+                        e.preventDefault();
+                    } else {
+                        e.returnValue = false; // ie
+                    }
+                    $this.submit();
+                    return false;
+                });
+            });
+
             submit() {
 
                 App.callmodule('regions:updateRegion',[this.region.name, {data:this.data}]).then(function(data) {
 
                     if (data.result) {
 
-                        App.ui.notify("Saving successfull", "success");
+                        App.ui.notify("Saving successful", "success");
 
                         $this.data = data.result.data;
 

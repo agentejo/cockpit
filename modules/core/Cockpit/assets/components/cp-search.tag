@@ -1,6 +1,6 @@
 <cp-search>
 
-    <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form app-search">
+    <div name="autocomplete" class="uk-autocomplete uk-form uk-form-icon app-search">
 
         <style>
             cp-search .uk-dropdown {
@@ -17,10 +17,35 @@
 
         this.on('mount', function(){
 
+            var txtSearch = App.$("input[type='text']", this.autocomplete);
+
             UIkit.autocomplete(this.autocomplete, {
                 source: App.route('/cockpit/search'),
                 template: '<ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">{{~items}}<li data-value="" data-url="{{$item.url}}"><a><i class="uk-icon-{{ ($item.icon || "cube") }}"></i> {{$item.title}}</a></li>{{/items}}</ul>'
             });
+
+            UIkit.$doc.on("keydown", function(e) {
+
+                //ctrl-c, ctrl-v etc.
+                if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+                if (e.target.tagName && e.target.tagName.toLowerCase()=='body' && (e.keyCode>=65 && e.keyCode<=90)) {
+                    txtSearch.focus();
+                }
+            });
+
+            // bind global command
+            Mousetrap.bindGlobal(['alt+f'], function(e) {
+
+                if (e.preventDefault) {
+                    e.preventDefault();
+                } else {
+                    e.returnValue = false; // ie
+                }
+                txtSearch.focus();
+                return false;
+            });
+
         });
 
         App.$(this.root).on("selectitem.uk.autocomplete", function(e, data) {

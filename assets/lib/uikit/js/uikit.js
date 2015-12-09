@@ -1,4 +1,4 @@
-/*! UIkit 2.23.0 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.24.2 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(core) {
 
     if (typeof define == "function" && define.amd) { // AMD
@@ -44,7 +44,7 @@
 
     var UI = {}, _UI = global.UIkit ? Object.create(global.UIkit) : undefined;
 
-    UI.version = '2.23.0';
+    UI.version = '2.24.2';
 
     UI.noConflict = function() {
         // restore UIkit version
@@ -1065,7 +1065,7 @@
             firstvisible = elements.filter(":visible:first"),
             offset       = firstvisible.length ? (firstvisible.position().top + firstvisible.outerHeight()) - 1 : false; // (-1): weird firefox bug when parent container is display:flex
 
-        if (offset === false) return;
+        if (offset === false || elements.length == 1) return;
 
         elements.each(function() {
 
@@ -1404,7 +1404,7 @@
         init: function() {
 
             var ids     = [],
-                links   = this.find("a[href^='#']").each(function(){ ids.push(UI.$(this).attr("href")); }),
+                links   = this.find("a[href^='#']").each(function(){ if(this.getAttribute("href").trim()!=='#') ids.push(this.getAttribute("href")); }),
                 targets = UI.$(ids.join(",")),
 
                 clsActive  = this.options.cls,
@@ -1435,7 +1435,7 @@
                     if (!target) return;
 
                     if ($this.options.closest) {
-                        links.closest(clsClosest).removeClass(clsActive);
+                        links.blur().closest(clsClosest).removeClass(clsActive);
                         navitems = links.filter("a[href='#"+target.attr("id")+"']").closest(clsClosest).addClass(clsActive);
                     } else {
                         navitems = links.removeClass(clsActive).filter("a[href='#"+target.attr("id")+"']").addClass(clsActive);
@@ -1997,6 +1997,9 @@
                     }
 
                     if (active && active == $this) {
+                        if (!$this.dropdown.find(e.target).length || $target.is(".uk-dropdown-close") || $target.parents(".uk-dropdown-close").length) {
+                            $this.hide();
+                        }
                         return;
                     }
 
@@ -2101,11 +2104,11 @@
                 pos            = UI.$.extend({}, this.offsetParent.offset(), {width: this.offsetParent[0].offsetWidth, height: this.offsetParent[0].offsetHeight}),
                 posoffset      = this.options.offset,
                 dropdown       = this.dropdown,
-                offset         = dropdown.show().offset(),
+                offset         = dropdown.show().offset() || {left: 0, top: 0},
                 width          = dropdown.outerWidth(),
                 height         = dropdown.outerHeight(),
                 boundarywidth  = this.boundary.width(),
-                boundaryoffset = this.boundary.offset() ? this.boundary.offset(): {top:0, left:0},
+                boundaryoffset = this.boundary[0] !== window && this.boundary.offset() ? this.boundary.offset(): {top:0, left:0},
                 dpos           = this.options.pos;
 
             var variants =  {
@@ -2576,14 +2579,17 @@
 
             if (scrollable.length) {
 
-                scrollable.css("height", 0);
+                scrollable.css('height', 0);
 
-                var offset = Math.abs(parseInt(this.dialog.css("margin-top"), 10)),
+                var offset = Math.abs(parseInt(this.dialog.css('margin-top'), 10)),
                 dh     = this.dialog.outerHeight(),
                 wh     = window.innerHeight,
                 h      = wh - 2*(offset < 20 ? 20:offset) - dh;
 
-                scrollable.css("height", h < this.options.minScrollHeight ? "":h);
+                scrollable.css({
+                    'max-height': (h < this.options.minScrollHeight ? '':h),
+                    'height':''
+                });
 
                 return true;
             }
@@ -2597,19 +2603,19 @@
             if (activeCount > 0) activeCount--;
             else activeCount = 0;
 
-            this.element.hide().removeClass("uk-open");
+            this.element.hide().removeClass('uk-open');
 
             // Update ARIA
             this.element.attr('aria-hidden', 'true');
 
             if (!activeCount) {
-                $html.removeClass("uk-modal-page");
+                $html.removeClass('uk-modal-page');
                 body.css(this.paddingdir, "");
             }
 
             if(active===this) active = false;
 
-            this.trigger("hide.uk.modal");
+            this.trigger('hide.uk.modal');
         },
 
         isActive: function() {
@@ -3063,7 +3069,7 @@
                     try {
                         target = UI.$(href);
                     } catch (e){
-                        target = ""
+                        target = "";
                     }
 
                     if (!target.length) {
@@ -3199,7 +3205,7 @@
                             default:
                                 $this.show(parseInt(item, 10));
                         }
-                    })
+                    });
 
                     if (this.options.swiping) {
 

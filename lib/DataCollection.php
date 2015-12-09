@@ -189,6 +189,18 @@ class DataCollection implements \Iterator {
     }
 
     /**
+     * @param $limit
+     * @param $current
+     * @return \Pagination
+     */
+    public function pagination($limit = 5, $current = 1) {
+
+        $pagination = new \Pagination($this->count(), $limit, $current);
+
+        return $pagination;
+    }
+
+    /**
      * @return array
      */
     public function toArray() {

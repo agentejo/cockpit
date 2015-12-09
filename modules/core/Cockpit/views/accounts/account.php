@@ -95,8 +95,8 @@
 
             <div class="uk-form-controls uk-margin-small-top">
                 <div class="uk-form-select">
-                    <a>{ account.i18n }</a>
-                    <select class="uk-width-1-1 uk-form-large" name="i18n">
+                    <a>{ _.result(_.find(languages, { 'i18n': account.i18n }), 'language') || account.i18n }</a>
+                    <select class="uk-width-1-1 uk-form-large" name="i18n" bind="account.i18n">
                         @foreach($languages as $lang)
                         <option value="{{ $lang['i18n'] }}">{{ $lang['language'] }}</option>
                         @endforeach
@@ -131,10 +131,24 @@
 
         this.mixin(RiotBindMixin);
 
-        this.account = {{ json_encode($account) }};
+        this.account   = {{ json_encode($account) }};
+        this.languages = {{ json_encode($languages) }};
 
         this.on('mount', function(){
+
             this.root.classList.remove('uk-invisible');
+
+            // bind clobal command + save
+            Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
+
+                if (e.preventDefault) {
+                    e.preventDefault();
+                } else {
+                    e.returnValue = false; // ie
+                }
+                $this.submit();
+                return false;
+            });
         });
 
         toggleactive() {

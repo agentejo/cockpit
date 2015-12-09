@@ -1,12 +1,13 @@
 <field-wysiwyg>
 
-    <textarea name="input" class="uk-width-1-1" rows="5"></textarea>
+    <textarea name="input" class="uk-width-1-1" rows="5" style="height:350px;visibility:hidden;"></textarea>
 
     <script>
 
-        var $this = this,
-            lang  = document.documentElement.getAttribute('lang') || 'en',
-            redactor;
+        var $this     = this,
+            lang      = document.documentElement.getAttribute('lang') || 'en',
+            languages = ['ar','az','ba','bg','by','ca','cs','da','de','el','eo','es_ar','es','fa','fi','fr','ge','he','hr','hu','id','it','ja','ko','lt','lv','mk','nl','no_NB','pl','pt_br','pt_pt','ro','ru','sl','sq','sr-cir','sr-lat','sv','th','tr','ua','vi','zh_cn','zh_tw'],
+            editor;
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -25,8 +26,8 @@
 
                 this.value = value;
 
-                if (redactor && this._field != field) {
-                    redactor.code.set(this.value || '');
+                if (editor && this._field != field) {
+                    editor.setContent(this.value || '');
                 }
             }
 
@@ -37,23 +38,15 @@
 
         this.on('mount', function(){
 
-            var assets = [
-                '/assets/lib/redactor/redactor.min.js',
-                '/assets/lib/redactor/redactor.css',
-            ];
-
-            var plugins = [
-                '/assets/lib/redactor/plugins/fullscreen/fullscreen.js',
-                '/assets/lib/redactor/plugins/fontcolor/fontcolor.js',
-                '/assets/lib/redactor/plugins/fontsize/fontsize.js',
-                '/assets/lib/redactor/plugins/textdirection/textdirection.js',
-                '/assets/lib/redactor/plugins/table/table.js',
-                '/assets/lib/redactor/plugins/video/video.js'
-            ];
-
-            if (lang != 'en') {
-                assets.push('/assets/lib/redactor/lang/'+lang+'.js');
+            if (!this.input.id) {
+                this.input.id = 'wysiwyg-'+parseInt(Math.random()*10000000, 10);
             }
+
+            var assets = [
+                '/assets/lib/tinymce/tinymce.min.js'
+            ];
+
+            var plugins = [];
 
             App.assets.require(assets, function() {
 
@@ -63,22 +56,43 @@
 
                     this.input.value = this.value;
 
-                    App.$($this.input).redactor({
-                        lang: lang,
-                        plugins: opts.plugins ||  ['table','textdirection','fontcolor','fontsize','video','fullscreen','imagepicker'],
-                        initCallback: function() {
-                            redactor = this;
-                        },
-                        changeCallback: function() {
-                            $this.$setValue(this.code.get());
-                        }
-                    });
+                    tinymce.init(App.$.extend(true, {
+                        resize: true,
+                        height: 350,
+                        menubar: 'edit insert view format table tools',
+                        plugins: [
+                            "link image lists preview hr anchor",
+                            "code fullscreen media mediapath",
+                            "table contextmenu paste"
+                        ],
+                        relative_urls: false
+                    },opts.editor || {}, {
+
+                      selector: '#'+this.input.id,
+                      setup: function (ed) {
+
+
+                          // Update model on button click
+                          ed.on('ExecCommand', function (e) {
+                             ed.save();
+                             $this.$setValue($this.input.value, true);
+                          });
+                          // Update model on keypress
+                          ed.on('KeyUp', function (e) {
+                             ed.save();
+                             $this.$setValue($this.input.value, true);
+                          });
+
+                          editor = ed;
+
+                          App.$(document).trigger('init-wysiwyg-editor', [editor]);
+                      }
+
+                    }));
 
                 }.bind(this));
 
             }.bind(this)).catch(function(){
-
-                // fallback if redactor is not available
 
                 this.input.value = this.value;
 
@@ -92,32 +106,28 @@
 
         function initPlugins() {
 
-            $.Redactor.prototype.imagepicker = function() {
-                return {
-        			init: function() {
-        				var button = this.button.add('image', 'Image Picker');
-                        this.button.addCallback(button, this.imagepicker.select);
-        			},
-        			select: function() {
+            if (initPlugins.done) return;
 
-                        var $this = this;
+            tinymce.PluginManager.add('mediapath', function(editor) {
+
+                editor.addMenuItem('mediapath', {
+                    icon: 'image',
+                    text: 'Insert image (Finder)',
+                    onclick: function(){
 
                         App.media.select(function(selected) {
-
-                            $this.image.insert('<img src="' + SITE_URL+'/'+selected + '" alt="">');
-
+                            editor.insertContent('<img src="' + SITE_URL+'/'+selected + '" alt="">');
                         }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
-        				//$(img).click($.proxy(this.imagemanager.insert, this));
+                    },
+                    context: 'insert',
+                    prependToContext: true
+                });
+            });
 
-
-        			},
-        			insert: function(e) {
-
-        			}
-        		};
-        	};
-
+            initPlugins.done = true;
         }
+
+        initPlugins.done = false;
 
     </script>
 

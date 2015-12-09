@@ -17,7 +17,7 @@
                 this.value = value;
 
                 if (editor && this._field != field) {
-                    editor.editor.setValue(value || '');
+                    editor.editor.setValue(value || '', true);
                 }
             }
 
@@ -53,10 +53,11 @@
                             editor['replaceSelection']('<img src="'+SITE_URL+'/'+selected[0]+'">');
                         }
 
-
-                    }, { pattern: '*.jpg|*.png|*.gif|*.svg' });
+                    }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
 
                 });
+
+                App.$(document).trigger('init-html-editor', [editor]);
 
             }.bind(this));
         });

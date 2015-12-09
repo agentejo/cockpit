@@ -8,7 +8,8 @@
 @import (less) "../../lib/codemirror/theme/light.css";
 @import "less/uikit/uikit.less";
 
-//@global-primary-background: #039be5;
+@global-primary-background: #eb5424;
+//@global-primary-background: #485b8a;
 //@global-link-color: @global-primary-background;
 
 .uk-selected {
@@ -16,23 +17,18 @@
 }
 
 .app-header {
-
     background-color: @global-background;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-
-    .uk-navbar {
-
-        & > div > *:first-child {
-            margin-left: -15px;
-        }
-    }
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-bottom: 2.5rem;
 }
 
 .app-header-topbar {
 
-    background-color: @global-primary-background;
-    padding: 10px 0;
+    //background-color: @global-primary-background;
+    border-bottom: 1px #eee solid;
+    padding: 15px 0;
     box-sizing: border-box;
+    min-height: 60px;
 
     a { text-decoration: none !important; }
 
@@ -42,33 +38,12 @@
 }
 
 .app-panel-dropdown {
-    margin-top: 10px;
-    border: none;
+    margin-top: 16px;
     width: 600px;
     max-width: 85vw;
-    border: none;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
-
-    &:after {
-    	bottom: 100%;
-    	left: 30px;
-    	border: solid transparent;
-    	content: " ";
-    	height: 0;
-    	width: 0;
-    	position: absolute;
-    	pointer-events: none;
-    	border-color: none;
-    	border-bottom-color: @global-background;
-    	border-width: 8px;
-    	margin-left: -8px;
-    }
 }
 
-.app-modulesbar li a.uk-active {
-    background-color: @global-background;
-    padding: 10px  15px;
-    margin: -10px 0;
+.app-modulesbar a.uk-active {
     color: @global-primary-background;
 }
 
@@ -78,4 +53,8 @@
 
 .app-footer {
     margin: (2 * @global-margin-large) 0;
+}
+
+.mce-panel, .mce-btn {
+    background: #fff !important;
 }

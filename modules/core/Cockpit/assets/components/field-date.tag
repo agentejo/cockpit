@@ -1,6 +1,6 @@
 <field-date>
 
-    <input name="input" class="uk-width-1-1" bind="{ opts.bind }" type="text">
+    <input name="input" class="uk-width-1-1" bind="{ opts.bind }" type="text" placeholder="{ opts.placeholder }">
 
     <script>
 

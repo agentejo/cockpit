@@ -14,7 +14,7 @@
                 if (msgsuccess) {
                     msgsuccess.style.display = 'block';
                 } else {
-                    alert("@lang('Form submission was successfull.')");
+                    alert("@lang('Form submission was successful.')");
                 }
             },
             fail        = function(){

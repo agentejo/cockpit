@@ -1,9 +1,12 @@
 <field-boolean>
-    
-    <button type="button" name="button" class="uk-button uk-button-{ checked ? 'success':'default'}" onclick="{ toggle }">
-        <i show="{checked}" class="uk-icon-check-circle"></i>
-        <i show="{!checked}" class="uk-icon-circle-o"></i>
+
+    <button type="button" name="button" class="uk-button uk-button-{ value ? 'success':'default'}" onclick="{ toggle }">
+
+        <span show="{value}">{ opts.label || 'On' }</span>
+        <span show="{!value}">{ opts.label || 'Off' }</span>
+
     </button>
+
 
     <script>
 
@@ -11,22 +14,20 @@
             App.$(this.button).addClass(opts.cls.replace(/uk\-form\-/g, 'uk-button-'));
         }
 
-        if (opts.label) {
-            this.button.innerHTML = opts.label;
-        }
+        this.value = opts.default || false;
 
         this.$updateValue = function(value) {
 
-            if (this.checked != value) {
+            if (this.value != value) {
 
-                this.checked = value;
+                this.value = value;
                 this.update();
             }
 
         }.bind(this);
 
         toggle() {
-            this.$setValue(!this.checked);
+            this.$setValue(!this.value);
         }
 
     </script>

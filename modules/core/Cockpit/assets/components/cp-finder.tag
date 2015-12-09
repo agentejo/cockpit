@@ -112,7 +112,7 @@
                     This is an empty folder
                 </div>
 
-                <div>
+                <div class="{modal ? 'uk-overflow-container':''}">
 
                     <div class="uk-margin-top" if="{data.folders.length}">
 
@@ -246,6 +246,8 @@
         });
 
         this.on('mount', function(){
+
+            this.modal = App.$(this.root).closest('.uk-modal').length ? UIkit.modal(App.$(this.root).closest('.uk-modal')):false;
 
             this.loadPath()
 
@@ -543,6 +545,11 @@
                 $this.resetselected();
                 $this.update();
 
+                if ($this.modal) {
+                    setTimeout(function(){
+                        $this.modal.resize();
+                    }, 100);
+                }
             });
 
             return defer;

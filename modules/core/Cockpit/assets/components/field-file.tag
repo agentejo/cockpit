@@ -1,7 +1,7 @@
 <field-file>
 
     <div class="uk-flex">
-        <input class="uk-flex-item-1 uk-margin-small-right" type="text" name="input" bind="{ opts.bind }" placeholder="{ App.i18n.get('No file selected...') }" disabled>
+        <input class="uk-flex-item-1 uk-margin-small-right" type="text" name="input" bind="{ opts.bind }" placeholder="{ opts.placeholder || App.i18n.get('No file selected...') }" disabled>
         <button type="button" class="uk-button" name="picker"><i class="uk-icon-paperclip"></i></button>
     </div>
 

@@ -12,14 +12,16 @@ try {
 
 } catch (Exception $e) { }
 
+require(__DIR__.'/../bootstrap.php');
+
 // misc checks
 $checks = array(
     "Php version >= 5.4.0"                              => (version_compare(PHP_VERSION, '5.4.0') >= 0),
     "PDO extension loaded with Sqlite support"          => $sqlitesupport,
-    'Data  folder is not writable: /storage/data'       => is_writable(__DIR__.'/../storage/data'),
-    'Cache folder is not writable: /storage/cache'      => is_writable(__DIR__.'/../storage/cache'),
-    'Temp folder is not writable: /storage/tmp'         => is_writable(__DIR__.'/../storage/tmp'),
-    'Uploads folder is not writable: /storage/uploads'  => is_writable(__DIR__.'/../storage/uploads'),
+    'Data  folder is not writable: /storage/data'       => is_writable(COCKPIT_STORAGE_FOLDER.'/data'),
+    'Cache folder is not writable: /storage/cache'      => is_writable(COCKPIT_STORAGE_FOLDER.'/cache'),
+    'Temp folder is not writable: /storage/tmp'         => is_writable(COCKPIT_STORAGE_FOLDER.'/tmp'),
+    'Uploads folder is not writable: /storage/uploads'  => is_writable(COCKPIT_STORAGE_FOLDER.'/uploads'),
 );
 
 foreach($checks as $info => $check) {
@@ -29,8 +31,6 @@ foreach($checks as $info => $check) {
         exit;
     }
 }
-
-require(__DIR__.'/../bootstrap.php');
 
 $app = cockpit();
 

@@ -65,8 +65,8 @@ function cockpit($module = null) {
             'session.name' => md5(__DIR__),
             'sec-key'      => 'c3b40c4c-db44-s5h7-a814-b4931a15e5e1',
             'i18n'         => 'en',
-            'database'     => [ "server" => "mongolite://".(COCKPIT_DIR."/storage/data"), "options" => ["db" => "cockpitdb"] ],
-            'memory'       => [ "server" => "redislite://".(COCKPIT_DIR."/storage/data/cockpit.memory.sqlite"), "options" => [] ],
+            'database'     => [ "server" => "mongolite://".(COCKPIT_STORAGE_FOLDER."/data"), "options" => ["db" => "cockpitdb"] ],
+            'memory'       => [ "server" => "redislite://".(COCKPIT_STORAGE_FOLDER."/data/cockpit.memory.sqlite"), "options" => [] ],
 
             'paths'        => [
                 '#root'    => COCKPIT_DIR,
@@ -76,8 +76,8 @@ function cockpit($module = null) {
                 '#tmp'     => COCKPIT_STORAGE_FOLDER.'/tmp',
                 '#modules' => COCKPIT_DIR.'/modules',
                 '#uploads' => COCKPIT_DIR.'/uploads',
+                '#config'  => dirname(COCKPIT_CONFIG_PATH),
                 'assets'   => COCKPIT_DIR.'/assets',
-                'config'   => COCKPIT_DIR.'/config',
                 'site'     => COCKPIT_DIR == COCKPIT_DOCS_ROOT ? COCKPIT_DIR : dirname(COCKPIT_DIR)
             ]
 

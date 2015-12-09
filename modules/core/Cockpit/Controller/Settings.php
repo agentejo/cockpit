@@ -32,13 +32,13 @@ class Settings extends \Cockpit\AuthController {
             return false;
         }
 
-        if ($createconfig && !$this->app->path('#root:config/config.yaml')) {
-            if ($this->app->helper('fs')->mkdir('#root:config')) {
-                $this->app->helper('fs')->write('#root:config/config.yaml', "# Cockpit settings\n");
+        if ($createconfig && !$this->app->path(COCKPIT_CONFIG_PATH)) {
+            if ($this->app->helper('fs')->mkdir(dirname(COCKPIT_CONFIG_PATH))) {
+                $this->app->helper('fs')->write(COCKPIT_CONFIG_PATH, "# Cockpit settings\n");
             }
         }
 
-        $configexists = $this->app->path('#root:config/config.yaml');
+        $configexists = $this->app->path(COCKPIT_CONFIG_PATH);
 
         return $this->render('cockpit:views/settings/edit.php', compact('configexists'));
     }

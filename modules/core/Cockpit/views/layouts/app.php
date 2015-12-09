@@ -25,6 +25,8 @@
 
     {{ $app->assets($app('admin')->data->get('assets'), $app['cockpit/version']) }}
 
+    <script src="@route('/cockpit.i18n.data')"></script>
+
     <script>
         App.$data = {{ json_encode($app('admin')->data->get('extract')) }};
     </script>
@@ -35,24 +37,22 @@
 </head>
 <body>
 
-    <div class="app-header">
+    <div class="app-header" data-uk-sticky="{animation: 'uk-animation-slide-top', showup:true}">
 
         <div class="app-header-topbar">
 
             <div class="uk-container uk-container-center">
 
-                <div class="uk-grid">
+                <div class="uk-grid uk-flex-middle">
 
-                    <div  class="uk-flex-item-1">
+                    <div>
 
-                        <div class="uk-position-inline-block" data-uk-dropdown>
+                        <div class="uk-display-inline-block" data-uk-dropdown>
 
-                            <strong class="uk-contrast">
-                                <a href="#">
-                                    <i class="uk-icon-bars"></i>
-                                    <span>{{ $app['app.name'] }}</span>
-                                </a>
-                            </strong>
+                            <a href="#" class="uk-link-muted uk-text-bold">
+                                <i class="uk-icon-bars"></i>
+                                <span>{{ $app['app.name'] }}</span>
+                            </a>
 
                             <div class="uk-dropdown app-panel-dropdown">
 
@@ -122,40 +122,25 @@
 
                     </div>
 
-                    <div>
-                        @if($app('admin')->data['menu.modules']->count())
-                        <ul class="uk-subnav app-modulesbar uk-hidden-small">
+                    <div class="uk-flex-item-1" riot-mount>
+                        <cp-search></cp-search>
+                    </div>
 
+                    @if($app('admin')->data['menu.modules']->count())
+                    <div class="uk-hidden-small">
+                        <ul class="uk-subnav app-modulesbar">
                             @foreach($modules as $item)
                             <li>
-                                <a class="{{ (@$item['active']) ? 'uk-active':'uk-contrast' }}" href="@route($item['route'])" title="@lang($item['label'])" data-uk-tooltip="{offset:10}">
+                                <a class="{{ (@$item['active']) ? 'uk-active':'' }}" href="@route($item['route'])" title="@lang($item['label'])" data-uk-tooltip="{offset:10}">
                                     <i class="uk-icon-{{ isset($item['icon']) ? $item['icon']:'cube' }}"></i>
                                 </a>
                             </li>
                             @endforeach
-
                         </ul>
-                        @endif
                     </div>
+                    @endif
 
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <nav class="uk-navbar">
-
-            <div class="uk-container uk-container-center">
-
-                <div class="uk-navbar-content uk-hidden-small" riot-mount>
-                    <cp-search></cp-search>
-                </div>
-
-                <div class="uk-navbar-flip">
-
-                    <div class="uk-navbar-content" data-uk-dropdown="{delay:150}">
+                    <div data-uk-dropdown="{delay:150}">
 
                         <a href="@route('/accounts/account')" riot-mount>
                             <cp-gravatar email="{{ $app['user']['email'] }}" size="30" alt="{{ $app["user"]["name"] ? $app["user"]["name"] : $app["user"]["user"] }}"></cp-gravatar>
@@ -171,10 +156,13 @@
                         </div>
 
                     </div>
+
                 </div>
 
             </div>
-        </nav>
+
+        </div>
+
     </div>
 
     <div class="app-main">

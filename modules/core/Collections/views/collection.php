@@ -32,13 +32,11 @@
                </div>
 
                 <div class="uk-margin">
-                    <field-boolean bind="collection.sortable" title="@lang('Sortable entries')" cls="uk-form-small"></field-boolean>
-                    <strong>@lang('Sortable entries')</strong>
+                    <field-boolean bind="collection.sortable" title="@lang('Sortable entries')" cls="uk-form-small uk-button-large uk-width-1-1" label="@lang('Sortable entries')"></field-boolean>
                 </div>
 
                 <div class="uk-margin">
-                    <field-boolean bind="collection.in_menu" title="@lang('Show in system menu')" cls="uk-form-small"></field-boolean>
-                    <strong>@lang('Show in system menu')</strong>
+                    <field-boolean bind="collection.in_menu" title="@lang('Show in system menu')" cls="uk-form-small uk-button-large uk-width-1-1" label="@lang('Show in system menu')"></field-boolean>
                 </div>
 
             </div>
@@ -90,6 +88,21 @@
             }
         });
 
+        this.on('mount', function(){
+
+            // bind clobal command + save
+            Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
+
+                if (e.preventDefault) {
+                    e.preventDefault();
+                } else {
+                    e.returnValue = false; // ie
+                }
+                $this.submit();
+                return false;
+            });
+        });
+
         submit() {
 
             var collection = this.collection;
@@ -98,7 +111,7 @@
 
                 if (data.result) {
 
-                    App.ui.notify("Saving successfull", "success");
+                    App.ui.notify("Saving successful", "success");
                     $this.collection = data.result;
                     $this.update();
 

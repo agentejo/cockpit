@@ -22,14 +22,15 @@
 
                 <h3>{ entry._id ? 'Edit':'Add' } @lang('Entry')</h3>
 
+                <br>
+
                 <div class="uk-grid uk-grid-match uk-grid-gutter">
 
-                    <div class="uk-width-medium-{field.width} uk-grid-margin" each="{field,idx in fields}">
+                    <div class="uk-width-medium-{field.width} uk-grid-margin" each="{field,idx in fields}" no-reorder>
 
                         <div class="uk-panel">
 
-                            <label>
-                                <i class="uk-icon-ellipsis-v"></i>
+                            <label class="uk-text-bold">
                                 { field.label || field.name }
                                 <span if="{ field.localize }" class="uk-icon-globe" title="@lang('Localized field')" data-uk-tooltip="\{pos:'right'\}"></span>
                             </label>
@@ -116,13 +117,28 @@
             }
         });
 
+        this.on('mount', function(){
+
+            // bind clobal command + save
+            Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
+
+                if (e.preventDefault) {
+                    e.preventDefault();
+                } else {
+                    e.returnValue = false; // ie
+                }
+                $this.submit();
+                return false;
+            });
+        });
+
         submit() {
 
             App.callmodule('collections:save',[this.collection.name, this.entry]).then(function(data) {
 
                 if (data.result) {
 
-                    App.ui.notify("Saving successfull", "success");
+                    App.ui.notify("Saving successful", "success");
 
                     $this.entry = data.result;
 

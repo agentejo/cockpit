@@ -1,6 +1,6 @@
 <field-object>
 
-    <textarea name="input" class="uk-width-1-1" onchange="{ change }">{}</textarea>
+    <textarea name="input" class="uk-width-1-1" onchange="{ change }" placeholder="{ opts.placeholder }">{}</textarea>
 
     <script>
 

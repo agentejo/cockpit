@@ -6,7 +6,7 @@
 
         this.on('update', function() {
 
-            if (opts.bind != this._field) {
+            if (opts.bind && opts.bind != this._field) {
 
                 App.$(this.root).children('div').remove();
 

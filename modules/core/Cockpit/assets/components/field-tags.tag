@@ -4,14 +4,13 @@
 
         <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form">
             <i class="uk-icon-tag"></i>
-            <input name="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{ App.i18n.get('Add Tag...') }">
+            <input name="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{ App.i18n.get(opts.placeholder || 'Add Tag...') }">
         </div>
 
-        <div class="uk-margin uk-panel uk-panel-box" if="{ tags && tags.length }">
-            <span class="uk-margin-small-right uk-margin-small-top" each="{tag,idx in tags}">
-                <a onclick="{ parent.remove }"><i class="uk-icon-close"></i></a>
-                {{ tag }}
-            </span>
+        <div class="uk-margin uk-panel uk-panel-box" show="{ tags && tags.length }">
+            <div class="uk-margin-small-right uk-margin-small-top" each="{ tag,idx in tags }">
+                <a onclick="{ parent.remove }"><i class="uk-icon-close"></i></a> { tag }
+            </div>
         </div>
 
     </div>
@@ -29,23 +28,30 @@
                 UIkit.autocomplete(this.autocomplete, {source: opts.autocomplete});
             }
 
-            App.$(this.input).on('keydown change', function(e) {
+            App.$(this.root).on({
 
-                if (e.type=='keydown' && e.keyCode != 13) {
-                    return;
-                }
+                'selectitem.uk.autocomplete keydown': function(e, data) {
 
-                if ($this.input.value.trim()) {
+                    var value = e.type=='keydown' ? $this.input.value : data.value;
 
-                    e.stopImmediatePropagation();
-                    e.stopPropagation();
+                    if (e.type=='keydown' && e.keyCode != 13) {
+                        return;
+                    }
 
-                    $this.tags.push($this.input.value);
-                    $this.input.value = "";
-                    $this.$setValue($this.tags)
-                    $this.update();
+                    if (value.trim()) {
 
-                    return false;
+                        $this.input.value = value;
+
+                        e.stopImmediatePropagation();
+                        e.stopPropagation();
+                        e.preventDefault();
+                        $this.tags.push($this.input.value);
+                        $this.input.value = "";
+                        $this.$setValue(_.uniq($this.tags));
+                        $this.update();
+
+                        return false;
+                    }
                 }
             });
         });

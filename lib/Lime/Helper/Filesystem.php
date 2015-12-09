@@ -72,7 +72,8 @@ class Filesystem extends \Lime\Helper {
             return false;
         }
 
-        if (strpos($args[0], ':') !== false) {
+        if (strpos($args[0], ':') !== false && !$this->app->isAbsolutePath($args[0])) {
+
             list($namespace, $additional) = explode(":",$args[0], 2);
 
             if (!$this->app->path("{$namespace}:")) {
@@ -97,7 +98,7 @@ class Filesystem extends \Lime\Helper {
      */
     public function mkdir($path, $mode = 0755) {
 
-        if (strpos($path, ':') !== false) {
+        if (strpos($path, ':') !== false && !$this->app->isAbsolutePath($path)) {
             list($namespace, $additional) = explode(":", $path, 2);
             $dir = $this->app->path("{$namespace}:").$additional;
         } else {
