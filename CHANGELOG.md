@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.13.0  (Dec 11, 2015)
+
+    # Fixed made Cockpit PHP7 compatible
+
 ### 0.13.0  (Feb 02, 2015)
 
     + Added preview for media + gallery field in collection entries list view
