@@ -1,6 +1,6 @@
 # Changelog
 
-### 0.13.0  (Dec 11, 2015)
+### 0.13.1  (Dec 11, 2015)
 
     # Fixed made Cockpit PHP7 compatible
 
