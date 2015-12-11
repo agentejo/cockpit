@@ -326,7 +326,7 @@ class ParsedownExtra extends Parsedown
         {
             foreach ($this->DefinitionData['Abbreviation'] as $abbreviation => $meaning)
             {
-                $pattern = '/\b'.preg_quote($abbreviation).'\b/';
+                $pattern = '/\b'.preg_quote($abbreviation, '/').'\b/';
 
                 $text = preg_replace($pattern, '<abbr title="'.$meaning.'">'.$abbreviation.'</abbr>', $text);
             }
@@ -503,10 +503,10 @@ class ParsedownExtra extends Parsedown
         }
 
         # because we don't want for markup to get encoded
-        $DOMDocument->documentElement->nodeValue = 'placeholder';
+        $DOMDocument->documentElement->nodeValue = 'placeholder\x1A';
 
         $markup = $DOMDocument->saveHTML($DOMDocument->documentElement);
-        $markup = str_replace('placeholder', $elementText, $markup);
+        $markup = str_replace('placeholder\x1A', $elementText, $markup);
 
         return $markup;
     }
