@@ -24,7 +24,7 @@
 
                                 var style = elm.attr('style') || '';
 
-                                $r = '<div class="media-url-preview" style="background-image:url('+encodeURI(url)+');background-size:cover;'+style+'"></div>';
+                                $r = '<div class="media-url-preview" style="background-image:url('+encodeURI(url)+');background-size:contain;'+style+'"></div>';
                             }
 
                             if (url.match(/\.(mp4|mpeg|ogv|webm|wmv)$/i)) {
