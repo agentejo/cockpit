@@ -199,4 +199,12 @@
 
     });
 
+    App.module.filter('filename', function() {
+        return function(input) {
+            if (input) {
+                return input.split('/').pop();
+            }
+        };
+    })
+
 })(jQuery);

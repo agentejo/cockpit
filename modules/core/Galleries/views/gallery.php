@@ -223,7 +223,8 @@
     <div id="meta-dialog" class="uk-modal">
         <div class="uk-modal-dialog">
             <a class="uk-modal-close uk-close"></a>
-            <h3>@lang('Meta')</h3>
+            <h3>@lang('Meta') for <b>@@ metaimage.path | filename @@</b></h3>
+
 
             <div class="uk-form uk-margin">
                 <div class="uk-form-row" data-ng-repeat="field in gallery.fields">
