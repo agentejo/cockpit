@@ -220,9 +220,9 @@
     </form>
 
 
-    <div id="meta-dialog" class="uk-modal">
+    <div id="meta-dialog" class="uk-modal" ng-if="modalOpen">
         <div class="uk-modal-dialog">
-            <a class="uk-modal-close uk-close"></a>
+            <a class="uk-modal-close uk-close" ng-click="hideMeta()"></a>
             <h3>@lang('Meta') for <b>@@ metaimage.path | filename @@</b></h3>
 
 
@@ -235,7 +235,7 @@
                 </div>
             </div>
 
-            <button class="uk-button uk-modal-close">@lang('Close')</button>
+            <button class="uk-button uk-modal-close" ng-click="hideMeta()">@lang('Close')</button>
         </div>
     </div>
 
