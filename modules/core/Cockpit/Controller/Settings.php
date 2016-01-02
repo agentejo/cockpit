@@ -116,6 +116,24 @@ class Settings extends \Cockpit\Controller {
         return false;
     }
 
+    public function getRegistry() {
+
+        $key = $this->param("key", false);
+
+        if ($key !== false) {
+
+            $registry = $this->app->memory->get("cockpit.api.registry");
+
+            if (isset($registry[$key])) {
+                return $registry[$key];
+            }
+        } else {
+            return $this->app->memory->get("cockpit.api.registry");
+        }
+
+        return false;
+    }
+
     public function saveRegistry() {
 
         $registry = $this->param("registry", false);

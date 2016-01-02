@@ -2,10 +2,11 @@
 
     App.module.controller("gallery", function($scope, $rootScope, $http, $timeout, Contentfields){
 
-        var id         = $("[data-ng-controller='gallery']").data("id"),
-            site_base  = COCKPIT_SITE_BASE_URL.replace(/^\/+|\/+$/g, ""),
-            media_base = COCKPIT_MEDIA_BASE_URL.replace(/^\/+|\/+$/g, ""),
-            site2media = media_base.replace(site_base, "").replace(/^\/+|\/+$/g, "");
+        var id            = $("[data-ng-controller='gallery']").data("id"),
+            site_base     = COCKPIT_SITE_BASE_URL.replace(/^\/+|\/+$/g, ""),
+            media_base    = COCKPIT_MEDIA_BASE_URL.replace(/^\/+|\/+$/g, ""),
+            site2media    = media_base.replace(site_base, "").replace(/^\/+|\/+$/g, ""),
+            defaultFields = [{"name":"caption","type":"html"}, {"name":"url","type":"text"}];
 
         $scope.groups        = [];
         $scope.metaimage     = {};
@@ -24,9 +25,17 @@
 
         } else {
 
+            $http.post(App.route("/settings/getRegistry"), {key: "galleryDefaultFields"}, {responseType:"json"}).success(function(data){
+
+                if (data && Object.keys(data).length) {
+                    $scope.gallery.fields = data;
+                }
+
+            });
+
             $scope.gallery = {
                 name: "",
-                fields:[{"name":"caption","type":"html"}, {"name":"url","type":"text"}],
+                fields: defaultFields,
                 images: [],
                 group: ""
             };
