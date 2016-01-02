@@ -3,13 +3,13 @@
     App.module.controller("gallery", function($scope, $rootScope, $http, $timeout, Contentfields){
 
         var id         = $("[data-ng-controller='gallery']").data("id"),
-            dialog     = UIkit.modal("#meta-dialog"),
             site_base  = COCKPIT_SITE_BASE_URL.replace(/^\/+|\/+$/g, ""),
             media_base = COCKPIT_MEDIA_BASE_URL.replace(/^\/+|\/+$/g, ""),
             site2media = media_base.replace(site_base, "").replace(/^\/+|\/+$/g, "");
 
         $scope.groups        = [];
         $scope.metaimage     = {};
+        $scope.modalOpen     = false;
         $scope.contentfields = Contentfields.fields();
 
         if (id) {
@@ -123,7 +123,18 @@
 
         $scope.showMeta = function(index){
             $scope.metaimage = $scope.gallery.images[index];
-            dialog.show();
+            $scope.modalOpen = true;
+            $timeout(function() {
+                UIkit.modal("#meta-dialog").show();
+            });
+        };
+
+        $scope.hideMeta = function(){
+            $scope.modalOpen = false;
+            $timeout(function() {
+                $scope.$apply('modalOpen');
+            }, 300);
+            UIkit.modal("#meta-dialog").hide();
         };
 
         $scope.addfield = function(){
@@ -194,6 +205,16 @@
                 e.returnValue = false; // ie
             }
             $scope.save();
+            return false;
+        });
+
+        Mousetrap.bindGlobal(['escape'], function(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            } else {
+                e.returnValue = false; // ie
+            }
+            $scope.hideMeta();
             return false;
         });
 
