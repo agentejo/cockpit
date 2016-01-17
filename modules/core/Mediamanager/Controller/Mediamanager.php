@@ -86,6 +86,14 @@ class Mediamanager extends \Cockpit\Controller {
                 }
             }
         }
+        
+        usort($data["folders"], function ($a, $b) {
+            return ($a['name'] < $b['name']) ? -1 : 1;
+        });
+        usort($data["files"], function ($a, $b) {
+            return ($a['name'] < $b['name']) ? -1 : 1;
+        });
+
 
     	return json_encode($data);
     }
@@ -299,6 +307,10 @@ class Mediamanager extends \Cockpit\Controller {
                 "url"  => $this->app->pathToUrl($file->getPathname()),
             ];
         }
+
+        usort($list, function ($a, $b) {
+            return ($a['name'] < $b['name']) ? -1 : 1;
+        });
 
         return json_encode($list);
     }
