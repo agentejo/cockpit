@@ -1,7 +1,8 @@
 
 # Notice:
 
-Current development moved to the [Cockpit Next branch](https://github.com/aheinze/cockpit/tree/next)
+- Current development moved to the [Cockpit Next branch](https://github.com/aheinze/cockpit/tree/next)
+- Visit [https://cocopi.co/](https://cocopi.co/) - a simple Content Management System built on top of Cockpit
 
 
 # Cockpit
