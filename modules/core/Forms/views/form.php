@@ -36,7 +36,7 @@
                    <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.email_forward">
 
                     <div class="uk-alert">
-                        @lang('Leave the email field empty if you don\'t want to recieve any form data via email.')
+                        @lang('Leave the email field empty if you don`t want to recieve any form data via email.')
                     </div>
                </div>
 
@@ -110,8 +110,6 @@
 
                     App.ui.notify("Saving successful", "success");
                     $this.form = data.result;
-
-                    stringifyOptionsField();
 
                     $this.update();
 

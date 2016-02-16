@@ -75,6 +75,21 @@
         return length;
     };
 
+    // Unix filename pattern matching *.jpg
+    App.Utils.fnmatch = function(pattern, path) {
+
+        path = path.split('/').pop();
+
+        var parsedPattern = '^' + pattern.replace(/\//g, '\\/').
+            replace(/\*\*/g, '(\\/[^\\/]+)*').
+            replace(/\*/g, '[^\\/]+').
+            replace(/((?!\\))\?/g, '$1.') + '$';
+
+        parsedPattern = '^' + parsedPattern + '$';
+
+        return (path.match(new RegExp(parsedPattern, 'i')) !== null);
+    }
+
     App.Utils.sluggify = (function(){
 
         var defaults = {
@@ -130,7 +145,7 @@
         }
 
         if (window.devicePixelRatio) {
-            size = (size * window.devicePixelRatio);
+            //size = (size * window.devicePixelRatio);
         }
 
         charIndex     = (initials == '?' ? 72 : initials.charCodeAt(0)) - 64;

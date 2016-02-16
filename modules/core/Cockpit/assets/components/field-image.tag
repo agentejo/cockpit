@@ -2,9 +2,9 @@
 
     <figure class="uk-display-block uk-overlay uk-overlay-hover">
 
-        <div class="uk-placeholder uk-flex uk-flex-middle uk-flex-center uk-text-muted" style="min-height:120px;">
-            <img riot-src="{ (SITE_URL+'/'+image.path) }" show="{ image.path }">
-            <i class="uk-icon-image" show="{ !image.path }"></i>
+        <div class="uk-placeholder uk-flex uk-flex-middle uk-flex-center uk-text-muted">
+            <div class="uk-width-1-1" show="{ image.path }" style="min-height:160px;background-size:contain;background-repeat:no-repeat;background-position:50% 50%;{ image.path ? 'background-image: url('+encodeURI(SITE_URL+'/'+image.path)+')':''}"></div>
+            <div class="uk-width-1-1" show="{ !image.path }"><i class="uk-icon-image" ></i></div>
         </div>
 
         <figcaption class="uk-overlay-panel uk-overlay-background">

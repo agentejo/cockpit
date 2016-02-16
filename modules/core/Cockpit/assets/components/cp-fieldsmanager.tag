@@ -1,6 +1,6 @@
 <cp-fieldsmanager>
 
-    <div name="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form" show="{fields.length}">
+    <div name="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form">
 
         <div class="uk-grid-margin uk-width-{field.width}" data-idx="{idx}" each="{ field,idx in fields }">
 
@@ -106,7 +106,7 @@
 
         </div>
 
-        <div class="uk-margin-top">
+        <div class="uk-margin-top" show="{fields.length}">
             <a class="uk-button uk-button-link" onclick="{ addfield }"><i class="uk-icon-plus-circle"></i> { App.i18n.get('Add field') }</a>
         </div>
 
@@ -191,7 +191,8 @@
                 fields.splice(cidx, 0, fields.splice(oidx, 1)[0]);
 
                 // hack to force complete fields rebuild
-                $this.fieldscontainer.style.height = $this.fieldscontainer.clientHeight;
+                App.$($this.fieldscontainer).css('height', App.$($this.fieldscontainer).height());
+
                 $this.fields = [];
                 $this.reorder = true;
                 $this.update();
@@ -201,7 +202,10 @@
                     $this.fields = fields;
                     $this.update();
                     $this.$setValue(fields);
-                    $this.fieldscontainer.style.height = '';
+
+                    setTimeout(function(){
+                        $this.fieldscontainer.style.height = '';
+                    }, 30)
                 }, 0);
 
             });

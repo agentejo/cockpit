@@ -80,6 +80,12 @@ class Admin extends \Lime\Helper {
 
         return $this;
     }
+    
+    public function extractVar($key, $value) {
+
+        $this->data["extract/{$key}"] = $value;
+    }
+
 
     public function getOption($key, $default = null) {
 

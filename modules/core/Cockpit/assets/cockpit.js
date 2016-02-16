@@ -3,6 +3,8 @@
 
     var Cockpit = {
 
+        Utils: {},
+
         callmodule: function (module, method, args, acl) {
 
             if (module.indexOf(':') !== -1) {
@@ -76,7 +78,7 @@
 
                         Object.keys(s.paths).forEach(function(path) {
 
-                            if (options.pattern == '*' || matchName(options.pattern, path)) {
+                            if (options.pattern == '*' || App.Utils.fnmatch(options.pattern, path)) {
                                 selected.push(path);
                             }
                         });
@@ -94,20 +96,5 @@
     App.$.extend(true, App, Cockpit);
 
     window.Cockpit = Cockpit;
-
-
-    function matchName(pattern, path) {
-
-        path = path.split('/').pop();
-
-        var parsedPattern = '^' + pattern.replace(/\//g, '\\/').
-            replace(/\*\*/g, '(\\/[^\\/]+)*').
-            replace(/\*/g, '[^\\/]+').
-            replace(/((?!\\))\?/g, '$1.') + '$';
-
-        parsedPattern = '^' + parsedPattern + '$';
-
-        return (path.match(new RegExp(parsedPattern, 'i')) !== null);
-    }
 
 })(jQuery);

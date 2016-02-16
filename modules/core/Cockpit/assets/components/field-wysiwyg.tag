@@ -54,41 +54,47 @@
 
                     initPlugins();
 
-                    this.input.value = this.value;
+                    setTimeout(function(){
 
-                    tinymce.init(App.$.extend(true, {
-                        resize: true,
-                        height: 350,
-                        menubar: 'edit insert view format table tools',
-                        plugins: [
-                            "link image lists preview hr anchor",
-                            "code fullscreen media mediapath",
-                            "table contextmenu paste"
-                        ],
-                        relative_urls: false
-                    },opts.editor || {}, {
+                        if (!App.$('#'+this.input.id).length) return;
 
-                      selector: '#'+this.input.id,
-                      setup: function (ed) {
+                        tinymce.init(App.$.extend(true, {
+                            resize: true,
+                            height: 350,
+                            menubar: 'edit insert view format table tools',
+                            plugins: [
+                                "link image lists preview hr anchor",
+                                "code fullscreen media mediapath",
+                                "table contextmenu paste"
+                            ],
+                            relative_urls: false
+                        }, opts.editor || {}, {
 
+                          selector: '#'+this.input.id,
+                          setup: function (ed) {
 
-                          // Update model on button click
-                          ed.on('ExecCommand', function (e) {
-                             ed.save();
-                             $this.$setValue($this.input.value, true);
-                          });
-                          // Update model on keypress
-                          ed.on('KeyUp', function (e) {
-                             ed.save();
-                             $this.$setValue($this.input.value, true);
-                          });
+                              $this.input.value = $this.value;
 
-                          editor = ed;
+                              // Update model on button click
+                              ed.on('ExecCommand', function (e) {
+                                 ed.save();
+                                 $this.$setValue($this.input.value, true);
+                              });
+                              // Update model on keypress
+                              ed.on('KeyUp', function (e) {
+                                 ed.save();
+                                 $this.$setValue($this.input.value, true);
+                              });
 
-                          App.$(document).trigger('init-wysiwyg-editor', [editor]);
-                      }
+                              editor = ed;
 
-                    }));
+                              App.$(document).trigger('init-wysiwyg-editor', [editor]);
+                          }
+
+                        }));
+
+    
+                    }.bind(this), 10);
 
                 }.bind(this));
 

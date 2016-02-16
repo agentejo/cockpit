@@ -116,6 +116,8 @@
 
                 }).element.on("change.uk.sortable", function(e, sortable, ele){
 
+                    if (App.$(e.target).is(':input')) return;
+
                     var updates = [];
 
                     App.$($this.sortableroot).children().each(function(idx) {

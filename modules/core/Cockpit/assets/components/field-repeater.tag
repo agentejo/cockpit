@@ -85,6 +85,8 @@
 
             var items = [];
 
+            App.$($this.root).css('height', App.$($this.root).height());
+
             App.$(this.itemscontainer).children().each(function(){
                 items.push($this.items[Number(this.getAttribute('data-idx'))]);
             });
@@ -98,6 +100,10 @@
                 $this.items = items;
                 $this.$setValue(items);
                 $this.update();
+
+                setTimeout(function(){
+                    $this.root.style.height = '';
+                }, 30)
             }, 10);
         }
 

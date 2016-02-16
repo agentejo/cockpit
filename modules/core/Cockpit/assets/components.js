@@ -255,7 +255,7 @@ riot.tag2('cp-field', '', '', '', function(opts) {
 
 });
 
-riot.tag2('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form" show="{fields.length}"> <div class="uk-grid-margin uk-width-{field.width}" data-idx="{idx}" each="{field,idx in fields}"> <div class="uk-panel uk-panel-box uk-panel-card"> <div class="uk-grid uk-grid-small"> <div class="uk-flex-item-1 uk-flex"> <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="fields[{idx}].name" placeholder="name" required> </div> <div class="uk-width-1-4"> <div class="uk-form-select" data-uk-form-select> <div class="uk-form-icon"> <i class="uk-icon-arrows-h"></i> <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{field.width}"> </div> <select bind="fields[{idx}].width"> <option value="1-1">1-1</option> <option value="1-2">1-2</option> <option value="1-3">1-3</option> <option value="2-3">2-3</option> <option value="1-4">1-4</option> <option value="3-4">3-4</option> </select> </div> </div> <div class="uk-text-right"> <ul class="uk-subnav"> <li> <a class="uk-text-{field.lst ? \'success\':\'muted\'}" onclick="{parent.togglelist}" title="{App.i18n.get(\'Show field on list view\')}"> <i class="uk-icon-list"></i> </a> </li> <li> <a onclick="UIkit.modal(\'#field-{idx}\').show()"><i class="uk-icon-cog uk-text-primary"></i></a> </li> <li> <a class="uk-text-danger" onclick="{parent.removefield}"> <i class="uk-icon-trash"></i> </a> </li> </ul> </div> </div> </div> <div class="uk-modal" id="field-{idx}"> <div class="uk-modal-dialog"> <div class="uk-form-row uk-text-bold"> {field.name || \'Field\'} </div> <div class="uk-form-row"> <div class="uk-form-select uk-width-1-1"> <div class="uk-form-icon uk-width-1-1"> <i class="uk-icon-tag"></i> <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{field.type.toUpperCase()}"> </div> <select class="uk-width-1-1" bind="fields[{idx}].type"> <option each="{type,typeidx in parent.fieldtypes}" value="{type.value}">{type.name}</option> </select> </div> </div> <div class="uk-form-row"> <input class="uk-width-1-1" type="text" bind="fields[{idx}].label" placeholder="{App.i18n.get(\'label\')}"> </div> <div class="uk-form-row"> <input class="uk-width-1-1" type="text" bind="fields[{idx}].info" placeholder="{App.i18n.get(\'info\')}"> </div> <div class="uk-form-row"> <div class="uk-text-small uk-text-bold">{App.i18n.get(\'Options\')} <span class="uk-text-muted">JSON</span></div> <field-object cls="uk-width-1-1" bind="fields[{idx}].options" rows="6" allowtabs="2"></field-object> </div> <div class="uk-form-row"> <input type="checkbox" bind="fields[{idx}].required"> {App.i18n.get(\'Required\')} </div> <div class="uk-form-row"> <input type="checkbox" bind="fields[{idx}].localize"> {App.i18n.get(\'Localize\')} </div> <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{App.i18n.get(\'Close\')}</button></div> </div> </div> </div> <div class="uk-margin-top"> <a class="uk-button uk-button-link" onclick="{addfield}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add field\')}</a> </div> </div> <div class="uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{!fields.length && !reorder}"> <div class="uk-animation-fade"> <p class="uk-text-xlarge"> <i class="uk-icon-list-alt"></i> </p> <hr> {App.i18n.get(\'No fields added yet\')}. <a onclick="{addfield}">{App.i18n.get(\'Add field\')}.</a> </div> </div>', '', '', function(opts) {
+riot.tag2('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form"> <div class="uk-grid-margin uk-width-{field.width}" data-idx="{idx}" each="{field,idx in fields}"> <div class="uk-panel uk-panel-box uk-panel-card"> <div class="uk-grid uk-grid-small"> <div class="uk-flex-item-1 uk-flex"> <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="fields[{idx}].name" placeholder="name" required> </div> <div class="uk-width-1-4"> <div class="uk-form-select" data-uk-form-select> <div class="uk-form-icon"> <i class="uk-icon-arrows-h"></i> <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{field.width}"> </div> <select bind="fields[{idx}].width"> <option value="1-1">1-1</option> <option value="1-2">1-2</option> <option value="1-3">1-3</option> <option value="2-3">2-3</option> <option value="1-4">1-4</option> <option value="3-4">3-4</option> </select> </div> </div> <div class="uk-text-right"> <ul class="uk-subnav"> <li> <a class="uk-text-{field.lst ? \'success\':\'muted\'}" onclick="{parent.togglelist}" title="{App.i18n.get(\'Show field on list view\')}"> <i class="uk-icon-list"></i> </a> </li> <li> <a onclick="UIkit.modal(\'#field-{idx}\').show()"><i class="uk-icon-cog uk-text-primary"></i></a> </li> <li> <a class="uk-text-danger" onclick="{parent.removefield}"> <i class="uk-icon-trash"></i> </a> </li> </ul> </div> </div> </div> <div class="uk-modal" id="field-{idx}"> <div class="uk-modal-dialog"> <div class="uk-form-row uk-text-bold"> {field.name || \'Field\'} </div> <div class="uk-form-row"> <div class="uk-form-select uk-width-1-1"> <div class="uk-form-icon uk-width-1-1"> <i class="uk-icon-tag"></i> <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{field.type.toUpperCase()}"> </div> <select class="uk-width-1-1" bind="fields[{idx}].type"> <option each="{type,typeidx in parent.fieldtypes}" value="{type.value}">{type.name}</option> </select> </div> </div> <div class="uk-form-row"> <input class="uk-width-1-1" type="text" bind="fields[{idx}].label" placeholder="{App.i18n.get(\'label\')}"> </div> <div class="uk-form-row"> <input class="uk-width-1-1" type="text" bind="fields[{idx}].info" placeholder="{App.i18n.get(\'info\')}"> </div> <div class="uk-form-row"> <div class="uk-text-small uk-text-bold">{App.i18n.get(\'Options\')} <span class="uk-text-muted">JSON</span></div> <field-object cls="uk-width-1-1" bind="fields[{idx}].options" rows="6" allowtabs="2"></field-object> </div> <div class="uk-form-row"> <input type="checkbox" bind="fields[{idx}].required"> {App.i18n.get(\'Required\')} </div> <div class="uk-form-row"> <input type="checkbox" bind="fields[{idx}].localize"> {App.i18n.get(\'Localize\')} </div> <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{App.i18n.get(\'Close\')}</button></div> </div> </div> </div> <div class="uk-margin-top" show="{fields.length}"> <a class="uk-button uk-button-link" onclick="{addfield}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add field\')}</a> </div> </div> <div class="uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{!fields.length && !reorder}"> <div class="uk-animation-fade"> <p class="uk-text-xlarge"> <i class="uk-icon-list-alt"></i> </p> <hr> {App.i18n.get(\'No fields added yet\')}. <a onclick="{addfield}">{App.i18n.get(\'Add field\')}.</a> </div> </div>', '', '', function(opts) {
 
         this.mixin(RiotBindMixin);
 
@@ -313,7 +313,8 @@ riot.tag2('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk
 
                 fields.splice(cidx, 0, fields.splice(oidx, 1)[0]);
 
-                $this.fieldscontainer.style.height = $this.fieldscontainer.clientHeight;
+                App.$($this.fieldscontainer).css('height', App.$($this.fieldscontainer).height());
+
                 $this.fields = [];
                 $this.reorder = true;
                 $this.update();
@@ -323,7 +324,10 @@ riot.tag2('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk
                     $this.fields = fields;
                     $this.update();
                     $this.$setValue(fields);
-                    $this.fieldscontainer.style.height = '';
+
+                    setTimeout(function(){
+                        $this.fieldscontainer.style.height = '';
+                    }, 30)
                 }, 0);
 
             });
@@ -913,7 +917,7 @@ riot.tag2('field-code', '<codemirror name="codemirror" syntx="{opts.syntax || \'
                 this.value = value;
 
                 if (editor && field != this._field) {
-                    editor.setValue($this.value || '');
+                    editor.setValue($this.value || '', true);
                 }
             }
 
@@ -928,7 +932,7 @@ riot.tag2('field-code', '<codemirror name="codemirror" syntx="{opts.syntax || \'
             });
 
             this.codemirror.on('input', function() {
-                $this.$setValue($this.codemirror.editor.getValue());
+                $this.$setValue($this.codemirror.editor.getValue(), true);
             });
         });
 
@@ -1025,7 +1029,7 @@ riot.tag2('field-file', '<div class="uk-flex"> <input class="uk-flex-item-1 uk-m
 
 }, '{ }');
 
-riot.tag2('field-gallery', '<div class="uk-panel"> <div name="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{images && images.length}"> <div class="uk-grid-margin" data-idx="{idx}" each="{img,idx in images}"> <div class="uk-panel uk-panel-box uk-panel-card"> <figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;"> <img riot-src="{(SITE_URL+\'/\'+img.path)}"> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{parent.title}" title="{App.i18n.get(\'Set title\')}" data-uk-tooltip><i class="uk-icon-tag"></i></a></li> <li><a onclick="{parent.remove}" title="{App.i18n.get(\'Remove image\')}" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{img.title}</p> </figcaption> </figure> </div> </div> </div> <div class="{images && images.length ? \'uk-margin-top\':\'\'}"> <div class="uk-alert" if="{images && !images.length}">{App.i18n.get(\'Gallery is empty\')}.</div> <a class="uk-button uk-button-link" onclick="{selectimages}"> <i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add images\')} </a> </div> </div>', '', '', function(opts) {
+riot.tag2('field-gallery', '<div name="panel" class="uk-panel"> <div name="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{images && images.length}"> <div class="uk-grid-margin" data-idx="{idx}" each="{img,idx in images}"> <div class="uk-panel uk-panel-box uk-panel-card"> <figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;"> <div class="uk-width-1-1"> <img class="uk-display-inline-block uk-responsive-width" riot-src="{(SITE_URL+\'/\'+img.path)}"> </div> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{parent.title}" title="{App.i18n.get(\'Set title\')}" data-uk-tooltip><i class="uk-icon-tag"></i></a></li> <li><a onclick="{parent.remove}" title="{App.i18n.get(\'Remove image\')}" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{img.title}</p> </figcaption> </figure> </div> </div> </div> <div class="{images && images.length ? \'uk-margin-top\':\'\'}"> <div class="uk-alert" if="{images && !images.length}">{App.i18n.get(\'Gallery is empty\')}.</div> <a class="uk-button uk-button-link" onclick="{selectimages}"> <i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add images\')} </a> </div> </div>', '', '', function(opts) {
 
         var $this = this;
 
@@ -1048,6 +1052,8 @@ riot.tag2('field-gallery', '<div class="uk-panel"> <div name="imagescontainer" c
 
                 images.splice(cidx, 0, images.splice(oidx, 1)[0]);
 
+                App.$($this.panel).css('height', App.$($this.panel).height());
+
                 $this.images = [];
                 $this.update();
 
@@ -1055,6 +1061,10 @@ riot.tag2('field-gallery', '<div class="uk-panel"> <div name="imagescontainer" c
                     $this.images = images;
                     $this.$setValue(images);
                     $this.update();
+
+                    setTimeout(function(){
+                        $this.panel.style.height = '';
+                    }, 30)
                 }, 10);
 
             });
@@ -1166,7 +1176,7 @@ riot.tag2('field-html', '<textarea name="input" class="uk-visibility-hidden"></t
 
 });
 
-riot.tag2('field-image', '<figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-placeholder uk-flex uk-flex-middle uk-flex-center uk-text-muted" style="min-height:120px;"> <img riot-src="{(SITE_URL+\'/\'+image.path)}" show="{image.path}"> <i class="uk-icon-image" show="{!image.path}"></i> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{selectimage}" title="{App.i18n.get(\'Select image\')}" data-uk-tooltip><i class="uk-icon-image"></i></a></li> <li><a onclick="{title}" title="{App.i18n.get(\'Set title\')}" data-uk-tooltip><i class="uk-icon-tag"></i></a></li> <li><a onclick="{remove}" title="{App.i18n.get(\'Reset\')}" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{image.title}</p> </figcaption> </figure>', '', '', function(opts) {
+riot.tag2('field-image', '<figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-placeholder uk-flex uk-flex-middle uk-flex-center uk-text-muted"> <div class="uk-width-1-1" show="{image.path}" riot-style="min-height:160px;background-size:contain;background-repeat:no-repeat;background-position:50% 50%;{image.path ? \'background-image: url(\'+encodeURI(SITE_URL+\'/\'+image.path)+\')\':\'\'}"></div> <div class="uk-width-1-1" show="{!image.path}"><i class="uk-icon-image"></i></div> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{selectimage}" title="{App.i18n.get(\'Select image\')}" data-uk-tooltip><i class="uk-icon-image"></i></a></li> <li><a onclick="{title}" title="{App.i18n.get(\'Set title\')}" data-uk-tooltip><i class="uk-icon-tag"></i></a></li> <li><a onclick="{remove}" title="{App.i18n.get(\'Reset\')}" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{image.title}</p> </figcaption> </figure>', '', '', function(opts) {
 
         var $this = this;
 
@@ -1524,6 +1534,8 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
 
             var items = [];
 
+            App.$($this.root).css('height', App.$($this.root).height());
+
             App.$(this.itemscontainer).children().each(function(){
                 items.push($this.items[Number(this.getAttribute('data-idx'))]);
             });
@@ -1536,6 +1548,10 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
                 $this.items = items;
                 $this.$setValue(items);
                 $this.update();
+
+                setTimeout(function(){
+                    $this.root.style.height = '';
+                }, 30)
             }, 10);
         }.bind(this)
 
@@ -1789,39 +1805,45 @@ riot.tag2('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5"
 
                     initPlugins();
 
-                    this.input.value = this.value;
+                    setTimeout(function(){
 
-                    tinymce.init(App.$.extend(true, {
-                        resize: true,
-                        height: 350,
-                        menubar: 'edit insert view format table tools',
-                        plugins: [
-                            "link image lists preview hr anchor",
-                            "code fullscreen media mediapath",
-                            "table contextmenu paste"
-                        ],
-                        relative_urls: false
-                    },opts.editor || {}, {
+                        if (!App.$('#'+this.input.id).length) return;
 
-                      selector: '#'+this.input.id,
-                      setup: function (ed) {
+                        tinymce.init(App.$.extend(true, {
+                            resize: true,
+                            height: 350,
+                            menubar: 'edit insert view format table tools',
+                            plugins: [
+                                "link image lists preview hr anchor",
+                                "code fullscreen media mediapath",
+                                "table contextmenu paste"
+                            ],
+                            relative_urls: false
+                        }, opts.editor || {}, {
 
-                          ed.on('ExecCommand', function (e) {
-                             ed.save();
-                             $this.$setValue($this.input.value, true);
-                          });
+                          selector: '#'+this.input.id,
+                          setup: function (ed) {
 
-                          ed.on('KeyUp', function (e) {
-                             ed.save();
-                             $this.$setValue($this.input.value, true);
-                          });
+                              $this.input.value = $this.value;
 
-                          editor = ed;
+                              ed.on('ExecCommand', function (e) {
+                                 ed.save();
+                                 $this.$setValue($this.input.value, true);
+                              });
 
-                          App.$(document).trigger('init-wysiwyg-editor', [editor]);
-                      }
+                              ed.on('KeyUp', function (e) {
+                                 ed.save();
+                                 $this.$setValue($this.input.value, true);
+                              });
 
-                    }));
+                              editor = ed;
+
+                              App.$(document).trigger('init-wysiwyg-editor', [editor]);
+                          }
+
+                        }));
+
+                    }.bind(this), 10);
 
                 }.bind(this));
 

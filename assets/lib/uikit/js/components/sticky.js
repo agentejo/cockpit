@@ -1,4 +1,4 @@
-/*! UIkit 2.24.2 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.24.3 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(addon) {
 
     var component;
@@ -302,8 +302,7 @@
                     sticky.element.css({
                         position : "fixed",
                         top      : newTop,
-                        width    : sticky.getWidthFrom.length ? sticky.getWidthFrom.width() : sticky.element.width(),
-                        left     : sticky.wrapper.offset().left
+                        width    : sticky.getWidthFrom.length ? sticky.getWidthFrom.width() : sticky.element.width()
                     });
 
                     if (!sticky.init) {

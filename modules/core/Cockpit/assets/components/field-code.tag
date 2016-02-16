@@ -33,7 +33,7 @@
                 this.value = value;
 
                 if (editor && field != this._field) {
-                    editor.setValue($this.value || '');
+                    editor.setValue($this.value || '', true);
                 }
             }
 
@@ -48,7 +48,7 @@
             });
 
             this.codemirror.on('input', function() {
-                $this.$setValue($this.codemirror.editor.getValue());
+                $this.$setValue($this.codemirror.editor.getValue(), true);
             });
         });
 

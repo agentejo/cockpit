@@ -1,13 +1,15 @@
 <field-gallery>
 
-    <div class="uk-panel">
+    <div name="panel" class="uk-panel">
 
         <div name="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ images && images.length }">
             <div class="uk-grid-margin" data-idx="{ idx }" each="{ img,idx in images }">
                 <div class="uk-panel uk-panel-box uk-panel-card">
                     <figure class="uk-display-block uk-overlay uk-overlay-hover">
                         <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;">
-                            <img riot-src="{ (SITE_URL+'/'+img.path) }">
+                            <div class="uk-width-1-1">
+                                <img class="uk-display-inline-block uk-responsive-width" riot-src="{ (SITE_URL+'/'+img.path) }">
+                            </div>
                         </div>
                         <figcaption class="uk-overlay-panel uk-overlay-background">
 
@@ -57,6 +59,9 @@
 
                 images.splice(cidx, 0, images.splice(oidx, 1)[0]);
 
+                // hack to force complete images rebuild
+                App.$($this.panel).css('height', App.$($this.panel).height());
+
                 $this.images = [];
                 $this.update();
 
@@ -64,6 +69,10 @@
                     $this.images = images;
                     $this.$setValue(images);
                     $this.update();
+
+                    setTimeout(function(){
+                        $this.panel.style.height = '';
+                    }, 30)
                 }, 10);
 
             });

@@ -1,8 +1,8 @@
-/* Riot v2.3.11, @license MIT, (c) 2015 Muut Inc. + contributors */
+/* Riot v2.3.13, @license MIT, (c) 2015 Muut Inc. + contributors */
 
 ;(function(window, undefined) {
   'use strict';
-var riot = { version: 'v2.3.11', settings: {} },
+var riot = { version: 'v2.3.13', settings: {} },
   // be aware, internal usage
   // ATTENTION: prefix the global dynamic variables with `__`
 
@@ -44,8 +44,8 @@ riot.observable = function(el) {
   /**
    * Private variables and methods
    */
-
   var callbacks = {},
+    slice = Array.prototype.slice,
     onEachEvent = function(e, fn) { e.replace(/\S+/g, fn) },
     defineProperty = function (key, value) {
       Object.defineProperty(el, key, {
@@ -62,7 +62,6 @@ riot.observable = function(el) {
    * @param  { Function } fn - callback function
    * @returns { Object } el
    */
-
   defineProperty('on', function(events, fn) {
     if (typeof fn != 'function')  return el
 
@@ -80,9 +79,8 @@ riot.observable = function(el) {
    * @param   { Function } fn - callback function
    * @returns { Object } el
    */
-
   defineProperty('off', function(events, fn) {
-    if (events == '*') callbacks = {}
+    if (events == '*' && !fn) callbacks = {}
     else {
       onEachEvent(events, function(name) {
         if (fn) {
@@ -102,7 +100,6 @@ riot.observable = function(el) {
    * @param   { Function } fn - callback function
    * @returns { Object } el
    */
-
   defineProperty('one', function(events, fn) {
     function on() {
       el.off(events, on)
@@ -116,34 +113,27 @@ riot.observable = function(el) {
    * @param   { String } events - events ids
    * @returns { Object } el
    */
-
   defineProperty('trigger', function(events) {
 
     // getting the arguments
     // skipping the first one
-    var arglen = arguments.length - 1,
-      args = new Array(arglen)
-    for (var i = 0; i < arglen; i++) {
-      args[i] = arguments[i + 1]
-    }
+    var args = slice.call(arguments, 1),
+      fns
 
     onEachEvent(events, function(name) {
 
-      var fns = (callbacks[name] || []).slice(0)
+      fns = slice.call(callbacks[name] || [], 0)
 
       for (var i = 0, fn; fn = fns[i]; ++i) {
         if (fn.busy) return
         fn.busy = 1
-
-        try {
-          fn.apply(el, fn.typed ? [name].concat(args) : args)
-        } catch (e) { el.trigger('error', e) }
+        fn.apply(el, fn.typed ? [name].concat(args) : args)
         if (fns[i] !== fn) { i-- }
         fn.busy = 0
       }
 
-      if (callbacks.all && name != 'all')
-        el.trigger.apply(el, ['all', name].concat(args))
+      if (callbacks['*'] && name != '*')
+        el.trigger.apply(el, ['*', name].concat(args))
 
     })
 
@@ -154,7 +144,7 @@ riot.observable = function(el) {
 
 }
 /* istanbul ignore next */
-;(function(riot) { if (!window) return;
+;(function(riot) {
 
 /**
  * Simple client-side router
@@ -169,16 +159,19 @@ var RE_ORIGIN = /^.+?\/+[^\/]+/,
   HAS_ATTRIBUTE = 'hasAttribute',
   REPLACE = 'replace',
   POPSTATE = 'popstate',
+  HASHCHANGE = 'hashchange',
   TRIGGER = 'trigger',
   MAX_EMIT_STACK_LEVEL = 3,
-  win = window,
-  doc = document,
-  loc = win.history.location || win.location, // see html5-history-api
+  win = typeof window != 'undefined' && window,
+  doc = typeof document != 'undefined' && document,
+  hist = win && history,
+  loc = win && (hist.location || win.location), // see html5-history-api
   prot = Router.prototype, // to minify more
   clickEvent = doc && doc.ontouchstart ? 'touchstart' : 'click',
   started = false,
   central = riot.observable(),
   routeFound = false,
+  debouncedEmit,
   base, current, parser, secondParser, emitStack = [], emitStackLevel = 0
 
 /**
@@ -201,6 +194,32 @@ function DEFAULT_SECOND_PARSER(path, filter) {
     args = path.match(re)
 
   if (args) return args.slice(1)
+}
+
+/**
+ * Simple/cheap debounce implementation
+ * @param   {function} fn - callback
+ * @param   {number} delay - delay in seconds
+ * @returns {function} debounced function
+ */
+function debounce(fn, delay) {
+  var t
+  return function () {
+    clearTimeout(t)
+    t = setTimeout(fn, delay)
+  }
+}
+
+/**
+ * Set the window listeners to trigger the routes
+ * @param {boolean} autoExec - see route.start
+ */
+function start(autoExec) {
+  debouncedEmit = debounce(emit, 1)
+  win[ADD_EVENT_LISTENER](POPSTATE, debouncedEmit)
+  win[ADD_EVENT_LISTENER](HASHCHANGE, debouncedEmit)
+  doc[ADD_EVENT_LISTENER](clickEvent, click)
+  if (autoExec) emit(true)
 }
 
 /**
@@ -227,7 +246,7 @@ function isString(str) {
  * @returns {string} path from root
  */
 function getPathFromRoot(href) {
-  return (href || loc.href)[REPLACE](RE_ORIGIN, '')
+  return (href || loc.href || '')[REPLACE](RE_ORIGIN, '')
 }
 
 /**
@@ -237,7 +256,7 @@ function getPathFromRoot(href) {
  */
 function getPathFromBase(href) {
   return base[0] == '#'
-    ? (href || loc.href).split(base)[1] || ''
+    ? (href || loc.href || '').split(base)[1] || ''
     : getPathFromRoot(href)[REPLACE](base, '')
 }
 
@@ -295,29 +314,41 @@ function click(e) {
  * Go to the path
  * @param {string} path - destination path
  * @param {string} title - page title
+ * @param {boolean} shouldReplace - use replaceState or pushState
+ * @returns {boolean} - route not found flag
  */
-function go(path, title) {
-  title = title || doc.title
-  // browsers ignores the second parameter `title`
-  history.pushState(null, title, base + normalize(path))
-  // so we need to set it manually
-  doc.title = title
-  routeFound = false
-  emit()
-  return routeFound
+function go(path, title, shouldReplace) {
+  if (hist) { // if a browser
+    path = base + normalize(path)
+    title = title || doc.title
+    // browsers ignores the second parameter `title`
+    shouldReplace
+      ? hist.replaceState(null, title, path)
+      : hist.pushState(null, title, path)
+    // so we need to set it manually
+    doc.title = title
+    routeFound = false
+    emit()
+    return routeFound
+  }
+
+  // Server-side usage: directly execute handlers for the path
+  return central[TRIGGER]('emit', getPathFromBase(path))
 }
 
 /**
  * Go to path or set action
  * a single string:                go there
  * two strings:                    go there with setting a title
+ * two strings and boolean:        replace history with setting a title
  * a single function:              set an action on the default route
  * a string/RegExp and a function: set an action on the route
  * @param {(string|function)} first - path / action / filter
  * @param {(string|RegExp|function)} second - title / action
+ * @param {boolean} third - replace flag
  */
-prot.m = function(first, second) {
-  if (isString(first) && (!second || isString(second))) go(first, second)
+prot.m = function(first, second, third) {
+  if (isString(first) && (!second || isString(second))) go(first, second, third || false)
   else if (second) this.r(first, second)
   else this.r('@', first)
 }
@@ -337,7 +368,7 @@ prot.s = function() {
 prot.e = function(path) {
   this.$.concat('@').some(function(filter) {
     var args = (filter == '@' ? parser : secondParser)(normalize(path), normalize(filter))
-    if (args) {
+    if (typeof args != 'undefined') {
       this[TRIGGER].apply(null, [filter].concat(args))
       return routeFound = true // exit from loop
     }
@@ -407,15 +438,19 @@ route.parser = function(fn, fn2) {
  */
 route.query = function() {
   var q = {}
-  loc.href[REPLACE](/[?&](.+?)=([^&]*)/g, function(_, k, v) { q[k] = v })
+  var href = loc.href || current
+  href[REPLACE](/[?&](.+?)=([^&]*)/g, function(_, k, v) { q[k] = v })
   return q
 }
 
 /** Stop routing **/
 route.stop = function () {
   if (started) {
-    win[REMOVE_EVENT_LISTENER](POPSTATE, emit)
-    doc[REMOVE_EVENT_LISTENER](clickEvent, click)
+    if (win) {
+      win[REMOVE_EVENT_LISTENER](POPSTATE, debouncedEmit)
+      win[REMOVE_EVENT_LISTENER](HASHCHANGE, debouncedEmit)
+      doc[REMOVE_EVENT_LISTENER](clickEvent, click)
+    }
     central[TRIGGER]('stop')
     started = false
   }
@@ -427,11 +462,16 @@ route.stop = function () {
  */
 route.start = function (autoExec) {
   if (!started) {
-    win[ADD_EVENT_LISTENER](POPSTATE, emit)
-    doc[ADD_EVENT_LISTENER](clickEvent, click)
+    if (win) {
+      if (document.readyState == 'complete') start(autoExec)
+      // the timeout is needed to solve
+      // a weird safari bug https://github.com/riot/route/issues/33
+      else win[ADD_EVENT_LISTENER]('load', function() {
+        setTimeout(function() { start(autoExec) }, 1)
+      })
+    }
     started = true
   }
-  if (autoExec) emit(true)
 }
 
 /** Prepare the router **/
@@ -444,16 +484,17 @@ riot.route = route
 
 /**
  * The riot template engine
- * @version v2.3.12
+ * @version v2.3.20
  */
 
 /**
  * @module brackets
  *
  * `brackets         ` Returns a string or regex based on its parameter
- * `brackets.settings` Mirrors the `riot.settings` object
- * `brackets.set     ` The recommended option to change the current tiot brackets
+ * `brackets.settings` Mirrors the `riot.settings` object (use brackets.set in new code)
+ * `brackets.set     ` Change the current riot brackets
  */
+/*global riot */
 
 var brackets = (function (UNDEF) {
 
@@ -464,15 +505,15 @@ var brackets = (function (UNDEF) {
     STRINGS = /"[^"\\]*(?:\\[\S\s][^"\\]*)*"|'[^'\\]*(?:\\[\S\s][^'\\]*)*'/g,
 
     S_QBSRC = STRINGS.source + '|' +
-      /(?:[$\w\)\]]|\+\+|--)\s*(\/)(?![*\/])/.source + '|' +
+      /(?:\breturn\s+|(?:[$\w\)\]]|\+\+|--)\s*(\/)(?![*\/]))/.source + '|' +
       /\/(?=[^*\/])[^[\/\\]*(?:(?:\[(?:\\.|[^\]\\]*)*\]|\\.)[^[\/\\]*)*?(\/)[gim]*/.source,
 
     DEFAULT = '{ }',
 
     FINDBRACES = {
-      '(': _regExp('([()])|'   + S_QBSRC, REGLOB),
-      '[': _regExp('([[\\]])|' + S_QBSRC, REGLOB),
-      '{': _regExp('([{}])|'   + S_QBSRC, REGLOB)
+      '(': RegExp('([()])|'   + S_QBSRC, REGLOB),
+      '[': RegExp('([[\\]])|' + S_QBSRC, REGLOB),
+      '{': RegExp('([{}])|'   + S_QBSRC, REGLOB)
     }
 
   var
@@ -480,49 +521,60 @@ var brackets = (function (UNDEF) {
     _regex,
     _pairs = []
 
-  function _regExp(source, flags) { return new RegExp(source, flags) }
+  function _loopback (re) { return re }
 
-  function _loopback(re) { return re }
-
-  function _rewrite(re) {
+  function _rewrite (re, bp) {
+    if (!bp) bp = _pairs
     return new RegExp(
-      re.source.replace(/{/g, _pairs[2]).replace(/}/g, _pairs[3]), re.global ? REGLOB : ''
+      re.source.replace(/{/g, bp[2]).replace(/}/g, bp[3]), re.global ? REGLOB : ''
     )
   }
 
-  function _reset(pair) {
-    pair = pair || DEFAULT
+  function _create (pair) {
+    var
+      cvt,
+      arr = pair.split(' ')
 
-    if (pair !== _pairs[8]) {
-      var bp = pair.split(' ')
-
-      if (pair === DEFAULT) {
-        _pairs = bp.concat(bp)
-        _regex = _loopback
-      }
-      else {
-        if (bp.length !== 2 || /[\x00-\x1F<>a-zA-Z0-9'",;\\]/.test(pair)) {
-          throw new Error('Unsupported brackets "' + pair + '"')
-        }
-        _pairs = bp.concat(pair.replace(/(?=[[\]()*+?.^$|])/g, '\\').split(' '))
-        _regex = _rewrite
-      }
-      _pairs[4] = _regex(_pairs[1].length > 1 ? /(?:^|[^\\]){[\S\s]*?}/ : /(?:^|[^\\]){[^}]*}/)
-      _pairs[5] = _regex(/\\({|})/g)
-      _pairs[6] = _regex(/(\\?)({)/g)
-      _pairs[7] = _regExp('(\\\\?)(?:([[({])|(' + _pairs[3] + '))|' + S_QBSRC, REGLOB)
-      _pairs[9] = _regex(/^\s*{\^?\s*([$\w]+)(?:\s*,\s*(\S+))?\s+in\s+(\S+)\s*}/)
-      _pairs[8] = pair
+    if (pair === DEFAULT) {
+      arr[2] = arr[0]
+      arr[3] = arr[1]
+      cvt = _loopback
     }
-    _brackets.settings.brackets = cachedBrackets = pair
+    else {
+      if (arr.length !== 2 || /[\x00-\x1F<>a-zA-Z0-9'",;\\]/.test(pair)) {
+        throw new Error('Unsupported brackets "' + pair + '"')
+      }
+      arr = arr.concat(pair.replace(/(?=[[\]()*+?.^$|])/g, '\\').split(' '))
+      cvt = _rewrite
+    }
+    arr[4] = cvt(arr[1].length > 1 ? /{[\S\s]*?}/ : /{[^}]*}/, arr)
+    arr[5] = cvt(/\\({|})/g, arr)
+    arr[6] = cvt(/(\\?)({)/g, arr)
+    arr[7] = RegExp('(\\\\?)(?:([[({])|(' + arr[3] + '))|' + S_QBSRC, REGLOB)
+    arr[8] = pair
+    return arr
   }
 
-  function _brackets(reOrIdx) {
-    _reset(_brackets.settings.brackets)
+  function _reset (pair) {
+    if (!pair) pair = DEFAULT
+
+    if (pair !== _pairs[8]) {
+      _pairs = _create(pair)
+      _regex = pair === DEFAULT ? _loopback : _rewrite
+      _pairs[9] = _regex(/^\s*{\^?\s*([$\w]+)(?:\s*,\s*(\S+))?\s+in\s+(\S.*)\s*}/)
+      _pairs[10] = _regex(/(^|[^\\]){=[\S\s]*?}/)
+      _brackets._rawOffset = _pairs[0].length
+    }
+    cachedBrackets = pair
+  }
+
+  function _brackets (reOrIdx) {
     return reOrIdx instanceof RegExp ? _regex(reOrIdx) : _pairs[reOrIdx]
   }
 
-  _brackets.split = function split(str, tmpl) {
+  _brackets.split = function split (str, tmpl, _bp) {
+    // istanbul ignore next: _bp is for the compiler
+    if (!_bp) _bp = _pairs
 
     var
       parts = [],
@@ -530,7 +582,7 @@ var brackets = (function (UNDEF) {
       isexpr,
       start,
       pos,
-      re = _brackets(6)
+      re = _bp[6]
 
     isexpr = start = re.lastIndex = 0
 
@@ -552,7 +604,7 @@ var brackets = (function (UNDEF) {
       if (!match[1]) {
         unescapeStr(str.slice(start, pos))
         start = re.lastIndex
-        re = _pairs[6 + (isexpr ^= 1)]
+        re = _bp[6 + (isexpr ^= 1)]
         re.lastIndex = start
       }
     }
@@ -563,14 +615,14 @@ var brackets = (function (UNDEF) {
 
     return parts
 
-    function unescapeStr(str) {
+    function unescapeStr (str) {
       if (tmpl || isexpr)
-        parts.push(str && str.replace(_pairs[5], '$1'))
+        parts.push(str && str.replace(_bp[5], '$1'))
       else
         parts.push(str)
     }
 
-    function skipBraces(ch, pos) {
+    function skipBraces (ch, pos) {
       var
         match,
         recch = FINDBRACES[ch],
@@ -585,20 +637,37 @@ var brackets = (function (UNDEF) {
     }
   }
 
-  _brackets.hasExpr = function hasExpr(str) {
+  _brackets.hasExpr = function hasExpr (str) {
     return _brackets(4).test(str)
   }
 
-  _brackets.loopKeys = function loopKeys(expr) {
+  _brackets.loopKeys = function loopKeys (expr) {
     var m = expr.match(_brackets(9))
     return m ?
-      { key: m[1], pos: m[2], val: _pairs[0] + m[3] + _pairs[1] } : { val: expr.trim() }
+      { key: m[1], pos: m[2], val: _pairs[0] + m[3].trim() + _pairs[1] } : { val: expr.trim() }
   }
 
-  _brackets.array = function array(pair) {
-    _reset(pair || _brackets.settings.brackets)
-    return _pairs
+  _brackets.array = function array (pair) {
+    return _create(pair || cachedBrackets)
   }
+
+  var _settings
+  function _setSettings (o) {
+    var b
+    o = o || {}
+    b = o.brackets
+    Object.defineProperty(o, 'brackets', {
+      set: _reset,
+      get: function () { return cachedBrackets },
+      enumerable: true
+    })
+    _settings = o
+    _reset(b)
+  }
+  Object.defineProperty(_brackets, 'settings', {
+    set: _setSettings,
+    get: function () { return _settings }
+  })
 
   /* istanbul ignore next: in the node version riot is not in the scope */
   _brackets.settings = typeof riot !== 'undefined' && riot.settings || {}
@@ -607,8 +676,6 @@ var brackets = (function (UNDEF) {
   _brackets.R_STRINGS = STRINGS
   _brackets.R_MLCOMMS = MLCOMMS
   _brackets.S_QBLOCKS = S_QBSRC
-
-  _reset(_brackets.settings.brackets)
 
   return _brackets
 
@@ -621,26 +688,33 @@ var brackets = (function (UNDEF) {
  * tmpl.hasExpr  - Test the existence of a expression inside a string
  * tmpl.loopKeys - Get the keys for an 'each' loop (used by `_each`)
  */
+/*global riot */
 
 var tmpl = (function () {
 
-  var
-    FALSE  = !1,
-    _cache = {}
+  var _cache = {}
 
-  function _tmpl(str, data) {
+  function _tmpl (str, data) {
     if (!str) return str
 
     return (_cache[str] || (_cache[str] = _create(str))).call(data, _logErr)
+  }
+
+  _tmpl.isRaw = function (expr) {
+    return expr[brackets._rawOffset] === '='
+  }
+
+  _tmpl.haveRaw = function (src) {
+    return brackets(10).test(src)
   }
 
   _tmpl.hasExpr = brackets.hasExpr
 
   _tmpl.loopKeys = brackets.loopKeys
 
-  _tmpl.errorHandler = FALSE
+  _tmpl.errorHandler = null
 
-  function _logErr(err, ctx) {
+  function _logErr (err, ctx) {
 
     if (_tmpl.errorHandler) {
 
@@ -652,23 +726,23 @@ var tmpl = (function () {
     }
   }
 
-  function _create(str) {
+  function _create (str) {
 
     var expr = _getTmpl(str)
     if (expr.slice(0, 11) !== 'try{return ') expr = 'return ' + expr
 
-    return new Function('E', expr + ';')  // eslint-disable-line indent
+    return new Function('E', expr + ';')
   }
 
   var
-    RE_QBLOCK = new RegExp(brackets.S_QBLOCKS, 'g'),
+    RE_QBLOCK = RegExp(brackets.S_QBLOCKS, 'g'),
     RE_QBMARK = /\x01(\d+)~/g
 
-  function _getTmpl(str) {
+  function _getTmpl (str) {
     var
       qstr = [],
       expr,
-      parts = brackets.split(str, 1)
+      parts = brackets.split(str.replace(/\u2057/g, '"'), 1)
 
     if (parts.length > 2 || parts[0]) {
       var i, j, list = []
@@ -710,10 +784,11 @@ var tmpl = (function () {
   }
 
   var
-    CS_IDENT = /^(?:(-?[_A-Za-z\xA0-\xFF][-\w\xA0-\xFF]*)|\x01(\d+)~):/,
-    RE_BRACE = /,|([[{(])|$/g
+    CS_IDENT = /^(?:(-?[_A-Za-z\xA0-\xFF][-\w\xA0-\xFF]*)|\x01(\d+)~):/
 
-  function _parseExpr(expr, asText, qstr) {
+  function _parseExpr (expr, asText, qstr) {
+
+    if (expr[0] === '=') expr = expr.slice(1)
 
     expr = expr
           .replace(RE_QBLOCK, function (s, div) {
@@ -753,7 +828,7 @@ var tmpl = (function () {
     }
     return expr
 
-    function skipBraces(jsb, re) {
+    function skipBraces (jsb, re) {
       var
         match,
         lv = 1,
@@ -769,11 +844,13 @@ var tmpl = (function () {
   }
 
   // istanbul ignore next: not both
-  var JS_CONTEXT = '"in this?this:' + (typeof window !== 'object' ? 'global' : 'window') + ').'
-  var JS_VARNAME = /[,{][$\w]+:|(^ *|[^$\w\.])(?!(?:typeof|true|false|null|undefined|in|instanceof|is(?:Finite|NaN)|void|NaN|new|Date|RegExp|Math)(?![$\w]))([$_A-Za-z][$\w]*)/g
+  var
+    JS_CONTEXT = '"in this?this:' + (typeof window !== 'object' ? 'global' : 'window') + ').',
+    JS_VARNAME = /[,{][$\w]+:|(^ *|[^$\w\.])(?!(?:typeof|true|false|null|undefined|in|instanceof|is(?:Finite|NaN)|void|NaN|new|Date|RegExp|Math)(?![$\w]))([$_A-Za-z][$\w]*)/g,
+    JS_NOPROPS = /^(?=(\.[$\w]+))\1(?:[^.[(]|$)/
 
-  function _wrapExpr(expr, asText, key) {
-    var tb = FALSE
+  function _wrapExpr (expr, asText, key) {
+    var tb
 
     expr = expr.replace(JS_VARNAME, function (match, p, mvar, pos, s) {
       if (mvar) {
@@ -783,8 +860,9 @@ var tmpl = (function () {
           match = p + '("' + mvar + JS_CONTEXT + mvar
           if (pos) tb = (s = s[pos]) === '.' || s === '(' || s === '['
         }
-        else if (pos)
-          tb = !/^(?=(\.[$\w]+))\1(?:[^.[(]|$)/.test(s.slice(pos))
+        else if (pos) {
+          tb = !JS_NOPROPS.test(s.slice(pos))
+        }
       }
       return match
     })
@@ -816,11 +894,13 @@ var tmpl = (function () {
 
 })()
 
+  tmpl.version = brackets.version = 'v2.3.20'
+
 
 /*
   lib/browser/tag/mkdom.js
 
-  Includes hacks needed for the Internet Explorer version 9 and bellow
+  Includes hacks needed for the Internet Explorer version 9 and below
 
 */
 // http://kangax.github.io/compat-table/es5/#ie8
@@ -829,31 +909,35 @@ var tmpl = (function () {
 var mkdom = (function (checkIE) {
 
   var rootEls = {
-      'tr': 'tbody',
-      'th': 'tr',
-      'td': 'tr',
-      'tbody': 'table',
-      'col': 'colgroup'
+      tr: 'tbody',
+      th: 'tr',
+      td: 'tr',
+      tbody: 'table',
+      col: 'colgroup'
     },
+    reToSrc = /<yield\s+to=(['"])?@\1\s*>([\S\s]+?)<\/yield\s*>/.source,
     GENERIC = 'div'
 
   checkIE = checkIE && checkIE < 10
 
   // creates any dom element in a div, table, or colgroup container
-  function _mkdom(html) {
+  function _mkdom(templ, html) {
 
-    var match = html && html.match(/^\s*<([-\w]+)/),
+    var match = templ && templ.match(/^\s*<([-\w]+)/),
       tagName = match && match[1].toLowerCase(),
       rootTag = rootEls[tagName] || GENERIC,
       el = mkEl(rootTag)
 
     el.stub = true
 
+    // replace all the yield tags with the tag inner html
+    if (html) templ = replaceYield(templ, html)
+
     /* istanbul ignore next */
     if (checkIE && tagName && (match = tagName.match(SPECIAL_TAGS_REGEX)))
-      ie9elem(el, html, tagName, !!match[1])
+      ie9elem(el, templ, tagName, !!match[1])
     else
-      el.innerHTML = html
+      el.innerHTML = templ
 
     return el
   }
@@ -874,6 +958,30 @@ var mkdom = (function (checkIE) {
 
   }
   // end ie9elem()
+
+  /**
+   * Replace the yield tag from any tag template with the innerHTML of the
+   * original tag in the page
+   * @param   { String } templ - tag implementation template
+   * @param   { String } html  - original content of the tag in the DOM
+   * @returns { String } tag template updated without the yield tag
+   */
+  function replaceYield(templ, html) {
+    // do nothing if no yield
+    if (!/<yield\b/i.test(templ)) return templ
+
+    // be careful with #1343 - string on the source having `$1`
+    var n = 0
+    templ = templ.replace(/<yield\s+from=['"]([-\w]+)['"]\s*(?:\/>|>\s*<\/yield\s*>)/ig,
+      function (str, ref) {
+        var m = html.match(RegExp(reToSrc.replace('@', ref), 'i'))
+        ++n
+        return m && m[2] || ''
+      })
+
+    // yield without any "from", replace yield in templ with the innerHTML
+    return n ? templ : templ.replace(/<yield\s*(?:\/>|>\s*<\/yield\s*>)/gi, html || '')
+  }
 
   return _mkdom
 
@@ -906,10 +1014,11 @@ function mkitem(expr, key, val) {
 function unmountRedundant(items, tags) {
 
   var i = tags.length,
-    j = items.length
+    j = items.length,
+    t
 
   while (i > j) {
-    var t = tags[--i]
+    t = tags[--i]
     tags.splice(i, 1)
     t.unmount()
   }
@@ -939,10 +1048,10 @@ function moveNestedTags(child, i) {
  * @param { Tag } target - only if inserting, insert before this tag's first child
  */
 function addVirtual(tag, src, target) {
-  var el = tag._root
+  var el = tag._root, sib
   tag._virts = []
   while (el) {
-    var sib = el.nextSibling
+    sib = el.nextSibling
     if (target)
       src.insertBefore(el, target._root)
     else
@@ -961,9 +1070,9 @@ function addVirtual(tag, src, target) {
  * @param { Number } len - how many child nodes to move
  */
 function moveVirtual(tag, src, target, len) {
-  var el = tag._root
-  for (var i = 0; i < len; i++) {
-    var sib = el.nextSibling
+  var el = tag._root, sib, i = 0
+  for (; i < len; i++) {
+    sib = el.nextSibling
     src.insertBefore(el, target._root)
     el = sib
   }
@@ -1025,7 +1134,7 @@ function _each(dom, parent, expr) {
     }
 
     // loop all the new items
-    each(items, function(item, i) {
+    items.forEach(function(item, i) {
       // reorder only if the items are objects
       var _mustReorder = mustReorder && item instanceof Object,
         oldPos = oldItems.indexOf(item),
@@ -1094,7 +1203,7 @@ function _each(dom, parent, expr) {
       // cache the real parent tag internally
       defineProperty(tag, '_parent', parent)
 
-    })
+    }, true) // allow null values
 
     // remove the redundant tags
     unmountRedundant(items, tags)
@@ -1116,13 +1225,76 @@ function _each(dom, parent, expr) {
   })
 
 }
+/**
+ * Object that will be used to inject and manage the css of every tag instance
+ */
+var styleManager = (function(_riot) {
+
+  if (!window) return { // skip injection on the server
+    add: function () {},
+    inject: function () {}
+  }
+
+  var styleNode = (function () {
+    // create a new style element with the correct type
+    var newNode = mkEl('style')
+    setAttr(newNode, 'type', 'text/css')
+
+    // replace any user node or insert the new one into the head
+    var userNode = $('style[type=riot]')
+    if (userNode) {
+      if (userNode.id) newNode.id = userNode.id
+      userNode.parentNode.replaceChild(newNode, userNode)
+    }
+    else document.getElementsByTagName('head')[0].appendChild(newNode)
+
+    return newNode
+  })()
+
+  // Create cache and shortcut to the correct property
+  var cssTextProp = styleNode.styleSheet,
+    stylesToInject = ''
+
+  // Expose the style node in a non-modificable property
+  Object.defineProperty(_riot, 'styleNode', {
+    value: styleNode,
+    writable: true
+  })
+
+  /**
+   * Public api
+   */
+  return {
+    /**
+     * Save a tag style to be later injected into DOM
+     * @param   { String } css [description]
+     */
+    add: function(css) {
+      stylesToInject += css
+    },
+    /**
+     * Inject all previously saved tag styles into DOM
+     * innerHTML seems slow: http://jsperf.com/riot-insert-style
+     */
+    inject: function() {
+      if (stylesToInject) {
+        if (cssTextProp) cssTextProp.cssText += stylesToInject
+        else styleNode.innerHTML += stylesToInject
+        stylesToInject = ''
+      }
+    }
+  }
+
+})(riot)
 
 
 function parseNamedElements(root, tag, childTags, forceParsingNamed) {
 
   walk(root, function(dom) {
     if (dom.nodeType == 1) {
-      dom.isLoop = dom.isLoop || (dom.parentNode && dom.parentNode.isLoop || getAttr(dom, 'each')) ? 1 : 0
+      dom.isLoop = dom.isLoop ||
+                  (dom.parentNode && dom.parentNode.isLoop || getAttr(dom, 'each'))
+                    ? 1 : 0
 
       // custom child tag
       if (childTags) {
@@ -1144,13 +1316,13 @@ function parseExpressions(root, tag, expressions) {
 
   function addExpr(dom, val, extra) {
     if (tmpl.hasExpr(val)) {
-      var expr = { dom: dom, expr: val }
-      expressions.push(extend(expr, extra))
+      expressions.push(extend({ dom: dom, expr: val }, extra))
     }
   }
 
   walk(root, function(dom) {
-    var type = dom.nodeType
+    var type = dom.nodeType,
+      attr
 
     // text node
     if (type == 3 && dom.parentNode.tagName != 'STYLE') addExpr(dom, dom.nodeValue)
@@ -1159,7 +1331,7 @@ function parseExpressions(root, tag, expressions) {
     /* element */
 
     // loop
-    var attr = getAttr(dom, 'each')
+    attr = getAttr(dom, 'each')
 
     if (attr) { _each(dom, tag, attr); return false }
 
@@ -1183,7 +1355,6 @@ function Tag(impl, conf, innerHTML) {
 
   var self = riot.observable(this),
     opts = inherit(conf.opts) || {},
-    dom = mkdom(impl.tmpl),
     parent = conf.parent,
     isLoop = conf.isLoop,
     hasImpl = conf.hasImpl,
@@ -1194,7 +1365,8 @@ function Tag(impl, conf, innerHTML) {
     fn = impl.fn,
     tagName = root.tagName.toLowerCase(),
     attr = {},
-    propsInSyncWithParent = []
+    propsInSyncWithParent = [],
+    dom
 
   if (fn && root._tag) root._tag.unmount(true)
 
@@ -1219,9 +1391,7 @@ function Tag(impl, conf, innerHTML) {
     if (tmpl.hasExpr(val)) attr[el.name] = val
   })
 
-  if (dom.innerHTML && !/^(select|optgroup|table|tbody|tr|col(?:group)?)$/.test(tagName))
-    // replace all the yield tags with the tag inner html
-    dom.innerHTML = replaceYield(dom.innerHTML, innerHTML)
+  dom = mkdom(impl.tmpl, innerHTML)
 
   // options
   function updateOpts() {
@@ -1229,7 +1399,8 @@ function Tag(impl, conf, innerHTML) {
 
     // update opts from current DOM attributes
     each(root.attributes, function(el) {
-      opts[toCamel(el.name)] = tmpl(el.value, ctx)
+      var val = el.value
+      opts[toCamel(el.name)] = tmpl.hasExpr(val) ? tmpl(val, ctx) : val
     })
     // recover those with expressions
     each(Object.keys(attr), function(name) {
@@ -1274,20 +1445,39 @@ function Tag(impl, conf, innerHTML) {
     updateOpts()
     self.trigger('update', data)
     update(expressions, self)
-    self.trigger('updated')
+    // the updated event will be triggered
+    // once the DOM will be ready and all the reflows are completed
+    // this is useful if you want to get the "real" root properties
+    // 4 ex: root.offsetWidth ...
+    rAF(function() { self.trigger('updated') })
     return this
   })
 
   defineProperty(this, 'mixin', function() {
     each(arguments, function(mix) {
+      var instance
+
       mix = typeof mix === T_STRING ? riot.mixin(mix) : mix
-      each(Object.keys(mix), function(key) {
+
+      // check if the mixin is a function
+      if (isFunction(mix)) {
+        // create the new mixin instance
+        instance = new mix()
+        // save the prototype to loop it afterwards
+        mix = mix.prototype
+      } else instance = mix
+
+      // loop the keys in the function prototype or the all object keys
+      each(Object.getOwnPropertyNames(mix), function(key) {
         // bind methods to self
         if (key != 'init')
-          self[key] = isFunction(mix[key]) ? mix[key].bind(self) : mix[key]
+          self[key] = isFunction(instance[key]) ?
+                        instance[key].bind(self) :
+                        instance[key]
       })
+
       // init method will be called automatically
-      if (mix.init) mix.init.bind(self)()
+      if (instance.init) instance.init.bind(self)()
     })
     return this
   })
@@ -1396,8 +1586,7 @@ function Tag(impl, conf, innerHTML) {
     toggle()
     self.off('*')
     self.isMounted = false
-    // somehow ie8 does not like `delete root._tag`
-    root._tag = null
+    delete root._tag
 
   })
 
@@ -1407,15 +1596,14 @@ function Tag(impl, conf, innerHTML) {
     each(childTags, function(child) { child[isMount ? 'mount' : 'unmount']() })
 
     // listen/unlisten parent (events flow one way from parent to children)
-    if (parent) {
-      var evt = isMount ? 'on' : 'off'
+    if (!parent) return
+    var evt = isMount ? 'on' : 'off'
 
-      // the loop tags will be always in sync with the parent automatically
-      if (isLoop)
-        parent[evt]('unmount', self.unmount)
-      else
-        parent[evt]('update', self.update)[evt]('unmount', self.unmount)
-    }
+    // the loop tags will be always in sync with the parent automatically
+    if (isLoop)
+      parent[evt]('unmount', self.unmount)
+    else
+      parent[evt]('update', self.update)[evt]('unmount', self.unmount)
   }
 
   // named elements available for fn
@@ -1476,10 +1664,9 @@ function setEventHandler(name, handler, dom, tag) {
  * @param   { Object } before - node added
  */
 function insertTo(root, node, before) {
-  if (root) {
-    root.insertBefore(before, node)
-    root.removeChild(node)
-  }
+  if (!root) return
+  root.insertBefore(before, node)
+  root.removeChild(node)
 }
 
 /**
@@ -1503,7 +1690,11 @@ function update(expressions, tag) {
 
     // leave out riot- prefixes from strings inside textarea
     // fix #815: any value -> string
-    if (parent && parent.tagName == 'TEXTAREA') value = ('' + value).replace(/riot-/g, '')
+    if (parent && parent.tagName == 'TEXTAREA') {
+      value = ('' + value).replace(/riot-/g, '')
+      // change textarea's value
+      parent.value = value
+    }
 
     // no change
     if (expr.value === value) return
@@ -1536,7 +1727,8 @@ function update(expressions, tag) {
           // maybe we can optimize this avoiding to mount the tag at all
           if (!isInStub(dom)) {
             walk(dom, function(el) {
-              if (el._tag && !el._tag.isMounted) el._tag.isMounted = !!el._tag.trigger('mount')
+              if (el._tag && !el._tag.isMounted)
+                el._tag.isMounted = !!el._tag.trigger('mount')
             })
           }
         }
@@ -1571,7 +1763,8 @@ function update(expressions, tag) {
         if (!value) return
       }
 
-      if (typeof value !== T_OBJECT) setAttr(dom, attrName, value)
+      if (value === 0 || value && typeof value !== T_OBJECT)
+        setAttr(dom, attrName, value)
 
     }
 
@@ -1612,13 +1805,13 @@ function remAttr(dom, name) {
 }
 
 /**
- * Convert a string containing dashes to camle case
+ * Convert a string containing dashes to camel case
  * @param   { String } string - input string
  * @returns { String } my-string -> myString
  */
 function toCamel(string) {
-  return string.replace(/(\-\w)/g, function(match) {
-    return match.toUpperCase().replace('-', '')
+  return string.replace(/-(\w)/g, function(_, c) {
+    return c.toUpperCase()
   })
 }
 
@@ -1831,7 +2024,8 @@ function isWritable(obj, key) {
  * @returns { Object } clean object without containing the riot internal reserved words
  */
 function cleanUpData(data) {
-  if (!(data instanceof Tag) && !(data && typeof data.trigger == T_FUNCTION)) return data
+  if (!(data instanceof Tag) && !(data && typeof data.trigger == T_FUNCTION))
+    return data
 
   var o = {}
   for (var key in data) {
@@ -1898,17 +2092,6 @@ function mkEl(name) {
 }
 
 /**
- * Replace the yield tag from any tag template with the innerHTML of the
- * original tag in the page
- * @param   { String } tmpl - tag implementation template
- * @param   { String } innerHTML - original content of the tag in the DOM
- * @returns { String } tag template updated without the yield tag
- */
-function replaceYield(tmpl, innerHTML) {
-  return tmpl.replace(/<yield\s*(?:\/>|>\s*<\/yield\s*>)/gi, innerHTML || '')
-}
-
-/**
  * Shorter and fast way to select multiple nodes in the DOM
  * @param   { String } selector - DOM selector
  * @param   { Object } ctx - DOM node where the targets of our search will is located
@@ -1957,12 +2140,13 @@ function getNamedKey(dom) {
 function setNamed(dom, parent, keys) {
   // get the key value we want to add to the tag instance
   var key = getNamedKey(dom),
+    isArr,
     // add the node detected to a tag instance using the named property
     add = function(value) {
       // avoid to override the tag properties already set
       if (contains(keys, key)) return
       // check whether this value is an array
-      var isArr = isArray(value)
+      isArr = isArray(value)
       // if the key was never set
       if (!value)
         // set it once on the tag instance
@@ -1983,7 +2167,7 @@ function setNamed(dom, parent, keys) {
   // check whether this key has been already evaluated
   if (tmpl.hasExpr(key))
     // wait the first updated event only once
-    parent.one('updated', function() {
+    parent.one('mount', function() {
       key = getNamedKey(dom)
       add(parent[key])
     })
@@ -2003,35 +2187,24 @@ function startsWith(src, str) {
 }
 
 /**
- * Function needed to inject in runtime the custom tags css
+ * requestAnimationFrame function
+ * Adapted from https://gist.github.com/paulirish/1579671, license MIT
  */
-var injectStyle = (function() {
+var rAF = (function (w) {
+  var raf = w.requestAnimationFrame    ||
+            w.mozRequestAnimationFrame || w.webkitRequestAnimationFrame
 
-  if (!window) return // skip injection on the server
+  if (!raf || /iP(ad|hone|od).*OS 6/.test(w.navigator.userAgent)) {  // buggy iOS6
+    var lastTime = 0
 
-  // create the style node
-  var styleNode = mkEl('style'),
-    placeholder = $('style[type=riot]')
-
-  setAttr(styleNode, 'type', 'text/css')
-
-  // inject the new node into the DOM -- in head
-  if (placeholder) {
-    placeholder.parentNode.replaceChild(styleNode, placeholder)
-    placeholder = null
+    raf = function (cb) {
+      var nowtime = Date.now(), timeout = Math.max(16 - (nowtime - lastTime), 0)
+      setTimeout(function () { cb(lastTime = nowtime + timeout) }, timeout)
+    }
   }
-  else document.getElementsByTagName('head')[0].appendChild(styleNode)
+  return raf
 
-  /**
-   * This is the function exported that will be used to update the style tag just created
-   * innerHTML seems slow: http://jsperf.com/riot-insert-style
-   * @param   { String } css [description]
-   */
-  return styleNode.styleSheet ?
-    function (css) { styleNode.styleSheet.cssText += css } :
-    function (css) { styleNode.innerHTML += css }
-
-})()
+})(window || {})
 
 /**
  * Mount a tag creating new Tag instance
@@ -2103,7 +2276,7 @@ riot.tag = function(name, html, css, attrs, fn) {
   }
   if (css) {
     if (isFunction(css)) fn = css
-    else if (injectStyle) injectStyle(css)
+    else styleManager.add(css)
   }
   __tagImpl[name] = { name: name, tmpl: html, attrs: attrs, fn: fn }
   return name
@@ -2120,7 +2293,7 @@ riot.tag = function(name, html, css, attrs, fn) {
  * @returns { String } name/id of the tag just created
  */
 riot.tag2 = function(name, html, css, attrs, fn, bpair) {
-  if (css && injectStyle) injectStyle(css)
+  if (css) styleManager.add(css)
   //if (bpair) riot.settings.brackets = bpair
   __tagImpl[name] = { name: name, tmpl: html, attrs: attrs, fn: fn }
   return name
@@ -2144,7 +2317,8 @@ riot.mount = function(selector, tagName, opts) {
   function addRiotTags(arr) {
     var list = ''
     each(arr, function (e) {
-      list += ', *[' + RIOT_TAG + '="' + e.trim() + '"]'
+      if (!/[^-\w]/.test(e))
+        list += ',*[' + RIOT_TAG + '=' + e.trim() + ']'
     })
     return list
   }
@@ -2170,6 +2344,9 @@ riot.mount = function(selector, tagName, opts) {
   }
 
   // ----- mount code -----
+
+  // inject styles into DOM
+  styleManager.inject()
 
   if (typeof tagName === T_OBJECT) {
     opts = tagName
@@ -2238,56 +2415,101 @@ riot.Tag = Tag
 /* istanbul ignore next */
 
 /**
- * Compiler for riot custom tags
- * @version v2.3.13
- */
-
-/**
  * @module parsers
  */
 var parsers = (function () {
-  var _mods = {}
+  var _mods = {
+    none: function (js) {
+      return js
+    }
+  }
+  _mods.javascript = _mods.none
 
-  function _try(name, req) {   //eslint-disable-line no-redeclare
+  function _try (name, req) {  //eslint-disable-line complexity
+    var parser
+
+    /*global window */
 
     switch (name) {
-    case 'coffee':
-      req = 'CoffeeScript'
-      break
-    case 'es6':
-      req = 'babel'
-      break
-    default:
-      if (!req) req = name
-      break
+      case 'coffee':
+        req = 'CoffeeScript'
+        break
+      case 'es6':
+      case 'babel':
+        req = 'babel'
+        break
+      case 'none':
+      case 'javascript':
+        return _mods.none
+      default:
+        if (!req) req = name
+        break
     }
-    return _mods[name] = window[req]
+    parser = window[req]
+
+    if (!parser)
+      throw new Error(req + ' parser not found.')
+    _mods[name] = parser
+
+    return parser
   }
 
-  function _req(name, req) {
+  function _req (name, req) {
     return name in _mods ? _mods[name] : _try(name, req)
   }
 
+  function extend (obj, props) {
+    if (props) {
+      for (var prop in props) {
+        /* istanbul ignore next */
+        if (props.hasOwnProperty(prop)) {
+          obj[prop] = props[prop]
+        }
+      }
+    }
+    return obj
+  }
+
   var _html = {
-    jade: function (html, opts) {
-      return _req('jade').render(html, extend({pretty: true, doctype: 'html'}, opts))
+    jade: function (html, opts, url) {
+      return _req('jade').render(html, extend({
+        pretty: true,
+        filename: url,
+        doctype: 'html'
+      }, opts))
     }
   }
 
   var _css = {
-    stylus: function (tag, css, opts) {
+    less: function (tag, css, opts, url) {
+      var less = _req('less'),
+        ret
+
+      less.render(css, extend({
+        sync: true,
+        syncImport: true,
+        filename: url,
+        compress: true
+      }, opts), function (err, result) {
+        // istanbul ignore next
+        if (err) throw err
+        ret = result.css
+      })
+      return ret
+    },
+    stylus: function (tag, css, opts, url) {
       var
-        stylus = _req('stylus'), nib = _req('nib')
+        xopts = extend({filename: url}, opts),
+        stylus = _req('stylus'),
+        nib = _req('nib')
+
       /* istanbul ignore next: can't run both */
       return nib ?
-        stylus(css).use(nib()).import('nib').render() : stylus.render(css)
+        stylus(css, xopts).use(nib()).import('nib').render() : stylus.render(css, xopts)
     }
   }
 
   var _js = {
-    none: function (js, opts) {
-      return js
-    },
     livescript: function (js, opts) {
       return _req('livescript').compile(js, extend({bare: true, header: false}, opts))
     },
@@ -2299,42 +2521,41 @@ var parsers = (function () {
         blacklist: ['useStrict', 'strict', 'react'], sourceMaps: false, comments: false
       }, opts)).code
     },
-    babel: function (js, opts) {
-      js = 'function __parser_babel_wrapper__(){' + js + '}'
-      return _req('babel').transform(js,
-        extend({
-          presets: ['es2015']
-        }, opts)
-      ).code.replace(/["']use strict["'];[\r\n]+/, '').slice(38, -2)
+    babel: function (js, opts, url) {
+      return _req('babel').transform(js, extend({filename: url}, opts)).code
     },
     coffee: function (js, opts) {
       return _req('coffee').compile(js, extend({bare: true}, opts))
-    }
+    },
+    none: _mods.none
   }
 
   _js.javascript   = _js.none
   _js.coffeescript = _js.coffee
 
-  return {html: _html, css: _css, js: _js, _req: _req}
+  return {
+    html: _html,
+    css: _css,
+    js: _js,
+    _req: _req}
 
 })()
 
 riot.parsers = parsers
 
 /**
- * @module compiler
+ * Compiler for riot custom tags
+ * @version v2.3.20
  */
 var compile = (function () {
 
-  var brackets = riot.util.brackets
-
-  function _regEx(str, opt) { return new RegExp(str, opt) }
+  function _regEx (str, opt) { return new RegExp(str, opt) }
 
   var
 
     BOOL_ATTRS = _regEx(
       '^(?:disabled|checked|readonly|required|allowfullscreen|auto(?:focus|play)|' +
-      'compact|controls|default|formnovalidate|hidden|inert|ismap|itemscope|loop|' +
+      'compact|controls|default|formnovalidate|hidden|ismap|itemscope|loop|' +
       'multiple|muted|no(?:resize|shade|validate|wrap)?|open|reversed|seamless|' +
       'selected|sortable|truespeed|typemustmatch)$'),
 
@@ -2342,22 +2563,21 @@ var compile = (function () {
 
     VOID_TAGS  = /^(?:input|img|br|wbr|hr|area|base|col|embed|keygen|link|meta|param|source|track)$/,
 
-    HTML_ATTR  = /\s*([-\w:\.\xA0-\xFF]+)\s*(?:=\s*('[^']+'|"[^"]+"|\S+))?/g,
-
+    HTML_ATTR  = /\s*([-\w:\xA0-\xFF]+)\s*(?:=\s*('[^']+'|"[^"]+"|\S+))?/g,
+    SPEC_TYPES = /^"(?:number|date(?:time)?|time|month|email|color)\b/i,
     TRIM_TRAIL = /[ \t]+$/gm,
+    S_STRINGS  = brackets.R_STRINGS.source
 
-    _bp = null
-
-  function q(s) {
+  function q (s) {
     return "'" + (s ? s
       .replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '\\r') :
       '') + "'"
   }
 
-  function mktag(name, html, css, attrs, js, pcex) {
+  function mktag (name, html, css, attrs, js, pcex) {
     var
       c = ', ',
-      s = '}' + (pcex.length ? ', ' + q(_bp[8]) : '') + ');'
+      s = '}' + (pcex.length ? ', ' + q(pcex._bp[8]) : '') + ');'
 
     if (js && js.slice(-1) !== '\n') s = '\n' + s
 
@@ -2365,23 +2585,16 @@ var compile = (function () {
            ', function(opts) {\n' + js + s
   }
 
-  function extend(obj, props) {
-    for (var prop in props) {
-      /* istanbul ignore next */
-      if (props.hasOwnProperty(prop)) {
-        obj[prop] = props[prop]
-      }
-    }
-    return obj
-  }
-
-  function parseAttrs(str) {
+  function parseAttrs (str, pcex) {
     var
       list = [],
       match,
-      k, v,
+      k, v, t, e,
       DQ = '"'
+
     HTML_ATTR.lastIndex = 0
+
+    str = str.replace(/\s+/g, ' ')
 
     while (match = HTML_ATTR.exec(str)) {
 
@@ -2396,31 +2609,36 @@ var compile = (function () {
         if (v[0] !== DQ)
           v = DQ + (v[0] === "'" ? v.slice(1, -1) : v) + DQ
 
-        if (k === 'type' && v.toLowerCase() === '"number"') {
-          v = DQ + _bp[0] + "'number'" + _bp[1] + DQ
+        if (k === 'type' && SPEC_TYPES.test(v)) {
+          t = v
         }
-        else if (/\u0001\d/.test(v)) {
+        else {
+          if (/\u0001\d/.test(v)) {
 
-          if (BOOL_ATTRS.test(k)) {
-            k = '__' + k
+            if (k === 'value') e = 1
+            else if (BOOL_ATTRS.test(k)) k = '__' + k
+            else if (~RIOT_ATTRS.indexOf(k)) k = 'riot-' + k
           }
-          else if (~RIOT_ATTRS.indexOf(k)) {
-            k = 'riot-' + k
-          }
+
+          list.push(k + '=' + v)
         }
-
-        list.push(k + '=' + v)
       }
+    }
+
+    if (t) {
+      if (e) t = DQ + pcex._bp[0] + "'" + t.slice(1, -1) + "'" + pcex._bp[1] + DQ
+      list.push('type=' + t)
     }
     return list.join(' ')
   }
 
-  function splitHtml(html, opts, pcex) {
+  function splitHtml (html, opts, pcex) {
+    var _bp = pcex._bp
 
     if (html && _bp[4].test(html)) {
       var
-        jsfn = opts.expr && (opts.parser || opts.type) ? compileJS : 0,
-        list = brackets.split(html),
+        jsfn = opts.expr && (opts.parser || opts.type) ? _compileJS : 0, //eslint-disable-line
+        list = brackets.split(html, 0, _bp),
         expr
 
       for (var i = 1; i < list.length; i += 2) {
@@ -2428,8 +2646,10 @@ var compile = (function () {
         if (expr[0] === '^')
           expr = expr.slice(1)
         else if (jsfn) {
-          expr = jsfn(expr, opts)
-          if (/;\s*$/.test(expr)) expr = expr.slice(0, expr.search(/;\s*$/))
+          var israw = expr[0] === '='
+          expr = jsfn(israw ? expr.slice(1) : expr, opts).trim()
+          if (expr.slice(-1) === ';') expr = expr.slice(0, -1)
+          if (israw) expr = '=' + expr
         }
         list[i] = '\u0001' + (pcex.push(expr.replace(/[\r\n]+/g, ' ').trim()) - 1) + _bp[1]
       }
@@ -2438,27 +2658,31 @@ var compile = (function () {
     return html
   }
 
-  function restoreExpr(html, pcex) {
+  function restoreExpr (html, pcex) {
     if (pcex.length) {
       html = html
         .replace(/\u0001(\d+)/g, function (_, d) {
-          return _bp[0] + pcex[d].replace(/"/g, '&quot;')
+          var expr = pcex[d]
+          if (expr[0] === '=') {
+            expr = expr.replace(brackets.R_STRINGS, function (qs) {
+              return qs
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+            })
+          }
+          return pcex._bp[0] + expr.replace(/"/g, '\u2057')
         })
     }
     return html
   }
 
   var
-    HTML_COMMENT = /<!--(?!>)[\S\s]*?-->/g,
-    HTML_TAGS = /<([-\w]+)\s*([^"'\/>]*(?:(?:"[^"]*"|'[^']*'|\/[^>])[^'"\/>]*)*)(\/?)>/g
+    HTML_COMMENT = _regEx(/<!--(?!>)[\S\s]*?-->/.source + '|' + S_STRINGS, 'g'),
+    HTML_TAGS = /<([-\w]+)\s*([^"'\/>]*(?:(?:"[^"]*"|'[^']*'|\/[^>])[^'"\/>]*)*)(\/?)>/g,
+    PRE_TAG = _regEx(
+      /<pre(?:\s+[^'">]+(?:(?:@Q)|[^>]*)*|\s*)?>([\S\s]*?)<\/pre\s*>/.source.replace('@Q', S_STRINGS), 'gi')
 
-  function compileHTML(html, opts, pcex, intc) {
-
-    if (!intc) {
-      _bp = brackets.array(opts.brackets)
-      html = html.replace(/\r\n?/g, '\n').replace(HTML_COMMENT, '').replace(TRIM_TRAIL, '')
-    }
-    if (!pcex) pcex = []
+  function _compileHTML (html, opts, pcex) {
 
     html = splitHtml(html, opts, pcex)
       .replace(HTML_TAGS, function (_, name, attr, ends) {
@@ -2467,19 +2691,23 @@ var compile = (function () {
 
         ends = ends && !VOID_TAGS.test(name) ? '></' + name : ''
 
-        if (attr) name += ' ' + parseAttrs(attr)
+        if (attr) name += ' ' + parseAttrs(attr, pcex)
 
         return '<' + name + ends + '>'
       })
 
     if (!opts.whitespace) {
-      var p = [],
-        pre = /<pre(?:\s+[^'">]+(?:(?:"[^"]*"|'[^']*')[^'">]*)*|\s*)>[\s\S]*<\/pre\s*>/gi
-
-      html = html.replace(pre, function (q) {
-        return '\u0002' + (p.push(q) - 1) + '~' }).trim().replace(/\s+/g, ' ')
-      if (p.length)
-        html = html.replace(/\u0002(\d+)~/g, function (q, n) { return p[n] })
+      if (/<pre[\s>]/.test(html)) {
+        var p = []
+        html = html.replace(PRE_TAG, function (_q) {
+          return p.push(_q) && '\u0002'
+        }).trim().replace(/\s+/g, ' ')
+        // istanbul ignore else
+        if (p.length)
+          html = html.replace(/\u0002/g, function () { return p.shift() })
+      }
+      else
+        html = html.trim().replace(/\s+/g, ' ')
     }
 
     if (opts.compact) html = html.replace(/> <([-\w\/])/g, '><$1')
@@ -2487,22 +2715,37 @@ var compile = (function () {
     return restoreExpr(html, pcex)
   }
 
+  // istanbul ignore next
+  function compileHTML (html, opts, pcex) {
+    if (Array.isArray(opts)) {
+      pcex = opts
+      opts = {}
+    }
+    else {
+      if (!pcex) pcex = []
+      if (!opts) opts = {}
+    }
+
+    html = html.replace(/\r\n?/g, '\n').replace(HTML_COMMENT,
+      function (s) { return s[0] === '<' ? '' : s }).replace(TRIM_TRAIL, '')
+
+    if (!pcex._bp) pcex._bp = brackets.array(opts.brackets)
+
+    return _compileHTML(html, opts, pcex)
+  }
+
   var
-
-    JS_RMCOMMS = _regEx(
-    '(' + brackets.S_QBLOCKS + ')|' + brackets.R_MLCOMMS.source + '|//[^\r\n]*',
-    'g'),
-
+    JS_RMCOMMS = _regEx('(' + brackets.S_QBLOCKS + ')|' + brackets.R_MLCOMMS.source + '|//[^\r\n]*', 'g'),
     JS_ES6SIGN = /^([ \t]*)([$_A-Za-z][$\w]*)\s*(\([^()]*\)\s*{)/m
 
-  function riotjs(js) {
+  function riotjs (js) {
     var
       match,
       toes5,
       parts = [],
       pos
 
-    js = js.replace(JS_RMCOMMS, function (m, q) { return q ? m : ' ' })
+    js = js.replace(JS_RMCOMMS, function (m, _q) { return _q ? m : ' ' })
 
     while (match = js.match(JS_ES6SIGN)) {
 
@@ -2521,21 +2764,21 @@ var compile = (function () {
 
     return parts.length ? parts.join('') + js : js
 
-    function skipBlock(str) {
+    function skipBlock (str) {
       var
         re = _regEx('([{}])|' + brackets.S_QBLOCKS, 'g'),
         level = 1,
-        match
+        mm
 
-      while (level && (match = re.exec(str))) {
-        if (match[1])
-          match[1] === '{' ? ++level : --level
+      while (level && (mm = re.exec(str))) {
+        if (mm[1])
+          mm[1] === '{' ? ++level : --level
       }
       return level ? str.length : re.lastIndex
     }
   }
 
-  function compileJS(js, opts, type, parserOpts) {
+  function _compileJS (js, opts, type, parserOpts, url) {
     if (!js) return ''
     if (!type) type = opts.type
 
@@ -2543,12 +2786,28 @@ var compile = (function () {
     if (!parser)
       throw new Error('JS parser not found: "' + type + '"')
 
-    return parser(js, parserOpts).replace(TRIM_TRAIL, '')
+    return parser(js, parserOpts, url).replace(TRIM_TRAIL, '')
   }
 
-  var CSS_SELECTOR = _regEx('(}|{|^)[ ;]*([^@ ;{}][^{}]*)(?={)|' + brackets.R_STRINGS.source, 'g')
+  // istanbul ignore next
+  function compileJS (js, opts, type, extra) {
+    if (typeof opts === 'string') {
+      extra = type
+      type = opts
+      opts = {}
+    }
+    if (typeof type === 'object') {
+      extra = type
+      type = ''
+    }
+    else if (!extra) extra = {}
 
-  function scopedCSS(tag, style) {
+    return _compileJS(js, opts, type, extra.parserOptions, extra.url)
+  }
+
+  var CSS_SELECTOR = _regEx('(}|{|^)[ ;]*([^@ ;{}][^{}]*)(?={)|' + S_STRINGS, 'g')
+
+  function scopedCSS (tag, style) {
     var scope = ':scope'
 
     return style.replace(CSS_SELECTOR, function (m, p1, p2) {
@@ -2571,14 +2830,15 @@ var compile = (function () {
     })
   }
 
-  function compileCSS(style, tag, type, scoped, opts) {
+  function _compileCSS (style, tag, type, opts) {
+    var scoped = (opts || (opts = {})).scoped
 
     if (type) {
       if (type === 'scoped-css') {
         scoped = true
       }
       else if (parsers.css[type]) {
-        style = parsers.css[type](tag, style, opts)
+        style = parsers.css[type](tag, style, opts.parserOpts || {}, opts.url)
       }
       else if (type !== 'css') {
         throw new Error('CSS parser not found: "' + type + '"')
@@ -2587,14 +2847,29 @@ var compile = (function () {
 
     style = style.replace(brackets.R_MLCOMMS, '').replace(/\s+/g, ' ').trim()
 
-    return scoped ? scopedCSS(tag, style) : style
+    if (scoped) {
+      // istanbul ignore next
+      if (!tag)
+        throw new Error('Can not parse scoped CSS without a tagName')
+      style = scopedCSS(tag, style)
+    }
+    return style
+  }
+
+  // istanbul ignore next
+  function compileCSS (style, parser, opts) {
+    if (typeof parser === 'object') {
+      opts = parser
+      parser = ''
+    }
+    return _compileCSS(style, opts.tagName, parser, opts)
   }
 
   var
     TYPE_ATTR = /\stype\s*=\s*(?:(['"])(.+?)\1|(\S+))/i,
     MISC_ATTR = /\s*=\s*("(?:\\[\S\s]|[^"\\]*)*"|'(?:\\[\S\s]|[^'\\]*)*'|\{[^}]+}|\S+)/.source
 
-  function getType(str) {
+  function getType (str) {
 
     if (str) {
       var match = str.match(TYPE_ATTR)
@@ -2603,7 +2878,7 @@ var compile = (function () {
     return str ? str.replace('text/', '') : ''
   }
 
-  function getAttr(str, name) {
+  function getAttr (str, name) {
 
     if (str) {
       var
@@ -2611,99 +2886,88 @@ var compile = (function () {
         match = str.match(re)
       str = match && match[1]
       if (str)
-        return /^['"]/.test(str) ? str.slice(1, -1) : str
+        return (/^['"]/).test(str) ? str.slice(1, -1) : str
     }
     return ''
   }
 
-  // get the parser options from the options attribute
-  function getParserOptions(attrs) {
+  function getParserOptions (attrs) {
     var opts = getAttr(attrs, 'options')
-    // convert the string into a valid js object
+
     if (opts) opts = JSON.parse(opts)
     return opts
   }
 
-  // Runs the custom or default parser on the received JavaScript code.
-  // The CLI version can read code from the file system (experimental)
-  function getCode(code, opts, attrs, url) {
+  function getCode (code, opts, attrs, url) {
     var type = getType(attrs),
       parserOpts = getParserOptions(attrs)
 
-    //#if READ_JS_SRC
-    var src = getAttr(attrs, 'src')
-    if (src && url) {
-      var
-        charset = getAttr(attrs, 'charset'),
-        file = path.resolve(path.dirname(url), src)
-      code = require('fs').readFileSync(file, {encoding: charset || 'utf8'})
-    }
-    //#endif
-    return compileJS(code, opts, type, parserOpts)
+    return _compileJS(code, opts, type, parserOpts, url)
   }
 
-  // Matches HTML tag ending a line. This regex still can be fooled by code as:
-  // ```js
-  // x <y && y >
-  //  z
-  // ```
+  function cssCode (code, opts, attrs, url, tag) {
+    var extraOpts = {
+      parserOpts: getParserOptions(attrs),
+      scoped: attrs && /\sscoped(\s|=|$)/i.test(attrs),
+      url: url
+    }
+    return _compileCSS(code, tag, getType(attrs) || opts.style, extraOpts)
+  }
+
   var END_TAGS = /\/>\n|^<(?:\/[\w\-]+\s*|[\w\-]+(?:\s+(?:[-\w:\xA0-\xFF][\S\s]*?)?)?)>\n/
 
-  function splitBlocks(str) {
+  function splitBlocks (str) {
     var k, m
 
     /* istanbul ignore next: this if() can't be true, but just in case... */
-    if (str[str.length - 1] === '>')
-      return [str, '']
+    if (str[str.length - 1] === '>') return [str, '']
 
-    k = str.lastIndexOf('<')    // first probable open tag
+    k = str.lastIndexOf('<')
     while (~k) {
       if (m = str.slice(k).match(END_TAGS)) {
         k += m.index + m[0].length
         return [str.slice(0, k), str.slice(k)]
       }
-      k = str.lastIndexOf('<', k -1)
+      k = str.lastIndexOf('<', k - 1)
     }
-
     return ['', str]
   }
 
-  // Runs the external HTML parser for the entire tag file
-  function compileTemplate(lang, html, opts) {
+  function compileTemplate (html, url, lang, opts) {
     var parser = parsers.html[lang]
 
     if (!parser)
       throw new Error('Template parser not found: "' + lang + '"')
 
-    return parser(html, opts)
+    return parser(html, opts, url)
   }
 
-  /*
-    CUST_TAG regex don't allow unquoted expressions containing the `>` operator.
-    STYLE and SCRIPT disallows the operator `>` at all.
-
-    The beta.4 CUST_TAG regex is fast, with RegexBuddy I get 76 steps and 14 backtracks on
-    the test/specs/fixtures/treeview.tag :) but fails with nested tags of the same name :(
-    With a greedy * operator, we have ~500 and 200bt, it is acceptable. So let's fix this.
-   */
   var
-    CUST_TAG = /^([ \t]*)<([-\w]+)(?:\s+([^'"\/>]+(?:(?:"[^"]*"|'[^']*'|\/[^>])[^'"\/>]*)*)|\s*)?(?:\/>|>[ \t]*\n?([\s\S]*)^\1<\/\2\s*>|>(.*)<\/\2\s*>)/gim,
-    STYLE = /<style(\s+[^>]*)?>\n?([^<]*(?:<(?!\/style\s*>)[^<]*)*)<\/style\s*>/gi,
-    SCRIPT = _regEx(STYLE.source.replace(/tyle/g, 'cript'), 'gi')
+    CUST_TAG = _regEx(
+      /^([ \t]*)<([-\w]+)(?:\s+([^'"\/>]+(?:(?:@Q|\/[^>])[^'"\/>]*)*)|\s*)?(?:\/>|>[ \t]*\n?([\S\s]*)^\1<\/\2\s*>|>(.*)<\/\2\s*>)/
+      .source.replace('@Q', S_STRINGS), 'gim'),
+    SRC_TAGS = /<style(\s+[^>]*)?>\n?([^<]*(?:<(?!\/style\s*>)[^<]*)*)<\/style\s*>/.source + '|' + S_STRINGS,
+    STYLES = _regEx(SRC_TAGS, 'gi'),
+    SCRIPT = _regEx(SRC_TAGS.replace(/style/g, 'script'), 'gi')
 
-  function compile(src, opts, url) {
-    var label, parts = []
+  function compile (src, opts, url) {
+    var
+      parts = [],
+      exclude
 
     if (!opts) opts = {}
 
-    _bp = brackets.array(opts.brackets)
+    if (!url) url = ''
+
+    exclude = opts.exclude || false
+    function included (s) { return !(exclude && ~exclude.indexOf(s)) }
+
+    var _bp = brackets.array(opts.brackets)
 
     if (opts.template)
-      src = compileTemplate(opts.template, src, opts.templateOptions)
+      src = compileTemplate(src, url, opts.template, opts.templateOptions)
 
-    label = url ? '//src: ' + url + '\n' : ''
-
-    src = label + src
+    src = src
       .replace(/\r\n?/g, '\n')
       .replace(CUST_TAG, function (_, indent, tagName, attribs, body, body2) {
 
@@ -2713,41 +2977,52 @@ var compile = (function () {
           html = '',
           pcex = []
 
+        pcex._bp = _bp
+
         tagName = tagName.toLowerCase()
 
-        attribs = !attribs ? '' : restoreExpr(parseAttrs(splitHtml(attribs, opts, pcex)), pcex)
+        attribs = attribs && included('attribs') ?
+          restoreExpr(parseAttrs(splitHtml(attribs, opts, pcex), pcex), pcex) : ''
 
         if (body2) body = body2
 
-        if (body && (body = body.replace(HTML_COMMENT, '')) && /\S/.test(body)) {
+        if (body && (body = body.replace(HTML_COMMENT,
+          function (s) { return s[0] === '<' ? '' : s })) && /\S/.test(body)) {
 
-          if (body2)
-            html = compileHTML(body2, opts, pcex, 1)
+          if (body2) {
+            /* istanbul ignore next */
+            html = included('html') ? _compileHTML(body2, opts, pcex) : ''
+          }
           else {
             body = body.replace(_regEx('^' + indent, 'gm'), '')
 
-            body = body.replace(STYLE, function (_, _attrs, _style) {
-              var scoped = _attrs && /\sscoped(\s|=|$)/i.test(_attrs),
-                csstype = getType(_attrs) || opts.style
-              styles += (styles ? ' ' : '') +
-                compileCSS(_style, tagName, csstype, scoped, getParserOptions(_attrs))
+            body = body.replace(STYLES, function (_m, _attrs, _style) {
+              if (_m[0] !== '<') return _m
+              if (included('css'))
+                styles += (styles ? ' ' : '') + cssCode(_style, opts, _attrs, url, tagName)
               return ''
             })
 
-            body = body.replace(SCRIPT, function (_, _attrs, _script) {
-              jscode += (jscode ? '\n' : '') + getCode(_script, opts, _attrs)
+            body = body.replace(SCRIPT, function (_m, _attrs, _script) {
+              if (_m[0] !== '<') return _m
+              if (included('js'))
+                jscode += (jscode ? '\n' : '') + getCode(_script, opts, _attrs, url)
               return ''
             })
 
             var blocks = splitBlocks(body.replace(TRIM_TRAIL, ''))
 
-            body = blocks[0]
-            if (body)
-              html = compileHTML(body, opts, pcex, 1)
+            if (included('html')) {
+              body = blocks[0]
+              if (body)
+                html = _compileHTML(body, opts, pcex)
+            }
 
-            body = blocks[1]
-            if (/\S/.test(body))
-              jscode += (jscode ? '\n' : '') + compileJS(body, opts)
+            if (included('js')) {
+              body = blocks[1]
+              if (/\S/.test(body))
+                jscode += (jscode ? '\n' : '') + _compileJS(body, opts, null, null, url)
+            }
           }
         }
 
@@ -2767,13 +3042,21 @@ var compile = (function () {
         return mktag(tagName, html, styles, attribs, jscode, pcex)
       })
 
-    return opts.entities ? parts : src
+    if (opts.entities) return parts
+
+    return src
   }
 
+  riot.util.compiler = {
+    compile: compile,
+    html: compileHTML,
+    css: compileCSS,
+    js: compileJS,
+    version: 'v2.3.20'
+  }
   return compile
 
 })()
-
 
 /*
   Compilation for the browser
@@ -2781,35 +3064,44 @@ var compile = (function () {
 riot.compile = (function () {
 
   var
-    doc = window.document,
-    promise,
-    ready
+    promise,    // emits the 'ready' event and runs the first callback
+    ready       // all the scripts were compiled?
 
-  function GET(url, fn, opts) {
+  // gets the source of an external tag with an async call
+  function GET (url, fn, opts) {
     var req = new XMLHttpRequest()
 
-    req.onreadystatechange = function() {
+    req.onreadystatechange = function () {
       if (req.readyState === 4 &&
-         (req.status === 200 || !req.status && req.responseText.length))
+         (req.status === 200 || !req.status && req.responseText.length)) {
         fn(req.responseText, opts, url)
+      }
     }
     req.open('GET', url, true)
     req.send('')
   }
 
-  function globalEval(js) {
-    var
-      node = doc.createElement('script'),
-      root = doc.documentElement
+  // evaluates a compiled tag within the global context
+  function globalEval (js, url) {
+    if (typeof js === T_STRING) {
+      var
+        node = mkEl('script'),
+        root = document.documentElement
 
-    node.text = js
-    root.appendChild(node)
-    root.removeChild(node)
+      // make the source available in the "(no domain)" tab
+      // of Chrome DevTools, with a .js extension
+      if (url) js += '\n//# sourceURL=' + url + '.js'
+
+      node.text = js
+      root.appendChild(node)
+      root.removeChild(node)
+    }
   }
 
-  function compileScripts(fn, exopt) {
+  // compiles all the internal and external tags on the page
+  function compileScripts (fn, xopt) {
     var
-      scripts = doc.querySelectorAll('script[type="riot/tag"]'),
+      scripts = $$('script[type="riot/tag"]'),
       scriptsAmount = scripts.length
 
     function done() {
@@ -2818,8 +3110,10 @@ riot.compile = (function () {
       if (fn) fn()
     }
 
-    function compileTag(src, opts, url) {
-      globalEval(compile(src, opts, url))
+    function compileTag (src, opts, url) {
+      var code = compile(src, opts, url)
+
+      globalEval(code, url)
       if (!--scriptsAmount) done()
     }
 
@@ -2828,10 +3122,9 @@ riot.compile = (function () {
       for (var i = 0; i < scripts.length; ++i) {
         var
           script = scripts[i],
-          opts = {template: script.getAttribute('template')},
-          url = script.getAttribute('src')
+          opts = extend({template: getAttr(script, 'template')}, xopt),
+          url = getAttr(script, 'src')
 
-        if (exopt) opts = extend(opts, exopt)
         url ? GET(url, compileTag, opts) : compileTag(script.innerHTML, opts)
       }
     }
@@ -2841,44 +3134,44 @@ riot.compile = (function () {
 
   return function (arg, fn, opts) {
 
-    if (typeof arg === 'string') {
+    if (typeof arg === T_STRING) {
 
-      if (typeof fn === 'object') {
+      // 2nd parameter is optional, but can be null
+      if (fn && typeof fn === T_OBJECT) {
         opts = fn
         fn = false
       }
 
-      if (/^\s*</.test(arg)) {
-
-        // `riot.compile(tag [, true][, options])`
+      // `riot.compile(tag [, callback | true][, options])`
+      if (/^\s*</m.test(arg)) {
         var js = compile(arg, opts)
-        if (!fn) globalEval(js)
+        if (fn !== true) globalEval(js)
+        if (isFunction(fn)) fn(js, arg, opts)
         return js
       }
 
       // `riot.compile(url [, callback][, options])`
-      GET(arg, function (str) {
-        var js = compile(str, opts, arg)
-        globalEval(js)
-        if (fn) fn(js, str)
+      GET(arg, function (str, opts, url) {
+        var js = compile(str, opts, url)
+        globalEval(js, url)
+        if (fn) fn(js, str, opts)
       })
 
     }
     else {
 
       // `riot.compile([callback][, options])`
-
-      if (typeof arg === 'function') {
+      if (isFunction(arg)) {
         opts = fn
         fn = arg
-      }
-      else {
+      } else {
         opts = arg
         fn = undefined
       }
 
-      if (ready)
+      if (ready) {
         return fn && fn()
+      }
 
       if (promise) {
         if (fn) promise.on('ready', fn)
@@ -2895,17 +3188,17 @@ riot.compile = (function () {
 // reassign mount methods -----
 var mount = riot.mount
 
-riot.mount = function(a, b, c) {
+riot.mount = function (a, b, c) {
   var ret
-  riot.compile(function() { ret = mount(a, b, c) })
+  riot.compile(function () { ret = mount(a, b, c) })
   return ret
 }
   // support CommonJS, AMD & browser
   /* istanbul ignore next */
   if (typeof exports === T_OBJECT)
     module.exports = riot
-  else if (typeof define === 'function' && define.amd)
-    define(function() { return (window.riot = riot) })
+  else if (typeof define === T_FUNCTION && typeof define.amd !== T_UNDEF)
+    define(function() { return riot })
   else
     window.riot = riot
 
