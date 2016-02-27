@@ -8,6 +8,7 @@
 
 
         var uuid = 0,
+            locale = document.documentElement.lang.toUpperCase(),
             loadApi = (function(){
 
                 var p, fn = function(){
@@ -22,7 +23,7 @@
 
                             script.onload = function() {
 
-                                google.load("maps", "3", {other_params:'sensor=false&libraries=places', callback: function(){
+                                google.load('maps', '3', {other_params: 'sensor=false&libraries=places&language=' + locale, callback: function(){
                                   if (google && google.maps.places) resolve();
                                 }});
                             };
