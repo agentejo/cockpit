@@ -11,7 +11,7 @@
         });
 
         if (!Object.keys($scope.groupsettings).length) {
-        $scope.groupsettings['admin'] = {"media.path" : "/"};
+            $scope.groupsettings['admin'] = {"media.path" : "/"};
         }
 
         if (location.hash && $scope.acl[location.hash.replace("#", "")]) {
