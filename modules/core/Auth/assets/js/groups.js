@@ -7,11 +7,11 @@
         $scope.active        = "admin";
 
         Object.keys(ACL_DATA).forEach(function(group){
-            $scope.groupsettings[group] = ACL_GROUP_SETTINGS[group] || {};
+            $scope.groupsettings[group] = ACL_GROUP_SETTINGS[group] || {"media.path" : "/"};
         });
 
         if (!Object.keys($scope.groupsettings).length) {
-            $scope.groupsettings['admin'] = {};
+            $scope.groupsettings['admin'] = {"media.path" : "/"};
         }
 
         if (location.hash && $scope.acl[location.hash.replace("#", "")]) {
