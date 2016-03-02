@@ -1217,9 +1217,11 @@ riot.tag2('field-image', '<figure class="uk-display-block uk-overlay uk-overlay-
 
 }, '{ }');
 
-riot.tag2('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-small-bottom uk-width-1-1"> <i class="uk-icon-search"></i><input name="autocomplete" class="uk-width-1-1"> </div> <div name="map" style="min-height:300px;"> Loading map... </div> <div class="uk-text-small uk-margin-small-top"> LAT: <span class="uk-text-muted">{latlng.lat}</span> LNG: <span class="uk-text-muted">{latlng.lng}</span> </div> </div>', '', '', function(opts) {
+riot.tag2('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-small-bottom uk-width-1-1"> <i class="uk-icon-search"></i><input name="autocomplete" class="uk-width-1-1" value="{latlng.address}"> </div> <div name="map" style="min-height:300px;"> Loading map... </div> <div class="uk-text-small uk-margin-small-top"> LAT: <span class="uk-text-muted">{latlng.lat}</span> LNG: <span class="uk-text-muted">{latlng.lng}</span> </div> </div>', '', '', function(opts) {
 
         var map, marker;
+
+        var locale = document.documentElement.lang.toUpperCase();
 
         var loadApi = (function(){
 
@@ -1235,7 +1237,7 @@ riot.tag2('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-sm
 
                         script.onload = function() {
 
-                            google.load("maps", "3", {other_params:'sensor=false&libraries=places', callback: function(){
+                            google.load("maps", "3", {other_params: 'libraries=places&language=' + locale, callback: function(){
                               if (google && google.maps.places) resolve();
                             }});
                         };
@@ -1297,8 +1299,9 @@ riot.tag2('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-sm
 
                 google.maps.event.addListener(marker, 'dragend', function() {
                     var point = marker.getPosition();
-                    $this.$setValue({lat: point.lat(), lng:point.lng()} );
-                    input.value = "";
+
+                    input.value = '';
+                    $this.$setValue({lat: point.lat(), lng: point.lng(), address: input.value});
                 });
 
                 App.$(window).on('resize', function(){
@@ -1326,10 +1329,9 @@ riot.tag2('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-sm
                     }
 
                     marker.setPosition(place.geometry.location);
-                    input.value = "";
 
                     var point = marker.getPosition();
-                    $this.$setValue({lat: point.lat(), lng:point.lng()} );
+                    $this.$setValue({lat: point.lat(), lng: point.lng(), address: input.value});
                 });
 
                 google.maps.event.addDomListener(input, 'keydown', function(e) {
