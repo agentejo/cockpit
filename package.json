@@ -13,5 +13,11 @@
 
         "watch-style": "watch-run -i -p 'assets/app/css/**/*.less' npm run build-style",
         "watch-components": "watch-run -i -p 'modules/core/Cockpit/assets/components/*.tag' npm run build-components"
+    },
+
+    "devDependencies": {
+        "less": "^2.6.0",
+        "riot": "^2.3.16",
+        "watch-run": "^1.2.4"
     }
 }
