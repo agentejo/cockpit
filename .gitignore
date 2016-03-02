@@ -9,6 +9,7 @@
 /config/*
 /modules/addons/*/*
 /tests/*
+/node_modules
 
 !.gitignore
 !.gitkeep
