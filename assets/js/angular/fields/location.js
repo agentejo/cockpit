@@ -8,6 +8,7 @@
 
 
         var uuid = 0,
+            locale = document.documentElement.lang.toUpperCase(),
             loadApi = (function(){
 
                 var p, fn = function(){
@@ -22,7 +23,7 @@
 
                             script.onload = function() {
 
-                                google.load("maps", "3", {other_params:'sensor=false&libraries=places', callback: function(){
+                                google.load('maps', '3', {other_params: 'sensor=false&libraries=places&language=' + locale, callback: function(){
                                   if (google && google.maps.places) resolve();
                                 }});
                             };
@@ -50,7 +51,7 @@
             replace     : true,
             template    : '<div>\
                                 <div class="uk-form uk-form-icon uk-margin-small-bottom uk-width-1-1">\
-                                    <i class="uk-icon-search"></i><input class="uk-width-1-1">\
+                                    <i class="uk-icon-search"></i><input class="uk-width-1-1" value="{{ latlng.address }}">\
                                 </div>\
                                 <div class="js-map" style="min-height:300px;"> \
                                 Loading map... \
@@ -66,7 +67,7 @@
                         var map, marker, mapId = 'google-maps-location-'+(++uuid), point = new google.maps.LatLng(53.55909862554551, 9.998652343749995),
                             input, autocomplete;
 
-                        scope.latlng = ngModel.$viewValue || {lat: point.lat(), lng:point.lng()};
+                        scope.latlng = ngModel.$viewValue || {lat: point.lat(), lng: point.lng(), address: ''};
 
                         elm.find('.js-map').attr('id', mapId);
 
@@ -83,8 +84,9 @@
 
                         google.maps.event.addListener(marker, 'dragend', function() {
                             var point = marker.getPosition();
-                            updateScope({lat: point.lat(), lng:point.lng()} );
-                            input.value = "";
+                            updateScope({lat: point.lat(), lng: point.lng(), address: ''});
+                            // Reset input value (or reverse geolocate)
+                            input.value = '';
                         });
 
                         jQuery.UIkit.$win.on('resize', function(){
@@ -94,7 +96,7 @@
 
                         input = elm.find('input')[0];
 
-                        autocomplete = new google.maps.places.Autocomplete(input);
+                        autocomplete = new google.maps.places.Autocomplete(input, {});
                         autocomplete.bindTo('bounds', map);
 
                         google.maps.event.addListener(autocomplete, 'place_changed', function(e) {
@@ -113,10 +115,9 @@
                             }
 
                             marker.setPosition(place.geometry.location);
-                            input.value = "";
 
                             var point = marker.getPosition();
-                            updateScope({lat: point.lat(), lng:point.lng()} );
+                            updateScope({lat: point.lat(), lng:point.lng(), address: input.value});
                         });
 
                         google.maps.event.addDomListener(input, 'keydown', function(e) {
@@ -133,8 +134,8 @@
 
                                     var point = new google.maps.LatLng(ngModel.$viewValue.lat, ngModel.$viewValue.lng);
 
-                    				marker.setPosition(point);
-                    				map.setCenter(point);
+                                    marker.setPosition(point);
+                                    map.setCenter(point);
                                 }
 
                             } catch(e) {}
