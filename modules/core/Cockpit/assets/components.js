@@ -1689,7 +1689,7 @@ riot.tag2('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete u
 
 }, '{ }');
 
-riot.tag2('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" placeholder="{opts.placeholder}">', '', '', function(opts) {
+riot.tag2('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" placeholder="{opts.placeholder}" bind-event="input">', '', '', function(opts) {
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -1701,7 +1701,7 @@ riot.tag2('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bi
 
 }, '{ }');
 
-riot.tag2('field-textarea', '<textarea name="input" class="uk-width-1-1" bind="{opts.bind}" placeholder="{opts.placeholder}"></textarea>', '', '', function(opts) {
+riot.tag2('field-textarea', '<textarea name="input" class="uk-width-1-1" bind="{opts.bind}" placeholder="{opts.placeholder}" bind-event="input"></textarea>', '', '', function(opts) {
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -1828,15 +1828,25 @@ riot.tag2('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5"
 
                               $this.input.value = $this.value;
 
-                              ed.on('ExecCommand', function (e) {
-                                 ed.save();
-                                 $this.$setValue($this.input.value, true);
-                              });
+                              var clbChange = function(e){
+                                ed.save();
+                                $this.$setValue($this.input.value, true);
+                              };
 
-                              ed.on('KeyUp', function (e) {
-                                 ed.save();
-                                 $this.$setValue($this.input.value, true);
-                              });
+                              ed.on('ExecCommand', clbChange);
+                              ed.on('KeyUp', clbChange);
+                              ed.on('Change', clbChange);
+
+                              var clbSave = function(){
+                                var form = App.$($this.root).closest('form');
+
+                                if (form.length) {
+                                    form.trigger('submit');
+                                }
+                              };
+
+                              ed.addShortcut('ctrl+s','Save', clbSave, ed);
+                              ed.addShortcut('meta+s','Save', clbSave, ed);
 
                               editor = ed;
 

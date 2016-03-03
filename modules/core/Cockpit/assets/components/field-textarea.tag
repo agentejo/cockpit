@@ -1,6 +1,6 @@
 <field-textarea>
 
-    <textarea name="input" class="uk-width-1-1" bind="{opts.bind}" placeholder="{ opts.placeholder }"></textarea>
+    <textarea name="input" class="uk-width-1-1" bind="{opts.bind}" placeholder="{ opts.placeholder }" bind-event="input"></textarea>
 
     <script>
 

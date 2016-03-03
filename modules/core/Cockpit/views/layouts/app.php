@@ -22,7 +22,7 @@
         // App constants
         var SITE_URL = '{{ rtrim($app->pathToUrl('site:'), '/') }}';
     </script>
-
+    <script src="@base('assets:lib/fuc.js.php')"></script>
     {{ $app->assets($app('admin')->data->get('assets'), $app['cockpit/version']) }}
 
     <script src="@route('/cockpit.i18n.data')"></script>

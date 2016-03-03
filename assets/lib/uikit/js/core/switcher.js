@@ -1,4 +1,4 @@
-/*! UIkit 2.24.3 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.25.0 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(UI) {
 
     "use strict";
@@ -46,7 +46,7 @@
 
                 this.connect = UI.$(this.options.connect);
 
-                this.connect.find(".uk-active").removeClass(".uk-active");
+                this.connect.children().removeClass("uk-active");
 
                 // delegate switch commands within container content
                 if (this.connect.length) {

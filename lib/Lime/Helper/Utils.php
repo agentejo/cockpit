@@ -166,7 +166,7 @@ class Utils extends \Lime\Helper {
 	*                          yes/no words
 	* @return boolean
 	*/
-	public static function str_to_bool($string, $default = false) {
+	public function str_to_bool($string, $default = false) {
 
 		$yes_words = 'affirmative|all right|aye|indubitably|most assuredly|ok|of course|okay|sure thing|y|yes+|yea|yep|sure|yeah|true|t|on|1|oui|vrai';
 		$no_words  = 'no*|no way|nope|nah|na|never|absolutely not|by no means|negative|never ever|false|f|off|0|non|faux';
@@ -189,7 +189,7 @@ class Utils extends \Lime\Helper {
 	*                           truncated, defaults to '...'
 	* @return  string
 	*/
-	public static function safe_truncate($string, $length, $append = '...') {
+	public function safe_truncate($string, $length, $append = '...') {
 
 		$ret        = substr($string, 0, $length);
 		$last_space = strrpos($ret, ' ');
@@ -203,5 +203,35 @@ class Utils extends \Lime\Helper {
 		}
 
 		return $ret;
+	}
+	
+	/**
+	* Get content from url source.
+	*
+	* @param   string  $url 
+	* @return  string
+	*/
+	public function url_get_contents ($url) {
+        $content = '';
+        if (function_exists('curl_exec')){
+            $conn = curl_init($url);
+            curl_setopt($conn, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($conn, CURLOPT_FRESH_CONNECT,  true);
+            curl_setopt($conn, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($conn,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.52 Safari/537.17');
+            curl_setopt($conn, CURLOPT_AUTOREFERER, true);
+            curl_setopt($conn, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($conn, CURLOPT_VERBOSE, 0);
+            $content = (curl_exec($conn));
+            curl_close($conn);
+        }
+        if (!$content && function_exists('file_get_contents')){
+            $content = @file_get_contents($url);
+        }
+        if (!$content && function_exists('fopen') && function_exists('stream_get_contents')){
+            $handle  = @fopen ($url, "r");
+            $content = @stream_get_contents($handle);
+        }
+        return $content;
 	}
 }

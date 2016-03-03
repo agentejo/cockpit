@@ -89,10 +89,8 @@
     </div>
 
     <script>
-        (function(hours, color){
-            hours = (new Date()).getHours();
-            color = hours >=18 || hours < 8 ? '#222':'#025780';
-            SKY(document.body, color);
+        (function(color){
+            SKY(document.body, '#222');
         })();
     </script>
 

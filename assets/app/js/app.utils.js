@@ -168,6 +168,48 @@
         return dataURI;
     };
 
+    App.Utils.worker = function(fn) {
+
+        var worker = new Worker(URL.createObjectURL(new Blob(['(', fn.toString(), ')()'], { type: 'application/javascript' })));
+
+        return worker;
+    };
+
+    App.Utils.worker.execute = function(fn, data) {
+
+        var canceled = false, p = new Promise(function(r, f) {
+
+           var w = new Worker(URL.createObjectURL(new Blob([
+               [
+                   'self.onmessage=function(e){',
+                        'var release = function(result) { self.postMessage(result) }',
+                        'var result = ('+fn.toString()+')(e.data, e)',
+                        'if(result!==undefined) release(result);',
+                    '}'
+
+               ].join("\n")
+           ], { type: 'application/javascript' })));
+
+            w.onmessage = function(e) {
+                if(!canceled) r(e.data || null, e);
+                w = null;
+            };
+
+            w.onerror = function(e) {
+                if(!canceled) f(e);
+                w = null;
+            };
+
+            w.postMessage(data);
+        });
+
+        p.cancel = function() {
+        	 canceled = true;
+        };
+
+        return p;
+    };
+
     // riot enhancments
     (function(riot){
 

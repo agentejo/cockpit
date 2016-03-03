@@ -1,4 +1,4 @@
-/*! UIkit 2.24.3 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.25.0 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(addon) {
 
     var component;
@@ -29,8 +29,8 @@
 
         defaults: {
             target   : false,
-            smooth   : 300,
-            diff     : 400
+            smooth   : 150,
+            translate     : 150
         },
 
         boot: function() {
@@ -57,10 +57,27 @@
 
         init: function() {
 
+            var $this = this;
+
             this.initItems().process();
-            this.element.css('margin-bottom', this.options.diff + parseInt(this.element.css('margin-bottom')));
             parallaxes.push(this);
 
+            UI.$win.on('load resize orientationchange', (function() {
+
+                var fn = function() {
+                    var columns  = getcolumns($this.element);
+
+                    $this.element.css('margin-bottom', '');
+
+                    if (columns > 1) {
+                        $this.element.css('margin-bottom', $this.options.translate + parseInt($this.element.css('margin-bottom')));
+                    }
+                };
+
+                UI.$(function() { fn(); });
+
+                return UI.Utils.debounce(fn, 50);
+            })());
         },
 
         initItems: function() {
@@ -94,11 +111,10 @@
                mods.push(mods[mods.length-1] - 2);
             }
 
-            var diff  = this.options.diff,
-                percentdiff = percent*diff;
+            var translate  = this.options.translate, percenttranslate = percent * translate;
 
             items.each(function(idx, ele, translate){
-                translate = mods.indexOf((idx+1) % columns) != -1 ? percentdiff : percentdiff / 4;
+                translate = mods.indexOf((idx+1) % columns) != -1 ? percenttranslate : percenttranslate / 8;
                 UI.$(this).css('transform', 'translate3d(0,'+(translate)+'px, 0)');
             });
         }
@@ -141,8 +157,12 @@
                 percentage = Math.round(distance / ((wh + height) / 100));
                 percent    = percentage/100;
             }
+
+            if (top < wh) {
+                percent = percent * scrolltop / ((top + height) - wh);
+            }
         }
 
-        return percent;
+        return percent > 1 ? 1:percent;
     }
 });
