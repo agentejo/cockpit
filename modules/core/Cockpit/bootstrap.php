@@ -181,6 +181,18 @@ if (COCKPIT_REST) {
     include_once(__DIR__.'/api.php');
 }
 
+if (COCKPIT_ADMIN) {
+
+    $this->bind("/api.js", function() {
+
+        $token                = $this->param("_toc", "");
+        $this->response->mime = 'js';
+
+        return $this->view('cockpit:views/api.js', compact('token'));
+    });
+}
+
+
 // ADMIN
 if (COCKPIT_ADMIN && !COCKPIT_REST) {
 
