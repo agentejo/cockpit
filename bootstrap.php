@@ -34,7 +34,7 @@ $COCKPIT_BASE_ROUTE  = $COCKPIT_BASE_URL;
  * SYSTEM DEFINES
  */
 if (!defined('COCKPIT_ADMIN'))       define('COCKPIT_ADMIN'      , 0);
-if (!defined('COCKPIT_REST'))        define('COCKPIT_REST'       , COCKPIT_ADMIN && strpos($_SERVER['REQUEST_URI'], '/rest/api')!==false ? 1:0);
+if (!defined('COCKPIT_REST'))        define('COCKPIT_REST'       , COCKPIT_ADMIN && strpos($_SERVER['REQUEST_URI'], $COCKPIT_BASE_URL.'/api/')!==false ? 1:0);
 if (!defined('COCKPIT_DIR'))         define('COCKPIT_DIR'        , $COCKPIT_DIR);
 if (!defined('COCKPIT_DOCS_ROOT'))   define('COCKPIT_DOCS_ROOT'  , $COCKPIT_DOCS_ROOT);
 if (!defined('COCKPIT_BASE_URL'))    define('COCKPIT_BASE_URL'   , $COCKPIT_BASE_URL);

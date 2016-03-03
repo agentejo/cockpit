@@ -39,6 +39,8 @@
 
                     if (typeof(data) === 'object' && data instanceof HTMLFormElement) {
                         data = new FormData(data);
+                    } else if (typeof(data) === 'object' && data instanceof FormData) {
+                        // do nothing
                     } else if (typeof(data) === 'object') {
 
                         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');

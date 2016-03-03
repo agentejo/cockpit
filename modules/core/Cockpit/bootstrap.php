@@ -43,6 +43,31 @@ $this->module("cockpit")->extend([
         return ["size"=>$app->helper("utils")->formatSize($app->helper("fs")->getDirSize('cache:'))];
     },
 
+    "loadApiKeys" => function() {
+
+        $keys      = [ 'master' => '', 'special' => [] ];
+        $container = $this->app->path('#storage:').'/api.keys.php';
+
+        if (file_exists($container)) {
+            $data = include($container);
+            $data = unserialize($this->app->decode($data, $this->app["sec-key"]));
+
+            if ($data !== false) {
+                $keys = array_merge($keys, $data);
+            }
+        }
+
+        return $keys;
+    },
+
+    "saveApiKeys" => function($data) {
+
+        $data      = serialize(array_merge([ 'master' => '', 'special' => [] ], (array)$data));
+        $export    = var_export($this->app->encode($data, $this->app["sec-key"]), true);
+        $container = $this->app->path('#storage:').'/api.keys.php';
+
+        return $this->app->helper('fs')->write($container, "<?php\n return {$export};");
+    }
 
 ]);
 
@@ -150,46 +175,10 @@ $this->module("cockpit")->extend([
     }
 ]);
 
-// Init REST handler
+// INIT REST API HANDLER
 if (COCKPIT_REST) {
 
-    $this->on("before", function() {
-
-        $routes = new \ArrayObject([]);
-
-        /*
-            $routes['{:resource}'] = string (classname) | callable
-        */
-        $this->trigger("cockpit.rest.init", [$routes])->bind("/rest/api/*", function($params) use($routes) {
-
-            $route = $this['route'];
-            $path  = $params[":splat"][0];
-
-            if (!$path) {
-                return false;
-            }
-
-            $parts      = explode('/', $path, 2);
-            $resource   = $parts[0];
-            $params     = isset($parts[1]) ? explode('/', $parts[1]) : [];
-
-            if (isset($routes[$resource])) {
-
-                // invoke class
-                if (is_string($routes[$resource])) {
-                    $action = count($params) ? array_shift($params):'index';
-                    return $this->invoke($routes[$resource], $action, $params);
-                }
-
-                if (is_callable($routes[$resource])) {
-                    return call_user_func_array($routes[$resource], $params);
-                }
-            }
-
-            return false;
-        });
-
-    });
+    include_once(__DIR__.'/api.php');
 }
 
 // ADMIN

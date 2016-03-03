@@ -26,6 +26,16 @@
     </div>
     @endif
 
+    @hasaccess?('cockpit', 'manage.rest')
+    <div>
+        <div class="uk-panel uk-panel-box uk-panel-card">
+            <div class="uk-text-truncate">
+                <a href="@route('/restadmin/index')"><i class="uk-icon-exchange uk-icon-justify"></i> @lang('API Access')</a>
+            </div>
+        </div>
+    </div>
+    @endif
+
     @if($app['user']['group']=='admin')
     <div>
         <div class="uk-panel uk-panel-box uk-panel-card">
