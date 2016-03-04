@@ -3,14 +3,16 @@
 namespace Collections\Controller;
 
 class RestApi extends \LimeExtra\Controller {
-
-    public function get($collection=null) {
-
+    public function getBySlug($collection=null) {
+        return $this->get($collection, "slug");
+    }
+    
+    public function get($collection=null, $findBy="name") {
         if (!$collection) {
             return false;
         }
 
-        $collection = $this->app->db->findOne("common/collections",  ['$or'=>[["name"=>$collection], ["slug"=>$collection]]]);
+        $collection = $this->app->db->findOne("common/collections",  [$findBy=>$collection]);
 
         if (!$collection) {
             return false;
