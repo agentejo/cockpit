@@ -44,7 +44,7 @@ class RestApi extends \LimeExtra\Controller {
             return false;
         }
 
-        $collection = $this->app->db->findOne("common/collections",  ["name"=>$collection]);
+        $collection = $this->app->db->findOne("common/collections", ["name"=>$collection]);
 
         if (!$collection) {
             return false;
