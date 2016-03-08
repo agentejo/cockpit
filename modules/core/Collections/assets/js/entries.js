@@ -30,6 +30,32 @@
             });
         };
 
+        // Create hashmap of available linked-collections, key is it's _id
+        $scope.linkedCollections = {};
+
+        $scope.collection.fields.forEach(function(field) {
+
+            if (field.type !== 'link-collection' || !field.collectionField) {
+                return;
+            }
+
+            $http.post(App.route("/api/collections/entries"), {
+                collection: {_id: field.collection}
+            })
+                .success(function(data) {
+
+                    // Create hashmap of entries, key is it's _id
+                    $scope.linkedCollections[field.collection] = {};
+
+                    data.forEach(function(entry) {
+
+                        // Key is entry _id, value is name of entry to show instead of id
+                        $scope.linkedCollections[field.collection][entry._id] = entry[field.collectionField];
+                    });
+                }).error(App.module.callbacks.error.http)
+            ;
+        });
+
         $scope.loadmore = function() {
 
             var limit  = COLLECTION.sortfield == 'custom-order' ? 10000 : 25, filter = false;
@@ -72,6 +98,34 @@
                     }
 
                     if (data.length) {
+
+                        // Convert collection link IDs to collection link field values.
+                        data.forEach(function(entry) {
+
+                            // Find fields which are type of link-collection
+                            $scope.collection.fields.forEach(function(field) {
+
+                                // Continue
+                                if (field.type !== 'link-collection' || !field.collectionField || !entry.hasOwnProperty(field.name)) {
+                                    return;
+                                }
+
+                                var linkedCollectionId = field.collection;
+
+                                // Convert to array
+                                var linkedEntryIds = (entry[field.name] instanceof Array) ?
+                                    entry[field.name] :
+                                    [entry[field.name]];
+
+                                // Push field value
+                                var fieldValues = linkedEntryIds.map(function(linkedEntryId) {
+                                    return $scope.linkedCollections[linkedCollectionId][linkedEntryId].toString();
+                                });
+
+                                // Overwrite linked entry id by field value
+                                entry[field.name] = fieldValues.join(', ');
+                            });
+                        });
 
                         if (data.length < limit) {
                             $scope.nomore = true;
