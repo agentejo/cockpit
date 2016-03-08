@@ -172,6 +172,8 @@ return [
     'Load more...' => '',
     'Unique' => '',
     'There is already an entry in this collection with this slug for field \'%s\'.',
+    'Field on entries list page' => '',
+    'Collection Id' => '',
 
     // Mediamanager
     'Mediamanager' => '',

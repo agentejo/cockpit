@@ -4,6 +4,9 @@
 
         var id = $("[data-ng-controller='collection']").data("id");
 
+        // Field types which values should not be used in entries list
+        var fieldTypesBlacklist = ['location', 'gallery', 'multifield', 'link-collection', 'media', 'region'];
+
         if (id) {
 
             $http.post(App.route("/api/collections/findOne"), {filter: {"_id":id}}, {responseType:"json"}).success(function(data){
@@ -94,6 +97,24 @@
             });
 
         }, true);
+
+        // Create options of collection fields. Problem: Executed too many times
+        $scope.getCollectionFields = function(collectionId) {
+
+            // Lookup collection (Using for.. to short-circuit loop)
+            for (var i = 0, l = $scope.collections.length; i < l; i++) {
+                if ($scope.collections[i]._id != collectionId) {
+                    continue;
+                }
+
+                // Allow just required fields
+                return $scope.collections[i].fields.filter(function(field) {
+                    return (field.required && fieldTypesBlacklist.indexOf(field.type) == -1);
+                });
+            }
+
+            return [];
+        };
 
         // after sorting list
         $(function(){
