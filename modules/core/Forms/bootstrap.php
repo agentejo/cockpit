@@ -320,7 +320,13 @@ $this->bind("/api/forms/submit/:form", function($params) {
 });
 
 
+// REST
+if (COCKPIT_REST) {
 
+    $app->on('cockpit.rest.init', function($routes) {
+        $routes['forms'] = 'Forms\\Controller\\RestApi';
+    });
+}
 
 // ADMIN
 if (COCKPIT_ADMIN && !COCKPIT_REST) {

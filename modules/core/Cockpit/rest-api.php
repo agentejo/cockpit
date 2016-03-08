@@ -8,7 +8,7 @@ $this->on("before", function() {
     /*
         $routes['{:resource}'] = string (classname) | callable
     */
-    $this->trigger("cockpit.api.init", [$routes])->bind("/api/*", function($params) use($routes) {
+    $this->trigger("cockpit.rest.init", [$routes])->bind("/api/*", function($params) use($routes) {
 
         $route = $this['route'];
         $path  = $params[":splat"][0];

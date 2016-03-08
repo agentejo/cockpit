@@ -175,10 +175,15 @@ $this->module("cockpit")->extend([
     }
 ]);
 
-// INIT REST API HANDLER
+// REST
 if (COCKPIT_REST) {
 
-    include_once(__DIR__.'/api.php');
+    // INIT REST API HANDLER
+    include_once(__DIR__.'/rest-api.php');
+
+    $this->on('cockpit.rest.init', function($routes) {
+        $routes['cockpit'] = 'Cockpit\\Controller\\RestApi';
+    });
 }
 
 if (COCKPIT_ADMIN) {

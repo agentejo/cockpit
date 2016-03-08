@@ -167,6 +167,14 @@ $app->renderer->extend(function($content){
     return $content;
 });
 
+// REST
+if (COCKPIT_REST) {
+
+    $app->on('cockpit.rest.init', function($routes) {
+        $routes['regions'] = 'Regions\\Controller\\RestApi';
+    });
+}
+
 // ADMIN
 if (COCKPIT_ADMIN && !COCKPIT_REST) {
     include_once(__DIR__.'/admin.php');

@@ -288,6 +288,14 @@ $this->module("collections")->extend([
 ]);
 
 
+// REST
+if (COCKPIT_REST) {
+
+    $app->on('cockpit.rest.init', function($routes) {
+        $routes['collections'] = 'Collections\\Controller\\RestApi';
+    });
+}
+
 
 // ADMIN
 if (COCKPIT_ADMIN && !COCKPIT_REST) {
