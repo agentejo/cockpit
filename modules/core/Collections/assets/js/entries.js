@@ -1,10 +1,13 @@
 (function($){
 
-    App.module.controller("entries", function($scope, $rootScope, $http, $timeout){
+    App.module.controller("entries", function($scope, $rootScope, $q, $http, $timeout){
 
         $scope.collection = COLLECTION || {};
         $scope.fields = [];
         $scope.filter = $('input[name="filter"]').val();
+
+        /** @type {array} Promises that should be resolved before loading entries */
+        var promisesBeforeLoadEntries = [];
 
         $scope.fields = (COLLECTION.fields.length ? COLLECTION.fields : [COLLECTION.fields]).filter(function(field){
             return field.lst;
@@ -39,9 +42,10 @@
                 return;
             }
 
-            $http.post(App.route("/api/collections/entries"), {
-                collection: {_id: field.collection}
-            })
+            promisesBeforeLoadEntries.push(
+                $http.post(App.route("/api/collections/entries"), {
+                    collection: {_id: field.collection}
+                })
                 .success(function(data) {
 
                     // Create hashmap of entries, key is it's _id
@@ -53,7 +57,7 @@
                         $scope.linkedCollections[field.collection][entry._id] = entry[field.collectionField];
                     });
                 }).error(App.module.callbacks.error.http)
-            ;
+            );
         });
 
         $scope.loadmore = function() {
@@ -227,7 +231,8 @@
             });
         });
 
-        $scope.loadmore();
+        $q.all(promisesBeforeLoadEntries)
+            .finally($scope.loadmore);
     });
 
 })(jQuery);
