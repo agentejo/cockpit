@@ -114,7 +114,7 @@ class Api extends \Cockpit\Controller {
             $col     = "collection".$collection["_id"];
             $options = [];
 
-            if ($collection["sortfield"] && $collection["sortorder"]) {
+            if (array_key_exists("sortfield", $collection) && $collection["sortfield"] && array_key_exists("sortorder", $collection) && $collection["sortorder"]) {
                 $options["sort"] = [];
                 $options["sort"][$collection["sortfield"]] = (int)$collection["sortorder"];
             }

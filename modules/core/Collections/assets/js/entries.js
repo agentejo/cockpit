@@ -123,7 +123,7 @@
 
                                 // Push field value
                                 var fieldValues = linkedEntryIds.map(function(linkedEntryId) {
-                                    return $scope.linkedCollections[linkedCollectionId][linkedEntryId].toString();
+                                    return $scope.linkedCollections[linkedCollectionId][linkedEntryId];
                                 });
 
                                 // Overwrite linked entry id by field value
