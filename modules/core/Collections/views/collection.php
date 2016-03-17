@@ -48,7 +48,7 @@
 
                     <h4>@lang('Fields')</h4>
 
-                    <cp-fieldsmanager bind="collection.fields"></cp-fieldsmanager>
+                    <cp-fieldsmanager bind="collection.fields" listoption="true"></cp-fieldsmanager>
 
 
                     <div class="uk-margin-large-top" show="{ collection.fields.length }">

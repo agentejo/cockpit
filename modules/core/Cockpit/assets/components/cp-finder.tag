@@ -94,7 +94,7 @@
                 <div class="uk-panel">
                     <ul class="uk-breadcrumb">
                         <li onclick="{ changedir }"><a title="Change dir to root"><i class="uk-icon-home"></i></a></li>
-                        <li each="{folder, idx in breadcrumbs}"><a onclick="{ parent.changedir }" title="Change dir to @@ folder.name @@">{ folder.name }</a></li>
+                        <li each="{folder, idx in breadcrumbs}"><a onclick="{ parent.changedir }" title="Change dir to { folder.name }">{ folder.name }</a></li>
                     </ul>
                 </div>
 

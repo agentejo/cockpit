@@ -10,7 +10,7 @@
 
                     <div class="uk-flex-item-1 uk-flex">
 
-                        <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="fields[{idx}].name" placeholder="name" required>
+                        <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" fields-bind="fields[{idx}].name" placeholder="name" required>
                     </div>
 
                     <div class="uk-width-1-4">
@@ -19,7 +19,7 @@
                                 <i class="uk-icon-arrows-h"></i>
                                 <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.width }">
                             </div>
-                            <select bind="fields[{idx}].width">
+                            <select fields-bind="fields[{idx}].width">
                                 <option value="1-1">1-1</option>
                                 <option value="1-2">1-2</option>
                                 <option value="1-3">1-3</option>
@@ -34,7 +34,7 @@
 
                         <ul class="uk-subnav">
 
-                            <li>
+                            <li show="{parent.opts.listoption}">
                                 <a class="uk-text-{ field.lst ? 'success':'muted'}" onclick="{ parent.togglelist }" title="{ App.i18n.get('Show field on list view') }">
                                     <i class="uk-icon-list"></i>
                                 </a>
@@ -72,31 +72,31 @@
                                 <i class="uk-icon-tag"></i>
                                 <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.type.toUpperCase() }">
                             </div>
-                            <select class="uk-width-1-1" bind="fields[{idx}].type">
+                            <select class="uk-width-1-1" fields-bind="fields[{idx}].type">
                                 <option each="{type,typeidx in parent.fieldtypes}" value="{type.value}">{type.name}</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="uk-form-row">
-                        <input class="uk-width-1-1" type="text" bind="fields[{idx}].label" placeholder="{ App.i18n.get('label') }">
+                        <input class="uk-width-1-1" type="text" fields-bind="fields[{idx}].label" placeholder="{ App.i18n.get('label') }">
                     </div>
 
                     <div class="uk-form-row">
-                        <input class="uk-width-1-1" type="text" bind="fields[{idx}].info" placeholder="{ App.i18n.get('info') }">
+                        <input class="uk-width-1-1" type="text" fields-bind="fields[{idx}].info" placeholder="{ App.i18n.get('info') }">
                     </div>
 
                     <div class="uk-form-row">
                         <div class="uk-text-small uk-text-bold">{ App.i18n.get('Options') } <span class="uk-text-muted">JSON</span></div>
-                        <field-object cls="uk-width-1-1" bind="fields[{idx}].options" rows="6" allowtabs="2"></field-object>
+                        <field-object cls="uk-width-1-1" fields-bind="fields[{idx}].options" rows="6" allowtabs="2"></field-object>
                     </div>
 
                     <div class="uk-form-row">
-                        <input type="checkbox" bind="fields[{idx}].required"> { App.i18n.get('Required') }
+                        <input type="checkbox" fields-bind="fields[{idx}].required"> { App.i18n.get('Required') }
                     </div>
 
                     <div class="uk-form-row">
-                        <input type="checkbox" bind="fields[{idx}].localize"> { App.i18n.get('Localize') }
+                        <input type="checkbox" fields-bind="fields[{idx}].localize"> { App.i18n.get('Localize') }
                     </div>
 
                     <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{ App.i18n.get('Close') }</button></div>
@@ -106,10 +106,10 @@
 
         </div>
 
-        <div class="uk-margin-top" show="{fields.length}">
-            <a class="uk-button uk-button-link" onclick="{ addfield }"><i class="uk-icon-plus-circle"></i> { App.i18n.get('Add field') }</a>
-        </div>
+    </div>
 
+    <div class="uk-margin-top" show="{fields.length}">
+        <a class="uk-button uk-button-link" onclick="{ addfield }"><i class="uk-icon-plus-circle"></i> { App.i18n.get('Add field') }</a>
     </div>
 
     <div class="uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ !fields.length && !reorder }">
@@ -131,7 +131,7 @@
 
     <script>
 
-        this.mixin(RiotBindMixin);
+        riot.util.bind(this, 'fields');
 
         var $this = this;
 
