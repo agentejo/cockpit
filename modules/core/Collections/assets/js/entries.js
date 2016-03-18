@@ -110,7 +110,7 @@
                             $scope.collection.fields.forEach(function(field) {
 
                                 // Continue
-                                if (field.type !== 'link-collection' || !field.collectionField || !entry.hasOwnProperty(field.name)) {
+                                if (field.type !== 'link-collection' || !field.collectionField || !entry[field.name] === undefined || entry[field.name] === null) {
                                     return;
                                 }
 
