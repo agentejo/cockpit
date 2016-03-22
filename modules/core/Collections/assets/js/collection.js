@@ -107,9 +107,9 @@
                     continue;
                 }
 
-                // Allow just required fields
+                // Allow just simple fields
                 return $scope.collections[i].fields.filter(function(field) {
-                    return (field.required && fieldTypesBlacklist.indexOf(field.type) == -1);
+                    return (fieldTypesBlacklist.indexOf(field.type) == -1);
                 });
             }
 

@@ -147,7 +147,7 @@
                                                     <div class="uk-form-row" data-ng-if="field.type=='link-collection'">
                                                         <label class="uk-form-label">@lang('Field on entries list page')</label>
                                                         <div class="uk-form-controls">
-                                                            <select ng-options="f.name as f.label for f in getCollectionFields(field.collection)" data-ng-model="field.collectionField" title="@lang('Show these fields in entries list')" data-uk-tooltip>
+                                                            <select ng-options="f.name as (f.label || '[' + f.name + ']') for f in getCollectionFields(field.collection)" data-ng-model="field.collectionField" title="@lang('Show these fields in entries list')" data-uk-tooltip>
                                                                 <option value="">@lang('Collection Id')</option>
                                                             </select>
                                                         </div>

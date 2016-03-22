@@ -109,8 +109,8 @@
                             // Find fields which are type of link-collection
                             $scope.collection.fields.forEach(function(field) {
 
-                                // Continue field is not type of link-collection, 'Field on entries list page' is not selected or is not a collection ID
-                                if (field.type !== 'link-collection' || !field.collectionField || typeof entry[field.name] != 'string') {
+                                // Continue field is not type of link-collection, 'Field on entries list page' is not selected or value is not selected.
+                                if (field.type !== 'link-collection' || !field.collectionField || !entry[field.name]) {
                                     return;
                                 }
 
