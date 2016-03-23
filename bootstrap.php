@@ -40,7 +40,6 @@ if (!defined('COCKPIT_DOCS_ROOT'))   define('COCKPIT_DOCS_ROOT'  , $COCKPIT_DOCS
 if (!defined('COCKPIT_BASE_URL'))    define('COCKPIT_BASE_URL'   , $COCKPIT_BASE_URL);
 if (!defined('COCKPIT_BASE_ROUTE'))  define('COCKPIT_BASE_ROUTE' , $COCKPIT_BASE_ROUTE);
 if (!defined('COCKPIT_STORAGE_FOLDER'))  define('COCKPIT_STORAGE_FOLDER' , COCKPIT_DIR . '/storage');
-if (!defined('COCKPIT_CONFIG_PATH')) define('COCKPIT_CONFIG_PATH', COCKPIT_DIR . '/config/config.yaml');
 
 function cockpit($module = null) {
 
@@ -50,8 +49,19 @@ function cockpit($module = null) {
 
         $customconfig = [];
 
-        if (file_exists(COCKPIT_CONFIG_PATH)) {
-            $customconfig = Spyc::YAMLLoad(COCKPIT_CONFIG_PATH);
+        // load config
+        if (!defined('COCKPIT_CONFIG_PATH')) {
+
+            foreach(['config.php', 'config.yaml'] as $config) {
+                if (file_exists(COCKPIT_DIR."/config/{$config}")) {
+                    define('COCKPIT_CONFIG_PATH', COCKPIT_DIR."/config/{$config}");
+                    break;
+                }
+            }
+        }
+
+        if (defined('COCKPIT_CONFIG_PATH') && file_exists(COCKPIT_CONFIG_PATH)) {
+            $customconfig = preg_match('/\.yaml$/', COCKPIT_CONFIG_PATH) ? Spyc::YAMLLoad(COCKPIT_CONFIG_PATH) : include(COCKPIT_CONFIG_PATH);
         }
 
         // load config
