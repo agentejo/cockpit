@@ -19,25 +19,40 @@ $app('acl')->addResource('cockpit', [
 
 
 // init acl groups + permissions + settings
+
 $app('acl')->addGroup('admin', true);
 
 if ($user = $app->module('cockpit')->getUser()) {
 
     $aclsettings = $app->retrieve('config/acl', []);
 
+    /*
+    acl:
+        author:
+            $admin: false
+            $vars:
+                mediapath: /upload
+            cockpit:
+                manage.media: true
+                manage.backups: true
+
+    */
+
     foreach ($aclsettings as $group => $settings) {
 
-        $app('acl')->addGroup($group, $settings === true ? true:false);
+        $isSuperAdmin = $settings === true || (isset($settings['$admin']) && $settings['$admin']);
+        $vars         = isset($settings['$vars']) ? $settings['$vars'] : [];
 
-        if (is_array($settings)) {
+        $app('acl')->addGroup($group, $isSuperAdmin, $vars);
 
-            if (isset($settings['allow']) && is_array($settings['allow'])) {
+        if (!$isSuperAdmin && is_array($settings)) {
 
-                foreach ($settings['allow'] as $resource => $actions) {
+            foreach ($settings as $resource => $actions) {
 
-                    foreach ((array)$actions as $action) {
-                        $app('acl')->allow($group, $resource, $action);
-                    }
+                if ($resource == '$vars' || $resource == '$admin') continue;
+
+                foreach ((array)$actions as $action => $allow) {
+                    if ($allow) $app('acl')->allow($group, $resource, $action);
                 }
             }
         }
@@ -71,6 +86,7 @@ $app->bind('/cockpit.i18n.data', function() {
 $assets = [
 
     'assets:polyfills/es6-shim.js',
+    'assets:polyfills/dom4.js',
     'assets:polyfills/object-observe.js',
     'assets:lib/jquery.js',
     'assets:lib/lodash.js',

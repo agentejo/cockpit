@@ -136,15 +136,13 @@ $this->module("cockpit")->extend([
         return array_unique($groups);
     },
 
-    "getGroupSetting" => function($setting, $default = null) use($app) {
+    "getGroupVar" => function($setting, $default = null) use($app) {
 
         if ($user = $this->getUser()) {
 
-            if (isset($user["group"]) && $user["group"]) {
+            if (isset($user['group']) && $user['group']) {
 
-                $group = $user["group"];
-
-                return $app->retrieve("config/acl/{$group}/settings/{$setting}", $default);
+                return $app('acl')->getVar($user['group'], $setting, $default);
             }
         }
 

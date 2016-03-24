@@ -11,8 +11,9 @@ class SimpleAcl
 
 
     protected $resources = array();
-    protected $groups = array();
-    protected $rights = array();
+    protected $groups    = array();
+    protected $rights    = array();
+    protected $vars      = array();
 
 
     /**
@@ -28,9 +29,10 @@ class SimpleAcl
      * @param $name
      * @param bool|false $isSuperAdmin
      */
-    public function addGroup($name, $isSuperAdmin = false)
+    public function addGroup($name, $isSuperAdmin = false, $vars = array())
     {
         $this->groups[$name] = $isSuperAdmin;
+        $this->vars[$name]   = $vars;
     }
 
     /**
@@ -56,6 +58,22 @@ class SimpleAcl
     public function getResources()
     {
         return $this->resources;
+    }
+
+    /**
+     * @return array
+     */
+    public function getVars($group)
+    {
+        return isset($this->vars[$group]) ? $this->vars[$group] : array();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVar($group, $key, $default = null)
+    {
+        return isset($this->vars[$group][$key]) ? $this->vars[$group][$key] : $default;
     }
 
     /**

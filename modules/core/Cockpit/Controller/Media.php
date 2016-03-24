@@ -9,7 +9,7 @@ class Media extends \Cockpit\AuthController {
     public function api() {
 
         $cmd       = $this->param("cmd", false);
-        $mediapath = trim($this->module("cockpit")->getGroupSetting("media.path", '/'), '/');
+        $mediapath = '';
 
         $this->root = rtrim($this->app->path("site:{$mediapath}"), '/');
 

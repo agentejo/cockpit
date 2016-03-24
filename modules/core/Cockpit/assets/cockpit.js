@@ -11,8 +11,8 @@
 
                 var parts = module.split(':');
 
-                args   = method;
                 acl    = args;
+                args   = method;
 
                 module = parts[0];
                 method = parts[1];
@@ -45,7 +45,7 @@
                     typefilter: '',
                     path: false,
                     selected : []
-                }, options)
+                }, options);
 
                 var selected = [], dialog = UIkit.modal.dialog([
                     '<div>',

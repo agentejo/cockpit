@@ -5,5 +5,5 @@
 </div>
 
 <div riot-view>
-    <cp-finder path="/"></cp-finder>
+    <cp-finder root="{{ $app->module("cockpit")->getGroupVar("media.path", '/') }}"></cp-finder>
 </div>

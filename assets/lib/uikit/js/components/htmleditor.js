@@ -206,9 +206,9 @@
                     }
                 };
 
-                var result = callback(match, index);
+                var result = typeof(callback) === 'string' ? callback : callback(match, index);
 
-                if (!result) {
+                if (!result && result !== '') {
                     return arguments[0];
                 }
 
