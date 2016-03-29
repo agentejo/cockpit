@@ -208,6 +208,18 @@
 
             return App.callmodule('collections:find', [this.collection.name, options]).then(function(data){
 
+                data.result.forEach(function(entry) {
+
+                    // Process fields
+                    for (var key in entry) {
+
+                        if (key in this.fieldsidx && this.fieldsidx[key].type == 'location') {
+                            // Use address to display value
+                            entry[key] = entry[key].address;
+                        }
+                    }
+                }, this);
+
                 this.entries = this.entries.concat(data.result);
 
                 this.ready    = true;
