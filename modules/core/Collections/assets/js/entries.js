@@ -26,7 +26,10 @@
                     $timeout(function(){
                         $scope.entries.splice(index, 1);
                         $scope.collection.count -= 1;
-
+                        App.trigger("entry.remove", {
+                            collection: $scope.collection,
+                            entryId: entryId
+                        });
                         App.notify(App.i18n.get("Entry removed"), "success");
                     }, 0);
                 }).error(App.module.callbacks.error.http);

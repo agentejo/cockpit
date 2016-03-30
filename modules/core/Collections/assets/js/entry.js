@@ -114,7 +114,10 @@
                     if (data && Object.keys(data).length) {
                         $scope.entry = data;
                         App.notify(App.i18n.get("Entry saved!"), "success");
-
+                        App.trigger("entry.save", {
+                            entry: entry,
+                            collection: collection
+                        });
                         $scope.loadVersions();
                     }
 
