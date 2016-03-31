@@ -1,4 +1,4 @@
-/*! UIkit 2.25.0 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.26.1 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(UI) {
 
     "use strict";
@@ -45,10 +45,6 @@
 
                 return UI.Utils.debounce(fn, 20);
             })());
-
-            UI.$html.on("changed.uk.dom", function(e) {
-                $this.process();
-            });
 
             this.on("display.uk.check", function(e) {
                 if (this.element.is(":visible")) this.process();
