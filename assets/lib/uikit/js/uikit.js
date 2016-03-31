@@ -715,8 +715,12 @@
                             if (mutation.type != 'childList') return;
 
                             for (var i = 0, node; i < mutation.addedNodes.length; ++i) {
+
                                 node = mutation.addedNodes[i];
-                                if (node.outerHTML.indexOf('data-uk-') !== -1) init.push(node.parentNode);
+
+                                if (node.outerHTML && node.outerHTML.indexOf('data-uk-') !== -1) {
+                                    init.push(node.parentNode);
+                                }
                             }
                         });
 
@@ -1487,7 +1491,7 @@
                         scrollTop = $win.scrollTop(),
                         target = (function(){
                             for(var i=0; i< inviews.length;i++){
-                                if(inviews[i].offset().top + inviews[i].outerHeight() >= scrollTop){
+                                if(inviews[i].offset().top >= scrollTop){
                                     return inviews[i];
                                 }
                             }
