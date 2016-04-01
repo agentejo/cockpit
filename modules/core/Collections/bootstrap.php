@@ -40,6 +40,8 @@ $this->module("collections")->extend([
             return false;
         }
 
+        $this->app->trigger('collections.createcollection', [$collection]);
+
         return $collection;
     },
 
@@ -60,6 +62,8 @@ $this->module("collections")->extend([
         if (!$this->app->helper('fs')->write($metapath, "<?php\n return {$export};")) {
             return false;
         }
+
+        $this->app->trigger('collections.updatecollection', [$collection]);
 
         return $collection;
     },
@@ -151,6 +155,7 @@ $this->module("collections")->extend([
 
         if (!$collections) return false;
 
+        $name       = $collection;
         $collection = $collections["_id"];
 
         // sort by custom order if collection is sortable
@@ -158,7 +163,13 @@ $this->module("collections")->extend([
             $options['sort'] = ['_order' => 1];
         }
 
-        return (array)$this->app->storage->find("collections/{$collection}", $options);
+        $this->app->trigger('collections.find.before', [$name, &$options, false]);
+
+        $entries = (array)$this->app->storage->find("collections/{$collection}", $options);
+
+        $this->app->trigger('collections.find.after', [$name, &$entries, false]);
+
+        return $entries;
     },
 
     'findOne' => function($collection, $criteria = [], $projection = null) {
@@ -167,9 +178,16 @@ $this->module("collections")->extend([
 
         if (!$collections) return false;
 
+        $name       = $collection;
         $collection = $collections["_id"];
 
-        return $this->app->storage->findOne("collections/{$collection}", $criteria, $projection);
+        $this->app->trigger('collections.find.before', [$name, &$criteria, true]);
+
+        $entry = $this->app->storage->findOne("collections/{$collection}", $criteria, $projection);
+
+        $this->app->trigger('collections.find.after', [$name, &$entry, true]);
+
+        return $entry;
     },
 
     'save' => function($collection, $data) {
@@ -178,6 +196,7 @@ $this->module("collections")->extend([
 
         if (!$collections) return false;
 
+        $name       = $collection;
         $collection = $collections["_id"];
         $data       = isset($data[0]) ? $data : [$data];
         $return     = [];
@@ -256,7 +275,11 @@ $this->module("collections")->extend([
                 $entry["_created"] = $entry["_modified"];
             }
 
+            $this->app->trigger('collections.save.before', [$name, &$entry, $isUpdate]);
+
             $ret = $this->app->storage->save("collections/{$collection}", $entry);
+
+            $this->app->trigger('collections.save.after', [$name, &$entry, $isUpdate]);
 
             $return[] = $ret ? $entry : false;
         }
@@ -270,9 +293,16 @@ $this->module("collections")->extend([
 
         if (!$collections) return false;
 
+        $name       = $collection;
         $collection = $collections["_id"];
 
-        return $this->app->storage->remove("collections/{$collection}", $criteria);
+        $this->app->trigger('collections.remove.before', [$name, &$criteria]);
+
+        $result = $this->app->storage->remove("collections/{$collection}", $criteria);
+
+        $this->app->trigger('collections.remove.after', [$name, $result]);
+
+        return $result;
     },
 
     'count' => function($collection, $criteria = []) {

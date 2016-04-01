@@ -179,7 +179,8 @@ $this->module("forms")->extend([
 
         if (!$forms) return false;
 
-        $form = $forms["_id"];
+        $name       = $form;
+        $form       = $forms["_id"];
         $data       = isset($data[0]) ? $data : [$data];
         $return     = [];
         $modified   = time();
@@ -194,7 +195,11 @@ $this->module("forms")->extend([
                 $entry["_created"] = $entry["_modified"];
             }
 
+            $this->app->trigger('forms.save.before', [$name, &$entry]);
+
             $ret = $this->app->storage->save("forms/{$form}", $entry);
+
+            $this->app->trigger('forms.save.after', [$name, &$entry]);
 
             $return[] = $ret ? $entry : false;
         }

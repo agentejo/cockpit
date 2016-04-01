@@ -77,6 +77,9 @@ class Media extends \Cockpit\AuthController {
         $uploaded   = [];
         $failed     = [];
 
+        // absolute paths for hook
+        $_uploaded  = [];
+        $_failed    = [];
 
         if (isset($files['name']) && $path && file_exists($targetpath)) {
             for ($i = 0; $i < count($files['name']); $i++) {
@@ -85,12 +88,16 @@ class Media extends \Cockpit\AuthController {
                 $clean = preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $files['name'][$i]));
 
                 if (!$files['error'][$i] && move_uploaded_file($files['tmp_name'][$i], $targetpath.'/'.$clean)) {
-                    $uploaded[] = $files['name'][$i];
+                    $uploaded[]  = $files['name'][$i];
+                    $_uploaded[] = $targetpath.'/'.$clean;
                 } else {
-                    $failed[] = $files['name'][$i];
+                    $failed[]    = $files['name'][$i];
+                    $_failed[]   = $targetpath.'/'.$clean;
                 }
             }
         }
+
+        $this->app->trigger('cockpit.media.upload', [$_uploaded, $_failed]);
 
         return json_encode(['uploaded' => $uploaded, 'failed' => $failed]);
     }
@@ -124,7 +131,8 @@ class Media extends \Cockpit\AuthController {
 
     protected function removefiles() {
 
-        $paths = (array)$this->param('paths', array());
+        $paths     = (array)$this->param('paths', array());
+        $deletions = [];
 
         foreach ($paths as $path) {
 
@@ -137,7 +145,11 @@ class Media extends \Cockpit\AuthController {
             if (is_file($delpath)){
                 unlink($delpath);
             }
+
+            $deletions[] = $delpath;
         }
+
+        $this->app->trigger('cockpit.media.removefiles', [$deletions]);
 
         return json_encode(array("success"=>true));
     }
@@ -167,6 +179,7 @@ class Media extends \Cockpit\AuthController {
             $target = dirname($source).'/'.$name;
 
             rename($source, $target);
+            $this->app->trigger('cockpit.media.rename', [$source, $target]);
         }
 
         return json_encode(array("success"=>true));

@@ -40,6 +40,8 @@ $this->module("regions")->extend([
             return false;
         }
 
+        $this->app->trigger('regions.create', [$region]);
+
         return $region;
     },
 
@@ -61,6 +63,8 @@ $this->module("regions")->extend([
             return false;
         }
 
+        $this->app->trigger('regions.update', [$region]);
+
         return $region;
     },
 
@@ -81,6 +85,8 @@ $this->module("regions")->extend([
 
             $this->app->helper("fs")->delete("#storage:regions/{$name}.region.php");
             $this->app->storage->dropregion("regions/{$region}");
+
+            $this->app->trigger('regions.remove', [$name]);
 
             return true;
         }
@@ -150,11 +156,11 @@ $this->module("regions")->extend([
 
         $fields = array_merge(isset($region['data']) && is_array($region['data']) ? $region['data']:[] , $params);
 
-        $this->app->trigger('regions.before.render', [$name, $region['template'], $fields]);
+        $this->app->trigger('regions.render.before', [$name, &$region, $fields]);
 
         $output = $renderer->execute($region['template'], $fields);
 
-        $this->app->trigger('regions.after.render', [$name, $output]);
+        $this->app->trigger('regions.render.after', [$name, &$output]);
 
         return $output;
     }
