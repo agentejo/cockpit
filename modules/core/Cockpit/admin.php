@@ -219,6 +219,7 @@ $app->on("after", function() {
                 }
             }
 
+            $this->trigger("cockpit.request.error", ['500']);
             break;
 
         case 404:
@@ -228,6 +229,8 @@ $app->on("after", function() {
             } else {
                 $this->response->body = $this->view("cockpit:views/errors/404.php");
             }
+
+            $this->trigger("cockpit.request.error", ['404']);
             break;
     }
 });

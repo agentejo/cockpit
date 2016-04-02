@@ -12,7 +12,7 @@ class Auth extends \LimeExtra\Controller {
             $user = $this->module('cockpit')->authenticate($data);
 
             if ($user) {
-
+                $this->app->trigger("cockpit.account.login", [&$user]);
                 $this->module('cockpit')->setUser($user);
             }
 
@@ -33,6 +33,8 @@ class Auth extends \LimeExtra\Controller {
     }
 
     public function logout() {
+
+        $this->app->trigger("cockpit.account.logout", [$this->app->module('cockpit')->getUser()]);
 
         $this->module('cockpit')->logout();
 
