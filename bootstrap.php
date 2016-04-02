@@ -132,7 +132,7 @@ function cockpit($module = null) {
         ]);
 
         // load config global bootstrap
-        if ($custombootfile = $app->path('config:bootstrap.php')) {
+        if ($custombootfile = $app->path('#config:bootstrap.php')) {
             include($custombootfile);
         }
 

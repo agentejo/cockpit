@@ -9,10 +9,9 @@
 
 </div>
 
-<div class="uk-alert" if="{ !entries.length && filter }">
+<div class="uk-alert" if="{ !entries.length && filter && !loading }">
     @lang('No entries found').
 </div>
-
 
 <table class="uk-table uk-table-striped uk-margin-top" if="{ entries.length }">
     <thead>
@@ -56,10 +55,12 @@
     </tbody>
 </table>
 
+<div class="uk-alert" if="{ loading }">
+    <i class="uk-icon-spinner uk-icon-spin"></i> @lang('Loading...').
+</div>
 
-
-<div class="uk margin" if="{ loadmore }">
+<div class="uk margin" if="{ loadmore && !loading }">
     <a class="uk-button uk-width-1-1" onclick="{ load }">
-        @lang('Load more..')
+        @lang('Load more...')
     </a>
 </div>

@@ -206,6 +206,8 @@
                 options.skip  = this.entries.length || 0;
             }
 
+            this.loading = true;
+
             return App.callmodule('collections:find', [this.collection.name, options]).then(function(data){
 
                 this.entries = this.entries.concat(data.result);
@@ -214,6 +216,8 @@
                 this.loadmore = data.result.length && data.result.length == limit;
 
                 this.checkselected();
+
+                this.loading = false;
 
                 this.update();
 
@@ -267,11 +271,12 @@
 
             this.filter = null;
 
+
             if (this.txtfilter.value) {
 
                 var filter       = this.txtfilter.value,
                     criterias    = [],
-                    allowedtypes = ['text','longtext','boolean','select','html','wysiwyg','markdown'],
+                    allowedtypes = ['text','longtext','boolean','select','html','wysiwyg','markdown','code'],
                     criteria;
 
                 if (App.Utils.str2json('{'+filter+'}')) {
@@ -318,6 +323,7 @@
 
             if (this.filter || load) {
                 this.entries = [];
+                this.loading = true;
                 this.load();
             }
         }
