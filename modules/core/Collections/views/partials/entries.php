@@ -33,7 +33,7 @@
             <td><input type="checkbox" data-check data-id="{ entry._id }"></td>
             <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' }">
                 <a class="uk-link-muted" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
-                    { parent.entry[field.name] === undefined ? '': (['number','string'].indexOf(typeof(parent.entry[field.name])) > -1) ? parent.entry[field.name]:JSON.stringify(parent.entry[field.name]) }
+                    <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }"></raw>
                 </a>
             </td>
             <td>{ App.Utils.dateformat( new Date( 1000 * entry._modified )) }</td>

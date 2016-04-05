@@ -15,7 +15,16 @@
 
                 <ul class="uk-list uk-margin-top">
                     @foreach(array_slice($collections, 0, count($collections) > 5 ? 5: count($collections)) as $col)
-                    <li><a href="@route('/collections/entries/'.$col['name'])"><i class="uk-icon-justify uk-icon-list"></i> {{ @$col['label'] ? $col['label'] : $col['name'] }}</a></li>
+                    <li>
+                        <div class="uk-grid uk-grid-small">
+                            <div class="uk-flex-item-1">
+                                <a href="@route('/collections/entries/'.$col['name'])"><i class="uk-icon-justify uk-icon-list"></i> {{ @$col['label'] ? $col['label'] : $col['name'] }}</a>
+                            </div>
+                            <div>
+                                <a href="@route('/collections/entry')/{{ $col['name'] }}" title="@lang('Add entry')" data-uk-tooltip="pos:'right'"><i class="uk-icon-plus-circle"></i></a>
+                            </div>
+                        </div>
+                    </li>
                     @endforeach
                 </ul>
 

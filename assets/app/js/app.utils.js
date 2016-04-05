@@ -210,6 +210,55 @@
         return p;
     };
 
+    // custom renderer
+    App.Utils.renderer = {};
+
+    App.Utils.renderer.default = function(v) {
+        v = String(v === undefined ? '': (['number','string'].indexOf(typeof(v)) > -1) ? v:JSON.stringify(v));
+        return v.length > 30 ? v.substr(0,30)+'...':v;
+    };
+
+    App.Utils.renderer.location = function(v) {
+        return v && v.address ? v.address : App.Utils.renderer.default(v);
+    };
+
+    App.Utils.renderer.image = function(v) {
+        return v && v.path ? '<a href="'+encodeURI(SITE_URL+'/'+v.path)+'" data-uk-lightbox title="'+App.i18n.get('Preview')+'"><i class="uk-icon-image"></i></a>' : App.Utils.renderer.default(v);
+    };
+
+    App.Utils.renderer.gallery = function(v) {
+        return Array.isArray(Array.isArray(v)) ? v.length+' '+App.i18n.get('Image(s)') : App.Utils.renderer.default(v);
+    };
+
+    App.Utils.renderer.boolean = function(v) {
+        return '<i class="uk-icon-circle uk-text-'+(v ? 'success':'danger')+'"></i>';
+    };
+
+    App.Utils.renderer.color = function(v) {
+        return '<i class="uk-icon-circle" style="color:'+(v ? v:'transparent')+'"></i>';
+    };
+
+    App.Utils.renderer.file = function(v) {
+        return v ? '<a title="'+v+'" dta-uk-tooltip><i class="uk-icon-paperclip></i></a>':null;
+    };
+
+    App.Utils.renderer.rating = function(v) {
+        return (v===0 || v) ? '<span class="uk-badge">'+v+'</span>':null;
+    };
+
+    App.Utils.renderer.markdown = function(v) {
+        return v ? '<i class="uk-icon-file-text-o" title="Markdown..." data-uk-tooltip></i>':null;
+    };
+
+    App.Utils.renderer.html = App.Utils.renderer.code = function(v) {
+        return v ? '<i class="uk-icon-code" title="Code..." data-uk-tooltip></i>':null;
+    };
+
+
+    App.Utils.renderValue = function(renderer, v) {
+        return (this.renderer[renderer] || this.renderer.default)(v);
+    };
+
     // riot enhancments
     (function(riot){
 

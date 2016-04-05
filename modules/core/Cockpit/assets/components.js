@@ -804,7 +804,7 @@ riot.tag2('cp-gravatar', '<canvas name="image" class="uk-responsive-width uk-bor
 
 });
 
-riot.tag2('cp-search', '<div name="autocomplete" class="uk-autocomplete uk-form uk-form-icon app-search"> <i class="uk-icon-search"></i> <input class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(\'Search...\')}"> </div>', 'cp-search .uk-dropdown { min-width: 25vw; }', '', function(opts) {
+riot.tag2('cp-search', '<div name="autocomplete" class="uk-autocomplete uk-form uk-form-icon app-search"> <i class="uk-icon-search"></i> <input class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(\'Search for anything...\')}"> </div>', 'cp-search .uk-dropdown { min-width: 25vw; }', '', function(opts) {
 
         this.on('mount', function(){
 
@@ -2053,4 +2053,8 @@ riot.tag2('picoedit', '<div class="picoedit"> <div class="picoedit-toolbar uk-fl
             return App.request('/media/api', data, type).then(fn);
         }
 
+});
+
+riot.tag2('raw', '<span></span>', '', '', function(opts) {
+        this.root.innerHTML = opts.content;
 });

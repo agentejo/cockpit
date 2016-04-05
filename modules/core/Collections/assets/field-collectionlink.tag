@@ -20,7 +20,7 @@
 
                 <div class="uk-grid uk-grid-small uk-text-small" each="{field,idx in fields}" if="{field.name != '_modified'}">
                     <div class="uk-text-bold uk-width-medium-1-5">{ field.label || field.name }</div>
-                    <div class="uk-flex-item-1">{ parent.link[field.name] === undefined ? '': (['number','string'].indexOf(typeof(parent.link[field.name])) > -1) ? parent.link[field.name]:JSON.stringify(parent.link[field.name]) }</div>
+                    <div class="uk-flex-item-1"><raw content="{ App.Utils.renderValue(field.type, parent.link[field.name]) }"></raw></div>
                 </div>
 
                 <div class="uk-panel-box-footer uk-text-small">
@@ -42,7 +42,7 @@
                             <div class="uk-flex-item-1">
                                 <div class="uk-margin" each="{field,idx in parent.fields}" if="{field.name != '_modified'}">
                                     <div class="uk-text-bold uk-width-medium-1-5">{ field.label || field.name }</div>
-                                    <div>{ parent.l[field.name] === undefined ? '': (['number','string'].indexOf(typeof(parent.l[field.name])) > -1) ? parent.l[field.name]:JSON.stringify(parent.l[field.name]) }</div>
+                                    <div><raw content="{ App.Utils.renderValue(field.type, parent.l[field.name]) }"></raw></div>
                                 </div>
                             </div>
 
@@ -101,7 +101,7 @@
                     <tbody>
                         <tr each="{entry,idx in entries}">
                             <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' }">
-                                { parent.entry[field.name] === undefined ? '': (['number','string'].indexOf(typeof(parent.entry[field.name])) > -1) ? parent.entry[field.name]:JSON.stringify(parent.entry[field.name]) }
+                                <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }"></raw>
                             </td>
                             <td>{ App.Utils.dateformat( new Date( 1000 * entry._modified )) }</td>
                             <td>
