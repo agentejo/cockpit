@@ -126,10 +126,10 @@ function cockpit($module = null) {
         $app("i18n")->locale = isset($config['i18n']) ? $config['i18n'] : 'en';
 
         // load modules
-        $app->loadModules([
+        $app->loadModules(array_merge([
             COCKPIT_DIR.'/modules/core',  # core
             COCKPIT_DIR.'/modules/addons' # addons
-        ]);
+        ], isset($config['loadmodules']) ? (array) $config['loadmodules'] : []));
 
         // load config global bootstrap
         if ($custombootfile = $app->path('#config:bootstrap.php')) {
