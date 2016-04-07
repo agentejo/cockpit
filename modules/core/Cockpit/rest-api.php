@@ -28,21 +28,22 @@ $this->on("before", function() {
         $parts      = explode('/', $path, 2);
         $resource   = $parts[0];
         $params     = isset($parts[1]) ? explode('/', $parts[1]) : [];
+        $output     = false;
 
         if (isset($routes[$resource])) {
 
             // invoke class
             if (is_string($routes[$resource])) {
-                $action = count($params) ? array_shift($params):'index';
-                return $this->invoke($routes[$resource], $action, $params);
-            }
 
-            if (is_callable($routes[$resource])) {
-                return call_user_func_array($routes[$resource], $params);
+                $action = count($params) ? array_shift($params):'index';
+                $output = $this->invoke($routes[$resource], $action, $params);
+
+            } elseif (is_callable($routes[$resource])) {
+                $output = call_user_func_array($routes[$resource], $params);
             }
         }
 
-        return false;
+        return $output;
     });
 
 });
