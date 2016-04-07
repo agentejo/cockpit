@@ -27,20 +27,32 @@ $this->module("cockpit")->extend([
 
     "clearCache" => function() use($app) {
 
-        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($app->path("cache:")), \RecursiveIteratorIterator::SELF_FIRST);
+        $dirs = ['#cache:','#tmp:','#thumbs:'];
 
-        foreach ($files as $file) {
+        foreach($dirs as $dir) {
 
-            if (!$file->isFile()) continue;
-            if (preg_match('/(.gitkeep|index\.html)$/', $file)) continue;
+            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($app->path($dir)), \RecursiveIteratorIterator::SELF_FIRST);
 
-            @unlink($file->getRealPath());
+            foreach ($files as $file) {
+
+                if (!$file->isFile()) continue;
+                if (preg_match('/(.gitkeep|index\.html)$/', $file)) continue;
+
+                @unlink($file->getRealPath());
+            }
+
+            $app->helper("fs")->removeEmptySubFolders('#cache:');
         }
 
-        $app->helper("fs")->removeEmptySubFolders('cache:');
         $app->trigger("cockpit.clearcache");
 
-        return ["size"=>$app->helper("utils")->formatSize($app->helper("fs")->getDirSize('cache:'))];
+        $size = 0;
+
+        foreach($dirs as $dir) {
+            $size += $app->helper("fs")->getDirSize($dir);
+        }
+
+        return ["size"=>$app->helper("utils")->formatSize($size)];
     },
 
     "loadApiKeys" => function() {

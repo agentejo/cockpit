@@ -779,7 +779,7 @@ class App implements \ArrayAccess {
 
         $this->bind('/'.$clean.'/*', function() use($self, $class, $clean) {
 
-            $parts      = explode('/', trim(str_replace($clean,"",$self["route"]),'/'));
+            $parts      = explode('/', trim(preg_replace("#$clean#","",$self["route"],1),'/'));
             $action     = isset($parts[0]) ? $parts[0]:"index";
             $params     = count($parts)>1 ? array_slice($parts, 1):[];
 
@@ -804,7 +804,7 @@ class App implements \ArrayAccess {
 
         $this->bind('/'.$clean.'/*', function() use($self, $namespace, $clean) {
 
-            $parts      = explode('/', trim(str_replace($clean,"",$self["route"]),'/'));
+            $parts      = explode('/', trim(preg_replace("#$clean#","",$self["route"],1),'/'));
             $class      = $namespace.'\\'.$parts[0];
             $action     = isset($parts[1]) ? $parts[1]:"index";
             $params     = count($parts)>2 ? array_slice($parts, 2):[];
@@ -958,7 +958,7 @@ class App implements \ArrayAccess {
                             }
 
                             if ($matched){
-                                $found = $this->render_route($route, $params);;
+                                $found = $this->render_route($route, $params);
                                 break;
                             }
                         }

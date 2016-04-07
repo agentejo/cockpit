@@ -19,7 +19,7 @@ class Utils extends \Cockpit\AuthController {
 
             $options = array(
                 "rebuild"     => false,
-                "cachefolder" => "#storage:thumbs",
+                "cachefolder" => "#thumbs:",
                 "quality"     => 100,
                 "base64"      => false,
                 "mode"        => "crop",

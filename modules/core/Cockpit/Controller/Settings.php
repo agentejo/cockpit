@@ -21,6 +21,13 @@ class Settings extends \Cockpit\AuthController {
         $info['sapi_name']     = php_sapi_name();
         $info['extensions']    = get_loaded_extensions();
 
+        $size = 0;
+        foreach(['#cache:','#tmp:','#thumbs:'] as $dir) {
+            $size += $this->app->helper("fs")->getDirSize($dir);
+        }
+
+        $info["cacheSize"]     = $size ? $this->app->helper("utils")->formatSize($size) : 0;
+
         $info["mailer"]        = $this->app->retrieve("config/mailer", false);
 
         return $this->render('cockpit:views/settings/info.php', compact('info'));

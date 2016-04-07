@@ -79,6 +79,7 @@ function cockpit($module = null) {
                 '#data'    => COCKPIT_STORAGE_FOLDER.'/data',
                 '#cache'   => COCKPIT_STORAGE_FOLDER.'/cache',
                 '#tmp'     => COCKPIT_STORAGE_FOLDER.'/tmp',
+                '#thumbs'  => COCKPIT_STORAGE_FOLDER.'/thumbs',
                 '#modules' => COCKPIT_DIR.'/modules',
                 '#uploads' => COCKPIT_DIR.'/uploads',
                 '#config'  => defined('COCKPIT_CONFIG_PATH') ? dirname(COCKPIT_CONFIG_PATH) : COCKPIT_DIR.'/config',
