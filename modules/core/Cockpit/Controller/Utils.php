@@ -12,6 +12,8 @@ class Utils extends \Cockpit\AuthController {
 
         if ($src) {
 
+            $src = rawurldecode($src);
+
             // check if absolute url
             if (substr($src, 0,1) == '/' && file_exists($this->app['docs_root'].$src)) {
                 $src = $this->app['docs_root'].$src;

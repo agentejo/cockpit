@@ -7,18 +7,21 @@
                 <div class="uk-panel uk-panel-box uk-panel-card">
                     <figure class="uk-display-block uk-overlay uk-overlay-hover">
                         <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;">
-                            <div class="uk-width-1-1">
+                            <div class="uk-width-1-1 uk-text-center">
                                 <img class="uk-display-inline-block uk-responsive-width" riot-src="{ (SITE_URL+'/'+img.path) }">
                             </div>
                         </div>
-                        <figcaption class="uk-overlay-panel uk-overlay-background">
+                        <figcaption class="uk-overlay-panel uk-overlay-background uk-flex uk-flex-middle uk-flex-center">
 
-                            <ul class="uk-subnav">
-                                <li><a onclick="{ parent.title }" title="{ App.i18n.get('Set title') }" data-uk-tooltip><i class="uk-icon-tag"></i></a></li>
-                                <li><a onclick="{ parent.remove }" title="{ App.i18n.get('Remove image') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
-                            </ul>
+                            <div>
+                                <ul class="uk-subnav">
+                                    <li><a onclick="{ parent.title }" title="{ App.i18n.get('Set title') }" data-uk-tooltip><i class="uk-icon-tag"></i></a></li>
+                                    <li><a onclick="{ parent.remove }" title="{ App.i18n.get('Remove image') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
+                                    <li><a href="{ (SITE_URL+'/'+img.path) }" data-uk-lightbox="type:'image'" title="{ App.i18n.get('Full size') }" data-uk-tooltip><i class="uk-icon-eye"></i></a></li>
+                                </ul>
 
-                            <p class="uk-text-small uk-text-truncate">{ img.title }</p>
+                                <p class="uk-text-small uk-text-truncate">{ img.title }</p>
+                            </div>
 
                         </figcaption>
                     </figure>
