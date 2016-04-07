@@ -53,7 +53,7 @@
                     </div>
 
                     <div>
-                        <div data-uk-dropdown="{ '{pos:\'bottom-right\'}' }">
+                        <div data-uk-dropdown="pos:'bottom-right'">
 
                             <a class="uk-icon-cog"></a>
 

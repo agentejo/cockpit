@@ -131,7 +131,7 @@
                         <ul class="uk-subnav app-modulesbar">
                             @foreach($modules as $item)
                             <li>
-                                <a class="{{ (@$item['active']) ? 'uk-active':'' }}" href="@route($item['route'])" title="@lang($item['label'])" data-uk-tooltip="{offset:10}">
+                                <a class="{{ (@$item['active']) ? 'uk-active':'' }}" href="@route($item['route'])" title="@lang($item['label'])" data-uk-tooltip="offset:10">
                                     <i class="uk-icon-{{ isset($item['icon']) ? $item['icon']:'cube' }}"></i>
                                 </a>
                             </li>
@@ -142,7 +142,7 @@
 
                     <div>
 
-                        <div data-uk-dropdown="{delay:150}">
+                        <div data-uk-dropdown="delay:150">
 
                             <a class="uk-display-block" href="@route('/accounts/account')" style="width:30px;height:30px;" riot-mount>
                                 <cp-gravatar email="{{ $app['user']['email'] }}" size="30" alt="{{ $app["user"]["name"] ? $app["user"]["name"] : $app["user"]["user"] }}"></cp-gravatar>

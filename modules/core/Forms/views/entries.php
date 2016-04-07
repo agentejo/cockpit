@@ -1,7 +1,7 @@
 <div>
     <ul class="uk-breadcrumb">
         <li><a href="@route('/forms')">@lang('Forms')</a></li>
-        <li class="uk-active" data-uk-dropdown="{mode:'click'}">
+        <li class="uk-active" data-uk-dropdown="mode:'click'">
 
             <a><i class="uk-icon-bars"></i> {{ @$form['label'] ? $form['label']:$form['name'] }}</a>
 

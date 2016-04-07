@@ -88,7 +88,7 @@
         </div>
 
         <div class="uk-width-medium-1-4">
-            <ul class="uk-nav uk-nav-side" data-uk-switcher="{connect:'#settings-info'}">
+            <ul class="uk-nav uk-nav-side" data-uk-switcher="connect:'#settings-info'">
                 <li><a href="#SYSTEM">System</a></li>
                 <li><a href="#PHP">PHP</a></li>
             </ul>
@@ -122,5 +122,5 @@
         </script>
 
     </div>
-    
+
 </div>
