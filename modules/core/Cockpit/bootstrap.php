@@ -200,7 +200,7 @@ if (COCKPIT_ADMIN) {
 
     $this->bind("/api.js", function() {
 
-        $token                = $this->param("_toc", "");
+        $token                = $this->param("token", "");
         $this->response->mime = 'js';
 
         return $this->view('cockpit:views/api.js', compact('token'));

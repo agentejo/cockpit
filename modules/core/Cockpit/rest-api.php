@@ -19,7 +19,7 @@ $this->on("before", function() {
 
         // api key check
         $apikeys = $this->module('cockpit')->loadApiKeys();
-        $allowed = (isset($apikeys['master']) && trim($apikeys['master']) && $apikeys['master'] == $this->param('_toc'));
+        $allowed = (isset($apikeys['master']) && trim($apikeys['master']) && $apikeys['master'] == $this->param('token'));
 
         if (!$allowed) {
             return false;
