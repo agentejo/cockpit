@@ -20,7 +20,8 @@
 
     <script>
         // App constants
-        var SITE_URL = '{{ rtrim($app->pathToUrl('site:'), '/') }}';
+        var SITE_URL   = '{{ rtrim($app->pathToUrl('site:'), '/') }}';
+        var ASSETS_URL = '{{ rtrim($app->pathToUrl('#uploads:'), '/') }}';
     </script>
     <script src="@base('assets:lib/fuc.js.php')"></script>
     {{ $app->assets($app('admin')->data->get('assets'), $app['cockpit/version']) }}
@@ -68,6 +69,10 @@
 
                                             <li class="{{ $app['route'] == '/cockpit/dashboard' ? 'uk-active':'' }}"><a href="@route('/cockpit/dashboard')"><i class="uk-icon-justify uk-icon-dashboard"></i> @lang('Dashboard')</a></li>
 
+                                            <li class="{{ strpos($app['route'],'/assetsmanager')===0 ? 'uk-active':'' }}"><a href="@route('/assetsmanager')"><i class="uk-icon-justify uk-icon-camera"></i> @lang('Assets')</a></li>
+
+                                            <li class="uk-nav-divider"></li>
+
                                             @hasaccess?('cockpit', 'manage.accounts')
                                             <li class="{{ strpos($app['route'],'/accounts')===0 ? 'uk-active':'' }}"><a href="@route('/accounts')"><i class="uk-icon-justify uk-icon-users"></i> @lang('Accounts')</a></li>
                                             @end
@@ -77,7 +82,6 @@
                                             @end
 
                                             @hasaccess?('cockpit', 'manage.settings')
-                                            <li class="uk-nav-divider"></li>
                                             <li class="{{ strpos($app['route'],'/settings')===0 ? 'uk-active':'' }}"><a href="@route('/settings')"><i class="uk-icon-justify uk-icon-cog"></i> @lang('Settings')</a></li>
                                             @end
 

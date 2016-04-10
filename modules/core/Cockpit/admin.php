@@ -137,6 +137,7 @@ $app->bindClass('Cockpit\\Controller\\Settings', 'settings');
 $app->bindClass('Cockpit\\Controller\\Accounts', 'accounts');
 $app->bindClass('Cockpit\\Controller\\Auth', 'auth');
 $app->bindClass('Cockpit\\Controller\\Media', 'media');
+$app->bindClass('Cockpit\\Controller\\Assets', 'assetsmanager');
 $app->bindClass('Cockpit\\Controller\\RestAdmin', 'restadmin');
 
 

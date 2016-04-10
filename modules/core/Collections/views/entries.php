@@ -53,7 +53,7 @@
             <div class="uk-float-right">
 
                 <a class="uk-button uk-button-large uk-button-danger" onclick="{ removeselected }" if="{ selected.length }">
-                    <i class="uk-icon-trash"></i> @lang('Delete') ({ selected.length })
+                    @lang('Delete') <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
                 </a>
 
                 <a class="uk-button uk-button-large uk-button-primary" href="@route('/collections/entry/'.$collection['name'])">@lang('Add entry')</a>

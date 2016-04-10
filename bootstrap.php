@@ -80,8 +80,8 @@ function cockpit($module = null) {
                 '#cache'   => COCKPIT_STORAGE_FOLDER.'/cache',
                 '#tmp'     => COCKPIT_STORAGE_FOLDER.'/tmp',
                 '#thumbs'  => COCKPIT_STORAGE_FOLDER.'/thumbs',
+                '#uploads' => COCKPIT_STORAGE_FOLDER.'/uploads',
                 '#modules' => COCKPIT_DIR.'/modules',
-                '#uploads' => COCKPIT_DIR.'/uploads',
                 '#config'  => defined('COCKPIT_CONFIG_PATH') ? dirname(COCKPIT_CONFIG_PATH) : COCKPIT_DIR.'/config',
                 'assets'   => COCKPIT_DIR.'/assets',
                 'site'     => COCKPIT_DIR == COCKPIT_DOCS_ROOT ? COCKPIT_DIR : dirname(COCKPIT_DIR)

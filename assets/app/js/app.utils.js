@@ -210,6 +210,11 @@
         return p;
     };
 
+    App.Utils.formatSize = function humanFileSize(size) {
+        var i = Math.floor( Math.log(size) / Math.log(1024) );
+        return Number(size) ? ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i] : 'n/a';
+    };
+
     // custom renderer
     App.Utils.renderer = {};
 

@@ -53,4 +53,8 @@ class ResultSet extends \ArrayObject {
     public function toArray() {
         return $this->getArrayCopy();
     }
+
+    public function __toString() {
+        return json_encode($this->getArrayCopy());
+    }
 }
