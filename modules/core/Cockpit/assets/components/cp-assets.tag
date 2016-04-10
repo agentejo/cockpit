@@ -1,10 +1,6 @@
 <cp-assets>
 
-    <div class="uk-text-center uk-text-muted uk-h2" show="{ loading }">
-        <i class="uk-icon-spinner uk-icon-spin"></i>
-    </div>
-
-    <div class="uk-form" name="list" show="{ !loading && mode=='list' }">
+    <div class="uk-form" name="list" show="{ mode=='list' }">
 
         <div class="uk-grid uk-grid-width-1-2">
             <div>
@@ -17,7 +13,7 @@
                     </div>
                     <div>
                         <select class="uk-form-large" name="filtertype" onchange="{ listAssets }">
-                            <option>All</option>
+                            <option value="">All</option>
                             <option value="image">Image</option>
                             <option value="video">Video</option>
                             <option value="audio">Audio</option>
@@ -52,11 +48,15 @@
             </div>
         </div>
 
-        <div class="uk-margin-large-top uk-panel-space uk-text-center" show="{ !assets.length }">
+        <div class="uk-margin-large-top uk-panel-space uk-text-center" show="{ !loading && !assets.length }">
             <span class="uk-text-muted uk-h2">{ App.i18n.get('No Assets found') }</span>
         </div>
 
-        <div class="uk-margin-large-top" if="{ assets.length }">
+        <div class="uk-text-center uk-text-muted uk-h2 uk-margin-large-top" show="{ loading }">
+            <i class="uk-icon-spinner uk-icon-spin"></i>
+        </div>
+
+        <div class="uk-margin-large-top" if="{ !loading && assets.length }">
 
             <div class="uk-grid uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
                 <div class="uk-grid-margin" each="{ asset,idx in assets }" each="{ asset,idx in assets }" onclick="{ select }">
@@ -86,7 +86,7 @@
                 <thead>
                     <tr>
                         <td width="30"></td>
-                        <th>{ App.i18n.get('Name') }</th>
+                        <th>{ App.i18n.get('Title') }</th>
                         <th width="20%">{ App.i18n.get('Type') }</th>
                         <th width="10%">{ App.i18n.get('Size') }</th>
                         <th width="10%">{ App.i18n.get('Updated') }</th>
@@ -133,7 +133,7 @@
             <div class="uk-grid">
                 <div class="uk-width-2-3">
                     <div class="uk-form-row">
-                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Name') }</label>
+                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Title') }</label>
                         <input class="uk-width-1-1" type="text" name="assettitle" required>
                     </div>
 
@@ -271,6 +271,10 @@
 
             if (this.filter.value) {
                 options.filter.title = {'$regex':this.filter.value};
+            }
+
+            if (this.filtertype.value) {
+                options.filter[this.filtertype.value] = true;
             }
 
             App.request('/assetsmanager/listAssets', options).then(function(assets){
