@@ -110,4 +110,18 @@ class Assets extends \Cockpit\AuthController {
 
     }
 
+    public function updateAsset() {
+
+        if ($asset = $this->param('asset', false)) {
+
+            $asset['modified'] = time();
+
+            $this->app->storage->save("cockpit/assets", $asset);
+
+            return $asset;
+        }
+
+        return false;
+    }
+
 }

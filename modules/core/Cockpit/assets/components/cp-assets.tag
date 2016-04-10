@@ -84,50 +84,53 @@
 
     </div>
 
-
     <div class="uk-form" show="{asset && mode=='edit'}">
+        <form onsubmit="{ updateAsset }">
+            <div class="uk-grid">
+                <div class="uk-width-2-3">
+                    <div class="uk-form-row">
+                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Name') }</label>
+                        <input class="uk-width-1-1" type="text" name="assetname" required>
+                    </div>
 
-        <div class="uk-grid">
-            <div class="uk-width-2-3">
-                <div class="uk-form-row">
-                    <label class="uk-text-small uk-text-bold">{ App.i18n.get('Name') }</label>
-                    <input class="uk-width-1-1" type="text" name="assetname">
+                    <div class="uk-form-row">
+                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Description') }</label>
+                        <textarea class="uk-width-1-1" name="assetdescription"></textarea>
+                    </div>
+
+                    <div class="uk-margin uk-panel uk-panel-box uk-panel-space uk-text-center">
+                        <span class="uk-h1" if="{ asset && asset.mime.match(/^image\//) == null }"><i class="uk-icon-paperclip"></i></span>
+                        <cp-thumbnail src="{ASSETS_URL+asset.path}" width="400" height="250" if="{ asset && asset.mime.match(/^image\//) }"></cp-thumbnail>
+                    </div>
                 </div>
+                <div class="uk-width-1-3">
 
-                <div class="uk-form-row">
-                    <label class="uk-text-small uk-text-bold">{ App.i18n.get('Description') }</label>
-                    <textarea class="uk-width-1-1" name="assetdescription"></textarea>
-                </div>
+                    <div class="uk-margin">
+                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Id') }</label>
+                        <div class="uk-margin-small-top uk-text-muted">{ asset._id }</div>
+                    </div>
+                    <div class="uk-margin">
+                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Type') }</label>
+                        <div class="uk-margin-small-top uk-text-muted">{ asset.mime }</div>
+                    </div>
+                    <div class="uk-margin">
+                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Size') }</label>
+                        <div class="uk-margin-small-top uk-text-muted">{ App.Utils.formatSize(asset.size) }</div>
+                    </div>
+                    <div class="uk-margin">
+                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Created') }</label>
+                        <div class="uk-margin-small-top uk-text-muted">{ App.Utils.dateformat( new Date( 1000 * asset.modified )) }</div>
+                    </div>
 
-                <div class="uk-margin uk-panel uk-panel-box uk-panel-space uk-text-center">
-                    <span class="uk-h1" if="{ asset && asset.mime.match(/^image\//) == null }"><i class="uk-icon-paperclip"></i></span>
-                    <cp-thumbnail src="{ASSETS_URL+asset.path}" width="400" height="250" if="{ asset && asset.mime.match(/^image\//) }"></cp-thumbnail>
                 </div>
             </div>
-            <div class="uk-width-1-3">
 
-                <div class="uk-margin">
-                    <label class="uk-text-small uk-text-bold">{ App.i18n.get('Id') }</label>
-                    <div class="uk-margin-small-top">{ asset._id }</div>
-                </div>
-                <div class="uk-margin">
-                    <label class="uk-text-small uk-text-bold">{ App.i18n.get('Size') }</label>
-                    <div class="uk-margin-small-top">{ App.Utils.formatSize(asset.size) }</div>
-                </div>
-                <div class="uk-margin">
-                    <label class="uk-text-small uk-text-bold">{ App.i18n.get('Created') }</label>
-                    <div class="uk-margin-small-top">{ App.Utils.dateformat( new Date( 1000 * asset.modified )) }</div>
-                </div>
-
+            <div class="uk-margin">
+                <button type="submit" class="uk-button uk-button-large uk-button-primary uk-margin-small-right">{ App.i18n.get('Save') }</button>
+                <a onclick="{ cancelEdit }">{ App.i18n.get('Cancel') }</a>
             </div>
-        </div>
 
-        <div class="uk-margin">
-            <button type="button" class="uk-button uk-button-large uk-button-primary uk-margin-small-right">{ App.i18n.get('Save') }</button>
-            <a onclick="{ cancelEdit }">{ App.i18n.get('Cancel') }</a>
-        </div>
-
-
+        </form>
 
     </div>
 
@@ -259,6 +262,25 @@
         cancelEdit() {
             this.asset = null;
             this.mode  = 'list';
+        }
+
+        updateAsset(e) {
+            
+            e.preventDefault();
+
+            this.asset.name = this.assetname.value;
+            this.asset.description = this.assetdescription.value;
+
+            App.request('/assetsmanager/updateAsset', {asset:$this.asset}).then(function(asset) {
+
+                $this.asset = asset;
+
+                App.ui.notify("Asset saved", "success");
+
+                $this.update();
+            });
+
+            return false;
         }
 
         select(e) {
