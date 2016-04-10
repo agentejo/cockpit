@@ -7,11 +7,19 @@
 
     <script>
 
-        var $this = this;
+        var $this = this, src;
 
-        this.on('mount', function(){
+        this.on('update', function(){
 
             opts.src = opts.src || opts['riot-src'] || opts['riotSrc'];
+
+            if (src == opts.src) {
+                return;
+            }
+
+            $this.spinner.classList.remove('uk-hidden');
+
+            $this.canvas.getContext("2d").clearRect(0, 0, $this.canvas.width, $this.canvas.height);
 
             App.request('/cockpit/utils/thumb_url', {src:opts.src,w:opts.width,h:opts.height}, 'text').then(function(url){
 
@@ -24,6 +32,7 @@
                 };
 
                 img.src = url;
+                src = opts.src;
             });
         });
 

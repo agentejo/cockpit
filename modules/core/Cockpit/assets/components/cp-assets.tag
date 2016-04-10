@@ -4,7 +4,7 @@
         <i class="uk-icon-spinner uk-icon-spin"></i>
     </div>
 
-    <div show="{ !loading && mode=='list' }">
+    <div name="list" show="{ !loading && mode=='list' }">
 
         <div class="uk-grid uk-grid-width-1-2">
             <div>
@@ -187,7 +187,8 @@
                         }
                 },
 
-                uploadselect = UIkit.uploadSelect(App.$('.js-upload-select', $this.root)[0], uploadSettings);
+                uploadselect = UIkit.uploadSelect(App.$('.js-upload-select', $this.root)[0], uploadSettings),
+                uploaddrop   = UIkit.uploadDrop($this.list, uploadSettings);
 
                 UIkit.init(this.root);
             });
@@ -265,7 +266,7 @@
         }
 
         updateAsset(e) {
-            
+
             e.preventDefault();
 
             this.asset.name = this.assetname.value;
@@ -275,7 +276,7 @@
 
                 $this.asset = asset;
 
-                App.ui.notify("Asset saved", "success");
+                App.ui.notify("Asset updated", "success");
 
                 $this.update();
             });

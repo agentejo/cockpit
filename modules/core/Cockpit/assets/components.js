@@ -218,7 +218,7 @@ riot.tag2('codemirror', '', '', '', function(opts) {
 
 });
 
-riot.tag2('cp-assets', '<div class="uk-text-center uk-text-muted uk-h2" show="{loading}"> <i class="uk-icon-spinner uk-icon-spin"></i> </div> <div show="{!loading && mode==\'list\'}"> <div class="uk-grid uk-grid-width-1-2"> <div> <div class="uk-form-icon uk-form uk-display-block uk-width-1-1"> <i class="uk-icon-search"></i> <input class="uk-width-1-1 uk-form-large" type="text" name="filter" onchange="{listAssets}"> </div> </div> <div class="uk-text-right"> <button class="uk-button uk-button-large uk-button-danger" type="button" onclick="{removeSelected}" show="{selected.length}"> {App.i18n.get(\'Delete\')} <span class="uk-badge uk-badge-contrast uk-margin-small-left">{selected.length}</span> </button> <span class="uk-button uk-button-large uk-button-primary uk-margin-small-right uk-form-file"> <input class="js-upload-select" type="file" multiple="true"> <i class="uk-icon-upload"></i> </span> </div> </div> <div name="uploadprogress" class="uk-margin uk-hidden"> <div class="uk-progress"> <div name="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div> </div> </div> <div class="uk-margin-large-top uk-panel-space uk-text-center" show="{!assets.length}"> <span class="uk-text-muted uk-h2">{App.i18n.get(\'No Assets found\')}</span> </div> <div class="uk-margin-large-top" if="{assets.length}"> <table class="uk-table uk-panel-card"> <thead> <tr> <td width="30"></td> <th>{App.i18n.get(\'Name\')}</th> <th width="20%">{App.i18n.get(\'Type\')}</th> <th width="10%">{App.i18n.get(\'Size\')}</th> <th width="10%">{App.i18n.get(\'Updated\')}</th> <th width="30"></th> </tr> </thead> <tbody> <tr class="{selected.length && selected.indexOf(asset) != -1 ? \'uk-selected\':\'\'}" each="{asset,idx in assets}" onclick="{select}"> <td class="uk-text-center"> <span if="{asset.mime.match(/^image\\//) == null}"><i class="uk-icon-paperclip"></i></span> <a href="{ASSETS_URL+asset.path}" if="{asset.mime.match(/^image\\//)}" data-uk-lightbox="type:\'image\'"> <cp-thumbnail riot-src="{ASSETS_URL+asset.path}" width="20" height="20"></cp-thumbnail> </a> </td> <td><a onclick="{parent.edit}">{asset.name}</a></td> <td class="uk-text-small">{asset.mime}</td> <td class="uk-text-small">{App.Utils.formatSize(asset.size)}</td> <td class="uk-text-small">{App.Utils.dateformat( new Date( 1000 * asset.modified ))}</td> <td> <span class="uk-float-right" data-uk-dropdown="\\{mode:\'click\'\\}"> <a class="uk-icon-bars"></a> <div class="uk-dropdown uk-dropdown-flip"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">{App.i18n.get(\'Actions\')}</li> <li><a class="uk-dropdown-close" onclick="{parent.edit}">{App.i18n.get(\'Edit\')}</a></li> <li><a class="uk-dropdown-close" onclick="{parent.remove}">{App.i18n.get(\'Delete\')}</a></li> </ul> </div> </span> </td> </tr> </tbody> </table> </div> </div> <div class="uk-form" show="{asset && mode==\'edit\'}"> <form onsubmit="{updateAsset}"> <div class="uk-grid"> <div class="uk-width-2-3"> <div class="uk-form-row"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Name\')}</label> <input class="uk-width-1-1" type="text" name="assetname" required> </div> <div class="uk-form-row"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Description\')}</label> <textarea class="uk-width-1-1" name="assetdescription"></textarea> </div> <div class="uk-margin uk-panel uk-panel-box uk-panel-space uk-text-center"> <span class="uk-h1" if="{asset && asset.mime.match(/^image\\//) == null}"><i class="uk-icon-paperclip"></i></span> <cp-thumbnail riot-src="{ASSETS_URL+asset.path}" width="400" height="250" if="{asset && asset.mime.match(/^image\\//)}"></cp-thumbnail> </div> </div> <div class="uk-width-1-3"> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Id\')}</label> <div class="uk-margin-small-top uk-text-muted">{asset._id}</div> </div> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Type\')}</label> <div class="uk-margin-small-top uk-text-muted">{asset.mime}</div> </div> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Size\')}</label> <div class="uk-margin-small-top uk-text-muted">{App.Utils.formatSize(asset.size)}</div> </div> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Created\')}</label> <div class="uk-margin-small-top uk-text-muted">{App.Utils.dateformat( new Date( 1000 * asset.modified ))}</div> </div> </div> </div> <div class="uk-margin"> <button type="submit" class="uk-button uk-button-large uk-button-primary uk-margin-small-right">{App.i18n.get(\'Save\')}</button> <a onclick="{cancelEdit}">{App.i18n.get(\'Cancel\')}</a> </div> </form> </div>', '', '', function(opts) {
+riot.tag2('cp-assets', '<div class="uk-text-center uk-text-muted uk-h2" show="{loading}"> <i class="uk-icon-spinner uk-icon-spin"></i> </div> <div name="list" show="{!loading && mode==\'list\'}"> <div class="uk-grid uk-grid-width-1-2"> <div> <div class="uk-form-icon uk-form uk-display-block uk-width-1-1"> <i class="uk-icon-search"></i> <input class="uk-width-1-1 uk-form-large" type="text" name="filter" onchange="{listAssets}"> </div> </div> <div class="uk-text-right"> <button class="uk-button uk-button-large uk-button-danger" type="button" onclick="{removeSelected}" show="{selected.length}"> {App.i18n.get(\'Delete\')} <span class="uk-badge uk-badge-contrast uk-margin-small-left">{selected.length}</span> </button> <span class="uk-button uk-button-large uk-button-primary uk-margin-small-right uk-form-file"> <input class="js-upload-select" type="file" multiple="true"> <i class="uk-icon-upload"></i> </span> </div> </div> <div name="uploadprogress" class="uk-margin uk-hidden"> <div class="uk-progress"> <div name="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div> </div> </div> <div class="uk-margin-large-top uk-panel-space uk-text-center" show="{!assets.length}"> <span class="uk-text-muted uk-h2">{App.i18n.get(\'No Assets found\')}</span> </div> <div class="uk-margin-large-top" if="{assets.length}"> <table class="uk-table uk-panel-card"> <thead> <tr> <td width="30"></td> <th>{App.i18n.get(\'Name\')}</th> <th width="20%">{App.i18n.get(\'Type\')}</th> <th width="10%">{App.i18n.get(\'Size\')}</th> <th width="10%">{App.i18n.get(\'Updated\')}</th> <th width="30"></th> </tr> </thead> <tbody> <tr class="{selected.length && selected.indexOf(asset) != -1 ? \'uk-selected\':\'\'}" each="{asset,idx in assets}" onclick="{select}"> <td class="uk-text-center"> <span if="{asset.mime.match(/^image\\//) == null}"><i class="uk-icon-paperclip"></i></span> <a href="{ASSETS_URL+asset.path}" if="{asset.mime.match(/^image\\//)}" data-uk-lightbox="type:\'image\'"> <cp-thumbnail riot-src="{ASSETS_URL+asset.path}" width="20" height="20"></cp-thumbnail> </a> </td> <td><a onclick="{parent.edit}">{asset.name}</a></td> <td class="uk-text-small">{asset.mime}</td> <td class="uk-text-small">{App.Utils.formatSize(asset.size)}</td> <td class="uk-text-small">{App.Utils.dateformat( new Date( 1000 * asset.modified ))}</td> <td> <span class="uk-float-right" data-uk-dropdown="\\{mode:\'click\'\\}"> <a class="uk-icon-bars"></a> <div class="uk-dropdown uk-dropdown-flip"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">{App.i18n.get(\'Actions\')}</li> <li><a class="uk-dropdown-close" onclick="{parent.edit}">{App.i18n.get(\'Edit\')}</a></li> <li><a class="uk-dropdown-close" onclick="{parent.remove}">{App.i18n.get(\'Delete\')}</a></li> </ul> </div> </span> </td> </tr> </tbody> </table> </div> </div> <div class="uk-form" show="{asset && mode==\'edit\'}"> <form onsubmit="{updateAsset}"> <div class="uk-grid"> <div class="uk-width-2-3"> <div class="uk-form-row"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Name\')}</label> <input class="uk-width-1-1" type="text" name="assetname" required> </div> <div class="uk-form-row"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Description\')}</label> <textarea class="uk-width-1-1" name="assetdescription"></textarea> </div> <div class="uk-margin uk-panel uk-panel-box uk-panel-space uk-text-center"> <span class="uk-h1" if="{asset && asset.mime.match(/^image\\//) == null}"><i class="uk-icon-paperclip"></i></span> <cp-thumbnail riot-src="{ASSETS_URL+asset.path}" width="400" height="250" if="{asset && asset.mime.match(/^image\\//)}"></cp-thumbnail> </div> </div> <div class="uk-width-1-3"> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Id\')}</label> <div class="uk-margin-small-top uk-text-muted">{asset._id}</div> </div> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Type\')}</label> <div class="uk-margin-small-top uk-text-muted">{asset.mime}</div> </div> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Size\')}</label> <div class="uk-margin-small-top uk-text-muted">{App.Utils.formatSize(asset.size)}</div> </div> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Created\')}</label> <div class="uk-margin-small-top uk-text-muted">{App.Utils.dateformat( new Date( 1000 * asset.modified ))}</div> </div> </div> </div> <div class="uk-margin"> <button type="submit" class="uk-button uk-button-large uk-button-primary uk-margin-small-right">{App.i18n.get(\'Save\')}</button> <a onclick="{cancelEdit}">{App.i18n.get(\'Cancel\')}</a> </div> </form> </div>', '', '', function(opts) {
 
         var $this = this;
 
@@ -269,7 +269,8 @@ riot.tag2('cp-assets', '<div class="uk-text-center uk-text-muted uk-h2" show="{l
                         }
                 },
 
-                uploadselect = UIkit.uploadSelect(App.$('.js-upload-select', $this.root)[0], uploadSettings);
+                uploadselect = UIkit.uploadSelect(App.$('.js-upload-select', $this.root)[0], uploadSettings),
+                uploaddrop   = UIkit.uploadDrop($this.list, uploadSettings);
 
                 UIkit.init(this.root);
             });
@@ -357,7 +358,7 @@ riot.tag2('cp-assets', '<div class="uk-text-center uk-text-muted uk-h2" show="{l
 
                 $this.asset = asset;
 
-                App.ui.notify("Asset saved", "success");
+                App.ui.notify("Asset updated", "success");
 
                 $this.update();
             });
@@ -1010,11 +1011,19 @@ riot.tag2('cp-search', '<div name="autocomplete" class="uk-autocomplete uk-form 
 
 riot.tag2('cp-thumbnail', '<span class="uk-position-relative"> <i name="spinner" class="uk-icon-spinner uk-icon-spin uk-position-absolute"></i> <canvas name="canvas" class="uk-responsive-width" width="{opts.width || \'\'}" height="{opts.height || \'\'}"></canvas> </span>', '', '', function(opts) {
 
-        var $this = this;
+        var $this = this, src;
 
-        this.on('mount', function(){
+        this.on('update', function(){
 
             opts.src = opts.src || opts['riot-src'] || opts['riotSrc'];
+
+            if (src == opts.src) {
+                return;
+            }
+
+            $this.spinner.classList.remove('uk-hidden');
+
+            $this.canvas.getContext("2d").clearRect(0, 0, $this.canvas.width, $this.canvas.height);
 
             App.request('/cockpit/utils/thumb_url', {src:opts.src,w:opts.width,h:opts.height}, 'text').then(function(url){
 
@@ -1027,6 +1036,7 @@ riot.tag2('cp-thumbnail', '<span class="uk-position-relative"> <i name="spinner"
                 };
 
                 img.src = url;
+                src = opts.src;
             });
         });
 
