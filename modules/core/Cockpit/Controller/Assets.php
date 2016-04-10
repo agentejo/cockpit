@@ -60,7 +60,7 @@ class Assets extends \Cockpit\AuthController {
 
                     $asset = [
                         'path' => str_replace($path, '', $target),
-                        'name' => $files['name'][$i],
+                        'title' => $files['name'][$i],
                         'mime' => finfo_file($finfo, $target),
                         'description' => '',
                         'tags' => [],

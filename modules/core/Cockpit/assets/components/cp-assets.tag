@@ -16,11 +16,14 @@
                         </div>
                     </div>
                     <div>
-                        <select class="uk-form-large">
+                        <select class="uk-form-large" name="filtertype" onchange="{ listAssets }">
                             <option>All</option>
-                            <option>Image</option>
-                            <option>Video</option>
-                            <option>Audio</option>
+                            <option value="image">Image</option>
+                            <option value="video">Video</option>
+                            <option value="audio">Audio</option>
+                            <option value="document">Document</option>
+                            <option value="archive">Archive</option>
+                            <option value="code">Code</option>
                         </select>
                     </div>
                 </div>
@@ -70,7 +73,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="uk-margin-small-top uk-text-truncate"><a onclick="{ parent.edit }">{ asset.name }</a></div>
+                        <div class="uk-margin-small-top uk-text-truncate"><a onclick="{ parent.edit }">{ asset.title }</a></div>
                         <div class="uk-text-small uk-text-muted">
                             <strong>{ asset.mime }</strong>
                             { App.Utils.formatSize(asset.size) }
@@ -100,7 +103,7 @@
                                 <cp-thumbnail src="{ASSETS_URL+asset.path}" width="20" height="20"></cp-thumbnail>
                             </a>
                         </td>
-                        <td><a onclick="{ parent.edit }">{ asset.name }</a></td>
+                        <td><a onclick="{ parent.edit }">{ asset.title }</a></td>
                         <td class="uk-text-small">{ asset.mime }</td>
                         <td class="uk-text-small">{ App.Utils.formatSize(asset.size) }</td>
                         <td class="uk-text-small">{ App.Utils.dateformat( new Date( 1000 * asset.modified )) }</td>
@@ -131,7 +134,7 @@
                 <div class="uk-width-2-3">
                     <div class="uk-form-row">
                         <label class="uk-text-small uk-text-bold">{ App.i18n.get('Name') }</label>
-                        <input class="uk-width-1-1" type="text" name="assetname" required>
+                        <input class="uk-width-1-1" type="text" name="assettitle" required>
                     </div>
 
                     <div class="uk-form-row">
@@ -262,10 +265,12 @@
 
             var options = {};
 
+            if (this.filter.value || this.filtertype.value) {
+                options.filter = {};
+            }
+
             if (this.filter.value) {
-                options.filter = {
-                    'name':{'$regex':this.filter.value}
-                };
+                options.filter.title = {'$regex':this.filter.value};
             }
 
             App.request('/assetsmanager/listAssets', options).then(function(assets){
@@ -317,7 +322,7 @@
         edit(e) {
             this.asset = e.item.asset;
             this.mode  = 'edit';
-            this.assetname.value = this.asset.name;
+            this.assettitle.value = this.asset.title;
             this.assetdescription.value = this.asset.description;
         }
 
@@ -330,7 +335,7 @@
 
             e.preventDefault();
 
-            this.asset.name = this.assetname.value;
+            this.asset.title = this.assettitle.value;
             this.asset.description = this.assetdescription.value;
 
             App.request('/assetsmanager/updateAsset', {asset:$this.asset}).then(function(asset) {
