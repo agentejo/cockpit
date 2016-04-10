@@ -59,7 +59,7 @@
                                     <li><a href="@route('/collections/entry')/{collection}">@lang('Add entry')</a></li>
                                     <li class="uk-nav-divider"></li>
                                     <li><a href="@route('/collections/collection')/{ collection }">@lang('Edit')</a></li>
-                                    <li><a onclick="{ parent.remove }">@lang('Delete')</a></li>
+                                    <li><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
                                     <li class="uk-nav-divider"></li>
                                     <li class="uk-text-truncate"><a href="@route('/collections/export')/{ meta.name }" download="{ meta.name }.collection.json">@lang('Export entries')</a></li>
                                 </ul>

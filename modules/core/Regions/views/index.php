@@ -58,7 +58,7 @@
                                     <li><a href="@route('/regions/form')/{ region }">@lang('Form')</a></li>
                                     <li class="uk-nav-divider"></li>
                                     <li><a href="@route('/regions/region')/{ region }">@lang('Edit')</a></li>
-                                    <li><a onclick="{ parent.remove }">@lang('Delete')</a></li>
+                                    <li><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
                                 </ul>
                             </div>
                         </div>

@@ -58,7 +58,7 @@
                                     <li><a href="@route('/forms/entries')/{form}">@lang('Entries')</a></li>
                                     <li class="uk-nav-divider"></li>
                                     <li><a href="@route('/forms/form')/{ form }">@lang('Edit')</a></li>
-                                    <li><a onclick="{ parent.remove }">@lang('Delete')</a></li>
+                                    <li><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
                                     <li class="uk-nav-divider"></li>
                                     <li class="uk-text-truncate"><a href="@route('/forms/export')/{ meta.name }" download="{ meta.name }.form.json">@lang('Export entries')</a></li>
                                 </ul>
