@@ -4,13 +4,25 @@
         <i class="uk-icon-spinner uk-icon-spin"></i>
     </div>
 
-    <div name="list" show="{ !loading && mode=='list' }">
+    <div class="uk-form" name="list" show="{ !loading && mode=='list' }">
 
         <div class="uk-grid uk-grid-width-1-2">
             <div>
-                <div class="uk-form-icon uk-form uk-display-block uk-width-1-1">
-                    <i class="uk-icon-search"></i>
-                    <input class="uk-width-1-1 uk-form-large" type="text" name="filter" onchange="{ listAssets }">
+                <div class="uk-grid">
+                    <div class="uk-flex-item-1">
+                        <div class="uk-form-icon uk-display-block uk-width-1-1">
+                            <i class="uk-icon-search"></i>
+                            <input class="uk-width-1-1 uk-form-large" type="text" name="filter" onchange="{ listAssets }">
+                        </div>
+                    </div>
+                    <div>
+                        <select class="uk-form-large">
+                            <option>All</option>
+                            <option>Image</option>
+                            <option>Video</option>
+                            <option>Audio</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="uk-text-right">
@@ -50,9 +62,9 @@
                             <canvas class="uk-responsive-width" width="200" height="150"></canvas>
                             <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle">
                                 <div class="uk-width-1-1 uk-text-center">
-                                    <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-icon-paperclip"></i></span>
+                                    <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-h1 uk-icon-paperclip"></i></span>
 
-                                    <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'">
+                                    <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
                                         <cp-thumbnail src="{ASSETS_URL+asset.path}" width="100" height="75"></cp-thumbnail>
                                     </a>
                                 </div>
@@ -60,9 +72,8 @@
                         </div>
                         <div class="uk-margin-small-top uk-text-truncate"><a onclick="{ parent.edit }">{ asset.name }</a></div>
                         <div class="uk-text-small uk-text-muted">
-                            <strong class="uk-margin-small-right">{ asset.mime }</strong>
-                            { App.Utils.formatSize(asset.size) },
-                            { App.Utils.dateformat( new Date( 1000 * asset.modified )) }
+                            <strong>{ asset.mime }</strong>
+                            { App.Utils.formatSize(asset.size) }
                         </div>
                     </div>
                 </div>
@@ -85,7 +96,7 @@
 
                             <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-icon-paperclip"></i></span>
 
-                            <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'">
+                            <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
                                 <cp-thumbnail src="{ASSETS_URL+asset.path}" width="20" height="20"></cp-thumbnail>
                             </a>
                         </td>
@@ -150,6 +161,10 @@
                     <div class="uk-margin">
                         <label class="uk-text-small uk-text-bold">{ App.i18n.get('Created') }</label>
                         <div class="uk-margin-small-top uk-text-muted">{ App.Utils.dateformat( new Date( 1000 * asset.modified )) }</div>
+                    </div>
+                    <div class="uk-margin">
+                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Url') }</label>
+                        <div class="uk-margin-small-top uk-text-truncate uk-text-muted"><a href="{ASSETS_URL+asset.path}" target="_blank">{ASSETS_URL+asset.path}</a></div>
                     </div>
 
                 </div>

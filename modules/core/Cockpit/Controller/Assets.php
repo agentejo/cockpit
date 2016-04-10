@@ -11,7 +11,9 @@ class Assets extends \Cockpit\AuthController {
 
     public function listAssets() {
 
-        $options = [];
+        $options = [
+            'sort' => ['created' => -1]
+        ];
 
         if ($filter = $this->param("filter", null)) $options["filter"] = $filter;
         if ($limit  = $this->param("limit", null))  $options["limit"] = $limit;
@@ -56,16 +58,30 @@ class Assets extends \Cockpit\AuthController {
 
                     $created = time();
 
-                    $assets[] = [
+                    $asset = [
                         'path' => str_replace($path, '', $target),
                         'name' => $files['name'][$i],
                         'mime' => finfo_file($finfo, $target),
                         'description' => '',
                         'tags' => [],
                         'size' => filesize($target),
+                        'image' => preg_match('/\.(jpg|jpeg|png|gif|svg)$/i', $target) ? true:false,
+                        'video' => preg_match('/\.(mp4|mov|ogv|webv|wmv|flv|avi)$/i', $target) ? true:false,
+                        'audio' => preg_match('/\.(mp3|weba|ogg|wav|flac)$/i', $target) ? true:false,
+                        'archive' => preg_match('/\.(zip|rar|7zip|gz|tar)$/i', $target) ? true:false,
+                        'document' => preg_match('/\.(txt|htm|html|pdf|md)$/i', $target) ? true:false,
+                        'code' => preg_match('/\.(htm|html|php|css|less|js|json|md|markdown|yaml|xml|htaccess)$/i', $target) ? true:false,
                         'created' => $created,
                         'modified' => $created
                     ];
+
+                    if ($asset['image'] && !preg_match('/\.svg$/i', $target)) {
+                        $info = getimagesize($target);
+                        $asset['width']  = $info[0];
+                        $asset['height'] = $info[1];
+                    }
+
+                    $assets[] = $asset;
 
                     $uploaded[]  = $files['name'][$i];
                     $_uploaded[] = $targetpath.'/'.$clean;
