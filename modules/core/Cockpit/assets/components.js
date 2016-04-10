@@ -270,7 +270,7 @@ riot.tag2('cp-assets', '<div class="uk-form" name="list" show="{mode==\'list\'}"
                                     $this.assets.unshift(asset);
                                 });
 
-                                $this.update();
+                                $this.listAssets();
                             }
 
                             if (!response) {

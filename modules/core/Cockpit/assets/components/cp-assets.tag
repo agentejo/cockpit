@@ -236,7 +236,7 @@
                                     $this.assets.unshift(asset);
                                 });
 
-                                $this.update();
+                                $this.listAssets();
                             }
 
                             if (!response) {
