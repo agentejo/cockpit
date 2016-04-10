@@ -84,7 +84,7 @@ class Assets extends \Cockpit\AuthController {
             $this->app->storage->insert("cockpit/assets", $assets);
         }
 
-        return json_encode(['uploaded' => $uploaded, 'failed' => $failed]);
+        return json_encode(['uploaded' => $uploaded, 'failed' => $failed, 'assets' => $assets]);
     }
 
     public function removeAssets() {

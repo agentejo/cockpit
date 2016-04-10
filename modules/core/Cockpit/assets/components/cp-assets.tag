@@ -19,6 +19,11 @@
                     { App.i18n.get('Delete') } <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
                 </button>
 
+                <span class="uk-button-group uk-button-large">
+                    <button class="uk-button uk-button-large {listmode=='list' ? 'uk-button-primary':''}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-list"></i></button>
+                    <button class="uk-button uk-button-large {listmode=='grid' ? 'uk-button-primary':''}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-th"></i></button>
+                </span>
+
                 <span class="uk-button uk-button-large uk-button-primary uk-margin-small-right uk-form-file">
                     <input class="js-upload-select" type="file" multiple="true">
                     <i class="uk-icon-upload"></i>
@@ -38,7 +43,32 @@
 
         <div class="uk-margin-large-top" if="{ assets.length }">
 
-            <table class="uk-table uk-panel-card">
+            <div class="uk-grid uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
+                <div class="uk-grid-margin" each="{ asset,idx in assets }" each="{ asset,idx in assets }" onclick="{ select }">
+                    <div class="uk-panel uk-panel-box uk-panel-card { selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}">
+                        <div class="uk-overlay uk-display-block uk-position-relative">
+                            <canvas class="uk-responsive-width" width="200" height="150"></canvas>
+                            <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle">
+                                <div class="uk-width-1-1 uk-text-center">
+                                    <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-icon-paperclip"></i></span>
+
+                                    <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'">
+                                        <cp-thumbnail src="{ASSETS_URL+asset.path}" width="100" height="75"></cp-thumbnail>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="uk-margin-small-top uk-text-truncate"><a onclick="{ parent.edit }">{ asset.name }</a></div>
+                        <div class="uk-text-small uk-text-muted">
+                            <strong class="uk-margin-small-right">{ asset.mime }</strong>
+                            { App.Utils.formatSize(asset.size) },
+                            { App.Utils.dateformat( new Date( 1000 * asset.modified )) }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="uk-table uk-panel-card" if="{ listmode=='list' }">
                 <thead>
                     <tr>
                         <td width="30"></td>
@@ -140,6 +170,7 @@
         var $this = this;
 
         this.mode     = 'list';
+        this.listmode = App.session.get('app.assets.listmode', 'list');
         this.loading  = false;
         this.selected = [];
 
@@ -175,9 +206,19 @@
                                 App.ui.notify("File(s) failed to uploaded.", "danger");
                             }
 
-                            if (response && response.uploaded && response.uploaded.length) {
+                            if (response && Array.isArray(response.assets) && response.assets.length) {
+
+                                if (!Array.isArray($this.assets)) {
+                                    $this.assets = [];
+                                }
+
                                 App.ui.notify("File(s) uploaded.", "success");
-                                $this.listAssets();
+
+                                response.assets.forEach(function(asset){
+                                    $this.assets.unshift(asset);
+                                });
+
+                                $this.update();
                             }
 
                             if (!response) {
@@ -194,6 +235,11 @@
             });
 
         });
+
+        toggleListMode() {
+            this.listmode = this.listmode=='list' ? 'grid':'list';
+            App.session.set('app.assets.listmode', this.listmode);
+        }
 
         listAssets() {
 
