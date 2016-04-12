@@ -65,7 +65,7 @@
                             <canvas class="uk-responsive-width" width="200" height="150"></canvas>
                             <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle">
                                 <div class="uk-width-1-1 uk-text-center">
-                                    <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-h1 uk-icon-paperclip"></i></span>
+                                    <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-h1 uk-text-muted uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
 
                                     <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
                                         <cp-thumbnail src="{ASSETS_URL+asset.path}" width="100" height="75"></cp-thumbnail>
@@ -97,7 +97,7 @@
                     <tr class="{ selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}" each="{ asset,idx in assets }" onclick="{ select }">
                         <td class="uk-text-center">
 
-                            <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-icon-paperclip"></i></span>
+                            <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-text-muted uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
 
                             <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
                                 <cp-thumbnail src="{ASSETS_URL+asset.path}" width="20" height="20"></cp-thumbnail>
@@ -143,7 +143,7 @@
                     </div>
 
                     <div class="uk-margin uk-panel uk-panel-box uk-panel-space uk-text-center">
-                        <span class="uk-h1" if="{ asset && asset.mime.match(/^image\//) == null }"><i class="uk-icon-paperclip"></i></span>
+                        <span class="uk-h1" if="{ asset && asset.mime.match(/^image\//) == null }"><i class="uk-icon-{ getIconCls(asset.path) }"></i></span>
                         <cp-thumbnail src="{ASSETS_URL+asset.path}" width="400" height="250" if="{ asset && asset.mime.match(/^image\//) }"></cp-thumbnail>
                     </div>
                 </div>
@@ -185,7 +185,14 @@
 
     <script>
 
-        var $this = this;
+        var $this = this, typefilters = {
+            'image'    : /\.(jpg|jpeg|png|gif|svg)$/i,
+            'video'    : /\.(mp4|mov|ogv|webv|wmv|flv|avi)$/i,
+            'audio'    : /\.(mp3|weba|ogg|wav|flac)$/i,
+            'archive'  : /\.(zip|rar|7zip|gz)$/i,
+            'document' : /\.(txt|pdf|md)$/i,
+            'code'     : /\.(htm|html|php|css|less|js|json|yaml|xml|htaccess)$/i
+        };
 
         this.mode     = 'list';
         this.listmode = App.session.get('app.assets.listmode', 'list');
@@ -364,6 +371,39 @@
                 this.selected.push(e.item.asset);
             } else {
                 this.selected.splice(idx, 1);
+            }
+        }
+
+        getIconCls(path) {
+
+            var name = path.toLowerCase();
+
+            if (name.match(typefilters.image)) {
+
+                return 'image';
+
+            } else if(name.match(typefilters.video)) {
+
+                return 'video-camera';
+
+            } else if(name.match(typefilters.audio)) {
+
+                return 'music';
+
+            } else if(name.match(typefilters.document)) {
+
+                return 'file-text-o';
+
+            } else if(name.match(typefilters.code)) {
+
+                return 'code';
+
+            } else if(name.match(typefilters.archive)) {
+
+                return 'archive';
+
+            } else {
+                return 'paperclip';
             }
         }
 

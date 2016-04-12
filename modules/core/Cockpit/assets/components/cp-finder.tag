@@ -603,7 +603,7 @@
 
             } else if(name.match(typefilters.video)) {
 
-                return 'video';
+                return 'video-camera';
 
             } else if(name.match(typefilters.text)) {
 
