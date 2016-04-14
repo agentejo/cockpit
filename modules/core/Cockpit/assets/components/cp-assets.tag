@@ -8,11 +8,11 @@
                     <div class="uk-flex-item-1">
                         <div class="uk-form-icon uk-display-block uk-width-1-1">
                             <i class="uk-icon-search"></i>
-                            <input class="uk-width-1-1 uk-form-large" type="text" name="filter" onchange="{ listAssets }">
+                            <input class="uk-width-1-1 uk-form-large" type="text" name="filtertitle" onchange="{ updateFilter }">
                         </div>
                     </div>
                     <div>
-                        <select class="uk-form-large" name="filtertype" onchange="{ listAssets }">
+                        <select class="uk-form-large" name="filtertype" onchange="{ updateFilter }">
                             <option value="">All</option>
                             <option value="image">Image</option>
                             <option value="video">Video</option>
@@ -124,6 +124,15 @@
                     </tr>
                 </tbody>
             </table>
+
+            <div class="uk-margin-top" if="{count > limit}">
+                <span class="uk-button-group uk-margin-small-right">
+                    <a class="uk-button uk-button-large" onclick="{ loadPage }" data-page="{ (page - 1) }" if="{ page > 1 }">{ App.i18n.get('Previous') }</a>
+                    <a class="uk-button uk-button-large" onclick="{ loadPage }" data-page="{ (page + 1) }" if="{ (page*limit) < count }">{ App.i18n.get('Next') }</a>
+                </span>
+                <span class="uk-text-small uk-text-muted">{page}/{Math.ceil(count/limit)}</span>
+            </div>
+
         </div>
 
     </div>
@@ -173,8 +182,8 @@
                 </div>
             </div>
 
-            <div class="uk-margin">
-                <button type="submit" class="uk-button uk-button-large uk-button-primary uk-margin-small-right">{ App.i18n.get('Save') }</button>
+            <div class="uk-margin-large-top">
+                <button type="submit" class="uk-button uk-button-large uk-button-primary uk-margin-right">{ App.i18n.get('Save') }</button>
                 <a onclick="{ cancelEdit }">{ App.i18n.get('Cancel') }</a>
             </div>
 
@@ -199,9 +208,14 @@
         this.loading  = false;
         this.selected = [];
 
+        // pagination
+        this.count    = 0;
+        this.page     = 1;
+        this.limit    = opts.limit || 30;
+
         this.on('mount', function() {
 
-            this.listAssets();
+            this.listAssets(1);
 
             // handle uploads
             App.assets.require(['/assets/lib/uikit/js/components/upload.js'], function() {
@@ -243,7 +257,7 @@
                                     $this.assets.unshift(asset);
                                 });
 
-                                $this.listAssets();
+                                $this.listAssets(1);
                             }
 
                             if (!response) {
@@ -266,32 +280,53 @@
             App.session.set('app.assets.listmode', this.listmode);
         }
 
-        listAssets() {
+        listAssets(page) {
 
+            this.page    = page || 1;
             this.loading = true;
 
-            var options = {};
+            var options = {
+                filter : this.filter || null,
+                limit  : this.limit,
+                skip   : (this.page-1) * this.limit,
+                sort   : {created:-1}
+            };
 
-            if (this.filter.value || this.filtertype.value) {
-                options.filter = {};
-            }
+            App.request('/assetsmanager/listAssets', options).then(function(response){
 
-            if (this.filter.value) {
-                options.filter.title = {'$regex':this.filter.value};
-            }
-
-            if (this.filtertype.value) {
-                options.filter[this.filtertype.value] = true;
-            }
-
-            App.request('/assetsmanager/listAssets', options).then(function(assets){
-
-                $this.assets = Array.isArray(assets) ? assets:[];
-                $this.loading = false;
+                $this.assets   = Array.isArray(response.assets) ? response.assets:[];
+                $this.count    = response.count || 0;
+                $this.loading  = false;
                 $this.selected = [];
                 $this.update();
             });
 
+        }
+
+        updateFilter() {
+
+            this.filter = null;
+
+            if (this.filtertitle.value || this.filtertype.value) {
+                this.filter = {};
+            }
+
+            if (this.filtertitle.value) {
+                this.filter.title = {'$regex':this.filter.value};
+            }
+
+            if (this.filtertype.value) {
+                this.filter[this.filtertype.value] = true;
+            }
+
+            this.listAssets(1);
+        }
+
+        loadPage(e) {
+
+            var page = parseInt(e.target.getAttribute('data-page'), 10);
+
+            this.listAssets(page || 1);
         }
 
         remove(e) {
@@ -372,6 +407,8 @@
             } else {
                 this.selected.splice(idx, 1);
             }
+
+            App.$(this.root).trigger('selectionchange', [this.selected]);
         }
 
         getIconCls(path) {
