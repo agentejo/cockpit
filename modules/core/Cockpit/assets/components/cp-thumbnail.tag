@@ -13,7 +13,7 @@
 
             opts.src = opts.src || opts['riot-src'] || opts['riotSrc'];
 
-            if (src == opts.src) {
+            if (!opts.src || src == opts.src) {
                 return;
             }
 
@@ -33,6 +33,8 @@
 
                 img.src = url;
                 src = opts.src;
+            }).catch(function(e){
+
             });
         });
 

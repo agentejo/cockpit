@@ -56,7 +56,7 @@
             <i class="uk-icon-spinner uk-icon-spin"></i>
         </div>
 
-        <div class="uk-margin-large-top" if="{ !loading && assets.length }">
+        <div class="uk-margin-large-top {modal ? 'uk-overflow-container':''}" if="{ !loading && assets.length }">
 
             <div class="uk-grid uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
                 <div class="uk-grid-margin" each="{ asset,idx in assets }" each="{ asset,idx in assets }" onclick="{ select }">
@@ -153,7 +153,7 @@
 
                     <div class="uk-margin uk-panel uk-panel-box uk-panel-space uk-text-center">
                         <span class="uk-h1" if="{ asset && asset.mime.match(/^image\//) == null }"><i class="uk-icon-{ getIconCls(asset.path) }"></i></span>
-                        <cp-thumbnail src="{ASSETS_URL+asset.path}" width="400" height="250" if="{ asset && asset.mime.match(/^image\//) }"></cp-thumbnail>
+                        <cp-thumbnail src="{asset && ASSETS_URL+asset.path}" width="400" height="250" if="{ asset && asset.mime.match(/^image\//) }"></cp-thumbnail>
                     </div>
                 </div>
                 <div class="uk-width-1-3">
@@ -214,6 +214,8 @@
         this.limit    = opts.limit || 30;
 
         this.on('mount', function() {
+
+            this.modal = App.$(this.root).closest('.uk-modal').length ? UIkit.modal(App.$(this.root).closest('.uk-modal')):false;
 
             this.listAssets(1);
 
