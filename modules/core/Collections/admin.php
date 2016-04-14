@@ -6,7 +6,7 @@ $app("acl")->addResource("collections", ['manage.collections']);
 
 $app->on('admin.init', function() {
 
-    $this->helper('admin')->data['components']->append('collections:assets/field-collectionlink.tag');
+    $this->helper('admin')->addAssets('collections:assets/field-collectionlink.tag');
 
     if (!$this->module('cockpit')->hasaccess('collections', ['manage.collections'])) {
         return;

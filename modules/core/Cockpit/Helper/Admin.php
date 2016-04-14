@@ -80,7 +80,21 @@ class Admin extends \Lime\Helper {
 
         return $this;
     }
-    
+
+    public function addAssets($assets) {
+
+        foreach ((array)$assets as $asset) {
+
+            if (preg_match('/\.(js|css)$/i', $asset)) {
+                $this->data['assets']->append($asset);
+            } elseif(preg_match('/\.tag$/i', $asset)) {
+                $this->data['components']->append($asset);
+            }
+        }
+
+        return $this;
+    }
+
     public function extractVar($key, $value) {
 
         $this->data["extract/{$key}"] = $value;

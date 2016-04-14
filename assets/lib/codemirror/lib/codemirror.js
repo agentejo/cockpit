@@ -1,6 +1,6 @@
 /* CodeMirror - Minified & Bundled
    Generated on 31.3.2016 with http://codemirror.net/doc/compress.html
-   Version: HEAD
+   Version: 5.13.2 HEAD
 
    CodeMirror Library:
    - codemirror.js
