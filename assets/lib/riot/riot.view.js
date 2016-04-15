@@ -43,7 +43,7 @@
                 view = views[i];
                 vid  = viewuid();
                 tag  = ("<"+vid+">\n" + view.innerHTML + "\n</"+vid+">").replace(' type="view/script"', '');
-                ele  = d.createElement(view.tagName);
+                ele  = d.createElement(view.tagName.toLowerCase() == 'script' ? 'div':view.tagName);
 
                 copyattrs(view, ele);
                 riot.compile(tag);
@@ -65,7 +65,7 @@
     function copyattrs(src, target) {
 
         for (var i = 0, atts = src.attributes, n = atts.length; i < n; i++) {
-            if (atts[i].name == 'riot-view') continue;
+            if (['riot-view', 'type'].indexOf(atts[i].name) !== -1) continue;
             target.setAttribute(atts[i].name, atts[i].value);
         }
     }
@@ -106,6 +106,5 @@
     d.addEventListener('DOMContentLoaded', function(event) {
         riot.util.autoMount();
     });
-
 
 })(riot, document);
