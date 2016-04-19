@@ -3,7 +3,17 @@
     <span></span>
 
     <script>
-        this.root.innerHTML = opts.content;
+
+        var cache = null;
+
+        this.on('update', function(){
+
+            if (cache==opts.content) return;
+
+            this.root.innerHTML = opts.content;
+            cache = opts.content;
+        });
+
     </script>
 
 </raw>

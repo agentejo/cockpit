@@ -2393,5 +2393,15 @@ riot.tag2('picoedit', '<div class="picoedit"> <div class="picoedit-toolbar uk-fl
 });
 
 riot.tag2('raw', '<span></span>', '', '', function(opts) {
-        this.root.innerHTML = opts.content;
+
+        var cache = null;
+
+        this.on('update', function(){
+
+            if (cache==opts.content) return;
+
+            this.root.innerHTML = opts.content;
+            cache = opts.content;
+        });
+
 });
