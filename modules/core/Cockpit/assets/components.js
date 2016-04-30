@@ -1487,6 +1487,13 @@ riot.tag2('field-html', '<textarea name="input" class="uk-visibility-hidden"></t
 
                 $this.input.value = $this.value;
 
+                if(opts.codemirroroptions){
+                    co=opts.codemirroroptions;
+                    for(prop in co){
+                        if(!(prop in opts))
+                            opts[prop]=co[prop];
+                    }
+                }
                 editor = UIkit.htmleditor(this.input, opts);
                 editor.on('input', function() {
                     $this.$setValue(editor.editor.getValue());
@@ -1683,7 +1690,7 @@ riot.tag2('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-sm
 
 });
 
-riot.tag2('field-markdown', '<field-html name="input" markdown="true" bind="{opts.bind}"></field-html>', '', '', function(opts) {
+riot.tag2('field-markdown', '<field-html name="input" markdown="true" bind="{opts.bind}" codemirroroptions="{opts.codemirror}"></field-html>', '', '', function(opts) {
 });
 
 riot.tag2('field-multipleselect', '<div class="uk-grid-gutter"> <div name="container" class="uk-grid uk-grid-match uk-grid-width-medium-1-6"> <div class="uk-grid-margin" each="{option in options}"> <a data-value="{option}" class="{parent.selected.indexOf(option)!==-1 ? \'uk-link-muted\':\'uk-text-muted\'}" onclick="{toggle}" title="{option}"> <i class="uk-icon-{parent.selected.indexOf(option)!==-1 ? \'circle\':\'circle-o\'}"></i> {option} </a> </div> </div> </div>', '', '', function(opts) {
