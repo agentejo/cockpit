@@ -1138,11 +1138,12 @@ class SimpleImage {
      *
      * @param int           $width
      * @param int|null      $height If omitted - assumed equal to $width
+     * @param string        $focal
      *
      * @return SimpleImage
      *
      */
-    function thumbnail($width, $height = null) {
+    public function thumbnail($width, $height = null, $focal = 'center') {
 
         // Determine height
         $height = $height ?: $width;
@@ -1157,12 +1158,67 @@ class SimpleImage {
         } else {
             $this->fit_to_width($width);
         }
-        $left = floor(($this->width / 2) - ($width / 2));
-        $top = floor(($this->height / 2) - ($height / 2));
+
+        switch(strtolower($focal)) {
+            case 'top':
+                $left = floor(($this->width / 2) - ($width / 2));
+                $right = $width + $left;
+                $top = 0;
+                $bottom = $height;
+                break;
+            case 'bottom':
+                $left = floor(($this->width / 2) - ($width / 2));
+                $right = $width + $left;
+                $top = $this->height - $height;
+                $bottom = $this->height;
+                break;
+            case 'left':
+                $left = 0;
+                $right = $width;
+                $top = floor(($this->height / 2) - ($height / 2));
+                $bottom = $height + $top;
+                break;
+            case 'right':
+                $left = $this->width - $width;
+                $right = $this->width;
+                $top = floor(($this->height / 2) - ($height / 2));
+                $bottom = $height + $top;
+                break;
+            case 'top left':
+                $left = 0;
+                $right = $width;
+                $top = 0;
+                $bottom = $height;
+                break;
+            case 'top right':
+                $left = $this->width - $width;
+                $right = $this->width;
+                $top = 0;
+                $bottom = $height;
+                break;
+            case 'bottom left':
+                $left = 0;
+                $right = $width;
+                $top = $this->height - $height;
+                $bottom = $this->height;
+                break;
+            case 'bottom right':
+                $left = $this->width - $width;
+                $right = $this->width;
+                $top = $this->height - $height;
+                $bottom = $this->height;
+                break;
+            case 'center':
+            default:
+                $left = floor(($this->width / 2) - ($width / 2));
+                $right = $width + $left;
+                $top = floor(($this->height / 2) - ($height / 2));
+                $bottom = $height + $top;
+                break;
+        }
 
         // Return trimmed image
-        return $this->crop($left, $top, $width + $left, $height + $top);
-
+        return $this->crop($left, $top, $right, $bottom);
     }
 
     /**

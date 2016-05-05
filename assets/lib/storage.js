@@ -12,19 +12,20 @@
 
         var $this = this;
 
-        this.name = name;
-        this.adapter = adapter;
-        this.data = adapter.load(name);
-        this.expires = {};
+        this.name      = name;
+        this.adapter   = adapter;
+        this.data      = adapter.load(name);
+        this.data.__ex = this.data.__ex || {}; // expires data container
 
+        // cleanup expires data
         (function() {
 
             var time = (new Date()).getTime();
 
-            for (var key in $this.expires) {
-                if ($this.expires[key] < time) {
+            for (var key in $this.data.__ex) {
+                if ($this.data.__ex[key] < time) {
                     delete $this.data[key];
-                    delete $this.expires[key];
+                    delete $this.data.__ex[key];
                 }
             }
 
@@ -44,7 +45,7 @@
         var $this = this;
 
         this.data = {};
-        this.expires = {};
+        this.data.__ex = {};
 
         setTimeout(function() {
             $this.store();
@@ -55,9 +56,9 @@
 
     Store.prototype.get = function(key, def) {
 
-        if (this.expires[key] && this.expires[key] < (new Date()).getTime()) {
+        if (this.data.__ex[key] && this.data.__ex[key] < (new Date()).getTime()) {
             delete this.data[key];
-            delete this.expires[key];
+            delete this.data.__ex[key];
         }
 
         return this.data[key] !== undefined ? this.data[key] : def;
@@ -74,7 +75,7 @@
     };
 
     Store.prototype.expire = function(key, seconds) {
-        if (this.data[key]) this.expires[key] = (new Date()).getTime() + (seconds * 1000);
+        if (this.data[key]) this.data.__ex[key] = (new Date()).getTime() + (seconds * 1000);
     };
 
     Store.prototype.exists = function(key) {
@@ -94,8 +95,8 @@
             if (this.exists(key)) {
                 delete this.data[key];
 
-                if (this.expires[key]) {
-                    delete this.expires[key];
+                if (this.data.__ex[key]) {
+                    delete this.data.__ex[key];
                 }
 
                 removed++;
