@@ -88,6 +88,7 @@ $assets = [
     'assets:polyfills/es6-shim.js',
     'assets:polyfills/dom4.js',
     'assets:polyfills/object-observe.js',
+    'assets:lib/moment.js',
     'assets:lib/jquery.js',
     'assets:lib/lodash.js',
     'assets:lib/riot/riot.js',

@@ -82,8 +82,10 @@
 
                 <div class="uk-margin">
                     <label class="uk-text-small">@lang('Last Modified')</label>
-                    <div class="uk-margin-small-top" if="{entry._id}">{  App.Utils.dateformat( new Date( 1000 * entry._modified )) }</div>
-                    <div class="uk-margin-small-top" if="{!entry._id}">@lang('Not saved yet')</div>
+                    <div class="uk-margin-small-top uk-text-muted" if="{entry._id}">
+                        <i class="uk-icon-calendar uk-margin-small-right"></i> {  App.Utils.dateformat( new Date( 1000 * entry._modified )) }
+                    </div>
+                    <div class="uk-margin-small-top uk-text-muted" if="{!entry._id}">@lang('Not saved yet')</div>
                 </div>
 
             </div>

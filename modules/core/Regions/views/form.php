@@ -92,7 +92,7 @@
 
                     <div class="uk-margin">
                         <label class="uk-text-small">@lang('Last Modified')</label>
-                        <div class="uk-margin-small-top">{  App.Utils.dateformat( new Date( 1000 * region._modified )) }</div>
+                        <div class="uk-margin-small-top uk-text-muted"><i class="uk-icon-calendar uk-margin-small-right"></i> {  App.Utils.dateformat( new Date( 1000 * region._modified )) }</div>
                     </div>
 
                 </div>

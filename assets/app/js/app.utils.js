@@ -41,9 +41,13 @@
         return b;
     };
 
-    App.Utils.dateformat  = function(date) {
+    App.Utils.dateformat  = function(date, format) {
 
         var str;
+
+        if (window.moment) {
+            return window.moment(date).format(format || 'LL');
+        }
 
         if (window.Intl && Intl.DateTimeFormat) {
             str = (new Intl.DateTimeFormat()).format(date);
