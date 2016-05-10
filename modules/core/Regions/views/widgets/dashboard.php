@@ -3,7 +3,7 @@
     <div class="uk-panel-box uk-panel-card">
 
         <div class="uk-panel-box-header uk-flex">
-            <strong class="uk-flex-item-1">@lang('Regions')</strong>
+            <strong class="uk-panel-box-header-title uk-flex-item-1">@lang('Regions')</strong>
             @if(count($regions))
             <span class="uk-badge uk-flex uk-flex-middle"><span>{{ count($regions) }}</span></span>
             @endif
@@ -13,7 +13,7 @@
 
             <div class="uk-margin">
 
-                <ul class="uk-list uk-margin-top">
+                <ul class="uk-list uk-list-space uk-margin-top">
                     @foreach(array_slice($regions, 0, count($regions) > 5 ? 5: count($regions)) as $region)
                     <li><a href="@route('/regions/form/'.$region['name'])"><i class="uk-icon-justify uk-icon-th"></i> {{ @$region['label'] ? $region['label'] : $region['name'] }}</a></li>
                     @endforeach

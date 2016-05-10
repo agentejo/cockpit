@@ -3,7 +3,7 @@
     <div class="uk-panel-box uk-panel-card">
 
         <div class="uk-panel-box-header uk-flex">
-            <strong class="uk-flex-item-1">@lang('Collections')</strong>
+            <strong class="uk-panel-box-header-title uk-flex-item-1">@lang('Collections')</strong>
             @if(count($collections))
             <span class="uk-badge uk-flex uk-flex-middle"><span>{{ count($collections) }}</span></span>
             @endif
@@ -13,7 +13,7 @@
 
             <div class="uk-margin">
 
-                <ul class="uk-list uk-margin-top">
+                <ul class="uk-list uk-list-space uk-margin-top">
                     @foreach(array_slice($collections, 0, count($collections) > 5 ? 5: count($collections)) as $col)
                     <li>
                         <div class="uk-grid uk-grid-small">
