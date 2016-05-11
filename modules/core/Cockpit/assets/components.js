@@ -338,7 +338,7 @@ riot.tag2('cp-assets', '<div class="uk-form" name="list" show="{mode==\'list\'}"
             }
 
             if (this.filtertitle.value) {
-                this.filter.title = {'$regex':this.filter.value};
+                this.filter.title = {'$regex':this.filtertitle.value};
             }
 
             if (this.filtertype.value) {
@@ -2304,6 +2304,33 @@ riot.tag2('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5"
                     context: 'insert',
                     prependToContext: true
                 });
+
+                editor.addMenuItem('assetpath', {
+                    icon: 'image',
+                    text: 'Insert Asset (Assets)',
+                    onclick: function(){
+
+                        App.assets.select(function(assets){
+
+                            if (Array.isArray(assets) && assets[0]) {
+
+                                var asset = assets[0], content;
+
+                                if (asset.mime.match(/^image\//)) {
+                                    content = '<img src="' + ASSETS_URL+asset.path + '" alt="">';
+                                } else {
+                                    content = '<a href="' + ASSETS_URL+asset.path + '">'+asset.title+'<a>';
+                                }
+
+                                editor.insertContent(content);
+                            }
+                        });
+
+                    },
+                    context: 'insert',
+                    prependToContext: true
+                });
+
             });
 
             initPlugins.done = true;

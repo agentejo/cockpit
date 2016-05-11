@@ -314,7 +314,7 @@
             }
 
             if (this.filtertitle.value) {
-                this.filter.title = {'$regex':this.filter.value};
+                this.filter.title = {'$regex':this.filtertitle.value};
             }
 
             if (this.filtertype.value) {
