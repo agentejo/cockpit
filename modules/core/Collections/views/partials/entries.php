@@ -1,13 +1,3 @@
-<div class="uk-margin">
-
-    <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted">
-
-        <i class="uk-icon-search"></i>
-        <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" name="txtfilter" placeholder="@lang('Filter items...')" onchange="{ updatefilter }">
-
-    </div>
-
-</div>
 
 <div class="uk-alert" if="{ !entries.length && filter && !loading }">
     @lang('No entries found').

@@ -48,7 +48,18 @@
 
         </div>
 
-        <div class="uk-clearfix uk-margin-large-top" if="{ entries.length }">
+        <div class="uk-clearfix uk-margin-top" if="{ entries.length }">
+
+            @if(!$collection['sortable'])
+            <div class="uk-float-left uk-width-1-2">
+                <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted">
+
+                    <i class="uk-icon-search"></i>
+                    <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" name="txtfilter" placeholder="@lang('Filter items...')" onchange="{ updatefilter }">
+
+                </div>
+            </div>
+            @endif
 
             <div class="uk-float-right">
 
@@ -62,7 +73,7 @@
         </div>
 
 
-        <div class="uk-margin-top" if="{ entries.length || filter }">
+        <div class="uk-margin-large-top" if="{ entries.length || filter }">
 
             @render('collections:views/partials/entries'.($collection['sortable'] ? '.sortable':'').'.php', compact('collection'))
 
