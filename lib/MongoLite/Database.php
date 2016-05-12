@@ -295,7 +295,7 @@ class UtilArrayQuery {
             case '$regex' :
             case '$preg' :
             case '$match' :
-                $r = (boolean) @preg_match('/'.$b.'/', $a, $match);
+                $r = (boolean) @preg_match(isset($b[0]) && $b[0]=='/' ? $b : '/'.$b.'/i', $a, $match);
                 break;
 
             case '$size' :
