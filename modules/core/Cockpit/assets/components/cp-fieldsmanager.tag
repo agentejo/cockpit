@@ -160,7 +160,15 @@
             }
 
             if (this.fields !== value) {
+
                 this.fields = value;
+
+                this.fields.forEach(function(field) {
+                    if (Array.isArray(field.options)) {
+                        field.options = {};
+                    }
+                });
+
                 this.update();
             }
 

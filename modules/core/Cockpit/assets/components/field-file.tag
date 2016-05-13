@@ -1,8 +1,9 @@
 <field-file>
 
-    <div class="uk-flex">
-        <input class="uk-flex-item-1 uk-margin-small-right" type="text" name="input" bind="{ opts.bind }" placeholder="{ opts.placeholder || App.i18n.get('No file selected...') }" disabled>
-        <button type="button" class="uk-button" name="picker"><i class="uk-icon-paperclip"></i></button>
+    <div class="uk-panel uk-panel-box uk-panel-card">
+        { input.$value }
+        <button type="button" class="uk-button uk-margin-small-right" name="picker" title="{ App.i18n.get('Pick file') }"><i class="uk-icon-paperclip"></i></button>
+        <input class="uk-form-blank" type="text" name="input" bind="{ opts.bind }" placeholder="{ opts.placeholder || App.i18n.get('No file selected...') }">
     </div>
 
     <script>

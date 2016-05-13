@@ -198,7 +198,7 @@
                 req.push(this._ress[ress[i]]);
             }
 
-            return Promise.all(req).then(onSuccess).catch(function(){
+            return Promise.all(req).then(onSuccess).catch(function(e){
                 onError.apply(self, [e]);
             });
         },

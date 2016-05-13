@@ -1,6 +1,6 @@
 <field-object>
 
-    <textarea name="input" class="uk-width-1-1" onchange="{ change }" placeholder="{ opts.placeholder }">{}</textarea>
+    <div name="input" style="height: {opts.height || '300px'}"></div>
 
     <script>
 
@@ -12,9 +12,6 @@
             App.$(this.input).addClass(opts.cls);
         }
 
-        this.input.setAttribute('rows', opts.rows || 5);
-        this.input.setAttribute('style', 'font-family: monospace;tab-size:2;');
-
         if (opts.required) {
             this.input.setAttribute('required', 'required');
         }
@@ -23,21 +20,21 @@
 
             App.assets.require([
 
-                '/assets/lib/behave.js'
+                '/assets/lib/jsoneditor/jsoneditor.min.css',
+                '/assets/lib/jsoneditor/jsoneditor.min.js'
 
             ], function() {
 
-                editor = new Behave({
-                    textarea: $this.input,
-                    replaceTab: true,
-                    softTabs: true,
-                    tabSize: 2,
-                    autoOpen: true,
-                    overwrite: true,
-                    autoStrip: true,
-                    autoIndent: true,
-                    fence: false
+                editor = new JSONEditor(this.input, {
+                    modes: ['tree', 'code'],
+                    mode: 'code',
+                    onChange: function(){
+                        $this.value = editor.get() || {};
+                        $this.$setValue($this.value, true);
+                    }
                 });
+
+                editor.set(this.value);
 
             }.bind(this));
 
@@ -52,14 +49,12 @@
 
             if (JSON.stringify(this.value) != JSON.stringify(value)) {
                 this.value = value || {};
-                this.input.value = JSON.stringify(this.value, null, 2);
+                if (editor)  {
+                    editor.set(this.value);
+                }
             }
 
         }.bind(this);
-
-        change() {
-            this.$setValue(App.Utils.str2json(this.input.value) || this.value);
-        }
 
     </script>
 

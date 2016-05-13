@@ -151,7 +151,7 @@
                         <textarea class="uk-width-1-1" name="assetdescription"></textarea>
                     </div>
 
-                    <div class="uk-margin uk-panel uk-panel-box uk-panel-space uk-text-center">
+                    <div class="uk-margin uk-panel uk-panel-box uk-panel-card uk-panel-space uk-text-center">
                         <span class="uk-h1" if="{ asset && asset.mime.match(/^image\//) == null }"><i class="uk-icon-{ getIconCls(asset.path) }"></i></span>
                         <cp-thumbnail src="{asset && ASSETS_URL+asset.path}" width="400" height="250" if="{ asset && asset.mime.match(/^image\//) }"></cp-thumbnail>
                     </div>
