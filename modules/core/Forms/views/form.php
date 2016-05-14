@@ -27,6 +27,13 @@
                </div>
 
                <div class="uk-margin">
+                   <label class="uk-text-small">@lang('Color')</label>
+                   <div class="uk-margin-small-top">
+                       <field-colortag bind="form.color" title="@lang('Color')" size="20px"></field-colortag>
+                   </div>
+               </div>
+
+               <div class="uk-margin">
                    <label class="uk-text-small">@lang('Description')</label>
                    <textarea class="uk-width-1-1 uk-form-large" name="description" bind="form.description" rows="5"></textarea>
                </div>

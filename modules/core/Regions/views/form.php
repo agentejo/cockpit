@@ -18,8 +18,17 @@
 
     @if(isset($region['description']) && $region['description'])
     <div class="uk-text-muted uk-margin uk-panel-box">
-        <i class="uk-icon-info-circle"></i> {{ $region['description'] }}
+        <div class="uk-grid uk-grid-small">
+            <div><i class="uk-icon-info-circle"></i></div>
+            <div class="uk-flex-item-1">{{ $region['description'] }}</div>
+        </div>
     </div>
+    @endif
+
+    @if(isset($region['color']) && $region['color'])
+    <style>
+        .app-header { border-top: 8px {{ $region['color'] }} solid; }
+    </style>
     @endif
 
     <div class="uk-margin-top-large" riot-view>

@@ -15,7 +15,18 @@
 
                 <ul class="uk-list uk-list-space uk-margin-top">
                     @foreach(array_slice($forms, 0, count($forms) > 5 ? 5: count($forms)) as $form)
-                    <li><a href="@route('/forms/entries/'.$form['name'])"><i class="uk-icon-justify uk-icon-inbox"></i> {{ @$form['label'] ? $form['label'] : $form['name'] }}</a></li>
+                    <li>
+                        <a href="@route('/forms/entries/'.$form['name'])">
+
+                            @if(isset($form['color']) && $form['color'])
+                            <i class="uk-icon-justify uk-icon-inbox" style="color:{{ $form['color'] }}"></i>
+                            @else
+                            <i class="uk-icon-justify uk-icon-inbox"></i>
+                            @endif
+
+                            {{ @$form['label'] ? $form['label'] : $form['name'] }}
+                        </a>
+                    </li>
                     @endforeach
                 </ul>
 

@@ -18,7 +18,16 @@
                     <li>
                         <div class="uk-grid uk-grid-small">
                             <div class="uk-flex-item-1">
-                                <a href="@route('/collections/entries/'.$col['name'])"><i class="uk-icon-justify uk-icon-list"></i> {{ @$col['label'] ? $col['label'] : $col['name'] }}</a>
+                                <a href="@route('/collections/entries/'.$col['name'])">
+
+                                    @if(isset($col['color']) && $col['color'])
+                                    <i class="uk-icon-justify uk-icon-list" style="color:{{ $col['color'] }}"></i>
+                                    @else
+                                    <i class="uk-icon-justify uk-icon-list"></i>
+                                    @endif
+
+                                    {{ @$col['label'] ? $col['label'] : $col['name'] }}
+                                </a>
                             </div>
                             <div>
                                 <a class="uk-link-muted" href="@route('/collections/entry')/{{ $col['name'] }}" title="@lang('Add entry')" data-uk-tooltip="pos:'right'"><i class="uk-icon-plus-circle"></i></a>

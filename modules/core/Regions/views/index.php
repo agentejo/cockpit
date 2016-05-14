@@ -50,7 +50,7 @@
 
                         <div data-uk-dropdown>
 
-                            <a class="uk-icon-cog"></a>
+                            <a class="uk-icon-cog" style="color: { (meta.color) }"></a>
 
                             <div class="uk-dropdown">
                                 <ul class="uk-nav uk-nav-dropdown">

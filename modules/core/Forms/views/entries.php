@@ -21,8 +21,17 @@
 
 @if(isset($form['description']) && $form['description'])
 <div class="uk-text-muted uk-panel-box">
-    <i class="uk-icon-info-circle"></i> {{ $form['description'] }}
+    <div class="uk-grid uk-grid-small">
+        <div><i class="uk-icon-info-circle"></i></div>
+        <div class="uk-flex-item-1">{{ $form['description'] }}</div>
+    </div>
 </div>
+@endif
+
+@if(isset($form['color']) && $form['color'])
+<style>
+    .app-header { border-top: 8px {{ $form['color'] }} solid; }
+</style>
 @endif
 
 <div riot-view>

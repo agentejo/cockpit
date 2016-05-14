@@ -13,7 +13,7 @@ class Admin extends \Cockpit\AuthController {
 
     public function collection($name = null) {
 
-        $collection = [ 'name'=>'', 'label' => '', 'fields'=>[], 'sortable' => false, 'in_menu' => false ];
+        $collection = [ 'name'=>'', 'label' => '', 'color'=>'', 'fields'=>[], 'sortable' => false, 'in_menu' => false ];
 
         if ($name) {
 
@@ -38,9 +38,7 @@ class Admin extends \Cockpit\AuthController {
         $count = $this->module('collections')->count($collection['name']);
 
         $collection = array_merge([
-
             'sortable' => false
-
         ], $collection);
 
         $view = 'collections:views/entries.php';

@@ -6,6 +6,12 @@
     </ul>
 </div>
 
+@if(isset($collection['color']) && $collection['color'])
+<style>
+    .app-header { border-top: 8px {{ $collection['color'] }} solid; }
+</style>
+@endif
+
 
 <div class="uk-margin-top-large" riot-view>
 
