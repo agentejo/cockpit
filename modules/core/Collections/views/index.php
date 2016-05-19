@@ -32,8 +32,8 @@
                 <p class="uk-text-xlarge">
                     <i class="uk-icon-list"></i>
                 </p>
-
-                <h3>@lang('No Collections'). <a href="@route('/collections/collection')">Create a collection.</a></h3>
+                <hr>
+                <span class="uk-text-large uk-text-muted">@lang('No Collections'). <a href="@route('/collections/collection')">Create a collection.</a></span>
 
             </div>
 

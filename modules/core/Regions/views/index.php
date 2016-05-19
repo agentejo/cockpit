@@ -32,8 +32,8 @@
                 <p class="uk-text-xlarge">
                     <i class="uk-icon-th"></i>
                 </p>
-
-                <h3>@lang('No regions'). <a href="@route('/regions/region')">Create a region.</a></h3>
+                <hr>
+                <span class="uk-text-large uk-text-muted">@lang('No regions'). <a href="@route('/regions/region')">Create a region.</a></span>
 
             </div>
 

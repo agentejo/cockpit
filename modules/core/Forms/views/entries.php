@@ -45,10 +45,8 @@
                 <p class="uk-text-xlarge">
                     <i class="uk-icon-inbox"></i>
                 </p>
-
                 <hr>
-
-                @lang('No entries').
+                <span class="uk-text-large uk-text-muted">@lang('No entries').</span>
 
             </div>
 

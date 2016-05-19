@@ -51,7 +51,7 @@
 
                 <hr>
 
-                @lang('No entries'). <a href="@route('/collections/entry/'.$collection['name'])">@lang('Create an entry').</a>
+                <span class="uk-text-large uk-text-muted">@lang('No entries'). <a href="@route('/collections/entry/'.$collection['name'])">@lang('Create an entry').</a></span>
 
             </div>
 
