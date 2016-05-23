@@ -70,7 +70,7 @@
 
                 requestapi({"cmd":"readfile", "path":path}, function(content){
 
-                    editor.setOption("mode", CodeMirror.findModeByFileName(path).mode || 'text');
+                    editor.setOption("mode", getMode(path));
                     editor.setValue(content);
                     editor.focus();
                     editor.refresh();
@@ -98,6 +98,16 @@
             data = Object.assign({"cmd":""}, data);
 
             return App.request('/media/api', data, type).then(fn);
+        }
+
+        function getMode(path) {
+            var mode = CodeMirror.findModeByFileName(path).mode || 'text';
+
+            if (mode == 'php') {
+                mode = 'application/x-httpd-php';
+            }
+
+            return mode;
         }
 
     </script>

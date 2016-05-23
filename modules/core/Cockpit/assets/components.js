@@ -2415,7 +2415,7 @@ riot.tag2('picoedit', '<div class="picoedit"> <div class="picoedit-toolbar uk-fl
 
                 requestapi({"cmd":"readfile", "path":path}, function(content){
 
-                    editor.setOption("mode", CodeMirror.findModeByFileName(path).mode || 'text');
+                    editor.setOption("mode", getMode(path));
                     editor.setValue(content);
                     editor.focus();
                     editor.refresh();
@@ -2443,6 +2443,16 @@ riot.tag2('picoedit', '<div class="picoedit"> <div class="picoedit-toolbar uk-fl
             data = Object.assign({"cmd":""}, data);
 
             return App.request('/media/api', data, type).then(fn);
+        }
+
+        function getMode(path) {
+            var mode = CodeMirror.findModeByFileName(path).mode || 'text';
+
+            if (mode == 'php') {
+                mode = 'application/x-httpd-php';
+            }
+
+            return mode;
         }
 
 });
