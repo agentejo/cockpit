@@ -1119,9 +1119,8 @@ class App implements \ArrayAccess {
     * Create Hash
     * @return String
     */
-    public function hash($text) {
-
-        return md5($this->encode($text, $this["sec-key"], true));
+    public function hash($text, $algo = PASSWORD_DEFAULT) {
+        return password_hash($text, $algo);
     }
 
     /**

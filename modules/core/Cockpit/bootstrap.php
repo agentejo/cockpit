@@ -99,12 +99,11 @@ $this->module("cockpit")->extend([
         if (!$data["password"]) return false;
 
         $user = $app->storage->findOne("cockpit/accounts", [
-            "user"     => $data["user"],
-            "password" => $app->hash($data["password"]),
-            "active"   => true
+            "user"   => $data["user"],
+            "active" => true
         ]);
 
-        if (count($user)) {
+        if (count($user) && password_verify($data["password"], $user["password"])) {
 
             $user = array_merge($data, (array)$user);
 
