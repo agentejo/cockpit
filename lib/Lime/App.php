@@ -1119,7 +1119,7 @@ class App implements \ArrayAccess {
     * Create Hash
     * @return String
     */
-    public function hash($text, $algo = PASSWORD_DEFAULT) {
+    public function hash($text, $algo = PASSWORD_BCRYPT) {
         return password_hash($text, $algo);
     }
 
