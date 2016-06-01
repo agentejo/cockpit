@@ -32,11 +32,13 @@
         })();
     }
 
-    Store.prototype.store = function(key) {
-        this.adapter.store(this.name, this.data);
+    Store.prototype.store = function() {
+        try {
+            this.adapter.store(this.name, this.data);
+        }catch(e){}
     };
 
-    Store.prototype.toString = function(key) {
+    Store.prototype.toString = function() {
         return JSON.stringify(this.data);
     };
 
