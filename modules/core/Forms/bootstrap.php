@@ -249,7 +249,7 @@ $this->bind("/api/forms/submit/:form", function($params) {
     // Security check
     if ($formhash = $this->param("__csrf", false)) {
 
-        if ($formhash != $this->hash($formname)) {
+        if (!password_verify($formname, $formhash)) {
             return false;
         }
 
