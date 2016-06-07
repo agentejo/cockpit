@@ -19,7 +19,7 @@
     App.Utils.isDefined   = function(val){ return "undefined"!==typeof val; };
     App.Utils.isObject    = function(val){ return null!==val && "object"===typeof val; };
 
-    App.Utils.ucfirst = function capitalizeFirstLetter(string) {
+    App.Utils.ucfirst = function(string) {
         return string[0].toUpperCase() + string.slice(1);
     };
 
