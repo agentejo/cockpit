@@ -8,7 +8,7 @@
 
 ### Requirements
 
-* PHP >= 5.4
+* PHP >= 5.5
 * PDO + SQLite (or MongoDB)
 * GD extension
 * mod_rewrite enabled (on apache)
