@@ -9,7 +9,6 @@
                 <div class="uk-grid uk-grid-small">
 
                     <div class="uk-flex-item-1 uk-flex">
-
                         <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" fields-bind="fields[{idx}].name" placeholder="name" required>
                     </div>
 
@@ -67,11 +66,9 @@
 
                     <div class="uk-form-row">
 
-                        <div class="uk-form-select uk-width-1-1">
-                            <div class="uk-form-icon uk-width-1-1">
-                                <i class="uk-icon-tag"></i>
-                                <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.type.toUpperCase() }">
-                            </div>
+                        <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Type') }:</label>
+                        <div class="uk-form-select uk-width-1-1 uk-margin-small-top">
+                            <a>{ App.Utils.ucfirst(field.type) }</a>
                             <select class="uk-width-1-1" fields-bind="fields[{idx}].type">
                                 <option each="{type,typeidx in parent.fieldtypes}" value="{type.value}">{type.name}</option>
                             </select>
@@ -79,15 +76,17 @@
                     </div>
 
                     <div class="uk-form-row">
-                        <input class="uk-width-1-1" type="text" fields-bind="fields[{idx}].label" placeholder="{ App.i18n.get('label') }">
+                        <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Label') }:</label>
+                        <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="fields[{idx}].label" placeholder="{ App.i18n.get('Label') }">
                     </div>
 
                     <div class="uk-form-row">
-                        <input class="uk-width-1-1" type="text" fields-bind="fields[{idx}].info" placeholder="{ App.i18n.get('info') }">
+                        <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Info') }:</label>
+                        <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="fields[{idx}].info" placeholder="{ App.i18n.get('Info') }">
                     </div>
 
                     <div class="uk-form-row">
-                        <div class="uk-text-small uk-text-bold">{ App.i18n.get('Options') } <span class="uk-text-muted">JSON</span></div>
+                        <label class="uk-text-small uk-text-bold uk-margin-small-bottom">{ App.i18n.get('Options') } <span class="uk-text-muted">JSON</span></label>
                         <field-object cls="uk-width-1-1" fields-bind="fields[{idx}].options" rows="6" allowtabs="2"></field-object>
                     </div>
 
