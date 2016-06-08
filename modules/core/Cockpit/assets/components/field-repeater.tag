@@ -17,7 +17,10 @@
 
     <div name="itemscontainer" class="uk-sortable" show="{ mode=='reorder' && items.length }">
         <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
-            <i class="uk-icon-bars"></i> Item { (idx+1) }
+            <div class="uk-grid uk-grid-small">
+                <div class="uk-flex-item-1"><i class="uk-icon-bars"></i> Item { (idx+1) }</div>
+                <div class="uk-text-muted uk-text-small">{ App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field:item.field.type) }</div>
+            </div>
         </div>
     </div>
 
