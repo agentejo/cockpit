@@ -85,9 +85,12 @@ $app->bind('/cockpit.i18n.data', function() {
 
 $assets = [
 
+    // polyfills
     'assets:polyfills/es6-shim.js',
     'assets:polyfills/dom4.js',
-    'assets:polyfills/object-observe.js',
+    'assets:polyfills/web-animations.min.js',
+
+    // libs
     'assets:lib/moment.js',
     'assets:lib/jquery.js',
     'assets:lib/lodash.js',
@@ -103,6 +106,8 @@ $assets = [
     'assets:lib/mousetrap.js',
     'assets:lib/storage.js',
     'assets:lib/i18n.js',
+
+    // app
     'assets:app/js/app.js',
     'assets:app/js/app.utils.js',
     'cockpit:assets/components.js',
