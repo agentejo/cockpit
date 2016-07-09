@@ -47,6 +47,10 @@
 
                 <div name="header" class="uk-panel-box-header uk-text-bold uk-text-center">
 
+                    <p>
+                        <img src="@url('assets:app/media/icons/login.svg')" width="80" alt="Login" />
+                    </p>
+
                     <h2 class="uk-text-bold uk-text-truncate"><span>{{ $app['app.name'] }}</span></h2>
 
                     <div class="uk-animation-shake uk-margin-top" if="{ error }">
