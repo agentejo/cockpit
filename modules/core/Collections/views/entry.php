@@ -51,6 +51,7 @@
 
                 <div class="uk-margin-top">
                     <button class="uk-button uk-button-large uk-button-primary uk-margin-right">@lang('Save')</button>
+                    <a type="submit" class="uk-button uk-button-large uk-button-primary uk-margin-right" onclick="{ submitandadd }"><i class="uk-icon-plus-circle uk-icon-justify"></i>@lang('Save and add')</a>
                     <a href="@route('/collections/entries/'.$collection['name'])">
                         <span show="{ !entry._id }">@lang('Cancel')</span>
                         <span show="{ entry._id }">@lang('Close')</span>
@@ -101,9 +102,11 @@
         this.collection   = {{ json_encode($collection) }};
         this.fields       = this.collection.fields;
 
-        this.entry        = {{ json_encode($entry) }};
+        this.entry        = {{ json_encode($entry) }}; 
 
         this.languages    = App.$data.languages;
+
+        this.saveandadd   = false;
 
         // fill with default values
         this.fields.forEach(function(field){
@@ -128,12 +131,21 @@
                     e.returnValue = false; // ie
                 }
                 $this.submit();
+
                 return false;
             });
+
+
         });
 
-        submit() {
+        submitandadd(){
+            this.saveandadd=true;
+            this.submit();
+        }
 
+        submit() {
+            console.log( $this.saveandadd);
+             ;
             App.callmodule('collections:save',[this.collection.name, this.entry]).then(function(data) {
 
                 if (data.result) {
@@ -149,10 +161,30 @@
                         }
                     });
 
+                    //if savenadnadd
+                    if($this.saveandadd){
+                        window.location='/cockpit/collections/entry/'+$this.collection.name;
+                        //ohibo.. cannot clear
+
+                        console.log("AND ADD");
+                        //add redirect
+                        $this.entry={};
+                        $this.fields.forEach(function(field){
+
+                             //entry.{ field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name
+                             fn = field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name;
+                             $this.entry[fn]='';
+                        });
+                        $this.entry.text="asasasa\n* ciao\n* paola\n\ncome va?";
+                    }
+                    console.log($this.entry);
+                    $this.saveandadd=false;
+
                     $this.update();
 
                 } else {
                     App.ui.notify("Saving failed.", "danger");
+                    this.saveandadd=false;
                 }
             });
         }

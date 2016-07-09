@@ -401,7 +401,6 @@
                 }
 
                 this.selected.count = Object.keys(this.selected.paths).length;
-
                 App.$(this.root).trigger('selectionchange', [this.selected]);
             }
         }

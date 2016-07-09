@@ -85,9 +85,9 @@
         save() {
 
             if (!this.path) return;
-
+            console.log("Path",this.path);
             requestapi({"cmd":"writefile", "path": this.path, "content":editor.getValue()}, function(status){
-
+console.log("Picoedit save ",this.path, editor.getValue());
                 App.ui.notify("File saved", "success");
 
             }, "text");

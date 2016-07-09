@@ -515,6 +515,7 @@ riot.tag2('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk
 
         var $this = this;
 
+        this.alertify4WhitespaceShown=false;
         this.fields  = [];
         this.reorder = false;
 
@@ -612,6 +613,24 @@ riot.tag2('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk
 
         this.togglelist = function(e) {
             e.item.field.lst = !e.item.field.lst;
+        }.bind(this)
+
+        this.validatename = function(e){
+            value=e.target.value;
+
+            if(/\s/g.test(value)){
+
+                e.target.value = value.replace(/\s/,'');
+
+                $(e.target).addClass('field-invalid');
+                if(!$this.alertify4WhitespaceShown){
+                    App.ui.notify("Can't use whitespace in field name",'warning');
+                    $this.alertify4WhitespaceShown=true;
+                }
+                setTimeout(function(){
+                    $(e.target).removeClass('field-invalid');
+                },150);
+            }
         }.bind(this)
 
 });
@@ -805,7 +824,6 @@ riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-mar
                 }
 
                 this.selected.count = Object.keys(this.selected.paths).length;
-
                 App.$(this.root).trigger('selectionchange', [this.selected]);
             }
         }.bind(this)
@@ -2382,9 +2400,9 @@ riot.tag2('picoedit', '<div class="picoedit"> <div class="picoedit-toolbar uk-fl
         this.save = function() {
 
             if (!this.path) return;
-
+            console.log("Path",this.path);
             requestapi({"cmd":"writefile", "path": this.path, "content":editor.getValue()}, function(status){
-
+console.log("Picoedit save ",this.path, editor.getValue());
                 App.ui.notify("File saved", "success");
 
             }, "text");

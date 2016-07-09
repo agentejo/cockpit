@@ -189,7 +189,6 @@ class Media extends \Cockpit\AuthController {
 
         $path = $this->param('path', false);
         $file = $this->root.'/'.trim($path, '/');
-
         if ($path && file_exists($file)) {
             echo file_get_contents($file);
         }

@@ -5,7 +5,7 @@ $app("acl")->addResource("forms", ['manage.forms']);
 
 
 $app->on('admin.init', function() {
-
+    
     if (!$this->module('cockpit')->hasaccess('forms', ['manage.forms'])) {
         return;
     }

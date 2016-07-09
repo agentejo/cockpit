@@ -186,7 +186,7 @@
     @block('app.layout.footer')
 
     <!-- RIOT COMPONENTS -->
-    @foreach($app('admin')->data['components'] as $component)
+    @foreach($app('admin')->data['components'] as $component) 
     <script type="riot/tag" src="@base($component)"></script>
     @endforeach
 

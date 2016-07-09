@@ -135,6 +135,7 @@
 
         var $this = this;
 
+        this.alertify4WhitespaceShown=false;
         this.fields  = [];
         this.reorder = false;
 
@@ -236,6 +237,24 @@
 
         togglelist(e) {
             e.item.field.lst = !e.item.field.lst;
+        }
+
+        validatename(e){
+            value=e.target.value;
+            //test for whitespaces
+            if(/\s/g.test(value)){
+                // flash values
+                e.target.value = value.replace(/\s/,'');
+                //apply style
+                $(e.target).addClass('field-invalid');
+                if(!$this.alertify4WhitespaceShown){
+                    App.ui.notify("Can't use whitespace in field name",'warning');
+                    $this.alertify4WhitespaceShown=true;
+                }
+                setTimeout(function(){
+                    $(e.target).removeClass('field-invalid');
+                },150);
+            }
         }
 
     </script>
