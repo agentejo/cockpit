@@ -147,6 +147,10 @@
                                     @else
                                     <img src="@url('assets:app/media/icons/module.svg')" alt="@lang($item['label'])" data-uk-svg width="20px" height="20px" />
                                     @endif
+
+                                    @if($item['active'])
+                                    <span class="uk-text-small uk-text-bold">{{ $item['label'] }}</span>
+                                    @endif
                                 </a>
                             </li>
                             @endforeach
