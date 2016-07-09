@@ -34,6 +34,12 @@
         	filter: url('#filter');
         }
 
+        svg path,
+        svg rect,
+        svg circle {
+            fill: currentColor;
+        }
+
     </style>
 
 </head>
@@ -48,7 +54,7 @@
                 <div name="header" class="uk-panel-box-header uk-text-bold uk-text-center">
 
                     <p>
-                        <img src="@url('assets:app/media/icons/login.svg')" width="80" alt="Login" />
+                        <img src="@url('assets:app/media/icons/login.svg')" width="80" alt="Login" data-uk-svg />
                     </p>
 
                     <h2 class="uk-text-bold uk-text-truncate"><span>{{ $app['app.name'] }}</span></h2>
