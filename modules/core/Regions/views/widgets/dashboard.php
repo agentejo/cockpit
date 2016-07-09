@@ -40,8 +40,8 @@
 
             <div class="uk-margin uk-text-center uk-text-muted">
 
-                <p class="uk-text-large">
-                    <i class="uk-icon-th"></i>
+                <p>
+                    <img src="@url('regions:icon.svg')" width="30" height="30" alt="Regions" data-uk-svg />
                 </p>
 
                 @lang('No regions'). <a href="@route('/regions/region')">@lang('Create a region')</a>.

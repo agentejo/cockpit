@@ -47,8 +47,8 @@
 
             <div class="uk-margin uk-text-center uk-text-muted">
 
-                <p class="uk-text-large">
-                    <i class="uk-icon-list"></i>
+                <p>
+                    <img src="@url('collections:icon.svg')" width="30" height="30" alt="Collections" data-uk-svg />
                 </p>
 
                 @lang('No collections'). <a href="@route('/collections/collection')">@lang('Create a collection')</a>.

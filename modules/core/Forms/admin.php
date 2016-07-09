@@ -16,7 +16,7 @@ $app->on('admin.init', function() {
     // add to modules menu
     $this('admin')->addMenuItem('modules', [
         'label' => 'Forms',
-        'icon'  => 'inbox',
+        'icon'  => 'forms:icon.svg',
         'route' => '/forms',
         'active' => strpos($this['route'], '/forms') === 0
     ]);

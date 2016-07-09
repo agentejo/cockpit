@@ -29,8 +29,8 @@
 
             <div class="uk-width-medium-1-4 uk-animation-scale">
 
-                <p class="uk-text-xlarge">
-                    <i class="uk-icon-inbox"></i>
+                <p>
+                    <img src="@url('forms:icon.svg')" width="80" height="80" alt="Forms" data-uk-svg />
                 </p>
                 <hr>
                 <span class="uk-text-large uk-text-muted">@lang('No forms'). <a href="@route('/forms/form')">Create a form.</a></span>

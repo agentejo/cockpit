@@ -29,8 +29,8 @@
 
             <div class="uk-width-medium-1-3 uk-animation-scale">
 
-                <p class="uk-text-xlarge">
-                    <i class="uk-icon-th"></i>
+                <p>
+                    <img src="@url('regions:icon.svg')" width="80" height="80" alt="Regions" data-uk-svg />
                 </p>
                 <hr>
                 <span class="uk-text-large uk-text-muted">@lang('No regions'). <a href="@route('/regions/region')">Create a region.</a></span>

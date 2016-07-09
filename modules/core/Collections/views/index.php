@@ -29,8 +29,8 @@
 
             <div class="uk-width-medium-1-3 uk-animation-scale">
 
-                <p class="uk-text-xlarge">
-                    <i class="uk-icon-list"></i>
+                <p>
+                    <img src="@url('collections:icon.svg')" width="80" height="80" alt="Collections" data-uk-svg />
                 </p>
                 <hr>
                 <span class="uk-text-large uk-text-muted">@lang('No Collections'). <a href="@route('/collections/collection')">Create a collection.</a></span>

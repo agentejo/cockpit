@@ -40,8 +40,8 @@
 
             <div class="uk-margin uk-text-center uk-text-muted">
 
-                <p class="uk-text-large">
-                    <i class="uk-icon-inbox"></i>
+                <p>
+                    <img src="@url('forms:icon.svg')" width="30" height="30" alt="Forms" data-uk-svg />
                 </p>
 
                 @lang('No forms'). <a href="@route('/forms/form')">@lang('Create a form')</a>.

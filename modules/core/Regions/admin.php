@@ -17,7 +17,7 @@ $app->on('admin.init', function() {
     // add to modules menu
     $this('admin')->addMenuItem('modules', [
         'label' => 'Regions',
-        'icon'  => 'th',
+        'icon'  => 'regions:icon.svg',
         'route' => '/regions',
         'active' => strpos($this['route'], '/regions') === 0
     ]);
