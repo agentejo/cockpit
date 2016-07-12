@@ -52,7 +52,7 @@
 
                             <a href="@route('/')" class="uk-link-muted uk-text-bold">
                                 <i class="uk-icon-bars"></i>
-                                <span>{{ $app['app.name'] }}</span>
+                                <span class="app-name">{{ $app['app.name'] }}</span>
                             </a>
 
                             <div class="uk-dropdown app-panel-dropdown">
@@ -149,7 +149,7 @@
                                     @endif
 
                                     @if($item['active'])
-                                    <span class="uk-text-small uk-text-bold uk-margin-small-left">{{ $item['label'] }}</span>
+                                    <span class="uk-text-small uk-margin-small-left">{{ $item['label'] }}</span>
                                     @endif
                                 </a>
                             </li>
