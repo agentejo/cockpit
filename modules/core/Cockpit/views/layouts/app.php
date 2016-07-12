@@ -149,7 +149,7 @@
                                     @endif
 
                                     @if($item['active'])
-                                    <span class="uk-text-small uk-text-bold">{{ $item['label'] }}</span>
+                                    <span class="uk-text-small uk-text-bold uk-margin-small-left">{{ $item['label'] }}</span>
                                     @endif
                                 </a>
                             </li>
