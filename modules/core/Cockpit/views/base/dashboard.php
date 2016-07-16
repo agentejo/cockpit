@@ -1,6 +1,6 @@
 <div>
     <ul class="uk-breadcrumb">
-        <li><span>@lang('Dashboard')</span></li>
+        <li class="uk-active"><span>@lang('Dashboard')</span></li>
     </ul>
 </div>
 

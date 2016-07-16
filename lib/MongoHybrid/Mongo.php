@@ -2,21 +2,24 @@
 
 namespace MongoHybrid;
 
+include_once(__DIR__.'/../MongoDB/functions.php');
+
 class Mongo {
 
     protected $client;
+    protected $db;
     protected $options;
 
     public function __construct($server, $options=[]) {
 
-        $this->client  = new \MongoClient($server, $options);
-        $this->db      = $this->client->selectDB($options["db"]);
+        $this->client  = new \MongoDB\Client($server, $options, ['typeMap' => ['root' => 'array', 'document' => 'array', 'array' => 'array']]);
+        $this->db      = $this->client->selectDatabase($options["db"]);
         $this->options = $options;
     }
 
     public function getCollection($name, $db = null){
 
-        if($db) {
+        if ($db) {
             $name = "{$db}/{$name}";
         }
 
@@ -27,22 +30,22 @@ class Mongo {
 
     public function findOneById($collection, $id){
 
-        if(is_string($id)) $id = new \MongoId($id);
+        if (is_string($id)) $id = new \MongoDB\BSON\ObjectID($id);
 
         $doc =  $this->getCollection($collection)->findOne(["_id" => $id]);
 
-        if(isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
+        if (isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
 
         return $doc;
     }
 
     public function findOne($collection, $filter = [], $projection = []) {
 
-        if(isset($filter["_id"]) && is_string($filter["_id"])) $filter["_id"] = new \MongoId($filter["_id"]);
+        if (isset($filter["_id"]) && is_string($filter["_id"])) $filter["_id"] = new \MongoDB\BSON\ObjectID($filter["_id"]);
 
-        $doc =  $this->getCollection($collection)->findOne($filter, $projection);
+        $doc =  $this->getCollection($collection)->findOne($filter, ['projection' => $projection]);
 
-        if(isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
+        if (isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
 
         return $doc;
     }
@@ -55,26 +58,26 @@ class Mongo {
         $sort   = isset($options["sort"])   && $options["sort"]   ? $options["sort"]   : null;
         $skip   = isset($options["skip"])   && $options["skip"]   ? $options["skip"]   : null;
 
-        if($filter && isset($filter["_id"])) {
-            $filter["_id"] = new \MongoId($filter["_id"]);
+        if ($filter && isset($filter["_id"])) {
+            $filter["_id"] = new \MongoDB\BSON\ObjectID($filter["_id"]);
         }
 
-        $cursor = $this->getCollection($collection)->find($filter, $fields);
+        $cursor = $this->getCollection($collection)->find($filter, [
+            'projection' => $fields,
+            'limit' => $limit,
+            'skip'  => $skip,
+            'sort'  => $sort
+        ]);
 
-        if($limit) $cursor->limit($limit);
-        if($sort)  $cursor->sort($sort);
-        if($skip)  $cursor->skip($skip);
+        $docs = $cursor->toArray();
 
-        if ($cursor->count()) {
-
-            $docs = array_values(iterator_to_array($cursor));
+        if (count($docs)) {
 
             foreach ($docs as &$doc) {
                 if(isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
             }
 
         } else {
-
             $docs = [];
         }
 
@@ -85,13 +88,15 @@ class Mongo {
 
     public function insert($collection, &$doc) {
 
-        if(isset($doc["_id"]) && is_string($doc["_id"])) $doc["_id"] = new \MongoId($doc["_id"]);
+        if (isset($doc["_id"]) && is_string($doc["_id"])) $doc["_id"] = new \MongoDB\BSON\ObjectID($doc["_id"]);
 
         $ref = $doc;
 
-        $return = $this->getCollection($collection)->insert($ref);
+        $return = $this->getCollection($collection)->insertOne($ref);
 
-        if(isset($ref["_id"])) $ref["_id"] = (string) $ref["_id"];
+        $ref['_id'] = $return->getInsertedId();
+
+        if (isset($ref["_id"])) $ref["_id"] = (string) $ref["_id"];
 
         $doc = $ref;
 
@@ -100,33 +105,37 @@ class Mongo {
 
     public function save($collection, &$data) {
 
-        if(isset($data["_id"]) && is_string($data["_id"])) $data["_id"] = new \MongoId($data["_id"]);
+        if (isset($data["_id"]) && is_string($data["_id"])) $data["_id"] = new \MongoDB\BSON\ObjectID($data["_id"]);
 
         $ref = $data;
 
-        $return = $this->getCollection($collection)->save($ref);
+        if (isset($data["_id"])) {
+            $return = $this->getCollection($collection)->updateOne(['_id' => $data["_id"]], ['$set' => $ref]);
+        } else {
+            $return = $this->getCollection($collection)->insertOne($ref);
+            $ref['_id'] = $return->getInsertedId();
+        }
 
-        if(isset($ref["_id"])) $ref["_id"] = (string) $ref["_id"];
+        if (isset($ref["_id"])) $ref["_id"] = (string) $ref["_id"];
 
         $data = $ref;
 
         return $return;
     }
 
-
     public function update($collection, $criteria, $data) {
 
-        if(isset($criteria["_id"]) && is_string($criteria["_id"])) $criteria["_id"] = new \MongoId($criteria["_id"]);
-        if(isset($data["_id"]) && is_string($data["_id"])) $data["_id"] = new \MongoId($data["_id"]);
+        if (isset($criteria["_id"]) && is_string($criteria["_id"])) $criteria["_id"] = new \MongoDB\BSON\ObjectID($criteria["_id"]);
+        if (isset($data["_id"]) && is_string($data["_id"])) $data["_id"] = new \MongoDB\BSON\ObjectID($data["_id"]);
 
-        return $this->getCollection($collection)->update($criteria, $data);
+        return $this->getCollection($collection)->updateMany($criteria, $data);
     }
 
     public function remove($collection, $filter=[]) {
 
-        if(isset($filter["_id"]) && is_string($filter["_id"])) $filter["_id"] = new \MongoId($filter["_id"]);
+        if (isset($filter["_id"]) && is_string($filter["_id"])) $filter["_id"] = new \MongoDB\BSON\ObjectID($filter["_id"]);
 
-        return $this->getCollection($collection)->remove($filter);
+        return $this->getCollection($collection)->deleteMany($filter);
     }
 
     public function count($collection, $filter=[]) {

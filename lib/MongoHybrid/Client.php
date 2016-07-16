@@ -9,7 +9,10 @@ class Client {
     public function __construct($server, $options=[]) {
 
         if (strpos($server, 'mongodb://')===0) {
-            $this->driver = new Mongo($server, $options);
+
+            $cls = class_exists('\MongoClient') ? 'MongoHybrid\\MongoLegacy':'MongoHybrid\\Mongo';
+
+            $this->driver = new $cls($server, $options);
         }
 
         if (strpos($server, 'mongolite://')===0) {
