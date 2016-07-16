@@ -4,14 +4,17 @@
     </ul>
 </div>
 
-<div class="uk-grid uk-grid-small uk-grid-match uk-grid-width-medium-1-4" data-uk-grid-margin>
+<div class="uk-grid uk-grid-match uk-grid-width-medium-1-4 uk-text-center" data-uk-grid-margin>
 
     @if($app['user']['group']=='admin')
     <div>
         <div class="uk-panel uk-panel-box uk-panel-card">
-            <div class="uk-text-truncate">
-                <a href="@route('/settings/edit')"><i class="uk-icon-cogs uk-icon-justify"></i> @lang('Settings')</a>
+            <img src="@url('assets:app/media/icons/settings.svg')" width="50" height="50" alt="@lang('Settings')" />
+
+            <div class="uk-text-truncate uk-margin">
+                @lang('Settings')
             </div>
+            <a class="uk-position-cover" href="@route('/settings/edit')"></a>
         </div>
     </div>
     @endif
@@ -19,9 +22,13 @@
     @hasaccess?('cockpit', 'manage.accounts')
     <div>
         <div class="uk-panel uk-panel-box uk-panel-card">
-            <div class="uk-text-truncate">
-                <a href="@route('/accounts/index')"><i class="uk-icon-users uk-icon-justify"></i> @lang('Accounts')</a>
+
+            <img src="@url('assets:app/media/icons/accounts.svg')" width="50" height="50" alt="@lang('Accounts')" />
+
+            <div class="uk-text-truncate uk-margin">
+                @lang('Accounts')
             </div>
+            <a class="uk-position-cover" href="@route('/accounts/index')"></a>
         </div>
     </div>
     @endif
@@ -29,9 +36,13 @@
     @hasaccess?('cockpit', 'manage.rest')
     <div>
         <div class="uk-panel uk-panel-box uk-panel-card">
-            <div class="uk-text-truncate">
-                <a href="@route('/restadmin/index')"><i class="uk-icon-exchange uk-icon-justify"></i> @lang('API Access')</a>
+
+            <img src="@url('assets:app/media/icons/api.svg')" width="50" height="50" alt="@lang('API Access')" />
+
+            <div class="uk-text-truncate uk-margin">
+                @lang('API Access')
             </div>
+            <a class="uk-position-cover" href="@route('/restadmin/index')"></a>
         </div>
     </div>
     @endif
@@ -39,9 +50,13 @@
     @if($app['user']['group']=='admin')
     <div>
         <div class="uk-panel uk-panel-box uk-panel-card">
-            <div class="uk-text-truncate">
-                <a href="@route('/settings/info')"><i class="uk-icon-info-circle uk-icon-justify"></i> @lang('System')</a>
+
+            <img src="@url('assets:app/media/icons/info.svg')" width="50" height="50" alt="@lang('System')" />
+
+            <div class="uk-text-truncate uk-margin">
+                @lang('System')
             </div>
+            <a class="uk-position-cover" href="@route('/settings/info')"></a>
         </div>
     </div>
     @endif

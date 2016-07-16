@@ -72,7 +72,7 @@
 
             <div class="uk-float-right">
 
-                <a class="uk-button uk-button-large uk-button-danger" onclick="{ removeselected }" if="{ selected.length }">
+                <a class="uk-button uk-button-large uk-button-danger uk-animation-fade" onclick="{ removeselected }" if="{ selected.length }">
                     @lang('Delete') <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
                 </a>
 

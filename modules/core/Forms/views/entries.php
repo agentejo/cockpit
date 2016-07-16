@@ -54,9 +54,11 @@
 
         <div class="uk-clearfix uk-margin-large-top" if="{ entries.length }">
 
-            <div class="uk-float-left uk-animation-fade uk-text-muted" if="{ selected.length }">
+            <div class="uk-float-right uk-animation-fade" if="{ selected.length }">
 
-                <a class="uk-text-danger" onclick="{ removeselected }"><i class="uk-icon-trash"></i> @lang('Delete') ({ selected.length })</a>
+                <a class="uk-button uk-button-large uk-button-danger" onclick="{ removeselected }">
+                    @lang('Delete') <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
+                </a>
 
             </div>
 
