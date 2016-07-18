@@ -349,6 +349,25 @@
             }
         }
 
+        duplicateEntry(e, collection, entry, idx) {
+
+            collection = this.collection.name;
+            entry      = App.$.extend({}, e.item.entry);
+            idx        = e.item.idx;
+
+            delete entry._id;
+
+            App.callmodule('collections:save',[this.collection.name, entry]).then(function(data) {
+
+                if (data.result) {
+
+                    $this.entries.unshift(data.result);
+                    App.ui.notify("Entry duplicated", "success");
+                    $this.update();
+                }
+            });
+        }
+
     </script>
 
 </div>

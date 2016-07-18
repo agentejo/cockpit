@@ -36,7 +36,9 @@
                         <ul class="uk-nav uk-nav-dropdown">
                             <li class="uk-nav-header">@lang('Actions')</li>
                             <li><a href="@route('/collections/entry/'.$collection['name'])/{ entry._id }">@lang('Edit')</a></li>
-                            <li><a onclick="{ parent.remove }">@lang('Delete')</a></li>
+                            <li><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
+                            <li class="uk-nav-divider"></li>
+                            <li><a class="uk-dropdown-close" onclick="{ parent.duplicateEntry }">@lang('Duplicate')</a></li>
                         </ul>
                     </div>
                 </span>
