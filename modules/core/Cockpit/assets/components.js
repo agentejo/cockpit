@@ -1616,7 +1616,7 @@ riot.tag2('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-sm
                             alert('Failed loading google maps api.');
                         };
 
-                        script.src = 'https://www.google.com/jsapi';
+                        script.src = 'https://www.google.com/jsapi?key='+(window.GOOGLE_MAPS_API_KEY || '');
 
                         document.getElementsByTagName('head')[0].appendChild(script);
                     });
