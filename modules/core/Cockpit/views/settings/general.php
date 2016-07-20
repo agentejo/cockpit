@@ -14,6 +14,7 @@
             <li><a href="#LOCALES">@lang('Locales')</a></li>
             <li><a href="#REGISTRY">@lang('Registry')</a></li>
             <li><a href="#SYSTEM">@lang('API')</a></li>
+            <li><a href="#GMAPS">@lang('Google Maps')</a></li>
         </ul>
     </div>
 
@@ -168,7 +169,17 @@
                     <button class="uk-button uk-button-large" ng-click="generateToken()">@lang('Generate api token')</button>
                 </div>
 
+                <div>
+                    <span class="uk-badge app-badge">@lang('Google Maps')</span>
+                    <hr />
 
+                    <div class="uk-margin uk-form">
+                        <label class="uk-text-small">@lang('Google Maps API Key')</label>
+                        <input type="text" class="uk-form-large uk-width-1-1" ng-model="gmapskey" />
+                    </div>
+
+                    <button class="uk-button uk-button-large" type="button" ng-click="saveGmapsKey()">@lang('Save')</button>
+                </div>
             </div>
         </div>
     </div>
@@ -182,6 +193,7 @@
         $scope.tokens    = {{ json_encode($tokens) }};
         $scope.registry  = {{ $registry }};
         $scope.locales   = {{ $locales }};
+        $scope.gmapskey  = '{{ $gmapskey }}';
 
         $scope.languages = {};
 
@@ -292,6 +304,12 @@
         $scope.saveTokens = function() {
             $http.post(App.route("/settings/saveTokens"), {"tokens": angular.copy($scope.tokens)}).success(function(data){
                 App.notify("@lang('Tokens updated!')", "success");
+            }).error(App.module.callbacks.error.http);
+        };
+
+        $scope.saveGmapsKey = function() {
+            $http.post(App.route("/settings/saveGmapsKey"), {"key": $scope.gmapskey}).success(function(data) {
+                App.notify("@lang('Key updated!')", "success");
             }).error(App.module.callbacks.error.http);
         };
 
