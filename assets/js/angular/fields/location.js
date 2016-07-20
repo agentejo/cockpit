@@ -4,8 +4,7 @@
 
 (function($){
 
-    angular.module('cockpit.fields').directive("locationfield", ['$timeout', '$compile', function($timeout, $compile){
-
+    angular.module('cockpit.fields').directive("locationfield", ['$timeout', '$compile', '$http', function($timeout, $compile, $http) {
 
         var uuid = 0,
             locale = document.documentElement.lang.toUpperCase(),
@@ -23,9 +22,14 @@
 
                             script.onload = function() {
 
-                                google.load('maps', '3', {other_params: 'sensor=false&libraries=places&language=' + locale, callback: function(){
-                                  if (google && google.maps.places) resolve();
-                                }});
+                                $http
+                                    .post(App.route('/settings/getGmapsKey'))
+                                    .success(function(key) {
+
+                                        google.load('maps', '3', {other_params: 'key=' + key + '&libraries=places&language=' + locale, callback: function() {
+                                            if (google && google.maps.places) resolve();
+                                        }});
+                                    });
                             };
 
                             script.onerror = function() {
