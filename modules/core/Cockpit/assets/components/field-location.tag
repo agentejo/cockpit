@@ -1,6 +1,10 @@
 <field-location>
 
-    <div>
+    <div class="uk-alert" if="{!window.GOOGLE_MAPS_API_KEY}">
+        Google Maps API is missing.
+    </div>
+
+    <div show="{window.GOOGLE_MAPS_API_KEY}">
         <div class="uk-form uk-form-icon uk-margin-small-bottom uk-width-1-1">
             <i class="uk-icon-search"></i><input name="autocomplete" class="uk-width-1-1" value="{ latlng.address }">
         </div>

@@ -1587,7 +1587,7 @@ riot.tag2('field-image', '<figure class="uk-display-block uk-panel uk-panel-box 
 
 });
 
-riot.tag2('field-location', '<div> <div class="uk-form uk-form-icon uk-margin-small-bottom uk-width-1-1"> <i class="uk-icon-search"></i><input name="autocomplete" class="uk-width-1-1" value="{latlng.address}"> </div> <div name="map" style="min-height:300px;"> Loading map... </div> <div class="uk-text-small uk-margin-small-top"> LAT: <span class="uk-text-muted">{latlng.lat}</span> LNG: <span class="uk-text-muted">{latlng.lng}</span> </div> </div>', '', '', function(opts) {
+riot.tag2('field-location', '<div class="uk-alert" if="{!window.GOOGLE_MAPS_API_KEY}"> Google Maps API is missing. </div> <div show="{window.GOOGLE_MAPS_API_KEY}"> <div class="uk-form uk-form-icon uk-margin-small-bottom uk-width-1-1"> <i class="uk-icon-search"></i><input name="autocomplete" class="uk-width-1-1" value="{latlng.address}"> </div> <div name="map" style="min-height:300px;"> Loading map... </div> <div class="uk-text-small uk-margin-small-top"> LAT: <span class="uk-text-muted">{latlng.lat}</span> LNG: <span class="uk-text-muted">{latlng.lng}</span> </div> </div>', '', '', function(opts) {
 
         var map, marker;
 
