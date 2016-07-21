@@ -10,12 +10,13 @@ class Settings extends \Cockpit\Controller {
         $registry = json_encode((object)$this->app->memory->get("cockpit.api.registry", []));
         $tokens   = $this->app->db->getKey("cockpit/settings", "cockpit.api.tokens", null);
         $locales  = json_encode($this->app->db->getKey("cockpit/settings", "cockpit.locales", []));
+        $gmapskey = $this->app->db->getKey("cockpit/settings", "cockpit.gmaps.key", '');
 
         if (!$tokens) {
             $tokens = new \stdClass;
         }
 
-        return $this->render('cockpit:views/settings/general.php', compact('tokens', 'registry', 'locales'));
+        return $this->render('cockpit:views/settings/general.php', compact('tokens', 'registry', 'locales', 'gmapskey'));
     }
 
     public function info() {
@@ -137,5 +138,19 @@ class Settings extends \Cockpit\Controller {
         $this->app->db->setKey("cockpit/settings", "cockpit.locales", $locals);
 
         return ["success"=>true];
+    }
+
+    public function getGmapsKey() {
+
+        return $this->app->db->getKey("cockpit/settings", "cockpit.gmaps.key", '');
+    }
+
+    public function saveGmapsKey() {
+
+        $gmapskey = $this->param("key", "");
+
+        $this->app->db->setKey("cockpit/settings", "cockpit.gmaps.key", (string) $gmapskey);
+
+        return ["success" => true];
     }
 }
