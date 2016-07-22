@@ -89,6 +89,7 @@ $assets = [
     'assets:polyfills/es6-shim.js',
     'assets:polyfills/dom4.js',
     'assets:polyfills/web-animations.min.js',
+    'assets:polyfills/pointer-events.js',
 
     // libs
     'assets:lib/moment.js',
