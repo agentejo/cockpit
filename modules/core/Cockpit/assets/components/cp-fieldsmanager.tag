@@ -57,7 +57,7 @@
 
             </div>
 
-            <div class="uk-modal" id="field-{idx}">
+            <div class="uk-modal uk-sortable-nodrag" id="field-{idx}">
                 <div class="uk-modal-dialog">
 
                     <div class="uk-form-row uk-text-bold">
