@@ -30,7 +30,7 @@
 
                 <span class="uk-button-group uk-margin-small-right">
 
-                    <span class="uk-position-relative uk-button" data-uk-dropdown="\{mode:'click'\}">
+                    <span class="uk-position-relative uk-button" data-uk-dropdown="mode:'click'">
 
                         <i class="uk-icon-magic"></i>
 
@@ -49,7 +49,7 @@
                     </button>
                 </span>
 
-                <span class="uk-button" if="{ selected.count }" data-uk-dropdown="\{mode:'click'\}">
+                <span class="uk-button" if="{ selected.count }" data-uk-dropdown="mode:'click'">
                     <strong>Batch:</strong> { selected.count } selected &nbsp;<i class="uk-icon-caret-down"></i>
                     <div class="uk-dropdown uk-text-left">
                         <ul class="uk-nav uk-nav-dropdown">
@@ -124,7 +124,7 @@
                                 <div class="uk-panel uk-panel-box finder-folder { folder.selected ? 'uk-selected':'' }">
                                     <div class="uk-flex">
                                         <div>
-                                            <span class="uk-margin-small-right" data-uk-dropdown="\{mode:'click'\}">
+                                            <span class="uk-margin-small-right" data-uk-dropdown="mode:'click'">
                                                 <i class="uk-icon-folder-o uk-text-muted js-no-item-select"></i>
                                                 <div class="uk-dropdown">
                                                     <ul class="uk-nav uk-nav-dropdown">
@@ -160,7 +160,7 @@
                                         <div class="uk-position-cover uk-position-z-index">
 
                                             <div class="uk-panel uk-panel-box uk-panel-box-trans">
-                                                <span class="uk-margin-small-right" data-uk-dropdown="\{mode:'click'\}">
+                                                <span class="uk-margin-small-right" data-uk-dropdown="mode:'click'">
                                                     <a><i class="uk-icon-{ parent.getIconCls(file) } js-no-item-select"></i>
                                                     <div class="uk-dropdown">
                                                         <ul class="uk-nav uk-nav-dropdown">

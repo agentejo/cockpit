@@ -417,6 +417,8 @@
             clsOut = clsIn;
         }
 
+        UI.$body.css('overflow-x', 'hidden'); // prevent horizontal scrollbar on animation
+
         release = function() {
 
             if (current && current.length) {
@@ -435,6 +437,7 @@
             var finish = function() {
                 next.removeClass(''+clsIn+'').css({opacity:'', display:'', 'animation-delay':'', 'animation':''});
                 d.resolve();
+                UI.$body.css('overflow-x', '');
                 $this.element.css('min-height', '');
                 finish = false;
             };

@@ -3,7 +3,7 @@
     <thead>
         <tr>
             <th width="20"><input type="checkbox" data-check="all"></th>
-            <th class="uk-text-small" each="{field,idx in fields}">
+            <th width="{field.name == '_modified' ? '120':''}" class="uk-text-small" each="{field,idx in fields}">
                 { field.label || field.name }
             </th>
             <th width="20"></th>
@@ -17,9 +17,9 @@
                     <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }"></raw>
                 </a>
             </td>
-            <td>{  App.Utils.dateformat( new Date( 1000 * entry._modified )) }</td>
+            <td class="uk-text-muted">{  App.Utils.dateformat( new Date( 1000 * entry._modified )) }</td>
             <td>
-                <span class="uk-float-right" data-uk-dropdown="\{mode:'click'\}">
+                <span data-uk-dropdown="mode:'click'">
 
                     <a class="uk-icon-bars"></a>
 
@@ -27,7 +27,7 @@
                         <ul class="uk-nav uk-nav-dropdown">
                             <li class="uk-nav-header">@lang('Actions')</li>
                             <li><a href="@route('/collections/entry/'.$collection['name'])/{ entry._id }">@lang('Edit')</a></li>
-                            <li><a onclick="{ parent.remove }">@lang('Delete')</a></li>
+                            <li><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
                         </ul>
                     </div>
                 </span>

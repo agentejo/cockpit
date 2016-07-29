@@ -93,11 +93,13 @@
 
     <script type="view/script">
 
-        var $this = this, $root = App.$(this.root);
+        var $this = this, $root = App.$(this.root), limit = 30;
 
         this.ready      = false;
         this.collection = {{ json_encode($collection) }};
         this.loadmore   = false;
+        this.count      = 0;
+        this.page       = 1;
         this.entries    = [];
         this.fieldsidx  = {};
         this.fields     = this.collection.fields.filter(function(field){
@@ -113,7 +115,6 @@
         this.selected = [];
 
         this.on('mount', function(){
-
 
             $root.on('click', '[data-check]', function() {
 
@@ -174,6 +175,12 @@
 
                     $this.entries.splice(idx, 1);
 
+                    if ($this.page > 1 && !$this.entries.length) {
+                        $this.page = $this.page - 1;
+                        $this.load();
+                        return;
+                    }
+
                     $this.update();
 
                     $this.checkselected(true);
@@ -202,7 +209,14 @@
                     });
 
                     Promise.all(promises).then(function(){
+
                         App.ui.notify("Entries removed", "success");
+
+                        if ($this.page > 1 && !$this.entries.length) {
+                            $this.page = $this.page - 1;
+                            $this.load();
+                            return;
+                        }
                     });
 
                     this.update();
@@ -214,8 +228,6 @@
 
         load() {
 
-            var limit = 50;
-
             var options = { sort:this.sort };
 
             if (this.filter) {
@@ -224,17 +236,20 @@
 
             if (!this.collection.sortable) {
                 options.limit = limit;
-                options.skip  = this.entries.length || 0;
+                options.skip  = (this.page - 1) * limit;
             }
 
             this.loading = true;
 
-            return App.callmodule('collections:find', [this.collection.name, options]).then(function(data){
+            return App.request('/collections/find', {collection:this.collection.name, options:options}).then(function(data){
 
-                this.entries = this.entries.concat(data.result);
+                this.entries = data.entries;
+                this.pages   = data.pages;
+                this.page    = data.page;
+                this.count   = data.count;
 
                 this.ready    = true;
-                this.loadmore = data.result.length && data.result.length == limit;
+                this.loadmore = data.entries.length && data.entries.length == limit;
 
                 this.checkselected();
 
@@ -243,6 +258,11 @@
                 this.update();
 
             }.bind(this))
+        }
+
+        loadpage(page) {
+            this.page = page > this.pages ? this.pages:page;
+            this.load();
         }
 
         updatesort(e, field) {
@@ -341,10 +361,10 @@
 
             }
 
-
             if (this.filter || load) {
                 this.entries = [];
                 this.loading = true;
+                this.page = 1;
                 this.load();
             }
         }

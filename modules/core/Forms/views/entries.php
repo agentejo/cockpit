@@ -68,26 +68,27 @@
             <thead>
                 <tr>
                     <th width="20"><input type="checkbox" data-check="all"></th>
-                    <th>@lang('Entry')</th>
+                    <th class="uk-text-small">@lang('Entry')</th>
+                    <th width="100" class="uk-text-small">@lang('Created')</th>
+                    <th width="20"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr each="{entry,idx in entries}">
                     <td width="20"><input type="checkbox" data-check data-id="{ entry._id }"></td>
                     <td>
-
-                        <h5 class="uk-text-muted">
-                            <i class="uk-icon-calendar"></i>
-                            <span class="uk-margin-small-right">{ App.Utils.dateformat( new Date( 1000 * entry._modified )) }</span>
-                            <a class="uk-text-danger" onclick="{ parent.remove }" title="@lang('Delete')"><i class="uk-icon-trash-o"></i></a>
-                        </h5>
-
                         <div class="uk-text-small uk-margin-small-top" each="{ name, value in entry.data }">
                             <strong>{name}:</strong>
                             <div>
                                 {value}
                             </div>
                         </div>
+                    </td>
+                    <td>
+                        <span class="uk-text-muted">{ App.Utils.dateformat( new Date( 1000 * entry._modified )) }</span>
+                    </td>
+                    <td>
+                        <a class="uk-text-danger" onclick="{ parent.remove }" title="@lang('Delete')"><i class="uk-icon-trash-o"></i></a>
                     </td>
                 </tr>
             </tbody>

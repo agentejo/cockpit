@@ -91,4 +91,23 @@ class Admin extends \Cockpit\AuthController {
 
         return json_encode($entries, JSON_PRETTY_PRINT);
     }
+
+    public function find() {
+
+        $collection = $this->app->param('collection');
+        $options    = $this->app->param('options');
+
+        if (!$collection) return false;
+
+        $entries = $this->app->module('collections')->find($collection, $options);
+        $count   = $this->app->module('collections')->count($collection, isset($options['filter']) ? $options['filter'] : []);
+        $pages   = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
+        $page    = 1;
+
+        if ($pages > 1 && isset($options['skip'])) {
+            $page = ceil($options['skip'] / $options['limit']) + 1;
+        }
+
+        return compact('entries', 'count', 'pages', 'page');
+    }
 }

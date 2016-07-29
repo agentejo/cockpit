@@ -108,7 +108,7 @@
                         <td class="uk-text-small">{ App.Utils.formatSize(asset.size) }</td>
                         <td class="uk-text-small">{ App.Utils.dateformat( new Date( 1000 * asset.modified )) }</td>
                         <td>
-                            <span class="uk-float-right" data-uk-dropdown="\{mode:'click'\}">
+                            <span class="uk-float-right" data-uk-dropdown="mode:'click'">
 
                                 <a class="uk-icon-bars"></a>
 

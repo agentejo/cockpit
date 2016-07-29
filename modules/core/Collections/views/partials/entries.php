@@ -3,11 +3,11 @@
     @lang('No entries found').
 </div>
 
-<table class="uk-table uk-table-border uk-table-striped uk-margin-top" if="{ entries.length }">
+<table class="uk-table uk-table-border uk-table-striped uk-margin-top" if="{ entries.length && !loading }">
     <thead>
         <tr>
             <th width="20"><input type="checkbox" data-check="all"></th>
-            <th class="uk-text-small" each="{field,idx in fields}">
+            <th width="{field.name == '_modified' ? '120':''}" class="uk-text-small" each="{field,idx in fields}">
                 <a class="uk-link-muted { parent.sort[field.name] ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
 
                     { field.label || field.name }
@@ -26,9 +26,9 @@
                     <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }"></raw>
                 </a>
             </td>
-            <td>{ App.Utils.dateformat( new Date( 1000 * entry._modified )) }</td>
+            <td class="uk-text-muted">{ App.Utils.dateformat( new Date( 1000 * entry._modified )) }</td>
             <td>
-                <span class="uk-float-right" data-uk-dropdown="\{mode:'click'\}">
+                <span data-uk-dropdown="mode:'click'">
 
                     <a class="uk-icon-bars"></a>
 
@@ -51,8 +51,32 @@
     <i class="uk-icon-spinner uk-icon-spin"></i> @lang('Loading...').
 </div>
 
-<div class="uk margin" if="{ loadmore && !loading }">
-    <a class="uk-button uk-width-1-1" onclick="{ load }">
-        @lang('Load more...')
-    </a>
+<div class="uk margin uk-flex uk-flex-middle" if="{ !loading && pages > 1 }">
+
+    <ul class="uk-breadcrumb uk-margin-remove">
+        <li class="uk-active"><span>{ page }</span></li>
+        <li data-uk-dropdown="mode:'click'">
+
+            <a><i class="uk-icon-bars"></i> { pages }</a>
+
+            <div class="uk-dropdown">
+
+                <strong>@lang('Pages')</strong>
+                <hr>
+
+                <div class="{ pages > 5 ? 'uk-scrollable-box':'' }">
+                    <ul class="uk-nav uk-nav-dropdown">
+                        <li each="{k,v in new Array(pages)}"><a class="uk-dropdown-close" onclick="{ parent.loadpage.bind(parent, v+1) }">@lang('Page') {v + 1}</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </li>
+    </ul>
+
+    <div class="uk-button-group uk-margin-small-left">
+        <a class="uk-button uk-button-small" onclick="{ loadpage.bind(this, page-1) }" if="{page-1 > 0}">@lang('Previous')</a>
+        <a class="uk-button uk-button-small" onclick="{ loadpage.bind(this, page+1) }" if="{page+1 <= pages}">@lang('Next')</a>
+    </div>
+
 </div>
