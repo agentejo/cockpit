@@ -11,15 +11,24 @@
     <h3>@lang('Full access API-key') <span class="uk-badge">@lang('Share with caution')</span></h3>
 
     <div class="uk-grid">
-        <div class="uk-flex-item-1">
-            <input class="uk-width-1-1 uk-form-large uk-text-primary" type="text" placeholder="@lang('No key generated')" bind="keys.master" name="fullaccesskey" readonly>
+        <div class="uk-width-1-2">
+
+            <div class="uk-grid">
+                <div class="uk-flex-item-1">
+                    <input class="uk-width-1-1 uk-form-large uk-text-primary" type="text" placeholder="@lang('No key generated')" bind="keys.master" name="fullaccesskey" readonly>
+                </div>
+                <div>
+                    <button class="uk-button uk-button-large" type="button" onclick="{ generate }">@lang('Generate')</button>
+                </div>
+            </div>
+
+            <button class="uk-button uk-button-primary uk-button-large uk-margin-top" type="button" name="button" onclick="{ save }" show="{ keys.master }">@lang('Save')</button>
+
         </div>
-        <div>
-            <button class="uk-button uk-button-large" type="button" onclick="{ generate }">@lang('Generate')</button>
-        </div>
+        
+        <div class="uk-width-1-2"></div>
     </div>
 
-    <button class="uk-button uk-button-large uk-margin-top" type="button" name="button" onclick="{ save }" show="{ keys.master }">@lang('Save')</button>
 
 
     <script type="view/script">

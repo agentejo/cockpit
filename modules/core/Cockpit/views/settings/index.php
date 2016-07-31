@@ -51,6 +51,20 @@
     <div>
         <div class="uk-panel uk-panel-box uk-panel-card">
 
+            <img src="@url('assets:app/media/icons/webhooks.svg')" width="50" height="50" alt="@lang('Webhooks')" />
+
+            <div class="uk-text-truncate uk-margin">
+                @lang('Webhooks')
+            </div>
+            <a class="uk-position-cover" href="@route('/webhooks/index')"></a>
+        </div>
+    </div>
+    @endif
+
+    @if($app['user']['group']=='admin')
+    <div>
+        <div class="uk-panel uk-panel-box uk-panel-card">
+
             <img src="@url('assets:app/media/icons/info.svg')" width="50" height="50" alt="@lang('System')" />
 
             <div class="uk-text-truncate uk-margin">

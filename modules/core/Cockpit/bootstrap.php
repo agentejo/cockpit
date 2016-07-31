@@ -212,3 +212,7 @@ if (COCKPIT_ADMIN && !COCKPIT_REST) {
 
     include_once(__DIR__.'/admin.php');
 }
+
+
+// WEBHOOKS
+include_once(__DIR__.'/webhooks.php');
