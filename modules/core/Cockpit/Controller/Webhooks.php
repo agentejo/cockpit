@@ -20,7 +20,8 @@ class Webhooks extends \Cockpit\AuthController {
             'url'  => '',
             'auth' => ['user'=>'', 'pass'=>''],
             'headers' => [],
-            'events' => []
+            'events' => [],
+            'active' => true
         ];
 
         if ($id) {

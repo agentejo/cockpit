@@ -37,11 +37,7 @@
             // bind global command
             Mousetrap.bindGlobal(['alt+f'], function(e) {
 
-                if (e.preventDefault) {
-                    e.preventDefault();
-                } else {
-                    e.returnValue = false; // ie
-                }
+                e.preventDefault();
                 txtSearch.focus();
                 return false;
             });

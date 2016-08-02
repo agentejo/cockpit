@@ -7,7 +7,7 @@
 </div>
 
 
-<div class="" riot-view>
+<div riot-view>
 
     <form class="uk-form" onsubmit="{ submit }">
 
@@ -26,10 +26,40 @@
                 </div>
 
                 <div class="uk-form-row">
+                    <label class="uk-text-small">@lang('Events')</label>
+
+                    <div class="uk-panel uk-panel-box uk-panel-card uk-margin" if="{!webhook.events.length}">
+                        @lang('You have not assign any event yet.')
+                    </div>
+
+                    <table class="uk-table uk-table-border" show="{webhook.events.length}">
+                        <thead>
+                            <tr>
+                                <th>@lang('Event')</th>
+                                <th width="20"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr each="{event,idx in webhook.events}">
+                                <td><i class="uk-icon-bolt uk-margin-small-right"></i> {event}</td>
+                                <td><a onclick="{ removeEvent }"><i class="uk-icon-trash"></i></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="uk-margin uk-form">
+                        <div class="uk-form-icon uk-width-1-1 uk-display-block">
+                            <i class="uk-icon-bolt"></i>
+                            <input class="uk-width-1-1 uk-form-large" type="text" name="event" placeholder="@lang('Add event...')">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="uk-form-row">
                     <button class="uk-button uk-button-large uk-button-primary uk-margin-small-right">@lang('Save')</button>
                     <a href="@route('/webhooks')">@lang('Cancel')</a>
                 </div>
-
 
             </div>
 
@@ -37,8 +67,6 @@
 
             </div>
         </div>
-
-
 
     </form>
 
@@ -51,6 +79,38 @@
 
         this.webhook = {{ json_encode($webhook) }};
 
+        this.on('mount', function(){
+
+            App.$(this.event).on('keydown', function(e) {
+
+                if (e.keyCode == 13) {
+                    e.preventDefault();
+
+                    if ($this.webhook.events.indexOf($this.event.value.trim()) != -1) {
+                        App.ui.notify("Event already exists");
+                    } else {
+                        $this.webhook.events.push($this.event.value.trim());
+                    }
+
+                    $this.event.value = '';
+                    $this.update();
+
+                    return false;
+                }
+
+            });
+
+            // bind clobal command + save
+            Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
+                e.preventDefault();
+                $this.submit();
+                return false;
+            });
+        });
+
+        removeEvent(evt) {
+            this.webhook.events.splice(evt.item.idx, 1);
+        }
 
         submit() {
 

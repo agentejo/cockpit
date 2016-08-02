@@ -1088,11 +1088,7 @@ riot.tag2('cp-search', '<div name="autocomplete" class="uk-autocomplete uk-form 
 
             Mousetrap.bindGlobal(['alt+f'], function(e) {
 
-                if (e.preventDefault) {
-                    e.preventDefault();
-                } else {
-                    e.returnValue = false;
-                }
+                e.preventDefault();
                 txtSearch.focus();
                 return false;
             });

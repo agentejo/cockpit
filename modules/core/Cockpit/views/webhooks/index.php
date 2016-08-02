@@ -46,6 +46,7 @@
         <thead>
             <tr>
                 <th width="20"><input type="checkbox" data-check="all"></th>
+                <th width="20"></th>
                 <th>@lang('Name')</th>
                 <th>@lang('Url')</th>
                 <th width="20"></th>
@@ -54,8 +55,9 @@
         <tbody>
             <tr each="{webhook,idx in webhooks}" show="{parent.infilter(webhook)}">
                 <td><input type="checkbox" data-check data-id="{ webhook._id }"></td>
+                <td class="uk-text-center"><a onclick="{ toggleStatus }" title="@lang('Toggle status')" data-uk-tooltip="pos:'left'"><i class="uk-icon-circle{webhook.active ? '':'-thin'} uk-text-{webhook.active ? 'success':'danger'}"></i></a></td>
                 <td><a href="@route('/webhooks/webhook')/{ webhook._id }">{ webhook.name }</a></td>
-                <td class="uk-text-muted">{ webhook.url }</td>
+                <td class="uk-text-muted uk-text-truncate">{ webhook.url }</td>
                 <td>
                     <span data-uk-dropdown="mode:'click'">
 
@@ -139,6 +141,21 @@
 
                 }.bind(this));
             }
+        }
+
+        toggleStatus(evt) {
+
+            var webhook = evt.item.webhook;
+
+            webhook.active = !webhook.active;
+
+            App.request('/webhooks/save', {webhook: webhook}).then(function(data) {
+
+                if (data) {
+                    App.ui.notify("Status updated", "success");
+                    $this.update();
+                }
+            });
         }
 
         updatefilter(evt) {
