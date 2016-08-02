@@ -33,7 +33,7 @@
                     <img src="@url('collections:icon.svg')" width="80" height="80" alt="Collections" data-uk-svg />
                 </p>
                 <hr>
-                <span class="uk-text-large uk-text-muted">@lang('No Collections'). <a href="@route('/collections/collection')">Create a collection.</a></span>
+                <span class="uk-text-large uk-text-muted">@lang('No Collections'). <a href="@route('/collections/collection')">@lang('Create a collection').</a></span>
 
             </div>
 
