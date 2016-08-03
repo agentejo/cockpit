@@ -59,7 +59,7 @@
 
                                 <div class="uk-grid uk-grid-gutter uk-grid-small uk-grid-divider">
 
-                                    <div class="uk-grid-margin uk-width-medium-1-3">
+                                    <div class="uk-width-medium-1-3">
 
                                         <div class="uk-margin">
                                             <span class="uk-badge uk-badge-primary">@lang('System')</span>
@@ -103,7 +103,7 @@
                                         <ul class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-text-center" data-modules-menu data-uk-sortable>
 
                                             @foreach(clone $modules as $item)
-                                            <li class="uk-grid-margin uk-width-1-2 uk-width-medium-1-3" data-route="{{ $item['route'] }}">
+                                            <li class="uk-width-1-2 uk-width-medium-1-3" data-route="{{ $item['route'] }}">
                                                 <a class="uk-display-block uk-panel-box {{ (@$item['active']) ? 'uk-bg-primary uk-contrast':'uk-panel-framed' }}" href="@route($item['route'])">
                                                     <div class="app-icon">
                                                         @if(preg_match('/\.svg$/i', $item['icon']))

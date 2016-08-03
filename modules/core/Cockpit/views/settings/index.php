@@ -4,7 +4,7 @@
     </ul>
 </div>
 
-<div class="uk-grid uk-grid-match uk-grid-width-medium-1-4 uk-text-center" data-uk-grid-margin>
+<div class="uk-grid uk-grid-gutter uk-grid-match uk-grid-width-medium-1-4 uk-text-center">
 
     @if($app['user']['group']=='admin')
     <div>

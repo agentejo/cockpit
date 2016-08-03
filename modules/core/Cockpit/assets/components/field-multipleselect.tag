@@ -2,7 +2,7 @@
 
     <div class="uk-grid-gutter">
         <div name="container" class="uk-grid uk-grid-match uk-grid-width-medium-1-6">
-            <div class="uk-grid-margin" each="{option in options}">
+            <div each="{option in options}">
                 <a data-value="{ option }" class="{ parent.selected.indexOf(option)!==-1 ? 'uk-link-muted':'uk-text-muted' }" onclick="{ toggle }" title="{ option }">
                     <i class="uk-icon-{ parent.selected.indexOf(option)!==-1 ? 'circle':'circle-o' }"></i>
                     { option }

@@ -64,7 +64,10 @@
             </div>
 
             <div class="uk-width-medium-1-3">
-
+                <div class="uk-margin" if="{webhook._id}">
+                    <label class="uk-text-small">@lang('Last Modified')</label>
+                    <div class="uk-margin-small-top uk-text-muted"><i class="uk-icon-calendar uk-margin-small-right"></i> {  App.Utils.dateformat( new Date( 1000 * webhook._modified )) }</div>
+                </div>
             </div>
         </div>
 
@@ -119,9 +122,7 @@
                 if (data) {
 
                     App.ui.notify("Saving successful", "success");
-
                     $this.webhook = data;
-
                     $this.update();
 
                 } else {

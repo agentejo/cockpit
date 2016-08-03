@@ -49,7 +49,7 @@
 
                     <div class="uk-grid uk-grid-match uk-grid-gutter">
 
-                        <div class="uk-width-medium-{field.width} uk-grid-margin" each="{field,idx in fields}" no-reorder>
+                        <div class="uk-width-medium-{field.width}" each="{field,idx in fields}" no-reorder>
 
                             <div class="uk-panel">
 

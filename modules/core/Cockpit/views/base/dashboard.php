@@ -14,7 +14,7 @@
         <div class="uk-width-medium-1-2" data-area="main">
             <div class="uk-sortable uk-grid uk-grid-gutter uk-grid-width-1-1" data-uk-sortable="{group:'dashboard',animation:false}">
                 @foreach($areas['main'] as $widget)
-                <div class="uk-grid-margin" data-widget="{{ $widget['name'] }}">
+                <div data-widget="{{ $widget['name'] }}">
                     {{ $widget['content'] }}
                 </div>
                 @endforeach
@@ -23,7 +23,7 @@
         <div class="uk-width-medium-1-4" data-area="aside-left">
             <div class="uk-sortable uk-grid uk-grid-gutter uk-grid-width-medium-1-1" data-uk-sortable="{group:'dashboard',animation:false}">
                 @foreach($areas['aside-left'] as $widget)
-                <div class="uk-grid-margin" data-widget="{{ $widget['name'] }}">
+                <div data-widget="{{ $widget['name'] }}">
                     {{ $widget['content'] }}
                 </div>
                 @endforeach
@@ -32,7 +32,7 @@
         <div class="uk-width-medium-1-4" data-area="aside-right">
             <div class="uk-sortable uk-grid uk-grid-gutter uk-grid-width-medium-1-1" data-uk-sortable="{group:'dashboard',animation:false}">
                 @foreach($areas['aside-right'] as $widget)
-                <div class="uk-grid-margin" data-widget="{{ $widget['name'] }}">
+                <div data-widget="{{ $widget['name'] }}">
                     {{ $widget['content'] }}
                 </div>
                 @endforeach

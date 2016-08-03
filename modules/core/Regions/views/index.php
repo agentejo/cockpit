@@ -42,7 +42,7 @@
 
         <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-margin-top">
 
-            <div class="uk-grid-margin" each="{ region, meta in regions }" if="{ parent.infilter(meta) }">
+            <div each="{ region, meta in regions }" if="{ parent.infilter(meta) }">
 
                 <div class="uk-panel uk-panel-box uk-panel-card">
 

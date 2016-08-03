@@ -54,15 +54,21 @@
                 <th width="20"></th>
                 <th>@lang('Name')</th>
                 <th>@lang('Url')</th>
+                <th>@lang('Events')</th>
+                <th>@lang('Modified')</th>
                 <th width="20"></th>
             </tr>
         </thead>
         <tbody>
             <tr each="{webhook,idx in webhooks}" show="{parent.infilter(webhook)}">
                 <td><input type="checkbox" data-check data-id="{ webhook._id }"></td>
-                <td class="uk-text-center"><a onclick="{ toggleStatus }" title="@lang('Toggle status')" data-uk-tooltip="pos:'left'"><i class="uk-icon-circle{webhook.active ? '':'-thin'} uk-text-{webhook.active ? 'success':'danger'}"></i></a></td>
+                <td class="uk-text-center">
+                    <a onclick="{ toggleStatus }" title="@lang('Toggle status')" data-uk-tooltip="pos:'left'"><i class="uk-icon-circle{webhook.active ? '':'-thin'} uk-text-{webhook.active ? 'success':'danger'}"></i></a>
+                </td>
                 <td><a href="@route('/webhooks/webhook')/{ webhook._id }">{ webhook.name }</a></td>
                 <td><a class="uk-text-muted uk-text-truncate" href="@route('/webhooks/webhook')/{ webhook._id }">{ webhook.url }</a></td>
+                <td><span class="uk-badge {!webhook.events.length && 'uk-badge-danger'}">{webhook.events.length}</span></td>
+                <td>{App.Utils.dateformat( new Date( 1000 * webhook._modified ))}</td>
                 <td>
                     <span data-uk-dropdown="mode:'click'">
 

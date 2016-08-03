@@ -23,16 +23,19 @@
 
     .uk-grid-gutter {
         margin-top: (-1 * @global-grid-gutter);
+        & > * { margin-top: @global-grid-gutter; }
     }
 
     @media (min-width: @breakpoint-xlarge) {
 
         .uk-grid-gutter {
             margin-top: (-1 * @global-grid-gutter-large);
+            & > * { margin-top: @global-grid-gutter-large; }
         }
     }
 
     .uk-grid-small.uk-grid-gutter {
         margin-top: (-1 * @grid-gutter-small-vertical);
+        & > * { margin-top: @grid-gutter-small-vertical; }
     }
 }
