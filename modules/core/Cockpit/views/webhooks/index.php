@@ -5,6 +5,11 @@
     </ul>
 </div>
 
+@if(!function_exists('curl_init'))
+<div class="uk-alert uk-alert-large uk-alert-danger">
+    <p>Please make sure that the <strong>cURL</strong> extension is loaded.</p>
+</div>
+@end
 
 <div class="uk-form" riot-view>
 
@@ -57,7 +62,7 @@
                 <td><input type="checkbox" data-check data-id="{ webhook._id }"></td>
                 <td class="uk-text-center"><a onclick="{ toggleStatus }" title="@lang('Toggle status')" data-uk-tooltip="pos:'left'"><i class="uk-icon-circle{webhook.active ? '':'-thin'} uk-text-{webhook.active ? 'success':'danger'}"></i></a></td>
                 <td><a href="@route('/webhooks/webhook')/{ webhook._id }">{ webhook.name }</a></td>
-                <td class="uk-text-muted uk-text-truncate">{ webhook.url }</td>
+                <td><a class="uk-text-muted uk-text-truncate" href="@route('/webhooks/webhook')/{ webhook._id }">{ webhook.url }</a></td>
                 <td>
                     <span data-uk-dropdown="mode:'click'">
 
@@ -137,7 +142,9 @@
                         App.ui.notify("Webhooks removed", "success");
                     });
 
-                    this.checkselected(true);
+                    this.selected = [];
+
+                    this.update();
 
                 }.bind(this));
             }

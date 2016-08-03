@@ -41,8 +41,8 @@
                         </thead>
                         <tbody>
                             <tr each="{event,idx in webhook.events}">
-                                <td><i class="uk-icon-bolt uk-margin-small-right"></i> {event}</td>
-                                <td><a onclick="{ removeEvent }"><i class="uk-icon-trash"></i></a></td>
+                                <td><i class="uk-icon-bolt uk-margin-small-right uk-text-primary"></i> {event}</td>
+                                <td><a class="uk-text-danger" onclick="{ removeEvent }"><i class="uk-icon-trash"></i></a></td>
                             </tr>
                         </tbody>
                     </table>
