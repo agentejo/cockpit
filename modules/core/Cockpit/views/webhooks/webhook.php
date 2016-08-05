@@ -25,7 +25,7 @@
                     <input class="uk-width-1-1 uk-form-large" type="url" bind="webhook.url" required>
                 </div>
 
-                <div class="uk-form-row uk-panel uk-panel-box uk-panel-box-secondary" show="{advanced}">
+                <div class="uk-form-row uk-panel uk-panel-box uk-panel-card" show="{advanced}">
                     
                     <span class="uk-badge">Advanced</span>
                 
