@@ -23,16 +23,20 @@ foreach ($webhooks as &$webhook) {
                 ];
 
                 // add custom headers
-                if (is_array($webhook['headers']) && count($webhook['headers'])) {
+                if (isset($webhook['headers']) && is_array($webhook['headers']) && count($webhook['headers'])) {
 
-                    foreach ($webhook['headers'] as $h) {
+                    foreach ($webhook['headers'] as &$h) {
                         
                         if (!isset($h['k'], $h['v']) || !$h['k'] || !$h['v']) {
                             continue;
                         }
-
                         $headers[] = implode(': ', [$h['k'], $h['v']]);
                     }
+                }
+
+                // add basic hhtp auth
+                if (isset($webhook['auth']) && $webhook['auth']['user'] && $webhook['auth']['pass']) {
+                    curl_setopt($ch, CURLOPT_USERPWD, $webhook['auth']['user'] . ":" . $webhook['auth']['pass'];
                 }
 
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
