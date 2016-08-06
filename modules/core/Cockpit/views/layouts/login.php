@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
     {{ $app->assets($app['app.assets.base'], $app['cockpit/version']) }}
-    {{ $app->assets(['assets:lib/uikit/js/components/form-password.min.js', 'assets:lib/sky.js'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:lib/uikit/js/components/form-password.min.js'], $app['cockpit/version']) }}
 
     <style>
 
@@ -22,16 +22,6 @@
 
         .uk-panel-box-header {
             border-bottom: none;
-        }
-
-        .gooeys {
-            position: fixed;
-            top:0;
-            left: 0;
-            z-index: -1;
-            margin: 0 auto;
-        	-webkit-filter: url('#filter');
-        	filter: url('#filter');
         }
 
         svg path,
@@ -49,7 +39,17 @@
 
         <form class="uk-form" method="post" action="@route('/auth/check')" onsubmit="{ submit }">
 
-            <div class="uk-panel-box uk-panel-space uk-panel-card uk-nbfc">
+            <div class="uk-panel-box uk-panel-space uk-panel-card uk-nbfc uk-text-center uk-animation-slide-bottom" if="{$user}">
+
+                <h2 class="uk-text-bold uk-text-truncate">@lang('Welcome back!')</h2>
+
+                <p>
+                    <cp-gravatar email="{ $user.email }" size="80" alt="{ $user.name || $user.user }" if="{$user}"></cp-gravatar>
+                </p>
+
+            </div>
+
+            <div id="login-dialog" class="uk-panel-box uk-panel-space uk-panel-card uk-nbfc" show="{!$user}">
 
                 <div name="header" class="uk-panel-box-header uk-text-bold uk-text-center">
 
@@ -86,8 +86,11 @@
         <script type="view/script">
 
             this.error = false;
+            this.$user  = null;
 
-            submit() {
+            submit(e) {
+
+                e.preventDefault();
 
                 this.error = false;
 
@@ -95,13 +98,22 @@
 
                     if (data && data.success) {
 
-                        App.reroute('/');
+                        this.$user = data.user;
 
+                        setTimeout(function(){
+                            App.reroute('/');
+                        }, 2000)
+                        
                     } else {
 
                         this.error = 'Login failed';
 
                         App.$(this.header).addClass('uk-bg-danger uk-contrast');
+                        App.$('#login-dialog').removeClass('uk-animation-shake');
+
+                        setTimeout(function(){
+                            App.$('#login-dialog').addClass('uk-animation-shake');
+                        }, 50);
                     }
 
                     this.update();
