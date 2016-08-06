@@ -24,53 +24,48 @@
     </div>
     @endif
 
-    <div class="uk-grid uk-grid-match uk-grid-width-1-1 uk-grid-width-medium-1-3">
 
-        <div class="uk-grid-margin" each="{account, $index in accounts}" if="{ parent.infilter(account) }">
+    <table class="uk-table uk-table-border uk-table-striped uk-margin-top">
+        <thead>
+            <tr>
+                <th width="30"></th>
+                <th class="uk-text-small">@lang('Name')</th>
+                <th class="uk-text-small" width="30%">@lang('Email')</th>
+                <th class="uk-text-small" width="150">@lang('Group')</th>
+                <th width="20"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr each="{account, $index in accounts}"  if="{ parent.infilter(account) }">
+                <td class="uk-text-center">
+                    <a class="uk-link-muted" href="@route('/accounts/account')/{ account._id }" title="@lang('Edit account')">
+                        <cp-gravatar email="{ account.md5email }" size="20" alt="{ account.name || account.user }"></cp-gravatar>
+                    </a>
+                </td>
+                <td>
+                    <a class="uk-link-muted" href="@route('/accounts/account')/{ account._id }" title="@lang('Edit account')">
+                        { account.name || account.user }
+                    </a>
+                </td>
+                <td class="uk-text-truncate"><a class="uk-link-muted" href="mailto:{ account.email }">{ account.email }</a></td>
+                <td><span class="{ account.group=='admin' && 'uk-badge' }">{ account.group }</span></td>
+                <td>
+                    <span data-uk-dropdown="pos:'bottom-right'">
 
-            <div class="uk-panel uk-panel-box uk-panel-card">
+                        <a class="uk-icon-bars"></a>
 
-                <div class="uk-grid uk-grid-small uk-flex-middle">
-
-                    <div>
-                        <a class="uk-link-muted" href="@route('/accounts/account')/{ account._id }" title="@lang('Edit account')">
-                            <cp-gravatar email="{ account.md5email }" size="30" alt="{ account.name || account.user }"></cp-gravatar>
-                        </a>
-                    </div>
-
-                    <div class="uk-flex-item-1 { account.active ? '':'uk-text-danger' }">
-
-                        <div class="uk-text-truncate">
-                            <a class="uk-link-muted" href="@route('/accounts/account')/{ account._id }" title="@lang('Edit account')">
-                                <strong>{ account.name || account.user }</strong>
-                            </a>
+                        <div class="uk-dropdown">
+                            <ul class="uk-nav uk-nav-dropdown">
+                                <li class="uk-nav-header">@lang('Actions')</li>
+                                <li><a href="@route('/accounts/account')/{ account._id }">@lang('Edit')</a></li>
+                                <li><a onclick="{ parent.remove }" href="#">@lang('Delete')</a></li>
+                            </ul>
                         </div>
-
-                    </div>
-
-                    <div>
-                        <span class="uk-badge">{ account.group }</span>
-                    </div>
-
-                    <div>
-                        <div data-uk-dropdown="pos:'bottom-right'">
-
-                            <a class="uk-icon-cog"></a>
-
-                            <div class="uk-dropdown">
-                                <ul class="uk-nav uk-nav-dropdown">
-                                    <li class="uk-nav-header">@lang('Actions')</li>
-                                    <li><a href="@route('/accounts/account')/{ account._id }">@lang('Edit')</a></li>
-                                    <li><a onclick="{ parent.remove }" href="#">@lang('Delete')</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
     <script type="view/script">
 
