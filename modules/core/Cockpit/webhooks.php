@@ -36,7 +36,7 @@ foreach ($webhooks as &$webhook) {
 
                 // add basic hhtp auth
                 if (isset($webhook['auth']) && $webhook['auth']['user'] && $webhook['auth']['pass']) {
-                    curl_setopt($ch, CURLOPT_USERPWD, $webhook['auth']['user'] . ":" . $webhook['auth']['pass'];
+                    curl_setopt($ch, CURLOPT_USERPWD, $webhook['auth']['user'] . ":" . $webhook['auth']['pass']);
                 }
 
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
