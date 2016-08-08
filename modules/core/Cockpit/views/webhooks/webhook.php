@@ -36,13 +36,13 @@
                             <div>
                                 <div class="uk-form-icon uk-width-1-1 uk-display-block">
                                     <i class="uk-icon-user"></i>
-                                    <input class="uk-width-1-1" type="text" bind="webhook.auth.user" placeholder="@lang('User')">
+                                    <input class="uk-form-large uk-width-1-1" type="text" bind="webhook.auth.user" placeholder="@lang('User')">
                                 </div>
                             </div>
                             <div class="uk-grid-margin">
                                 <div class="uk-form-icon uk-width-1-1 uk-display-block">
                                     <i class="uk-icon-key"></i>
-                                    <input class="uk-width-1-1" type="password" bind="webhook.auth.pass" placeholder="@lang('Password')">
+                                    <input class="uk-form-large uk-width-1-1" type="password" bind="webhook.auth.pass" placeholder="@lang('Password')">
                                 </div>
                             </div>
                         </div>
@@ -54,7 +54,7 @@
 
                         <div class="uk-margin uk-panel uk-form">
                             
-                            <div class="uk-grid uk-grid-small" each="{h,idx in webhook.headers}">
+                            <div class="uk-grid uk-grid-small uk-flex-middle" each="{h,idx in webhook.headers}">
                                 <div class="uk-flex-item-1"><input class="uk-width-1-1" type="text" placeholder="Key" bind="webhook.headers[{idx}].k"></div>
                                 <div>:</div>
                                 <div class="uk-flex-item-1"><input class="uk-width-1-1" type="text" placeholder="Value" bind="webhook.headers[{idx}].v"></div>
@@ -71,7 +71,7 @@
                 </div>
 
                 <div class="uk-form-row">
-                    <a class="uk-button uk-button-small" onclick="{ toggleAdvance.bind(this, true) }" show="{!advanced}"><i class="uk-icon-cog"></i> @lang('Show Advanced Options')</a>
+                    <a class="uk-button uk-button-small" onclick="{ toggleAdvance.bind(this, true) }" show="{!advanced}"><i class="uk-icon-cog"></i> @lang('Advanced Options')</a>
                     <a class="uk-button uk-button-small" onclick="{ toggleAdvance.bind(this, false) }" show="{advanced}"><i class="uk-icon-cog"></i> @lang('Hide')</a>
                 </div>
 
@@ -114,10 +114,19 @@
             </div>
 
             <div class="uk-width-medium-1-3">
-                <div class="uk-margin" if="{webhook._id}">
+
+                <div class="uk-panel">
+                    <label class="uk-text-small">@lang('Status')</label>
+                    <div class="uk-margin-small-top">
+                        <field-boolean bind="webhook.active" cls="uk-form-small uk-button-large uk-width-1-1 uk-width-medium-1-3"></field-boolean>
+                    </div>
+                </div>
+
+                <div class="uk-panel" if="{webhook._id}">
                     <label class="uk-text-small">@lang('Last Modified')</label>
                     <div class="uk-margin-small-top uk-text-muted"><i class="uk-icon-calendar uk-margin-small-right"></i> {  App.Utils.dateformat( new Date( 1000 * webhook._modified )) }</div>
                 </div>
+
             </div>
         </div>
 
