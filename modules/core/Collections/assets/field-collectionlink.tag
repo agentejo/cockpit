@@ -232,6 +232,10 @@
 
         if (this.filter) {
             options.filter = this.filter;
+        } else {
+            if (opts.filter) {
+                options.filter = opts.filter;
+            }
         }
 
         if (!this.collection.sortable) {
@@ -260,7 +264,6 @@
         var load = this.filter ? true:false;
 
         this.filter = null;
-
 
         if (this.txtfilter.value) {
 
@@ -311,6 +314,27 @@
         }
 
         if (this.filter || load) {
+
+            if (opts.filter) {
+                
+                Object.keys(opts.filter).forEach(function(k) {
+                    switch(k) {
+                        case '$and':
+                        case '$or':
+                            if ($this.filter[k]) {
+                                this.filter[k] = this.filter[k].concat(opts.filter[k]);
+                            } else {
+                                $this.filter[k] = opts.filter[k];
+                            }
+                            break;
+                        default:
+                            $this.filter[k] = opts.filter[k];
+                    }
+                });
+                
+                this.filter = opts.filter;
+            }
+
             this.entries = [];
             this.loading = true;
             this.load();
