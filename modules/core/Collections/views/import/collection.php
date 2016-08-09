@@ -26,10 +26,17 @@
 
 <div class="uk-margin-top" riot-view>
 
-    <div class="uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" name="step0" data-step="0" show="{step==0}">
+    <div class="uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" name="parse" data-step="parse" show="{step=='parse'}">
         <div class="uk-text-center">
             <i class="uk-h1 uk-icon-spinner uk-icon-spin"></i>
             <p class="uk-text-muted uk-text-large">@lang('Parsing file...')</p>
+        </div>
+    </div>
+
+    <div class="uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" name="process" data-step="process" show="{step=='process'}">
+        <div class="uk-text-center">
+            <i class="uk-h1 uk-icon-spinner uk-icon-spin"></i>
+            <p class="uk-text-muted uk-text-large"><span name="progress"></span></p>
         </div>
     </div>
 
@@ -48,7 +55,7 @@
 
     <div name="step2" data-step="1" show="{step==2}">
         
-        <h2><i class="uk-icon-file-o"></i> { file.name }</h2>
+        <h2>{ file.name }</h2>
         <div class="uk-margin uk-text-muted">{ data.rows.length } @lang('Entries found.')</div>
 
         <table class="uk-table uk-table-border uk-table-striped uk-margin-top">
@@ -104,6 +111,7 @@
         this.file = null;
         this.data = null;
         this.mapping = {};
+        this.filter = {};
         this.step = 1;
 
         this.fields = [];
@@ -131,6 +139,7 @@
 
             this.data = null;
             this.mapping = {};
+            this.filter = {};
             
             this.step = 1;
             this.step1.classList.remove('uk-dragover');
@@ -144,12 +153,19 @@
                 return App.ui.notify("Only JSON and CSV files are supported.");
             }
 
-            this.step = 0;
+            this.step = 'parse';
             this.update();
 
             ImportParser.parse(file).then(function(data) {
                 
                 $this.data = data;
+
+                // auto-map fields
+                $this.fields.forEach(function(f){
+                    if (data.headers.indexOf(f.name) != -1) {
+                        $this.mapping[f.name] = f.name;
+                    }
+                });
                 
                 $this.file = file;
                 $this.step = 2;
@@ -223,6 +239,66 @@
                 return App.ui.notify("Required fields are not mapped:<div class='uk-margin-small-top'>"+required+"</div>");
             }
 
+            var cnt    = 20,
+                chunks = chunk(this.data.rows, cnt),
+                chain  = Promise.resolve(),
+                progress = 0;
+
+            this.progress.innerHTML  = '0 %';
+            this.step = 'process';
+
+            chunks.forEach(function(chunk){
+
+                chain = chain.then(function() {
+
+                    return new Promise(function(resolve){
+
+                        var entries = [], entry;
+
+                        chunk.forEach(function(c) {
+
+                            entry = {};
+
+                            Object.keys($this.mapping).forEach(function(k){
+                                entry[k] = c[k] || null;
+                            });
+
+                            entries.push(entry);
+                        });
+
+                        App.callmodule('collections:save',[$this.collection.name, entries]).then(function(data) {
+                            
+                            progress += cnt;
+
+                            if (progress > $this.data.rows.length) {
+                                progress = $this.data.rows.length;
+                            }
+                            
+                            $this.progress.innerHTML = Math.ceil((progress/$this.data.rows.length)*100)+' %';
+
+                            if (progress == $this.data.rows.length) {
+                                App.ui.notify("Import completed.", "success");
+                                $this.restart();
+                                $this.update();
+                            }
+
+                            resolve(data && data.result);
+                        });
+                    });
+                });
+            });
+        }
+
+
+        function chunk(arr, len) {
+
+            var chunks = [], i = 0, n = arr.length;
+
+            while (i < n) {
+                chunks.push(arr.slice(i, i += len));
+            }
+
+            return chunks;
         }
 
 

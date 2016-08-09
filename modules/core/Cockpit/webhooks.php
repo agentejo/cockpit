@@ -16,7 +16,13 @@ foreach ($webhooks as &$webhook) {
             $app->on($evt, function() use($evt, $webhook) {
 
                 $ch      = curl_init($webhook['url']);
-                $data    = json_encode(['event' => $evt, 'args' => func_get_args()]);
+                $data    = json_encode([
+                    'event' => $evt,
+                    'hook'  => $webhook['name'],
+                    'backend' => COCKPIT_ADMIN, 
+                    'args' => func_get_args()
+                ]);
+                
                 $headers = [
                     'Content-Type: application/json',
                     'Content-Length: '.strlen($data)

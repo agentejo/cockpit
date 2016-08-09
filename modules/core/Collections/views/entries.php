@@ -94,7 +94,7 @@
 
     <script type="view/script">
 
-        var $this = this, $root = App.$(this.root), limit = 30;
+        var $this = this, $root = App.$(this.root), limit = 20;
 
         this.ready      = false;
         this.collection = {{ json_encode($collection) }};
