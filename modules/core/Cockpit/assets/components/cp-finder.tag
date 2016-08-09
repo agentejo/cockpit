@@ -49,9 +49,9 @@
                     </button>
                 </span>
 
-                <span class="uk-button" if="{ selected.count }" data-uk-dropdown="mode:'click'">
-                    <strong>Batch:</strong> { selected.count } selected &nbsp;<i class="uk-icon-caret-down"></i>
-                    <div class="uk-dropdown uk-text-left">
+                <span if="{ selected.count }" data-uk-dropdown="mode:'click'">
+                    <span class="uk-button"><strong>Batch:</strong> { selected.count } selected &nbsp;<i class="uk-icon-caret-down"></i></span>
+                    <div class="uk-dropdown uk-margin-top uk-text-left">
                         <ul class="uk-nav uk-nav-dropdown">
                             <li class="uk-nav-header">Batch action</li>
                             <li><a onclick="{ removeSelected }">Delete</a></li>
@@ -127,7 +127,7 @@
                                             <span class="uk-margin-small-right" data-uk-dropdown="mode:'click'">
                                                 <i class="uk-icon-folder-o uk-text-muted js-no-item-select"></i>
                                                 <div class="uk-dropdown">
-                                                    <ul class="uk-nav uk-nav-dropdown">
+                                                    <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                                                         <li class="uk-nav-header uk-text-truncate">{ folder.name }</li>
                                                         <li><a onclick="{ parent.rename }">Rename</a></li>
                                                         <li><a onclick="{ parent.remove }">Delete</a></li>
@@ -163,7 +163,7 @@
                                                 <span class="uk-margin-small-right" data-uk-dropdown="mode:'click'">
                                                     <a><i class="uk-icon-{ parent.getIconCls(file) } js-no-item-select"></i>
                                                     <div class="uk-dropdown">
-                                                        <ul class="uk-nav uk-nav-dropdown">
+                                                        <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                                                             <li class="uk-nav-header uk-text-truncate">{ file.name }</li>
                                                             <li> <a class="uk-link-muted js-no-item-select" onclick="{ parent.open }">Open</a></li>
                                                             <li><a onclick="{ parent.rename }">Rename</a></li>

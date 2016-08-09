@@ -62,6 +62,7 @@
                                     <li><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
                                     <li class="uk-nav-divider"></li>
                                     <li class="uk-text-truncate"><a href="@route('/collections/export')/{ meta.name }" download="{ meta.name }.collection.json">@lang('Export entries')</a></li>
+                                    <li class="uk-text-truncate"><a href="@route('/collections/import/collection')/{ meta.name }">@lang('Import entries')</a></li>
                                 </ul>
                             </div>
                         </div>

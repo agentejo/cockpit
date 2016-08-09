@@ -38,7 +38,7 @@
 
                             <label class="uk-text-bold">
                                 { field.label || field.name }
-                                <span if="{ field.localize }" class="uk-icon-globe" title="@lang('Localized field')" data-uk-tooltip="\{pos:'right'\}"></span>
+                                <span if="{ field.localize }" class="uk-icon-globe" title="@lang('Localized field')" data-uk-tooltip="pos:'right'"></span>
                             </label>
 
                             <div class="uk-margin uk-text-small uk-text-muted">
