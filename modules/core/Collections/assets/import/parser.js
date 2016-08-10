@@ -24,6 +24,7 @@
             App.assets.require('/assets/lib/papaparse.js').then(function() {
 
                 Papa.parse(content, {
+                    header: true,
                     complete: function(result) {
 
                         var data, headers = [];
@@ -38,7 +39,7 @@
 
                             if (['_id', '_created', '_modified'].indexOf(key) != -1) return;
 
-                            headers.push(Number(key));
+                            headers.push(key);
                         });
 
                         resolve({

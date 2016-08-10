@@ -3,7 +3,7 @@
     @lang('No entries found').
 </div>
 
-<table class="uk-table uk-table-border uk-table-striped uk-margin-top" if="{ entries.length && !loading }">
+<table class="uk-table uk-table-border uk-table-striped" if="{ entries.length && !loading }">
     <thead>
         <tr>
             <th width="20"><input type="checkbox" data-check="all"></th>

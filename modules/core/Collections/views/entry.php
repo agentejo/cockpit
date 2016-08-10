@@ -1,7 +1,19 @@
 <div>
     <ul class="uk-breadcrumb">
         <li><a href="@route('/collections')">@lang('Collections')</a></li>
-        <li><a href="@route('/collections/entries/'.$collection['name'])">{{ $collection['name'] }}</a></li>
+        <li data-uk-dropdown="mode:'hover'">
+            <a href="@route('/collections/entries/'.$collection['name'])"><i class="uk-icon-bars"></i> {{ @$collection['label'] ? $collection['label']:$collection['name'] }}</a>
+
+            <div class="uk-dropdown">
+                <ul class="uk-nav uk-nav-dropdown">
+                    <li class="uk-nav-header">@lang('Actions')</li>
+                    <li><a href="@route('/collections/collection/'.$collection['name'])">@lang('Edit')</a></li>
+                    <li class="uk-nav-divider"></li>
+                    <li class="uk-text-truncate"><a href="@route('/collections/export/'.$collection['name'])" download="{{ $collection['name'] }}.collection.json">@lang('Export entries')</a></li>
+                    <li class="uk-text-truncate"><a href="@route('/collections/import/collection/'.$collection['name'])">@lang('Import entries')</a></li>
+                </ul>
+            </div>
+        </li>
         <li class="uk-active"><span>@lang('Entry')</span></li>
     </ul>
 </div>
