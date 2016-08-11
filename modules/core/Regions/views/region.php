@@ -6,7 +6,7 @@
 </div>
 
 
-<div class="uk-margin-large-top" riot-view>
+<div class="uk-margin" riot-view>
 
     <form class="uk-form" onsubmit="{ submit }">
 

@@ -1302,26 +1302,29 @@ riot.tag2('field-color', '<input name="input" class="uk-width-1-1" bind="{opts.b
 
         this.on('mount', function(){
 
-            App.assets.require(['/assets/lib/tinycolorpicker/colors.js'], function(){
+            App.assets.require([
+                '/assets/lib/spectrum/spectrum.js',
+                '/assets/lib/spectrum/spectrum.css'
+            ], function(){
 
-                App.assets.require(['/assets/lib/tinycolorpicker/jqColorPicker.js'], function(){
-
-                    $this.input.id = $this.input.id || 'colorpicker'+Math.ceil(Math.random()*10000);
-
-                    $this.input.onfocus = function(){
-                        $('#'+$this.input.id).colorPicker({
-                            renderCallback: function($elm, toggled) {
-                                if (toggled === false) {
-                                    $this.$setValue($elm.val());
-                                }
-                            }
-                        });
-                    };
-
-                    $this.input.onkeyup = function(){
+                App.$($this.input).spectrum(App.$.extend({
+                    preferredFormat: 'rgb',
+                    allowEmpty:true,
+                    showInitial: true,
+                    showInput: true,
+                    showButtons: false,
+                    showAlpha: true,
+                    showSelectionPalette: true,
+                    palette: [ ],
+                    change: function() {
                         $this.$setValue($this.input.value);
-                    };
-                });
+                    }
+                }, opts.spectrum));
+
+                $this.input.oninput = function(){
+                    $this.$setValue($this.input.value);
+                };
+
             });
         });
 

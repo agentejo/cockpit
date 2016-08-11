@@ -31,7 +31,7 @@
     </style>
     @endif
 
-    <div class="uk-margin-top-large" riot-view>
+    <div class="uk-margin-top" riot-view>
 
         <div class="uk-alert" if="{ !fields.length }">
             @lang('No fields defined'). <a href="@route('/regions/region')/{ region.name }">@lang('Define region fields').</a>
