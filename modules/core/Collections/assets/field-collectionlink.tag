@@ -23,9 +23,9 @@
                     <div class="uk-flex-item-1"><raw content="{ App.Utils.renderValue(field.type, parent.link[field.name]) }"></raw></div>
                 </div>
 
-                <div class="uk-panel-box-footer uk-text-small">
-                    <a class="uk-margin-small-right" onclick="{ showDialog }"><i class="uk-icon-link"></i> { App.i18n.get('Link another item') }</a>
-                    <a onclick="{ removeItem }"><i class="uk-icon-trash-o"></i> { App.i18n.get('Remove') }</a>
+                <div class="uk-panel-box-footer uk-text-small uk-padding-bottom-remove">
+                    <a class="uk-margin-small-right" onclick="{ showDialog }"><i class="uk-icon-link"></i> { App.i18n.get('Link item') }</a>
+                    <a class="uk-text-danger" onclick="{ removeItem }"><i class="uk-icon-trash-o"></i> { App.i18n.get('Remove') }</a>
                 </div>
             </div>
 
@@ -45,17 +45,15 @@
                                     <div><raw content="{ App.Utils.renderValue(field.type, parent.l[field.name]) }"></raw></div>
                                 </div>
                             </div>
-
                         </div>
                     </li>
                 </ul>
 
-                <div class="uk-panel-box-footer uk-text-small">
+                <div class="uk-panel-box-footer uk-text-small uk-padding-bottom-remove">
                     <a class="uk-margin-small-right" onclick="{ showDialog }"><i class="uk-icon-plus-circle"></i> { App.i18n.get('Item') }</a>
-                    <a onclick="{ removeItem }"><i class="uk-icon-trash-o"></i> { App.i18n.get('Reset') }</a>
+                    <a class="uk-text-danger" onclick="{ removeItem }"><i class="uk-icon-trash-o"></i> { App.i18n.get('Reset') }</a>
                 </div>
             </div>
-
 
         </div>
 
@@ -120,7 +118,6 @@
                         { App.i18n.get('Load more...') }
                     </a>
                 </div>
-
 
             </div>
         </div>
