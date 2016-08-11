@@ -48,7 +48,7 @@
 
                     <div>
 
-                        <div class="uk-display-inline-block" data-uk-dropdown>
+                        <div class="uk-display-inline-block" data-uk-dropdown="delay:400">
 
                             <a href="@route('/')" class="uk-link-muted uk-text-bold">
                                 <i class="uk-icon-bars"></i>

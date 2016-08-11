@@ -1,14 +1,18 @@
 <field-collectionlink>
 
-    <div class="uk-alert uk-alert-danger" if="{error}">
+    <div class="uk-alert" if="{!opts.link}">
+        { App.i18n.get('Collection to link not defined in the field settings') }
+    </div>
+
+    <div class="uk-alert uk-alert-danger" if="{opts.link && error}">
         { App.i18n.get('Failed loading collection') } {opts.link}
     </div>
 
-    <div class="uk-alert" if="{!collection && !error}">
+    <div class="uk-alert" if="{opts.link && !collection && !error}">
         <i class="uk-icon-spinner uk-icon-spin"></i> { App.i18n.get('Loading field') }
     </div>
 
-    <div if="{collection}">
+    <div if="{opts.link && collection}">
 
         <div class="uk-alert" if="{!link || (opts.multiple && !link.length)}">
             { App.i18n.get('Nothing linked yet') }. <a onclick="{ showDialog }">{ App.i18n.get('Create link to') } { collection.label || opts.link }</a>
@@ -162,6 +166,8 @@
     }.bind(this);
 
     this.on('mount', function(){
+
+        if (!opts.link) return;
 
         modal = UIkit.modal(App.$('.uk-modal', this.root));
 

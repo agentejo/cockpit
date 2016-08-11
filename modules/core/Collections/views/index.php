@@ -48,7 +48,7 @@
 
                     <div class="uk-grid uk-grid-small">
 
-                        <div data-uk-dropdown>
+                        <div data-uk-dropdown="delay:300">
 
                             <a class="uk-icon-cog" style="color:{ (meta.color) }"></a>
 

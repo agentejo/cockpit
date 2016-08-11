@@ -4,7 +4,7 @@
 <div>
     <ul class="uk-breadcrumb">
         <li><a href="@route('/collections')">@lang('Collections')</a></li>
-        <li data-uk-dropdown="mode:'hover'">
+        <li data-uk-dropdown="mode:'hover, delay:300'">
 
             <a href="@route('/collections/entries/'.$collection['name'])"><i class="uk-icon-bars"></i> {{ @$collection['label'] ? $collection['label']:$collection['name'] }}</a>
 
