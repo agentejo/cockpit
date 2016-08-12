@@ -1,5 +1,5 @@
 
-{{ $app->assets(['collections:assets/import/parser.js'], $app['cockpit/version']) }}
+{{ $app->assets(['collections:assets/import/parser.js', 'collections:assets/import/filter.js'], $app['cockpit/version']) }}
 
 <div>
     <ul class="uk-breadcrumb">
@@ -85,7 +85,7 @@
                         
                     </td>
                     <td>
-                        <div class="uk-form-select">
+                        <div class="uk-text-center">
                             <input type="checkbox" bind="filter.{field.name}" />
                         </div>
                     </td>
@@ -239,6 +239,7 @@
             }
 
             var cnt    = 20,
+                fields = _.keyBy(this.fields, 'name'),
                 chunks = chunk(this.data.rows, cnt),
                 chain  = Promise.resolve(),
                 progress = 0;
@@ -252,36 +253,48 @@
 
                     return new Promise(function(resolve){
 
-                        var entries = [], entry;
+                        var promises = [], entries = [];
 
-                        chunk.forEach(function(c) {
+                        chunk.forEach(function(c, entry) {
 
                             entry = {};
 
-                            Object.keys($this.mapping).forEach(function(k){
-                                entry[k] = c[k] || null;
+                            Object.keys($this.mapping).forEach(function(k, val){
+                                
+                                val = c[$this.mapping[k]];
+
+                                if ($this.filter[k]) {
+                                    promises.push(ImportFilter.filter(fields[k], val).then(function(val){
+                                        entry[k] = val;
+                                    }));
+                                } else {
+                                    entry[k] = val;
+                                }
                             });
 
                             entries.push(entry);
                         });
 
-                        App.callmodule('collections:save',[$this.collection.name, entries]).then(function(data) {
-                            
-                            progress += cnt;
+                        Promise.all(promises).then(function(){
 
-                            if (progress > $this.data.rows.length) {
-                                progress = $this.data.rows.length;
-                            }
-                            
-                            $this.progress.innerHTML = Math.ceil((progress/$this.data.rows.length)*100)+' %';
+                            App.callmodule('collections:save',[$this.collection.name, entries]).then(function(data) {
+                                
+                                progress += cnt;
 
-                            if (progress == $this.data.rows.length) {
-                                App.ui.notify("Import completed.", "success");
-                                $this.restart();
-                                $this.update();
-                            }
+                                if (progress > $this.data.rows.length) {
+                                    progress = $this.data.rows.length;
+                                }
+                                
+                                $this.progress.innerHTML = Math.ceil((progress/$this.data.rows.length)*100)+' %';
 
-                            resolve(data && data.result);
+                                if (progress == $this.data.rows.length) {
+                                    App.ui.notify("Import completed.", "success");
+                                    $this.restart();
+                                    $this.update();
+                                }
+
+                                resolve(data && data.result);
+                            });
                         });
                     });
                 });
