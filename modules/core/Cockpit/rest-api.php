@@ -42,6 +42,8 @@ $this->on("before", function() {
                 $output = call_user_func_array($routes[$resource], $params);
             }
         }
+        
+        $this->response->mime = 'json';
 
         return $output;
     });
