@@ -43,7 +43,9 @@ $this->on("before", function() {
             }
         }
         
-        $this->response->mime = 'json';
+        if (is_object($output) || is_array($output)) {
+            $this->response->mime = 'json';
+        }
 
         return $output;
     });
