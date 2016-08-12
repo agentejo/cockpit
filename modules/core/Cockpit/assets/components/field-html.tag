@@ -37,7 +37,14 @@
             ], function() {
 
                 $this.input.value = $this.value;
-
+                //pass along codemirror options to htmleditor/codemirror
+                if(opts.codemirroroptions){
+                    co=opts.codemirroroptions;
+                    for(prop in co){
+                        if(!(prop in opts))
+                            opts[prop]=co[prop];
+                    }
+                }
                 editor = UIkit.htmleditor(this.input, opts);
                 editor.on('input', function() {
                     $this.$setValue(editor.editor.getValue());
