@@ -105,7 +105,7 @@
                                             @foreach(clone $modules as $item)
                                             <li class="uk-width-1-2 uk-width-medium-1-3" data-route="{{ $item['route'] }}">
                                                 <a class="uk-display-block uk-panel-box {{ (@$item['active']) ? 'uk-bg-primary uk-contrast':'uk-panel-framed' }}" href="@route($item['route'])">
-                                                    <div class="app-icon">
+                                                    <div class="uk-svg-adjust">
                                                         @if(preg_match('/\.svg$/i', $item['icon']))
                                                         <img src="@url($item['icon'])" alt="@lang($item['label'])" data-uk-svg width="30px" height="30px" />
                                                         @else
@@ -141,7 +141,7 @@
                         <ul class="uk-subnav app-modulesbar">
                             @foreach($modules as $item)
                             <li>
-                                <a class="app-icon {{ (@$item['active']) ? 'uk-active':'' }}" href="@route($item['route'])" title="@lang($item['label'])" data-uk-tooltip="offset:10">
+                                <a class="uk-svg-adjust {{ (@$item['active']) ? 'uk-active':'' }}" href="@route($item['route'])" title="@lang($item['label'])" data-uk-tooltip="offset:10">
                                     @if(preg_match('/\.svg$/i', $item['icon']))
                                     <img src="@url($item['icon'])" alt="@lang($item['label'])" data-uk-svg width="20px" height="20px" />
                                     @else
@@ -149,7 +149,7 @@
                                     @endif
 
                                     @if($item['active'])
-                                    <span class="uk-text-small uk-margin-small-left">{{ $item['label'] }}</span>
+                                    <span class="uk-text-small uk-margin-small-left uk-text-bolder">{{ $item['label'] }}</span>
                                     @endif
                                 </a>
                             </li>

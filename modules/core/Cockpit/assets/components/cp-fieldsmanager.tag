@@ -68,8 +68,8 @@
 
                         <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Type') }:</label>
                         <div class="uk-form-select uk-width-1-1 uk-margin-small-top">
-                            <a>{ App.Utils.ucfirst(field.type) }</a>
-                            <select class="uk-width-1-1" fields-bind="fields[{idx}].type">
+                            <a class="uk-text-capitalize">{ field.type }</a>
+                            <select class="uk-width-1-1 uk-text-capitalize" fields-bind="fields[{idx}].type">
                                 <option each="{type,typeidx in parent.fieldtypes}" value="{type.value}">{type.name}</option>
                             </select>
                         </div>
@@ -147,7 +147,7 @@
 
                 f = tag.replace('field-', '');
 
-                this.fieldtypes.push({name:f.toUpperCase(), value:f});
+                this.fieldtypes.push({name:f, value:f});
             }
         }
         // --

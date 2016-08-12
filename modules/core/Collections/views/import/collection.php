@@ -63,8 +63,8 @@
                 <tr>
                     <th width="10"></th>
                     <th class="uk-text-small">@lang('Collection Field')</th>
-                    <th width="30%" class="uk-text-small">@lang('Map Field')</th>
-                    <th width="30%" class="uk-text-small">@lang('Filter')</th>
+                    <th width="20%" class="uk-text-small">@lang('Map Field')</th>
+                    <th width="10" class="uk-text-small">@lang('Filter')</th>
                 </tr>
             </thead>
             <tbody class="uk-form">
@@ -86,8 +86,7 @@
                     </td>
                     <td>
                         <div class="uk-form-select">
-                            <a><i class="uk-icon-bolt"></i></a>
-                            <select class="uk-width-1-1"></select>
+                            <input type="checkbox" bind="filter.{field.name}" />
                         </div>
                     </td>
                 </tr>

@@ -14,6 +14,9 @@
 //@global-primary-background: #485b8a;
 @global-link-color: @global-primary-background;
 
+.uk-text-bolder {
+    font-weight: bolder;
+}
 
 .uk-selected, tr.uk-selected > td {
     background: @global-selected-background;
@@ -22,7 +25,7 @@
 .app-header {
     position: relative;
     background-color: @global-background;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 20px rgba(0,0,0,0.07);
     margin-bottom: 2.5rem;
     z-index: 10;
 }
@@ -42,14 +45,16 @@
     }
 }
 
-.app-icon path,
-.app-icon rect,
-.app-icon circle {
+.uk-svg-adjust path,
+.uk-svg-adjust rect,
+.uk-svg-adjust circle,
+.uk-svg-adjust polygon,
+.uk-svg-adjust line {
     fill: currentColor;
 }
 
 .app-panel-dropdown {
-    margin-top: 16px;
+    margin-top: 25px;
     width: 600px;
     max-width: 85vw;
 }
