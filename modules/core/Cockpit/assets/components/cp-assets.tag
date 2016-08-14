@@ -4,23 +4,28 @@
 
         <div class="uk-grid uk-grid-width-1-2">
             <div>
-                <div class="uk-grid">
+                <div class="uk-grid uk-grid-small uk-flex-middle">
+                    <div>
+                        <div class="uk-form-select">
+
+                            <span class="uk-button uk-button-large {filtertype.value && 'uk-button-primary'} uk-text-capitalize"><i class="uk-icon-eye uk-margin-small-right"></i> { filtertype.value || 'All' }</span>
+
+                            <select name="filtertype" onchange="{ updateFilter }">
+                                <option value="">All</option>
+                                <option value="image">Image</option>
+                                <option value="video">Video</option>
+                                <option value="audio">Audio</option>
+                                <option value="document">Document</option>
+                                <option value="archive">Archive</option>
+                                <option value="code">Code</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="uk-flex-item-1">
                         <div class="uk-form-icon uk-display-block uk-width-1-1">
                             <i class="uk-icon-search"></i>
                             <input class="uk-width-1-1 uk-form-large" type="text" name="filtertitle" onchange="{ updateFilter }">
                         </div>
-                    </div>
-                    <div>
-                        <select class="uk-form-large" name="filtertype" onchange="{ updateFilter }">
-                            <option value="">All</option>
-                            <option value="image">Image</option>
-                            <option value="video">Video</option>
-                            <option value="audio">Audio</option>
-                            <option value="document">Document</option>
-                            <option value="archive">Archive</option>
-                            <option value="code">Code</option>
-                        </select>
                     </div>
                 </div>
             </div>
@@ -31,8 +36,8 @@
                 </button>
 
                 <span class="uk-button-group uk-button-large">
-                    <button class="uk-button uk-button-large {listmode=='list' ? 'uk-button-primary':''}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-list"></i></button>
-                    <button class="uk-button uk-button-large {listmode=='grid' ? 'uk-button-primary':''}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-th"></i></button>
+                    <button class="uk-button uk-button-large {listmode=='list' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-list"></i></button>
+                    <button class="uk-button uk-button-large {listmode=='grid' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-th"></i></button>
                 </span>
 
                 <span class="uk-button uk-button-large uk-button-primary uk-margin-small-right uk-form-file">
