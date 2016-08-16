@@ -7,7 +7,7 @@
 .idea
 /storage/*
 /config/*
-/modules/addons/*/*
+/addons/*/*
 /tests/*
 /node_modules
 
