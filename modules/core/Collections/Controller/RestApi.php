@@ -30,6 +30,10 @@ class RestApi extends \LimeExtra\Controller {
             if ($limit  = $this->param("limit", null))  $options["limit"] = $limit;
             if ($sort   = $this->param("sort", null))   $options["sort"] = $sort;
             if ($skip   = $this->param("skip", null))   $options["skip"] = $skip;
+            
+            if (count($options)) {
+                $options = json_decode(json_encode($options, JSON_NUMERIC_CHECK), true);
+            }
 
             $entries = $this->app->db->find("collections/{$col}", $options);
         }
