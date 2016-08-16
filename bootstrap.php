@@ -82,6 +82,7 @@ function cockpit($module = null) {
                 '#thumbs'  => COCKPIT_STORAGE_FOLDER.'/thumbs',
                 '#uploads' => COCKPIT_STORAGE_FOLDER.'/uploads',
                 '#modules' => COCKPIT_DIR.'/modules',
+                '#addons' => COCKPIT_DIR.'/addons',
                 '#config'  => defined('COCKPIT_CONFIG_PATH') ? dirname(COCKPIT_CONFIG_PATH) : COCKPIT_DIR.'/config',
                 'assets'   => COCKPIT_DIR.'/assets',
                 'site'     => COCKPIT_DIR == COCKPIT_DOCS_ROOT ? COCKPIT_DIR : dirname(COCKPIT_DIR)
@@ -128,8 +129,8 @@ function cockpit($module = null) {
 
         // load modules
         $app->loadModules(array_merge([
-            COCKPIT_DIR.'/modules/core',  # core
-            COCKPIT_DIR.'/modules/addons' # addons
+            COCKPIT_DIR.'/modules',  # core
+            COCKPIT_DIR.'/addons' # addons
         ], isset($config['loadmodules']) ? (array) $config['loadmodules'] : []));
 
         // load config global bootstrap
