@@ -8,12 +8,12 @@
         "build": "npm run build-style && npm run build-components",
 
         "build-style": "lessc assets/app/css/style.less > assets/app/css/style.css -x",
-        "build-components": "riot modules/core/Cockpit/assets/components modules/core/Cockpit/assets/components.js",
+        "build-components": "riot modules/Cockpit/assets/components modules/Cockpit/assets/components.js",
 
         "watch": "npm run watch-style & npm run watch-components",
 
         "watch-style": "watch-run -i -p 'assets/app/css/**/*.less' npm run build-style",
-        "watch-components": "watch-run -i -p 'modules/core/Cockpit/assets/components/*.tag' npm run build-components"
+        "watch-components": "watch-run -i -p 'modules/Cockpit/assets/components/*.tag' npm run build-components"
     },
 
     "devDependencies": {
