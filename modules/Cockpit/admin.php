@@ -243,6 +243,24 @@ $app->on("after", function() {
             $this->trigger("cockpit.request.error", ['404']);
             break;
     }
+
+     /**
+     * send some debug information
+     * back to client (visible in the network panel)
+     */
+    if ($this['debug'] && !headers_sent()) {
+
+        /**
+        * some system info
+        */
+
+        $DURATION_TIME = microtime(true) - COCKPIT_START_TIME;
+        $MEMORY_USAGE  = memory_get_peak_usage(false)/1024/1024;
+
+        header('COCKPIT_DURATION_TIME: '.$DURATION_TIME.'sec');
+        header('COCKPIT_MEMORY_USAGE: '.$MEMORY_USAGE.'mb');
+        header('COCKPIT_LOADED_FILES: '.count(get_included_files()));
+    }
 });
 
 // load package info

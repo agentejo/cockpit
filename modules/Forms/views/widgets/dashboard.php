@@ -32,7 +32,7 @@
 
             </div>
 
-            <div class="uk-panel-box-footer uk-bg-light">
+            <div class="uk-panel-box-footer">
                 <a href="@route('/forms')">@lang('See all')</a>
             </div>
 
