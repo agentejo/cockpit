@@ -1,19 +1,15 @@
 <field-location>
 
-    <div class="uk-alert" if="{!window.GOOGLE_MAPS_API_KEY}">
-        Google Maps API is missing.
+    <div class="uk-alert" if="{!apiready}">
+        Loading maps api...
     </div>
 
-    <div show="{window.GOOGLE_MAPS_API_KEY}">
-        <div class="uk-form uk-form-icon uk-margin-small-bottom uk-width-1-1">
-            <i class="uk-icon-search"></i><input name="autocomplete" class="uk-width-1-1" value="{ latlng.address }">
+    <div show="{apiready}">
+        <div class="uk-form uk-position-relative uk-margin-small-bottom uk-width-1-1" style="z-index:1001">
+            <input name="autocomplete" class="uk-width-1-1" placeholder="{ latlng.address || [latlng.lat, latlng.lng].join(', ') }">
         </div>
         <div name="map" style="min-height:300px;">
             Loading map...
-        </div>
-
-        <div class="uk-text-small uk-margin-small-top">
-            LAT: <span class="uk-text-muted">{ latlng.lat }</span> LNG: <span class="uk-text-muted">{ latlng.lng }</span>
         </div>
    </div>
 
@@ -24,56 +20,28 @@
 
         var locale = document.documentElement.lang.toUpperCase();
 
-        var loadApi = (function(){
+        var loadApi = App.assets.require([
+            'https://cdn.jsdelivr.net/leaflet/1.0.0-rc.3/leaflet.css',
+            'https://cdn.jsdelivr.net/places.js/1/places.min.js',
+            'https://cdn.jsdelivr.net/leaflet/1.0.0-rc.3/leaflet.js'
+        ]);
 
-            var p, fn = function(){
+        var $this = this, defaultpos = {lat:53.55909862554551, lng:9.998652343749995};
 
-                if (!p) {
-
-                    p = new Promise(function(resolve){
-
-                        var script = document.createElement('script');
-
-                        script.async = true;
-
-                        script.onload = function() {
-
-                            google.load("maps", "3", {other_params: 'libraries=places&language=' + locale, callback: function(){
-                              if (google && google.maps.places) resolve();
-                            }});
-                        };
-
-                        script.onerror = function() {
-                            alert('Failed loading google maps api.');
-                        };
-
-                        script.src = 'https://www.google.com/jsapi?key='+(window.GOOGLE_MAPS_API_KEY || '');
-
-                        document.getElementsByTagName('head')[0].appendChild(script);
-                    });
-                }
-
-                return p;
-            };
-
-            return fn;
-        })();
-
-        var $this = this;
-
-        this.latlng = {lat:53.55909862554551, lng:9.998652343749995};
+        this.latlng = defaultpos;
 
         this.$updateValue = function(value) {
 
             if (!value) {
-                value = {lat:53.55909862554551, lng:9.998652343749995};
+                value = defaultpos;
             }
 
             if (this.latlng != value) {
                 this.latlng = value;
 
                 if (marker) {
-                    marker.setPosition(new google.maps.LatLng(this.latlng.lat, this.latlng.lng));
+                    marker.setLatLng([this.latlng.lat, this.latlng.lng]).update();
+                    map.panTo(marker.getLatLng());
                 }
 
                 this.update();
@@ -81,69 +49,42 @@
 
         }.bind(this);
 
-        this.on('mount', function(){
+        this.on('mount', function() {
 
-            loadApi().then(function(){
+            loadApi.then(function() {
 
-                var point = new google.maps.LatLng($this.latlng.lat, $this.latlng.lng), input, autocomplete;
+                $this.apiready = true;
 
-                map = new google.maps.Map($this.map, {
-                    zoom   : 6,
-                    center : point
-                });
+                setTimeout(function(){
 
-                marker = new google.maps.Marker({
-                    position  : point,
-                    map       : map,
-                    draggable : true
-                });
+                    var map = L.map($this.map).setView([$this.latlng.lat, $this.latlng.lng], opts.zoomlevel || 13);
 
-                google.maps.event.addListener(marker, 'dragend', function() {
-                    var point = marker.getPosition();
-                    // Reset input value
-                    input.value = '';
-                    $this.$setValue({lat: point.lat(), lng: point.lng(), address: input.value});
-                });
+                    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
 
-                App.$(window).on('resize', function(){
-                    google.maps.event.trigger(map,'resize');
-                    map.setCenter(marker.getPosition());
-                });
+                    var marker = new L.marker([$this.latlng.lat, $this.latlng.lng], {draggable:'true'});
 
+                    marker.on('dragend', function(e) {
+                        $this.$setValue(marker.getLatLng());
+                    });
 
-                input = $this.autocomplete;
+                    map.addLayer(marker);
 
-                autocomplete = new google.maps.places.Autocomplete(input);
-                autocomplete.bindTo('bounds', map);
+                    var pla = places({
+                        container: $this.autocomplete
+                    }).on('change', function(e) {
+                        e.suggestion.latlng.address = e.suggestion.value;
+                        $this.$setValue(e.suggestion.latlng);
+                        marker.setLatLng(e.suggestion.latlng).update();
+                        map.panTo(marker.getLatLng());
+                        pla.close();
+                        pla.setVal('');
+                    });
 
-                google.maps.event.addListener(autocomplete, 'place_changed', function(e) {
+                }, 50);
 
-                    var place = autocomplete.getPlace();
-
-                    if (!place.geometry) {
-                      return;
-                    }
-
-                    // If the place has a geometry, then present it on a map.
-                    if (place.geometry.viewport) {
-                      map.fitBounds(place.geometry.viewport);
-                    } else {
-                      map.setCenter(place.geometry.location);
-                    }
-
-                    marker.setPosition(place.geometry.location);
-
-                    var point = marker.getPosition();
-                    $this.$setValue({lat: point.lat(), lng: point.lng(), address: input.value});
-                });
-
-                google.maps.event.addDomListener(input, 'keydown', function(e) {
-                    if (e.keyCode == 13) {
-                        e.preventDefault();
-                    }
-                });
-
-
+                $this.update();
             });
 
         });
