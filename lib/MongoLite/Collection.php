@@ -190,7 +190,7 @@ class Collection {
      */
     public function renameCollection($newname) {
 
-        if (!in_array($newname, $this->getCollectionNames())) {
+        if (!in_array($newname, $this->database->getCollectionNames())) {
 
             $this->database->connection->exec("ALTER TABLE '.$this->name.' RENAME TO {$newname}");
 
