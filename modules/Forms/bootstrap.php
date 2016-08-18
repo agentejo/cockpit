@@ -196,10 +196,12 @@ $this->module("forms")->extend([
             }
 
             $this->app->trigger('forms.save.before', [$name, &$entry]);
+            $this->app->trigger("forms.save.before.{$name}", [$name, &$entry]);
 
             $ret = $this->app->storage->save("forms/{$form}", $entry);
 
             $this->app->trigger('forms.save.after', [$name, &$entry]);
+            $this->app->trigger("forms.save.after.{$name}", [$name, &$entry]);
 
             $return[] = $ret ? $entry : false;
         }

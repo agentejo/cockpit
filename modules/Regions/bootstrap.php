@@ -64,6 +64,7 @@ $this->module("regions")->extend([
         }
 
         $this->app->trigger('regions.update', [$region]);
+        $this->app->trigger("regions.update.{$name}", [$region]);
 
         return $region;
     },
@@ -157,10 +158,12 @@ $this->module("regions")->extend([
         $fields = array_merge(isset($region['data']) && is_array($region['data']) ? $region['data']:[] , $params);
 
         $this->app->trigger('regions.render.before', [$name, &$region, $fields]);
+        $this->app->trigger("regions.render.before.{$name}", [$name, &$region, $fields]);
 
         $output = $renderer->execute($region['template'], $fields);
 
         $this->app->trigger('regions.render.after', [$name, &$output]);
+        $this->app->trigger("regions.render.after.{$name}", [$name, &$output]);
 
         return $output;
     }

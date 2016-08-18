@@ -64,6 +64,7 @@ $this->module("collections")->extend([
         }
 
         $this->app->trigger('collections.updatecollection', [$collection]);
+        $this->app->trigger("collections.updatecollection.{$name}", [$collection]);
 
         return $collection;
     },
@@ -85,6 +86,9 @@ $this->module("collections")->extend([
 
             $this->app->helper("fs")->delete("#storage:collections/{$name}.collection.php");
             $this->app->storage->dropCollection("collections/{$collection}");
+
+            $this->app->trigger('collections.removecollection', [$name]);
+            $this->app->trigger("collections.removecollection.{$name}", [$name]);
 
             return true;
         }
@@ -164,10 +168,12 @@ $this->module("collections")->extend([
         }
 
         $this->app->trigger('collections.find.before', [$name, &$options, false]);
+        $this->app->trigger("collections.find.before.{$name}", [$name, &$options, false]);
 
         $entries = (array)$this->app->storage->find("collections/{$collection}", $options);
 
         $this->app->trigger('collections.find.after', [$name, &$entries, false]);
+        $this->app->trigger("collections.find.after.{$name}", [$name, &$entries, false]);
 
         return $entries;
     },
@@ -182,10 +188,12 @@ $this->module("collections")->extend([
         $collection = $collections["_id"];
 
         $this->app->trigger('collections.find.before', [$name, &$criteria, true]);
+        $this->app->trigger("collections.find.before.{$name}", [$name, &$criteria, true]);
 
         $entry = $this->app->storage->findOne("collections/{$collection}", $criteria, $projection);
 
         $this->app->trigger('collections.find.after', [$name, &$entry, true]);
+        $this->app->trigger("collections.find.after.{$name}", [$name, &$entry, true]);
 
         return $entry;
     },
@@ -276,10 +284,12 @@ $this->module("collections")->extend([
             }
 
             $this->app->trigger('collections.save.before', [$name, &$entry, $isUpdate]);
+            $this->app->trigger("collections.save.before.{$name}", [$name, &$entry, $isUpdate]);
 
             $ret = $this->app->storage->save("collections/{$collection}", $entry);
 
             $this->app->trigger('collections.save.after', [$name, &$entry, $isUpdate]);
+            $this->app->trigger("collections.save.after.{$name}", [$name, &$entry, $isUpdate]);
 
             $return[] = $ret ? $entry : false;
         }
@@ -297,10 +307,12 @@ $this->module("collections")->extend([
         $collection = $collections["_id"];
 
         $this->app->trigger('collections.remove.before', [$name, &$criteria]);
+        $this->app->trigger("collections.remove.before.{$name}", [$name, &$criteria]);
 
         $result = $this->app->storage->remove("collections/{$collection}", $criteria);
 
         $this->app->trigger('collections.remove.after', [$name, $result]);
+        $this->app->trigger("collections.remove.after.{$name}", [$name, $result]);
 
         return $result;
     },
