@@ -86,8 +86,9 @@
                             <hr>
                             @lang('Match against:')
                             <div class="uk-form-select">
-                                {field.options.link}.<a>...</a>
-                                <select>
+                                {field.options.link}.<a>{parent.filterData[field.name] || '(Select field...)'}</a>
+                                <select bind="filterData.{field.name}">
+                                    <option value=""></option>
                                     <option value="{f.name}" each="{f in _COL_[field.options.link].fields}">{f.name}</option>
                                 </select>
                             </div>
@@ -120,6 +121,7 @@
         this.data = null;
         this.mapping = {};
         this.filter = {};
+        this.filterData = {};
         this.step = 1;
 
         this.fields = [];
@@ -157,6 +159,7 @@
             this.data = null;
             this.mapping = {};
             this.filter = {};
+            this.filterData = {};
             
             this.step = 1;
             this.step1.classList.remove('uk-dragover');
@@ -277,12 +280,13 @@
 
                             entry = {};
 
-                            Object.keys($this.mapping).forEach(function(k, val){
+                            Object.keys($this.mapping).forEach(function(k, val, d){
                                 
                                 val = c[$this.mapping[k]];
+                                d   = $this.filterData[k];
 
                                 if ($this.filter[k]) {
-                                    promises.push(ImportFilter.filter(fields[k], val).then(function(val){
+                                    promises.push(ImportFilter.filter(fields[k], val, d).then(function(val){
                                         entry[k] = val;
                                     }));
                                 } else {
@@ -313,6 +317,24 @@
 
                                 resolve(data && data.result);
                             });
+                        }, function(msg) {
+                            
+                            App.ui.notify(msg, "danger");
+
+                            progress += cnt;
+
+                            if (progress > $this.data.rows.length) {
+                                progress = $this.data.rows.length;
+                            }
+                            
+                            $this.progress.innerHTML = Math.ceil((progress/$this.data.rows.length)*100)+' %';
+
+                            if (progress == $this.data.rows.length) {
+                                App.ui.notify("Import completed.", "success");
+                                $this.restart();
+                                $this.update();
+                            }
+
                         });
                     });
                 });

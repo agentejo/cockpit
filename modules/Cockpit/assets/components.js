@@ -2086,7 +2086,7 @@ riot.tag2('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete u
 
 });
 
-riot.tag2('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" placeholder="{opts.placeholder}" bind-event="input">', '', '', function(opts) {
+riot.tag2('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" placeholder="{opts.placeholder}" bind-event="change">', '', '', function(opts) {
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -2098,7 +2098,7 @@ riot.tag2('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bi
 
 });
 
-riot.tag2('field-textarea', '<textarea name="input" class="uk-width-1-1" bind="{opts.bind}" placeholder="{opts.placeholder}" bind-event="input"></textarea>', '', '', function(opts) {
+riot.tag2('field-textarea', '<textarea name="input" class="uk-width-1-1" bind="{opts.bind}" placeholder="{opts.placeholder}" bind-event="change"></textarea>', '', '', function(opts) {
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
