@@ -39,8 +39,29 @@
             }
 
             this.resolve(value);   
+        },
+
+        collectionlink: function(value, field) {
+
+            if (field.options && field.options.link) {
+
+            }
         }
     };
+
+    // Utils
+
+    Filter._getCollections = new Promise(function(resolve){
+
+        App.callmodule('collections:collections', true).then(function(data) {
+            var collections = _.keyBy(data.result, 'name');
+            resolve(collections);
+        });
+    });
+
+    Filter._getCollections.then(function(collections) {
+        Filter.collections = collections;
+    })
 
     g.ImportFilter = Filter;
 

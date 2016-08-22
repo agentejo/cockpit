@@ -63,7 +63,7 @@
                 <tr>
                     <th width="10"></th>
                     <th class="uk-text-small">@lang('Collection Field')</th>
-                    <th width="20%" class="uk-text-small">@lang('Map Field')</th>
+                    <th width="30%" class="uk-text-small">@lang('Map Field')</th>
                     <th width="10" class="uk-text-small">@lang('Filter')</th>
                 </tr>
             </thead>
@@ -82,7 +82,16 @@
                                 <option each="{h,hidx in data.headers}" value="{h}">{h}</option>
                             </select>
                         </div>
-                        
+                        <div class="uk-margin-small-top uk-text-small uk-text-muted" if="{field.type == 'collectionlink' && parent.mapping[field.name] && parent.filter[field.name]}">
+                            <hr>
+                            @lang('Match against:')
+                            <div class="uk-form-select">
+                                {field.options.link}.<a>...</a>
+                                <select>
+                                    <option value="{f.name}" each="{f in _COL_[field.options.link].fields}">{f.name}</option>
+                                </select>
+                            </div>
+                        </div> 
                     </td>
                     <td>
                         <div class="uk-text-center">
@@ -115,7 +124,16 @@
 
         this.fields = [];
 
+        this.on('mount', function() {
+
+            ImportFilter._getCollections.then(function(collections) {
+                window._COL_ = collections;
+            });
+
+        });
+
         this.collection.fields.forEach(function(field) {
+
             $this.fields.push(field);
 
             if (field.localize && App.$data.languages) {
@@ -312,8 +330,6 @@
 
             return chunks;
         }
-
-
 
     </script>
 
