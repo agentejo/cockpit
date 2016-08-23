@@ -46,8 +46,28 @@ class Database {
         $this->connection->sqliteCreateFunction('document_key', function($key, $document){
 
             $document = json_decode($document, true);
+            $val      = '';
 
-            return isset($document[$key]) ? $document[$key] : '';
+            if (strpos($key, '.') !== false) {
+                
+                $keys = explode('.', $key);
+                
+                switch(count($keys)) {
+                    case 2:
+                        $val = isset($document[$keys[0]][$keys[1]]) ? $document[$keys[0]][$keys[1]] : '';
+                        break;
+                    case 3:
+                        $val = isset($document[$keys[0]][$keys[1]][$keys[2]]) ? $document[$keys[0]][$keys[1]][$keys[2]] : '';
+                        break;
+                    default:
+                        $val = isset($document[$keys[0]]) ? $document[$keys[0]] : '';
+                }
+
+            } else {
+                $val = isset($document[$key]) ? $document[$key] : '';
+            }
+
+            return is_array($val) || is_object($val) ? json_encode($val) : $val;
         }, 2);
 
         $this->connection->sqliteCreateFunction('document_criteria', function($funcid, $document) use($database) {
@@ -78,9 +98,7 @@ class Database {
         }
 
         if (is_array($criteria)) {
-
             $this->document_criterias[$id] = create_function('$document','return '.UtilArrayQuery::buildCondition($criteria).';');
-
             return $id;
         }
 
@@ -205,26 +223,43 @@ class UtilArrayQuery {
             switch($key) {
 
                 case '$and':
-                    $fn[] = '('.self::buildCondition($value, ' && ').')';
+
+                    $_fn = array();
+
+                    foreach($value as $v) {
+                        $_fn[] = '('.self::buildCondition($v, ' && ').')';
+                    }
+
+                    $fn[] = implode(' || ', $_fn);
+
                     break;
                 case '$or':
-                    $fn[] = '('.self::buildCondition($value, ' || ').')';
+
+                    $_fn = array();
+
+                    foreach($value as $v) {
+                        $_fn[] = '('.self::buildCondition($v, ' || ').')';
+                    }
+
+                    $fn[] = implode(' || ', $_fn);
+
                     break;
                 default:
 
                     $d = '$document';
 
-                    if(strpos($key, ".") !== false) {
+                    if (strpos($key, ".") !== false) {
+                        
                         $keys = explode('.', $key);
 
-                        foreach ($keys as &$k) {
+                        foreach ($keys as $k) {
                             $d .= '["'.$k.'"]';
                         }
 
                     } else {
                         $d .= '["'.$key.'"]';
                     }
-
+                    
                     $fn[] = is_array($value) ? "\\MongoLite\\UtilArrayQuery::check((isset({$d}) ? {$d} : null), ".var_export($value, true).")": "(isset({$d}) && {$d}==".(is_string($value) ? "'{$value}'": var_export($value, true)).")";
             }
         }

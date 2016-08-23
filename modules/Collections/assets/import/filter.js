@@ -51,15 +51,19 @@
                 App.callmodule('collections:findOne', [field.options.link, filter]).then(function(data) {
                     
                     if (data.result && data.result._id) {
-                        $this.resolve(data.result);
+
+                        var entry = {_id:data.result._id, display: data.result[field.options.display] || data.result[Filter.collections[field.options.link].fields[0].name] || 'n/a'};
+                        $this.resolve(field.options.multiple ? [entry]:entry);
+
                     } else {
-                        $this.reject("Couldn't find a collection reference for "+value);
+                        console.log("Couldn't find a collection reference for "+value);
+                        $this.resolve(null);
                     }
                 });
 
             } else {
 
-                this.resolve(value);
+                this.resolve(null);
             }
         }
     };

@@ -22,10 +22,7 @@
 
             <div class="uk-panel uk-panel-card uk-panel-box">
 
-                <div class="uk-grid uk-grid-small uk-text-small" each="{field,idx in fields}" if="{field.name != '_modified'}">
-                    <div class="uk-text-bold uk-width-medium-1-5">{ field.label || field.name }</div>
-                    <div class="uk-flex-item-1"><raw content="{ App.Utils.renderValue(field.type, parent.link[field.name]) }"></raw></div>
-                </div>
+                <div>{ link.display }</div>
 
                 <div class="uk-panel-box-footer uk-text-small uk-padding-bottom-remove">
                     <a class="uk-margin-small-right" onclick="{ showDialog }"><i class="uk-icon-link"></i> { App.i18n.get('Link item') }</a>
@@ -43,12 +40,7 @@
                     <li each="{l,index in link}" data-idx="{ index }">
                         <div class="uk-grid uk-grid-small uk-text-small">
                             <div><a onclick="{ removeListItem }"><i class="uk-icon-trash-o"></i></a></div>
-                            <div class="uk-flex-item-1">
-                                <div class="uk-margin" each="{field,idx in parent.fields}" if="{field.name != '_modified'}">
-                                    <div class="uk-text-bold uk-width-medium-1-5">{ field.label || field.name }</div>
-                                    <div><raw content="{ App.Utils.renderValue(field.type, parent.l[field.name]) }"></raw></div>
-                                </div>
-                            </div>
+                            <div class="uk-flex-item-1">{ l.display }</div>
                         </div>
                     </li>
                 </ul>
@@ -202,8 +194,9 @@
 
     linkItem(e) {
 
-        var entry = e.item.entry
-
+        var _entry = e.item.entry;
+        var entry = {_id:_entry._id, display: _entry[opts.display] || _entry[this.collection.fields[0].name] || 'n/a'};
+    
         if (opts.multiple) {
             this.link.push(entry);
         } else {

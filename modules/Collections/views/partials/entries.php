@@ -8,11 +8,11 @@
         <tr>
             <th width="20"><input type="checkbox" data-check="all"></th>
             <th width="{field.name == '_modified' ? '120':''}" class="uk-text-small" each="{field,idx in fields}">
-                <a class="uk-link-muted { parent.sort[field.name] ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
+                <a class="uk-link-muted { parent.sortedBy == field.name ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
 
                     { field.label || field.name }
 
-                    <span if="{parent.sort[field.name]}" class="uk-icon-long-arrow-{ parent.sort[field.name] == 1 ? 'up':'down'}"></span>
+                    <span if="{parent.sortedBy == field.name}" class="uk-icon-long-arrow-{ parent.sortedOrder == 1 ? 'up':'down'}"></span>
                 </a>
             </th>
             <th width="20"></th>

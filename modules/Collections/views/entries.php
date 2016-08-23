@@ -94,6 +94,10 @@
 
     <script type="view/script">
 
+        App.Utils.renderer.collectionlink = function(v) {
+            return v.display ? v.display: App.Utils.renderer.default(v);
+        };
+
         var $this = this, $root = App.$(this.root), limit = 20;
 
         this.ready      = false;
@@ -274,12 +278,28 @@
                 return;
             }
 
-            if (!this.sort[field]) {
-                this.sort        = {};
-                this.sort[field] = 1;
-            } else {
-                this.sort[field] = this.sort[field] == 1 ? -1:1;
+            var col = field;
+
+            switch (this.fieldsidx[field].type) {
+                case 'collectionlink':
+                    col = field+'.display';
+                    break;
+                case 'location':
+                    col = field+'.address';
+                    break;
+                default:
+                    col = field; 
             }
+
+            if (!this.sort[col]) {
+                this.sort        = {};
+                this.sort[col] = 1;
+            } else {
+                this.sort[col] = this.sort[col] == 1 ? -1:1;
+            }
+
+            this.sortedBy = field;
+            this.sortedOrder = this.sort[col];
 
             this.entries = [];
 
@@ -350,6 +370,18 @@
                        if (field.type != 'boolean' && allowedtypes.indexOf(field.type) !== -1) {
                            criteria = {};
                            criteria[field.name] = {'$regex':filter};
+                           criterias.push(criteria);
+                       }
+
+                       if (field.type=='collectionlink') {
+                           criteria = {};
+                           criteria[field.name+'.display'] = {'$regex':filter};
+                           criterias.push(criteria);
+                       }
+
+                       if (field.type=='location') {
+                           criteria = {};
+                           criteria[field.name+'.address'] = {'$regex':filter};
                            criterias.push(criteria);
                        }
 
