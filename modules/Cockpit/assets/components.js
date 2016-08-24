@@ -2086,7 +2086,7 @@ riot.tag2('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete u
 
 });
 
-riot.tag2('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" placeholder="{opts.placeholder}" bind-event="change">', '', '', function(opts) {
+riot.tag2('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" placeholder="{opts.placeholder}" bind-event="change"> <div class="uk-text-muted uk-margin-small-top" if="{opts.slug}" title="Slug"> {slug} </div>', '', '', function(opts) {
 
         if (opts.cls) {
             App.$(this.input).addClass(opts.cls);
@@ -2095,6 +2095,16 @@ riot.tag2('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bi
         if (opts.required) {
             this.input.setAttribute('required', 'required');
         }
+
+        this.$updateValue = function(value) {
+
+            if (opts.slug) {
+                this.slug = App.Utils.sluggify(value || '');
+                this.$setValue(this.slug, false, opts.bind+'_slug');
+                this.update();
+            }
+
+        }.bind(this);
 
 });
 

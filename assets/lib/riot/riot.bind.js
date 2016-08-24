@@ -19,8 +19,6 @@
 
                 field = ele.getAttribute(attr);
 
-                var value = null;
-
                 if (!ele.$boundTo) {
                     init(ele);
                 }
@@ -29,11 +27,7 @@
                     return;
                 }
 
-                try {
-
-                    value = (new Function('tag', 'return tag.'+ele.getAttribute(attr)+';'))(tag);
-
-                } catch(e) {}
+                var value = ele.$getValue();
 
                 if (JSON.stringify(ele.$value) !== JSON.stringify(value)) {
                     ele.$value = value;
@@ -47,13 +41,30 @@
 
             ele.$boundTo = tag;
 
+            ele.$getValue = function(field) {
+                
+                field = field || ele.getAttribute(attr);
+
+                var value = null;
+
+                if (ele.$boundTo !== tag ) {
+                    return;
+                }
+
+                try {
+                    value = (new Function('tag', 'return tag.'+field+';'))(tag);
+                } catch(e) {}
+
+                return value;
+            };
+
             ele.$setValue = (function(fn, body) {
 
                 var field, segments, cache = {};
 
-                return function(value, silent) {
+                return function(value, silent, field) {
 
-                    field = ele.getAttribute(attr);
+                    field = field || ele.getAttribute(attr);
 
                     if (!cache[field]) {
 
@@ -135,6 +146,7 @@
 
                 if (ele._tag) {
 
+                    ele._tag.$getValue = ele.$getValue;
                     ele._tag.$setValue = ele.$setValue;
                     ele._tag.$boundTo  = tag;
 
