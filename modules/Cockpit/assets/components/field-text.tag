@@ -1,7 +1,7 @@
 <field-text>
 
     <input name="input" class="uk-width-1-1" bind="{opts.bind}" type="{ opts.type || 'text' }" placeholder="{ opts.placeholder }" bind-event="change">
-    <div class="uk-text-muted uk-margin-small-top" if="{opts.slug}" title="Slug">
+    <div class="uk-text-muted uk-text-small uk-margin-small-top" if="{opts.slug}" title="Slug">
         { slug }
     </div>
 
