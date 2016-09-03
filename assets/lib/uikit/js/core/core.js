@@ -1,4 +1,4 @@
-/*! UIkit 2.26.4 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.27.1 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(core) {
 
     if (typeof define == "function" && define.amd) { // AMD
@@ -44,7 +44,7 @@
 
     var UI = {}, _UI = global.UIkit ? Object.create(global.UIkit) : undefined;
 
-    UI.version = '2.26.4';
+    UI.version = '2.27.1';
 
     UI.noConflict = function() {
         // restore UIkit version
@@ -374,6 +374,10 @@
     UI.Utils.focus = function(element, extra) {
 
         element = $(element);
+
+        if (!element.length) {
+            return element;
+        }
 
         var autofocus = element.find('[autofocus]:first'), tabidx;
 

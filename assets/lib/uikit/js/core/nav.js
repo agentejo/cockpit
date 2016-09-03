@@ -1,4 +1,4 @@
-/*! UIkit 2.26.4 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.27.1 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(UI) {
 
     "use strict";
@@ -36,16 +36,18 @@
                 $this.open(ele.parent()[0] == $this.element[0] ? ele : ele.parent("li"));
             });
 
-            this.update(true);
+            this.update();
 
             UI.domObserve(this.element, function(e) {
-                if ($this.element.find(this.options.lists).not('[role]').length) {
+                if ($this.element.find($this.options.lists).not('[role]').length) {
                     $this.update();
                 }
             });
         },
 
-        update: function(init) {
+        update: function() {
+
+            var $this = this;
 
             this.find(this.options.lists).each(function() {
 
