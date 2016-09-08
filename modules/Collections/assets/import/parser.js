@@ -64,7 +64,14 @@
             } catch(e) { return reject(e.message) }
 
             if (!Array.isArray(data)) {
-                return reject('JSON needs to be an array of items!');
+                if (_.isPlainObject(data)) {
+                    data = _.reduce(_.keys(data).sort(), function(result, val){
+                        result.push(data[val]);
+                        return result;
+                    }, []);
+                } else {
+                    return reject('JSON needs to be a collection of items!');
+                }
             }
 
             if (!data.length) {
@@ -77,7 +84,7 @@
 
                 headers.push(key);
             });
-            
+
             resolve({
                 headers: headers,
                 rows: data
