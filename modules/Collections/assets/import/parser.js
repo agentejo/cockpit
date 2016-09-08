@@ -65,9 +65,8 @@
 
             if (!Array.isArray(data)) {
                 if (_.isPlainObject(data)) {
-                    data = _.reduce(_.keys(data).sort(), function(result, val){
+                    data = _.transform(_.keys(data).sort(), function(result, val){
                         result.push(data[val]);
-                        return result;
                     }, []);
                 } else {
                     return reject('JSON needs to be a collection of items!');
@@ -77,6 +76,7 @@
             if (!data.length) {
                 return reject('List is empty!');
             }
+
 
             Object.keys(data[0]).forEach(function(key) {
 
