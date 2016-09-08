@@ -57,7 +57,7 @@
 
         json: function(content, resolve, reject) {
 
-            var data, headers = [];
+            var data;
 
             try {
                 var data = JSON.parse(content);
@@ -77,13 +77,9 @@
                 return reject('List is empty!');
             }
 
-
-            Object.keys(data[0]).forEach(function(key) {
-
-                if (['_id', '_created', '_modified'].indexOf(key) != -1) return;
-
-                headers.push(key);
-            });
+            var headers = _.reduce(data, function(result, item){
+                return _.difference(_.union(_.keys(item), result), ['_id', '_uid', '_created', '_modified']);
+            }, []);
 
             resolve({
                 headers: headers,
