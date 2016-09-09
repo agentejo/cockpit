@@ -281,15 +281,17 @@
                             entry = {};
 
                             Object.keys($this.mapping).forEach(function(k, val, d){
-
                                 val = c[$this.mapping[k]];
+                                
                                 d   = $this.filterData[k];
 
                                 if ($this.filter[k]) {
                                     promises.push(ImportFilter.filter(fields[k], val, d).then(function(val){
                                         entry[k] = val;
                                     }));
-                                } else if (typeof val === "string") {
+                                } else if (_.isObject(val)) {
+                                    entry[k] = val.type == fields[k].type ? val : null;
+                                } else {
                                     entry[k] = val;
                                 }
                             });

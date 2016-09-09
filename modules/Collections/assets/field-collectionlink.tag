@@ -196,7 +196,7 @@
 
         var _entry = e.item.entry;
         var entry = {_id:_entry._id, display: _entry[opts.display] || _entry[this.collection.fields[0].name] || 'n/a'};
-    
+
         if (opts.multiple) {
             this.link.push(entry);
         } else {
@@ -312,7 +312,7 @@
         if (this.filter || load) {
 
             if (opts.filter) {
-                
+
                 Object.keys(opts.filter).forEach(function(k) {
                     switch(k) {
                         case '$and':
@@ -327,7 +327,7 @@
                             $this.filter[k] = opts.filter[k];
                     }
                 });
-                
+
                 this.filter = opts.filter;
             }
 
