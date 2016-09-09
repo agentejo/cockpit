@@ -41,7 +41,7 @@
         },
 
         collectionlink: function(value, field, extra) {
-            if (_.isPlainObject(value)) {
+            if (_.isPlainObject(value) && extra) {
                 value = value[extra];
             }
             if (field.options && field.options.link && extra && value) {
