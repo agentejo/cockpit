@@ -41,8 +41,19 @@
 
     <div show="{ ready }">
 
+        <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-center uk-flex-middle" if="{ loading }">
 
-        <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ !entries.length && !filter }">
+            <div class="uk-animation-fade uk-text-center">
+
+                <p class="uk-text-xlarge">
+                    <i class="uk-icon-spin uk-icon-spinner"></i>
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ !loading && !entries.length && !filter }">
 
             <div class="uk-animation-fade">
 
@@ -83,7 +94,7 @@
         </div>
 
 
-        <div class="uk-margin-top" if="{ entries.length || filter }">
+        <div class="uk-margin-top" if="{ !loading && (entries.length || filter) }">
 
             @render('collections:views/partials/entries'.($collection['sortable'] ? '.sortable':'').'.php', compact('collection'))
 
@@ -180,15 +191,15 @@
 
                     $this.entries.splice(idx, 1);
 
-                    if ($this.page > 1 && !$this.entries.length) {
-                        $this.page = $this.page - 1;
+                    if ($this.pages > 1 && !$this.entries.length) {
+                        $this.page = $this.page == 1 ? 1 : $this.page - 1;
                         $this.load();
                         return;
                     }
 
                     $this.update();
 
-                    $this.checkselected(true);
+                    $this.checkselected();
                 });
 
             }.bind(this));
@@ -217,14 +228,18 @@
 
                         App.ui.notify("Entries removed", "success");
 
-                        if ($this.page > 1 && !$this.entries.length) {
-                            $this.page = $this.page - 1;
+                        $this.loading = false;
+
+                        if ($this.pages > 1 && !$this.entries.length) {
+                            $this.page = $this.page == 1 ? 1 : $this.page - 1;
                             $this.load();
-                            return;
+                        } else {
+                            $this.update();
                         }
+
                     });
 
-                    this.update();
+                    this.loading = true;
                     this.checkselected(true);
 
                 }.bind(this));
@@ -288,7 +303,7 @@
                     col = field+'.address';
                     break;
                 default:
-                    col = field; 
+                    col = field;
             }
 
             if (!this.sort[col]) {
