@@ -183,7 +183,6 @@
                 // auto-map fields
                 $this.fields.forEach(function(f){
                     if (data.headers.indexOf(f.name) != -1) {
-                        debugger;
                         $this.mapping[f.name] = f.name;
                     }
                 });
@@ -290,8 +289,8 @@
                                     promises.push(ImportFilter.filter(fields[k], val, d).then(function(val){
                                         entry[k] = val;
                                     }));
-                                // } else if (_.isPlainObject(val)) {
-                                //     entry[k] = val.type == fields[k].type ? val : null;
+                                } else if (_.isPlainObject(val)) {
+                                    entry[k] = val.type == fields[k].type ? val : null;
                                 } else {
                                     entry[k] = val;
                                 }

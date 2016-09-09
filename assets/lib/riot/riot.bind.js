@@ -52,7 +52,7 @@
                 }
 
                 try {
-                    value = (new Function('tag', 'return tag.'+field+'];'))(tag);
+                    value = (new Function('tag', 'return tag.'+field+';'))(tag);
                 } catch(e) {}
 
                 return value;
@@ -95,7 +95,7 @@
                         cache[field] = true;
                     }
 
-                    body = 'try{ tag.'+field+'] = val; if(!silent) { tag.update(); } tag.trigger("bindingupdated", ["'+field+'", val]);return true;}catch(e){ return false; }';
+                    body = 'try{ tag.'+field+' = val; if(!silent) { tag.update(); } tag.trigger("bindingupdated", ["'+field+'", val]);return true;}catch(e){ return false; }';
 
                     fn = new Function('tag', 'val', 'silent', body);
 

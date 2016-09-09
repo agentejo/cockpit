@@ -44,7 +44,7 @@
             if (_.isPlainObject(value) && extra) {
                 value = value[extra];
             }
-            if (field.options && field.options.link && extra && typeof value === "string") {
+            if (field.options && field.options.link && extra && value) {
                 var $this = this, filter = {};
                 filter[extra] = value;
 
