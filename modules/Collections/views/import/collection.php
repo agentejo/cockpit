@@ -289,9 +289,7 @@
                                     promises.push(ImportFilter.filter(fields[k], val, d).then(function(val){
                                         entry[k] = val;
                                     }));
-                                } else if (_.isPlainObject(val)) {
-                                    entry[k] = val.type == fields[k].type ? val : null;
-                                } else {
+                                } else if (typeof val === "string") {
                                     entry[k] = val;
                                 }
                             });

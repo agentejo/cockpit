@@ -50,7 +50,7 @@
 
                 App.callmodule('collections:findOne', [field.options.link, filter]).then(function(data) {
                     if (data.result && data.result._id) {
-
+                        //TODO add support for multiple imports
                         var entry = {_id:data.result._id, display: data.result[field.options.display] || data.result[Filter.collections[field.options.link].fields[0].name] || 'n/a'};
                         $this.resolve(field.options.multiple ? [entry]:entry);
 
