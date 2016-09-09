@@ -3,7 +3,6 @@
     var Filter = {
 
         filter: function(field, value, extra){
-
             var _resolve, _reject, p = new Promise(function(resolve, reject) {
                 _resolve = resolve;
                 _reject = reject;
@@ -33,23 +32,23 @@
         date: function(value) {
 
             var date = new Date(value);
-   
+
             if (isNaN(date.getTime()) || !date.toISOString().match(/(.+)\T/)[1]) {
                 value = null;
             }
 
-            this.resolve(value);   
+            this.resolve(value);
         },
 
         collectionlink: function(value, field, extra) {
-
-            if (field.options && field.options.link && extra) {
-
+            if (_.isPlainObject(value)) {
+                value = value[extra];
+            }
+            if (field.options && field.options.link && extra && value) {
                 var $this = this, filter = {};
                 filter[extra] = value;
 
                 App.callmodule('collections:findOne', [field.options.link, filter]).then(function(data) {
-                    
                     if (data.result && data.result._id) {
 
                         var entry = {_id:data.result._id, display: data.result[field.options.display] || data.result[Filter.collections[field.options.link].fields[0].name] || 'n/a'};
