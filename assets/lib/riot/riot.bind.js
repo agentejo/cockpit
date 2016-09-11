@@ -42,7 +42,7 @@
             ele.$boundTo = tag;
 
             ele.$getValue = function(field) {
-                
+
                 field = field || ele.getAttribute(attr);
 
                 var value = null;

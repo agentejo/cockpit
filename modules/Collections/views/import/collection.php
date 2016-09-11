@@ -54,7 +54,7 @@
     </div>
 
     <div name="step2" data-step="1" show="{step==2}">
-        
+
         <h2>{ file.name }</h2>
         <div class="uk-margin uk-text-muted">{ data.rows.length } @lang('Entries found.')</div>
 
@@ -77,7 +77,7 @@
                     <td>
                         <div class="uk-form-select">
                             <a class="{ parent.mapping[field.name] ? 'uk-link-muted':''}"><i class="uk-icon-exchange" show="{parent.mapping[field.name]}"></i> { parent.mapping[field.name] || 'Select...'}</a>
-                            <select class="uk-width-1-1" bind="mapping.{field.name}">
+                            <select class="uk-width-1-1" bind="mapping['{field.name}']">
                                 <option></option>
                                 <option each="{h,hidx in data.headers}" value="{h}">{h}</option>
                             </select>
@@ -87,16 +87,16 @@
                             @lang('Match against:')
                             <div class="uk-form-select">
                                 {field.options.link}.<a>{parent.filterData[field.name] || '(Select field...)'}</a>
-                                <select bind="filterData.{field.name}">
+                                <select bind="filterData['{field.name}']">
                                     <option value=""></option>
                                     <option value="{f.name}" each="{f in _COL_[field.options.link].fields}">{f.name}</option>
                                 </select>
                             </div>
-                        </div> 
+                        </div>
                     </td>
                     <td>
                         <div class="uk-text-center">
-                            <input type="checkbox" bind="filter.{field.name}" />
+                            <input type="checkbox" bind="filter['{field.name}']" />
                         </div>
                     </td>
                 </tr>
@@ -160,7 +160,7 @@
             this.mapping = {};
             this.filter = {};
             this.filterData = {};
-            
+
             this.step = 1;
             this.step1.classList.remove('uk-dragover');
         }
@@ -177,7 +177,7 @@
             this.update();
 
             ImportParser.parse(file).then(function(data) {
-                
+
                 $this.data = data;
 
                 // auto-map fields
@@ -186,7 +186,7 @@
                         $this.mapping[f.name] = f.name;
                     }
                 });
-                
+
                 $this.file = file;
                 $this.step = 2;
                 $this.update();
@@ -281,14 +281,16 @@
                             entry = {};
 
                             Object.keys($this.mapping).forEach(function(k, val, d){
-                                
                                 val = c[$this.mapping[k]];
+                                
                                 d   = $this.filterData[k];
 
                                 if ($this.filter[k]) {
                                     promises.push(ImportFilter.filter(fields[k], val, d).then(function(val){
                                         entry[k] = val;
                                     }));
+                                } else if (_.isObject(val)) {
+                                    entry[k] = val.type == fields[k].type ? val : null;
                                 } else {
                                     entry[k] = val;
                                 }
@@ -300,13 +302,13 @@
                         Promise.all(promises).then(function(){
 
                             App.callmodule('collections:save',[$this.collection.name, entries]).then(function(data) {
-                                
+
                                 progress += cnt;
 
                                 if (progress > $this.data.rows.length) {
                                     progress = $this.data.rows.length;
                                 }
-                                
+
                                 $this.progress.innerHTML = Math.ceil((progress/$this.data.rows.length)*100)+' %';
 
                                 if (progress == $this.data.rows.length) {
@@ -318,7 +320,7 @@
                                 resolve(data && data.result);
                             });
                         }, function(msg) {
-                            
+
                             App.ui.notify(msg, "danger");
 
                             progress += cnt;
@@ -326,7 +328,7 @@
                             if (progress > $this.data.rows.length) {
                                 progress = $this.data.rows.length;
                             }
-                            
+
                             $this.progress.innerHTML = Math.ceil((progress/$this.data.rows.length)*100)+' %';
 
                             if (progress == $this.data.rows.length) {
