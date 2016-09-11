@@ -7,8 +7,8 @@
         component = addon(UIkit);
     }
 
-    if (typeof define == "function" && define.amd) {
-        define("uikit-htmleditor", ["uikit"], function(){
+    if (typeof define == 'function' && define.amd) {
+        define('uikit-htmleditor', ['uikit'], function(){
             return component || addon(UIkit);
         });
     }

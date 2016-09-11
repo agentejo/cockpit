@@ -7,8 +7,8 @@
         component = addon(UIkit);
     }
 
-    if (typeof define == "function" && define.amd) {
-        define("uikit-timepicker", ["uikit"], function(){
+    if (typeof define == 'function' && define.amd) {
+        define('uikit-timepicker', ['uikit'], function(){
             return component || addon(UIkit);
         });
     }
@@ -30,12 +30,12 @@
         boot: function() {
 
             // init code
-            UI.$html.on("focus.timepicker.uikit", "[data-uk-timepicker]", function(e) {
+            UI.$html.on('focus.timepicker.uikit', '[data-uk-timepicker]', function(e) {
 
                 var ele = UI.$(this);
 
-                if (!ele.data("timepicker")) {
-                    var obj = UI.timepicker(ele, UI.Utils.options(ele.attr("data-uk-timepicker")));
+                if (!ele.data('timepicker')) {
+                    var obj = UI.timepicker(ele, UI.Utils.options(ele.attr('data-uk-timepicker')));
 
                     setTimeout(function(){
                         obj.autocomplete.input.focus();
