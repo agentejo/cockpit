@@ -43,13 +43,13 @@
         collectionlink: function(value, field, extra) {
 
             if (field.options && field.options.link && extra && value) {
-                
+
                 var $this = this;
 
                 if (Array.isArray(value)) {
-                    
+
                     var options = {};
-                    
+
                     value = _.map(value, function(item){
                         return _.isPlainObject(item) && extra ? item[extra] : item;
                     });
@@ -63,25 +63,27 @@
                     });
 
                     App.callmodule('collections:find', [field.options.link, options]).then(function(data) {
-                        
+
                         if (data.result && data.result.length) {
-                            
+
                             if (field.options.multiple) {
 
                                 var entries = _.map(data.result, function(item){
                                     return {
                                         _id: item._id,
-                                        display: item[field.options.display] || item[Filter.collections[field.options.link].fields[0].name] || 'n/a'
+                                        display: item[field.options.display] || item[Filter.collections[field.options.link].fields[0].name] || 'n/a',
+                                        link: field.options.link
                                     };
                                 });
 
                                 $this.resolve(entries);
 
                             } else {
-                                
+
                                 var entry = {
                                     _id:data.result[0]._id,
-                                    display: data.result[0][field.options.display] || data.result[0][Filter.collections[field.options.link].fields[0].name] || 'n/a'
+                                    display: data.result[0][field.options.display] || data.result[0][Filter.collections[field.options.link].fields[0].name] || 'n/a',
+                                    link: field.options.link
                                 };
 
                                 $this.resolve(entry);
@@ -103,10 +105,14 @@
                     filter[extra] = value;
 
                     App.callmodule('collections:findOne', [field.options.link, filter]).then(function(data) {
-                        
+
                         if (data.result && data.result._id) {
                             //TODO add support for multiple imports
-                            var entry = {_id:data.result._id, display: data.result[field.options.display] || data.result[Filter.collections[field.options.link].fields[0].name] || 'n/a'};
+                            var entry = {
+                                _id:data.result._id,
+                                display: data.result[field.options.display] || data.result[Filter.collections[field.options.link].fields[0].name] || 'n/a',
+                                link: field.options.link
+                            };
                             $this.resolve(field.options.multiple ? [entry]:entry);
 
                         } else {
