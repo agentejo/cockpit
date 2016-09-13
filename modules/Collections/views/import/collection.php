@@ -93,28 +93,6 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="uk-margin-small-top uk-text-small uk-text-muted" if="{field.type == 'date' && parent.mapping[field.name] && parent.filter[field.name]}">
-                            <hr>
-                            @lang('Input date Format:')
-                            <div class="uk-form-select">
-                                <a>{parent.filterData[field.name] || '(Select date format...)'}</a>
-                                <select bind="filterData['{field.name}']">
-                                    <option value=""></option>
-                                    <option value="{format}" each="{format in ['Timestamp: s', 'Timestamp: ms']}">{format}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="uk-margin-small-top uk-text-small uk-text-muted" if="{field.type == 'time' && parent.mapping[field.name] && parent.filter[field.name]}">
-                            <hr>
-                            @lang('Input time Format:')
-                            <div class="uk-form-select">
-                                <a>{parent.filterData[field.name] || '(Select date format...)'}</a>
-                                <select bind="filterData['{field.name}']">
-                                    <option value=""></option>
-                                    <option value="{format}" each="{format in ['Timestamp: s', 'Timestamp: ms']}">{format}</option>
-                                </select>
-                            </div>
-                        </div>
                     </td>
                     <td>
                         <div class="uk-text-center">
@@ -304,7 +282,7 @@
 
                             Object.keys($this.mapping).forEach(function(k, val, d){
                                 val = c[$this.mapping[k]];
-
+                                
                                 d   = $this.filterData[k];
 
                                 if ($this.filter[k]) {
