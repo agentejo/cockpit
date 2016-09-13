@@ -26,7 +26,7 @@ class SimpleImage {
      */
     public $quality = 80;
 
-    protected $image, $filename, $original_info, $width, $height, $imagestring;
+    protected $image, $filename, $original_info, $width, $height, $imagestring, $mimetype;
 
     /**
      * Create instance and load an image, or create an image from scratch
@@ -453,6 +453,13 @@ class SimpleImage {
     }
 
     /**
+     * Generates an image
+     *
+     * @return int
+     *
+     */
+
+    /**
      * Get the current height
      *
      * @return int
@@ -599,7 +606,7 @@ class SimpleImage {
     }
 
     /**
-     * Outputs image without saving
+     * Generates the image as a string it and sets mime type
      *
      * @param null|string   $format     If omitted or null - format of original file will be used, may be gif|jpg|png
      * @param int|null      $quality    Output image quality in percents 0-100
@@ -607,7 +614,7 @@ class SimpleImage {
      * @throws Exception
      *
      */
-    function output($format = null, $quality = null) {
+    protected function generate($format = null, $quality = null) {
 
         // Determine quality
         $quality = $quality ?: $this->quality;
@@ -632,61 +639,7 @@ class SimpleImage {
                 break;
         }
 
-        // Output the image
-        header('Content-Type: '.$mimetype);
-        switch ($mimetype) {
-            case 'image/gif':
-                imagegif($this->image);
-                break;
-            case 'image/jpeg':
-                imageinterlace($this->image, true);
-                imagejpeg($this->image, null, round($quality));
-                break;
-            case 'image/png':
-                imagepng($this->image, null, round(9 * $quality / 100));
-                break;
-            default:
-                throw new Exception('Unsupported image format: '.$this->filename);
-                break;
-        }
-    }
-
-    /**
-     * Outputs image as data base64 to use as img src
-     *
-     * @param null|string   $format     If omitted or null - format of original file will be used, may be gif|jpg|png
-     * @param int|null      $quality    Output image quality in percents 0-100
-     *
-     * @return string
-     * @throws Exception
-     *
-     */
-    function output_base64($format = null, $quality = null) {
-
-        // Determine quality
-        $quality = $quality ?: $this->quality;
-
-        // Determine mimetype
-        switch (strtolower($format)) {
-            case 'gif':
-                $mimetype = 'image/gif';
-                break;
-            case 'jpeg':
-            case 'jpg':
-                imageinterlace($this->image, true);
-                $mimetype = 'image/jpeg';
-                break;
-            case 'png':
-                $mimetype = 'image/png';
-                break;
-            default:
-                $info = getimagesize($this->filename);
-                $mimetype = $info['mime'];
-                unset($info);
-                break;
-        }
-
-        // Output the image
+        // Sets the image data
         ob_start();
         switch ($mimetype) {
             case 'image/gif':
@@ -702,11 +655,46 @@ class SimpleImage {
                 throw new Exception('Unsupported image format: '.$this->filename);
                 break;
         }
-        $image_data = ob_get_contents();
+        $imagestring = ob_get_contents();
         ob_end_clean();
 
+        return array($mimetype, $imagestring);
+    }
+
+    /**
+     * Outputs image without saving
+     *
+     * @param null|string   $format     If omitted or null - format of original file will be used, may be gif|jpg|png
+     * @param int|null      $quality    Output image quality in percents 0-100
+     *
+     * @throws Exception
+     *
+     */
+    function output($format = null, $quality = null) {
+
+        list( $mimetype, $imagestring ) = $this->generate( $format, $quality );
+
+        // Output the image
+        header('Content-Type: '.$mimetype);
+        echo $imagestring;
+    }
+
+    /**
+     * Outputs image as data base64 to use as img src
+     *
+     * @param null|string   $format     If omitted or null - format of original file will be used, may be gif|jpg|png
+     * @param int|null      $quality    Output image quality in percents 0-100
+     *
+     * @return string
+     * @throws Exception
+     *
+     */
+    function output_base64($format = null, $quality = null) {
+
+        list( $mimetype, $imagestring ) = $this->generate( $format, $quality );
+
         // Returns formatted string for img src
-        return 'data:'.$mimetype.';base64,'.base64_encode($image_data);
+        return "data:{$mimetype};base64,".base64_encode($imagestring);
 
     }
 
@@ -881,32 +869,16 @@ class SimpleImage {
     function save($filename = null, $quality = null, $format = null) {
 
         // Determine quality, filename, and format
-        $quality = $quality ?: $this->quality;
         $filename = $filename ?: $this->filename;
-        if( !$format ) {
+        if( !$format )
             $format = $this->file_ext($filename) ?: $this->original_info['format'];
-        }
 
-        // Create the image
-        switch (strtolower($format)) {
-            case 'gif':
-                $result = imagegif($this->image, $filename);
-                break;
-            case 'jpg':
-            case 'jpeg':
-                imageinterlace($this->image, true);
-                $result = imagejpeg($this->image, $filename, round($quality));
-                break;
-            case 'png':
-                $result = imagepng($this->image, $filename, round(9 * $quality / 100));
-                break;
-            default:
-                throw new Exception('Unsupported format');
-        }
+        list( $mimetype, $imagestring ) = $this->generate( $format, $quality );
 
-        if (!$result) {
+        // Save the image
+        $result = file_put_contents( $filename, $imagestring );
+        if (!$result)
             throw new Exception('Unable to save image: ' . $filename);
-        }
 
         return $this;
 
@@ -1138,7 +1110,7 @@ class SimpleImage {
      *
      * @param int           $width
      * @param int|null      $height If omitted - assumed equal to $width
-     * @param string        $focal
+     * @param string        $focal 
      *
      * @return SimpleImage
      *
@@ -1208,7 +1180,7 @@ class SimpleImage {
                 $top = $this->height - $height;
                 $bottom = $this->height;
                 break;
-            case 'center':
+            case 'center': 
             default:
                 $left = floor(($this->width / 2) - ($width / 2));
                 $right = $width + $left;

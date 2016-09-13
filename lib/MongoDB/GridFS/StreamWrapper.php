@@ -2,6 +2,8 @@
 
 namespace MongoDB\GridFS;
 
+use Exception;
+
 /**
  * Stream wrapper for reading and writing a GridFS file.
  *
@@ -20,9 +22,14 @@ class StreamWrapper
     private $protocol;
     private $stream;
 
-    public function getId()
+    /**
+     * Return the stream's file document.
+     *
+     * @return stdClass
+     */
+    public function getFile()
     {
-        return $this->stream->getId();
+        return $this->stream->getFile();
     }
 
     /**
@@ -57,6 +64,10 @@ class StreamWrapper
      */
     public function stream_eof()
     {
+        if ( ! $this->stream instanceof ReadableStream) {
+            return false;
+        }
+
         return $this->stream->isEOF();
     }
 
@@ -93,12 +104,20 @@ class StreamWrapper
      * 
      * @see http://php.net/manual/en/streamwrapper.stream-read.php
      * @param integer $count Number of bytes to read
-     * @return string 
+     * @return string
      */
     public function stream_read($count)
     {
-        // TODO: Ensure that $this->stream is a ReadableStream
-        return $this->stream->downloadNumBytes($count);
+        if ( ! $this->stream instanceof ReadableStream) {
+            return '';
+        }
+
+        try {
+            return $this->stream->downloadNumBytes($count);
+        } catch (Exception $e) {
+            trigger_error(sprintf('%s: %s', get_class($e), $e->getMessage()), \E_USER_WARNING);
+            return false;
+        }
     }
 
     /**
@@ -122,14 +141,20 @@ class StreamWrapper
      *
      * @see http://php.net/manual/en/streamwrapper.stream-write.php
      * @param string $data Data to write
-     * @return integer The number of bytes successfully stored
+     * @return integer The number of bytes written
      */
     public function stream_write($data)
     {
-        // TODO: Ensure that $this->stream is a WritableStream
-        $this->stream->insertChunks($data);
+        if ( ! $this->stream instanceof WritableStream) {
+            return 0;
+        }
 
-        return strlen($data);
+        try {
+            return $this->stream->insertChunks($data);
+        } catch (Exception $e) {
+            trigger_error(sprintf('%s: %s', get_class($e), $e->getMessage()), \E_USER_WARNING);
+            return false;
+        }
     }
 
     /**

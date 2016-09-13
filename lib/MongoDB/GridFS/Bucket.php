@@ -21,12 +21,18 @@ use stdClass;
  */
 class Bucket
 {
+    private static $defaultBucketName = 'fs';
     private static $defaultChunkSizeBytes = 261120;
     private static $streamWrapperProtocol = 'gridfs';
 
     private $collectionWrapper;
     private $databaseName;
-    private $options;
+    private $manager;
+    private $bucketName;
+    private $chunkSizeBytes;
+    private $readConcern;
+    private $readPreference;
+    private $writeConcern;
 
     /**
      * Constructs a GridFS bucket.
@@ -53,7 +59,7 @@ class Bucket
     public function __construct(Manager $manager, $databaseName, array $options = [])
     {
         $options += [
-            'bucketName' => 'fs',
+            'bucketName' => self::$defaultBucketName,
             'chunkSizeBytes' => self::$defaultChunkSizeBytes,
         ];
 
@@ -77,13 +83,37 @@ class Bucket
             throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], 'MongoDB\Driver\WriteConcern');
         }
 
+        $this->manager = $manager;
         $this->databaseName = (string) $databaseName;
-        $this->options = $options;
+        $this->bucketName = $options['bucketName'];
+        $this->chunkSizeBytes = $options['chunkSizeBytes'];
+        $this->readConcern = isset($options['readConcern']) ? $options['readConcern'] : $this->manager->getReadConcern();
+        $this->readPreference = isset($options['readPreference']) ? $options['readPreference'] : $this->manager->getReadPreference();
+        $this->writeConcern = isset($options['writeConcern']) ? $options['writeConcern'] : $this->manager->getWriteConcern();
 
         $collectionOptions = array_intersect_key($options, ['readConcern' => 1, 'readPreference' => 1, 'writeConcern' => 1]);
 
         $this->collectionWrapper = new CollectionWrapper($manager, $databaseName, $options['bucketName'], $collectionOptions);
         $this->registerStreamWrapper();
+    }
+
+    /**
+     * Return internal properties for debugging purposes.
+     *
+     * @see http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.debuginfo
+     * @return array
+     */
+    public function __debugInfo()
+    {
+        return [
+            'bucketName' => $this->bucketName,
+            'databaseName' => $this->databaseName,
+            'manager' => $this->manager,
+            'chunkSizeBytes' => $this->chunkSizeBytes,
+            'readConcern' => $this->readConcern,
+            'readPreference' => $this->readPreference,
+            'writeConcern' => $this->writeConcern,
+        ];
     }
 
     /**
@@ -179,31 +209,65 @@ class Bucket
         return $this->collectionWrapper->findFiles($filter, $options);
     }
 
-    public function getCollectionWrapper()
+    /**
+     * Return the bucket name.
+     *
+     * @return string
+     */
+    public function getBucketName()
     {
-        return $this->collectionWrapper;
+        return $this->bucketName;
     }
 
+    /**
+     * Return the database name.
+     *
+     * @return string
+     */
     public function getDatabaseName()
     {
         return $this->databaseName;
     }
 
     /**
-     * Gets the ID of the GridFS file associated with a stream.
+     * Gets the file document of the GridFS file associated with a stream.
      *
      * @param resource $stream GridFS stream
-     * @return mixed
+     * @return stdClass
+     * @throws InvalidArgumentException
      */
-    public function getIdFromStream($stream)
+    public function getFileDocumentForStream($stream)
     {
-        $metadata = stream_get_meta_data($stream);
-
-        if ($metadata['wrapper_data'] instanceof StreamWrapper) {
-            return $metadata['wrapper_data']->getId();
+        if ( ! is_resource($stream) || get_resource_type($stream) != "stream") {
+            throw InvalidArgumentException::invalidType('$stream', $stream, 'resource');
         }
 
-        // TODO: Throw if we cannot access the ID
+        $metadata = stream_get_meta_data($stream);
+
+        if (!$metadata['wrapper_data'] instanceof StreamWrapper) {
+            throw InvalidArgumentException::invalidType('$stream wrapper data', $metadata['wrapper_data'], 'MongoDB\Driver\GridFS\StreamWrapper');
+        }
+
+        return $metadata['wrapper_data']->getFile();
+    }
+
+    /**
+     * Gets the file document's ID of the GridFS file associated with a stream.
+     *
+     * @param resource $stream GridFS stream
+     * @return stdClass
+     * @throws CorruptFileException
+     * @throws InvalidArgumentException
+     */
+    public function getFileIdForStream($stream)
+    {
+        $file = $this->getFileDocumentForStream($stream);
+
+        if ( ! isset($file->_id) && ! property_exists($file, '_id')) {
+            throw new CorruptFileException('file._id does not exist');
+        }
+
+        return $file->_id;
     }
 
     /**
@@ -280,7 +344,7 @@ class Bucket
      */
     public function openUploadStream($filename, array $options = [])
     {
-        $options += ['chunkSizeBytes' => $this->options['chunkSizeBytes']];
+        $options += ['chunkSizeBytes' => $this->chunkSizeBytes];
 
         $path = $this->createPathForUpload();
         $context = stream_context_create([
@@ -351,7 +415,7 @@ class Bucket
         $destination = $this->openUploadStream($filename, $options);
         stream_copy_to_stream($source, $destination);
 
-        return $this->getIdFromStream($destination);
+        return $this->getFileIdForStream($destination);
     }
 
     /**
@@ -372,7 +436,7 @@ class Bucket
             '%s://%s/%s.files/%s',
             self::$streamWrapperProtocol,
             urlencode($this->databaseName),
-            urlencode($this->options['bucketName']),
+            urlencode($this->bucketName),
             urlencode($id)
         );
     }
@@ -388,7 +452,7 @@ class Bucket
             '%s://%s/%s.files',
             self::$streamWrapperProtocol,
             urlencode($this->databaseName),
-            urlencode($this->options['bucketName'])
+            urlencode($this->bucketName)
         );
     }
 
@@ -399,7 +463,7 @@ class Bucket
      */
     private function getFilesNamespace()
     {
-        return sprintf('%s.%s.files', $this->databaseName, $this->options['bucketName']);
+        return sprintf('%s.%s.files', $this->databaseName, $this->bucketName);
     }
 
     /**
