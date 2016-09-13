@@ -21,8 +21,8 @@ class ReadableStream
     private $chunkOffset = 0;
     private $chunksIterator;
     private $collectionWrapper;
+    private $file;
     private $firstCheck = true;
-    private $id;
     private $iteratorEmpty = false;
     private $length;
     private $numChunks;
@@ -44,15 +44,15 @@ class ReadableStream
             throw new CorruptFileException('file.length is not an integer > 0');
         }
 
-        if ( ! isset($file->_id) && ! array_key_exists('_id', (array) $file)) {
+        if ( ! isset($file->_id) && ! property_exists($file, '_id')) {
             throw new CorruptFileException('file._id does not exist');
         }
 
-        $this->id = $file->_id;
+        $this->file = $file;
         $this->chunkSize = $file->chunkSize;
         $this->length = $file->length;
 
-        $this->chunksIterator = $collectionWrapper->getChunksIteratorByFilesId($this->id);
+        $this->chunksIterator = $collectionWrapper->getChunksIteratorByFilesId($file->_id);
         $this->collectionWrapper = $collectionWrapper;
         $this->numChunks = ceil($this->length / $this->chunkSize);
         $this->initEmptyBuffer();
@@ -69,9 +69,7 @@ class ReadableStream
         return [
             'bucketName' => $this->collectionWrapper->getBucketName(),
             'databaseName' => $this->collectionWrapper->getDatabaseName(),
-            'id' => $this->id,
-            'chunkSize' => $this->chunkSize,
-            'length' => $this->length,
+            'file' => $this->file,
         ];
     }
 
@@ -130,13 +128,13 @@ class ReadableStream
     }
 
     /**
-     * Return the stream's ID (i.e. file document identifier).
+     * Return the stream's file document.
      *
-     * @return integer
+     * @return stdClass
      */
-    public function getId()
+    public function getFile()
     {
-        return $this->id;
+        return $this->file;
     }
 
     /**

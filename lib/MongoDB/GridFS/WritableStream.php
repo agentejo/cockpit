@@ -127,13 +127,13 @@ class WritableStream
     }
 
     /**
-     * Return the stream's ID (i.e. file document identifier).
+     * Return the stream's file document.
      *
-     * @return integer
+     * @return stdClass
      */
-    public function getId()
+    public function getFile()
     {
-        return $this->file['_id'];
+        return (object) $this->file;
     }
 
     /**
@@ -182,11 +182,6 @@ class WritableStream
         }
 
         return $readBytes;
-    }
-
-    public function isEOF()
-    {
-        return $this->isClosed;
     }
 
     private function abort()
