@@ -71,7 +71,7 @@
                         var date = new Date(value);
                         date.setSeconds(0,0);
                         var match = date.toISOString().match(/\T(.+?\:.+?)\:/);
-                        
+
                         if (isNaN(date.getTime()) || !match[1]) {
                             value = null;
                         } else {
@@ -117,7 +117,8 @@
                                 var entries = _.map(data.result, function(item){
                                     return {
                                         _id: item._id,
-                                        display: item[field.options.display] || item[Filter.collections[field.options.link].fields[0].name] || 'n/a'
+                                        display: item[field.options.display] || item[Filter.collections[field.options.link].fields[0].name] || 'n/a',
+                                        link: field.options.link
                                     };
                                 });
 
@@ -125,7 +126,8 @@
                             } else {
                                 var entry = {
                                     _id:data.result[0]._id,
-                                    display: data.result[0][field.options.display] || data.result[0][Filter.collections[field.options.link].fields[0].name] || 'n/a'
+                                    display: data.result[0][field.options.display] || data.result[0][Filter.collections[field.options.link].fields[0].name] || 'n/a',
+                                    link: field.options.link
                                 };
                                 $this.resolve(entry);
                             }
@@ -145,7 +147,11 @@
                     App.callmodule('collections:findOne', [field.options.link, filter]).then(function(data) {
                         if (data.result && data.result._id) {
                             //TODO add support for multiple imports
-                            var entry = {_id:data.result._id, display: data.result[field.options.display] || data.result[Filter.collections[field.options.link].fields[0].name] || 'n/a'};
+                            var entry = {
+                                _id:data.result._id,
+                                display: data.result[field.options.display] || data.result[Filter.collections[field.options.link].fields[0].name] || 'n/a',
+                                link: field.options.link
+                            };
                             $this.resolve(field.options.multiple ? [entry]:entry);
 
                         } else {
