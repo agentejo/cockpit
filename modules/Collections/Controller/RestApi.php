@@ -16,7 +16,26 @@ class RestApi extends \LimeExtra\Controller {
         if ($sort   = $this->param("sort", null))   $options["sort"] = $sort;
         if ($skip   = $this->param("skip", null))   $options["skip"] = $skip;
 
-        $entries = $this->app->module('collections')->find($collection, $options);
+        $entries    = $this->app->module('collections')->find($collection, $options);
+        $collection = $this->app->module('collections')->collection($collection);
+
+        $fields = [];
+
+        foreach ($collection["fields"] as $field) {
+
+            $fields[$field["name"]] = [
+                "name" => $field["name"],
+                "type" => $field["type"],
+                "localize" => $field["type"],
+                "options" => $field["options"],
+            ];
+        }
+
+        return [
+            "fields"   => $fields,
+            "entries"  => $entries,
+            "total"    => count($entries)
+        ];
 
         return $entries;
     }
