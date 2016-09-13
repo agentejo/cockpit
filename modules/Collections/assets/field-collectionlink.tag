@@ -196,10 +196,10 @@
 
         var _entry = e.item.entry;
         var entry = {
-+           _id:_entry._id,
-+           display: _entry[opts.display] || _entry[this.collection.fields[0].name] || 'n/a',
-+           link: opts.link
-+       };
+           _id:_entry._id,
+           display: _entry[opts.display] || _entry[this.collection.fields[0].name] || 'n/a',
+           link: opts.link
+        };
         if (opts.multiple) {
             this.link.push(entry);
         } else {
