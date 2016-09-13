@@ -29,12 +29,65 @@
             this.resolve(value == '1' || !!value);
         },
 
-        date: function(value) {
+        date: function(value, field, extra) {
+            switch(extra) {
+                case "Timestamp: ms":
+                case "Timestamp: s":
+                    if (!isNaN(Number(value))) {
+                        if (extra == "Timestamp: s") {
+                            value = value * 1000;
+                        }
+                        var date = new Date(value);
+                        var match = date.toISOString().match(/(.+)\T/)
+                        if (isNaN(date.getTime()) || !match[1]) {
+                            value = null;
+                        } else {
+                            value = match[1];
+                        }
+                    } else {
+                        value = null;
+                    }
+                    break;
+                default:
+                    var date = new Date(value);
 
-            var date = new Date(value);
+                    if (isNaN(date.getTime()) || !date.toISOString().match(/(.+)\T/)[1]) {
+                        value = null;
+                    }
+                    break;
+            }
 
-            if (isNaN(date.getTime()) || !date.toISOString().match(/(.+)\T/)[1]) {
-                value = null;
+            this.resolve(value);
+        },
+
+        time: function(value, field, extra){
+            switch(extra) {
+                case "Timestamp: ms":
+                case "Timestamp: s":
+                    if (!isNaN(Number(value))) {
+                        if (extra == "Timestamp: s") {
+                            value = value * 1000;
+                        }
+                        var date = new Date(value);
+                        date.setSeconds(0,0);
+                        var match = date.toISOString().match(/\T(.+?\:.+?)\:/);
+
+                        if (isNaN(date.getTime()) || !match[1]) {
+                            value = null;
+                        } else {
+                            value = match[1];
+                        }
+                    } else {
+                        value = null;
+                    }
+                    break;
+                default:
+                    var date = new Date(value);
+
+                    if (isNaN(date.getTime()) || !date.toISOString().match(/\T(.+)\Z/)[1]) {
+                        value = null;
+                    }
+                    break;
             }
 
             this.resolve(value);
@@ -43,13 +96,13 @@
         collectionlink: function(value, field, extra) {
 
             if (field.options && field.options.link && extra && value) {
-                
+
                 var $this = this;
 
                 if (Array.isArray(value)) {
-                    
+
                     var options = {};
-                    
+
                     value = _.map(value, function(item){
                         return _.isPlainObject(item) && extra ? item[extra] : item;
                     });
@@ -63,9 +116,9 @@
                     });
 
                     App.callmodule('collections:find', [field.options.link, options]).then(function(data) {
-                        
+
                         if (data.result && data.result.length) {
-                            
+
                             if (field.options.multiple) {
 
                                 var entries = _.map(data.result, function(item){
@@ -78,7 +131,7 @@
                                 $this.resolve(entries);
 
                             } else {
-                                
+
                                 var entry = {
                                     _id:data.result[0]._id,
                                     display: data.result[0][field.options.display] || data.result[0][Filter.collections[field.options.link].fields[0].name] || 'n/a'
@@ -103,7 +156,7 @@
                     filter[extra] = value;
 
                     App.callmodule('collections:findOne', [field.options.link, filter]).then(function(data) {
-                        
+
                         if (data.result && data.result._id) {
                             //TODO add support for multiple imports
                             var entry = {_id:data.result._id, display: data.result[field.options.display] || data.result[Filter.collections[field.options.link].fields[0].name] || 'n/a'};
