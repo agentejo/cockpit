@@ -106,6 +106,15 @@
     <script type="view/script">
 
         App.Utils.renderer.collectionlink = function(v) {
+            
+            if (Array.isArray(v)) {
+                var vals = [];
+                v.forEach(function(val) {
+                    vals.push(val.display ? val.display: App.Utils.renderer.default(val));
+                });
+                return vals;
+            }
+            
             return v.display ? v.display: App.Utils.renderer.default(v);
         };
 

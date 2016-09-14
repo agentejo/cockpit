@@ -57,7 +57,7 @@ $this->module("collections")->extend([
 
         $collection  = include($metapath);
         $collection  = array_merge($collection, $data);
-        $export = var_export($collection, true);
+        $export      = var_export($collection, true);
 
         if (!$this->app->helper('fs')->write($metapath, "<?php\n return {$export};")) {
             return false;
@@ -81,8 +81,6 @@ $this->module("collections")->extend([
     'removeCollection' => function($name) {
 
         if ($collection = $this->collection($name)) {
-
-            $collection = $collections["_id"];
 
             $this->app->helper("fs")->delete("#storage:collections/{$name}.collection.php");
             $this->app->storage->dropCollection("collections/{$collection}");
@@ -144,26 +142,26 @@ $this->module("collections")->extend([
 
     'entries' => function($name) use($app) {
 
-        $collections = $this->collection($name);
+        $_collection = $this->collection($name);
 
-        if (!$collections) return false;
+        if (!$_collection) return false;
 
-        $collection = $collections["_id"];
+        $collection = $_collection['_id'];
 
         return $this->app->storage->getCollection("collections/{$collection}");
     },
 
     'find' => function($collection, $options = []) {
 
-        $collections = $this->collection($collection);
+        $_collection = $this->collection($collection);
 
-        if (!$collections) return false;
+        if (!$_collection) return false;
 
         $name       = $collection;
-        $collection = $collections["_id"];
+        $collection = $_collection['_id'];
 
         // sort by custom order if collection is sortable
-        if (isset($collections['sortable']) && $collections['sortable'] && !isset($options['sort'])) {
+        if (isset($_collection['sortable']) && $_collection['sortable'] && !isset($options['sort'])) {
             $options['sort'] = ['_order' => 1];
         }
 
@@ -172,25 +170,34 @@ $this->module("collections")->extend([
 
         $entries = (array)$this->app->storage->find("collections/{$collection}", $options);
 
+        if (isset($options['populate']) && $options['populate']) {
+            $entries = $this->_populate($_collection, $entries); 
+        }
+
         $this->app->trigger('collections.find.after', [$name, &$entries, false]);
         $this->app->trigger("collections.find.after.{$name}", [$name, &$entries, false]);
 
         return $entries;
     },
 
-    'findOne' => function($collection, $criteria = [], $projection = null) {
+    'findOne' => function($collection, $criteria = [], $projection = null, $populate = false) {
 
-        $collections = $this->collection($collection);
+        $_collection = $this->collection($collection);
 
-        if (!$collections) return false;
+        if (!$_collection) return false;
 
         $name       = $collection;
-        $collection = $collections["_id"];
+        $collection = $_collection['_id'];
 
         $this->app->trigger('collections.find.before', [$name, &$criteria, true]);
         $this->app->trigger("collections.find.before.{$name}", [$name, &$criteria, true]);
 
         $entry = $this->app->storage->findOne("collections/{$collection}", $criteria, $projection);
+
+        if ($entry && $populate) {
+           $entry = $this->_populate($_collection, [$entry]);
+           $entry = $entry[0];
+        }
 
         $this->app->trigger('collections.find.after', [$name, &$entry, true]);
         $this->app->trigger("collections.find.after.{$name}", [$name, &$entry, true]);
@@ -200,25 +207,25 @@ $this->module("collections")->extend([
 
     'save' => function($collection, $data) {
 
-        $collections = $this->collection($collection);
+        $_collection = $this->collection($collection);
 
-        if (!$collections) return false;
+        if (!$_collection) return false;
 
         $name       = $collection;
-        $collection = $collections["_id"];
+        $collection = $_collection['_id'];
         $data       = isset($data[0]) ? $data : [$data];
         $return     = [];
         $modified   = time();
 
         foreach($data as $entry) {
 
-            $isUpdate = isset($entry["_id"]);
+            $isUpdate = isset($entry['_id']);
 
             $entry['_modified'] = $modified;
 
-            if (isset($collections['fields'])) {
+            if (isset($_collection['fields'])) {
 
-                foreach($collections['fields'] as $field) {
+                foreach($_collection['fields'] as $field) {
 
                     // skip missing fields on update
                     if (!isset($entry[$field['name']]) && $isUpdate) {
@@ -299,12 +306,12 @@ $this->module("collections")->extend([
 
     'remove' => function($collection, $criteria) {
 
-        $collections = $this->collection($collection);
+        $_collection = $this->collection($collection);
 
-        if (!$collections) return false;
+        if (!$_collection) return false;
 
         $name       = $collection;
-        $collection = $collections["_id"];
+        $collection = $_collection['_id'];
 
         $this->app->trigger('collections.remove.before', [$name, &$criteria]);
         $this->app->trigger("collections.remove.before.{$name}", [$name, &$criteria]);
@@ -319,13 +326,87 @@ $this->module("collections")->extend([
 
     'count' => function($collection, $criteria = []) {
 
-        $collections = $this->collection($collection);
+        $_collection = $this->collection($collection);
 
-        if (!$collections) return false;
+        if (!$_collection) return false;
 
-        $collection = $collections["_id"];
+        $collection = $_collection['_id'];
 
         return $this->app->storage->count("collections/{$collection}", $criteria);
+    },
+
+    '_populate' => function($collection, $entries) {
+
+        static $cache;
+
+        if (null === $cache) {
+            $cache = [];
+        }
+
+        if (!$collection || !count($entries)) {
+            return $entries;
+        }
+
+        $hasOne  = [];
+        $hasMany = [];
+
+        foreach($collection['fields'] as &$field) {
+ 
+            if ($field['type'] == 'collectionlink' && isset($field['options']['link']) && $field['options']['link']) {
+
+                if (isset($field['options']['multiple']) && $field['options']['multiple']) {
+                    $hasMany[$field['name']] = $field['options']['link'];
+                } else {
+                    $hasOne[$field['name']] = $field['options']['link'];
+                }
+
+                if (!isset($cache[$field['options']['link']])) {
+                    $cache[$field['options']['link']] = [];
+                }
+            }
+        }
+
+        foreach ($entries as &$entry) {
+
+            // resolve hasOne
+            foreach ($hasOne as $_field => $_collection) {
+
+                if (isset($entry[$_field]['_id'])) {
+
+                    if (!isset($cache[$_collection][$entry[$_field]['_id']])) {
+                        $cache[$_collection][$entry[$_field]['_id']] = $this->findOne($_collection, ['_id' => $entry[$_field]['_id']]);
+                    }
+
+                    $entry[$_field] = $cache[$_collection][$entry[$_field]['_id']];
+                }
+            }
+
+            // resolve hasMany
+            foreach ($hasMany as $_field => $_collection) {
+
+                if (isset($entry[$_field]) && $entry[$_field] && is_array($entry[$_field])) {
+
+                    $links = [];
+
+                    foreach ($entry[$_field] as $data) {
+
+                        if (!isset($data['_id'])) continue;
+
+                        if (!isset($cache[$_collection][$data['_id']])) {
+                            $cache[$_collection][$data['_id']] = $this->findOne($_collection, ['_id' => $data['_id']]);
+                        }
+
+                        if ($cache[$_collection][$data['_id']]) {
+                            $links[] = $cache[$_collection][$data['_id']];
+                        }
+                    }
+
+                    $entry[$_field] = $links;
+                }
+            }
+        }
+
+        return $entries;
     }
 ]);
 
