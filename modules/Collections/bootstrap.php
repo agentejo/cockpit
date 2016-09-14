@@ -171,7 +171,7 @@ $this->module("collections")->extend([
         $entries = (array)$this->app->storage->find("collections/{$collection}", $options);
 
         if (isset($options['populate']) && $options['populate']) {
-            $entries = $this->_populate($_collection, $entries); 
+            $entries = $this->_populate($_collection, $entries, is_numeric($options['populate']) ? intval($options['populate']) : false);
         }
 
         $this->app->trigger('collections.find.after', [$name, &$entries, false]);
@@ -195,7 +195,7 @@ $this->module("collections")->extend([
         $entry = $this->app->storage->findOne("collections/{$collection}", $criteria, $projection);
 
         if ($entry && $populate) {
-           $entry = $this->_populate($_collection, [$entry]);
+           $entry = $this->_populate($_collection, [$entry], is_numeric($populate) ? intval($populate) : false);
            $entry = $entry[0];
         }
 
@@ -335,12 +335,17 @@ $this->module("collections")->extend([
         return $this->app->storage->count("collections/{$collection}", $criteria);
     },
 
-    '_populate' => function($collection, $entries) {
+    '_populate' => function($collection, $entries, $deep = false, $_deeplevel = -1) {
 
         static $cache;
 
         if (null === $cache) {
             $cache = [];
+        }
+
+        // a maximum of recursive level
+        if (is_numeric($deep) && $_deeplevel == $deep) {
+            return $entries;
         }
 
         if (!$collection || !count($entries)) {
@@ -351,7 +356,7 @@ $this->module("collections")->extend([
         $hasMany = [];
 
         foreach($collection['fields'] as &$field) {
- 
+
             if ($field['type'] == 'collectionlink' && isset($field['options']['link']) && $field['options']['link']) {
 
                 if (isset($field['options']['multiple']) && $field['options']['multiple']) {
@@ -378,6 +383,11 @@ $this->module("collections")->extend([
                     }
 
                     $entry[$_field] = $cache[$_collection][$entry[$_field]['_id']];
+
+                    if ($entry[$_field] && $deep) {
+                        $_entry = $this->_populate($this->collection($_collection), [$entry[$_field]], $deep, ($_deeplevel+1));
+                        $entry[$_field] = $_entry[0];
+                    }
                 }
             }
 
@@ -399,6 +409,10 @@ $this->module("collections")->extend([
                         if ($cache[$_collection][$data['_id']]) {
                             $links[] = $cache[$_collection][$data['_id']];
                         }
+                    }
+
+                    if ($deep && count($links)) {
+                        $links = $this->_populate($this->collection($_collection), $links, $deep, ($_deeplevel+1));
                     }
 
                     $entry[$_field] = $links;

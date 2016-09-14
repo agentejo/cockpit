@@ -15,9 +15,15 @@ class RestApi extends \LimeExtra\Controller {
         if ($limit    = $this->param("limit", null))    $options["limit"] = $limit;
         if ($sort     = $this->param("sort", null))     $options["sort"] = $sort;
         if ($skip     = $this->param("skip", null))     $options["skip"] = $skip;
-        if ($populate = $this->param("populate", null)) $options["populate"] = (boolean)$populate;
+        if ($populate = $this->param("populate", null)) $options["populate"] = $populate;
 
         $entries    = $this->app->module('collections')->find($collection, $options);
+
+        // return only entries array - due to legacy
+        if ((boolean) $this->param("simple", false)) {
+            return $entries;
+        }
+
         $collection = $this->app->module('collections')->collection($collection);
 
         $fields = [];
