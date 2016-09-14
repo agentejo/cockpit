@@ -1211,10 +1211,12 @@ riot.tag2('field-asset', '<div class="uk-placeholder uk-text-center" if="{!asset
 
 });
 
-riot.tag2('field-boolean', '<button type="button" name="button" class="uk-button uk-button-{value ? \'success\':\'default\'}" onclick="{toggle}"> <span show="{value}">{opts.label || \'On\'}</span> <span show="{!value}">{opts.label || \'Off\'}</span> </button>', '', '', function(opts) {
+riot.tag2('field-boolean', '<div name="container" class="uk-display-inline-block" onclick="{toggle}" style="cursor:pointer;"> <div class="uk-form-switch"> <input name="check" type="checkbox" id="{id}"> <label for="{id}"></label> </div> <span show="{value && (opts.label !== \'false\' && opts.label !== false)}">{opts.label || \'On\'}</span> <span class="uk-text-muted" show="{!value && (opts.label !== \'false\' && opts.label !== false)}">{opts.label || \'Off\'}</span> </div>', '', '', function(opts) {
+
+        this.id = 'switch'+Math.ceil(Math.random()*10000000);
 
         if (opts.cls) {
-            App.$(this.button).addClass(opts.cls.replace(/uk\-form\-/g, 'uk-button-'));
+            App.$(this.container).addClass(opts.cls);
         }
 
         this.value = opts.default || false;
@@ -1222,10 +1224,11 @@ riot.tag2('field-boolean', '<button type="button" name="button" class="uk-button
         this.$updateValue = function(value) {
 
             if (this.value != value) {
-
                 this.value = value;
                 this.update();
             }
+
+            document.getElementById(this.id).checked = Boolean(this.value);
 
         }.bind(this);
 
@@ -1666,7 +1669,7 @@ riot.tag2('field-location', '<div class="uk-alert" if="{!apiready}"> Loading map
 riot.tag2('field-markdown', '<field-html name="input" markdown="true" bind="{opts.bind}"></field-html>', '', '', function(opts) {
 });
 
-riot.tag2('field-multipleselect', '<div class="uk-grid-gutter"> <div name="container" class="uk-grid uk-grid-match uk-grid-width-medium-1-6"> <div each="{option in options}"> <a data-value="{option}" class="{parent.selected.indexOf(option)!==-1 ? \'uk-link-muted\':\'uk-text-muted\'}" onclick="{toggle}" title="{option}"> <i class="uk-icon-{parent.selected.indexOf(option)!==-1 ? \'circle\':\'circle-o\'}"></i> {option} </a> </div> </div> </div>', '', '', function(opts) {
+riot.tag2('field-multipleselect', '<div name="container" class="{options.length > 10 ? \'uk-scrollable-box\':\'\'}"> <div class="uk-margin-small-top" each="{option in options}"> <a data-value="{option}" class="{parent.selected.indexOf(option)!==-1 ? \'uk-text-primary\':\'uk-text-muted\'}" onclick="{toggle}" title="{option}"> <i class="uk-icon-{parent.selected.indexOf(option)!==-1 ? \'circle\':\'circle-o\'} uk-margin-small-right"></i> {option} </a> </div> </div> <span class="uk-text-small uk-text-muted" if="{options.length > 10}">{selected.length} {App.i18n.get(\'selected\')}</span>', '', '', function(opts) {
 
         var $this = this;
 

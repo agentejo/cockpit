@@ -50,7 +50,7 @@
 
                         <div data-uk-dropdown="delay:300">
 
-                            <a class="uk-icon-cog" style="color: { (meta.color) }"></a>
+                            <a class="uk-icon-cog" style="color: { (meta.color) }" href="@route('/regions/region')/{ region }"></a>
 
                             <div class="uk-dropdown">
                                 <ul class="uk-nav uk-nav-dropdown">

@@ -13,48 +13,46 @@
 
             <div class="uk-width-medium-1-2">
 
-               <div class="uk-margin">
-                   <label class="uk-text-small">@lang('Name')</label>
-                   <input class="uk-width-1-1 uk-form-large" type="text" name="name" bind="form.name" pattern="[a-zA-Z0-9_]+" required>
-                   <p class="uk-text-small uk-text-muted" if="{!form._id}">
-                       @lang('Only alpha nummeric value is allowed')
-                   </p>
-               </div>
+                <div class="uk-margin">
+                    <label class="uk-text-small">@lang('Name')</label>
+                    <input class="uk-width-1-1 uk-form-large" type="text" name="name" bind="form.name" pattern="[a-zA-Z0-9_]+" required>
+                    <p class="uk-text-small uk-text-muted" if="{!form._id}">
+                        @lang('Only alpha nummeric value is allowed')
+                    </p>
+                </div>
 
-               <div class="uk-margin">
-                   <label class="uk-text-small">@lang('Label')</label>
-                   <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.label">
-               </div>
+                <div class="uk-margin">
+                    <label class="uk-text-small">@lang('Label')</label>
+                    <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.label">
+                </div>
 
-               <div class="uk-margin">
-                   <label class="uk-text-small">@lang('Color')</label>
-                   <div class="uk-margin-small-top">
-                       <field-colortag bind="form.color" title="@lang('Color')" size="20px"></field-colortag>
-                   </div>
-               </div>
+                <div class="uk-margin">
+                    <label class="uk-text-small">@lang('Color')</label>
+                    <div class="uk-margin-small-top">
+                        <field-colortag bind="form.color" title="@lang('Color')" size="20px"></field-colortag>
+                    </div>
+                </div>
 
-               <div class="uk-margin">
-                   <label class="uk-text-small">@lang('Description')</label>
-                   <textarea class="uk-width-1-1 uk-form-large" name="description" bind="form.description" rows="5"></textarea>
-               </div>
+                <div class="uk-margin">
+                    <label class="uk-text-small">@lang('Description')</label>
+                    <textarea class="uk-width-1-1 uk-form-large" name="description" bind="form.description" rows="5"></textarea>
+                </div>
 
-               <div class="uk-margin">
-                   <label class="uk-text-small">@lang('Email')</label>
-                   <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.email_forward">
+                <div class="uk-margin">
+                    <label class="uk-text-small">@lang('Email')</label>
+                    <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.email_forward">
 
                     <div class="uk-alert">
                         @lang('Leave the email field empty if you don`t want to recieve any form data via email.')
                     </div>
-               </div>
+                </div>
 
-               <div class="uk-margin">
-                    <field-boolean bind="form.in_menu" title="@lang('Show in system menu')" cls="uk-form-small"></field-boolean>
-                    <strong>@lang('Show in system menu')</strong>
-               </div>
+                <div class="uk-margin">
+                    <field-boolean bind="form.in_menu" label="@lang('Show in system menu')"></field-boolean>
+                </div>
 
-               <div class="uk-margin">
-                    <field-boolean bind="form.save_entry" title="@lang('Save form data')" cls="uk-form-small"></field-boolean>
-                    <strong>@lang('Save form data')</strong>
+                <div class="uk-margin">
+                    <field-boolean bind="form.save_entry" label="@lang('Save form data')"></field-boolean>
                 </div>
 
             </div>
@@ -68,6 +66,7 @@
         <div class="uk-margin-large-top">
 
             <button class="uk-button uk-button-large uk-button-primary uk-margin-right">@lang('Save')</button>
+            
             <a href="@route('/forms')">
                 <span show="{ !form._id }">@lang('Cancel')</span>
                 <span show="{ form._id }">@lang('Close')</span>
