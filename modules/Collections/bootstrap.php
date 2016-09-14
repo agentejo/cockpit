@@ -171,7 +171,9 @@ $this->module("collections")->extend([
         $entries = (array)$this->app->storage->find("collections/{$collection}", $options);
 
         if (isset($options['populate']) && $options['populate']) {
-            $entries = $this->_populate($_collection, $entries); 
+            $entries = $this->_populate($_collection, $entries);
+        } else if (isset($options['populate-deep']) && $options['populate-deep']) {
+            $entries = $this->_populateDeep($_collection, $entries);
         }
 
         $this->app->trigger('collections.find.after', [$name, &$entries, false]);
@@ -335,7 +337,11 @@ $this->module("collections")->extend([
         return $this->app->storage->count("collections/{$collection}", $criteria);
     },
 
-    '_populate' => function($collection, $entries) {
+    '_populateDeep' => function($collection, $entries) {
+        return $this->_populate($collection, $entries, true);
+    },
+
+    '_populate' => function($collection, $entries=[], $deep=false) {
 
         static $cache;
 
@@ -347,11 +353,15 @@ $this->module("collections")->extend([
             return $entries;
         }
 
+        if (gettype($collection) === 'string') {
+            $collection = $this->collection($collection);
+        }
+
         $hasOne  = [];
         $hasMany = [];
 
         foreach($collection['fields'] as &$field) {
- 
+
             if ($field['type'] == 'collectionlink' && isset($field['options']['link']) && $field['options']['link']) {
 
                 if (isset($field['options']['multiple']) && $field['options']['multiple']) {
@@ -374,7 +384,11 @@ $this->module("collections")->extend([
                 if (isset($entry[$_field]['_id'])) {
 
                     if (!isset($cache[$_collection][$entry[$_field]['_id']])) {
-                        $cache[$_collection][$entry[$_field]['_id']] = $this->findOne($_collection, ['_id' => $entry[$_field]['_id']]);
+                        $linkedEntry = $this->findOne($_collection, ['_id' => $entry[$_field]['_id']]);
+                        if ($deep) {
+                            $linkedEntry = $this->_populate($_collection, [$linkedEntry], $deep)[0];
+                        }
+                        $cache[$_collection][$entry[$_field]['_id']] = $linkedEntry;
                     }
 
                     $entry[$_field] = $cache[$_collection][$entry[$_field]['_id']];
@@ -387,21 +401,26 @@ $this->module("collections")->extend([
                 if (isset($entry[$_field]) && $entry[$_field] && is_array($entry[$_field])) {
 
                     $links = [];
+                    $newLinks = [];
 
                     foreach ($entry[$_field] as $data) {
 
                         if (!isset($data['_id'])) continue;
 
                         if (!isset($cache[$_collection][$data['_id']])) {
-                            $cache[$_collection][$data['_id']] = $this->findOne($_collection, ['_id' => $data['_id']]);
-                        }
-
-                        if ($cache[$_collection][$data['_id']]) {
+                            $newLinks[] = $this->findOne($_collection, ['_id' => $data['_id']]);
+                        } else {
                             $links[] = $cache[$_collection][$data['_id']];
                         }
                     }
+                    if ($deep) {
+                        $newLinks = $this->_populate($_collection, $newLinks, $deep);
+                    }
+                    foreach($newLinks as $newLink) {
+                        $cache[$_collection][$newLink['_id']] = $newLink;
+                    }
 
-                    $entry[$_field] = $links;
+                    $entry[$_field] = array_merge($newLinks, $links);
                 }
             }
         }

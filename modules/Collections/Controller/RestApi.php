@@ -16,6 +16,7 @@ class RestApi extends \LimeExtra\Controller {
         if ($sort     = $this->param("sort", null))     $options["sort"] = $sort;
         if ($skip     = $this->param("skip", null))     $options["skip"] = $skip;
         if ($populate = $this->param("populate", null)) $options["populate"] = (boolean)$populate;
+        if ($populateDeep = $this->param("populate-deep", null)) $options["populate-deep"] = (boolean)$populateDeep;
 
         $entries    = $this->app->module('collections')->find($collection, $options);
         $collection = $this->app->module('collections')->collection($collection);
