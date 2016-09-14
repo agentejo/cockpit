@@ -18,26 +18,29 @@ class RestApi extends \LimeExtra\Controller {
         if ($populate = $this->param("populate", null)) $options["populate"] = (boolean)$populate;
 
         $entries    = $this->app->module('collections')->find($collection, $options);
-        $collection = $this->app->module('collections')->collection($collection);
 
-        $fields = [];
+        if ($this->param("bare-entries")) {
+            return $entries;
+        } else {
+            $collection = $this->app->module('collections')->collection($collection);
 
-        foreach ($collection["fields"] as $field) {
+            $fields = [];
 
-            $fields[$field["name"]] = [
-                "name" => $field["name"],
-                "type" => $field["type"],
-                "localize" => $field["type"],
-                "options" => $field["options"],
+            foreach ($collection["fields"] as $field) {
+
+                $fields[$field["name"]] = [
+                    "name" => $field["name"],
+                    "type" => $field["type"],
+                    "localize" => $field["type"],
+                    "options" => $field["options"],
+                ];
+            }
+
+            return [
+                "fields"   => $fields,
+                "entries"  => $entries,
+                "total"    => count($entries)
             ];
         }
-
-        return [
-            "fields"   => $fields,
-            "entries"  => $entries,
-            "total"    => count($entries)
-        ];
-
-        return $entries;
     }
 }
