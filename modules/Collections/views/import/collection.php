@@ -294,6 +294,10 @@
                                 } else {
                                     entry[k] = val;
                                 }
+
+                                if (fields[k].options.slug && typeof val === "string") {
+                                    entry[k + "_slug"] = App.Utils.sluggify(val);
+                                }
                             });
 
                             entries.push(entry);
