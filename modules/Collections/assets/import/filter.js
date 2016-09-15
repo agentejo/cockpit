@@ -31,10 +31,10 @@
 
         date: function(value, field, extra) {
             switch(extra) {
-                case "Timestamp: ms":
-                case "Timestamp: s":
+                case "Unix timestamp: ms":
+                case "Unix timestamp: s":
                     if (!isNaN(Number(value))) {
-                        if (extra == "Timestamp: s") {
+                        if (extra == "Unix timestamp: s") {
                             value = value * 1000;
                         }
                         var date = new Date(value);
@@ -62,10 +62,10 @@
 
         time: function(value, field, extra){
             switch(extra) {
-                case "Timestamp: ms":
-                case "Timestamp: s":
+                case "Unix timestamp: ms":
+                case "Unix timestamp: s":
                     if (!isNaN(Number(value))) {
-                        if (extra == "Timestamp: s") {
+                        if (extra == "Unix timestamp: s") {
                             value = value * 1000;
                         }
                         var date = new Date(value);
