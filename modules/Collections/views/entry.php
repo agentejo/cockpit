@@ -79,7 +79,7 @@
 
         </div>
 
-        <div class="uk-width-medium-1-4">
+        <div class="uk-width-medium-1-4 uk-flex-order-first uk-flex-order-last-medium">
 
             <div class="uk-panel">
 

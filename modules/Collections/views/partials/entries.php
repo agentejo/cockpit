@@ -61,12 +61,11 @@
 
             <div class="uk-dropdown">
 
-                <strong>@lang('Pages')</strong>
-                <hr>
+                <strong class="uk-text-small">@lang('Pages')</strong>
 
-                <div class="{ pages > 5 ? 'uk-scrollable-box':'' }">
+                <div class="uk-margin-small-top { pages > 5 ? 'uk-scrollable-box':'' }">
                     <ul class="uk-nav uk-nav-dropdown">
-                        <li each="{k,v in new Array(pages)}"><a class="uk-dropdown-close" onclick="{ parent.loadpage.bind(parent, v+1) }">@lang('Page') {v + 1}</a></li>
+                        <li class="uk-text-small" each="{k,v in new Array(pages)}"><a class="uk-dropdown-close" onclick="{ parent.loadpage.bind(parent, v+1) }">@lang('Page') {v + 1}</a></li>
                     </ul>
                 </div>
             </div>
