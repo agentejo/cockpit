@@ -273,7 +273,7 @@
 
         var cnt = Array.isArray(v) ? v.length : 0;
 
-        return cnt+(cnt ==1 ? 'Item' : ' Items');
+        return '<span class="uk-badge">'+(cnt+(cnt ==1 ? 'Item' : ' Items'))+'</span>';
     };
 
 
