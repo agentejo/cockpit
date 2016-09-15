@@ -269,6 +269,13 @@
         return v ? '<i class="uk-icon-code" title="Code..." data-uk-tooltip></i>':null;
     };
 
+    App.Utils.renderer.repeater = function(v) {
+
+        var cnt = Array.isArray(v) ? v.length : 0;
+
+        return cnt+(cnt ==1 ? 'Item' : ' Items');
+    };
+
 
     App.Utils.renderValue = function(renderer, v) {
         return (this.renderer[renderer] || this.renderer.default)(v);
