@@ -2028,11 +2028,11 @@ riot.tag2('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> {App.
 
 });
 
-riot.tag2('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form"> <i class="uk-icon-tag"></i> <input name="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(opts.placeholder || \'Add Tag...\')}"> </div> <div class="uk-margin uk-panel uk-panel-box" show="{tags && tags.length}"> <div class="uk-margin-small-right uk-margin-small-top" each="{tag,idx in tags}"> <a onclick="{parent.remove}"><i class="uk-icon-close"></i></a> {tag} </div> </div> </div>', '', '', function(opts) {
+riot.tag2('field-tags', '<div class="uk-grid uk-grid-small uk-flex-middle" data-uk-grid-margin="observe:true"> <div class="uk-text-primary" each="{_tag,idx in _tags}"> <span class="field-tag"><i class="uk-icon-tag"></i> {_tag} <a onclick="{parent.remove}"><i class="uk-icon-close"></i></a></span> </div> <div> <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form"> <i class="uk-icon-tag"></i> <input name="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(opts.placeholder || \'Add Tag...\')}"> </div> </div> </div>', '.field-tag { display: inline-block; border: 1px currentColor solid; padding: .1em .5em; font-size: .9em; border-radius: 3px; }', '', function(opts) {
 
         var $this = this;
 
-        this.tags = [];
+        this._tags = [];
 
         this.on('mount', function(){
 
@@ -2058,9 +2058,9 @@ riot.tag2('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete u
                         e.stopImmediatePropagation();
                         e.stopPropagation();
                         e.preventDefault();
-                        $this.tags.push($this.input.value);
+                        $this._tags.push($this.input.value);
                         $this.input.value = "";
-                        $this.$setValue(_.uniq($this.tags));
+                        $this.$setValue(_.uniq($this._tags));
                         $this.update();
 
                         return false;
@@ -2075,16 +2075,16 @@ riot.tag2('field-tags', '<div> <div name="autocomplete" class="uk-autocomplete u
                 value = [];
             }
 
-            if (this.tags !== value) {
-                this.tags = value;
+            if (this._tags !== value) {
+                this._tags = value;
                 this.update();
             }
 
         }.bind(this);
 
         this.remove = function(e) {
-            this.tags.splice(e.item.idx, 1);
-            this.$setValue(this.tags);
+            this._tags.splice(e.item.idx, 1);
+            this.$setValue(this._tags);
         }.bind(this)
 
 });

@@ -1,15 +1,27 @@
 <field-tags>
 
-    <div>
+    <style>
 
-        <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form">
-            <i class="uk-icon-tag"></i>
-            <input name="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{ App.i18n.get(opts.placeholder || 'Add Tag...') }">
+        .field-tag {
+            display: inline-block;
+            border: 1px currentColor solid;
+            padding: .1em .5em;
+            font-size: .9em;
+            border-radius: 3px;
+        }
+
+    </style>
+
+    <div class="uk-grid uk-grid-small uk-flex-middle" data-uk-grid-margin="observe:true">
+
+        <div class="uk-text-primary" each="{ _tag,idx in _tags }">
+            <span class="field-tag"><i class="uk-icon-tag"></i> { _tag } <a onclick="{ parent.remove }"><i class="uk-icon-close"></i></a></span> 
         </div>
 
-        <div class="uk-margin uk-panel uk-panel-box" show="{ tags && tags.length }">
-            <div class="uk-margin-small-right uk-margin-small-top" each="{ tag,idx in tags }">
-                <a onclick="{ parent.remove }"><i class="uk-icon-close"></i></a> { tag }
+        <div>
+            <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form">
+                <i class="uk-icon-tag"></i>
+                <input name="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{ App.i18n.get(opts.placeholder || 'Add Tag...') }">
             </div>
         </div>
 
@@ -19,7 +31,7 @@
 
         var $this = this;
 
-        this.tags = [];
+        this._tags = [];
 
         this.on('mount', function(){
 
@@ -45,9 +57,9 @@
                         e.stopImmediatePropagation();
                         e.stopPropagation();
                         e.preventDefault();
-                        $this.tags.push($this.input.value);
+                        $this._tags.push($this.input.value);
                         $this.input.value = "";
-                        $this.$setValue(_.uniq($this.tags));
+                        $this.$setValue(_.uniq($this._tags));
                         $this.update();
 
                         return false;
@@ -57,21 +69,21 @@
         });
 
         this.$updateValue = function(value) {
-
+            
             if (!Array.isArray(value)) {
                 value = [];
             }
 
-            if (this.tags !== value) {
-                this.tags = value;
+            if (this._tags !== value) {
+                this._tags = value;
                 this.update();
             }
 
         }.bind(this);
 
         remove(e) {
-            this.tags.splice(e.item.idx, 1);
-            this.$setValue(this.tags);
+            this._tags.splice(e.item.idx, 1);
+            this.$setValue(this._tags);
         }
 
     </script>
