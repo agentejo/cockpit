@@ -22,7 +22,7 @@
 
         riot.util.bind(this);
 
-        this.set    = opts.multiple ? []:{};
+        this.set    = {};
         this.fields = opts.fields || [];
         this.value  = {};
 

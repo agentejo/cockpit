@@ -1992,7 +1992,7 @@ riot.tag2('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> {App.
 
         riot.util.bind(this);
 
-        this.set    = opts.multiple ? []:{};
+        this.set    = {};
         this.fields = opts.fields || [];
         this.value  = {};
 
