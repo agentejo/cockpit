@@ -112,7 +112,7 @@
                 v.forEach(function(val) {
                     vals.push(val.display ? val.display: App.Utils.renderer.default(val));
                 });
-                return vals;
+                return vals.join(', ');
             }
             
             return v.display ? v.display: App.Utils.renderer.default(v);

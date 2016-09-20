@@ -50,7 +50,7 @@
         var str;
 
         if (window.moment) {
-            return window.moment(date).format(format || 'LL');
+            return window.moment(date).format(format || 'll');
         }
 
         if (window.Intl && Intl.DateTimeFormat) {
