@@ -355,68 +355,7 @@
 
             var load = this.filter ? true:false;
 
-            this.filter = null;
-
-
-            if (this.txtfilter.value) {
-
-                var filter       = this.txtfilter.value,
-                    criterias    = [],
-                    allowedtypes = ['text','longtext','boolean','select','html','wysiwyg','markdown','code'],
-                    criteria;
-
-                if (App.Utils.str2json('{'+filter+'}')) {
-
-                    filter = App.Utils.str2json('{'+filter+'}');
-
-                    var key, field;
-
-                    for (key in filter) {
-
-                        field = this.fieldsidx[key] || {};
-
-                        if (allowedtypes.indexOf(field.type) !== -1) {
-
-                            criteria = {};
-                            criteria[key] = field.type == 'boolean' ? filter[key]: {'$regex':filter[key]};
-                            criterias.push(criteria);
-                        }
-                    }
-
-                    if (criterias.length) {
-                        this.filter = {'$and':criterias};
-                    }
-
-                } else {
-
-                    this.collection.fields.forEach(function(field){
-
-                       if (field.type != 'boolean' && allowedtypes.indexOf(field.type) !== -1) {
-                           criteria = {};
-                           criteria[field.name] = {'$regex':filter};
-                           criterias.push(criteria);
-                       }
-
-                       if (field.type=='collectionlink') {
-                           criteria = {};
-                           criteria[field.name+'.display'] = {'$regex':filter};
-                           criterias.push(criteria);
-                       }
-
-                       if (field.type=='location') {
-                           criteria = {};
-                           criteria[field.name+'.address'] = {'$regex':filter};
-                           criterias.push(criteria);
-                       }
-
-                    });
-
-                    if (criterias.length) {
-                        this.filter = {'$or':criterias};
-                    }
-                }
-
-            }
+            this.filter = this.txtfilter.value || null;
 
             if (this.filter || load) {
                 this.entries = [];

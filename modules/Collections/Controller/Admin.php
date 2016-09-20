@@ -13,7 +13,7 @@ class Admin extends \Cockpit\AuthController {
 
     public function collection($name = null) {
 
-        $collection = [ 'name'=>'', 'label' => '', 'color'=>'', 'fields'=>[], 'sortable' => false, 'in_menu' => false ];
+        $collection = [ 'name' => '', 'label' => '', 'color' => '', 'fields'=>[], 'sortable' => false, 'in_menu' => false ];
 
         if ($name) {
 
@@ -99,8 +99,14 @@ class Admin extends \Cockpit\AuthController {
 
         if (!$collection) return false;
 
-        $entries = $this->app->module('collections')->find($collection, $options);
-        $count   = $this->app->module('collections')->count($collection, isset($options['filter']) ? $options['filter'] : []);
+        $collection = $this->app->module('collections')->collection($collection);
+
+        if (isset($options['filter']) && is_string($options['filter'])) {
+            $options['filter'] = $this->_filter($options['filter'], $collection);
+        }
+
+        $entries = $this->app->module('collections')->find($collection['name'], $options);
+        $count   = $this->app->module('collections')->count($collection['name'], isset($options['filter']) ? $options['filter'] : []);
         $pages   = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
         $page    = 1;
 
@@ -109,5 +115,101 @@ class Admin extends \Cockpit\AuthController {
         }
 
         return compact('entries', 'count', 'pages', 'page');
+    }
+
+    protected function _filter($filter, $collection) {
+
+        if ($this->app->storage->type == 'mongolite') {
+            return $this->_filterLight($filter, $collection);
+        }
+
+        if ($this->app->storage->type == 'mongodb') {
+            return $this->_filterMongo($filter, $collection);
+        }
+
+        return null;
+
+    }
+
+    protected function _filterLight($filter, $collection) {
+
+        $allowedtypes = ['text','longtext','boolean','select','html','wysiwyg','markdown','code'];
+        $criterias    = [];
+        $_filter      = null;
+
+        foreach($collection['fields'] as $field) {
+
+            if ($field['type'] != 'boolean' && in_array($field['type'], $allowedtypes)) {
+                $criteria = [];
+                $criteria[$field['name']] = ['$regex' => $filter];
+                $criterias[] = $criteria;
+            }
+
+            if ($field['type']=='collectionlink') {
+                $criteria = [];
+                $criteria[$field['name'].'.display'] = ['$regex' => $filter];
+                $criterias[] = $criteria;
+            }
+
+            if ($field['type']=='location') {
+                $criteria = [];
+                $criteria[$field['name'].'.address'] = ['$regex' => $filter];
+                $criterias[] = $criteria;
+            }
+
+            if ($field['type']=='tags') {
+                $criteria = [];
+                $criteria[$field['name']] = ['$all' => [$filter]];
+                $criterias[] = $criteria;
+            }
+
+        }
+
+        if (count($criterias)) {
+            $_filter = ['$or' => $criterias];
+        }
+
+        return $_filter;
+    }
+
+    protected function _filterMongo($filter, $collection) {
+
+        $allowedtypes = ['text','longtext','boolean','select','html','wysiwyg','markdown','code'];
+        $criterias    = [];
+        $_filter      = null;
+
+        foreach($collection['fields'] as $field) {
+
+            if ($field['type'] != 'boolean' && in_array($field['type'], $allowedtypes)) {
+                $criteria = [];
+                $criteria[$field['name']] = ['$regex' => $filter, '$options' => 'i'];
+                $criterias[] = $criteria;
+            }
+
+            if ($field['type']=='collectionlink') {
+                $criteria = [];
+                $criteria[$field['name'].'.display'] = ['$regex' => $filter, '$options' => 'i'];
+                $criterias[] = $criteria;
+            }
+
+            if ($field['type']=='location') {
+                $criteria = [];
+                $criteria[$field['name'].'.address'] = ['$regex' => $filter, '$options' => 'i'];
+                $criterias[] = $criteria;
+            }
+
+            if ($field['type']=='tags') {
+                $criteria = [];
+                $criteria[$field['name']] = ['$all' => [$filter]];
+                $criterias[] = $criteria;
+            }
+
+        }
+
+        if (count($criterias)) {
+            $_filter = ['$or' => $criterias];
+        }
+
+        return $_filter;
     }
 }
