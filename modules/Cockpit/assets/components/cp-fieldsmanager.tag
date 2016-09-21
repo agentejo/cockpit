@@ -116,7 +116,7 @@
         <div class="uk-animation-fade">
 
             <p class="uk-text-xlarge">
-                <i class="uk-icon-list-alt"></i>
+                <img riot-src="{ App.base('/assets/app/media/icons/form-editor.svg') }" width="100" height="100" > 
             </p>
 
             <hr>

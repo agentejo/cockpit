@@ -118,7 +118,7 @@
                 <div class="uk-panel">
                     <label class="uk-text-small">@lang('Status')</label>
                     <div class="uk-margin-small-top">
-                        <field-boolean bind="webhook.active" cls="uk-form-small uk-button-large uk-width-1-1 uk-width-medium-1-3"></field-boolean>
+                        <field-boolean bind="webhook.active" label="false"></field-boolean>
                     </div>
                 </div>
 

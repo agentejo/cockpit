@@ -11,20 +11,25 @@
             this.size  = opts.size || 100;
             this.email = opts.email || '';
 
-            var img = new Image(), url;
-
+            var img = new Image(), url, release = function() {
+                setTimeout(function() {
+                    this.image.getContext("2d").drawImage(img,0,0);
+                    sessionStorage[url] = this.image.toDataURL();
+                }.bind(this), 10);
+            }.bind(this);
+            
             url = '//www.gravatar.com/avatar/'+md5(this.email)+'?d=404&s='+this.size;
 
             img.onload = function() {
-                this.image.getContext("2d").drawImage(img,0,0);
+                release();
             }.bind(this);
 
             img.onerror = function() {
                 img.src = App.Utils.letterAvatar(opts.alt || '', this.size);
-                this.image.getContext("2d").drawImage(img,0,0);
+                release();
             }.bind(this);
 
-            img.src = url;
+            img.src = sessionStorage[url] || url;
 
         });
 
