@@ -1277,11 +1277,12 @@ riot.tag2('field-code', '<codemirror name="codemirror" syntx="{opts.syntax || \'
         this.on('mount', function(){
 
             this.ready.then(function() {
-                editor.setValue($this.value || '');
-            });
 
-            this.codemirror.on('input', function() {
-                $this.$setValue($this.codemirror.editor.getValue(), true);
+                editor.setValue($this.value || '');
+
+                editor.on('change', function() {
+                    $this.$setValue(editor.getValue(), true);
+                });
             });
         });
 
@@ -1528,7 +1529,7 @@ riot.tag2('field-html', '<textarea name="input" class="uk-visibility-hidden"></t
                 $this.input.value = $this.value;
 
                 editor = UIkit.htmleditor(this.input, opts);
-                editor.on('input', function() {
+                editor.editor.on('change', function() {
                     $this.$setValue(editor.editor.getValue());
                 });
 
@@ -1880,7 +1881,7 @@ riot.tag2('field-rating', '<ul class="uk-grid uk-grid-small"> <li show="{value}"
 
 });
 
-riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.i18n.get(\'No items\')}. </div> <div show="{mode==\'edit\' && items.length}"> <div class="uk-margin uk-panel-box uk-panel-card" each="{item,idx in items}" data-idx="{idx}"> <cp-field class="uk-width-1-1" field="{item.field}" options="{opts.options}" bind="items[{idx}].value"></cp-field> <div class="uk-panel-box-footer uk-bg-light"> <a onclick="{parent.remove}"><i class="uk-icon-trash-o"></i></a> </div> </div> </div> <div name="itemscontainer" class="uk-sortable" show="{mode==\'reorder\' && items.length}"> <div class="uk-margin uk-panel-box uk-panel-card" each="{item,idx in items}" data-idx="{idx}"> <div class="uk-grid uk-grid-small"> <div class="uk-flex-item-1"><i class="uk-icon-bars"></i> Item {(idx+1)}</div> <div class="uk-text-muted uk-text-small">{App.Utils.ucfirst(typeof(item.field) == \'string\' ? item.field:item.field.type)}</div> </div> </div> </div> <div class="uk-margin"> <a class="uk-button" onclick="{add}" show="{mode==\'edit\'}" if="{!fields}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add item\')}</a> <span show="{mode==\'edit\'}" if="{fields}" data-uk-dropdown="mode:\'click\'"> <a class="uk-button"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add item\')}</a> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li each="{field in fields}"><a class="uk-dropdown-close" onclick="{parent.add}">{field.label && field.label || App.Utils.ucfirst(typeof(field) == \'string\' ? field:field.type)}</a></li> </ul> </div> </span> <a class="uk-button" onclick="{updateorder}" show="{mode==\'reorder\'}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Update order\')}</a> <a class="uk-button" onclick="{switchreorder}" show="{items.length > 1}"> <span show="{mode==\'edit\'}"><i class="uk-icon-arrows"></i> {App.i18n.get(\'Reorder\')}</span> <span show="{mode==\'reorder\'}">{App.i18n.get(\'Cancel\')}</span> </a> </div>', '', '', function(opts) {
+riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.i18n.get(\'No items\')}. </div> <div show="{mode==\'edit\' && items.length}"> <div class="uk-margin uk-panel-box uk-panel-card" each="{item,idx in items}" data-idx="{idx}"> <cp-field class="uk-width-1-1" field="{item.field}" bind="items[{idx}].value"></cp-field> <div class="uk-panel-box-footer uk-bg-light"> <a onclick="{parent.remove}"><i class="uk-icon-trash-o"></i></a> </div> </div> </div> <div name="itemscontainer" class="uk-sortable" show="{mode==\'reorder\' && items.length}"> <div class="uk-margin uk-panel-box uk-panel-card" each="{item,idx in items}" data-idx="{idx}"> <div class="uk-grid uk-grid-small"> <div class="uk-flex-item-1"><i class="uk-icon-bars"></i> Item {(idx+1)}</div> <div class="uk-text-muted uk-text-small">{App.Utils.ucfirst(typeof(item.field) == \'string\' ? item.field:item.field.type)}</div> </div> </div> </div> <div class="uk-margin"> <a class="uk-button" onclick="{add}" show="{mode==\'edit\'}" if="{!fields}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add item\')}</a> <span show="{mode==\'edit\'}" if="{fields}" data-uk-dropdown="mode:\'click\'"> <a class="uk-button"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add item\')}</a> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li each="{field in fields}"><a class="uk-dropdown-close" onclick="{parent.add}">{field.label && field.label || App.Utils.ucfirst(typeof(field) == \'string\' ? field:field.type)}</a></li> </ul> </div> </span> <a class="uk-button" onclick="{updateorder}" show="{mode==\'reorder\'}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Update order\')}</a> <a class="uk-button" onclick="{switchreorder}" show="{items.length > 1}"> <span show="{mode==\'edit\'}"><i class="uk-icon-arrows"></i> {App.i18n.get(\'Reorder\')}</span> <span show="{mode==\'reorder\'}">{App.i18n.get(\'Cancel\')}</span> </a> </div>', '', '', function(opts) {
 
         var $this = this;
 
@@ -1909,7 +1910,7 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
         }.bind(this);
 
         this.on('bindingupdated', function() {
-            this.$setValue(this.items);
+            $this.$setValue(this.items);
         });
 
         this.on('mount', function() {
@@ -1941,8 +1942,6 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
 
             var items = [];
 
-            App.$($this.root).css('height', App.$($this.root).height());
-
             App.$(this.itemscontainer).children().each(function(){
                 items.push($this.items[Number(this.getAttribute('data-idx'))]);
             });
@@ -1951,15 +1950,14 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
             $this.update();
 
             setTimeout(function() {
-                $this.mode = 'edit'
+                $this.mode = 'edit';
                 $this.items = items;
                 $this.$setValue(items);
-                $this.update();
 
                 setTimeout(function(){
-                    $this.root.style.height = '';
-                }, 30)
-            }, 10);
+                    $this.update();
+                }, 50)
+            }, 50);
         }.bind(this)
 
 });
@@ -1989,7 +1987,7 @@ riot.tag2('field-select', '<select name="input" class="uk-width-1-1" bind="{opts
 
 });
 
-riot.tag2('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> {App.i18n.get(\'Fields definition is missing\')} </div> <div class="uk-margin" each="{field,idx in fields}"> <label><span class="uk-badge">{field.label || field.name || \'\'}</span></label> <cp-field class="uk-width-1-1" field="{field}" bind="value.{field.name}"></cp-field> </div> </div>', '', '', function(opts) {
+riot.tag2('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> {App.i18n.get(\'Fields definition is missing\')} </div> <div class="uk-margin" each="{field,idx in fields}"> <label><span class="uk-text-small">{field.label || field.name || \'\'}</span></label> <cp-field class="uk-width-1-1" field="{field}" bind="value.{field.name}"></cp-field> </div> </div>', '', '', function(opts) {
 
         var $this = this;
 
@@ -2028,7 +2026,7 @@ riot.tag2('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> {App.
         }.bind(this);
 
         this.on('bindingupdated', function() {
-            this.$setValue(this.value);
+            $this.$setValue(this.value);
         });
 
 });

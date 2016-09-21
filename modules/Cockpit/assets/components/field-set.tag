@@ -7,8 +7,7 @@
         </div>
 
         <div class="uk-margin" each="{field,idx in fields}">
-            <label><span class="uk-badge">{ field.label || field.name || ''}</span></label>
-
+            <label><span class="uk-text-small">{ field.label || field.name || ''}</span></label>
             <cp-field class="uk-width-1-1" field="{field}" bind="value.{field.name}"></cp-field>
         </div>
 
@@ -53,7 +52,7 @@
         }.bind(this);
 
         this.on('bindingupdated', function() {
-            this.$setValue(this.value);
+            $this.$setValue(this.value);
         });
 
     </script>

@@ -39,7 +39,7 @@
                 $this.input.value = $this.value;
 
                 editor = UIkit.htmleditor(this.input, opts);
-                editor.on('input', function() {
+                editor.editor.on('change', function() {
                     $this.$setValue(editor.editor.getValue());
                 });
 

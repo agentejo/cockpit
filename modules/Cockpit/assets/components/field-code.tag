@@ -44,11 +44,12 @@
         this.on('mount', function(){
 
             this.ready.then(function() {
-                editor.setValue($this.value || '');
-            });
 
-            this.codemirror.on('input', function() {
-                $this.$setValue($this.codemirror.editor.getValue(), true);
+                editor.setValue($this.value || '');
+
+                editor.on('change', function() {
+                    $this.$setValue(editor.getValue(), true);
+                });
             });
         });
 

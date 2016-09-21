@@ -7,7 +7,7 @@
     <div show="{mode=='edit' && items.length}">
         <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
 
-            <cp-field class="uk-width-1-1" field="{ item.field }" options="{ opts.options }" bind="items[{ idx }].value"></cp-field>
+            <cp-field class="uk-width-1-1" field="{ item.field }" bind="items[{ idx }].value"></cp-field>
 
             <div class="uk-panel-box-footer uk-bg-light">
                 <a onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a>
@@ -70,7 +70,7 @@
         }.bind(this);
 
         this.on('bindingupdated', function() {
-            this.$setValue(this.items);
+            $this.$setValue(this.items);
         });
 
         this.on('mount', function() {
@@ -102,26 +102,22 @@
 
             var items = [];
 
-            App.$($this.root).css('height', App.$($this.root).height());
-
             App.$(this.itemscontainer).children().each(function(){
                 items.push($this.items[Number(this.getAttribute('data-idx'))]);
             });
-
 
             $this.items = [];
             $this.update();
 
             setTimeout(function() {
-                $this.mode = 'edit'
+                $this.mode = 'edit';
                 $this.items = items;
                 $this.$setValue(items);
-                $this.update();
 
                 setTimeout(function(){
-                    $this.root.style.height = '';
-                }, 30)
-            }, 10);
+                    $this.update();
+                }, 50)
+            }, 50);
         }
 
     </script>
