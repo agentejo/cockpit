@@ -91,11 +91,11 @@
                     </div>
 
                     <div class="uk-form-row">
-                        <input type="checkbox" fields-bind="fields[{idx}].required"> { App.i18n.get('Required') }
+                        <field-boolean fields-bind="fields[{idx}].required" label="{ App.i18n.get('Required') }"></field-boolean>
                     </div>
 
                     <div class="uk-form-row">
-                        <input type="checkbox" fields-bind="fields[{idx}].localize"> { App.i18n.get('Localize') }
+                        <field-boolean fields-bind="fields[{idx}].localize" label="{ App.i18n.get('Localize') }"></field-boolean>
                     </div>
 
                     <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{ App.i18n.get('Close') }</button></div>
@@ -121,7 +121,18 @@
 
             <hr>
 
-            { App.i18n.get('No fields added yet') }. <a onclick="{ addfield }">{ App.i18n.get('Add field') }.</a>
+            { App.i18n.get('No fields added yet') }. 
+            <span data-uk-dropdown="pos:'bottom-center'">
+                <a onclick="{ addfield }">{ App.i18n.get('Add field') }.</a>
+                <div class="uk-dropdown uk-dropdown-scrollable uk-text-left" if="{opts.templates && opts.templates.length}">
+                    <ul class="uk-nav uk-nav-dropdown">
+                        <li class="uk-nav-header">{ App.i18n.get('Choose from template') }</li>
+                        <li each="{template in opts.templates}">
+                            <a onclick="{ parent.fromTemplate.bind(parent, template) }">{ template.label || template.name }</a>
+                        </li>
+                    </ul>
+                </div>
+            <span>
 
         </div>
 
@@ -243,6 +254,14 @@
 
         togglelist(e) {
             e.item.field.lst = !e.item.field.lst;
+        }
+
+        fromTemplate(template) {
+            
+            if (template && Array.isArray(template.fields) && template.fields.length) {
+                this.fields = template.fields;
+                $this.$setValue(this.fields);
+            }
         }
 
     </script>

@@ -24,7 +24,18 @@ class Admin extends \Cockpit\AuthController {
             }
         }
 
-        return $this->render('collections:views/collection.php', compact('collection'));
+        // get field templates
+        $templates = [];
+
+        foreach ($this->app->helper("fs")->ls('*.php', 'collections:fields-templates') as $file) {
+            $templates[] = include($file->getRealPath());
+        }
+
+        foreach ($this->app->module("collections")->collections() as $col) {
+            $templates[] = $col;
+        }
+
+        return $this->render('collections:views/collection.php', compact('collection', 'templates'));
     }
 
     public function entries($collection) {

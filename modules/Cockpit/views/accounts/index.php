@@ -39,7 +39,7 @@
             <tr each="{account, $index in accounts}"  if="{ parent.infilter(account) }">
                 <td class="uk-text-center">
                     <a class="uk-link-muted" href="@route('/accounts/account')/{ account._id }" title="@lang('Edit account')">
-                        <cp-gravatar email="{ account.md5email }" size="20" alt="{ account.name || account.user }"></cp-gravatar>
+                        <cp-gravatar email="{ account.email }" size="25" alt="{ account.name || account.user }"></cp-gravatar>
                     </a>
                 </td>
                 <td>

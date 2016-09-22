@@ -55,7 +55,7 @@
 
                     <h4>@lang('Fields')</h4>
 
-                    <cp-fieldsmanager bind="collection.fields" listoption="true"></cp-fieldsmanager>
+                    <cp-fieldsmanager bind="collection.fields" listoption="true" templates="{ templates }"></cp-fieldsmanager>
 
 
                     <div class="uk-margin-large-top" show="{ collection.fields.length }">
@@ -86,6 +86,7 @@
         this.mixin(RiotBindMixin);
 
         this.collection = {{ json_encode($collection) }};
+        this.templates = {{ json_encode($templates) }};
 
         this.on('update', function(){
 

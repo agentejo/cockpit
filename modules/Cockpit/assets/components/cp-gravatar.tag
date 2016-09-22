@@ -20,6 +20,8 @@
             
             url = '//www.gravatar.com/avatar/'+md5(this.email)+'?d=404&s='+this.size;
 
+            img.crossOrigin = 'Anonymous';
+
             img.onload = function() {
                 release();
             }.bind(this);
