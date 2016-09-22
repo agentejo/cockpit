@@ -128,7 +128,7 @@
                     <ul class="uk-nav uk-nav-dropdown">
                         <li class="uk-nav-header">{ App.i18n.get('Choose from template') }</li>
                         <li each="{template in opts.templates}">
-                            <a onclick="{ parent.fromTemplate.bind(parent, template) }">{ template.label || template.name }</a>
+                            <a onclick="{ parent.fromTemplate.bind(parent, template) }"><i class="uk-icon-sliders uk-margin-small-right"></i> { template.label || template.name }</a>
                         </li>
                     </ul>
                 </div>
