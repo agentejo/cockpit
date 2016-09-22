@@ -86,6 +86,11 @@
                     </div>
 
                     <div class="uk-form-row">
+                        <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Group') }:</label>
+                        <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="fields[{idx}].group" placeholder="{ App.i18n.get('Group name') }">
+                    </div>
+
+                    <div class="uk-form-row">
                         <label class="uk-text-small uk-text-bold uk-margin-small-bottom">{ App.i18n.get('Options') } <span class="uk-text-muted">JSON</span></label>
                         <field-object cls="uk-width-1-1" fields-bind="fields[{idx}].options" rows="6" allowtabs="2"></field-object>
                     </div>
@@ -116,12 +121,12 @@
         <div class="uk-animation-fade">
 
             <p class="uk-text-xlarge">
-                <img riot-src="{ App.base('/assets/app/media/icons/form-editor.svg') }" width="100" height="100" > 
+                <img riot-src="{ App.base('/assets/app/media/icons/form-editor.svg') }" width="100" height="100" >
             </p>
 
             <hr>
 
-            { App.i18n.get('No fields added yet') }. 
+            { App.i18n.get('No fields added yet') }.
             <span data-uk-dropdown="pos:'bottom-center'">
                 <a onclick="{ addfield }">{ App.i18n.get('Add field') }.</a>
                 <div class="uk-dropdown uk-dropdown-scrollable uk-text-left" if="{opts.templates && opts.templates.length}">
@@ -238,6 +243,7 @@
                 'type'    : 'text',
                 'default' : '',
                 'info'    : '',
+                'group'   : '',
                 'localize': false,
                 'options' : {},
                 'width'   : '1-1',
@@ -257,7 +263,7 @@
         }
 
         fromTemplate(template) {
-            
+
             if (template && Array.isArray(template.fields) && template.fields.length) {
                 this.fields = template.fields;
                 $this.$setValue(this.fields);

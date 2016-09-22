@@ -40,16 +40,21 @@
 
                 <h3>{ entry._id ? 'Edit':'Add' } @lang('Entry')</h3>
 
+                <ul class="uk-tab uk-margin uk-flex uk-flex-center" show="{ App.Utils.count(groups) > 1 }">
+                    <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
+                    <li class="{ group==parent.group && 'uk-active'}" each="{group, items in groups}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+                </ul>
+
                 <br>
 
                 <div class="uk-grid uk-grid-match uk-grid-gutter">
 
-                    <div class="uk-width-medium-{field.width}" each="{field,idx in fields}" no-reorder>
+                    <div class="uk-width-medium-{field.width}" each="{field,idx in fields}" show="{!parent.group || (parent.group == field.group) }" no-reorder>
 
                         <div class="uk-panel">
 
                             <label class="uk-text-bold">
-                                { field.label || field.name }
+                                { field.label || field.name } {field.group}
                                 <span if="{ field.localize }" class="uk-icon-globe" title="@lang('Localized field')" data-uk-tooltip="pos:'right'"></span>
                             </label>
 
@@ -124,6 +129,8 @@
         this.entry        = {{ json_encode($entry) }};
 
         this.languages    = App.$data.languages;
+        this.groups       = {main:[]};
+        this.group        = 'main';
 
         // fill with default values
         this.fields.forEach(function(field){
@@ -135,6 +142,14 @@
             if (field.type == 'password') {
                 $this.entry[field.name] = '';
             }
+
+            if (field.group && !$this.groups[field.group]) {
+                $this.groups[field.group] = [];
+            } else if (!field.group) {
+                field.group = 'main';
+            }
+
+            $this.groups[field.group || 'main'].push(field);
         });
 
         this.on('mount', function(){
@@ -147,6 +162,10 @@
                 return false;
             });
         });
+
+        toggleGroup(e) {
+            this.group = e.item && e.item.group || false;
+        }
 
         submit() {
 

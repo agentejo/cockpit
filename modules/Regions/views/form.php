@@ -43,13 +43,18 @@
 
                 <h3>{ region.label || region.name }</h3>
 
+                <ul class="uk-tab uk-margin uk-flex uk-flex-center" show="{ App.Utils.count(groups) > 1 }">
+                    <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
+                    <li class="{ group==parent.group && 'uk-active'}" each="{group, items in groups}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+                </ul>
+
                 <br>
 
                 <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
 
                     <div class="uk-grid uk-grid-match uk-grid-gutter">
 
-                        <div class="uk-width-medium-{field.width}" each="{field,idx in fields}" no-reorder>
+                        <div class="uk-width-medium-{field.width}" each="{field,idx in fields}" show="{!parent.group || (parent.group == field.group) }" no-reorder>
 
                             <div class="uk-panel">
 
@@ -123,6 +128,8 @@
             this.data      = this.region.data || {};
 
             this.languages = App.$data.languages;
+            this.groups       = {main:[]};
+            this.group        = 'main';
 
             // fill with default values
             this.fields.forEach(function(field){
@@ -134,6 +141,14 @@
                 if (field.type == 'password') {
                     $this.data[field.name] = '';
                 }
+
+                if (field.group && !$this.groups[field.group]) {
+                    $this.groups[field.group] = [];
+                } else if (!field.group) {
+                    field.group = 'main';
+                }
+
+                $this.groups[field.group || 'main'].push(field);
             });
 
             this.on('mount', function(){
@@ -146,6 +161,10 @@
                     return false;
                 });
             });
+
+            toggleGroup(e) {
+                this.group = e.item && e.item.group || false;
+            }
 
             submit() {
 

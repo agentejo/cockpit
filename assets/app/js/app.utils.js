@@ -64,23 +64,15 @@
 
     App.Utils.count = function(value) {
 
-        var length = 0, key;
-
         if (App.Utils.isObject(value)) {
-            for (key in value) {
-                if (value.hasOwnProperty(key) && !(key.charAt(0) === '$')) {
-                    length++;
-                }
-            }
-
-            return length;
+            return Object.keys(value).length;
         }
 
         if (App.Utils.isString(value) || Array.isArray(value)) {
             return value.length;
         }
 
-        return length;
+        return 0;
     };
 
     // Unix filename pattern matching *.jpg
