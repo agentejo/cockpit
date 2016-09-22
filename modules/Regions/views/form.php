@@ -45,7 +45,7 @@
 
                 <ul class="uk-tab uk-margin uk-flex uk-flex-center" show="{ App.Utils.count(groups) > 1 }">
                     <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
-                    <li class="{ group==parent.group && 'uk-active'}" each="{group, items in groups}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+                    <li class="{ group==parent.group && 'uk-active'}" each="{group, items in groups}" if="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
                 </ul>
 
                 <br>
@@ -150,6 +150,10 @@
 
                 $this.groups[field.group || 'main'].push(field);
             });
+
+            if (!this.groups[this.group].length) {
+                this.group = Object.keys(this.groups)[1];
+            }
 
             this.on('mount', function(){
 
