@@ -1429,7 +1429,8 @@ riot.tag2('field-gallery', '<div name="panel"> <div name="imagescontainer" class
 
         this.meta   = App.$.extend(opts.meta || {}, {
             title: {
-                type: 'text'
+                type: 'text',
+                label: 'Title'
             }
         });
 

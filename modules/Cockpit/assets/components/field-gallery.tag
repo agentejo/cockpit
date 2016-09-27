@@ -83,7 +83,8 @@
 
         this.meta   = App.$.extend(opts.meta || {}, {
             title: {
-                type: 'text'
+                type: 'text',
+                label: 'Title'
             }
         });
 
