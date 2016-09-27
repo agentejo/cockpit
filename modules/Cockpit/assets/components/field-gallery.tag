@@ -1,10 +1,10 @@
 <field-gallery>
 
-    <div name="panel" class="uk-panel">
+    <div name="panel">
 
         <div name="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ images && images.length }">
             <div data-idx="{ idx }" each="{ img,idx in images }">
-                <div class="uk-panel uk-panel-box uk-panel-card">
+                <div class="uk-panel uk-panel-box uk-panel-thumbnail uk-panel-card">
                     <figure class="uk-display-block uk-overlay uk-overlay-hover">
                         <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;">
                             <div class="uk-width-1-1 uk-text-center">
@@ -15,7 +15,7 @@
 
                             <div>
                                 <ul class="uk-subnav">
-                                    <li><a onclick="{ parent.title }" title="{ App.i18n.get('Set title') }" data-uk-tooltip><i class="uk-icon-tag"></i></a></li>
+                                    <li><a onclick="{ parent.showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
                                     <li><a onclick="{ parent.remove }" title="{ App.i18n.get('Remove image') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
                                     <li><a href="{ (SITE_URL+'/'+img.path) }" data-uk-lightbox="type:'image'" title="{ App.i18n.get('Full size') }" data-uk-tooltip><i class="uk-icon-eye"></i></a></li>
                                 </ul>
@@ -26,6 +26,7 @@
                         </figcaption>
                     </figure>
                 </div>
+
             </div>
         </div>
 
@@ -37,14 +38,54 @@
             </a>
         </div>
 
+        <div class="uk-modal uk-sortable-nodrag" id="gallery-image-meta">
+            <div class="uk-modal-dialog">
+
+                <div class="uk-modal-header"><h3>{ App.i18n.get('Image Meta') }</h3></div>
+
+                <div class="uk-grid uk-grid-match uk-grid-gutter" if="{image}">
+
+                    <div class="uk-grid-margin uk-width-medium-{field.width}" each="{name,field in meta}" no-reorder>
+
+                        <div class="uk-panel">
+
+                            <label class="uk-text-bold">
+                                { field.label || name }
+                            </label>
+
+                            <div class="uk-margin uk-text-small uk-text-muted">
+                                { field.info || ' ' }
+                            </div>
+
+                            <div class="uk-margin">
+                                <cp-field field="{ field }" bind="image.meta['{name}']"></cp-field>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{ App.i18n.get('Close') }</button></div>
+
+            </div>
+        </div>
+
     </div>
 
     <script>
+
+        riot.util.bind(this);
 
         var $this = this;
 
         this.images = [];
         this._field = null;
+
+        this.meta   = App.$.extend(opts.meta || {}, {
+            title: {
+                type: 'text'
+            }
+        });
 
         this.on('mount', function() {
 
@@ -75,6 +116,7 @@
 
                     setTimeout(function(){
                         $this.panel.style.height = '';
+                        $this.update();
                     }, 30)
                 }, 10);
 
@@ -88,12 +130,31 @@
                 value = [];
             }
 
-            if (this.images !== value) {
+            if (JSON.stringify(this.images) !== JSON.stringify(value)) {
                 this.images = value;
                 this.update();
             }
 
         }.bind(this);
+
+        this.$initBind = function() {
+            this.root.$value = this.images;
+        };
+
+        this.on('bindingupdated', function() {
+            $this.$setValue(this.images);
+        });
+
+        showMeta(e) {
+
+            this.image = this.images[e.item.idx];
+
+            setTimeout(function() {
+                UIkit.modal('#gallery-image-meta').show().on('close.uk.modal', function(){
+                    $this.image = null;
+                });
+            }, 50)
+        }
 
 
         selectimages() {
@@ -103,7 +164,7 @@
                 var images = [];
 
                 selected.forEach(function(path){
-                    images.push({title:'', path:path});
+                    images.push({meta:{title:''}, path:path});
                 });
 
                 $this.$setValue($this.images.concat(images));
@@ -114,15 +175,6 @@
         remove(e) {
             this.images.splice(e.item.idx, 1);
             this.$setValue(this.images);
-        }
-
-        title(e) {
-
-            App.ui.prompt('Title', this.images[e.item.idx].title, function(value) {
-                $this.images[e.item.idx].title = value;
-                $this.$setValue($this.images);
-                $this.update();
-            });
         }
 
     </script>

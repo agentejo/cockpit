@@ -160,7 +160,7 @@
             }
 
             UI.domObserve(this.element, function(e) {
-                if ($this.element.children(':not([data-slide])').length) {
+                if ($this.element.children(':not([data-slider-slide])').length) {
                     $this.update(true);
                 }
             });
@@ -178,7 +178,7 @@
 
             this.items.each(function(idx){
 
-                item      = UI.$(this).attr('data-slide', idx);
+                item      = UI.$(this).attr('data-slider-slide', idx);
                 size      = item.css({'left': '', 'width':''})[0].getBoundingClientRect();
                 width     = size.width;
                 cwidth    = item.width();
