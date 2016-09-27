@@ -38,7 +38,7 @@
             </a>
         </div>
 
-        <div class="uk-modal uk-sortable-nodrag" id="gallery-image-meta">
+        <div class="uk-modal uk-sortable-nodrag" name="modalmeta">
             <div class="uk-modal-dialog">
 
                 <div class="uk-modal-header"><h3>{ App.i18n.get('Image Meta') }</h3></div>
@@ -151,7 +151,7 @@
             this.image = this.images[e.item.idx];
 
             setTimeout(function() {
-                UIkit.modal('#gallery-image-meta').show().on('close.uk.modal', function(){
+                UIkit.modal($this.modalmeta).show().on('close.uk.modal', function(){
                     $this.image = null;
                 });
             }, 50)
