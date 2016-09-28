@@ -32,17 +32,33 @@ $this->on("before", function() {
 
         if (isset($routes[$resource])) {
 
-            // invoke class
-            if (is_string($routes[$resource])) {
+            try {
 
-                $action = count($params) ? array_shift($params):'index';
-                $output = $this->invoke($routes[$resource], $action, $params);
+                // invoke class
+                if (is_string($routes[$resource])) {
 
-            } elseif (is_callable($routes[$resource])) {
-                $output = call_user_func_array($routes[$resource], $params);
+                    $action = count($params) ? array_shift($params):'index';
+                    $output = $this->invoke($routes[$resource], $action, $params);
+
+                } elseif (is_callable($routes[$resource])) {
+                    $output = call_user_func_array($routes[$resource], $params);
+                }
+
+            } catch(Exception $e) {
+
+                $output = ["error" => true];
+
+                $this->response->status = 406;
+                $this->trigger('cockpit.api.erroronrequest', [$route, $e->getMessage()]);
+
+                if ($this['debug']) {
+                    $output['message'] = $e->getMessage();
+                } else {
+                    $output['message'] = 'Oooops, something went wrong.';
+                }
             }
         }
-        
+
         if (is_object($output) || is_array($output)) {
             $this->response->mime = 'json';
         }
