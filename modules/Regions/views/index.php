@@ -40,11 +40,18 @@
         </div>
 
 
-        <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-margin-top">
+        <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4 uk-margin-top uk-flex-center">
 
-            <div each="{ region, meta in regions }" if="{ parent.infilter(meta) }">
+            <div class="uk-animation-fade uk-animation-fast" each="{ region, meta in regions }" if="{ parent.infilter(meta) }">
 
                 <div class="uk-panel uk-panel-box uk-panel-card">
+
+                    <div class="uk-panel-teaser uk-position-relative">
+                        <canvas width="600" height="350"></canvas>
+                        <a href="@route('/regions/form')/{ region }" class="uk-position-cover uk-flex uk-flex-middle uk-flex-center">
+                            <div class="uk-width-1-4 uk-svg-adjust" style="color:{ (meta.color) }"><img src="@url('regions:icon.svg')" alt="icon" data-uk-svg></div>
+                        </a>
+                    </div>
 
                     <div class="uk-grid uk-grid-small">
 
@@ -63,7 +70,7 @@
                             </div>
                         </div>
 
-                        <a class="uk-text-bold uk-flex-item-1 uk-link-muted" href="@route('/regions/form')/{region}">{ meta.label || region }</a>
+                        <a class="uk-text-bold uk-flex-item-1 uk-text-center uk-link-muted" href="@route('/regions/form')/{region}">{ meta.label || region }</a>
 
                     </div>
 

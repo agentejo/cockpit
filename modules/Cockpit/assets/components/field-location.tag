@@ -21,9 +21,9 @@
         var locale = document.documentElement.lang.toUpperCase();
 
         var loadApi = App.assets.require([
-            'https://cdn.jsdelivr.net/leaflet/1.0.0-rc.3/leaflet.css',
+            'https://cdn.jsdelivr.net/leaflet/1.0.0/leaflet.css',
             'https://cdn.jsdelivr.net/places.js/1/places.min.js',
-            'https://cdn.jsdelivr.net/leaflet/1.0.0-rc.3/leaflet.js'
+            'https://cdn.jsdelivr.net/leaflet/1.0.0/leaflet.js'
         ]);
 
         var $this = this, defaultpos = {lat:53.55909862554551, lng:9.998652343749995};
