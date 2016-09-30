@@ -40,7 +40,7 @@
         </div>
 
 
-        <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4 uk-margin-top uk-flex-center">
+        <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4 uk-margin-top">
 
             <div class="uk-animation-fade uk-animation-fast" each="{ form, meta in forms }" if="{ parent.infilter(meta) }">
 
@@ -49,7 +49,9 @@
                     <div class="uk-panel-teaser uk-position-relative">
                         <canvas width="600" height="350"></canvas>
                         <a href="@route('/forms/entries')/{form}" class="uk-position-cover uk-flex uk-flex-middle uk-flex-center">
-                            <div class="uk-width-1-4 uk-svg-adjust" style="color:{ (meta.color) }"><img src="@url('forms:icon.svg')" alt="icon" data-uk-svg></div>
+                            <div class="uk-width-1-4 uk-svg-adjust" style="color:{ (meta.color) }">
+                                <img riot-src="{ meta.icon ? '@url('assets:app/media/icons/')'+meta.icon : '@url('forms:icon.svg')'}" alt="icon" data-uk-svg>
+                            </div>
                         </a>
                     </div>
 
@@ -75,7 +77,7 @@
                         <a class="uk-text-bold uk-flex-item-1 uk-text-center uk-link-muted" href="@route('/forms/entries')/{form}">{ meta.label || form }</a>
 
                         <div>
-                            <span class="uk-badge">{ meta.itemsCount }</span>
+                            <span class="uk-badge" style="background-color:{ (meta.color) }">{ meta.itemsCount }</span>
                         </div>
                     </div>
 

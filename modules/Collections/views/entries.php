@@ -1,5 +1,13 @@
 
+@if($collection['color'])
+<style>
+    .app-header { border-top: 8px {{ $collection['color'] }} solid; }
+</style>
+@endif
+
+
 <div>
+
     <ul class="uk-breadcrumb">
         <li><a href="@route('/collections')">@lang('Collections')</a></li>
         <li class="uk-active" data-uk-dropdown="mode:'hover', delay:300">
@@ -21,20 +29,15 @@
 
 </div>
 
-@if(isset($collection['color']) && $collection['color'])
-<style>
-    .app-header { border-top: 8px {{ $collection['color'] }} solid; }
-</style>
-@endif
+<div class="uk-margin uk-text-center uk-text-muted">
 
-@if(isset($collection['description']) && $collection['description'])
-<div class="uk-text-muted uk-panel-box">
-    <div class="uk-grid uk-grid-small">
-        <div><i class="uk-icon-info-circle"></i></div>
-        <div class="uk-flex-item-1">{{ $collection['description'] }}</div>
+    <img class="uk-svg-adjust" src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="50" alt="icon" data-uk-svg>
+    @if($collection['description'])
+    <div class="uk-container-center uk-margin-top uk-width-medium-1-2">
+        {{ $collection['description'] }}
     </div>
+    @endif
 </div>
-@endif
 
 <div class="uk-margin-top" riot-view>
 
@@ -53,15 +56,9 @@
 
         </div>
 
-        <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ !loading && !entries.length && !filter }">
+        <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-center uk-flex-middle" if="{ !loading && !entries.length && !filter }">
 
             <div class="uk-animation-fade">
-
-                <p class="uk-text-xlarge">
-                    <i class="uk-icon-list"></i>
-                </p>
-
-                <hr>
 
                 <span class="uk-text-large uk-text-muted">@lang('No entries'). <a href="@route('/collections/entry/'.$collection['name'])">@lang('Create an entry').</a></span>
 
@@ -106,7 +103,7 @@
     <script type="view/script">
 
         App.Utils.renderer.collectionlink = function(v) {
-            
+
             if (Array.isArray(v)) {
                 var vals = [];
                 v.forEach(function(val) {
@@ -114,7 +111,7 @@
                 });
                 return vals.join(', ');
             }
-            
+
             return v.display ? v.display: App.Utils.renderer.default(v);
         };
 

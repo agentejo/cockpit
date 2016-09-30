@@ -27,6 +27,25 @@
                 </div>
 
                 <div class="uk-margin">
+                   <label class="uk-text-small">@lang('Icon')</label>
+                   <div data-uk-dropdown="pos:'right-center'">
+                       <img class="uk-display-block uk-margin uk-container-center" riot-src="{ form.icon ? '@url('assets:app/media/icons/')'+form.icon : '@url('forms:icon.svg')'}" alt="icon" style="max-width: 50%;">
+                       <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-width-2">
+                            <div class="uk-grid uk-grid-gutter">
+                                <div>
+                                    <a class="uk-dropdown-close" onclick="{ selectIcon }" icon=""><img src="@url('forms:icon.svg')" width="30" icon=""></a>
+                                </div>
+                                @foreach($app->helper("fs")->ls('*.svg', 'assets:app/media/icons') as $icon)
+                                <div>
+                                    <a class="uk-dropdown-close" onclick="{ selectIcon }" icon="{{ $icon->getFilename() }}"><img src="@url($icon->getRealPath())" width="30" icon="{{ $icon->getFilename() }}"></a>
+                                </div>
+                                @endforeach
+                            </div>
+                       </div>
+                   </div>
+               </div>
+
+                <div class="uk-margin">
                     <label class="uk-text-small">@lang('Color')</label>
                     <div class="uk-margin-small-top">
                         <field-colortag bind="form.color" title="@lang('Color')" size="20px"></field-colortag>
@@ -66,7 +85,7 @@
         <div class="uk-margin-large-top">
 
             <button class="uk-button uk-button-large uk-button-primary uk-margin-right">@lang('Save')</button>
-            
+
             <a href="@route('/forms')">
                 <span show="{ !form._id }">@lang('Cancel')</span>
                 <span show="{ form._id }">@lang('Close')</span>
@@ -101,6 +120,10 @@
                 this.name.disabled = true;
             }
         });
+
+        selectIcon(e) {
+            this.form.icon = e.target.getAttribute('icon');
+        }
 
         submit() {
 

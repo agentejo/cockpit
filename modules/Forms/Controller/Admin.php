@@ -36,9 +36,10 @@ class Admin extends \Cockpit\AuthController {
         $count = $this->module('forms')->count($form['name']);
 
         $form = array_merge([
-
-            'sortable' => false
-
+            'sortable' => false,
+            'color' => '',
+            'icon' => '',
+            'description' => ''
         ], $form);
 
         $view = 'forms:views/entries.php';

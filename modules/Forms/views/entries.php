@@ -1,3 +1,10 @@
+
+@if($form['color'])
+<style>
+    .app-header { border-top: 8px {{ $form['color'] }} solid; }
+</style>
+@endif
+
 <div>
     <ul class="uk-breadcrumb">
         <li><a href="@route('/forms')">@lang('Forms')</a></li>
@@ -19,20 +26,15 @@
 
 </div>
 
-@if(isset($form['description']) && $form['description'])
-<div class="uk-text-muted uk-panel-box">
-    <div class="uk-grid uk-grid-small">
-        <div><i class="uk-icon-info-circle"></i></div>
-        <div class="uk-flex-item-1">{{ $form['description'] }}</div>
-    </div>
-</div>
-@endif
+<div class="uk-margin uk-text-muted uk-text-center">
 
-@if(isset($form['color']) && $form['color'])
-<style>
-    .app-header { border-top: 8px {{ $form['color'] }} solid; }
-</style>
-@endif
+    <img class="uk-svg-adjust" src="@url($form['icon'] ? 'assets:app/media/icons/'.$form['icon']:'forms:icon.svg')" width="50" alt="icon" data-uk-svg>
+    @if($form['description'])
+    <div class="uk-container-center uk-margin-top uk-width-medium-1-2">
+        {{ $form['description'] }}
+    </div>
+    @endif
+</div>
 
 <div riot-view>
 
@@ -42,10 +44,6 @@
 
             <div class="uk-animation-fade uk-width-1-1">
 
-                <p class="uk-text-xlarge">
-                    <i class="uk-icon-inbox"></i>
-                </p>
-                <hr>
                 <span class="uk-text-large uk-text-muted">@lang('No entries').</span>
 
             </div>

@@ -49,7 +49,10 @@ class Admin extends \Cockpit\AuthController {
         $count = $this->module('collections')->count($collection['name']);
 
         $collection = array_merge([
-            'sortable' => false
+            'sortable' => false,
+            'color' => '',
+            'icon' => '',
+            'description' => ''
         ], $collection);
 
         $view = 'collections:views/entries.php';
@@ -69,6 +72,13 @@ class Admin extends \Cockpit\AuthController {
         if (!$collection) {
             return false;
         }
+
+        $collection = array_merge([
+            'sortable' => false,
+            'color' => '',
+            'icon' => '',
+            'description' => ''
+        ], $collection);
 
         if ($id) {
 

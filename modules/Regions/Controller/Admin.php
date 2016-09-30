@@ -13,7 +13,7 @@ class Admin extends \Cockpit\AuthController {
 
     public function region($name = null) {
 
-        $region = [ 'name'=>'', 'fields'=>[], 'template' => '', 'data' => null];
+        $region = [ 'name'=>'', 'description' => '', 'fields'=>[], 'template' => '', 'data' => null];
 
         if ($name) {
 
@@ -36,6 +36,13 @@ class Admin extends \Cockpit\AuthController {
             if (!$region) {
                 return false;
             }
+
+            $region = array_merge([
+                'sortable' => false,
+                'color' => '',
+                'icon' => '',
+                'description' => ''
+            ], $region);
 
             return $this->render('regions:views/form.php', compact('region'));
         }

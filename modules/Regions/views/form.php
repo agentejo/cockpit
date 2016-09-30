@@ -1,3 +1,10 @@
+
+@if($region['color'])
+<style>
+    .app-header { border-top: 8px {{ $region['color'] }} solid; }
+</style>
+@endif
+
 <div>
 
     <ul class="uk-breadcrumb">
@@ -16,21 +23,6 @@
         </li>
     </ul>
 
-    @if(isset($region['description']) && $region['description'])
-    <div class="uk-text-muted uk-margin uk-panel-box">
-        <div class="uk-grid uk-grid-small">
-            <div><i class="uk-icon-info-circle"></i></div>
-            <div class="uk-flex-item-1">{{ $region['description'] }}</div>
-        </div>
-    </div>
-    @endif
-
-    @if(isset($region['color']) && $region['color'])
-    <style>
-        .app-header { border-top: 8px {{ $region['color'] }} solid; }
-    </style>
-    @endif
-
     <div class="uk-margin-top" riot-view>
 
         <div class="uk-alert" if="{ !fields.length }">
@@ -41,7 +33,10 @@
 
             <div class="uk-width-medium-3-4">
 
-                <h3>{ region.label || region.name }</h3>
+                <h3 class="uk-flex uk-flex-middle uk-text-bold">
+                    <img class="uk-margin-small-right" src="@url($region['icon'] ? 'assets:app/media/icons/'.$region['icon']:'regions:icon.svg')" width="25" alt="icon">
+                    { region.label || region.name }
+                </h3>
 
                 <ul class="uk-tab uk-margin uk-flex uk-flex-center" show="{ App.Utils.count(groups) > 1 }">
                     <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>

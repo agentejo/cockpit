@@ -14,7 +14,6 @@
                 </ul>
             </div>
         </li>
-        <li class="uk-active"><span>@lang('Entry')</span></li>
     </ul>
 </div>
 
@@ -38,7 +37,10 @@
 
             <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
 
-                <h3>{ entry._id ? 'Edit':'Add' } @lang('Entry')</h3>
+                <h3 class="uk-flex uk-flex-middle uk-text-bold">
+                    <img class="uk-margin-small-right" src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="25" alt="icon">
+                    { entry._id ? 'Edit':'Add' } @lang('Entry')
+                </h3>
 
                 <ul class="uk-tab uk-margin uk-flex uk-flex-center" show="{ App.Utils.count(groups) > 1 }">
                     <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
