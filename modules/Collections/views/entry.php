@@ -1,3 +1,10 @@
+
+@if(isset($collection['color']) && $collection['color'])
+<style>
+    .app-header { border-top: 8px {{ $collection['color'] }} solid; }
+</style>
+@endif
+
 <div>
     <ul class="uk-breadcrumb">
         <li><a href="@route('/collections')">@lang('Collections')</a></li>
@@ -17,37 +24,27 @@
     </ul>
 </div>
 
-@if(isset($collection['color']) && $collection['color'])
-<style>
-    .app-header { border-top: 8px {{ $collection['color'] }} solid; }
-</style>
-@endif
-
-
 <div class="uk-margin-top-large" riot-view>
 
     <div class="uk-alert" if="{ !fields.length }">
         @lang('No fields defined'). <a href="@route('/collections/collection')/{ collection.name }">@lang('Define collection fields').</a>
     </div>
 
+    <h3 class="uk-flex uk-flex-middle uk-text-bold">
+        <img class="uk-margin-small-right" src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="25" alt="icon">
+        { entry._id ? 'Edit':'Add' } @lang('Entry')
+    </h3>
 
-    <div class="uk-grid" data-uk-grid-margin>
+    <div class="uk-grid">
 
-        <div class="uk-width-medium-3-4">
+        <div class="uk-grid-margin uk-width-medium-3-4">
 
             <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
 
-                <h3 class="uk-flex uk-flex-middle uk-text-bold">
-                    <img class="uk-margin-small-right" src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="25" alt="icon">
-                    { entry._id ? 'Edit':'Add' } @lang('Entry')
-                </h3>
-
-                <ul class="uk-tab uk-margin uk-flex uk-flex-center" show="{ App.Utils.count(groups) > 1 }">
+                <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center" show="{ App.Utils.count(groups) > 1 }">
                     <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
                     <li class="{ group==parent.group && 'uk-active'}" each="{group, items in groups}" if="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
                 </ul>
-
-                <br>
 
                 <div class="uk-grid uk-grid-match uk-grid-gutter">
 
@@ -86,7 +83,7 @@
 
         </div>
 
-        <div class="uk-width-medium-1-4 uk-flex-order-first uk-flex-order-last-medium">
+        <div class="uk-grid-margin uk-width-medium-1-4 uk-flex-order-first uk-flex-order-last-medium">
 
             <div class="uk-panel">
 

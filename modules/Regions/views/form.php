@@ -29,21 +29,19 @@
             @lang('No fields defined'). <a href="@route('/regions/region')/{ region.name }">@lang('Define region fields').</a>
         </div>
 
+        <h3 class="uk-flex uk-flex-middle uk-text-bold">
+            <img class="uk-margin-small-right" src="@url($region['icon'] ? 'assets:app/media/icons/'.$region['icon']:'regions:icon.svg')" width="25" alt="icon">
+            { region.label || region.name }
+        </h3>
+
         <div class="uk-grid">
 
-            <div class="uk-width-medium-3-4">
+            <div class="uk-width-medium-3-4 uk-grid-margin">
 
-                <h3 class="uk-flex uk-flex-middle uk-text-bold">
-                    <img class="uk-margin-small-right" src="@url($region['icon'] ? 'assets:app/media/icons/'.$region['icon']:'regions:icon.svg')" width="25" alt="icon">
-                    { region.label || region.name }
-                </h3>
-
-                <ul class="uk-tab uk-margin uk-flex uk-flex-center" show="{ App.Utils.count(groups) > 1 }">
+                <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center" show="{ App.Utils.count(groups) > 1 }">
                     <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
                     <li class="{ group==parent.group && 'uk-active'}" each="{group, items in groups}" if="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
                 </ul>
-
-                <br>
 
                 <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
 
@@ -80,7 +78,7 @@
                 </form>
             </div>
 
-            <div class="uk-width-medium-1-4 uk-flex-order-first uk-flex-order-last-medium">
+            <div class="uk-grid-margin uk-width-medium-1-4 uk-flex-order-first uk-flex-order-last-medium">
 
                 <div class="uk-panel">
 

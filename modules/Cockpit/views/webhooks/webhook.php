@@ -11,9 +11,9 @@
 
     <form class="uk-form" onsubmit="{ submit }">
 
-        <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-grid">
 
-            <div class="uk-width-medium-2-3">
+            <div class="uk-grid-margin uk-width-medium-2-3">
 
                 <div class="uk-form-row">
                     <label class="uk-text-small">@lang('Name')</label>
@@ -26,9 +26,9 @@
                 </div>
 
                 <div class="uk-form-row uk-panel uk-panel-box uk-panel-card" show="{advanced}">
-                    
+
                     <span class="uk-badge">Advanced</span>
-                
+
                     <div class="uk-margin">
                         <label class="uk-text-small uk-text-uppercase">HTTP Basic Auth</label>
 
@@ -46,14 +46,14 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                     </div>
 
                     <div class="uk-margin">
                         <label class="uk-text-small uk-text-uppercase">@lang('Custom Headers')</label>
 
                         <div class="uk-margin uk-panel uk-form">
-                            
+
                             <div class="uk-grid uk-grid-small uk-flex-middle" each="{h,idx in webhook.headers}">
                                 <div class="uk-flex-item-1"><input class="uk-width-1-1" type="text" placeholder="Key" bind="webhook.headers[{idx}].k"></div>
                                 <div>:</div>
@@ -66,7 +66,7 @@
                             </div>
 
                         </div>
-                        
+
                     </div>
                 </div>
 
@@ -113,18 +113,22 @@
 
             </div>
 
-            <div class="uk-width-medium-1-3">
+            <div class="uk-grid-margin uk-width-medium-1-3">
 
                 <div class="uk-panel">
-                    <label class="uk-text-small">@lang('Status')</label>
-                    <div class="uk-margin-small-top">
-                        <field-boolean bind="webhook.active" label="false"></field-boolean>
-                    </div>
-                </div>
 
-                <div class="uk-panel" if="{webhook._id}">
-                    <label class="uk-text-small">@lang('Last Modified')</label>
-                    <div class="uk-margin-small-top uk-text-muted"><i class="uk-icon-calendar uk-margin-small-right"></i> {  App.Utils.dateformat( new Date( 1000 * webhook._modified )) }</div>
+                    <div class="uk-margin">
+                        <label class="uk-text-small">@lang('Status')</label>
+                        <div class="uk-margin-small-top">
+                            <field-boolean bind="webhook.active" label="false"></field-boolean>
+                        </div>
+                    </div>
+
+                    <div class="uk-margin" if="{webhook._id}">
+                        <label class="uk-text-small">@lang('Last Modified')</label>
+                        <div class="uk-margin-small-top uk-text-muted"><i class="uk-icon-calendar uk-margin-small-right"></i> {  App.Utils.dateformat( new Date( 1000 * webhook._modified )) }</div>
+                    </div>
+
                 </div>
 
             </div>
