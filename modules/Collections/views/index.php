@@ -42,7 +42,7 @@
 
         <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4 uk-margin-top">
 
-            <div class="uk-animation-fade uk-animation-fast" each="{ collection, meta in collections }" if="{ parent.infilter(meta) }">
+            <div each="{ collection, meta in collections }" if="{ parent.infilter(meta) }">
 
                 <div class="uk-panel uk-panel-box uk-panel-card">
 
