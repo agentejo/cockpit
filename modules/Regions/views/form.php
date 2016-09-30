@@ -34,6 +34,12 @@
             { region.label || region.name }
         </h3>
 
+        @if($region['description'])
+        <div class="uk-margin uk-text-muted">
+            {{ $region['description'] }}
+        </div>
+        @endif
+
         <div class="uk-grid">
 
             <div class="uk-width-medium-3-4 uk-grid-margin">

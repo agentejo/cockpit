@@ -18,11 +18,7 @@
                     <li>
                         <a href="@route('/regions/form/'.$region['name'])">
 
-                            @if(isset($region['color']) && $region['color'])
-                            <i class="uk-icon-justify uk-icon-th" style="color:{{ $region['color'] }}"></i>
-                            @else
-                            <i class="uk-icon-justify uk-icon-th"></i>
-                            @endif
+                            <img class="uk-margin-small-right uk-svg-adjust" src="@url(isset($region['icon']) && $region['icon'] ? 'assets:app/media/icons/'.$region['icon']:'regions:icon.svg')" width="18px" alt="icon" data-uk-svg>
 
                             {{ @$region['label'] ? $region['label'] : $region['name'] }}
                         </a>

@@ -18,11 +18,7 @@
                     <li>
                         <a href="@route('/forms/entries/'.$form['name'])">
 
-                            @if(isset($form['color']) && $form['color'])
-                            <i class="uk-icon-justify uk-icon-inbox" style="color:{{ $form['color'] }}"></i>
-                            @else
-                            <i class="uk-icon-justify uk-icon-inbox"></i>
-                            @endif
+                            <img class="uk-margin-small-right uk-svg-adjust" src="@url(isset($form['icon']) && $form['icon'] ? 'assets:app/media/icons/'.$form['icon']:'forms:icon.svg')" width="18px" alt="icon" data-uk-svg>
 
                             {{ @$form['label'] ? $form['label'] : $form['name'] }}
                         </a>
