@@ -147,8 +147,20 @@ class Mongo {
 
         array_walk_recursive($data, function(&$v, $k){
 
-            if ($k === '_id' && is_string($v)) {
-                $v = new \MongoId($v);
+            if ($k === '_id') {
+
+                if (is_string($v)) {
+                    
+                    $v = new \MongoDB\BSON\ObjectID($v);
+
+                } elseif (is_array($v) && isset($v['$in'])) {
+                    
+                    foreach ($v['$in'] as &$id) {
+                        if (is_string($id)) {
+                            $id = new \MongoDB\BSON\ObjectID($id);
+                        }
+                    }
+                }
             }
         });
 
