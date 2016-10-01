@@ -378,6 +378,14 @@ $this->module("collections")->extend([
 
                 if (isset($entry[$_field]['_id'])) {
 
+                    if (!is_string($entry[$_field]['_id'])) {
+                        $entry[$_field]['_id'] = (string)$entry[$_field]['_id'];
+                    }
+
+                    if (!isset($cache[$_collection])) {
+                        $cache[$_collection] = [];
+                    }
+
                     if (!isset($cache[$_collection][$entry[$_field]['_id']])) {
                         $cache[$_collection][$entry[$_field]['_id']] = $this->findOne($_collection, ['_id' => $entry[$_field]['_id']]);
                     }
@@ -401,6 +409,14 @@ $this->module("collections")->extend([
                     foreach ($entry[$_field] as $data) {
 
                         if (!isset($data['_id'])) continue;
+
+                        if (!is_string($data['_id'])) {
+                            $data['_id'] = (string)$data['_id'];
+                        }
+
+                        if (!isset($cache[$_collection])) {
+                            $cache[$_collection] = [];
+                        }
 
                         if (!isset($cache[$_collection][$data['_id']])) {
                             $cache[$_collection][$data['_id']] = $this->findOne($_collection, ['_id' => $data['_id']]);
