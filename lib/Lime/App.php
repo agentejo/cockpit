@@ -871,7 +871,7 @@ class App implements \ArrayAccess {
                 $self->response->status = "500";
                 $self->response->body   = $self["debug"] ? json_encode($error, JSON_PRETTY_PRINT):'Internal Error.';
 
-            } elseif (!$self->response->body && !is_string($self->response->body)) {
+            } elseif (!$self->response->body && !is_string($self->response->body) && !is_array($self->response->body)) {
                 $self->response->status = "404";
                 $self->response->body   = "Path not found.";
             }

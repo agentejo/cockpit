@@ -138,14 +138,18 @@ class Mongo {
 
         return $this->getCollection($collection)->count($filter);
     }
-
+    
     protected function _fixMongoIds(&$data) {
 
         if (!is_array($data)) {
             return $data;
         }
 
-        array_walk_recursive($data, function(&$v, $k){
+        foreach ($data as $k => $v) {
+            
+            if (is_array($data[$k])) {
+                $data[$k] = $this->_fixMongoIds($data[$k]);
+            }
 
             if ($k === '_id') {
 
@@ -162,7 +166,9 @@ class Mongo {
                     }
                 }
             }
-        });
+
+            $data[$k] = $v;
+        }
 
         return $data;
     }

@@ -141,7 +141,11 @@ class MongoLegacy {
             return $data;
         }
 
-        array_walk_recursive($data, function(&$v, $k){
+        foreach ($data as $k => $v) {
+            
+            if (is_array($data[$k])) {
+                $data[$k] = $this->_fixMongoIds($data[$k]);
+            }
 
             if ($k === '_id') {
 
@@ -158,7 +162,9 @@ class MongoLegacy {
                     }
                 }
             }
-        });
+
+            $data[$k] = $v;
+        }
 
         return $data;
     }
