@@ -53,7 +53,7 @@
                         <div class="uk-panel">
 
                             <label class="uk-text-bold">
-                                { field.label || field.name } {field.group}
+                                { field.label || field.name }
                                 <span if="{ field.localize }" class="uk-icon-globe" title="@lang('Localized field')" data-uk-tooltip="pos:'right'"></span>
                             </label>
 
