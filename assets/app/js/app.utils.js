@@ -263,7 +263,7 @@
 
     App.Utils.renderer.repeater = function(v) {
         var cnt = Array.isArray(v) ? v.length : 0;
-        return '<span class="uk-badge">'+(cnt+(cnt ==1 ? 'Item' : ' Items'))+'</span>';
+        return '<span class="uk-badge">'+(cnt+(cnt ==1 ? ' Item' : ' Items'))+'</span>';
     };
 
     App.Utils.renderer.tags = App.Utils.renderer.multipleselect = function(v) {

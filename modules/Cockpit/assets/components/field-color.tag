@@ -1,24 +1,20 @@
 <field-color>
 
-    <input name="input" class="uk-width-1-1" bind="{opts.bind}" type="{ opts.type || 'text' }" placeholder="{ opts.placeholder }">
+    <input name="input" class="uk-width-1-1" type="text">
 
     <script>
 
         var $this = this;
-
-        if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
-        }
-
-        if (opts.required) {
-            this.input.setAttribute('required', 'required');
-        }
 
         this.$updateValue = function(value, field) {
 
             if (value && this.input.value !== value) {
                 this.input.value = value;
                 this.update();
+            }
+
+            if (App.$.fn.spectrum) {
+                App.$($this.input).spectrum("set", $this.root.$value);
             }
 
         }.bind(this);
@@ -29,6 +25,8 @@
                 '/assets/lib/spectrum/spectrum.js',
                 '/assets/lib/spectrum/spectrum.css'
             ], function(){
+
+                $this.input.value = $this.root.$value || '';
 
                 App.$($this.input).spectrum(App.$.extend({
                     preferredFormat: 'rgb',
@@ -44,10 +42,6 @@
                     }
                 }, opts.spectrum));
 
-                $this.input.oninput = function(){
-                    $this.$setValue($this.input.value);
-                };
-    
             });
         });
 

@@ -16,8 +16,8 @@
                             <div>
                                 <ul class="uk-subnav">
                                     <li><a onclick="{ parent.showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
-                                    <li><a onclick="{ parent.remove }" title="{ App.i18n.get('Remove image') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
                                     <li><a href="{ (SITE_URL+'/'+img.path) }" data-uk-lightbox="type:'image'" title="{ App.i18n.get('Full size') }" data-uk-tooltip><i class="uk-icon-eye"></i></a></li>
+                                    <li><a onclick="{ parent.remove }" title="{ App.i18n.get('Remove image') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
                                 </ul>
 
                                 <p class="uk-text-small uk-text-truncate">{ img.title }</p>

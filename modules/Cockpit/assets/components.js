@@ -1299,23 +1299,19 @@ riot.tag2('field-code', '<codemirror name="codemirror" syntx="{opts.syntax || \'
 
 });
 
-riot.tag2('field-color', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" placeholder="{opts.placeholder}">', '', '', function(opts) {
+riot.tag2('field-color', '<input name="input" class="uk-width-1-1" type="text">', '', '', function(opts) {
 
         var $this = this;
-
-        if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
-        }
-
-        if (opts.required) {
-            this.input.setAttribute('required', 'required');
-        }
 
         this.$updateValue = function(value, field) {
 
             if (value && this.input.value !== value) {
                 this.input.value = value;
                 this.update();
+            }
+
+            if (App.$.fn.spectrum) {
+                App.$($this.input).spectrum("set", $this.root.$value);
             }
 
         }.bind(this);
@@ -1326,6 +1322,8 @@ riot.tag2('field-color', '<input name="input" class="uk-width-1-1" bind="{opts.b
                 '/assets/lib/spectrum/spectrum.js',
                 '/assets/lib/spectrum/spectrum.css'
             ], function(){
+
+                $this.input.value = $this.root.$value || '';
 
                 App.$($this.input).spectrum(App.$.extend({
                     preferredFormat: 'rgb',
@@ -1340,10 +1338,6 @@ riot.tag2('field-color', '<input name="input" class="uk-width-1-1" bind="{opts.b
                         $this.$setValue($this.input.value);
                     }
                 }, opts.spectrum));
-
-                $this.input.oninput = function(){
-                    $this.$setValue($this.input.value);
-                };
 
             });
         });
@@ -1418,7 +1412,7 @@ riot.tag2('field-file', '<div class="uk-panel uk-panel-box uk-panel-card"> {inpu
 
 });
 
-riot.tag2('field-gallery', '<div name="panel"> <div name="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{images && images.length}"> <div data-idx="{idx}" each="{img,idx in images}"> <div class="uk-panel uk-panel-box uk-panel-thumbnail uk-panel-card"> <figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;"> <div class="uk-width-1-1 uk-text-center"> <img class="uk-display-inline-block uk-responsive-width" riot-src="{(SITE_URL+\'/\'+img.path)}"> </div> </div> <figcaption class="uk-overlay-panel uk-overlay-background uk-flex uk-flex-middle uk-flex-center"> <div> <ul class="uk-subnav"> <li><a onclick="{parent.showMeta}" title="{App.i18n.get(\'Edit meta data\')}" data-uk-tooltip><i class="uk-icon-cog"></i></a></li> <li><a onclick="{parent.remove}" title="{App.i18n.get(\'Remove image\')}" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> <li><a href="{(SITE_URL+\'/\'+img.path)}" data-uk-lightbox="type:\'image\'" title="{App.i18n.get(\'Full size\')}" data-uk-tooltip><i class="uk-icon-eye"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{img.title}</p> </div> </figcaption> </figure> </div> </div> </div> <div class="{images && images.length ? \'uk-margin-top\':\'\'}"> <div class="uk-alert" if="{images && !images.length}">{App.i18n.get(\'Gallery is empty\')}.</div> <a class="uk-button uk-button-link" onclick="{selectimages}"> <i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add images\')} </a> </div> <div class="uk-modal uk-sortable-nodrag" name="modalmeta"> <div class="uk-modal-dialog"> <div class="uk-modal-header"><h3>{App.i18n.get(\'Image Meta\')}</h3></div> <div class="uk-grid uk-grid-match uk-grid-gutter" if="{image}"> <div class="uk-grid-margin uk-width-medium-{field.width}" each="{name,field in meta}" no-reorder> <div class="uk-panel"> <label class="uk-text-bold"> {field.label || name} </label> <div class="uk-margin uk-text-small uk-text-muted"> {field.info || \' \'} </div> <div class="uk-margin"> <cp-field field="{field}" bind="image.meta[\'{name}\']"></cp-field> </div> </div> </div> </div> <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{App.i18n.get(\'Close\')}</button></div> </div> </div> </div>', '', '', function(opts) {
+riot.tag2('field-gallery', '<div name="panel"> <div name="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{images && images.length}"> <div data-idx="{idx}" each="{img,idx in images}"> <div class="uk-panel uk-panel-box uk-panel-thumbnail uk-panel-card"> <figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;"> <div class="uk-width-1-1 uk-text-center"> <img class="uk-display-inline-block uk-responsive-width" riot-src="{(SITE_URL+\'/\'+img.path)}"> </div> </div> <figcaption class="uk-overlay-panel uk-overlay-background uk-flex uk-flex-middle uk-flex-center"> <div> <ul class="uk-subnav"> <li><a onclick="{parent.showMeta}" title="{App.i18n.get(\'Edit meta data\')}" data-uk-tooltip><i class="uk-icon-cog"></i></a></li> <li><a href="{(SITE_URL+\'/\'+img.path)}" data-uk-lightbox="type:\'image\'" title="{App.i18n.get(\'Full size\')}" data-uk-tooltip><i class="uk-icon-eye"></i></a></li> <li><a onclick="{parent.remove}" title="{App.i18n.get(\'Remove image\')}" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{img.title}</p> </div> </figcaption> </figure> </div> </div> </div> <div class="{images && images.length ? \'uk-margin-top\':\'\'}"> <div class="uk-alert" if="{images && !images.length}">{App.i18n.get(\'Gallery is empty\')}.</div> <a class="uk-button uk-button-link" onclick="{selectimages}"> <i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add images\')} </a> </div> <div class="uk-modal uk-sortable-nodrag" name="modalmeta"> <div class="uk-modal-dialog"> <div class="uk-modal-header"><h3>{App.i18n.get(\'Image Meta\')}</h3></div> <div class="uk-grid uk-grid-match uk-grid-gutter" if="{image}"> <div class="uk-grid-margin uk-width-medium-{field.width}" each="{name,field in meta}" no-reorder> <div class="uk-panel"> <label class="uk-text-bold"> {field.label || name} </label> <div class="uk-margin uk-text-small uk-text-muted"> {field.info || \' \'} </div> <div class="uk-margin"> <cp-field field="{field}" bind="image.meta[\'{name}\']"></cp-field> </div> </div> </div> </div> <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{App.i18n.get(\'Close\')}</button></div> </div> </div> </div>', '', '', function(opts) {
 
         riot.util.bind(this);
 
