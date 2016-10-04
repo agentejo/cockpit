@@ -1714,7 +1714,7 @@ riot.tag2('field-location', '<div class="uk-alert" if="{!apiready}"> Loading map
 
 });
 
-riot.tag2('field-markdown', '<field-html name="input" markdown="true" bind="{opts.bind}"></field-html>', '', '', function(opts) {
+riot.tag2('field-markdown', '<field-html name="input" markdown="true" bind="{opts.bind}" height="opts.height"></field-html>', '', '', function(opts) {
 });
 
 riot.tag2('field-multipleselect', '<div name="container" class="{options.length > 10 ? \'uk-scrollable-box\':\'\'}"> <div class="uk-margin-small-top" each="{option in options}"> <a data-value="{option}" class="{parent.selected.indexOf(option)!==-1 ? \'uk-text-primary\':\'uk-text-muted\'}" onclick="{toggle}" title="{option}"> <i class="uk-icon-{parent.selected.indexOf(option)!==-1 ? \'circle\':\'circle-o\'} uk-margin-small-right"></i> {option} </a> </div> </div> <span class="uk-text-small uk-text-muted" if="{options.length > 10}">{selected.length} {App.i18n.get(\'selected\')}</span>', '', '', function(opts) {
