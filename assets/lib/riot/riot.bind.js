@@ -76,7 +76,7 @@
 
                             for (var i = 0;i<segments.length;i++) {
 
-                                if (segments[i].idexOf('[')!=-1) break;
+                                if (segments[i].indexOf('[') != -1) break;
 
                                 if (current[segments[i]] === undefined ) {
 
