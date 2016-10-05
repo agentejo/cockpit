@@ -92,11 +92,11 @@
                     <div class="uk-width-1-1 uk-form-select">
 
                         <label class="uk-text-small">@lang('Language')</label>
-                        <div class="uk-margin-small-top">{ lang || 'Default' }</div>
+                        <div class="uk-margin-small-top">{ languageNames[lang] || lang || 'Default' }</div>
 
                         <select bind="lang">
                             <option value="">@lang('Default')</option>
-                            <option each="{language,idx in languages}" value="{language}">{language}</option>
+                            <option each="{language,idx in languages}" value="{language}">{ languageNames[language] || language}</option>
                         </select>
                     </div>
 
@@ -127,7 +127,10 @@
 
         this.entry        = {{ json_encode($entry) }};
 
-        this.languages    = App.$data.languages;
+        var langsAreNamed = !Array.isArray(App.$data.languages);
+        this.languages = langsAreNamed ? _.values(App.$data.languages) : App.$data.languages;
+        this.languageNames = langsAreNamed ? _.invert(App.$data.languages) : {};
+
         this.groups       = {main:[]};
         this.group        = 'main';
 
