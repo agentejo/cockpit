@@ -80,6 +80,26 @@
     margin: (2 * @global-margin-large) 0;
 }
 
+.material-ripple {
+    position: absolute;
+    z-index: 100000;
+}
+.material-ink {
+    position: absolute;
+    background: rgba(0,0,0,.1);
+    border-radius: 50%;
+    transform: scale(0);
+}
+.material-ink.animate {
+    animation: matrial-ripple .6s linear
+}
+@keyframes matrial-ripple {
+    to {
+        transform: scale(2.5);
+        opacity: 0
+    }
+}
+
 
 // vendor styles
 

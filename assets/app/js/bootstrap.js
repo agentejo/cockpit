@@ -93,5 +93,49 @@
         });
     });
 
+    // Material Ripple effect
+    $('html').on('click', 'a,button,input', function(e) {
+        
+        var trigger = $(this);
+
+        var surface = $('<div class="material-ripple"><div class="material-ink"></div></div>').appendTo('body');
+
+        surface.css({
+            top: trigger.offset().top,
+            left: trigger.offset().left,
+            width: trigger.outerWidth(),
+            height: trigger.outerHeight()
+        });
+
+        var ink = surface.find(".material-ink");
+
+        // set size of .ink
+        var d = Math.min(surface.outerWidth(), surface.outerHeight());
+        
+        if (d > 100 || trigger.is('button,.uk-button')) {
+            surface.css('overflow', 'hidden');
+        }
+
+        ink.css({height: d, width: d});
+
+        var x = e.pageX - surface.offset().left - (ink.width() / 2);
+        var y = e.pageY - surface.offset().top - (ink.height() / 2);
+
+        var rippleColor = surface.data("ripple-color");
+
+        //set the position and add class .animate
+        ink.css({
+            top: y + 'px',
+            left: x + 'px',
+            background: rippleColor
+        }).on('animationend', function() {
+            surface.remove();
+        }).addClass("animate");
+
+        setTimeout(function(){
+            surface.remove();
+        }, 500);
+    });
+
 
 })(jQuery, UIkit);
