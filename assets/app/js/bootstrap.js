@@ -94,48 +94,31 @@
     });
 
     // Material Ripple effect
-    $('html').on('click', 'a,button,input', function(e) {
-        
-        var trigger = $(this);
+    $('html').on('click', 'a, button, input, .ripple', function(e) {
 
-        var surface = $('<div class="material-ripple"><div class="material-ink"></div></div>').appendTo('body');
+        var trigger = $(this), w = trigger.outerWidth(), h = trigger.outerHeight(), d = Math.min(w, h), surface;
 
-        surface.css({
-            top: trigger.offset().top,
-            left: trigger.offset().left,
-            width: trigger.outerWidth(),
-            height: trigger.outerHeight()
-        });
+        surface = $('<div class="material-ripple"><div class="material-ink"></div></div>').css({
+            top      : trigger.offset().top,
+            left     : trigger.offset().left,
+            width    : w,
+            height   : h,
+            overflow : d > 100 || trigger.is('button,.uk-button') ? 'hidden' : ''
+        }).appendTo('body');
 
-        var ink = surface.find(".material-ink");
-
-        // set size of .ink
-        var d = Math.min(surface.outerWidth(), surface.outerHeight());
-        
-        if (d > 100 || trigger.is('button,.uk-button')) {
-            surface.css('overflow', 'hidden');
-        }
-
-        ink.css({height: d, width: d});
-
-        var x = e.pageX - surface.offset().left - (ink.width() / 2);
-        var y = e.pageY - surface.offset().top - (ink.height() / 2);
-
-        var rippleColor = surface.data("ripple-color");
-
-        //set the position and add class .animate
-        ink.css({
-            top: y + 'px',
-            left: x + 'px',
-            background: rippleColor
+        surface.find('.material-ink').css({
+            height     : d,
+            width      : d,
+            top        : Math.floor(h/2 - d/2)+'px',
+            left       : Math.floor(w/2 - d/2)+'px',
+            background : trigger.attr('ripple-color') || ''
         }).on('animationend', function() {
             surface.remove();
-        }).addClass("animate");
+        }).addClass("animate").width();
 
         setTimeout(function(){
             surface.remove();
         }, 500);
     });
-
 
 })(jQuery, UIkit);
