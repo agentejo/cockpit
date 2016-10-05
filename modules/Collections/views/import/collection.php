@@ -140,8 +140,8 @@
 
             if (field.localize && App.$data.languages) {
 
-                App.$data.languages.forEach(function(lang, f) {
-
+                _.forEach(App.$data.languages, function(lang, f) {
+                    
                     f = App.$.extend({}, field);
 
                     f.name = f.name+'_'+lang;
@@ -282,7 +282,7 @@
 
                             Object.keys($this.mapping).forEach(function(k, val, d){
                                 val = c[$this.mapping[k]];
-                                
+
                                 d   = $this.filterData[k];
 
                                 if ($this.filter[k]) {
