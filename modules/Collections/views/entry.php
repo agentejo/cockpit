@@ -96,7 +96,7 @@
 
                         <select bind="lang">
                             <option value="">@lang('Default')</option>
-                            <option each="{language,idx in languages}" value="{language}">{language}</option>
+                            <option each="{language,idx in languages}" value="{language.code}">{language.label}</option>
                         </select>
                     </div>
 

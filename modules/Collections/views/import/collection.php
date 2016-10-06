@@ -144,7 +144,7 @@
 
                     f = App.$.extend({}, field);
 
-                    f.name = f.name+'_'+lang;
+                    f.name = f.name+'_'+lang.code;
                     f.required = false;
                     f.localize = false;
                     f._lang = lang
@@ -282,7 +282,7 @@
 
                             Object.keys($this.mapping).forEach(function(k, val, d){
                                 val = c[$this.mapping[k]];
-                                
+
                                 d   = $this.filterData[k];
 
                                 if ($this.filter[k]) {
