@@ -93,7 +93,7 @@
                         <div class="uk-width-1-1 uk-form-select">
 
                             <label class="uk-text-small">@lang('Language')</label>
-                            <div class="uk-margin-small-top">{ lang || 'Default' }</div>
+                            <div class="uk-margin-small-top">{ lang ? _.find(languages,{code:lang}).label:'Default' }</div>
 
                             <select bind="lang">
                                 <option value="">@lang('Default')</option>

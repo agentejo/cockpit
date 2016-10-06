@@ -30,9 +30,9 @@ class Admin extends \Lime\Helper {
 
         $languages = [];
 
-        foreach((array)$this->app->retrieve('config/languages', []) as $key => $val) {
+        foreach($this->app->retrieve('config/languages', []) as $key => $val) {
             if (is_numeric($key)) $key = $val;
-            $languages[] = ['code'=>$val, 'label'=>$key];
+            $languages[] = ['code'=>$key,'label'=>$val];
         }
 
         $this->data->extend([
