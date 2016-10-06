@@ -267,6 +267,11 @@
     };
 
     App.Utils.renderer.tags = App.Utils.renderer.multipleselect = function(v) {
+
+        if (Array.isArray(v) && v.length > 1) {
+            return '<span class="uk-badge" title="'+v.join(', ')+'" data-uk-tooltip>'+v.length+'</span>';
+        }
+
         return Array.isArray(v) ? v.join(', ') : App.Utils.renderer.default(v);
     };
 

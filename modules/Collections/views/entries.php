@@ -106,10 +106,16 @@
 
             if (Array.isArray(v)) {
                 var vals = [];
+
                 v.forEach(function(val) {
                     vals.push(val.display ? val.display: App.Utils.renderer.default(val));
                 });
-                return vals.join(', ');
+
+                if (vals.length > 1) {
+                    return '<span class="uk-badge" title="'+vals.join(', ')+'" data-uk-tooltip>'+vals.length+'</span>';
+                }
+
+                return vals[0];
             }
 
             return v.display ? v.display: App.Utils.renderer.default(v);
