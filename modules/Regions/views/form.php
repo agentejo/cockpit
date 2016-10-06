@@ -126,7 +126,7 @@
 
             this.data      = this.region.data || {};
 
-            this.languages = App.$data.languages;
+            this.languages = Array.isArray(App.$data.languages) ? App.$data.languages :  _.values(App.$data.languages);
             this.groups       = {main:[]};
             this.group        = 'main';
 
