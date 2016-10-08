@@ -83,6 +83,11 @@
 
         add(e) {
 
+            if (opts.limit && this.items.length >= opts.limit) {
+                App.ui.notify('Maximum amount of items reached');
+                return;
+            }
+
             if (this.fields) {
                 this.items.push({field:e.item.field, value:null});
             } else {

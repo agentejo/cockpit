@@ -171,7 +171,7 @@
 
         App.$(this.txtfilter).on('keydown', function(e){
 
-            if(e.keyCode == 13) {
+            if (e.keyCode == 13) {
                 e.preventDefault();
                 e.stopPropagation();
 
@@ -188,6 +188,12 @@
     });
 
     showDialog(){
+
+        if (opts.multiple && opts.limit && this.link.length >= Number(opts.limit)) {
+            App.ui.notify('Maximum amount of items reached');
+            return;
+        }
+
         modal.show();
         this.load();
     }
