@@ -1100,9 +1100,9 @@ class App implements \ArrayAccess {
     */
     public function getSiteUrl($withpath = false) {
 
-        $url = ($this->req_is("ssl") ? 'https':'http')."://";
+        $url = ($this->req_is('ssl') ? 'https':'http').'://';
 
-        if ($this->registry['base_port'] != "80") {
+        if (!in_array($this->registry['base_port'], ['80', '443'])) {
             $url .= $this->registry['base_host'].":".$this->registry['base_port'];
         } else {
             $url .= $this->registry['base_host'];
