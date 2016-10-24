@@ -8,7 +8,7 @@
 
     </style>
 
-    <codemirror name="codemirror" syntx="{ opts.syntax || 'text' }"></codemirror>
+    <codemirror name="codemirror" syntax="{ opts.syntax || 'text' }"></codemirror>
 
     <script>
 
