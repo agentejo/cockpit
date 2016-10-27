@@ -385,20 +385,20 @@ $this->module("collections")->extend([
                             }
 
                             if (!isset($cache[$_collection])) {
-                                $cache[$_collection] = [];
+                                $cache[$field['options']['link']] = [];
                             }
 
-                            if (!isset($cache[$_collection][$data['_id']])) {
-                                $cache[$_collection][$data['_id']] = $this->findOne($_collection, ['_id' => $data['_id']]);
+                            if (!isset($cache[$field['options']['link']][$data['_id']])) {
+                                $cache[$field['options']['link']][$data['_id']] = $this->findOne($field['options']['link'], ['_id' => $data['_id']]);
                             }
 
-                            if ($cache[$_collection][$data['_id']]) {
-                                $links[] = $cache[$_collection][$data['_id']];
+                            if ($cache[$field['options']['link']][$data['_id']]) {
+                                $links[] = $cache[$field['options']['link']][$data['_id']];
                             }
                         }
 
                         if ($deep && count($links)) {
-                            $links = $this->_populate($this->collection($_collection), $links, $deep, ($_deeplevel+1));
+                            $links = $this->_populate($this->collection($field['options']['link']), $links, $deep, ($_deeplevel+1));
                         }
 
                         return $links;
@@ -410,18 +410,18 @@ $this->module("collections")->extend([
                             $fieldValue['_id'] = (string)$fieldValue['_id'];
                         }
 
-                        if (!isset($cache[$_collection])) {
-                            $cache[$_collection] = [];
+                        if (!isset($cache[$field['options']['link']])) {
+                            $cache[$field['options']['link']] = [];
                         }
 
-                        if (!isset($cache[$_collection][$fieldValue['_id']])) {
-                            $cache[$_collection][$fieldValue['_id']] = $this->findOne($_collection, ['_id' => $fieldValue['_id']]);
+                        if (!isset($cache[$field['options']['link']][$fieldValue['_id']])) {
+                            $cache[$field['options']['link']][$fieldValue['_id']] = $this->findOne($field['options']['link'], ['_id' => $fieldValue['_id']]);
                         }
 
-                        $fieldValue = $cache[$_collection][$fieldValue['_id']];
+                        $fieldValue = $cache[$field['options']['link']][$fieldValue['_id']];
 
                         if ($fieldValue && $deep) {
-                            $_entry = $this->_populate($this->collection($_collection), [$fieldValue], $deep, ($_deeplevel+1));
+                            $_entry = $this->_populate($this->collection($field['options']['link']), [$fieldValue], $deep, ($_deeplevel+1));
                             return $_entry[0];
                         }
                     }
