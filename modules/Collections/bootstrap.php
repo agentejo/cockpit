@@ -352,87 +352,103 @@ $this->module("collections")->extend([
             return $entries;
         }
 
-        $hasOne  = [];
-        $hasMany = [];
-
-        foreach($collection['fields'] as &$field) {
-
-            if ($field['type'] == 'collectionlink' && isset($field['options']['link']) && $field['options']['link']) {
-
-                if (isset($field['options']['multiple']) && $field['options']['multiple']) {
-                    $hasMany[$field['name']] = $field['options']['link'];
-                } else {
-                    $hasOne[$field['name']] = $field['options']['link'];
+        function filterNonLinkFields($fields){
+            return array_filter($fields, function($field){
+                if ($field['type'] == 'collectionlink' && isset($field['options']['link']) && $field['options']['link']) {
+                    return true;
+                } else if ($field['type'] == 'repeater' || $field['type'] == 'set') {
+                    if (is_array($field['options']['fields']) && count($field['options']['fields'])) {
+                        $field['options']['fields'] = filterNonLinkFields($field['options']['fields']);
+                        if (count($field['options']['fields'])) {
+                            return true;
+                        }
+                    }
                 }
-
-                if (!isset($cache[$field['options']['link']])) {
-                    $cache[$field['options']['link']] = [];
-                }
-            }
+            });
         }
 
-        foreach ($entries as &$entry) {
+        $fieldsWithLinks = filterNonLinkFields($collection['fields']);
 
-            // resolve hasOne
-            foreach ($hasOne as $_field => $_collection) {
+        function resolveField($fieldValue, $field) {
+            if ($field['type'] == 'collectionlink') {
+                if (isset($field['options']['multiple']) && $field['options']['multiple']) {
+                    if (isset($entry[$field['name']]) && $entry[$field['name']] && is_array($entry[$field['name']])) {
 
-                if (isset($entry[$_field]['_id'])) {
+                        $links = [];
 
-                    if (!is_string($entry[$_field]['_id'])) {
-                        $entry[$_field]['_id'] = (string)$entry[$_field]['_id'];
+                        foreach ($fieldValue as $data) {
+
+                            if (!isset($data['_id'])) continue;
+
+                            if (!is_string($data['_id'])) {
+                                $data['_id'] = (string)$data['_id'];
+                            }
+
+                            if (!isset($cache[$_collection])) {
+                                $cache[$_collection] = [];
+                            }
+
+                            if (!isset($cache[$_collection][$data['_id']])) {
+                                $cache[$_collection][$data['_id']] = $this->findOne($_collection, ['_id' => $data['_id']]);
+                            }
+
+                            if ($cache[$_collection][$data['_id']]) {
+                                $links[] = $cache[$_collection][$data['_id']];
+                            }
+                        }
+
+                        if ($deep && count($links)) {
+                            $links = $this->_populate($this->collection($_collection), $links, $deep, ($_deeplevel+1));
+                        }
+
+                        return $links;
                     }
+                } else {
+                    if (isset($fieldValue['_id'])) {
 
-                    if (!isset($cache[$_collection])) {
-                        $cache[$_collection] = [];
-                    }
-
-                    if (!isset($cache[$_collection][$entry[$_field]['_id']])) {
-                        $cache[$_collection][$entry[$_field]['_id']] = $this->findOne($_collection, ['_id' => $entry[$_field]['_id']]);
-                    }
-
-                    $entry[$_field] = $cache[$_collection][$entry[$_field]['_id']];
-
-                    if ($entry[$_field] && $deep) {
-                        $_entry = $this->_populate($this->collection($_collection), [$entry[$_field]], $deep, ($_deeplevel+1));
-                        $entry[$_field] = $_entry[0];
-                    }
-                }
-            }
-
-            // resolve hasMany
-            foreach ($hasMany as $_field => $_collection) {
-
-                if (isset($entry[$_field]) && $entry[$_field] && is_array($entry[$_field])) {
-
-                    $links = [];
-
-                    foreach ($entry[$_field] as $data) {
-
-                        if (!isset($data['_id'])) continue;
-
-                        if (!is_string($data['_id'])) {
-                            $data['_id'] = (string)$data['_id'];
+                        if (!is_string($fieldValue['_id'])) {
+                            $fieldValue['_id'] = (string)$fieldValue['_id'];
                         }
 
                         if (!isset($cache[$_collection])) {
                             $cache[$_collection] = [];
                         }
 
-                        if (!isset($cache[$_collection][$data['_id']])) {
-                            $cache[$_collection][$data['_id']] = $this->findOne($_collection, ['_id' => $data['_id']]);
+                        if (!isset($cache[$_collection][$fieldValue['_id']])) {
+                            $cache[$_collection][$fieldValue['_id']] = $this->findOne($_collection, ['_id' => $fieldValue['_id']]);
                         }
 
-                        if ($cache[$_collection][$data['_id']]) {
-                            $links[] = $cache[$_collection][$data['_id']];
+                        $fieldValue = $cache[$_collection][$fieldValue['_id']];
+
+                        if ($fieldValue && $deep) {
+                            $_entry = $this->_populate($this->collection($_collection), [$fieldValue], $deep, ($_deeplevel+1));
+                            return $_entry[0];
                         }
                     }
-
-                    if ($deep && count($links)) {
-                        $links = $this->_populate($this->collection($_collection), $links, $deep, ($_deeplevel+1));
-                    }
-
-                    $entry[$_field] = $links;
                 }
+            } else if ($field['type'] == 'repeater') {
+                foreach($field['options']['fields'] as $linkField) {
+                    foreach($fieldValue as $i=>$fieldEntry) {
+                        if ($fieldEntry['field']['name'] == $linkField['name']) {
+                            $fieldValue[$i]['value'] = resolveField($fieldEntry['value'], $linkField);
+                        }
+                    }
+                }
+                return $fieldValue;
+            } else if ($field['type'] == 'set') {
+                foreach($field['options']['fields'] as $linkField) {
+                    if (isset($fieldValue[$linkField['name']]) && $fieldValue[$linkField['name']]) {
+                        $fieldValue[$linkField['name']] = resolveField($fieldValue[$linkField['name']], $linkField);
+                    }
+                }
+                return $fieldValue;
+            }
+            return $fieldValue;
+        }
+
+        foreach ($entries as &$entry) {
+            foreach($fieldsWithLinks as $field) {
+                $entry[$field['name']] = resolveField($entry[$field['name']], $field);
             }
         }
 
