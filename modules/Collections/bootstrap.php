@@ -369,7 +369,7 @@ $this->module("collections")->extend([
 
         $fieldsWithLinks = filterNonLinkFields($collection['fields']);
 
-        function resolveField($fieldValue, $field) {
+        function resolveField($fieldValue, $field, $context) {
             if ($field['type'] == 'collectionlink') {
                 if (isset($field['options']['multiple']) && $field['options']['multiple']) {
                     if (isset($entry[$field['name']]) && $entry[$field['name']] && is_array($entry[$field['name']])) {
@@ -389,7 +389,7 @@ $this->module("collections")->extend([
                             }
 
                             if (!isset($cache[$field['options']['link']][$data['_id']])) {
-                                $cache[$field['options']['link']][$data['_id']] = $this->findOne($field['options']['link'], ['_id' => $data['_id']]);
+                                $cache[$field['options']['link']][$data['_id']] = $context->findOne($field['options']['link'], ['_id' => $data['_id']]);
                             }
 
                             if ($cache[$field['options']['link']][$data['_id']]) {
@@ -398,7 +398,7 @@ $this->module("collections")->extend([
                         }
 
                         if ($deep && count($links)) {
-                            $links = $this->_populate($this->collection($field['options']['link']), $links, $deep, ($_deeplevel+1));
+                            $links = $context->_populate($context->collection($field['options']['link']), $links, $deep, ($_deeplevel+1));
                         }
 
                         return $links;
@@ -415,13 +415,13 @@ $this->module("collections")->extend([
                         }
 
                         if (!isset($cache[$field['options']['link']][$fieldValue['_id']])) {
-                            $cache[$field['options']['link']][$fieldValue['_id']] = $this->findOne($field['options']['link'], ['_id' => $fieldValue['_id']]);
+                            $cache[$field['options']['link']][$fieldValue['_id']] = $context->findOne($field['options']['link'], ['_id' => $fieldValue['_id']]);
                         }
 
                         $fieldValue = $cache[$field['options']['link']][$fieldValue['_id']];
 
                         if ($fieldValue && $deep) {
-                            $_entry = $this->_populate($this->collection($field['options']['link']), [$fieldValue], $deep, ($_deeplevel+1));
+                            $_entry = $context->_populate($context->collection($field['options']['link']), [$fieldValue], $deep, ($_deeplevel+1));
                             return $_entry[0];
                         }
                     }
@@ -430,7 +430,7 @@ $this->module("collections")->extend([
                 foreach($field['options']['fields'] as $linkField) {
                     foreach($fieldValue as $i=>$fieldEntry) {
                         if ($fieldEntry['field']['name'] == $linkField['name']) {
-                            $fieldValue[$i]['value'] = resolveField($fieldEntry['value'], $linkField);
+                            $fieldValue[$i]['value'] = resolveField($fieldEntry['value'], $linkField, $context);
                         }
                     }
                 }
@@ -438,7 +438,7 @@ $this->module("collections")->extend([
             } else if ($field['type'] == 'set') {
                 foreach($field['options']['fields'] as $linkField) {
                     if (isset($fieldValue[$linkField['name']]) && $fieldValue[$linkField['name']]) {
-                        $fieldValue[$linkField['name']] = resolveField($fieldValue[$linkField['name']], $linkField);
+                        $fieldValue[$linkField['name']] = resolveField($fieldValue[$linkField['name']], $linkField, $context);
                     }
                 }
                 return $fieldValue;
@@ -448,7 +448,7 @@ $this->module("collections")->extend([
 
         foreach ($entries as &$entry) {
             foreach($fieldsWithLinks as $field) {
-                $entry[$field['name']] = resolveField($entry[$field['name']], $field);
+                $entry[$field['name']] = resolveField($entry[$field['name']], $field, $this);
             }
         }
 
