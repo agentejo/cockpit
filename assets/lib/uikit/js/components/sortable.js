@@ -1,4 +1,4 @@
-/*! UIkit 2.27.1 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.27.2 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 /*
   * Based on nativesortable - Copyright (c) Brian Grinstead - https://github.com/bgrins/nativesortable
   */
@@ -6,13 +6,13 @@
 
     var component;
 
-    if (window.UIkit) {
-        component = addon(UIkit);
+    if (window.UIkit2) {
+        component = addon(UIkit2);
     }
 
     if (typeof define == 'function' && define.amd) {
         define('uikit-sortable', ['uikit'], function(){
-            return component || addon(UIkit);
+            return component || addon(UIkit2);
         });
     }
 
@@ -412,7 +412,7 @@
                     overElement.append($current);
                 }
 
-                UIkit.$doc.trigger('mouseover');
+                UI.$doc.trigger('mouseover');
             }
 
             this.checkEmptyList();

@@ -1254,7 +1254,7 @@ riot.tag2('field-boolean', '<div name="container" class="uk-display-inline-block
 
 });
 
-riot.tag2('field-code', '<codemirror name="codemirror" syntx="{opts.syntax || \'text\'}"></codemirror>', 'field-code .CodeMirror { height: auto; }', '', function(opts) {
+riot.tag2('field-code', '<codemirror name="codemirror" syntax="{opts.syntax || \'text\'}"></codemirror>', 'field-code .CodeMirror { height: auto; }', '', function(opts) {
 
         var $this = this, editor;
 
