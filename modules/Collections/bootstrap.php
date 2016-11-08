@@ -337,6 +337,12 @@ $this->module("collections")->extend([
 
     '_resolveField' => function($fieldValue, $field, $deep, $_deeplevel) {
 
+        static $cache;
+
+        if (null === $cache) {
+            $cache = [];
+        }
+
         switch ($field['type']) {
 
             case 'collectionlink':
@@ -463,12 +469,6 @@ $this->module("collections")->extend([
     },
 
     '_populate' => function($collection, $entries, $deep = false, $_deeplevel = -1) {
-
-        static $cache;
-
-        if (null === $cache) {
-            $cache = [];
-        }
 
         // a maximum of recursive level
         if (is_numeric($deep) && $_deeplevel == $deep) {
