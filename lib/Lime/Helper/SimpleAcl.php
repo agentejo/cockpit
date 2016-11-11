@@ -119,6 +119,20 @@ class SimpleAcl
     }
 
     /**
+     * @param $group
+     * @param $resource
+     * @return mixed
+     */
+    public function getGroupRights($group, $resource)
+    {
+        if (!isset($this->groups[$group])) {
+            return false;
+        }
+
+        return isset($this->rights[$group][$resource]) ? isset($this->rights[$group][$resource]) : $this->groups[$group];
+    }
+
+    /**
      * @param $groups
      * @param $resource
      * @param $actions

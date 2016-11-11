@@ -79,7 +79,7 @@
 
                                             <li class="uk-nav-divider"></li>
 
-                                            @hasaccess?('cockpit', 'manage.media')
+                                            @hasaccess?('cockpit', 'finder')
                                             <li class="{{ strpos($app['route'],'/finder')===0 ? 'uk-active':'' }}"><a href="@route('/finder')"><img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/finder.svg')" width="30" height="30" data-uk-svg alt="assets" /> @lang('Finder')</a></li>
                                             @end
 

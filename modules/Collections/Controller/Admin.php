@@ -100,7 +100,7 @@ class Admin extends \Cockpit\AuthController {
 
     public function export($collection) {
 
-        if (!$this->app->module("cockpit")->hasaccess("collections", 'manage.collections')) {
+        if (!$this->app->module("cockpit")->hasaccess("collections", 'manage')) {
             return false;
         }
 

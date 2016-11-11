@@ -19,7 +19,7 @@
             }
 
             args = args || [];
-            acl  = acl || 'manage.'+module;
+            acl  = acl || 'manage';
 
             if (!Array.isArray(args)) args = [args];
 

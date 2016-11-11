@@ -1,13 +1,13 @@
 <?php
 
 // ACL
-$app("acl")->addResource("regions", ['manage.regions']);
+$app("acl")->addResource("regions", ['manage']);
 
 
 $app->on('admin.init', function() {
 
 
-    if (!$this->module('cockpit')->hasaccess('regions', ['manage.regions'])) {
+    if (!$this->module('cockpit')->getGroupRights('regions')) {
         return;
     }
 

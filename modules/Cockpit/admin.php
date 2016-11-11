@@ -13,8 +13,7 @@ $app->helpers['admin']  = 'Cockpit\\Helper\\Admin';
 
 // ACL
 $app('acl')->addResource('cockpit', [
-    'manage.backups',
-    'manage.media',
+    'finder'
 ]);
 
 
@@ -31,10 +30,9 @@ if ($user = $app->module('cockpit')->getUser()) {
         author:
             $admin: false
             $vars:
-                mediapath: /upload
+                finder.path: /upload
             cockpit:
-                manage.media: true
-                manage.backups: true
+                finder: true
 
     */
 
@@ -162,7 +160,7 @@ $app->on('admin.init', function() {
         $this["user"] = $this->module('cockpit')->getUser();
         return $this->view('cockpit:views/base/finder.php');
 
-    }, $this->module("cockpit")->hasaccess('cockpit', 'manage.media'));
+    }, $this->module("cockpit")->hasaccess('cockpit', 'media'));
 
 }, 0);
 

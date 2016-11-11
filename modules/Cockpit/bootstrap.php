@@ -132,9 +132,18 @@ $this->module("cockpit")->extend([
         $user = $this->getUser();
 
         if (isset($user["group"])) {
-
-            if ($user["group"]=='admin') return true;
             if ($app("acl")->hasaccess($user["group"], $resource, $action)) return true;
+        }
+
+        return false;
+    },
+
+    "getGroupRights" => function($resource) use($app) {
+
+        $user = $this->getUser();
+
+        if (isset($user["group"])) {
+            return $app("acl")->getGroupRights($user["group"], $resource);
         }
 
         return false;

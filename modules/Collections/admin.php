@@ -1,14 +1,14 @@
 <?php
 
 // ACL
-$app("acl")->addResource("collections", ['manage.collections']);
+$app("acl")->addResource("collections", ['manage']);
 
 
 $app->on('admin.init', function() {
 
     $this->helper('admin')->addAssets('collections:assets/field-collectionlink.tag');
 
-    if (!$this->module('cockpit')->hasaccess('collections', ['manage.collections'])) {
+    if (!$this->module('cockpit')->getGroupRights('collections')) {
         return;
     }
 

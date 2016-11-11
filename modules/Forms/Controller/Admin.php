@@ -53,7 +53,7 @@ class Admin extends \Cockpit\AuthController {
 
     public function export($form) {
 
-        if (!$this->app->module("cockpit")->hasaccess("forms", 'manage.forms')) {
+        if (!$this->app->module("cockpit")->hasaccess("forms", 'manage')) {
             return false;
         }
 
