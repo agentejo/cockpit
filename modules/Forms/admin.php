@@ -8,7 +8,7 @@ $app->on('admin.init', function() {
 
     if (!$this->module('cockpit')->getGroupRights('forms')) {
 
-        $this->bind('/regions/*', function() {
+        $this->bind('/forms/*', function() {
             return $this('admin')->denyRequest();
         });
 
