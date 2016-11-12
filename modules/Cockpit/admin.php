@@ -230,6 +230,17 @@ $app->on("after", function() {
             $this->trigger("cockpit.request.error", ['500']);
             break;
 
+        case 401:
+
+            if ($this->req_is('ajax')) {
+                $this->response->body = '{"error": "401", "message":"Unauthorized"}';
+            } else {
+                $this->response->body = $this->view("cockpit:views/errors/401.php");
+            }
+
+            $this->trigger("cockpit.request.error", ['401']);
+            break;
+
         case 404:
 
             if ($this->req_is('ajax')) {

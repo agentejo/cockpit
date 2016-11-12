@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Page not found</title>
+    <title>Unauthorized</title>
     <link rel="icon" href="@base('/favicon.ico')" type="image/x-icon">
     {{ $app->assets($app['app.assets.base'], $app['cockpit/version']) }}
 </head>
@@ -10,14 +10,13 @@
 
     <div class="uk-container uk-container-center uk-text-center uk-animation-slide-bottom">
 
-        <h1><strong>404</strong></h1>
+        <h1><strong>401</strong></h1>
 
-        <img src="@base('assets:app/media/icons/lighthouse.svg')" width="100" height="100">
+        <img src="@base('assets:app/media/icons/lock.svg')" width="100" height="100">
 
-        <p class="uk-text-large uk-margin-large">Uuuups, Page not found.</p>
-        <p><a href="@route('/')">@lang('Back to start')</a></p>
+        <p class="uk-text-large uk-margin-large">Sorry, you are not authorized.</p>
+        <p><a class="uk-button uk-button-outline uk-button-primary uk-button-large" href="@route('/')">Get back</a></p>
 
     </div>
-
 </body>
 </html>

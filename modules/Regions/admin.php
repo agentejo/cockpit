@@ -8,6 +8,11 @@ $app->on('admin.init', function() {
 
 
     if (!$this->module('cockpit')->getGroupRights('regions')) {
+
+        $this->bind('/regions/*', function() {
+            return $this('admin')->denyRequest();
+        });
+
         return;
     }
 

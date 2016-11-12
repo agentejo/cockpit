@@ -19,7 +19,7 @@
     </div>
     @endif
 
-    @hasaccess?('cockpit', 'manage.accounts')
+    @hasaccess?('cockpit', 'accounts')
     <div>
         <div class="uk-panel uk-panel-box uk-panel-card">
 
@@ -33,7 +33,7 @@
     </div>
     @endif
 
-    @hasaccess?('cockpit', 'manage.rest')
+    @hasaccess?('cockpit', 'rest')
     <div>
         <div class="uk-panel uk-panel-box uk-panel-card">
 
@@ -47,7 +47,7 @@
     </div>
     @endif
 
-    @if($app['user']['group']=='admin')
+    @hasaccess?('cockpit', 'webhooks')
     <div>
         <div class="uk-panel uk-panel-box uk-panel-card">
 
@@ -61,7 +61,7 @@
     </div>
     @endif
 
-    @if($app['user']['group']=='admin')
+    @hasaccess?('cockpit', 'info')
     <div>
         <div class="uk-panel uk-panel-box uk-panel-card">
 

@@ -840,6 +840,11 @@ class App implements \ArrayAccess {
             $callback = $callback->bindTo($this, $this);
         }
 
+        // autou-register for /route/* also /route
+        if (substr($path, -2) == '/*' && !isset($this->routes[substr($path, 0, -2)])) {
+            $this->bind(substr($path, 0, -2), $callback, $condition);
+        }
+
         $this->routes[$path] = $callback;
     }
 

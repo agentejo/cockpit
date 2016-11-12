@@ -137,4 +137,15 @@ class Admin extends \Lime\Helper {
 
         return $this->app->module('cockpit')->updateUserOption($key, $value);
     }
+
+    public function denyRequest($message = null) {
+
+        if ($this->app->module('cockpit')->getUser()) {
+            $this->app->response->status = 401;
+        } else {
+            $this->app->response->status = 404;
+        }
+
+        return '';
+    }
 }

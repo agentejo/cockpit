@@ -162,4 +162,44 @@
     .uk-button-group .uk-button:hover,
     .uk-button-group .uk-button:active { position: relative; }
 
+
+    .uk-button-outline {
+        background: none;
+        color: #222;
+        border-width: 1px;
+        border-style: solid;
+        border-color: currentColor;
+        border-radius: 3px;
+
+        &:hover, &:active {
+            background: none;
+            color: #000;
+        }
+    }
+
+    .uk-button-outline.uk-button-primary {
+        color: @button-primary-background;
+        &:hover { color: darken(@button-primary-background, 10%); }
+    }
+    .uk-button-outline.uk-button-danger {
+        color: @button-danger-background;
+        &:hover { color: darken(@button-danger-background, 10%); }
+    }
+    .uk-button-outline.uk-button-success {
+        color: @button-success-background;
+        &:hover { color: darken(@button-success-background, 10%); }
+    }
+
+    .uk-button-group > .uk-button-outline::not(:last-child):not(:first-child) {
+        border-left-color: none;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .uk-button-group > .uk-button-outline:first-child:not(:last-child) {
+        border-right-color: currentColor;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
 }

@@ -9,6 +9,11 @@ $app->on('admin.init', function() {
     $this->helper('admin')->addAssets('collections:assets/field-collectionlink.tag');
 
     if (!$this->module('cockpit')->getGroupRights('collections')) {
+
+        $this->bind('/collections/*', function() {
+            return $this('admin')->denyRequest();
+        });
+
         return;
     }
 

@@ -14,7 +14,7 @@
 
         <img src="@base('assets:app/media/icons/emoticon-sad.svg')" width="100" height="100">
 
-        <p class="uk-text-large">Uuuups, something went wrong.</p>
+        <p class="uk-text-large uk-margin-large">Uuuups, something went wrong.</p>
 
     </div>
 </body>

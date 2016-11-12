@@ -7,6 +7,11 @@ $app("acl")->addResource("forms", ['manage']);
 $app->on('admin.init', function() {
 
     if (!$this->module('cockpit')->getGroupRights('forms')) {
+
+        $this->bind('/regions/*', function() {
+            return $this('admin')->denyRequest();
+        });
+
         return;
     }
 

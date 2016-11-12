@@ -17,11 +17,11 @@
 
             </div>
 
+            @hasaccess?('collections', 'create')
             <div class="uk-float-right">
-
                 <a class="uk-button uk-button-large uk-button-primary uk-width-1-1" href="@route('/collections/collection')"><i class="uk-icon-plus-circle uk-icon-justify"></i>  @lang('Collection')</a>
-
             </div>
+            @end
 
         </div>
 
@@ -68,7 +68,9 @@
                                     <li><a href="@route('/collections/entry')/{collection}">@lang('Add entry')</a></li>
                                     <li class="uk-nav-divider"></li>
                                     <li><a href="@route('/collections/collection')/{ collection }">@lang('Edit')</a></li>
+                                    @hasaccess?('collections', 'delete')
                                     <li><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
+                                    @end
                                     <li class="uk-nav-divider"></li>
                                     <li class="uk-text-truncate"><a href="@route('/collections/export')/{ meta.name }" download="{ meta.name }.collection.json">@lang('Export entries')</a></li>
                                     <li class="uk-text-truncate"><a href="@route('/collections/import/collection')/{ meta.name }">@lang('Import entries')</a></li>
