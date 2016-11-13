@@ -97,19 +97,8 @@
 
         var $this = this;
 
-        this.ready  = false;
-        this.collections = [];
-
-        this.on('mount', function() {
-
-            App.callmodule('collections:collections', true).then(function(data) {
-
-                this.collections = data.result;
-                this.ready  = true;
-                this.update();
-
-            }.bind(this));
-        });
+        this.ready  = true;
+        this.collections = {{ json_encode($app->module('collections')->getCollectionsInGroup()) }};
 
         remove(e, collection) {
 

@@ -138,6 +138,17 @@ $this->module("cockpit")->extend([
         return false;
     },
 
+    "getGroup" => function() use($app) {
+
+        $user = $this->getUser();
+
+        if (isset($user["group"])) {
+            return $user["group"];
+        }
+
+        return false;
+    },
+
     "getGroupRights" => function($resource, $group = null) use($app) {
 
         if ($group) {
@@ -151,6 +162,20 @@ $this->module("cockpit")->extend([
         }
 
         return false;
+    },
+
+    "isSuperAdmin" => function($group = null) use($app) {
+
+        if (!$group) {
+
+            $user = $this->getUser();
+
+            if (isset($user["group"])) {
+                $group = $user["group"];
+            }
+        }
+
+        return $group ? $app("acl")->isSuperAdmin($group) : false;
     },
 
     "getGroups" => function() use($app) {

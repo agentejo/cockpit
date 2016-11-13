@@ -15,6 +15,14 @@ class SimpleAcl
     protected $rights    = array();
     protected $vars      = array();
 
+    /**
+     * @param $group
+     * @param bool
+     */
+    public function isSuperAdmin($group)
+    {
+        return isset($this->groups[$group]) &&  $this->groups[$group];
+    }
 
     /**
      * @param $resource
