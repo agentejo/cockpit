@@ -23,7 +23,7 @@ $app('acl')->addGroup('admin', true);
 
 if ($user = $app->module('cockpit')->getUser()) {
 
-    $aclsettings = $app->retrieve('config/acl', []);
+    $aclsettings = $app->retrieve('config/groups', []);
 
     /*
     acl:
