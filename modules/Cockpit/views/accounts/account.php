@@ -2,7 +2,7 @@
 
 <div>
     <ul class="uk-breadcrumb">
-        @hasaccess?('cockpit', 'manage.accounts')
+        @hasaccess?('cockpit', 'accounts')
         <li><a href="@route('/settings')">@lang('Settings')</a></li>
         <li><a href="@route('/accounts')">@lang('Accounts')</a></li>
         @endif
