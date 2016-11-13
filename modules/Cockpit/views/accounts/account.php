@@ -105,7 +105,7 @@
             </div>
         </div>
 
-        @if($app["user"]["group"]=="admin" AND @$account["_id"]!=$app["user"]["_id"])
+        @if($app->module('cockpit')->isSuperAdmin() AND @$account["_id"] != $app["user"]["_id"])
         <div class="uk-form-row">
             <label class="uk-text-small">@lang('Group')</label>
 
