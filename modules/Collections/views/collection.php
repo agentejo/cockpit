@@ -93,13 +93,13 @@
                         </div>
                     </div>
 
-                    <div class="uk-panel uk-panel-box uk-panel-card uk-margin" each="{group in aclgroups}">
+                    <div class="uk-panel uk-panel-box uk-panel-space uk-panel-card uk-margin" each="{group in aclgroups}">
 
                         <div class="uk-grid">
-                            <div class="uk-flex uk-flex-middle">
-                                <div class="uk-panel-space uk-text-center">
+                            <div class="uk-width-1-3 uk-flex uk-flex-middle uk-flex-center">
+                                <div class="uk-text-center">
                                     <p class="uk-text-uppercase uk-text-small">{ group }</p>
-                                    <img class="uk-text-muted uk-svg-adjust" src="@url('assets:app/media/icons/accounts.svg')" alt="icon" width="100" data-uk-svg>
+                                    <img class="uk-text-muted uk-svg-adjust" src="@url('assets:app/media/icons/accounts.svg')" alt="icon" width="80" data-uk-svg>
                                 </div>
                             </div>
                             <div class="uk-flex-item-1">
