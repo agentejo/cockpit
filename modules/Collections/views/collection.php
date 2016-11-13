@@ -73,7 +73,7 @@
 
                 <ul class="uk-tab uk-margin-large-bottom">
                     <li class="{ tab=='fields' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }">{ App.i18n.get('Fields') }</a></li>
-                    <li class="{ tab=='acl' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }">{ App.i18n.get('Acl') }</a></li>
+                    <li class="{ tab=='acl' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }">{ App.i18n.get('Access') }</a></li>
                 </ul>
 
                 <div class="uk-form-row" show="{tab=='fields'}">
@@ -97,16 +97,20 @@
 
                         <div class="uk-grid">
                             <div class="uk-flex uk-flex-middle">
-                                <div class="uk-panel-space">
+                                <div class="uk-panel-space uk-text-center">
+                                    <p class="uk-text-uppercase uk-text-small">{ group }</p>
                                     <img class="uk-text-muted uk-svg-adjust" src="@url('assets:app/media/icons/accounts.svg')" alt="icon" width="100" data-uk-svg>
                                 </div>
                             </div>
                             <div class="uk-flex-item-1">
-                                <strong class="uk-text-uppercase uk-text-small">{ group }</strong>
-                                <div class="uk-margin">
-                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.{group}.view" label="@lang('View Entries')"></field-boolean></div>
-                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.{group}.create" label="@lang('Create Entries')"></field-boolean></div>
-                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.{group}.delete" label="@lang('Delete Entries')"></field-boolean></div>
+                                <div class="uk-margin uk-text-small">
+                                    <strong class="uk-text-uppercase">@lang('Collection')</strong>
+                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.{group}.collection_edit" label="@lang('Edit Collection')"></field-boolean></div>
+                                    <strong class="uk-text-uppercase uk-display-block uk-margin-top">@lang('Entries')</strong>
+                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.{group}.entries_view" label="@lang('View Entries')"></field-boolean></div>
+                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.{group}.entries_edit" label="@lang('Edit Entries')"></field-boolean></div>
+                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.{group}.entries_create" label="@lang('Create Entries')"></field-boolean></div>
+                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.{group}.entries_delete" label="@lang('Delete Entries')"></field-boolean></div>
                                 </div>
                             </div>
                         </div>
