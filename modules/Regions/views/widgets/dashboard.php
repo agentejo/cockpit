@@ -3,7 +3,14 @@
     <div class="uk-panel-box uk-panel-card">
 
         <div class="uk-panel-box-header uk-flex">
-            <strong class="uk-panel-box-header-title uk-flex-item-1">@lang('Regions')</strong>
+            <strong class="uk-panel-box-header-title uk-flex-item-1">
+                @lang('Regions')
+
+                @if($app->module('cockpit')->hasaccess('regions', 'create'))
+                <a href="@route('/regions/region')" class="uk-icon-plus uk-margin-small-left" title="@lang('Create Region')" data-uk-tooltip></a>
+                @endif
+            </strong>
+
             @if(count($regions))
             <span class="uk-badge uk-flex uk-flex-middle"><span>{{ count($regions) }}</span></span>
             @endif

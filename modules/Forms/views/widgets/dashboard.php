@@ -3,7 +3,14 @@
     <div class="uk-panel-box uk-panel-card">
 
         <div class="uk-panel-box-header uk-flex">
-            <strong class="uk-panel-box-header-title uk-flex-item-1">@lang('Forms')</strong>
+            <strong class="uk-panel-box-header-title uk-flex-item-1">
+                @lang('Forms')
+
+                @if($app->module('cockpit')->hasaccess('forms', 'form'))
+                <a href="@route('/forms/form')" class="uk-icon-plus uk-margin-small-left" title="@lang('Create Form')" data-uk-tooltip></a>
+                @endif
+            </strong>
+
             @if(count($forms))
             <span class="uk-badge uk-flex uk-flex-middle"><span>{{ count($forms) }}</span></span>
             @endif
