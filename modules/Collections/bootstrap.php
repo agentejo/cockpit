@@ -441,7 +441,7 @@ $this->module("collections")->extend([
 
         return array_filter($fields, function($field) {
 
-            if (in_array($field['type'], ['collectionlink','repeater', 'set'])) {
+            if (!in_array($field['type'], ['collectionlink','repeater', 'set'])) {
                 return false;
             }
 
