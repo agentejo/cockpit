@@ -13,7 +13,7 @@ class Admin extends \Cockpit\AuthController {
 
     public function collection($name = null) {
 
-        $collection = [ 'name' => '', 'label' => '', 'color' => '', 'fields'=>[], 'sortable' => false, 'in_menu' => false ];
+        $collection = [ 'name' => '', 'label' => '', 'color' => '', 'fields'=>[], 'acl' => new \ArrayObject, 'sortable' => false, 'in_menu' => false ];
 
         if ($name) {
 
@@ -35,7 +35,19 @@ class Admin extends \Cockpit\AuthController {
             $templates[] = $col;
         }
 
-        return $this->render('collections:views/collection.php', compact('collection', 'templates'));
+        // acl groups
+        $aclgroups = [];
+
+        foreach ($this->app->helper("acl")->getGroups() as $group => $superAdmin) {
+
+            if ($superAdmin) continue;
+
+            if ($this->module('cockpit')->getGroupRights('collections', $group)) {
+                $aclgroups[] = $group;
+            }
+        }
+
+        return $this->render('collections:views/collection.php', compact('collection', 'templates', 'aclgroups'));
     }
 
     public function entries($collection) {

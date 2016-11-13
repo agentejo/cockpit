@@ -9,7 +9,7 @@
 
     <form class="uk-form" onsubmit="{ submit }">
 
-        <div class="uk-grid uk-grid-divider">
+        <div class="uk-grid">
 
             <div class="uk-width-medium-1-2">
 

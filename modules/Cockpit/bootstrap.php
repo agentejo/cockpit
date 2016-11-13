@@ -138,7 +138,11 @@ $this->module("cockpit")->extend([
         return false;
     },
 
-    "getGroupRights" => function($resource) use($app) {
+    "getGroupRights" => function($resource, $group = null) use($app) {
+
+        if ($group) {
+            return $app("acl")->getGroupRights($group, $resource);
+        }
 
         $user = $this->getUser();
 
