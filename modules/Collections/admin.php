@@ -1,7 +1,7 @@
 <?php
 
 // ACL
-$app("acl")->addResource("collections", ['manage']);
+$app("acl")->addResource("collections", ['create', 'delete']);
 
 $this->module("collections")->extend([
 
@@ -20,12 +20,35 @@ $this->module("collections")->extend([
 
         foreach ($_collections as $collection => $meta) {
 
-            if (isset($meta['acl'][$group]['view']) && $meta['acl'][$group]['view']) {
+            if (isset($meta['acl'][$group]['entries_view']) && $meta['acl'][$group]['entries_view']) {
                 $collections[$collection] = $meta;
             }
         }
 
         return $collections;
+    },
+
+    'hasaccess' => function($collection, $action, $group = null) {
+
+        $collection = $this->collection($collection);
+
+        if (!$collection) {
+            return false;
+        }
+
+        if ($this->app->module('cockpit')->isSuperAdmin()) {
+            return true;
+        }
+
+        if (!$group) {
+            $group = $this->app->module('cockpit')->getGroup();
+        }
+
+        if (isset($collection['acl'][$group][$action])) {
+            return $collection['acl'][$group][$action];
+        }
+
+        return false;
     }
 ]);
 

@@ -59,21 +59,22 @@
 
                         <div data-uk-dropdown="delay:300">
 
-                            <a class="uk-icon-cog" style="color:{ (meta.color) }" href="@route('/collections/collection')/{ collection }"></a>
+                            <a class="uk-icon-cog" style="color:{ (meta.color) }" href="@route('/collections/collection')/{ collection }" if="{ meta.allowed.edit }"></a>
+                            <a class="uk-icon-cog" style="color:{ (meta.color) }" if="{ !meta.allowed.edit }"></a>
 
                             <div class="uk-dropdown">
                                 <ul class="uk-nav uk-nav-dropdown">
                                     <li class="uk-nav-header">@lang('Actions')</li>
                                     <li><a href="@route('/collections/entries')/{collection}">@lang('Entries')</a></li>
-                                    <li><a href="@route('/collections/entry')/{collection}">@lang('Add entry')</a></li>
-                                    <li class="uk-nav-divider"></li>
-                                    <li><a href="@route('/collections/collection')/{ collection }">@lang('Edit')</a></li>
+                                    <li><a href="@route('/collections/entry')/{collection}" if="{ meta.allowed.entries_create }">@lang('Add entry')</a></li>
+                                    <li if="{ meta.allowed.edit || meta.allowed.delete }" class="uk-nav-divider"></li>
+                                    <li if="{ meta.allowed.edit }"><a href="@route('/collections/collection')/{ collection }">@lang('Edit')</a></li>
                                     @hasaccess?('collections', 'delete')
-                                    <li><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
+                                    <li if="{ meta.allowed.delete }"><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
                                     @end
-                                    <li class="uk-nav-divider"></li>
-                                    <li class="uk-text-truncate"><a href="@route('/collections/export')/{ meta.name }" download="{ meta.name }.collection.json">@lang('Export entries')</a></li>
-                                    <li class="uk-text-truncate"><a href="@route('/collections/import/collection')/{ meta.name }">@lang('Import entries')</a></li>
+                                    <li class="uk-nav-divider" if="{ meta.allowed.edit }"></li>
+                                    <li class="uk-text-truncate" if="{ meta.allowed.edit }"><a href="@route('/collections/export')/{ meta.name }" download="{ meta.name }.collection.json">@lang('Export entries')</a></li>
+                                    <li class="uk-text-truncate" if="{ meta.allowed.edit }"><a href="@route('/collections/import/collection')/{ meta.name }">@lang('Import entries')</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -98,7 +99,7 @@
         var $this = this;
 
         this.ready  = true;
-        this.collections = {{ json_encode($app->module('collections')->getCollectionsInGroup()) }};
+        this.collections = {{ json_encode($collections) }};
 
         remove(e, collection) {
 

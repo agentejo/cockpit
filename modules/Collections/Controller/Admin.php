@@ -8,10 +8,29 @@ class Admin extends \Cockpit\AuthController {
 
     public function index() {
 
-        return $this->render('collections:views/index.php');
+        $collections = $this->module('collections')->getCollectionsInGroup();
+
+        foreach ($collections as $collection => $meta) {
+            $collections[$collection]['allowed'] = [
+                'delete' => $this->module('cockpit')->hasaccess('collections', 'delete'),
+                'create' => $this->module('cockpit')->hasaccess('collections', 'create'),
+                'edit' => $this->module('collections')->hasaccess($collection, 'collection_edit'),
+                'entries_create' => $this->module('collections')->hasaccess($collection, 'collection_create')
+            ];
+        }
+
+        return $this->render('collections:views/index.php', compact('collections'));
     }
 
     public function collection($name = null) {
+
+        if ($name && !$this->module('collections')->hasaccess($name, 'collection_edit')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        if (!$name && !$this->module('cockpit')->hasaccess('collections', 'create')) {
+            return $this->helper('admin')->denyRequest();
+        }
 
         $collection = [ 'name' => '', 'label' => '', 'color' => '', 'fields'=>[], 'acl' => new \ArrayObject, 'sortable' => false, 'in_menu' => false ];
 
@@ -52,6 +71,10 @@ class Admin extends \Cockpit\AuthController {
 
     public function entries($collection) {
 
+        if (!$this->module('collections')->hasaccess($collection, 'entries_view')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
         $collection = $this->module('collections')->collection($collection);
 
         if (!$collection) {
@@ -77,6 +100,14 @@ class Admin extends \Cockpit\AuthController {
     }
 
     public function entry($collection, $id = null) {
+
+        if ($id && !$this->module('collections')->hasaccess($collection, 'entries_view')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        if (!$id && !$this->module('collections')->hasaccess($collection, 'entries_create')) {
+            return $this->helper('admin')->denyRequest();
+        }
 
         $collection = $this->module('collections')->collection($collection);
         $entry      = new \ArrayObject([]);

@@ -8,9 +8,10 @@
 <div>
     <ul class="uk-breadcrumb">
         <li><a href="@route('/collections')">@lang('Collections')</a></li>
-        <li data-uk-dropdown="mode:'hover, delay:300'">
+        <li data-uk-dropdown="mode:'hover', delay:300">
             <a href="@route('/collections/entries/'.$collection['name'])"><i class="uk-icon-bars"></i> {{ @$collection['label'] ? $collection['label']:$collection['name'] }}</a>
 
+            @if($app->module('collections')->hasaccess($collection['name'], 'collection_edit'))
             <div class="uk-dropdown">
                 <ul class="uk-nav uk-nav-dropdown">
                     <li class="uk-nav-header">@lang('Actions')</li>
@@ -20,6 +21,7 @@
                     <li class="uk-text-truncate"><a href="@route('/collections/import/collection/'.$collection['name'])">@lang('Import entries')</a></li>
                 </ul>
             </div>
+            @endif
         </li>
     </ul>
 </div>

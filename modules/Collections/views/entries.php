@@ -14,6 +14,7 @@
 
             <a><i class="uk-icon-bars"></i> {{ @$collection['label'] ? $collection['label']:$collection['name'] }}</a>
 
+            @if($app->module('collections')->hasaccess($collection['name'], 'collection_edit'))
             <div class="uk-dropdown">
                 <ul class="uk-nav uk-nav-dropdown">
                     <li class="uk-nav-header">@lang('Actions')</li>
@@ -23,6 +24,7 @@
                     <li class="uk-text-truncate"><a href="@route('/collections/import/collection/'.$collection['name'])">@lang('Import entries')</a></li>
                 </ul>
             </div>
+            @endif
 
         </li>
     </ul>
@@ -81,12 +83,15 @@
 
             <div class="uk-float-right">
 
+                @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
                 <a class="uk-button uk-button-large uk-button-danger uk-animation-fade" onclick="{ removeselected }" if="{ selected.length }">
                     @lang('Delete') <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
                 </a>
+                @endif
 
+                @if($app->module('collections')->hasaccess($collection['name'], 'entries_create'))
                 <a class="uk-button uk-button-large uk-button-primary" href="@route('/collections/entry/'.$collection['name'])"><i class="uk-icon-plus-circle uk-icon-justify"></i> @lang('Entry')</a>
-
+                @endif
             </div>
         </div>
 
