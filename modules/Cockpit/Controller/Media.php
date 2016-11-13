@@ -32,6 +32,7 @@ class Media extends \Cockpit\AuthController {
         ];
 
         $cpfolder = $this->app->path('#root:');
+        $isSuperAdmin = $this->module('cockpit')->isSuperAdmin();
 
         if ($path = $this->param("path", false)){
 
@@ -43,7 +44,7 @@ class Media extends \Cockpit\AuthController {
                foreach (new \DirectoryIterator($dir) as $file) {
 
                     if ($file->isDot()) continue;
-                    if ($file->isDir() && $file->getRealPath() == $cpfolder && $this->app['user']['group'] != 'admin' ) continue;
+                    if ($file->isDir() && $file->getRealPath() == $cpfolder && !$isSuperAdmin ) continue;
 
                     $filename = $file->getFilename();
 

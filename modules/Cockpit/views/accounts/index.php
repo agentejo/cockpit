@@ -7,7 +7,7 @@
 
 <div class="uk-margin-top" riot-view>
 
-    @if($app["user"]["group"]=="admin")
+    @if($app->module('cockpit')->isSuperAdmin())
     <div class="uk-form uk-clearfix">
 
         <span class="uk-form-icon">
