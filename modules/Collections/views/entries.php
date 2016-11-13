@@ -235,7 +235,7 @@
                         yepp = ($this.selected.indexOf(entry._id) === -1);
 
                         if (!yepp) {
-                            promises.push(App.callmodule('collections:remove', [$this.collection.name, {'_id':entry._id}]));
+                            promises.push(App.request('/collections/delete_entries/'+$this.collection.name, {filter: {'_id':entry._id}}));
                         }
 
                         return yepp;
@@ -381,11 +381,11 @@
 
             delete entry._id;
 
-            App.callmodule('collections:save',[this.collection.name, entry]).then(function(data) {
+            App.request('/collections/save_entry/'+this.collection.name, {"entry": entry}).then(function(entry) {
 
-                if (data.result) {
+                if (entry) {
 
-                    $this.entries.unshift(data.result);
+                    $this.entries.unshift(entry);
                     App.ui.notify("Entry duplicated", "success");
                     $this.update();
                 }

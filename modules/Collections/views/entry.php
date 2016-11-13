@@ -174,13 +174,13 @@
 
         submit() {
 
-            App.callmodule('collections:save',[this.collection.name, this.entry]).then(function(data) {
+            App.request('/collections/save_entry/'+this.collection.name,{entry:this.entry}).then(function(entry) {
 
-                if (data.result) {
+                if (entry) {
 
                     App.ui.notify("Saving successful", "success");
 
-                    $this.entry = data.result;
+                    $this.entry = entry;
 
                     $this.fields.forEach(function(field){
 

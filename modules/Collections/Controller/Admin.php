@@ -141,6 +141,57 @@ class Admin extends \Cockpit\AuthController {
         return $this->render($view, compact('collection', 'entry'));
     }
 
+    public function save_entry($collection) {
+
+        $collection = $this->module('collections')->collection($collection);
+
+        if (!$collection) {
+            return false;
+        }
+
+        $entry = $this->param('entry', false);
+
+        if (!$entry) {
+            return false;
+        }
+
+        if (!isset($entry['_id']) && !$this->module('collections')->hasaccess($collection['name'], 'entries_create')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        if (isset($entry['_id']) && !$this->module('collections')->hasaccess($collection['name'], 'entries_edit')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        $entry = $this->module('collections')->save($collection['name'], $entry);
+
+        return $entry;
+    }
+
+    public function delete_entries($collection) {
+
+        $collection = $this->module('collections')->collection($collection);
+
+        if (!$collection) {
+            return false;
+        }
+
+        if (!$this->module('collections')->hasaccess($collection['name'], 'entries_delete')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        $filter = $this->param('filter', false);
+
+        if (!$filter) {
+            return false;
+        }
+
+        $this->module('collections')->remove($collection['name'], $filter);
+
+
+        return true;
+    }
+
     public function export($collection) {
 
         if (!$this->app->module("cockpit")->hasaccess("collections", 'manage')) {
