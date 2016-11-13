@@ -6,6 +6,10 @@ class Accounts extends \Cockpit\AuthController {
 
     public function index() {
 
+        if (!$this->module('cockpit')->hasaccess('cockpit', 'accounts')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
         $current  = $this->user["_id"];
         $accounts = $this->storage->find("cockpit/accounts", [
             "filter" => $this->user["group"]=="admin" ? null:["_id"=>$current],
