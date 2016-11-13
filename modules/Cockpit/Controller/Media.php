@@ -32,6 +32,7 @@ class Media extends \Cockpit\AuthController {
         ];
 
         $cpfolder = $this->app->path('#root:');
+        $sitefolder = $this->app->path('site:');
         $isSuperAdmin = $this->module('cockpit')->isSuperAdmin();
 
         if ($path = $this->param("path", false)){
@@ -58,6 +59,7 @@ class Media extends \Cockpit\AuthController {
                         "is_writable" => is_writable($file->getPathname()),
                         "name" => $filename,
                         "path" => trim($path.'/'.$file->getFilename(), '/'),
+                        "rel_site_path" => trim(str_replace($sitefolder, '', $file->getPathname()), '/'),
                         "url"  => $this->app->pathToUrl($file->getPathname()),
                         "size" => $isDir ? "" : $this->app->helper("utils")->formatSize($file->getSize()),
                         "ext"  => $isDir ? "" : strtolower($file->getExtension()),
