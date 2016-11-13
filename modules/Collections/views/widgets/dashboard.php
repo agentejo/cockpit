@@ -26,7 +26,9 @@
                                 </a>
                             </div>
                             <div>
+                                @if($app->module('collections')->hasaccess($col['name'], 'entries_create'))
                                 <a class="uk-link-muted" href="@route('/collections/entry')/{{ $col['name'] }}" title="@lang('Add entry')" data-uk-tooltip="pos:'right'"><i class="uk-icon-plus-circle"></i></a>
+                                @endif
                             </div>
                         </div>
                     </li>
