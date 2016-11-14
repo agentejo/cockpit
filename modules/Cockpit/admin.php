@@ -26,7 +26,7 @@ if ($user = $app->module('cockpit')->getUser()) {
     $aclsettings = $app->retrieve('config/groups', []);
 
     /*
-    acl:
+    groups:
         author:
             $admin: false
             $vars:
