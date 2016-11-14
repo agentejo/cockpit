@@ -180,7 +180,7 @@ $this->module("cockpit")->extend([
 
     "getGroups" => function() use($app) {
 
-        $groups = array_merge(['admin'], array_keys($app->retrieve("config/acl", [])));
+        $groups = array_merge(['admin'], array_keys($app->retrieve("config/groups", [])));
 
         return array_unique($groups);
     },
