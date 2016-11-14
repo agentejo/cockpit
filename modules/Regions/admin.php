@@ -82,7 +82,7 @@ $app->on('admin.init', function() {
      */
     $this->on('cockpit.search', function($search, $list) {
 
-        foreach ($this->module('regions')->regions() as $region => $meta) {
+        foreach ($this->module('regions')->getRegionsInGroup() as $region => $meta) {
 
             if (stripos($region, $search)!==false || stripos($meta['label'], $search)!==false) {
 
