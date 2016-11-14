@@ -47,7 +47,11 @@
                     <img src="@url('regions:icon.svg')" width="30" height="30" alt="Regions" data-uk-svg />
                 </p>
 
-                @lang('No regions'). <a href="@route('/regions/region')">@lang('Create a region')</a>.
+                @lang('No regions').
+
+                @hasaccess?('regions', 'create')
+                <a href="@route('/regions/region')">@lang('Create a region')</a>.
+                @end
 
             </div>
 
