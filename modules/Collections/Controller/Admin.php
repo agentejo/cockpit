@@ -58,12 +58,8 @@ class Admin extends \Cockpit\AuthController {
         $aclgroups = [];
 
         foreach ($this->app->helper("acl")->getGroups() as $group => $superAdmin) {
-
-            if ($superAdmin) continue;
-
-            if ($this->module('cockpit')->getGroupRights('collections', $group)) {
-                $aclgroups[] = $group;
-            }
+            
+            if (!$superAdmin) $aclgroups[] = $group;
         }
 
         return $this->render('collections:views/collection.php', compact('collection', 'templates', 'aclgroups'));

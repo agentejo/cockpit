@@ -57,7 +57,7 @@ $this->module("regions")->extend([
 $app->on('admin.init', function() {
 
 
-    if (!$this->module('cockpit')->getGroupRights('regions')) {
+    if (!$this->module('cockpit')->getGroupRights('regions') && !$this->module('regions')->getRegionsInGroup()) {
 
         $this->bind('/regions/*', function() {
             return $this('admin')->denyRequest();
