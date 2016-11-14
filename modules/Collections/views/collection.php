@@ -154,6 +154,10 @@
             this.collection.acl = {};
         }
 
+        if (Array.isArray(this.collection.acl)) {
+            this.collection.acl = {};
+        }
+
         this.on('update', function(){
 
             // lock name if saved

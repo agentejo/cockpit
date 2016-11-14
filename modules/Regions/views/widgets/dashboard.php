@@ -6,9 +6,9 @@
             <strong class="uk-panel-box-header-title uk-flex-item-1">
                 @lang('Regions')
 
-                @if($app->module('cockpit')->hasaccess('regions', 'create'))
+                @hasaccess?('regions', 'create')
                 <a href="@route('/regions/region')" class="uk-icon-plus uk-margin-small-left" title="@lang('Create Region')" data-uk-tooltip></a>
-                @endif
+                @end
             </strong>
 
             @if(count($regions))

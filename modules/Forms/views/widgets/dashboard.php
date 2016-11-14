@@ -6,9 +6,9 @@
             <strong class="uk-panel-box-header-title uk-flex-item-1">
                 @lang('Forms')
 
-                @if($app->module('cockpit')->hasaccess('forms', 'form'))
+                @hasaccess?('forms', 'create')
                 <a href="@route('/forms/form')" class="uk-icon-plus uk-margin-small-left" title="@lang('Create Form')" data-uk-tooltip></a>
-                @endif
+                @end
             </strong>
 
             @if(count($forms))

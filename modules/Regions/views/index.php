@@ -17,11 +17,11 @@
 
             </div>
 
+            @hasaccess?('regions', 'create')
             <div class="uk-float-right">
-
                 <a class="uk-button uk-button-large uk-button-primary uk-width-1-1" href="@route('/regions/region')"><i class="uk-icon-plus-circle uk-icon-justify"></i>  @lang('Region')</a>
-
             </div>
+            @endif
 
         </div>
 
@@ -59,15 +59,18 @@
 
                         <div data-uk-dropdown="delay:300">
 
-                            <a class="uk-icon-cog" style="color: { (meta.color) }" href="@route('/regions/region')/{ region }"></a>
+                            <a class="uk-icon-cog" style="color: { (meta.color) }" href="@route('/regions/region')/{ region }" if="{ meta.allowed.region_edit }"></a>
+                            <a class="uk-icon-cog" style="color: { (meta.color) }" if="{ !meta.allowed.region_edit }"></a>
 
                             <div class="uk-dropdown">
                                 <ul class="uk-nav uk-nav-dropdown">
                                     <li class="uk-nav-header">@lang('Actions')</li>
                                     <li><a href="@route('/regions/form')/{ region }">@lang('Form')</a></li>
-                                    <li class="uk-nav-divider"></li>
-                                    <li><a href="@route('/regions/region')/{ region }">@lang('Edit')</a></li>
+                                    <li if="{ meta.allowed.region_edit }" class="uk-nav-divider"></li>
+                                    <li if="{ meta.allowed.region_edit }"><a href="@route('/regions/region')/{ region }">@lang('Edit')</a></li>
+                                    @hasaccess?('regions', 'delete')
                                     <li><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
+                                    @end
                                 </ul>
                             </div>
                         </div>
@@ -89,19 +92,8 @@
 
         var $this = this;
 
-        this.ready  = false;
-        this.regions = [];
-
-        this.on('mount', function() {
-
-            App.callmodule('regions:regions', true).then(function(data) {
-
-                this.regions = data.result;
-                this.ready  = true;
-                this.update();
-
-            }.bind(this));
-        });
+        this.ready  = true;
+        this.regions = {{ json_encode($regions) }};
 
         remove(e, region) {
 
@@ -109,7 +101,7 @@
 
             App.ui.confirm("Are you sure?", function() {
 
-                App.callmodule('regions:removeRegion', region).then(function(data) {
+                App.request('/regions/remove_region/'+region, {nc:Math.random()}).then(function(data) {
 
                     App.ui.notify("Region removed", "success");
 

@@ -9,16 +9,18 @@
 
     <ul class="uk-breadcrumb">
         <li><a href="@route('/regions')">@lang('Regions')</a></li>
-        <li class="uk-active" data-uk-dropdown="mode:'click'">
+        <li class="uk-active" data-uk-dropdown>
 
             <a><i class="uk-icon-bars"></i> {{ @$region['label'] ? $region['label']:$region['name'] }}</a>
 
+            @if($app->module('regions')->hasaccess($region['name'], 'edit'))
             <div class="uk-dropdown">
                 <ul class="uk-nav uk-nav-dropdown">
                     <li class="uk-nav-header">@lang('Actions')</li>
                     <li><a href="@route('/regions/region/'.$region['name'])">@lang('Edit')</a></li>
                 </ul>
             </div>
+            @endif
 
         </li>
     </ul>
@@ -171,13 +173,13 @@
 
             submit() {
 
-                App.callmodule('regions:updateRegion',[this.region.name, {data:this.data}]).then(function(data) {
+                App.request('/regions/update_region/'+this.region.name, {data:this.data}).then(function(region) {
 
-                    if (data.result) {
+                    if (region) {
 
                         App.ui.notify("Saving successful", "success");
 
-                        $this.data = data.result.data;
+                        $this.data = region.data;
 
                         $this.fields.forEach(function(field){
 

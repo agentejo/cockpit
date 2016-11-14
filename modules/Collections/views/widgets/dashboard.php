@@ -6,9 +6,9 @@
             <strong class="uk-panel-box-header-title uk-flex-item-1">
                 @lang('Collections')
 
-                @if($app->module('cockpit')->hasaccess('collections', 'create'))
+                @hasaccess?('collections', 'create')
                 <a href="@route('/collections/collection')" class="uk-icon-plus uk-margin-small-left" title="@lang('Create Collection')" data-uk-tooltip></a>
-                @endif
+                @end
             </strong>
             @if(count($collections))
             <span class="uk-badge uk-flex uk-flex-middle"><span>{{ count($collections) }}</span></span>
