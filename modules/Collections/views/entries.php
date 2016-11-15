@@ -202,7 +202,7 @@
 
             App.ui.confirm("Are you sure?", function() {
 
-                App.callmodule('collections:remove', [this.collection.name, {'_id':entry._id}]).then(function(data) {
+                App.request('/collections/delete_entries/'+$this.collection.name, {filter: {'_id':entry._id}}).then(function(data) {
 
                     App.ui.notify("Entry removed", "success");
 
