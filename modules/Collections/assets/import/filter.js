@@ -75,13 +75,13 @@
                         return filter;
                     });
 
-                    App.callmodule('collections:find', [field.options.link, options]).then(function(data) {
+                    App.request('/collections/_find', {collection:field.options.link, options:options}).then(function(data) {
 
-                        if (data.result && data.result.length) {
+                        if (data && data.length) {
 
                             if (field.options.multiple) {
 
-                                var entries = _.map(data.result, function(item){
+                                var entries = _.map(data, function(item){
                                     return {
                                         _id: item._id,
                                         display: item[field.options.display] || item[Filter.collections[field.options.link].fields[0].name] || 'n/a'
@@ -94,7 +94,7 @@
 
                                 var entry = {
                                     _id:data.result[0]._id,
-                                    display: data.result[0][field.options.display] || data.result[0][Filter.collections[field.options.link].fields[0].name] || 'n/a'
+                                    display: data[0][field.options.display] || data[0][Filter.collections[field.options.link].fields[0].name] || 'n/a'
                                 };
 
                                 $this.resolve(entry);
@@ -140,8 +140,8 @@
 
     Filter._getCollections = new Promise(function(resolve){
 
-        App.callmodule('collections:collections', true).then(function(data) {
-            var collections = _.keyBy(data.result, 'name');
+        App.request('/collections/collections', {nc: Math.random()}).then(function(collections) {
+            var collections = _.keyBy(collections, 'name');
             resolve(collections);
         });
     });
