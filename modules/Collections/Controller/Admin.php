@@ -22,6 +22,19 @@ class Admin extends \Cockpit\AuthController {
         return $this->render('collections:views/index.php', compact('collections'));
     }
 
+    public function _collections() {
+        return $this->module('collections')->collections();
+    }
+
+    public function _find() {
+
+        if ($this->param('collection') && $this->param('options')) {
+            return $this->module('collections')->find($this->param('collection'), $this->param('options'));
+        }
+
+        return false;
+    }
+
     public function collection($name = null) {
 
         if ($name && !$this->module('collections')->hasaccess($name, 'collection_edit')) {
@@ -58,7 +71,7 @@ class Admin extends \Cockpit\AuthController {
         $aclgroups = [];
 
         foreach ($this->app->helper("acl")->getGroups() as $group => $superAdmin) {
-            
+
             if (!$superAdmin) $aclgroups[] = $group;
         }
 

@@ -163,8 +163,8 @@
 
         modal = UIkit.modal(App.$('.uk-modal', this.root));
 
-        Cockpit.callmodule('collections:collections').then(function(data){
-            collections = data.result;
+        App.request('/collections/_collections').then(function(data){
+            collections = data;
             $this.collection  = collections[opts.link] || null;
             _init();
         });
@@ -247,12 +247,12 @@
 
         this.loading = true;
 
-        return App.callmodule('collections:find', [this.collection.name, options]).then(function(data){
+        return App.request('/collections/_find', {collection:this.collection.name, options: options}).then(function(data){
 
-            this.entries = this.entries.concat(data.result);
+            this.entries = this.entries.concat(data);
 
             this.ready    = true;
-            this.loadmore = data.result.length && data.result.length == limit;
+            this.loadmore = data.length && data.length == limit;
 
             this.loading = false;
 
