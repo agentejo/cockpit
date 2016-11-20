@@ -7,6 +7,10 @@
     <div show="{mode=='edit' && items.length}">
         <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
 
+            <div class="uk-text-muted uk-text-small uk-margin">
+                { App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }
+            </div>
+
             <cp-field class="uk-width-1-1" field="{ item.field }" bind="items[{ idx }].value"></cp-field>
 
             <div class="uk-panel-box-footer uk-bg-light">
