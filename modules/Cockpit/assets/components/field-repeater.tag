@@ -7,8 +7,8 @@
     <div show="{mode=='edit' && items.length}">
         <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
 
-            <div class="uk-text-muted uk-text-small uk-margin">
-                { App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }
+            <div class="uk-text-small uk-margin">
+                <span class="uk-text-primary uk-badge uk-badget-outline">{ App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</span>
             </div>
 
             <cp-field class="uk-width-1-1" field="{ item.field }" bind="items[{ idx }].value"></cp-field>
