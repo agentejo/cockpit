@@ -15,4 +15,19 @@ class RestApi extends \LimeExtra\Controller {
         return is_null($content) ? false : $content;
     }
 
+    public function data($name = null) {
+
+        if (!$name) {
+            return false;
+        }
+
+        $region = $this->region($name);
+
+        if (!$region) {
+            return false;
+        }
+
+        return isset($region['data']) ? $region['data'] : [];
+    }
+
 }
