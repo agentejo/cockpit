@@ -1,0 +1,4 @@
+cockpit:
+  image: cockpit
+  ports:
+    - 80
