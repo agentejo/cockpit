@@ -8,16 +8,12 @@
 
         <div class="uk-margin" each="{field,idx in fields}">
             <label><span class="uk-text-small">{ field.label || field.name || ''}</span></label>
-            <div data-is="{ 'field-'+(field.type || 'text') }" class="uk-width-1-1" bind="value.{field.name}" opts="{ (field.options || {}) }"></div>
+            <cp-field type="{ field.type || 'text' }" bind="value.{field.name}" opts="{ field.options || {} }"></cp-field>
         </div>
 
     </div>
 
     <script>
-
-        this.on('mount', function() { this.trigger('update'); });
-        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
-
 
         var $this = this;
 

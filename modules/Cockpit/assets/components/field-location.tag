@@ -16,9 +16,6 @@
 
     <script>
 
-        this.on('mount', function() { this.trigger('update'); });
-        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
-
         var map, marker;
 
         var locale = document.documentElement.lang.toUpperCase();

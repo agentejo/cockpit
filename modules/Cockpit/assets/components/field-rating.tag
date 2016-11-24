@@ -12,13 +12,9 @@
 
     <script>
 
-        this.on('mount', function() { this.trigger('update'); });
-        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
-
         // Code based on work of https://github.com/attitude
 
         this.on('mount', function() {
-
 
             this.mininmum  = opts.mininmum  || 0;
             this.maximum   = opts.maximum   || 5;
@@ -72,7 +68,7 @@
         }
 
         this.$updateValue = function(value) {
-            
+
             if (value === null && !opts.remove) {
                 value = this.mininmum;
             }

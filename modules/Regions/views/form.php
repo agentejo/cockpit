@@ -69,7 +69,7 @@
                                 </div>
 
                                 <div class="uk-margin">
-                                    <div data-is="{ 'field-'+(field.type || 'text') }" bind="data.{field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" cls="uk-form-large" opts="{ (field.options || {}) }"></div>
+                                    <cp-field type="{field.type || 'text'}" bind="{ parent.getBindValue(field) }" opts="{ field.options || {} }"></cp-field>
                                 </div>
 
                             </div>
@@ -81,6 +81,7 @@
                     <div class="uk-margin-large-top">
                         <button class="uk-button uk-button-large uk-button-primary uk-margin-right">@lang('Save')</button>
                         <a href="@route('/regions')">@lang('Close')</a>
+                        <button type="button" onclick="{ update }">Test</button>
                     </div>
 
                 </form>
@@ -99,7 +100,7 @@
 
                             <select bind="lang">
                                 <option value="">@lang('Default')</option>
-                                <option each="{language,idx in languages}" value="{language.code}">{language.label}</option>
+                                <option each="{language in languages}" value="{language.code}">{language.label}</option>
                             </select>
                         </div>
 
@@ -172,8 +173,12 @@
                 this.group = e.item && e.item.group || false;
             }
 
+            getBindValue(field) {
+                return 'data.'+(field.localize && this.lang ? (field.name+'_'+this.lang):field.name);
+            }
+
             submit(e) {
-                
+
                 e.preventDefault();
 
                 App.request('/regions/update_region/'+this.region.name, {data:this.data}).then(function(region) {

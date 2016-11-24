@@ -15,7 +15,7 @@
     <div class="uk-grid uk-grid-small uk-flex-middle" data-uk-grid-margin="observe:true">
 
         <div class="uk-text-primary" each="{ _tag,idx in _tags }">
-            <span class="field-tag"><i class="uk-icon-tag"></i> { _tag } <a onclick="{ parent.remove }"><i class="uk-icon-close"></i></a></span> 
+            <span class="field-tag"><i class="uk-icon-tag"></i> { _tag } <a onclick="{ parent.remove }"><i class="uk-icon-close"></i></a></span>
         </div>
 
         <div>
@@ -28,9 +28,6 @@
     </div>
 
     <script>
-
-        this.on('mount', function() { this.trigger('update'); });
-        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         var $this = this;
 
@@ -72,7 +69,7 @@
         });
 
         this.$updateValue = function(value) {
-            
+
             if (!Array.isArray(value)) {
                 value = [];
             }

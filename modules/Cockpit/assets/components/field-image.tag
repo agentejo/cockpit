@@ -27,7 +27,7 @@
 
             <div class="uk-grid uk-grid-match uk-grid-gutter" if="{_meta}">
 
-                <div class="uk-grid-margin uk-width-medium-{field.width}" each="{field, name in meta}" no-reorder>
+                <div riot-class="uk-grid-margin uk-width-medium-{field.width}" each="{field, name in meta}" no-reorder>
 
                     <div class="uk-panel">
 
@@ -40,7 +40,7 @@
                         </div>
 
                         <div class="uk-margin">
-                            <div data-is="{ 'field-'+(field.type || 'text') }" bind="_meta['{name}']" opts="{ (field.options || {}) }"></div>
+                            <cp-field type="{ field.type || 'text' }" bind="image.meta['{name}']" opts="{ field.options || {} }"></cp-field>
                         </div>
                     </div>
 

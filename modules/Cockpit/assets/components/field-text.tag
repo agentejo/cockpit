@@ -7,12 +7,8 @@
 
     <script>
 
-        this.on('mount', function() { this.trigger('update'); });
-        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
-
-
         this.on('mount', function() {
-        
+
             if (opts.cls) {
                 App.$(this.refs.input).addClass(opts.cls);
             }
@@ -21,7 +17,7 @@
                 this.refs.input.setAttribute('required', 'required');
             }
         });
-        
+
         this.$updateValue = function(value) {
 
             if (opts.slug) {

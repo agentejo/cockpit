@@ -64,7 +64,7 @@
                             </div>
 
                             <div class="uk-margin">
-                                <div data-is="{ 'field-'+(field.type || 'text') }" bind="entry.{ field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" cls="uk-form-large"></div>
+                                <cp-field type="{field.type || 'text'}" bind="entry.{ field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" opts="{ field.options || {} }"></cp-field>
                             </div>
 
                         </div>

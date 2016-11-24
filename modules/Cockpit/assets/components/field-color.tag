@@ -1,6 +1,6 @@
 <field-color>
 
-    <input name="input" class="uk-width-1-1" type="text">
+    <input ref="input" class="uk-width-1-1" type="text">
 
     <script>
 
@@ -11,13 +11,13 @@
 
         this.$updateValue = function(value, field) {
 
-            if (value && this.input.value !== value) {
-                this.input.value = value;
+            if (value && this.refs.input.value !== value) {
+                this.refs.input.value = value;
                 this.update();
             }
 
             if (App.$.fn.spectrum) {
-                App.$($this.input).spectrum("set", $this.root.$value);
+                App.$($this.refs.input).spectrum("set", $this.root.$value);
             }
 
         }.bind(this);
@@ -29,9 +29,9 @@
                 '/assets/lib/spectrum/spectrum.css'
             ], function(){
 
-                $this.input.value = $this.root.$value || '';
+                $this.refs.input.value = $this.root.$value || '';
 
-                App.$($this.input).spectrum(App.$.extend({
+                App.$($this.refs.input).spectrum(App.$.extend({
                     preferredFormat: 'rgb',
                     allowEmpty:true,
                     showInitial: true,
@@ -41,7 +41,7 @@
                     showSelectionPalette: true,
                     palette: [ ],
                     change: function() {
-                        $this.$setValue($this.input.value);
+                        $this.$setValue($this.refs.input.value);
                     }
                 }, opts.spectrum));
 

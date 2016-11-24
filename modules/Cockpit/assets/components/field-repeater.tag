@@ -11,7 +11,7 @@
                 <span class="uk-text-primary uk-badge uk-badget-outline">{ App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</span>
             </div>
 
-            <div data-is="{ 'field-'+(item.field.type || 'text') }" class="uk-width-1-1" bind="items[{ idx }].value" opts="{ (item.field.options || {}) }"></div>
+            <cp-field type="{ field.type || 'text' }" bind="items[{ idx }].value" opts="{ field.options || {} }"></cp-field>
 
             <div class="uk-panel-box-footer uk-bg-light">
                 <a onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a>
@@ -46,9 +46,6 @@
     </div>
 
     <script>
-
-        this.on('mount', function() { this.trigger('update'); });
-        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         var $this = this;
 
