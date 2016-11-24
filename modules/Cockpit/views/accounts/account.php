@@ -152,7 +152,7 @@
 
         submit(e) {
 
-            e.preventDefault();
+            if(e) e.preventDefault();
 
             App.request("/accounts/save", {"account": this.account}).then(function(data){
                 $this.account = data;

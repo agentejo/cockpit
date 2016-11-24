@@ -129,7 +129,7 @@
 
         submit(e) {
 
-            e.preventDefault();
+            if(e) e.preventDefault();
 
             var form = this.form;
 

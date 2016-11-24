@@ -181,7 +181,7 @@
 
         submit(e) {
 
-            e.preventDefault();
+            if(e) e.preventDefault();
 
             var region = this.region;
 

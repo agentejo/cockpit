@@ -189,7 +189,7 @@
 
         submit(e) {
 
-            e.preventDefault();
+            if(e) e.preventDefault();
 
             var collection = this.collection;
 

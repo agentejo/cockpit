@@ -174,7 +174,7 @@
 
         submit(e) {
 
-            e.preventDefault();
+            if(e) e.preventDefault();
 
             App.request('/collections/save_entry/'+this.collection.name,{entry:this.entry}).then(function(entry) {
 

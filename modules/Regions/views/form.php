@@ -179,7 +179,7 @@
 
             submit(e) {
 
-                e.preventDefault();
+                if(e) e.preventDefault();
 
                 App.request('/regions/update_region/'+this.region.name, {data:this.data}).then(function(region) {
 

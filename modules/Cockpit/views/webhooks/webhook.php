@@ -181,7 +181,7 @@
 
         submit(e) {
 
-            e.preventDefault();
+            if(e) e.preventDefault();
 
             App.request('/webhooks/save', {webhook: this.webhook}).then(function(data) {
 
