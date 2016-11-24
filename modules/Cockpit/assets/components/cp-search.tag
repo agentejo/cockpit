@@ -1,6 +1,6 @@
 <cp-search>
 
-    <div name="autocomplete" class="uk-autocomplete uk-form uk-form-icon app-search">
+    <div ref="autocomplete" class="uk-autocomplete uk-form uk-form-icon app-search">
 
         <style>
             cp-search .uk-dropdown {
@@ -17,9 +17,9 @@
 
         this.on('mount', function(){
 
-            var txtSearch = App.$("input[type='text']", this.autocomplete);
+            var txtSearch = App.$("input[type='text']", this.refs.autocomplete);
 
-            UIkit.autocomplete(this.autocomplete, {
+            UIkit.autocomplete(this.refs.autocomplete, {
                 source: App.route('/cockpit/search'),
                 template: '<ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">{{~items}}<li data-value="" data-url="{{$item.url}}"><a><i class="uk-icon-{{ ($item.icon || "cube") }}"></i> {{$item.title}}</a></li>{{/items}}</ul>'
             });

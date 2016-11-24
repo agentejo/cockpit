@@ -36,7 +36,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr each="{account, $index in accounts}"  if="{ parent.infilter(account) }">
+            <tr each="{account, $index in accounts}"  if="{ infilter(account) }">
                 <td class="uk-text-center">
                     <a class="uk-link-muted" href="@route('/accounts/account')/{ account._id }" title="@lang('Edit account')">
                         <cp-gravatar email="{ account.email }" size="25" alt="{ account.name || account.user }"></cp-gravatar>
@@ -58,7 +58,7 @@
                             <ul class="uk-nav uk-nav-dropdown">
                                 <li class="uk-nav-header">@lang('Actions')</li>
                                 <li><a href="@route('/accounts/account')/{ account._id }">@lang('Edit')</a></li>
-                                <li><a onclick="{ parent.remove }" href="#">@lang('Delete')</a></li>
+                                <li><a onclick="{ this.parent.remove }" href="#">@lang('Delete')</a></li>
                             </ul>
                         </div>
                     </span>

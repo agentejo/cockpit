@@ -218,7 +218,7 @@ riot.tag2('codemirror', '', '', '', function(opts) {
 
 });
 
-riot.tag2('cp-assets', '<div class="uk-form" name="list" show="{mode==\'list\'}"> <div class="uk-grid uk-grid-width-1-2"> <div> <div class="uk-grid uk-grid-small uk-flex-middle"> <div> <div class="uk-form-select"> <span class="uk-button uk-button-large {filtertype.value && \'uk-button-primary\'} uk-text-capitalize"><i class="uk-icon-eye uk-margin-small-right"></i> {filtertype.value || \'All\'}</span> <select name="filtertype" onchange="{updateFilter}"> <option value="">All</option> <option value="image">Image</option> <option value="video">Video</option> <option value="audio">Audio</option> <option value="document">Document</option> <option value="archive">Archive</option> <option value="code">Code</option> </select> </div> </div> <div class="uk-flex-item-1"> <div class="uk-form-icon uk-display-block uk-width-1-1"> <i class="uk-icon-search"></i> <input class="uk-width-1-1 uk-form-large" type="text" name="filtertitle" onchange="{updateFilter}"> </div> </div> </div> </div> <div class="uk-text-right"> <button class="uk-button uk-button-large uk-button-danger" type="button" onclick="{removeSelected}" show="{selected.length}"> {App.i18n.get(\'Delete\')} <span class="uk-badge uk-badge-contrast uk-margin-small-left">{selected.length}</span> </button> <span class="uk-button-group uk-button-large"> <button class="uk-button uk-button-large {listmode==\'list\' && \'uk-button-primary\'}" type="button" onclick="{toggleListMode}"><i class="uk-icon-list"></i></button> <button class="uk-button uk-button-large {listmode==\'grid\' && \'uk-button-primary\'}" type="button" onclick="{toggleListMode}"><i class="uk-icon-th"></i></button> </span> <span class="uk-button uk-button-large uk-button-primary uk-margin-small-right uk-form-file"> <input class="js-upload-select" type="file" multiple="true"> <i class="uk-icon-upload"></i> </span> </div> </div> <div name="uploadprogress" class="uk-margin uk-hidden"> <div class="uk-progress"> <div name="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div> </div> </div> <div class="uk-margin-large-top uk-panel-space uk-text-center" show="{!loading && !assets.length}"> <span class="uk-text-muted uk-h2">{App.i18n.get(\'No Assets found\')}</span> </div> <div class="uk-text-center uk-text-muted uk-h2 uk-margin-large-top" show="{loading}"> <i class="uk-icon-spinner uk-icon-spin"></i> </div> <div class="uk-margin-large-top {modal ? \'uk-overflow-container\':\'\'}" if="{!loading && assets.length}"> <div class="uk-grid uk-grid-small uk-grid-width-medium-1-5" if="{listmode==\'grid\'}"> <div class="uk-grid-margin" each="{asset,idx in assets}" each="{asset,idx in assets}" onclick="{select}"> <div class="uk-panel uk-panel-box uk-panel-card {selected.length && selected.indexOf(asset) != -1 ? \'uk-selected\':\'\'}"> <div class="uk-overlay uk-display-block uk-position-relative"> <canvas class="uk-responsive-width" width="200" height="150"></canvas> <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle"> <div class="uk-width-1-1 uk-text-center"> <span if="{asset.mime.match(/^image\\//) == null}"><i class="uk-h1 uk-text-muted uk-icon-{parent.getIconCls(asset.path)}"></i></span> <a href="{ASSETS_URL+asset.path}" if="{asset.mime.match(/^image\\//)}" data-uk-lightbox="type:\'image\'" title="{asset.width && [asset.width, asset.height].join(\'x\')}"> <cp-thumbnail riot-src="{ASSETS_URL+asset.path}" width="100" height="75"></cp-thumbnail> </a> </div> </div> </div> <div class="uk-margin-small-top uk-text-truncate"><a onclick="{parent.edit}">{asset.title}</a></div> <div class="uk-text-small uk-text-muted"> <strong>{asset.mime}</strong> {App.Utils.formatSize(asset.size)} </div> </div> </div> </div> <table class="uk-table uk-panel-card" if="{listmode==\'list\'}"> <thead> <tr> <td width="30"></td> <th>{App.i18n.get(\'Title\')}</th> <th width="20%">{App.i18n.get(\'Type\')}</th> <th width="10%">{App.i18n.get(\'Size\')}</th> <th width="10%">{App.i18n.get(\'Updated\')}</th> <th width="30"></th> </tr> </thead> <tbody> <tr class="{selected.length && selected.indexOf(asset) != -1 ? \'uk-selected\':\'\'}" each="{asset,idx in assets}" onclick="{select}"> <td class="uk-text-center"> <span if="{asset.mime.match(/^image\\//) == null}"><i class="uk-text-muted uk-icon-{parent.getIconCls(asset.path)}"></i></span> <a href="{ASSETS_URL+asset.path}" if="{asset.mime.match(/^image\\//)}" data-uk-lightbox="type:\'image\'" title="{asset.width && [asset.width, asset.height].join(\'x\')}"> <cp-thumbnail riot-src="{ASSETS_URL+asset.path}" width="20" height="20"></cp-thumbnail> </a> </td> <td><a onclick="{parent.edit}">{asset.title}</a></td> <td class="uk-text-small">{asset.mime}</td> <td class="uk-text-small">{App.Utils.formatSize(asset.size)}</td> <td class="uk-text-small">{App.Utils.dateformat( new Date( 1000 * asset.modified ))}</td> <td> <span class="uk-float-right" data-uk-dropdown="mode:\'click\'"> <a class="uk-icon-bars"></a> <div class="uk-dropdown uk-dropdown-flip"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">{App.i18n.get(\'Actions\')}</li> <li><a class="uk-dropdown-close" onclick="{parent.edit}">{App.i18n.get(\'Edit\')}</a></li> <li><a class="uk-dropdown-close" onclick="{parent.remove}">{App.i18n.get(\'Delete\')}</a></li> </ul> </div> </span> </td> </tr> </tbody> </table> <div class="uk-margin-top" if="{count > limit}"> <span class="uk-button-group uk-margin-small-right"> <a class="uk-button uk-button-large" onclick="{loadPage}" data-page="{(page - 1)}" if="{page > 1}">{App.i18n.get(\'Previous\')}</a> <a class="uk-button uk-button-large" onclick="{loadPage}" data-page="{(page + 1)}" if="{(page*limit) < count}">{App.i18n.get(\'Next\')}</a> </span> <span class="uk-text-small uk-text-muted">{page}/{Math.ceil(count/limit)}</span> </div> </div> </div> <div class="uk-form" show="{asset && mode==\'edit\'}"> <form onsubmit="{updateAsset}"> <div class="uk-grid"> <div class="uk-width-2-3"> <div class="uk-form-row"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Title\')}</label> <input class="uk-width-1-1" type="text" name="assettitle" required> </div> <div class="uk-form-row"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Description\')}</label> <textarea class="uk-width-1-1" name="assetdescription"></textarea> </div> <div class="uk-margin uk-panel uk-panel-box uk-panel-card uk-panel-space uk-text-center"> <span class="uk-h1" if="{asset && asset.mime.match(/^image\\//) == null}"><i class="uk-icon-{getIconCls(asset.path)}"></i></span> <cp-thumbnail riot-src="{asset && ASSETS_URL+asset.path}" width="400" height="250" if="{asset && asset.mime.match(/^image\\//)}"></cp-thumbnail> </div> </div> <div class="uk-width-1-3"> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Id\')}</label> <div class="uk-margin-small-top uk-text-muted">{asset._id}</div> </div> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Type\')}</label> <div class="uk-margin-small-top uk-text-muted">{asset.mime}</div> </div> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Size\')}</label> <div class="uk-margin-small-top uk-text-muted">{App.Utils.formatSize(asset.size)}</div> </div> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Created\')}</label> <div class="uk-margin-small-top uk-text-muted">{App.Utils.dateformat( new Date( 1000 * asset.modified ))}</div> </div> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Url\')}</label> <div class="uk-margin-small-top uk-text-truncate uk-text-muted"><a href="{ASSETS_URL+asset.path}" target="_blank">{ASSETS_URL+asset.path}</a></div> </div> </div> </div> <div class="uk-margin-large-top"> <button type="submit" class="uk-button uk-button-large uk-button-primary uk-margin-right">{App.i18n.get(\'Save\')}</button> <a onclick="{cancelEdit}">{App.i18n.get(\'Cancel\')}</a> </div> </form> </div>', '', '', function(opts) {
+riot.tag2('cp-assets', '<div class="uk-form" ref="list" show="{mode==\'list\'}"> <div class="uk-grid uk-grid-width-1-2"> <div> <div class="uk-grid uk-grid-small uk-flex-middle"> <div> <div class="uk-form-select"> <span class="uk-button uk-button-large {getRefValue(\'filtertype\') && \'uk-button-primary\'} uk-text-capitalize"><i class="uk-icon-eye uk-margin-small-right"></i> {getRefValue(\'filtertype\') || App.i18n.get(\'All\')}</span> <select ref="filtertype" onchange="{updateFilter}"> <option value="">All</option> <option value="image">Image</option> <option value="video">Video</option> <option value="audio">Audio</option> <option value="document">Document</option> <option value="archive">Archive</option> <option value="code">Code</option> </select> </div> </div> <div class="uk-flex-item-1"> <div class="uk-form-icon uk-display-block uk-width-1-1"> <i class="uk-icon-search"></i> <input class="uk-width-1-1 uk-form-large" type="text" ref="filtertitle" onchange="{updateFilter}"> </div> </div> </div> </div> <div class="uk-text-right"> <button class="uk-button uk-button-large uk-button-danger" type="button" onclick="{removeSelected}" show="{selected.length}"> {App.i18n.get(\'Delete\')} <span class="uk-badge uk-badge-contrast uk-margin-small-left">{selected.length}</span> </button> <span class="uk-button-group uk-button-large"> <button class="uk-button uk-button-large {listmode==\'list\' && \'uk-button-primary\'}" type="button" onclick="{toggleListMode}"><i class="uk-icon-list"></i></button> <button class="uk-button uk-button-large {listmode==\'grid\' && \'uk-button-primary\'}" type="button" onclick="{toggleListMode}"><i class="uk-icon-th"></i></button> </span> <span class="uk-button uk-button-large uk-button-primary uk-margin-small-right uk-form-file"> <input class="js-upload-select" type="file" multiple="true"> <i class="uk-icon-upload"></i> </span> </div> </div> <div ref="uploadprogress" class="uk-margin uk-hidden"> <div class="uk-progress"> <div ref="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div> </div> </div> <div class="uk-margin-large-top uk-panel-space uk-text-center" show="{!loading && !assets.length}"> <span class="uk-text-muted uk-h2">{App.i18n.get(\'No Assets found\')}</span> </div> <div class="uk-text-center uk-text-muted uk-h2 uk-margin-large-top" show="{loading}"> <i class="uk-icon-spinner uk-icon-spin"></i> </div> <div class="uk-margin-large-top {modal ? \'uk-overflow-container\':\'\'}" if="{!loading && assets.length}"> <div class="uk-grid uk-grid-small uk-grid-width-medium-1-5" if="{listmode==\'grid\'}"> <div class="uk-grid-margin" each="{asset,idx in assets}" each="{asset,idx in assets}" onclick="{select}"> <div class="uk-panel uk-panel-box uk-panel-card {selected.length && selected.indexOf(asset) != -1 ? \'uk-selected\':\'\'}"> <div class="uk-overlay uk-display-block uk-position-relative"> <canvas class="uk-responsive-width" width="200" height="150"></canvas> <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle"> <div class="uk-width-1-1 uk-text-center"> <span if="{asset.mime.match(/^image\\//) == null}"><i class="uk-h1 uk-text-muted uk-icon-{parent.getIconCls(asset.path)}"></i></span> <a href="{ASSETS_URL+asset.path}" if="{asset.mime.match(/^image\\//)}" data-uk-lightbox="type:\'image\'" title="{asset.width && [asset.width, asset.height].join(\'x\')}"> <cp-thumbnail riot-src="{ASSETS_URL+asset.path}" width="100" height="75"></cp-thumbnail> </a> </div> </div> </div> <div class="uk-margin-small-top uk-text-truncate"><a onclick="{parent.edit}">{asset.title}</a></div> <div class="uk-text-small uk-text-muted"> <strong>{asset.mime}</strong> {App.Utils.formatSize(asset.size)} </div> </div> </div> </div> <table class="uk-table uk-panel-card" if="{listmode==\'list\'}"> <thead> <tr> <td width="30"></td> <th>{App.i18n.get(\'Title\')}</th> <th width="20%">{App.i18n.get(\'Type\')}</th> <th width="10%">{App.i18n.get(\'Size\')}</th> <th width="10%">{App.i18n.get(\'Updated\')}</th> <th width="30"></th> </tr> </thead> <tbody> <tr class="{selected.length && selected.indexOf(asset) != -1 ? \'uk-selected\':\'\'}" each="{asset,idx in assets}" onclick="{select}"> <td class="uk-text-center"> <span if="{asset.mime.match(/^image\\//) == null}"><i class="uk-text-muted uk-icon-{parent.getIconCls(asset.path)}"></i></span> <a href="{ASSETS_URL+asset.path}" if="{asset.mime.match(/^image\\//)}" data-uk-lightbox="type:\'image\'" title="{asset.width && [asset.width, asset.height].join(\'x\')}"> <cp-thumbnail riot-src="{ASSETS_URL+asset.path}" width="20" height="20"></cp-thumbnail> </a> </td> <td><a onclick="{parent.edit}">{asset.title}</a></td> <td class="uk-text-small">{asset.mime}</td> <td class="uk-text-small">{App.Utils.formatSize(asset.size)}</td> <td class="uk-text-small">{App.Utils.dateformat( new Date( 1000 * asset.modified ))}</td> <td> <span class="uk-float-right" data-uk-dropdown="mode:\'click\'"> <a class="uk-icon-bars"></a> <div class="uk-dropdown uk-dropdown-flip"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">{App.i18n.get(\'Actions\')}</li> <li><a class="uk-dropdown-close" onclick="{parent.edit}">{App.i18n.get(\'Edit\')}</a></li> <li><a class="uk-dropdown-close" onclick="{parent.remove}">{App.i18n.get(\'Delete\')}</a></li> </ul> </div> </span> </td> </tr> </tbody> </table> <div class="uk-margin-top" if="{count > limit}"> <span class="uk-button-group uk-margin-small-right"> <a class="uk-button uk-button-large" onclick="{loadPage}" data-page="{(page - 1)}" if="{page > 1}">{App.i18n.get(\'Previous\')}</a> <a class="uk-button uk-button-large" onclick="{loadPage}" data-page="{(page + 1)}" if="{(page*limit) < count}">{App.i18n.get(\'Next\')}</a> </span> <span class="uk-text-small uk-text-muted">{page}/{Math.ceil(count/limit)}</span> </div> </div> </div> <div class="uk-form" show="{asset && mode==\'edit\'}"> <form onsubmit="{updateAsset}"> <div class="uk-grid"> <div class="uk-width-2-3"> <div class="uk-form-row"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Title\')}</label> <input class="uk-width-1-1" type="text" ref="assettitle" required> </div> <div class="uk-form-row"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Description\')}</label> <textarea class="uk-width-1-1" ref="assetdescription"></textarea> </div> <div class="uk-margin uk-panel uk-panel-box uk-panel-card uk-panel-space uk-text-center"> <span class="uk-h1" if="{asset && asset.mime.match(/^image\\//) == null}"><i class="uk-icon-{getIconCls(asset.path)}"></i></span> <cp-thumbnail riot-src="{asset && ASSETS_URL+asset.path}" width="400" height="250" if="{asset && asset.mime.match(/^image\\//)}"></cp-thumbnail> </div> </div> <div class="uk-width-1-3" if="{asset}"> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Id\')}</label> <div class="uk-margin-small-top uk-text-muted">{asset._id}</div> </div> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Type\')}</label> <div class="uk-margin-small-top uk-text-muted">{asset.mime}</div> </div> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Size\')}</label> <div class="uk-margin-small-top uk-text-muted">{App.Utils.formatSize(asset.size)}</div> </div> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Created\')}</label> <div class="uk-margin-small-top uk-text-muted">{App.Utils.dateformat( new Date( 1000 * asset.modified ))}</div> </div> <div class="uk-margin"> <label class="uk-text-small uk-text-bold">{App.i18n.get(\'Url\')}</label> <div class="uk-margin-small-top uk-text-truncate uk-text-muted"><a href="{ASSETS_URL+asset.path}" target="_blank">{ASSETS_URL+asset.path}</a></div> </div> </div> </div> <div class="uk-margin-large-top"> <button type="submit" class="uk-button uk-button-large uk-button-primary uk-margin-right">{App.i18n.get(\'Save\')}</button> <a onclick="{cancelEdit}">{App.i18n.get(\'Cancel\')}</a> </div> </form> </div>', '', '', function(opts) {
 
         var $this = this, typefilters = {
             'image'    : /\.(jpg|jpeg|png|gif|svg)$/i,
@@ -232,6 +232,7 @@ riot.tag2('cp-assets', '<div class="uk-form" name="list" show="{mode==\'list\'}"
         this.mode     = 'list';
         this.listmode = App.session.get('app.assets.listmode', 'list');
         this.loading  = false;
+        this.assets   = [];
         this.selected = [];
 
         this.count    = 0;
@@ -254,18 +255,18 @@ riot.tag2('cp-assets', '<div class="uk-form" name="list" show="{mode==\'list\'}"
 
                         },
                         loadstart: function() {
-                            $this.uploadprogress.classList.remove('uk-hidden');
+                            $this.refs.uploadprogress.classList.remove('uk-hidden');
                         },
                         progress: function(percent) {
 
                             percent = Math.ceil(percent) + '%';
 
-                            $this.progressbar.innerHTML   = '<span>'+percent+'</span>';
-                            $this.progressbar.style.width = percent;
+                            $this.refs.progressbar.innerHTML   = '<span>'+percent+'</span>';
+                            $this.refs.progressbar.style.width = percent;
                         },
                         allcomplete: function(response) {
 
-                            $this.uploadprogress.classList.add('uk-hidden');
+                            $this.refs.uploadprogress.classList.add('uk-hidden');
 
                             if (response && response.failed && response.failed.length) {
                                 App.ui.notify("File(s) failed to uploaded.", "danger");
@@ -294,7 +295,7 @@ riot.tag2('cp-assets', '<div class="uk-form" name="list" show="{mode==\'list\'}"
                 },
 
                 uploadselect = UIkit.uploadSelect(App.$('.js-upload-select', $this.root)[0], uploadSettings),
-                uploaddrop   = UIkit.uploadDrop($this.list, uploadSettings);
+                uploaddrop   = UIkit.uploadDrop($this.refs.list, uploadSettings);
 
                 UIkit.init(this.root);
             });
@@ -333,16 +334,16 @@ riot.tag2('cp-assets', '<div class="uk-form" name="list" show="{mode==\'list\'}"
 
             this.filter = null;
 
-            if (this.filtertitle.value || this.filtertype.value) {
+            if (this.refs.filtertitle.value || this.refs.filtertype.value) {
                 this.filter = {};
             }
 
-            if (this.filtertitle.value) {
-                this.filter.title = {'$regex':this.filtertitle.value};
+            if (this.refs.filtertitle.value) {
+                this.filter.title = {'$regex':this.refs.filtertitle.value};
             }
 
-            if (this.filtertype.value) {
-                this.filter[this.filtertype.value] = true;
+            if (this.refs.filtertype.value) {
+                this.filter[this.refs.filtertype.value] = true;
             }
 
             this.listAssets(1);
@@ -394,8 +395,8 @@ riot.tag2('cp-assets', '<div class="uk-form" name="list" show="{mode==\'list\'}"
         this.edit = function(e) {
             this.asset = e.item.asset;
             this.mode  = 'edit';
-            this.assettitle.value = this.asset.title;
-            this.assetdescription.value = this.asset.description;
+            this.refs.assettitle.value = this.asset.title;
+            this.refs.assetdescription.value = this.asset.description;
         }.bind(this)
 
         this.cancelEdit = function() {
@@ -407,8 +408,8 @@ riot.tag2('cp-assets', '<div class="uk-form" name="list" show="{mode==\'list\'}"
 
             e.preventDefault();
 
-            this.asset.title = this.assettitle.value;
-            this.asset.description = this.assetdescription.value;
+            this.asset.title = this.refs.assettitle.value;
+            this.asset.description = this.refs.assetdescription.value;
 
             App.request('/assetsmanager/updateAsset', {asset:$this.asset}).then(function(asset) {
 
@@ -470,46 +471,14 @@ riot.tag2('cp-assets', '<div class="uk-form" name="list" show="{mode==\'list\'}"
             }
         }.bind(this)
 
-});
-
-riot.tag2('cp-field', '', '', '', function(opts) {
-
-        this._field = null;
-
-        this.on('update', function() {
-
-            if (opts.bind && opts.bind != this._field) {
-
-                App.$(this.root).children('div').remove();
-
-                var container = App.$('<div name="fieldcontainer" type="{ field.type }"></div>').appendTo(this.root);
-
-                var field   = typeof(opts.field) == 'string' ? {type:opts.field} : ( opts.field || {}),
-                    type    = field.type || 'text',
-                    options = field.options || {},
-                    fc      = 'field-'+type;
-
-                if (!riot.tags[fc]) {
-                    fc = 'field-text';
-                }
-
-                if (opts.cls) {
-                    container[0].setAttribute('cls', opts.cls);
-                }
-
-                if (opts.bind) {
-                    container[0].setAttribute('bind', opts.bind);
-                }
-
-                riot.mount(container[0], fc, options);
-
-                this._field = opts.bind;
-            }
-        })
+        this.getRefValue = function(name) {
+            return this.refs[name] && this.refs[name].value;
+        }.bind(this)
 
 });
 
-riot.tag2('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form"> <div class="uk-width-{field.width}" data-idx="{idx}" each="{field,idx in fields}"> <div class="uk-panel uk-panel-box uk-panel-card"> <div class="uk-grid uk-grid-small"> <div class="uk-flex-item-1 uk-flex"> <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" fields-bind="fields[{idx}].name" placeholder="name" required> </div> <div class="uk-width-1-4"> <div class="uk-form-select" data-uk-form-select> <div class="uk-form-icon"> <i class="uk-icon-arrows-h"></i> <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{field.width}"> </div> <select fields-bind="fields[{idx}].width"> <option value="1-1">1-1</option> <option value="1-2">1-2</option> <option value="1-3">1-3</option> <option value="2-3">2-3</option> <option value="1-4">1-4</option> <option value="3-4">3-4</option> </select> </div> </div> <div class="uk-text-right"> <ul class="uk-subnav"> <li show="{parent.opts.listoption}"> <a class="uk-text-{field.lst ? \'success\':\'muted\'}" onclick="{parent.togglelist}" title="{App.i18n.get(\'Show field on list view\')}"> <i class="uk-icon-list"></i> </a> </li> <li> <a onclick="UIkit.modal(\'#field-{idx}\').show()"><i class="uk-icon-cog uk-text-primary"></i></a> </li> <li> <a class="uk-text-danger" onclick="{parent.removefield}"> <i class="uk-icon-trash"></i> </a> </li> </ul> </div> </div> </div> <div class="uk-modal uk-sortable-nodrag" id="field-{idx}"> <div class="uk-modal-dialog"> <div class="uk-form-row uk-text-bold"> {field.name || \'Field\'} </div> <div class="uk-form-row"> <label class="uk-text-muted uk-text-small">{App.i18n.get(\'Field Type\')}:</label> <div class="uk-form-select uk-width-1-1 uk-margin-small-top"> <a class="uk-text-capitalize">{field.type}</a> <select class="uk-width-1-1 uk-text-capitalize" fields-bind="fields[{idx}].type"> <option each="{type,typeidx in parent.fieldtypes}" value="{type.value}">{type.name}</option> </select> </div> </div> <div class="uk-form-row"> <label class="uk-text-muted uk-text-small">{App.i18n.get(\'Field Label\')}:</label> <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="fields[{idx}].label" placeholder="{App.i18n.get(\'Label\')}"> </div> <div class="uk-form-row"> <label class="uk-text-muted uk-text-small">{App.i18n.get(\'Field Info\')}:</label> <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="fields[{idx}].info" placeholder="{App.i18n.get(\'Info\')}"> </div> <div class="uk-form-row"> <label class="uk-text-muted uk-text-small">{App.i18n.get(\'Field Group\')}:</label> <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="fields[{idx}].group" placeholder="{App.i18n.get(\'Group name\')}"> </div> <div class="uk-form-row"> <label class="uk-text-small uk-text-bold uk-margin-small-bottom">{App.i18n.get(\'Options\')} <span class="uk-text-muted">JSON</span></label> <field-object cls="uk-width-1-1" fields-bind="fields[{idx}].options" rows="6" allowtabs="2"></field-object> </div> <div class="uk-form-row"> <field-boolean fields-bind="fields[{idx}].required" label="{App.i18n.get(\'Required\')}"></field-boolean> </div> <div class="uk-form-row"> <field-boolean fields-bind="fields[{idx}].localize" label="{App.i18n.get(\'Localize\')}"></field-boolean> </div> <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{App.i18n.get(\'Close\')}</button></div> </div> </div> </div> </div> <div class="uk-margin-top" show="{fields.length}"> <a class="uk-button uk-button-link" onclick="{addfield}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add field\')}</a> </div> <div class="uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{!fields.length && !reorder}"> <div class="uk-animation-fade"> <p class="uk-text-xlarge"> <img riot-src="{App.base(\'/assets/app/media/icons/form-editor.svg\')}" width="100" height="100"> </p> <hr> {App.i18n.get(\'No fields added yet\')}. <span data-uk-dropdown="pos:\'bottom-center\'"> <a onclick="{addfield}">{App.i18n.get(\'Add field\')}.</a> <div class="uk-dropdown uk-dropdown-scrollable uk-text-left" if="{opts.templates && opts.templates.length}"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">{App.i18n.get(\'Choose from template\')}</li> <li each="{template in opts.templates}"> <a onclick="{parent.fromTemplate.bind(parent, template)}"><i class="uk-icon-sliders uk-margin-small-right"></i> {template.label || template.name}</a> </li> </ul> </div> <span> </div> </div>', '', '', function(opts) {
+
+riot.tag2('cp-fieldsmanager', '<div ref="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form"> <div riot-class="uk-width-{field.width}" data-idx="{idx}" each="{field,idx in fields}"> <div class="uk-panel uk-panel-box uk-panel-card"> <div class="uk-grid uk-grid-small"> <div class="uk-flex-item-1 uk-flex"> <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" fields-bind="fields[{idx}].name" placeholder="name" required> </div> <div class="uk-width-1-4"> <div class="uk-form-select" data-uk-form-select> <div class="uk-form-icon"> <i class="uk-icon-arrows-h"></i> <input class="uk-width-1-1 uk-form-small uk-form-blank" riot-value="{field.width}"> </div> <select fields-bind="fields[{idx}].width"> <option value="1-1">1-1</option> <option value="1-2">1-2</option> <option value="1-3">1-3</option> <option value="2-3">2-3</option> <option value="1-4">1-4</option> <option value="3-4">3-4</option> </select> </div> </div> <div class="uk-text-right"> <ul class="uk-subnav"> <li show="{parent.opts.listoption}"> <a class="uk-text-{field.lst ? \'success\':\'muted\'}" onclick="{parent.togglelist}" title="{App.i18n.get(\'Show field on list view\')}"> <i class="uk-icon-list"></i> </a> </li> <li> <a onclick="UIkit.modal(\'#field-{idx}\').show()"><i class="uk-icon-cog uk-text-primary"></i></a> </li> <li> <a class="uk-text-danger" onclick="{parent.removefield}"> <i class="uk-icon-trash"></i> </a> </li> </ul> </div> </div> </div> <div class="uk-modal uk-sortable-nodrag" id="field-{idx}"> <div class="uk-modal-dialog"> <div class="uk-form-row uk-text-bold"> {field.name || \'Field\'} </div> <div class="uk-form-row"> <label class="uk-text-muted uk-text-small">{App.i18n.get(\'Field Type\')}:</label> <div class="uk-form-select uk-width-1-1 uk-margin-small-top"> <a class="uk-text-capitalize">{field.type}</a> <select class="uk-width-1-1 uk-text-capitalize" fields-bind="fields[{idx}].type"> <option each="{type,typeidx in parent.fieldtypes}" riot-value="{type.value}">{type.name}</option> </select> </div> </div> <div class="uk-form-row"> <label class="uk-text-muted uk-text-small">{App.i18n.get(\'Field Label\')}:</label> <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="fields[{idx}].label" placeholder="{App.i18n.get(\'Label\')}"> </div> <div class="uk-form-row"> <label class="uk-text-muted uk-text-small">{App.i18n.get(\'Field Info\')}:</label> <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="fields[{idx}].info" placeholder="{App.i18n.get(\'Info\')}"> </div> <div class="uk-form-row"> <label class="uk-text-muted uk-text-small">{App.i18n.get(\'Field Group\')}:</label> <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="fields[{idx}].group" placeholder="{App.i18n.get(\'Group name\')}"> </div> <div class="uk-form-row"> <label class="uk-text-small uk-text-bold uk-margin-small-bottom">{App.i18n.get(\'Options\')} <span class="uk-text-muted">JSON</span></label> <field-object cls="uk-width-1-1" fields-bind="fields[{idx}].options" rows="6" allowtabs="2"></field-object> </div> <div class="uk-form-row"> <field-boolean fields-bind="fields[{idx}].required" label="{App.i18n.get(\'Required\')}"></field-boolean> </div> <div class="uk-form-row"> <field-boolean fields-bind="fields[{idx}].localize" label="{App.i18n.get(\'Localize\')}"></field-boolean> </div> <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{App.i18n.get(\'Close\')}</button></div> </div> </div> </div> </div> <div class="uk-margin-top" show="{fields.length}"> <a class="uk-button uk-button-link" onclick="{addfield}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add field\')}</a> </div> <div class="uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{!fields.length && !reorder}"> <div class="uk-animation-fade"> <p class="uk-text-xlarge"> <img riot-src="{App.base(\'/assets/app/media/icons/form-editor.svg\')}" width="100" height="100"> </p> <hr> {App.i18n.get(\'No fields added yet\')}. <span data-uk-dropdown="pos:\'bottom-center\'"> <a onclick="{addfield}">{App.i18n.get(\'Add field\')}.</a> <div class="uk-dropdown uk-dropdown-scrollable uk-text-left" if="{opts.templates && opts.templates.length}"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">{App.i18n.get(\'Choose from template\')}</li> <li each="{template in opts.templates}"> <a onclick="{parent.fromTemplate.bind(parent, template)}"><i class="uk-icon-sliders uk-margin-small-right"></i> {template.label || template.name}</a> </li> </ul> </div> <span> </div> </div>', '', '', function(opts) {
 
         riot.util.bind(this, 'fields');
 
@@ -557,7 +526,7 @@ riot.tag2('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk
 
         this.one('mount', function(){
 
-            UIkit.sortable(this.fieldscontainer, {
+            UIkit.sortable(this.refs.fieldscontainer, {
 
                 dragCustomClass:'uk-form'
 
@@ -575,7 +544,7 @@ riot.tag2('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk
 
                 fields.splice(cidx, 0, fields.splice(oidx, 1)[0]);
 
-                App.$($this.fieldscontainer).css('height', App.$($this.fieldscontainer).height());
+                App.$($this.refs.fieldscontainer).css('height', App.$($this.refs.fieldscontainer).height());
 
                 $this.fields = [];
                 $this.reorder = true;
@@ -588,7 +557,7 @@ riot.tag2('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk
                     $this.$setValue(fields);
 
                     setTimeout(function(){
-                        $this.fieldscontainer.style.height = '';
+                        $this.refs.fieldscontainer.style.height = '';
                     }, 30)
                 }, 0);
 
@@ -633,7 +602,7 @@ riot.tag2('cp-fieldsmanager', '<div name="fieldscontainer" class="uk-sortable uk
 
 });
 
-riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-margin> <div class="uk-float-left"> <span class="uk-button uk-button-primary uk-margin-small-right uk-form-file"> <input class="js-upload-select" type="file" multiple="true" title=""> <i class="uk-icon-upload"></i> </span> <span class="uk-button-group uk-margin-small-right"> <span class="uk-position-relative uk-button" data-uk-dropdown="mode:\'click\'"> <i class="uk-icon-magic"></i> <div class="uk-dropdown uk-text-left"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">Create</li> <li><a onclick="{createfolder}"><i class="uk-icon-folder-o uk-icon-justify"></i> Folder</a></li> <li><a onclick="{createfile}"><i class="uk-icon-file-o uk-icon-justify"></i> File</a></li> </ul> </div> </span> <button class="uk-button" onclick="{refresh}"> <i class="uk-icon-refresh"></i> </button> </span> <span if="{selected.count}" data-uk-dropdown="mode:\'click\'"> <span class="uk-button"><strong>Batch:</strong> {selected.count} selected &nbsp;<i class="uk-icon-caret-down"></i></span> <div class="uk-dropdown uk-margin-top uk-text-left"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">Batch action</li> <li><a onclick="{removeSelected}">Delete</a></li> </ul> </div> </span> </div> <div class="uk-float-right"> <div class="uk-form uk-form-icon uk-width-1-1"> <i class="uk-icon-filter"></i> <input name="filter" type="text" onkeyup="{updatefilter}"> </div> </div> </div> <div class="uk-grid uk-grid-divider uk-margin-large-top" data-uk-grid-margin> <div class="uk-width-medium-1-4"> <div class="uk-panel"> <ul class="uk-nav uk-nav-side"> <li class="uk-nav-header">Display</li> <li class="{!typefilter ? \'uk-active\':\'\'}"><a data-type="" onclick="{settypefilter}"><i class="uk-icon-circle-o uk-icon-justify"></i> All</a></li> <li class="{typefilter==\'image\' ? \'uk-active\':\'\'}"><a data-type="image" onclick="{settypefilter}"><i class="uk-icon-image uk-icon-justify"></i> Images</a></li> <li class="{typefilter==\'video\' ? \'uk-active\':\'\'}"><a data-type="video" onclick="{settypefilter}"><i class="uk-icon-video-camera uk-icon-justify"></i> Video</a></li> <li class="{typefilter==\'audio\' ? \'uk-active\':\'\'}"><a data-type="audio" onclick="{settypefilter}"><i class="uk-icon-volume-up uk-icon-justify"></i> Audio</a></li> <li class="{typefilter==\'document\' ? \'uk-active\':\'\'}"><a data-type="document" onclick="{settypefilter}"><i class="uk-icon-paper-plane uk-icon-justify"></i> Documents</a></li> <li class="{typefilter==\'archive\' ? \'uk-active\':\'\'}"><a data-type="archive" onclick="{settypefilter}"><i class="uk-icon-archive uk-icon-justify"></i> Archives</a></li> </ul> </div> </div> <div class="uk-width-medium-3-4"> <div class="uk-panel"> <ul class="uk-breadcrumb"> <li onclick="{changedir}"><a title="Change dir to root"><i class="uk-icon-home"></i></a></li> <li each="{folder, idx in breadcrumbs}"><a onclick="{parent.changedir}" title="Change dir to {folder.name}">{folder.name}</a></li> </ul> </div> <div name="uploadprogress" class="uk-margin uk-hidden"> <div class="uk-progress"> <div name="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div> </div> </div> <div class="uk-alert uk-text-center uk-margin" if="{(this.typefilter || this.filter.value) && (data.folders.length || data.files.length)}"> Filter is active </div> <div class="uk-alert uk-text-center uk-margin" if="{(!data.folders.length && !data.files.length)}"> This is an empty folder </div> <div class="{modal ? \'uk-overflow-container\':\'\'}"> <div class="uk-margin-top" if="{data.folders.length}"> <strong class="uk-text-small uk-text-muted" if="{!(this.filter.value)}"><i class="uk-icon-folder-o uk-margin-small-right"></i> {data.folders.length} Folders</strong> <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4"> <li class="uk-grid-margin" each="{folder, idx in data.folders}" onclick="{parent.select}" if="{parent.infilter(folder)}"> <div class="uk-panel uk-panel-box finder-folder {folder.selected ? \'uk-selected\':\'\'}"> <div class="uk-flex"> <div> <span class="uk-margin-small-right" data-uk-dropdown="mode:\'click\'"> <i class="uk-icon-folder-o uk-text-muted js-no-item-select"></i> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown uk-dropdown-close"> <li class="uk-nav-header uk-text-truncate">{folder.name}</li> <li><a onclick="{parent.rename}">Rename</a></li> <li><a onclick="{parent.remove}">Delete</a></li> </ul> </div> </span> </div> <div class="uk-flex-item-1 uk-text-truncate"> <a class="uk-link-muted" onclick="{parent.changedir}"><strong>{folder.name}</strong></a> </div> </div> </div> </li> </ul> </div> <div class="uk-margin-top" if="{data.files.length}"> <strong class="uk-text-small uk-text-muted" if="{!(this.typefilter || this.filter.value)}"><i class="uk-icon-file-o uk-margin-small-right"></i> {data.files.length} Files</strong> <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4"> <li class="uk-grid-margin" each="{file, idx in data.files}" onclick="{parent.select}" if="{parent.infilter(file)}"> <div class="uk-panel uk-panel-box finder-file {file.selected ? \'uk-selected\':\'\'}"> <div class="uk-panel-teaser uk-cover-background uk-position-relative"> <div class="uk-position-cover uk-position-z-index"> <div class="uk-panel uk-panel-box uk-panel-box-trans"> <span class="uk-margin-small-right" data-uk-dropdown="mode:\'click\'"> <a><i class="uk-icon-{parent.getIconCls(file)} js-no-item-select"></i> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown uk-dropdown-close"> <li class="uk-nav-header uk-text-truncate">{file.name}</li> <li> <a class="uk-link-muted js-no-item-select" onclick="{parent.open}">Open</a></li> <li><a onclick="{parent.rename}">Rename</a></li> <li if="{file.ext == \'zip\'}"><a onclick="{parent.unzip}">Unzip</a></li> <li class="uk-nav-divider"></li> <li><a onclick="{parent.remove}">Delete</a></li> </ul> </div> </span> </div> </div> <canvas class="uk-responsive-width uk-display-block" width="400" height="300" if="{parent.getIconCls(file) != \'image\'}"></canvas> <cp-thumbnail riot-src="{file.url}" width="400" height="300" if="{parent.getIconCls(file) == \'image\'}"></cp-thumbnail> </div> <div class="uk-flex-item-1 uk-text-truncate"> <a class="uk-link-muted js-no-item-select" onclick="{parent.open}">{file.name}</a> <div class="uk-margin-small-top uk-text-small uk-text-muted"> {file.size} </div> </div> </div> </li> </ul> </div> </div> </div> </div> <div name="editor" class="uk-offcanvas"> <div class="uk-offcanvas-bar uk-width-3-4"> <picoedit></picoedit> </div> </div> </div>', '.uk-offcanvas[name=editor] .CodeMirror { height: auto; } .uk-offcanvas[name=editor] .picoedit-toolbar { padding-left: 15px; padding-right: 15px; } .uk-modal .uk-panel-box.finder-folder, .uk-modal .uk-panel-box.finder-file { border: 1px rgba(0,0,0,0.1) solid; }', '', function(opts) {
+riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-margin> <div class="uk-float-left"> <span class="uk-button uk-button-primary uk-margin-small-right uk-form-file"> <input class="js-upload-select" type="file" multiple="true" title=""> <i class="uk-icon-upload"></i> </span> <span class="uk-button-group uk-margin-small-right"> <span class="uk-position-relative uk-button" data-uk-dropdown="mode:\'click\'"> <i class="uk-icon-magic"></i> <div class="uk-dropdown uk-text-left"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">Create</li> <li><a onclick="{createfolder}"><i class="uk-icon-folder-o uk-icon-justify"></i> Folder</a></li> <li><a onclick="{createfile}"><i class="uk-icon-file-o uk-icon-justify"></i> File</a></li> </ul> </div> </span> <button class="uk-button" onclick="{refresh}"> <i class="uk-icon-refresh"></i> </button> </span> <span if="{selected.count}" data-uk-dropdown="mode:\'click\'"> <span class="uk-button"><strong>Batch:</strong> {selected.count} selected &nbsp;<i class="uk-icon-caret-down"></i></span> <div class="uk-dropdown uk-margin-top uk-text-left"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">Batch action</li> <li><a onclick="{removeSelected}">Delete</a></li> </ul> </div> </span> </div> <div class="uk-float-right"> <div class="uk-form uk-form-icon uk-width-1-1"> <i class="uk-icon-filter"></i> <input ref="filter" type="text" onkeyup="{updatefilter}"> </div> </div> </div> <div class="uk-grid uk-grid-divider uk-margin-large-top" data-uk-grid-margin> <div class="uk-width-medium-1-4"> <div class="uk-panel"> <ul class="uk-nav uk-nav-side"> <li class="uk-nav-header">Display</li> <li riot-class="{!typefilter ? \'uk-active\':\'\'}"><a data-type="" onclick="{settypefilter}"><i class="uk-icon-circle-o uk-icon-justify"></i> All</a></li> <li riot-class="{typefilter==\'image\' ? \'uk-active\':\'\'}"><a data-type="image" onclick="{settypefilter}"><i class="uk-icon-image uk-icon-justify"></i> Images</a></li> <li riot-class="{typefilter==\'video\' ? \'uk-active\':\'\'}"><a data-type="video" onclick="{settypefilter}"><i class="uk-icon-video-camera uk-icon-justify"></i> Video</a></li> <li riot-class="{typefilter==\'audio\' ? \'uk-active\':\'\'}"><a data-type="audio" onclick="{settypefilter}"><i class="uk-icon-volume-up uk-icon-justify"></i> Audio</a></li> <li riot-class="{typefilter==\'document\' ? \'uk-active\':\'\'}"><a data-type="document" onclick="{settypefilter}"><i class="uk-icon-paper-plane uk-icon-justify"></i> Documents</a></li> <li riot-class="{typefilter==\'archive\' ? \'uk-active\':\'\'}"><a data-type="archive" onclick="{settypefilter}"><i class="uk-icon-archive uk-icon-justify"></i> Archives</a></li> </ul> </div> </div> <div class="uk-width-medium-3-4"> <div class="uk-panel"> <ul class="uk-breadcrumb"> <li onclick="{changedir}"><a title="Change dir to root"><i class="uk-icon-home"></i></a></li> <li each="{folder, idx in breadcrumbs}"><a onclick="{parent.changedir}" title="Change dir to {folder.name}">{folder.name}</a></li> </ul> </div> <div ref="uploadprogress" class="uk-margin uk-hidden"> <div class="uk-progress"> <div ref="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div> </div> </div> <div class="uk-alert uk-text-center uk-margin" if="{data && (this.typefilter || this.refs.filter.value) && (data.folders.length || data.files.length)}"> Filter is active </div> <div class="uk-alert uk-text-center uk-margin" if="{data && (!data.folders.length && !data.files.length)}"> This is an empty folder </div> <div riot-class="{modal ? \'uk-overflow-container\':\'\'}"> <div class="uk-margin-top" if="{data && data.folders.length}"> <strong class="uk-text-small uk-text-muted" if="{!(this.refs.filter.value)}"><i class="uk-icon-folder-o uk-margin-small-right"></i> {data.folders.length} Folders</strong> <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4"> <li class="uk-grid-margin" each="{folder, idx in data.folders}" onclick="{select}" if="{infilter(folder)}"> <div riot-class="uk-panel uk-panel-box finder-folder {folder.selected ? \'uk-selected\':\'\'}"> <div class="uk-flex"> <div> <span class="uk-margin-small-right" data-uk-dropdown="mode:\'click\'"> <i class="uk-icon-folder-o uk-text-muted js-no-item-select"></i> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown uk-dropdown-close"> <li class="uk-nav-header uk-text-truncate">{folder.name}</li> <li><a onclick="{parent.rename}">Rename</a></li> <li><a onclick="{parent.remove}">Delete</a></li> </ul> </div> </span> </div> <div class="uk-flex-item-1 uk-text-truncate"> <a class="uk-link-muted" onclick="{parent.changedir}"><strong>{folder.name}</strong></a> </div> </div> </div> </li> </ul> </div> <div class="uk-margin-top" if="{data && data.files.length}"> <strong class="uk-text-small uk-text-muted" if="{!(this.typefilter || this.refs.filter.value)}"><i class="uk-icon-file-o uk-margin-small-right"></i> {data.files.length} Files</strong> <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4"> <li class="uk-grid-margin" each="{file, idx in data.files}" onclick="{select}" if="{infilter(file)}"> <div riot-class="uk-panel uk-panel-box finder-file {file.selected ? \'uk-selected\':\'\'}"> <div class="uk-panel-teaser uk-cover-background uk-position-relative"> <div class="uk-position-cover uk-position-z-index"> <div class="uk-panel uk-panel-box uk-panel-box-trans"> <span class="uk-margin-small-right" data-uk-dropdown="mode:\'click\'"> <a><i class="uk-icon-{parent.getIconCls(file)} js-no-item-select"></i> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown uk-dropdown-close"> <li class="uk-nav-header uk-text-truncate">{file.name}</li> <li> <a class="uk-link-muted js-no-item-select" onclick="{parent.open}">Open</a></li> <li><a onclick="{parent.rename}">Rename</a></li> <li if="{file.ext == \'zip\'}"><a onclick="{parent.unzip}">Unzip</a></li> <li class="uk-nav-divider"></li> <li><a onclick="{parent.remove}">Delete</a></li> </ul> </div> </span> </div> </div> <canvas class="uk-responsive-width uk-display-block" width="400" height="300" if="{parent.getIconCls(file) != \'image\'}"></canvas> <cp-thumbnail riot-src="{file.url}" width="400" height="300" if="{parent.getIconCls(file) == \'image\'}"></cp-thumbnail> </div> <div class="uk-flex-item-1 uk-text-truncate"> <a class="uk-link-muted js-no-item-select" onclick="{parent.open}">{file.name}</a> <div class="uk-margin-small-top uk-text-small uk-text-muted"> {file.size} </div> </div> </div> </li> </ul> </div> </div> </div> </div> <div ref="editor" class="uk-offcanvas"> <div class="uk-offcanvas-bar uk-width-3-4"> <picoedit></picoedit> </div> </div> </div>', 'cp-finder .uk-offcanvas[ref=editor] .CodeMirror,[data-is="cp-finder"] .uk-offcanvas[ref=editor] .CodeMirror{ height: auto; } cp-finder .uk-offcanvas[ref=editor] .picoedit-toolbar,[data-is="cp-finder"] .uk-offcanvas[ref=editor] .picoedit-toolbar{ padding-left: 15px; padding-right: 15px; } cp-finder .uk-modal .uk-panel-box.finder-folder,[data-is="cp-finder"] .uk-modal .uk-panel-box.finder-folder,cp-finder .uk-modal .uk-panel-box.finder-file,[data-is="cp-finder"] .uk-modal .uk-panel-box.finder-file{ border: 1px rgba(0,0,0,0.1) solid; }', '', function(opts) {
 
         var $this = this,
             typefilters = {
@@ -661,7 +630,7 @@ riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-mar
         this.dirlist    = false;
         this.selected   = {};
 
-        App.$(this.editor).on('click', function(e){
+        App.$(this.refs.editor).on('click', function(e){
 
             if (e.target.classList.contains('uk-offcanvas-bar')) {
                 $this.tags.picoedit.codemirror.editor.focus();
@@ -724,6 +693,7 @@ riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-mar
         this.changedir = function(e, path) {
 
             if (e && e.item) {
+                e.preventDefault();
                 e.stopPropagation();
                 path = e.item.folder.path;
             } else {
@@ -733,14 +703,16 @@ riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-mar
             this.loadPath(path);
         }.bind(this)
 
-        this.open = function(evt) {
+        this.open = function(e) {
+
+            e.preventDefault();
 
             if (opts.previewfiles === false) {
-                this.select(evt, true);
+                this.select(e, true);
                 return;
             }
 
-            var file = evt.item.file,
+            var file = e.item.file,
                 name = file.name.toLowerCase();
 
             if (name.match(typefilters.image)) {
@@ -757,7 +729,7 @@ riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-mar
 
             } else if(name.match(typefilters.text)) {
 
-                UIkit.offcanvas.show(this.editor);
+                UIkit.offcanvas.show(this.refs.editor);
                 this.tags.picoedit.open(file.path);
 
             } else {
@@ -975,12 +947,14 @@ riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-mar
             return defer;
         }.bind(this)
 
-        this.settypefilter = function(evt) {
-            this.typefilter = evt.target.dataset.type;
+        this.settypefilter = function(e) {
+            e.preventDefault();
+
+            this.typefilter = e.target.dataset.type;
             this.resetselected();
         }.bind(this)
 
-        this.updatefilter = function(evt) {
+        this.updatefilter = function(e) {
             this.resetselected();
         }.bind(this)
 
@@ -995,7 +969,7 @@ riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-mar
                 }
             }
 
-            return (!this.filter.value || (name && name.indexOf(this.filter.value.toLowerCase()) !== -1));
+            return (!this.refs.filter.value || (name && name.indexOf(this.refs.filter.value.toLowerCase()) !== -1));
         }.bind(this)
 
         this.resetselected = function() {
@@ -1047,9 +1021,14 @@ riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-mar
 
 });
 
-riot.tag2('cp-gravatar', '<canvas name="image" class="uk-responsive-width uk-border-circle" width="{size}" height="{size}"></canvas>', '', '', function(opts) {
+riot.tag2('cp-gravatar', '<canvas ref="image" class="uk-responsive-width uk-border-circle" width="{size}" height="{size}"></canvas>', '', '', function(opts) {
 
         this.url = '';
+        this.size  = opts.size || 100;
+
+        this.on('mount', function(){
+            this.trigger('update');
+        });
 
         this.on('update', function() {
 
@@ -1058,8 +1037,8 @@ riot.tag2('cp-gravatar', '<canvas name="image" class="uk-responsive-width uk-bor
 
             var img = new Image(), url, release = function() {
                 setTimeout(function() {
-                    this.image.getContext("2d").drawImage(img,0,0);
-                    sessionStorage[url] = this.image.toDataURL();
+                    this.refs.image.getContext("2d").drawImage(img,0,0);
+                    sessionStorage[url] = this.refs.image.toDataURL();
                 }.bind(this), 10);
             }.bind(this);
 
@@ -1082,13 +1061,13 @@ riot.tag2('cp-gravatar', '<canvas name="image" class="uk-responsive-width uk-bor
 
 });
 
-riot.tag2('cp-search', '<div name="autocomplete" class="uk-autocomplete uk-form uk-form-icon app-search"> <i class="uk-icon-search"></i> <input class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(\'Search for anything...\')}"> </div>', 'cp-search .uk-dropdown { min-width: 25vw; }', '', function(opts) {
+riot.tag2('cp-search', '<div ref="autocomplete" class="uk-autocomplete uk-form uk-form-icon app-search"> <i class="uk-icon-search"></i> <input class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(\'Search for anything...\')}"> </div>', 'cp-search .uk-dropdown { min-width: 25vw; }', '', function(opts) {
 
         this.on('mount', function(){
 
-            var txtSearch = App.$("input[type='text']", this.autocomplete);
+            var txtSearch = App.$("input[type='text']", this.refs.autocomplete);
 
-            UIkit.autocomplete(this.autocomplete, {
+            UIkit.autocomplete(this.refs.autocomplete, {
                 source: App.route('/cockpit/search'),
                 template: '<ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">{{~items}}<li data-value="" data-url="{{$item.url}}"><a><i class="uk-icon-{{ ($item.icon || "cube") }}"></i> {{$item.title}}</a></li>{{/items}}</ul>'
             });
@@ -1120,9 +1099,13 @@ riot.tag2('cp-search', '<div name="autocomplete" class="uk-autocomplete uk-form 
 
 });
 
-riot.tag2('cp-thumbnail', '<span class="uk-position-relative"> <i name="spinner" class="uk-icon-spinner uk-icon-spin uk-position-absolute"></i> <canvas name="canvas" class="uk-responsive-width" width="{opts.width || \'\'}" height="{opts.height || \'\'}"></canvas> </span>', '', '', function(opts) {
+riot.tag2('cp-thumbnail', '<span class="uk-position-relative"> <i ref="spinner" class="uk-icon-spinner uk-icon-spin uk-position-absolute"></i> <canvas ref="canvas" class="uk-responsive-width" width="{opts.width || \'\'}" height="{opts.height || \'\'}"></canvas> </span>', '', '', function(opts) {
 
         var $this = this, src;
+
+        this.on('mount', function() {
+            this.trigger('update');
+        })
 
         this.on('update', function(){
 
@@ -1132,9 +1115,9 @@ riot.tag2('cp-thumbnail', '<span class="uk-position-relative"> <i name="spinner"
                 return;
             }
 
-            $this.spinner.classList.remove('uk-hidden');
+            $this.refs.spinner.classList.remove('uk-hidden');
 
-            $this.canvas.getContext("2d").clearRect(0, 0, $this.canvas.width, $this.canvas.height);
+            $this.refs.canvas.getContext("2d").clearRect(0, 0, $this.refs.canvas.width, $this.refs.canvas.height);
 
             App.request('/cockpit/utils/thumb_url', {src:opts.src,w:opts.width,h:opts.height}, 'text').then(function(url){
 
@@ -1142,8 +1125,8 @@ riot.tag2('cp-thumbnail', '<span class="uk-position-relative"> <i name="spinner"
 
                 img.onload = function() {
 
-                    $this.canvas.getContext("2d").drawImage(img,0,0);
-                    $this.spinner.classList.add('uk-hidden');
+                    $this.refs.canvas.getContext("2d").drawImage(img,0,0);
+                    $this.refs.spinner.classList.add('uk-hidden');
                 };
 
                 img.src = url;
@@ -1227,12 +1210,12 @@ riot.tag2('field-asset', '<div class="uk-placeholder uk-text-center" if="{!asset
 
 });
 
-riot.tag2('field-boolean', '<div name="container" class="uk-display-inline-block" onclick="{toggle}" style="cursor:pointer;"> <div class="uk-form-switch"> <input name="check" type="checkbox" id="{id}"> <label for="{id}"></label> </div> <span show="{value && (opts.label !== \'false\' && opts.label !== false)}">{opts.label || \'On\'}</span> <span class="uk-text-muted" show="{!value && (opts.label !== \'false\' && opts.label !== false)}">{opts.label || \'Off\'}</span> </div>', '', '', function(opts) {
+riot.tag2('field-boolean', '<div ref="container" class="uk-display-inline-block" onclick="{toggle}" style="cursor:pointer;"> <div class="uk-form-switch"> <input ref="check" type="checkbox" id="{id}"> <label for="{id}"></label> </div> <span show="{value && (opts.label !== \'false\' && opts.label !== false)}">{opts.label || \'On\'}</span> <span class="uk-text-muted" show="{!value && (opts.label !== \'false\' && opts.label !== false)}">{opts.label || \'Off\'}</span> </div>', '', '', function(opts) {
 
         this.id = 'switch'+Math.ceil(Math.random()*10000000);
 
         if (opts.cls) {
-            App.$(this.container).addClass(opts.cls);
+            App.$(this.refs.container).addClass(opts.cls);
         }
 
         this.value = opts.default || false;
@@ -1248,7 +1231,8 @@ riot.tag2('field-boolean', '<div name="container" class="uk-display-inline-block
 
         }.bind(this);
 
-        this.toggle = function() {
+        this.toggle = function(e) {
+            e.preventDefault();
             this.$setValue(!this.value);
         }.bind(this)
 
@@ -1260,15 +1244,6 @@ riot.tag2('field-code', '<codemirror name="codemirror" syntax="{opts.syntax || \
 
         this.value  = null;
         this._field = null;
-
-        this.ready = new Promise(function(resolve){
-
-            $this.tags.codemirror.on('ready', function(){
-                editor = $this.codemirror.editor;
-                $this.isReady = true;
-                resolve();
-            });
-        });
 
         this.$updateValue = function(value, field) {
 
@@ -1286,6 +1261,15 @@ riot.tag2('field-code', '<codemirror name="codemirror" syntax="{opts.syntax || \
         }.bind(this);
 
         this.on('mount', function(){
+
+            this.ready = new Promise(function(resolve){
+
+                $this.tags.codemirror.on('ready', function(){
+                    editor = $this.codemirror.editor;
+                    $this.isReady = true;
+                    resolve();
+                });
+            });
 
             this.ready.then(function() {
 
@@ -1766,18 +1750,18 @@ riot.tag2('field-multipleselect', '<div name="container" class="{options.length 
 
 });
 
-riot.tag2('field-object', '<div name="input" riot-style="height: {opts.height || \'300px\'}"></div>', '', '', function(opts) {
+riot.tag2('field-object', '<div ref="input" riot-style="height: {opts.height || \'300px\'}"></div>', '', '', function(opts) {
 
         var $this = this, editor;
 
         this.value = {};
 
         if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
+            App.$(this.refs.input).addClass(opts.cls);
         }
 
         if (opts.required) {
-            this.input.setAttribute('required', 'required');
+            this.refs.input.setAttribute('required', 'required');
         }
 
         this.on('mount', function(){
@@ -1789,7 +1773,7 @@ riot.tag2('field-object', '<div name="input" riot-style="height: {opts.height ||
 
             ], function() {
 
-                editor = new JSONEditor(this.input, {
+                editor = new JSONEditor(this.refs.input, {
                     modes: ['tree', 'code'],
                     mode: 'code',
                     onChange: function(){
@@ -1838,7 +1822,7 @@ riot.tag2('field-password', '<div class="uk-form-password uk-width-1-1"> <input 
 
 });
 
-riot.tag2('field-rating', '<ul class="uk-grid uk-grid-small"> <li show="{value}"><a onclick="{removeRating}"><i class="uk-icon-trash-o"></i></a></li> <li class="{(!hoverValue && Math.ceil(value) >= n) || (hoverValue && Math.ceil(hoverValue) >= n) ? \'uk-text-primary\' : \'\'}" each="{n,idx in ratingRange}" onmousemove="{hoverRating}" onmouseleave="{leaveHoverRating}" onclick="{setRating}"><i class="uk-icon-{opts.icon ? opts.icon : \'star\'}" title="{(idx+1)}" data-uk-tooltip></i></li> <li show="{value}"><span class="uk-badge">{!hoverValue && value || hoverValue}</span></li> </ul>', 'field-rating .uk-grid > *,[riot-tag="field-rating"] .uk-grid > *,[data-is="field-rating"] .uk-grid > *{ cursor: pointer; }', '', function(opts) {
+riot.tag2('field-rating', '<ul class="uk-grid uk-grid-small"> <li show="{value}"><a onclick="{removeRating}"><i class="uk-icon-trash-o"></i></a></li> <li class="{(!hoverValue && Math.ceil(value) >= n) || (hoverValue && Math.ceil(hoverValue) >= n) ? \'uk-text-primary\' : \'\'}" each="{n,idx in ratingRange}" onmousemove="{hoverRating}" onmouseleave="{leaveHoverRating}" onclick="{setRating}"><i class="uk-icon-{opts.icon ? opts.icon : \'star\'}" title="{(idx+1)}" data-uk-tooltip></i></li> <li show="{value}"><span class="uk-badge">{!hoverValue && value || hoverValue}</span></li> </ul>', 'field-rating .uk-grid > *,[data-is="field-rating"] .uk-grid > *{ cursor: pointer; }', '', function(opts) {
 
 
         var mininmum  = opts.mininmum  || 0,
@@ -2003,7 +1987,7 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
 
 });
 
-riot.tag2('field-select', '<select name="input" class="uk-width-1-1" bind="{opts.bind}"> <option value=""></option> <option each="{option,idx in options}" value="{option}">{option}</option> </select>', '', '', function(opts) {
+riot.tag2('field-select', '<select name="input" class="uk-width-1-1" bind="{opts.bind}"> <option value=""></option> <option each="{option,idx in options}" riot-value="{option}">{option}</option> </select>', '', '', function(opts) {
 
         this.options = opts.options || []
 
@@ -2072,7 +2056,7 @@ riot.tag2('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> {App.
 
 });
 
-riot.tag2('field-tags', '<div class="uk-grid uk-grid-small uk-flex-middle" data-uk-grid-margin="observe:true"> <div class="uk-text-primary" each="{_tag,idx in _tags}"> <span class="field-tag"><i class="uk-icon-tag"></i> {_tag} <a onclick="{parent.remove}"><i class="uk-icon-close"></i></a></span> </div> <div> <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form"> <i class="uk-icon-tag"></i> <input name="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(opts.placeholder || \'Add Tag...\')}"> </div> </div> </div>', '.field-tag { display: inline-block; border: 1px currentColor solid; padding: .1em .5em; font-size: .9em; border-radius: 3px; }', '', function(opts) {
+riot.tag2('field-tags', '<div class="uk-grid uk-grid-small uk-flex-middle" data-uk-grid-margin="observe:true"> <div class="uk-text-primary" each="{_tag,idx in _tags}"> <span class="field-tag"><i class="uk-icon-tag"></i> {_tag} <a onclick="{parent.remove}"><i class="uk-icon-close"></i></a></span> </div> <div> <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form"> <i class="uk-icon-tag"></i> <input name="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(opts.placeholder || \'Add Tag...\')}"> </div> </div> </div>', 'field-tags .field-tag,[data-is="field-tags"] .field-tag{ display: inline-block; border: 1px currentColor solid; padding: .1em .5em; font-size: .9em; border-radius: 3px; }', '', function(opts) {
 
         var $this = this;
 
@@ -2378,35 +2362,32 @@ riot.tag2('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5"
 
 });
 
-riot.tag2('picoedit', '<div class="picoedit"> <div class="picoedit-toolbar uk-flex" if="{path}"> <div class="uk-flex-item-1 uk-text-truncate"> <strong class="uk-text-small"><i class="uk-icon-pencil uk-margin-small-right"></i> {path}</strong> </div> <div> <button type="button" class="uk-button uk-button-primary" onclick="{save}"><i class="uk-icon-save"></i></button> </div> </div> <codemirror name="codemirror"></codemirror> </div>', '.picoedit-toolbar { padding-top: 15px; padding-bottom: 15px; }', '', function(opts) {
+riot.tag2('picoedit', '<div class="picoedit" show="{isReady}"> <div class="picoedit-toolbar uk-flex" if="{path}"> <div class="uk-flex-item-1 uk-text-truncate"> <strong class="uk-text-small"><i class="uk-icon-pencil uk-margin-small-right"></i> {path}</strong> </div> <div> <button type="button" class="uk-button uk-button-primary" onclick="{save}"><i class="uk-icon-save"></i></button> </div> </div> <codemirror ref="codemirror"></codemirror> </div>', 'picoedit .picoedit-toolbar,[data-is="picoedit"] .picoedit-toolbar{ padding-top: 15px; padding-bottom: 15px; }', '', function(opts) {
 
         var root  = this.root,
             $this = this,
             editor;
 
         this.isReady = false;
-
-        this.ready = new Promise(function(resolve){
-
-            $this.tags.codemirror.on('ready', function(){
-                editor = $this.codemirror.editor;
-
-                editor.addKeyMap({
-                    'Ctrl-S': function(){ $this.save(); },
-                    'Cmd-S': function(){ $this.save(); }
-                });
-
-                $this.isReady = true;
-
-                resolve();
-            });
-        });
-
         root.picoedit = this;
 
         this.path = null;
 
         this.on('mount', function() {
+
+            this.ready = new Promise(function(resolve){
+
+                $this.tags.codemirror.on('ready', function(){
+                    editor = $this.refs.codemirror.editor;
+
+                    editor.addKeyMap({
+                        'Ctrl-S': function(){ $this.save(); },
+                        'Cmd-S': function(){ $this.save(); }
+                    });
+
+                    resolve();
+                });
+            });
 
             if (opts.path) {
 
@@ -2426,11 +2407,13 @@ riot.tag2('picoedit', '<div class="picoedit"> <div class="picoedit-toolbar uk-fl
                 requestapi({"cmd":"readfile", "path":path}, function(content){
 
                     editor.setOption("mode", getMode(path));
-                    editor.setValue(content);
                     editor.focus();
-                    editor.refresh();
+                    $this.isReady = true;
 
                     this.update();
+
+                    editor.setValue(content);
+                    editor.refresh();
 
                 }.bind(this), "text");
 

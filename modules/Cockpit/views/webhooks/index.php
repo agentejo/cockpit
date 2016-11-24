@@ -60,7 +60,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr each="{webhook,idx in webhooks}" show="{parent.infilter(webhook)}">
+            <tr each="{webhook,idx in webhooks}" show="{infilter(webhook)}">
                 <td><input type="checkbox" data-check data-id="{ webhook._id }"></td>
                 <td class="uk-text-center">
                     <a onclick="{ toggleStatus }" title="@lang('Toggle status')" data-uk-tooltip="pos:'left'"><i class="uk-icon-circle{webhook.active ? '':'-thin'} uk-text-{webhook.active ? 'success':'danger'}"></i></a>

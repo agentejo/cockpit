@@ -17,15 +17,6 @@
         this.value  = null;
         this._field = null;
 
-        this.ready = new Promise(function(resolve){
-
-            $this.tags.codemirror.on('ready', function(){
-                editor = $this.codemirror.editor;
-                $this.isReady = true;
-                resolve();
-            });
-        });
-
         this.$updateValue = function(value, field) {
 
             if (this.value != value) {
@@ -42,6 +33,15 @@
         }.bind(this);
 
         this.on('mount', function(){
+
+            this.ready = new Promise(function(resolve){
+
+                $this.tags.codemirror.on('ready', function(){
+                    editor = $this.codemirror.editor;
+                    $this.isReady = true;
+                    resolve();
+                });
+            });
 
             this.ready.then(function() {
 

@@ -102,10 +102,6 @@
 
             this.cacheSize = {{ $info['cacheSize'] ? '"'.$info['cacheSize'].'"':0 }};
 
-            this.on('mount', function() {
-
-            });
-
             cleanUpCache() {
 
                 this.cleaning = true;

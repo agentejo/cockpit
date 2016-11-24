@@ -95,7 +95,7 @@
                         cache[field] = true;
                     }
 
-                    body = 'try{ tag.'+field+' = val; if(!silent) { tag.update(); } tag.trigger("bindingupdated", ["'+field+'", val]);return true;}catch(e){ return false; }';
+                    body = 'try{ tag.'+field+' = val; if(!silent) { tag.update(); } tag.trigger("bindingupdated", ["'+field+'", val]);return true;}catch(e){ console.log(e);return false; }';
 
                     fn = new Function('tag', 'val', 'silent', body);
 
@@ -167,9 +167,18 @@
         }
 
         // init values
-        tag.on('mount updated bind', function() {
+        tag.on('mount', function() {
             update();
         });
+
+        tag.on('updated', function() {
+            update();
+        });
+
+        tag.on('bind', function() {
+            update();
+        });
+
 
         tag.$bindUpdate = function() {
             update();
