@@ -24,6 +24,9 @@
 
     <script>
 
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
+
         this.value  = '';
         this.size   = opts.size || 'inherit';
         this.colors = opts.colors || ['#D8334A','#FFCE54','#A0D468','#48CFAD','#4FC1E9','#5D9CEC','#AC92EC','#EC87C0','#BAA286','#8E8271','#3C3B3D'];

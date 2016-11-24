@@ -14,6 +14,9 @@
 
     <script>
 
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
+
         this.id = 'switch'+Math.ceil(Math.random()*10000000);
 
         if (opts.cls) {

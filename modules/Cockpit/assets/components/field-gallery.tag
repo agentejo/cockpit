@@ -1,8 +1,8 @@
 <field-gallery>
 
-    <div name="panel">
+    <div ref="panel">
 
-        <div name="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ images && images.length }">
+        <div ref="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ images && images.length }">
             <div data-idx="{ idx }" each="{ img,idx in images }">
                 <div class="uk-panel uk-panel-box uk-panel-thumbnail uk-panel-card">
                     <figure class="uk-display-block uk-overlay uk-overlay-hover">
@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <div class="{images && images.length ? 'uk-margin-top':'' }">
+        <div riot-class="{images && images.length ? 'uk-margin-top':'' }">
             <div class="uk-alert" if="{ images && !images.length }">{ App.i18n.get('Gallery is empty') }.</div>
             <a class="uk-button uk-button-link" onclick="{ selectimages }">
                 <i class="uk-icon-plus-circle"></i>
@@ -38,14 +38,14 @@
             </a>
         </div>
 
-        <div class="uk-modal uk-sortable-nodrag" name="modalmeta">
+        <div class="uk-modal uk-sortable-nodrag" ref="modalmeta">
             <div class="uk-modal-dialog">
 
                 <div class="uk-modal-header"><h3>{ App.i18n.get('Image Meta') }</h3></div>
 
                 <div class="uk-grid uk-grid-match uk-grid-gutter" if="{image}">
 
-                    <div class="uk-grid-margin uk-width-medium-{field.width}" each="{name,field in meta}" no-reorder>
+                    <div class="uk-grid-margin uk-width-medium-{field.width}" each="{field,name in meta}" no-reorder>
 
                         <div class="uk-panel">
 
@@ -58,7 +58,7 @@
                             </div>
 
                             <div class="uk-margin">
-                                <cp-field field="{ field }" bind="image.meta['{name}']"></cp-field>
+                                <div data-is="{ 'field-'+(field.type || 'text') }" bind="image.meta['{name}']" opts="{ (field.options || {}) }"></div>
                             </div>
                         </div>
 
@@ -73,6 +73,9 @@
     </div>
 
     <script>
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         riot.util.bind(this);
 
@@ -90,7 +93,7 @@
 
         this.on('mount', function() {
 
-            UIkit.sortable(this.imagescontainer, {
+            UIkit.sortable(this.refs.imagescontainer, {
 
                 animation: false
 
@@ -105,7 +108,7 @@
                 images.splice(cidx, 0, images.splice(oidx, 1)[0]);
 
                 // hack to force complete images rebuild
-                App.$($this.panel).css('height', App.$($this.panel).height());
+                App.$($this.refs.panel).css('height', App.$($this.refs.panel).height());
 
                 $this.images = [];
                 $this.update();
@@ -116,7 +119,7 @@
                     $this.update();
 
                     setTimeout(function(){
-                        $this.panel.style.height = '';
+                        $this.refs.panel.style.height = '';
                         $this.update();
                     }, 30)
                 }, 10);
@@ -151,7 +154,7 @@
             this.image = this.images[e.item.idx];
 
             setTimeout(function() {
-                UIkit.modal($this.modalmeta).show().on('close.uk.modal', function(){
+                UIkit.modal($this.refs.modalmeta).show().on('close.uk.modal', function(){
                     $this.image = null;
                 });
             }, 50)

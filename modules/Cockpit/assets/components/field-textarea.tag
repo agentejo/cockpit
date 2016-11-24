@@ -1,34 +1,40 @@
 <field-textarea>
 
-    <textarea name="input" class="uk-width-1-1" bind="{opts.bind}" placeholder="{ opts.placeholder }" bind-event="change"></textarea>
+    <textarea ref="input" class="uk-width-1-1 uk-invisible" bind="{opts.bind}" placeholder="{ opts.placeholder }" bind-event="change"></textarea>
 
     <script>
+        
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
-        if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
-        }
+        this.on('mount', function() {
 
-        if (opts.rows) {
-            this.input.setAttribute('rows', opts.rows);
-        }
+            if (opts.cls) {
+                App.$(this.refs.input).addClass(opts.cls);
+            }
 
-        if (opts.required) {
-            this.input.setAttribute('required', 'required');
-        }
+            if (opts.rows) {
+                this.refs.input.setAttribute('rows', opts.rows);
+            }
 
-        if (opts.allowtabs) {
+            if (opts.required) {
+                this.refs.input.setAttribute('required', 'required');
+            }
 
-            this.input.onkeydown = function(e) {
-                if (e.keyCode === 9) {
-                    var val = this.value, start = this.selectionStart, end = this.selectionEnd;
-                    this.value = val.substring(0, start) + '\t' + val.substring(end);
-                    this.selectionStart = this.selectionEnd = start + 1;
-                    return false;
-                }
-            };
+            if (opts.allowtabs) {
 
-            this.input.style.tabSize = opts.allowtabs;
-        }
+                this.refs.input.onkeydown = function(e) {
+                    if (e.keyCode === 9) {
+                        var val = this.value, start = this.selectionStart, end = this.selectionEnd;
+                        this.value = val.substring(0, start) + '\t' + val.substring(end);
+                        this.selectionStart = this.selectionEnd = start + 1;
+                        return false;
+                    }
+                };
+
+                this.refs.input.style.tabSize = opts.allowtabs;
+            }
+        });
 
     </script>
 

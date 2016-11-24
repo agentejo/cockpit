@@ -13,7 +13,7 @@
             <div class="uk-form-icon uk-form uk-text-muted">
 
                 <i class="uk-icon-filter"></i>
-                <input class="uk-form-large uk-form-blank" type="text" name="txtfilter" placeholder="@lang('Filter forms...')" onkeyup="{ updatefilter }">
+                <input class="uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="@lang('Filter forms...')" onkeyup="{ updatefilter }">
 
             </div>
 
@@ -42,7 +42,7 @@
 
         <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4 uk-margin-top">
 
-            <div each="{ form, meta in forms }" if="{ parent.infilter(meta) }">
+            <div each="{ meta, form in forms }" show="{ infilter(meta) }">
 
                 <div class="uk-panel uk-panel-box uk-panel-card">
 
@@ -131,11 +131,11 @@
 
         infilter(form, value, name, label) {
 
-            if (!this.txtfilter.value) {
+            if (!this.refs.txtfilter.value) {
                 return true;
             }
 
-            value = this.txtfilter.value.toLowerCase();
+            value = this.refs.txtfilter.value.toLowerCase();
             name  = [form.name.toLowerCase(), form.label.toLowerCase()].join(' ');
 
             return name.indexOf(value) !== -1;

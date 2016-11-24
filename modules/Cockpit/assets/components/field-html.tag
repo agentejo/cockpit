@@ -1,8 +1,11 @@
 <field-html>
 
-    <textarea name="input" class="uk-visibility-hidden"></textarea>
+    <textarea ref="input" class="uk-visibility-hidden"></textarea>
 
     <script>
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         var $this = this, editor;
 
@@ -36,9 +39,9 @@
 
             ], function() {
 
-                $this.input.value = $this.value;
+                $this.refs.input.value = $this.value;
 
-                editor = UIkit.htmleditor(this.input, opts);
+                editor = UIkit.htmleditor(this.refs.input, opts);
                 editor.editor.on('change', function() {
                     $this.$setValue(editor.editor.getValue());
                 });

@@ -44,13 +44,13 @@
             <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
 
                 <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center" show="{ App.Utils.count(groups) > 1 }">
-                    <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
-                    <li class="{ group==parent.group && 'uk-active'}" each="{group, items in groups}" if="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+                    <li riot-class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
+                    <li riot-class="{ group==parent.group && 'uk-active'}" each="{group, items in groups}" if="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
                 </ul>
 
                 <div class="uk-grid uk-grid-match uk-grid-gutter">
 
-                    <div class="uk-width-medium-{field.width}" each="{field,idx in fields}" show="{!parent.group || (parent.group == field.group) }" no-reorder>
+                    <div riot-class="uk-width-medium-{field.width}" each="{field,idx in fields}" show="{!parent.group || (parent.group == field.group) }" no-reorder>
 
                         <div class="uk-panel">
 
@@ -64,7 +64,7 @@
                             </div>
 
                             <div class="uk-margin">
-                                <cp-field field="{ field }" bind="entry.{ field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" cls="uk-form-large"></cp-field>
+                                <div data-is="{ 'field-'+(field.type || 'text') }" bind="entry.{ field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" cls="uk-form-large"></div>
                             </div>
 
                         </div>
@@ -172,7 +172,9 @@
             this.group = e.item && e.item.group || false;
         }
 
-        submit() {
+        submit(e) {
+
+            e.preventDefault();
 
             App.request('/collections/save_entry/'+this.collection.name,{entry:this.entry}).then(function(entry) {
 

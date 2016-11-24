@@ -6,6 +6,10 @@
 
         var cache = null;
 
+        this.on('mount', function() {
+            this.trigger('update');
+        });
+
         this.on('update', function(){
 
             if (cache==opts.content) return;

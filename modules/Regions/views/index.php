@@ -46,7 +46,7 @@
 
         <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4 uk-margin-top">
 
-            <div each="{ meta, region in regions }" if="{ infilter(meta) }">
+            <div each="{ meta, region in regions }" show="{ infilter(meta) }">
 
                 <div class="uk-panel uk-panel-box uk-panel-card">
 
@@ -78,8 +78,10 @@
                                 </ul>
                             </div>
                         </div>
-
-                        <a class="uk-text-bold uk-flex-item-1 uk-text-center uk-link-muted" href="@route('/regions/form')/{region}">{ meta.label || region }</a>
+                        <div class="uk-flex-item-1 uk-text-center">
+                            <a class="uk-text-bold uk-link-muted" href="@route('/regions/form')/{region}">{ meta.label || region }</a>
+                        </div>
+                        <div>&nbsp;</div>
 
                     </div>
 

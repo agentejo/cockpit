@@ -19,15 +19,18 @@
         </div>
 
         <div>
-            <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form">
+            <div ref="autocomplete" class="uk-autocomplete uk-form-icon uk-form">
                 <i class="uk-icon-tag"></i>
-                <input name="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{ App.i18n.get(opts.placeholder || 'Add Tag...') }">
+                <input ref="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{ App.i18n.get(opts.placeholder || 'Add Tag...') }">
             </div>
         </div>
 
     </div>
 
     <script>
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         var $this = this;
 
@@ -37,14 +40,14 @@
 
             if (opts.autocomplete) {
 
-                UIkit.autocomplete(this.autocomplete, {source: opts.autocomplete});
+                UIkit.autocomplete(this.refs.autocomplete, {source: opts.autocomplete});
             }
 
             App.$(this.root).on({
 
                 'selectitem.uk.autocomplete keydown': function(e, data) {
 
-                    var value = e.type=='keydown' ? $this.input.value : data.value;
+                    var value = e.type=='keydown' ? $this.refs.input.value : data.value;
 
                     if (e.type=='keydown' && e.keyCode != 13) {
                         return;
@@ -52,13 +55,13 @@
 
                     if (value.trim()) {
 
-                        $this.input.value = value;
+                        $this.refs.input.value = value;
 
                         e.stopImmediatePropagation();
                         e.stopPropagation();
                         e.preventDefault();
-                        $this._tags.push($this.input.value);
-                        $this.input.value = "";
+                        $this._tags.push($this.refs.input.value);
+                        $this.refs.input.value = "";
                         $this.$setValue(_.uniq($this._tags));
                         $this.update();
 

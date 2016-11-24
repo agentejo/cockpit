@@ -1,19 +1,26 @@
 <field-text>
 
-    <input name="input" class="uk-width-1-1" bind="{opts.bind}" type="{ opts.type || 'text' }" placeholder="{ opts.placeholder }" bind-event="change">
+    <input ref="input" class="uk-width-1-1" bind="{opts.bind}" type="{ opts.type || 'text' }" placeholder="{ opts.placeholder }" bind-event="change">
     <div class="uk-text-muted uk-text-small uk-margin-small-top" if="{opts.slug}" title="Slug">
         { slug }
     </div>
 
     <script>
 
-        if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
-        }
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
-        if (opts.required) {
-            this.input.setAttribute('required', 'required');
-        }
+
+        this.on('mount', function() {
+        
+            if (opts.cls) {
+                App.$(this.refs.input).addClass(opts.cls);
+            }
+
+            if (opts.required) {
+                this.refs.input.setAttribute('required', 'required');
+            }
+        });
         
         this.$updateValue = function(value) {
 

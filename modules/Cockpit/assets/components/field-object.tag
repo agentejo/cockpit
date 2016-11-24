@@ -4,20 +4,22 @@
 
     <script>
 
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
+
         var $this = this, editor;
 
         this.value = {};
 
-        if (opts.cls) {
-            App.$(this.refs.input).addClass(opts.cls);
-        }
-
-        if (opts.required) {
-            this.refs.input.setAttribute('required', 'required');
-        }
-
         this.on('mount', function(){
 
+            if (opts.cls) {
+                App.$(this.refs.input).addClass(opts.cls);
+            }
+
+            if (opts.required) {
+                this.refs.input.setAttribute('required', 'required');
+            }
             App.assets.require([
 
                 '/assets/lib/jsoneditor/jsoneditor.min.css',

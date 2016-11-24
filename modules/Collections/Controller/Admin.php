@@ -8,7 +8,7 @@ class Admin extends \Cockpit\AuthController {
 
     public function index() {
 
-        $collections = $this->module('collections')->getCollectionsInGroup();
+        $collections = $this->module('collections')->getCollectionsInGroup(null, true);
 
         foreach ($collections as $collection => $meta) {
             $collections[$collection]['allowed'] = [

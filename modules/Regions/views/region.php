@@ -156,6 +156,8 @@
 
         this.on('mount', function(){
 
+            this.trigger('update');
+
             // bind clobal command + save
             Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
 

@@ -65,12 +65,12 @@
                 </div>
 
                 <div class="uk-form-row">
-                    <input name="user" class="uk-form-large uk-width-1-1" type="text" placeholder="@lang('Username')" required>
+                    <input ref="user" class="uk-form-large uk-width-1-1" type="text" placeholder="@lang('Username')" required>
                 </div>
 
                 <div class="uk-form-row">
                     <div class="uk-form-password uk-width-1-1">
-                        <input name="password" class="uk-form-large uk-width-1-1" type="password" placeholder="@lang('Password')" required>
+                        <input ref="password" class="uk-form-large uk-width-1-1" type="password" placeholder="@lang('Password')" required>
                         <a href="#" class="uk-form-password-toggle" data-uk-form-password>@lang('Show')</a>
                     </div>
                 </div>
@@ -94,7 +94,7 @@
 
                 this.error = false;
 
-                App.request('/auth/check', {"auth":{"user":this.user.value, "password":this.password.value}}).then(function(data){
+                App.request('/auth/check', {"auth":{"user":this.refs.user.value, "password":this.refs.password.value}}).then(function(data){
 
                     if (data && data.success) {
 

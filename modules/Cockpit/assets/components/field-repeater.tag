@@ -11,7 +11,7 @@
                 <span class="uk-text-primary uk-badge uk-badget-outline">{ App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</span>
             </div>
 
-            <cp-field class="uk-width-1-1" field="{ item.field }" bind="items[{ idx }].value"></cp-field>
+            <div data-is="{ 'field-'+(item.field.type || 'text') }" class="uk-width-1-1" bind="items[{ idx }].value" opts="{ (item.field.options || {}) }"></div>
 
             <div class="uk-panel-box-footer uk-bg-light">
                 <a onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a>
@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <div name="itemscontainer" class="uk-sortable" show="{ mode=='reorder' && items.length }">
+    <div ref="itemscontainer" class="uk-sortable" show="{ mode=='reorder' && items.length }">
         <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
             <div class="uk-grid uk-grid-small">
                 <div class="uk-flex-item-1"><i class="uk-icon-bars uk-margin-small-right"></i> { App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</div>
@@ -47,6 +47,9 @@
 
     <script>
 
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
+
         var $this = this;
 
         riot.util.bind(this);
@@ -55,6 +58,13 @@
         this.field  = opts.field || {type:'text'};
         this.fields = opts.fields && Array.isArray(opts.fields) && opts.fields  || false;
         this.mode   = 'edit';
+
+        this.on('mount', function() {
+
+            UIkit.sortable(this.refs.itemscontainer, {
+                animation: false
+            });
+        });
 
         this.$initBind = function() {
             this.root.$value = this.items;
@@ -75,14 +85,6 @@
 
         this.on('bindingupdated', function() {
             $this.$setValue(this.items);
-        });
-
-        this.on('mount', function() {
-
-            UIkit.sortable(this.itemscontainer, {
-                animation: false
-            });
-
         });
 
         add(e) {

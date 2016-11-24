@@ -1140,6 +1140,9 @@ riot.tag2('cp-thumbnail', '<span class="uk-position-relative"> <i ref="spinner" 
 
 riot.tag2('field-asset', '<div class="uk-placeholder uk-text-center" if="{!asset}"> {App.i18n.get(\'No asset selected\')}. <a onclick="{selectAsset}">{App.i18n.get(\'Select one\')}</a> </div> <div class="uk-panel uk-panel-box uk-panel-card uk-display-inline-block" if="{asset}"> <div class="uk-overlay uk-display-block uk-position-relative"> <canvas class="uk-responsive-width" width="200" height="150"></canvas> <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle"> <div class="uk-width-1-1 uk-text-center"> <span if="{asset.mime.match(/^image\\//) == null}"><i class="uk-h1 uk-text-muted uk-icon-{getIconCls(asset.path)}"></i></span> <a href="{ASSETS_URL+asset.path}" if="{asset.mime.match(/^image\\//)}" data-uk-lightbox="type:\'image\'" title="{asset.width && [asset.width, asset.height].join(\'x\')}"> <cp-thumbnail riot-src="{asset && ASSETS_URL+asset.path}" width="100" height="75"></cp-thumbnail> </a> </div> </div> </div> <div class="uk-margin-small-top uk-text-truncate"><a href="{ASSETS_URL+asset.path}" target="_blank">{asset.title}</a></div> <div class="uk-text-small uk-text-muted"> <strong>{asset.mime}</strong> {App.Utils.formatSize(asset.size)} </div> <hr> <div class="uk-text-small"> <a class="uk-margin-small-right" onclick="{selectAsset}">{App.i18n.get(\'Replace\')}</a> <a onclick="{reset}"><i class="uk-icon-trash-o"></i></a> </div> </div>', '', '', function(opts) {
 
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
+
         var $this = this, typefilters = {
             'image'    : /\.(jpg|jpeg|png|gif|svg)$/i,
             'video'    : /\.(mp4|mov|ogv|webv|wmv|flv|avi)$/i,
@@ -1212,6 +1215,9 @@ riot.tag2('field-asset', '<div class="uk-placeholder uk-text-center" if="{!asset
 
 riot.tag2('field-boolean', '<div ref="container" class="uk-display-inline-block" onclick="{toggle}" style="cursor:pointer;"> <div class="uk-form-switch"> <input ref="check" type="checkbox" id="{id}"> <label for="{id}"></label> </div> <span show="{value && (opts.label !== \'false\' && opts.label !== false)}">{opts.label || \'On\'}</span> <span class="uk-text-muted" show="{!value && (opts.label !== \'false\' && opts.label !== false)}">{opts.label || \'Off\'}</span> </div>', '', '', function(opts) {
 
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
+
         this.id = 'switch'+Math.ceil(Math.random()*10000000);
 
         if (opts.cls) {
@@ -1239,6 +1245,9 @@ riot.tag2('field-boolean', '<div ref="container" class="uk-display-inline-block"
 });
 
 riot.tag2('field-code', '<codemirror name="codemirror" syntax="{opts.syntax || \'text\'}"></codemirror>', 'field-code .CodeMirror { height: auto; }', '', function(opts) {
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         var $this = this, editor;
 
@@ -1285,6 +1294,9 @@ riot.tag2('field-code', '<codemirror name="codemirror" syntax="{opts.syntax || \
 
 riot.tag2('field-color', '<input name="input" class="uk-width-1-1" type="text">', '', '', function(opts) {
 
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
+
         var $this = this;
 
         this.$updateValue = function(value, field) {
@@ -1330,6 +1342,9 @@ riot.tag2('field-color', '<input name="input" class="uk-width-1-1" type="text">'
 
 riot.tag2('field-colortag', '<div class="uk-display-inline-block" data-uk-dropdown="pos:\'right-center\'"> <a riot-style="font-size:{size};color:{value || \'#ccc\'}"><i class="uk-icon-circle"></i></a> <div class="uk-dropdown uk-text-center"> <strong class="uk-text-small">{App.i18n.get(\'Choose\')}</strong> <div class="uk-grid uk-grid-small uk-margin-small-top uk-grid-width-1-4"> <div class="uk-grid-margin" each="{color in colors}"> <a onclick="{parent.select}" riot-style="color:{color};"><i class="uk-icon-circle"></i></a> </div> </div> <div class="uk-margin-top uk-text-small"> <a onclick="{reset}">{App.i18n.get(\'Reset\')}</a> </div> </div> </div>', '', '', function(opts) {
 
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
+
         this.value  = '';
         this.size   = opts.size || 'inherit';
         this.colors = opts.colors || ['#D8334A','#FFCE54','#A0D468','#48CFAD','#4FC1E9','#5D9CEC','#AC92EC','#EC87C0','#BAA286','#8E8271','#3C3B3D'];
@@ -1353,24 +1368,27 @@ riot.tag2('field-colortag', '<div class="uk-display-inline-block" data-uk-dropdo
 
 });
 
-riot.tag2('field-date', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="text" placeholder="{opts.placeholder}">', '', '', function(opts) {
+riot.tag2('field-date', '<input ref="input" class="uk-width-1-1" bind="{opts.bind}" type="text" placeholder="{opts.placeholder}">', '', '', function(opts) {
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         var $this = this;
 
         if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
+            App.$(this.refs.input).addClass(opts.cls);
         }
 
         if (opts.required) {
-            this.input.setAttribute('required', 'required');
+            this.refs.input.setAttribute('required', 'required');
         }
 
         this.on('mount', function(){
 
             App.assets.require(['/assets/lib/uikit/js/components/datepicker.js', '/assets/lib/uikit/js/components/form-select.js'], function() {
 
-                UIkit.datepicker(this.input, opts).element.on('change', function() {
-                    $this.input.$setValue($this.input.value);
+                UIkit.datepicker(this.refs.input, opts).element.on('change', function() {
+                    $this.refs.input.$setValue($this.refs.input.value);
                 });
 
             }.bind(this));
@@ -1378,25 +1396,31 @@ riot.tag2('field-date', '<input name="input" class="uk-width-1-1" bind="{opts.bi
 
 });
 
-riot.tag2('field-file', '<div class="uk-panel uk-panel-box uk-panel-card"> {input.$value} <button type="button" class="uk-button uk-margin-small-right" name="picker" title="{App.i18n.get(\'Pick file\')}"><i class="uk-icon-paperclip"></i></button> <input class="uk-form-blank" type="text" name="input" bind="{opts.bind}" placeholder="{opts.placeholder || App.i18n.get(\'No file selected...\')}"> </div>', '', '', function(opts) {
+riot.tag2('field-file', '<div class="uk-panel uk-panel-box uk-panel-card"> {input.$value} <button type="button" class="uk-button uk-margin-small-right" ref="picker" title="{App.i18n.get(\'Pick file\')}"><i class="uk-icon-paperclip"></i></button> <input class="uk-form-blank" type="text" ref="input" bind="{opts.bind}" placeholder="{opts.placeholder || App.i18n.get(\'No file selected...\')}"> </div>', '', '', function(opts) {
 
-        var $this = this, $input = App.$(this.input);
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
+
+        var $this = this, $input = App.$(this.refs.input);
 
         if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
-            App.$(this.picker).addClass(opts.cls);
+            App.$(this.refs.input).addClass(opts.cls);
+            App.$(this.refs.picker).addClass(opts.cls);
         }
 
-        App.$(this.picker).on('click', function() {
+        App.$(this.refs.picker).on('click', function() {
 
             App.media.select(function(selected) {
-                $this.input.$setValue(selected[0]);
+                $this.refs.input.$setValue(selected[0]);
             });
         });
 
 });
 
-riot.tag2('field-gallery', '<div name="panel"> <div name="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{images && images.length}"> <div data-idx="{idx}" each="{img,idx in images}"> <div class="uk-panel uk-panel-box uk-panel-thumbnail uk-panel-card"> <figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;"> <div class="uk-width-1-1 uk-text-center"> <img class="uk-display-inline-block uk-responsive-width" riot-src="{(SITE_URL+\'/\'+img.path)}"> </div> </div> <figcaption class="uk-overlay-panel uk-overlay-background uk-flex uk-flex-middle uk-flex-center"> <div> <ul class="uk-subnav"> <li><a onclick="{parent.showMeta}" title="{App.i18n.get(\'Edit meta data\')}" data-uk-tooltip><i class="uk-icon-cog"></i></a></li> <li><a href="{(SITE_URL+\'/\'+img.path)}" data-uk-lightbox="type:\'image\'" title="{App.i18n.get(\'Full size\')}" data-uk-tooltip><i class="uk-icon-eye"></i></a></li> <li><a onclick="{parent.remove}" title="{App.i18n.get(\'Remove image\')}" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{img.title}</p> </div> </figcaption> </figure> </div> </div> </div> <div class="{images && images.length ? \'uk-margin-top\':\'\'}"> <div class="uk-alert" if="{images && !images.length}">{App.i18n.get(\'Gallery is empty\')}.</div> <a class="uk-button uk-button-link" onclick="{selectimages}"> <i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add images\')} </a> </div> <div class="uk-modal uk-sortable-nodrag" name="modalmeta"> <div class="uk-modal-dialog"> <div class="uk-modal-header"><h3>{App.i18n.get(\'Image Meta\')}</h3></div> <div class="uk-grid uk-grid-match uk-grid-gutter" if="{image}"> <div class="uk-grid-margin uk-width-medium-{field.width}" each="{name,field in meta}" no-reorder> <div class="uk-panel"> <label class="uk-text-bold"> {field.label || name} </label> <div class="uk-margin uk-text-small uk-text-muted"> {field.info || \' \'} </div> <div class="uk-margin"> <cp-field field="{field}" bind="image.meta[\'{name}\']"></cp-field> </div> </div> </div> </div> <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{App.i18n.get(\'Close\')}</button></div> </div> </div> </div>', '', '', function(opts) {
+riot.tag2('field-gallery', '<div ref="panel"> <div ref="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{images && images.length}"> <div data-idx="{idx}" each="{img,idx in images}"> <div class="uk-panel uk-panel-box uk-panel-thumbnail uk-panel-card"> <figure class="uk-display-block uk-overlay uk-overlay-hover"> <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;"> <div class="uk-width-1-1 uk-text-center"> <img class="uk-display-inline-block uk-responsive-width" riot-src="{(SITE_URL+\'/\'+img.path)}"> </div> </div> <figcaption class="uk-overlay-panel uk-overlay-background uk-flex uk-flex-middle uk-flex-center"> <div> <ul class="uk-subnav"> <li><a onclick="{parent.showMeta}" title="{App.i18n.get(\'Edit meta data\')}" data-uk-tooltip><i class="uk-icon-cog"></i></a></li> <li><a href="{(SITE_URL+\'/\'+img.path)}" data-uk-lightbox="type:\'image\'" title="{App.i18n.get(\'Full size\')}" data-uk-tooltip><i class="uk-icon-eye"></i></a></li> <li><a onclick="{parent.remove}" title="{App.i18n.get(\'Remove image\')}" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{img.title}</p> </div> </figcaption> </figure> </div> </div> </div> <div riot-class="{images && images.length ? \'uk-margin-top\':\'\'}"> <div class="uk-alert" if="{images && !images.length}">{App.i18n.get(\'Gallery is empty\')}.</div> <a class="uk-button uk-button-link" onclick="{selectimages}"> <i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add images\')} </a> </div> <div class="uk-modal uk-sortable-nodrag" ref="modalmeta"> <div class="uk-modal-dialog"> <div class="uk-modal-header"><h3>{App.i18n.get(\'Image Meta\')}</h3></div> <div class="uk-grid uk-grid-match uk-grid-gutter" if="{image}"> <div class="uk-grid-margin uk-width-medium-{field.width}" each="{field,name in meta}" no-reorder> <div class="uk-panel"> <label class="uk-text-bold"> {field.label || name} </label> <div class="uk-margin uk-text-small uk-text-muted"> {field.info || \' \'} </div> <div class="uk-margin"> <div data-is="{\'field-\'+(field.type || \'text\')}" bind="image.meta[\'{name}\']" opts="{(field.options || {})}"></div> </div> </div> </div> </div> <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{App.i18n.get(\'Close\')}</button></div> </div> </div> </div>', '', '', function(opts) {
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         riot.util.bind(this);
 
@@ -1414,7 +1438,7 @@ riot.tag2('field-gallery', '<div name="panel"> <div name="imagescontainer" class
 
         this.on('mount', function() {
 
-            UIkit.sortable(this.imagescontainer, {
+            UIkit.sortable(this.refs.imagescontainer, {
 
                 animation: false
 
@@ -1428,7 +1452,7 @@ riot.tag2('field-gallery', '<div name="panel"> <div name="imagescontainer" class
 
                 images.splice(cidx, 0, images.splice(oidx, 1)[0]);
 
-                App.$($this.panel).css('height', App.$($this.panel).height());
+                App.$($this.refs.panel).css('height', App.$($this.refs.panel).height());
 
                 $this.images = [];
                 $this.update();
@@ -1439,7 +1463,7 @@ riot.tag2('field-gallery', '<div name="panel"> <div name="imagescontainer" class
                     $this.update();
 
                     setTimeout(function(){
-                        $this.panel.style.height = '';
+                        $this.refs.panel.style.height = '';
                         $this.update();
                     }, 30)
                 }, 10);
@@ -1474,7 +1498,7 @@ riot.tag2('field-gallery', '<div name="panel"> <div name="imagescontainer" class
             this.image = this.images[e.item.idx];
 
             setTimeout(function() {
-                UIkit.modal($this.modalmeta).show().on('close.uk.modal', function(){
+                UIkit.modal($this.refs.modalmeta).show().on('close.uk.modal', function(){
                     $this.image = null;
                 });
             }, 50)
@@ -1502,7 +1526,10 @@ riot.tag2('field-gallery', '<div name="panel"> <div name="imagescontainer" class
 
 });
 
-riot.tag2('field-html', '<textarea name="input" class="uk-visibility-hidden"></textarea>', '', '', function(opts) {
+riot.tag2('field-html', '<textarea ref="input" class="uk-visibility-hidden"></textarea>', '', '', function(opts) {
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         var $this = this, editor;
 
@@ -1535,9 +1562,9 @@ riot.tag2('field-html', '<textarea name="input" class="uk-visibility-hidden"></t
 
             ], function() {
 
-                $this.input.value = $this.value;
+                $this.refs.input.value = $this.value;
 
-                editor = UIkit.htmleditor(this.input, opts);
+                editor = UIkit.htmleditor(this.refs.input, opts);
                 editor.editor.on('change', function() {
                     $this.$setValue(editor.editor.getValue());
                 });
@@ -1563,7 +1590,10 @@ riot.tag2('field-html', '<textarea name="input" class="uk-visibility-hidden"></t
 
 });
 
-riot.tag2('field-image', '<figure class="uk-display-block uk-panel uk-panel-box uk-panel-card uk-overlay uk-overlay-hover"> <div class="uk-flex uk-flex-middle uk-flex-center uk-text-muted"> <div class="uk-width-1-1" show="{image.path}" riot-style="min-height:160px;background-size:contain;background-repeat:no-repeat;background-position:50% 50%;{image.path ? \'background-image: url(\'+encodeURI(SITE_URL+\'/\'+image.path)+\')\':\'\'}"></div> <div class="uk-width-1-1 uk-text-large" show="{!image.path}"><i class="uk-icon-image"></i></div> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{selectimage}" title="{App.i18n.get(\'Select image\')}" data-uk-tooltip><i class="uk-icon-image"></i></a></li> <li><a onclick="{showMeta}" title="{App.i18n.get(\'Edit meta data\')}" data-uk-tooltip><i class="uk-icon-cog"></i></a></li> <li><a onclick="{remove}" title="{App.i18n.get(\'Reset\')}" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{image.title}</p> </figcaption> </figure> <div class="uk-modal uk-sortable-nodrag" name="modalmeta"> <div class="uk-modal-dialog"> <div class="uk-modal-header"><h3>{App.i18n.get(\'Image Meta\')}</h3></div> <div class="uk-grid uk-grid-match uk-grid-gutter" if="{_meta}"> <div class="uk-grid-margin uk-width-medium-{field.width}" each="{name,field in meta}" no-reorder> <div class="uk-panel"> <label class="uk-text-bold"> {field.label || name} </label> <div class="uk-margin uk-text-small uk-text-muted"> {field.info || \' \'} </div> <div class="uk-margin"> <cp-field field="{field}" bind="_meta[\'{name}\']"></cp-field> </div> </div> </div> </div> <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{App.i18n.get(\'Close\')}</button></div> </div> </div>', '', '', function(opts) {
+riot.tag2('field-image', '<figure class="uk-display-block uk-panel uk-panel-box uk-panel-card uk-overlay uk-overlay-hover"> <div class="uk-flex uk-flex-middle uk-flex-center uk-text-muted"> <div class="uk-width-1-1" show="{image.path}" riot-style="min-height:160px;background-size:contain;background-repeat:no-repeat;background-position:50% 50%;{image.path ? \'background-image: url(\'+encodeURI(SITE_URL+\'/\'+image.path)+\')\':\'\'}"></div> <div class="uk-width-1-1 uk-text-large" show="{!image.path}"><i class="uk-icon-image"></i></div> </div> <figcaption class="uk-overlay-panel uk-overlay-background"> <ul class="uk-subnav"> <li><a onclick="{selectimage}" title="{App.i18n.get(\'Select image\')}" data-uk-tooltip><i class="uk-icon-image"></i></a></li> <li><a onclick="{showMeta}" title="{App.i18n.get(\'Edit meta data\')}" data-uk-tooltip><i class="uk-icon-cog"></i></a></li> <li><a onclick="{remove}" title="{App.i18n.get(\'Reset\')}" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{image.title}</p> </figcaption> </figure> <div class="uk-modal uk-sortable-nodrag" ref="modalmeta"> <div class="uk-modal-dialog"> <div class="uk-modal-header"><h3>{App.i18n.get(\'Image Meta\')}</h3></div> <div class="uk-grid uk-grid-match uk-grid-gutter" if="{_meta}"> <div class="uk-grid-margin uk-width-medium-{field.width}" each="{field, name in meta}" no-reorder> <div class="uk-panel"> <label class="uk-text-bold"> {field.label || name} </label> <div class="uk-margin uk-text-small uk-text-muted"> {field.info || \' \'} </div> <div class="uk-margin"> <div data-is="{\'field-\'+(field.type || \'text\')}" bind="_meta[\'{name}\']" opts="{(field.options || {})}"></div> </div> </div> </div> </div> <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{App.i18n.get(\'Close\')}</button></div> </div> </div>', '', '', function(opts) {
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         riot.util.bind(this);
 
@@ -1571,11 +1601,14 @@ riot.tag2('field-image', '<figure class="uk-display-block uk-panel uk-panel-box 
 
         this.image = {path:'', meta:{title:''}};
 
-        this.meta  = App.$.extend(opts.meta || {}, {
-            title: {
-                type: 'text',
-                label: 'Title'
-            }
+        this.on('mount', function() {
+
+            this.meta  = App.$.extend(opts.meta || {}, {
+                title: {
+                    type: 'text',
+                    label: 'Title'
+                }
+            });
         });
 
         this.$updateValue = function(value, field) {
@@ -1607,7 +1640,7 @@ riot.tag2('field-image', '<figure class="uk-display-block uk-panel uk-panel-box 
             this._meta = this.image.meta;
 
             setTimeout(function() {
-                UIkit.modal($this.modalmeta).show().on('close.uk.modal', function(){
+                UIkit.modal($this.refs.modalmeta).show().on('close.uk.modal', function(){
                     $this._meta = null;
                 });
             }, 50)
@@ -1615,7 +1648,10 @@ riot.tag2('field-image', '<figure class="uk-display-block uk-panel uk-panel-box 
 
 });
 
-riot.tag2('field-location', '<div class="uk-alert" if="{!apiready}"> Loading maps api... </div> <div show="{apiready}"> <div class="uk-form uk-position-relative uk-margin-small-bottom uk-width-1-1" style="z-index:1001"> <input name="autocomplete" class="uk-width-1-1" placeholder="{latlng.address || [latlng.lat, latlng.lng].join(\', \')}"> </div> <div name="map" style="min-height:300px;"> Loading map... </div> </div>', '', '', function(opts) {
+riot.tag2('field-location', '<div class="uk-alert" if="{!apiready}"> Loading maps api... </div> <div show="{apiready}"> <div class="uk-form uk-position-relative uk-margin-small-bottom uk-width-1-1" style="z-index:1001"> <input ref="autocomplete" class="uk-width-1-1" placeholder="{latlng.address || [latlng.lat, latlng.lng].join(\', \')}"> </div> <div ref="map" style="min-height:300px;"> Loading map... </div> </div>', '', '', function(opts) {
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         var map, marker;
 
@@ -1658,7 +1694,7 @@ riot.tag2('field-location', '<div class="uk-alert" if="{!apiready}"> Loading map
 
                 setTimeout(function(){
 
-                    var map = L.map($this.map).setView([$this.latlng.lat, $this.latlng.lng], opts.zoomlevel || 13);
+                    var map = L.map($this.refs.map).setView([$this.latlng.lat, $this.latlng.lng], opts.zoomlevel || 13);
 
                     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
                         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -1673,7 +1709,7 @@ riot.tag2('field-location', '<div class="uk-alert" if="{!apiready}"> Loading map
                     map.addLayer(marker);
 
                     var pla = places({
-                        container: $this.autocomplete
+                        container: $this.refs.autocomplete
                     }).on('change', function(e) {
                         e.suggestion.latlng.address = e.suggestion.value;
                         $this.$setValue(e.suggestion.latlng);
@@ -1692,29 +1728,35 @@ riot.tag2('field-location', '<div class="uk-alert" if="{!apiready}"> Loading map
 
 });
 
-riot.tag2('field-markdown', '<field-html name="input" markdown="true" bind="{opts.bind}" height="opts.height"></field-html>', '', '', function(opts) {
+riot.tag2('field-markdown', '<field-html ref="input" markdown="true" bind="{opts.bind}" height="{opts.height}"></field-html>', '', '', function(opts) {
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
+
 });
 
-riot.tag2('field-multipleselect', '<div name="container" class="{options.length > 10 ? \'uk-scrollable-box\':\'\'}"> <div class="uk-margin-small-top" each="{option in options}"> <a data-value="{option}" class="{parent.selected.indexOf(option)!==-1 ? \'uk-text-primary\':\'uk-text-muted\'}" onclick="{toggle}" title="{option}"> <i class="uk-icon-{parent.selected.indexOf(option)!==-1 ? \'circle\':\'circle-o\'} uk-margin-small-right"></i> {option} </a> </div> </div> <span class="uk-text-small uk-text-muted" if="{options.length > 10}">{selected.length} {App.i18n.get(\'selected\')}</span>', '', '', function(opts) {
+riot.tag2('field-multipleselect', '<div name="container" class="{options.length > 10 ? \'uk-scrollable-box\':\'\'}"> <div class="uk-margin-small-top" each="{option in options}"> <a data-value="{option}" class="{parent.selected.indexOf(option)!==-1 ? \'uk-text-primary\':\'uk-text-muted\'}" onclick="{toggle}" title="{option}"> <i riot-class="uk-icon-{parent.selected.indexOf(option)!==-1 ? \'circle\':\'circle-o\'} uk-margin-small-right"></i> {option} </a> </div> </div> <span class="uk-text-small uk-text-muted" if="{options.length > 10}">{selected.length} {App.i18n.get(\'selected\')}</span>', '', '', function(opts) {
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         var $this = this;
 
-        this.selected   = [];
-        this.options = opts.options || []
-
-        if (typeof(this.options) === 'string') {
-
-            var options = [];
-
-            this.options.split(',').forEach(function(option) {
-                options.push(option.trim());
-            });
-
-            this.options = options;
-        }
-
         this.on('mount', function() {
 
+            this.selected   = [];
+            this.options = opts.options || []
+
+            if (typeof(this.options) === 'string') {
+
+                var options = [];
+
+                this.options.split(',').forEach(function(option) {
+                    options.push(option.trim());
+                });
+
+                this.options = options;
+            }
         });
 
         this.$initBind = function() {
@@ -1752,20 +1794,22 @@ riot.tag2('field-multipleselect', '<div name="container" class="{options.length 
 
 riot.tag2('field-object', '<div ref="input" riot-style="height: {opts.height || \'300px\'}"></div>', '', '', function(opts) {
 
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
+
         var $this = this, editor;
 
         this.value = {};
 
-        if (opts.cls) {
-            App.$(this.refs.input).addClass(opts.cls);
-        }
-
-        if (opts.required) {
-            this.refs.input.setAttribute('required', 'required');
-        }
-
         this.on('mount', function(){
 
+            if (opts.cls) {
+                App.$(this.refs.input).addClass(opts.cls);
+            }
+
+            if (opts.required) {
+                this.refs.input.setAttribute('required', 'required');
+            }
             App.assets.require([
 
                 '/assets/lib/jsoneditor/jsoneditor.min.css',
@@ -1805,13 +1849,16 @@ riot.tag2('field-object', '<div ref="input" riot-style="height: {opts.height || 
 
 });
 
-riot.tag2('field-password', '<div class="uk-form-password uk-width-1-1"> <input name="input" class="uk-width-1-1" bind="{opts.bind}" type="password"> <a href="" class="uk-form-password-toggle" data-uk-form-password>Show</a> </div>', '', '', function(opts) {
+riot.tag2('field-password', '<div class="uk-form-password uk-width-1-1"> <input ref="input" class="uk-width-1-1" bind="{opts.bind}" type="password"> <a href="" class="uk-form-password-toggle" data-uk-form-password>Show</a> </div>', '', '', function(opts) {
 
-        if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
-        }
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         this.on('mount', function(){
+
+            if (opts.cls) {
+                App.$(this.refs.input).addClass(opts.cls);
+            }
 
             App.assets.require(['/assets/lib/uikit/js/components/form-password.js'], function() {
 
@@ -1822,30 +1869,34 @@ riot.tag2('field-password', '<div class="uk-form-password uk-width-1-1"> <input 
 
 });
 
-riot.tag2('field-rating', '<ul class="uk-grid uk-grid-small"> <li show="{value}"><a onclick="{removeRating}"><i class="uk-icon-trash-o"></i></a></li> <li class="{(!hoverValue && Math.ceil(value) >= n) || (hoverValue && Math.ceil(hoverValue) >= n) ? \'uk-text-primary\' : \'\'}" each="{n,idx in ratingRange}" onmousemove="{hoverRating}" onmouseleave="{leaveHoverRating}" onclick="{setRating}"><i class="uk-icon-{opts.icon ? opts.icon : \'star\'}" title="{(idx+1)}" data-uk-tooltip></i></li> <li show="{value}"><span class="uk-badge">{!hoverValue && value || hoverValue}</span></li> </ul>', 'field-rating .uk-grid > *,[data-is="field-rating"] .uk-grid > *{ cursor: pointer; }', '', function(opts) {
+riot.tag2('field-rating', '<ul class="uk-grid uk-grid-small"> <li show="{value}"><a onclick="{removeRating}"><i class="uk-icon-trash-o"></i></a></li> <li riot-class="{(!hoverValue && Math.ceil(value) >= n) || (hoverValue && Math.ceil(hoverValue) >= n) ? \'uk-text-primary\' : \'\'}" each="{n,idx in ratingRange}" onmousemove="{hoverRating}" onmouseleave="{leaveHoverRating}" onclick="{setRating}"><i class="uk-icon-{opts.icon ? opts.icon : \'star\'}" title="{(idx+1)}" data-uk-tooltip></i></li> <li show="{value}"><span class="uk-badge">{!hoverValue && value || hoverValue}</span></li> </ul>', 'field-rating .uk-grid > *,[data-is="field-rating"] .uk-grid > *{ cursor: pointer; }', '', function(opts) {
 
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
-        var mininmum  = opts.mininmum  || 0,
-            maximum   = opts.maximum   || 5,
-            precision = opts.precision || 0,
-            j;
+        this.on('mount', function() {
 
-        if (precision < 0 || precision > 0.5) {
-            precision = precision - Math.floor(precision);
+            this.mininmum  = opts.mininmum  || 0;
+            this.maximum   = opts.maximum   || 5;
+            this.precision = opts.this.precision || 0;
 
-            if (precision > 0.5) {
-                precision = precision - 0.5;
+            if (this.precision < 0 || this.precision > 0.5) {
+                this.precision = this.precision - Math.floor(this.precision);
+
+                if (this.precision > 0.5) {
+                    this.precision = this.precision - 0.5;
+                }
             }
-        }
 
-        this.value = null;
-        this.hoverValue = null;
+            this.value = null;
+            this.hoverValue = null;
 
-        this.ratingRange = [];
+            this.ratingRange = [];
 
-        for (j = mininmum + 1; j <= maximum; j = j +1) {
-            this.ratingRange.push(j);
-        }
+            for (var j = this.mininmum + 1; j <= this.maximum; j = j +1) {
+                this.ratingRange.push(j);
+            }
+        });
 
         this.setRating = function(e) {
             this.$setValue(this.getValue(e));
@@ -1857,11 +1908,11 @@ riot.tag2('field-rating', '<ul class="uk-grid uk-grid-small"> <li show="{value}"
 
             if (!element) return;
 
-            if (precision === 0) {
+            if (this.precision === 0) {
                 return e.item.n;
             }
 
-            return Math.floor(((e.item.n - 1) + (Math.floor(e.layerX/element.clientWidth / precision) + 1) * precision) * 1000) / 1000;
+            return Math.floor(((e.item.n - 1) + (Math.floor(e.layerX/element.clientWidth / this.precision) + 1) * this.precision) * 1000) / 1000;
         }.bind(this)
 
         this.hoverRating = function(e) {
@@ -1877,22 +1928,23 @@ riot.tag2('field-rating', '<ul class="uk-grid uk-grid-small"> <li show="{value}"
         }.bind(this)
 
         this.$updateValue = function(value) {
+
             if (value === null && !opts.remove) {
-                value = mininmum;
+                value = this.mininmum;
             }
 
             if (value !== null) {
-                if (value < mininmum) {
-                    value = mininmum;
+
+                if (value < this.mininmum) {
+                    value = this.mininmum;
                 }
 
-                if (value > maximum) {
-                    value = maximum;
+                if (value > this.maximum) {
+                    value = this.maximum;
                 }
             }
 
             if (this.value != value) {
-
                 this.value = value;
                 this.update();
             }
@@ -1901,7 +1953,10 @@ riot.tag2('field-rating', '<ul class="uk-grid uk-grid-small"> <li show="{value}"
 
 });
 
-riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.i18n.get(\'No items\')}. </div> <div show="{mode==\'edit\' && items.length}"> <div class="uk-margin uk-panel-box uk-panel-card" each="{item,idx in items}" data-idx="{idx}"> <div class="uk-text-small uk-margin"> <span class="uk-text-primary uk-badge uk-badget-outline">{App.Utils.ucfirst(typeof(item.field) == \'string\' ? item.field : (item.field.label || item.field.type))}</span> </div> <cp-field class="uk-width-1-1" field="{item.field}" bind="items[{idx}].value"></cp-field> <div class="uk-panel-box-footer uk-bg-light"> <a onclick="{parent.remove}"><i class="uk-icon-trash-o"></i></a> </div> </div> </div> <div name="itemscontainer" class="uk-sortable" show="{mode==\'reorder\' && items.length}"> <div class="uk-margin uk-panel-box uk-panel-card" each="{item,idx in items}" data-idx="{idx}"> <div class="uk-grid uk-grid-small"> <div class="uk-flex-item-1"><i class="uk-icon-bars uk-margin-small-right"></i> {App.Utils.ucfirst(typeof(item.field) == \'string\' ? item.field : (item.field.label || item.field.type))}</div> <div class="uk-text-muted uk-text-small">Item {(idx+1)}</div> </div> </div> </div> <div class="uk-margin"> <a class="uk-button" onclick="{add}" show="{mode==\'edit\'}" if="{!fields}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add item\')}</a> <span show="{mode==\'edit\'}" if="{fields}" data-uk-dropdown="mode:\'click\'"> <a class="uk-button"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add item\')}</a> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li each="{field in fields}"><a class="uk-dropdown-close" onclick="{parent.add}">{field.label && field.label || App.Utils.ucfirst(typeof(field) == \'string\' ? field:field.type)}</a></li> </ul> </div> </span> <a class="uk-button" onclick="{updateorder}" show="{mode==\'reorder\'}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Update order\')}</a> <a class="uk-button" onclick="{switchreorder}" show="{items.length > 1}"> <span show="{mode==\'edit\'}"><i class="uk-icon-arrows"></i> {App.i18n.get(\'Reorder\')}</span> <span show="{mode==\'reorder\'}">{App.i18n.get(\'Cancel\')}</span> </a> </div>', '', '', function(opts) {
+riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.i18n.get(\'No items\')}. </div> <div show="{mode==\'edit\' && items.length}"> <div class="uk-margin uk-panel-box uk-panel-card" each="{item,idx in items}" data-idx="{idx}"> <div class="uk-text-small uk-margin"> <span class="uk-text-primary uk-badge uk-badget-outline">{App.Utils.ucfirst(typeof(item.field) == \'string\' ? item.field : (item.field.label || item.field.type))}</span> </div> <div data-is="{\'field-\'+(item.field.type || \'text\')}" class="uk-width-1-1" bind="items[{idx}].value" opts="{(item.field.options || {})}"></div> <div class="uk-panel-box-footer uk-bg-light"> <a onclick="{parent.remove}"><i class="uk-icon-trash-o"></i></a> </div> </div> </div> <div ref="itemscontainer" class="uk-sortable" show="{mode==\'reorder\' && items.length}"> <div class="uk-margin uk-panel-box uk-panel-card" each="{item,idx in items}" data-idx="{idx}"> <div class="uk-grid uk-grid-small"> <div class="uk-flex-item-1"><i class="uk-icon-bars uk-margin-small-right"></i> {App.Utils.ucfirst(typeof(item.field) == \'string\' ? item.field : (item.field.label || item.field.type))}</div> <div class="uk-text-muted uk-text-small">Item {(idx+1)}</div> </div> </div> </div> <div class="uk-margin"> <a class="uk-button" onclick="{add}" show="{mode==\'edit\'}" if="{!fields}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add item\')}</a> <span show="{mode==\'edit\'}" if="{fields}" data-uk-dropdown="mode:\'click\'"> <a class="uk-button"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add item\')}</a> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li each="{field in fields}"><a class="uk-dropdown-close" onclick="{parent.add}">{field.label && field.label || App.Utils.ucfirst(typeof(field) == \'string\' ? field:field.type)}</a></li> </ul> </div> </span> <a class="uk-button" onclick="{updateorder}" show="{mode==\'reorder\'}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Update order\')}</a> <a class="uk-button" onclick="{switchreorder}" show="{items.length > 1}"> <span show="{mode==\'edit\'}"><i class="uk-icon-arrows"></i> {App.i18n.get(\'Reorder\')}</span> <span show="{mode==\'reorder\'}">{App.i18n.get(\'Cancel\')}</span> </a> </div>', '', '', function(opts) {
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         var $this = this;
 
@@ -1911,6 +1966,13 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
         this.field  = opts.field || {type:'text'};
         this.fields = opts.fields && Array.isArray(opts.fields) && opts.fields  || false;
         this.mode   = 'edit';
+
+        this.on('mount', function() {
+
+            UIkit.sortable(this.refs.itemscontainer, {
+                animation: false
+            });
+        });
 
         this.$initBind = function() {
             this.root.$value = this.items;
@@ -1931,14 +1993,6 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
 
         this.on('bindingupdated', function() {
             $this.$setValue(this.items);
-        });
-
-        this.on('mount', function() {
-
-            UIkit.sortable(this.itemscontainer, {
-                animation: false
-            });
-
         });
 
         this.add = function(e) {
@@ -1987,32 +2041,41 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
 
 });
 
-riot.tag2('field-select', '<select name="input" class="uk-width-1-1" bind="{opts.bind}"> <option value=""></option> <option each="{option,idx in options}" riot-value="{option}">{option}</option> </select>', '', '', function(opts) {
+riot.tag2('field-select', '<select ref="input" class="uk-width-1-1" bind="{opts.bind}"> <option value=""></option> <option each="{option,idx in options}" riot-value="{option}">{option}</option> </select>', '', '', function(opts) {
 
-        this.options = opts.options || []
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
-        if (typeof(this.options) === 'string') {
+        this.on('update', function() {
 
-            var options = [];
+            if (opts.cls) {
+                App.$(this.refs.input).addClass(opts.cls);
+            }
 
-            this.options.split(',').forEach(function(option) {
-                options.push(option.trim());
-            });
+            if (opts.required) {
+                this.refs.input.setAttribute('required', 'required');
+            }
 
-            this.options = options;
-        }
+            this.options = opts.options || []
 
-        if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
-        }
+            if (typeof(this.options) === 'string') {
 
-        if (opts.required) {
-            this.input.setAttribute('required', 'required');
-        }
+                var options = [];
+
+                this.options.split(',').forEach(function(option) {
+                    options.push(option.trim());
+                });
+
+                this.options = options;
+            }
+        });
 
 });
 
-riot.tag2('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> {App.i18n.get(\'Fields definition is missing\')} </div> <div class="uk-margin" each="{field,idx in fields}"> <label><span class="uk-text-small">{field.label || field.name || \'\'}</span></label> <cp-field class="uk-width-1-1" field="{field}" bind="value.{field.name}"></cp-field> </div> </div>', '', '', function(opts) {
+riot.tag2('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> {App.i18n.get(\'Fields definition is missing\')} </div> <div class="uk-margin" each="{field,idx in fields}"> <label><span class="uk-text-small">{field.label || field.name || \'\'}</span></label> <div data-is="{\'field-\'+(field.type || \'text\')}" class="uk-width-1-1" bind="value.{field.name}" opts="{(field.options || {})}"></div> </div> </div>', '', '', function(opts) {
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         var $this = this;
 
@@ -2020,11 +2083,13 @@ riot.tag2('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> {App.
 
         riot.util.bind(this);
 
-        this.set    = {};
-        this.fields = opts.fields || [];
-        this.value  = {};
+        this.on('mount', function() {
+            this.set    = {};
+            this.fields = opts.fields || [];
+            this.value  = {};
 
-        this.bind = opts.bind || '';
+            this.bind = opts.bind || '';
+        });
 
         this.$initBind = function() {
             this.root.$value = this.value;
@@ -2056,7 +2121,10 @@ riot.tag2('field-set', '<div> <div class="uk-alert" if="{!fields.length}"> {App.
 
 });
 
-riot.tag2('field-tags', '<div class="uk-grid uk-grid-small uk-flex-middle" data-uk-grid-margin="observe:true"> <div class="uk-text-primary" each="{_tag,idx in _tags}"> <span class="field-tag"><i class="uk-icon-tag"></i> {_tag} <a onclick="{parent.remove}"><i class="uk-icon-close"></i></a></span> </div> <div> <div name="autocomplete" class="uk-autocomplete uk-form-icon uk-form"> <i class="uk-icon-tag"></i> <input name="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(opts.placeholder || \'Add Tag...\')}"> </div> </div> </div>', 'field-tags .field-tag,[data-is="field-tags"] .field-tag{ display: inline-block; border: 1px currentColor solid; padding: .1em .5em; font-size: .9em; border-radius: 3px; }', '', function(opts) {
+riot.tag2('field-tags', '<div class="uk-grid uk-grid-small uk-flex-middle" data-uk-grid-margin="observe:true"> <div class="uk-text-primary" each="{_tag,idx in _tags}"> <span class="field-tag"><i class="uk-icon-tag"></i> {_tag} <a onclick="{parent.remove}"><i class="uk-icon-close"></i></a></span> </div> <div> <div ref="autocomplete" class="uk-autocomplete uk-form-icon uk-form"> <i class="uk-icon-tag"></i> <input ref="input" class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(opts.placeholder || \'Add Tag...\')}"> </div> </div> </div>', 'field-tags .field-tag,[data-is="field-tags"] .field-tag{ display: inline-block; border: 1px currentColor solid; padding: .1em .5em; font-size: .9em; border-radius: 3px; }', '', function(opts) {
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         var $this = this;
 
@@ -2066,14 +2134,14 @@ riot.tag2('field-tags', '<div class="uk-grid uk-grid-small uk-flex-middle" data-
 
             if (opts.autocomplete) {
 
-                UIkit.autocomplete(this.autocomplete, {source: opts.autocomplete});
+                UIkit.autocomplete(this.refs.autocomplete, {source: opts.autocomplete});
             }
 
             App.$(this.root).on({
 
                 'selectitem.uk.autocomplete keydown': function(e, data) {
 
-                    var value = e.type=='keydown' ? $this.input.value : data.value;
+                    var value = e.type=='keydown' ? $this.refs.input.value : data.value;
 
                     if (e.type=='keydown' && e.keyCode != 13) {
                         return;
@@ -2081,13 +2149,13 @@ riot.tag2('field-tags', '<div class="uk-grid uk-grid-small uk-flex-middle" data-
 
                     if (value.trim()) {
 
-                        $this.input.value = value;
+                        $this.refs.input.value = value;
 
                         e.stopImmediatePropagation();
                         e.stopPropagation();
                         e.preventDefault();
-                        $this._tags.push($this.input.value);
-                        $this.input.value = "";
+                        $this._tags.push($this.refs.input.value);
+                        $this.refs.input.value = "";
                         $this.$setValue(_.uniq($this._tags));
                         $this.update();
 
@@ -2117,15 +2185,21 @@ riot.tag2('field-tags', '<div class="uk-grid uk-grid-small uk-flex-middle" data-
 
 });
 
-riot.tag2('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" placeholder="{opts.placeholder}" bind-event="change"> <div class="uk-text-muted uk-text-small uk-margin-small-top" if="{opts.slug}" title="Slug"> {slug} </div>', '', '', function(opts) {
+riot.tag2('field-text', '<input ref="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" placeholder="{opts.placeholder}" bind-event="change"> <div class="uk-text-muted uk-text-small uk-margin-small-top" if="{opts.slug}" title="Slug"> {slug} </div>', '', '', function(opts) {
 
-        if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
-        }
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
-        if (opts.required) {
-            this.input.setAttribute('required', 'required');
-        }
+        this.on('mount', function() {
+
+            if (opts.cls) {
+                App.$(this.refs.input).addClass(opts.cls);
+            }
+
+            if (opts.required) {
+                this.refs.input.setAttribute('required', 'required');
+            }
+        });
 
         this.$updateValue = function(value) {
 
@@ -2139,54 +2213,63 @@ riot.tag2('field-text', '<input name="input" class="uk-width-1-1" bind="{opts.bi
 
 });
 
-riot.tag2('field-textarea', '<textarea name="input" class="uk-width-1-1" bind="{opts.bind}" placeholder="{opts.placeholder}" bind-event="change"></textarea>', '', '', function(opts) {
+riot.tag2('field-textarea', '<textarea ref="input" class="uk-width-1-1 uk-invisible" bind="{opts.bind}" placeholder="{opts.placeholder}" bind-event="change"></textarea>', '', '', function(opts) {
 
-        if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
-        }
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
-        if (opts.rows) {
-            this.input.setAttribute('rows', opts.rows);
-        }
+        this.on('mount', function() {
 
-        if (opts.required) {
-            this.input.setAttribute('required', 'required');
-        }
+            if (opts.cls) {
+                App.$(this.refs.input).addClass(opts.cls);
+            }
 
-        if (opts.allowtabs) {
+            if (opts.rows) {
+                this.refs.input.setAttribute('rows', opts.rows);
+            }
 
-            this.input.onkeydown = function(e) {
-                if (e.keyCode === 9) {
-                    var val = this.value, start = this.selectionStart, end = this.selectionEnd;
-                    this.value = val.substring(0, start) + '\t' + val.substring(end);
-                    this.selectionStart = this.selectionEnd = start + 1;
-                    return false;
-                }
-            };
+            if (opts.required) {
+                this.refs.input.setAttribute('required', 'required');
+            }
 
-            this.input.style.tabSize = opts.allowtabs;
-        }
+            if (opts.allowtabs) {
+
+                this.refs.input.onkeydown = function(e) {
+                    if (e.keyCode === 9) {
+                        var val = this.value, start = this.selectionStart, end = this.selectionEnd;
+                        this.value = val.substring(0, start) + '\t' + val.substring(end);
+                        this.selectionStart = this.selectionEnd = start + 1;
+                        return false;
+                    }
+                };
+
+                this.refs.input.style.tabSize = opts.allowtabs;
+            }
+        });
 
 });
 
-riot.tag2('field-time', '<input name="input" class="uk-width-1-1" bind="{opts.bind}" type="text">', '', '', function(opts) {
+riot.tag2('field-time', '<input ref="input" class="uk-width-1-1" bind="{opts.bind}" type="text">', '', '', function(opts) {
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         var $this = this;
 
-        if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
-        }
-
-        if (opts.required) {
-            this.input.setAttribute('required', 'required');
-        }
-
         this.on('mount', function(){
+
+            if (opts.cls) {
+                App.$(this.refs.input).addClass(opts.cls);
+            }
+
+            if (opts.required) {
+                this.refs.input.setAttribute('required', 'required');
+            }
 
             App.assets.require(['/assets/lib/uikit/js/components/timepicker.js'], function() {
 
-                UIkit.timepicker(this.input, opts).element.on('change', function() {
-                    $this.input.$setValue($this.input.value);
+                UIkit.timepicker(this.refs.input, opts).element.on('change', function() {
+                    $this.refs.input.$setValue($this.refs.input.value);
                 });
 
             }.bind(this));
@@ -2194,20 +2277,15 @@ riot.tag2('field-time', '<input name="input" class="uk-width-1-1" bind="{opts.bi
 
 });
 
-riot.tag2('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5" style="height:350px;visibility:hidden;"></textarea>', '', '', function(opts) {
+riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" style="height:350px;visibility:hidden;"></textarea>', '', '', function(opts) {
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         var $this     = this,
             lang      = document.documentElement.getAttribute('lang') || 'en',
             languages = ['ar','az','ba','bg','by','ca','cs','da','de','el','eo','es_ar','es','fa','fi','fr','ge','he','hr','hu','id','it','ja','ko','lt','lv','mk','nl','no_NB','pl','pt_br','pt_pt','ro','ru','sl','sq','sr-cir','sr-lat','sv','th','tr','ua','vi','zh_cn','zh_tw'],
             editor;
-
-        if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
-        }
-
-        if (opts.rows) {
-            this.input.setAttribute('rows', opts.rows);
-        }
 
         this.value = null;
         this._field = null;
@@ -2229,8 +2307,16 @@ riot.tag2('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5"
 
         this.on('mount', function(){
 
-            if (!this.input.id) {
-                this.input.id = 'wysiwyg-'+parseInt(Math.random()*10000000, 10);
+            if (opts.cls) {
+                App.$(this.refs.input).addClass(opts.cls);
+            }
+
+            if (opts.rows) {
+                this.refs.input.setAttribute('rows', opts.rows);
+            }
+
+            if (!this.refs.input.id) {
+                this.refs.input.id = 'wysiwyg-'+parseInt(Math.random()*10000000, 10);
             }
 
             var assets = [
@@ -2247,7 +2333,7 @@ riot.tag2('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5"
 
                     setTimeout(function(){
 
-                        if (!App.$('#'+this.input.id).length) return;
+                        if (!App.$('#'+this.refs.input.id).length) return;
 
                         tinymce.init(App.$.extend(true, {
                             resize: true,
@@ -2261,14 +2347,14 @@ riot.tag2('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5"
                             relative_urls: false
                         }, opts.editor || {}, {
 
-                          selector: '#'+this.input.id,
+                          selector: '#'+this.refs.input.id,
                           setup: function (ed) {
 
-                              $this.input.value = $this.value;
+                              $this.refs.input.value = $this.value;
 
                               var clbChange = function(e){
                                 ed.save();
-                                $this.$setValue($this.input.value, true);
+                                $this.$setValue($this.refs.input.value, true);
                               };
 
                               ed.on('ExecCommand', clbChange);
@@ -2299,9 +2385,9 @@ riot.tag2('field-wysiwyg', '<textarea name="input" class="uk-width-1-1" rows="5"
 
             }.bind(this)).catch(function(){
 
-                this.input.value = this.value;
+                this.refs.input.value = this.value;
 
-                App.$(this.input).css('visibility','').on('change', function() {
+                App.$(this.refs.input).css('visibility','').on('change', function() {
                     $this.$setValue(this.value);
                 });
 
@@ -2453,6 +2539,10 @@ riot.tag2('picoedit', '<div class="picoedit" show="{isReady}"> <div class="picoe
 riot.tag2('raw', '<span></span>', '', '', function(opts) {
 
         var cache = null;
+
+        this.on('mount', function() {
+            this.trigger('update');
+        });
 
         this.on('update', function(){
 
