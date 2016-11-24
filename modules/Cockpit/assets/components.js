@@ -479,7 +479,12 @@ riot.tag2('cp-assets', '<div class="uk-form" ref="list" show="{mode==\'list\'}">
 
 riot.tag2('cp-field', '<div ref="field" data-is="{\'field-\'+opts.type}" bind="{opts.bind}" cls="{opts.cls}"></div>', '', '', function(opts) {
 
+        this.on('mount', function() {
+            this.trigger('update');
+        });
+
         this.on('update', function() {
+
             this.refs.field.opts.bind = opts.bind;
             this.refs.field.opts.bind = opts.opts || {};
 

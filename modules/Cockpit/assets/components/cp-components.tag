@@ -4,7 +4,12 @@
 
     <script>
 
+        this.on('mount', function() {
+            this.trigger('update');
+        });
+
         this.on('update', function() {
+
             this.refs.field.opts.bind = opts.bind;
             this.refs.field.opts.bind = opts.opts || {};
 

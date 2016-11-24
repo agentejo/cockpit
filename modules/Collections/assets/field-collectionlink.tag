@@ -55,7 +55,7 @@
 
     </div>
 
-    <div class="uk-modal">
+    <div class="uk-modal" if="{collection}">
 
         <div class="uk-modal-dialog uk-modal-dialog-large">
             <a href="" class="uk-modal-close uk-close"></a>
@@ -66,7 +66,7 @@
                 <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted">
 
                     <i class="uk-icon-search"></i>
-                    <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" name="txtfilter" placeholder="{ App.i18n.get('Filter items...') }" onchange="{ updatefilter }">
+                    <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="{ App.i18n.get('Filter items...') }" onchange="{ updatefilter }">
 
                 </div>
 
@@ -140,9 +140,8 @@
 
     }.bind(this);
 
-    this.link       = null;
-    this.sort       = {'_created': -1};
-
+    this.link = null;
+    this.sort = {'_created': -1};
 
     this.$updateValue = function(value, field) {
 
@@ -169,7 +168,7 @@
             _init();
         });
 
-        App.$(this.txtfilter).on('keydown', function(e){
+        App.$(this.refs.txtfilter).on('keydown', function(e){
 
             if (e.keyCode == 13) {
                 e.preventDefault();
@@ -267,9 +266,9 @@
 
         this.filter = null;
 
-        if (this.txtfilter.value) {
+        if (this.refs.txtfilter.value) {
 
-            var filter       = this.txtfilter.value,
+            var filter       = this.refs.txtfilter.value,
                 criterias    = [],
                 allowedtypes = ['text','longtext','boolean','select','html','wysiwyg','markdown','code'],
                 criteria;
