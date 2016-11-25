@@ -30,7 +30,6 @@
                 var img = new Image();
 
                 img.onload = function() {
-                    //App.$($this.refs.canvas).replaceWith('<img src="'+url+'">');
                     $this.refs.canvas.getContext("2d").drawImage(img,0,0);
                     $this.refs.spinner.classList.add('uk-hidden');
                 };
