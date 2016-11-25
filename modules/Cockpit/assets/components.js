@@ -10,7 +10,6 @@ riot.tag2('codemirror', '', '', '', function(opts) {
             App.assets.require([
                 '/assets/lib/codemirror/lib/codemirror.js'
             ], function() {
-
                 $textarea = App.$('<textarea style="visibility:hidden;"></textarea>');
 
                 $root.append($textarea);
@@ -37,7 +36,8 @@ riot.tag2('codemirror', '', '', '', function(opts) {
                 init();
 
                 if (opts.syntax) {
-                    editor.setOption("mode", CodeMirror.findModeByName(opts.syntax).mode || 'text');
+                    var mode = CodeMirror.findModeByName(opts.syntax) || {mode:'text'};
+                    editor.setOption("mode", mode.mode);
                 }
 
                 this.trigger('ready');
@@ -1257,7 +1257,7 @@ riot.tag2('field-boolean', '<div ref="container" class="uk-display-inline-block"
 
 });
 
-riot.tag2('field-code', '<codemirror name="codemirror" syntax="{opts.syntax || \'text\'}"></codemirror>', 'field-code .CodeMirror { height: auto; }', '', function(opts) {
+riot.tag2('field-code', '<codemirror ref="codemirror" syntax="{opts.syntax || \'text\'}"></codemirror>', 'field-code .CodeMirror { height: auto; }', '', function(opts) {
 
         var $this = this, editor;
 
@@ -1281,22 +1281,17 @@ riot.tag2('field-code', '<codemirror name="codemirror" syntax="{opts.syntax || \
 
         this.on('mount', function(){
 
-            this.ready = new Promise(function(resolve){
-
-                $this.tags.codemirror.on('ready', function(){
-                    editor = $this.codemirror.editor;
-                    $this.isReady = true;
-                    resolve();
-                });
-            });
-
-            this.ready.then(function() {
+            this.refs.codemirror.on('ready', function(){
+                editor = $this.refs.codemirror.editor;
 
                 editor.setValue($this.value || '');
 
                 editor.on('change', function() {
                     $this.$setValue(editor.getValue(), true);
                 });
+
+                $this.isReady = true;
+                $this.update();
             });
         });
 
