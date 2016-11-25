@@ -1990,7 +1990,7 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
 
             var items = [];
 
-            App.$(this.itemscontainer).children().each(function(){
+            App.$(this.refs.itemscontainer).children().each(function(){
                 items.push($this.items[Number(this.getAttribute('data-idx'))]);
             });
 

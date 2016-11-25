@@ -110,7 +110,7 @@
 
             var items = [];
 
-            App.$(this.itemscontainer).children().each(function(){
+            App.$(this.refs.itemscontainer).children().each(function(){
                 items.push($this.items[Number(this.getAttribute('data-idx'))]);
             });
 
