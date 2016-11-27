@@ -5,7 +5,7 @@ class RestApi extends \LimeExtra\Controller {
 
     public function get($collection=null) {
 
-        if (!$collection || !$this->app->module('collections')->exists($collection)) {
+        if ($collection && !$this->app->module('collections')->exists($collection)) {
             return false;
         }
 
@@ -23,6 +23,22 @@ class RestApi extends \LimeExtra\Controller {
             }
         }
 
+        if (!$collection) {
+            $collections = $this->app->module('collections')->collections();
+
+            $entries = [];
+            foreach ($collections as $collection) {
+                $entries[$collection['name']] = $this->getEntriesFromCollection($collection['name'], $options);
+            }
+
+            return $entries;
+        } else {
+            return $this->getEntriesFromCollection($collection, $options);
+        }
+    }
+
+    private function getEntriesFromCollection($collection, $options)
+    {
         $entries = $this->app->module('collections')->find($collection, $options);
 
         // return only entries array - due to legacy
@@ -49,7 +65,6 @@ class RestApi extends \LimeExtra\Controller {
             "entries"  => $entries,
             "total"    => count($entries)
         ];
-
-        return $entries;
     }
+
 }
