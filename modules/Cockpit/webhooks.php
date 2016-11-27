@@ -15,7 +15,7 @@ foreach ($webhooks as &$webhook) {
 
             $app->on($evt, function() use($evt, $webhook) {
 
-                $ch      = curl_init($webhook['url']);
+                $ch      = curl_init(trim($webhook['url']));
                 $data    = json_encode([
                     'event' => $evt,
                     'hook'  => $webhook['name'],
