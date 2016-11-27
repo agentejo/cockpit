@@ -29,7 +29,7 @@ class RestApi extends \LimeExtra\Controller {
             $entries = [];
             foreach ($collections as $collection) {
                 $collectionEntries = $this->getEntriesFromCollection($collection['name'], $options);
-                if ($collections['total'] > 0) {
+                if ($collectionEntries['total'] > 0) {
                     $entries[$collection['name']] = $collectionEntries;
                 }
             }
