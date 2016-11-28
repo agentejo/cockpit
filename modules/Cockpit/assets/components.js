@@ -1143,7 +1143,6 @@ riot.tag2('cp-thumbnail', '<span class="uk-position-relative"> <i ref="spinner" 
                 var img = new Image();
 
                 img.onload = function() {
-
                     $this.refs.canvas.getContext("2d").drawImage(img,0,0);
                     $this.refs.spinner.classList.add('uk-hidden');
                 };
@@ -1718,14 +1717,20 @@ riot.tag2('field-location', '<div class="uk-alert" if="{!apiready}"> Loading map
 riot.tag2('field-markdown', '<field-html ref="input" markdown="true" bind="{opts.bind}" height="{opts.height}"></field-html>', '', '', function(opts) {
 });
 
-riot.tag2('field-multipleselect', '<div name="container" riot-class="{options.length > 10 ? \'uk-scrollable-box\':\'\'}"> <div class="uk-margin-small-top" each="{option in options}"> <a data-value="{option}" riot-class="{parent.selected.indexOf(option)!==-1 ? \'uk-text-primary\':\'uk-text-muted\'}" onclick="{toggle}" title="{option}"> <i riot-class="uk-icon-{parent.selected.indexOf(option)!==-1 ? \'circle\':\'circle-o\'} uk-margin-small-right"></i> {option} </a> </div> </div> <span class="uk-text-small uk-text-muted" if="{options.length > 10}">{selected.length} {App.i18n.get(\'selected\')}</span>', '', '', function(opts) {
+riot.tag2('field-multipleselect', '<div riot-class="{options.length > 10 ? \'uk-scrollable-box\':\'\'}"> <div class="uk-margin-small-top" each="{option in options}"> <a data-value="{option}" riot-class="{parent.selected.indexOf(option)!==-1 ? \'uk-text-primary\':\'uk-text-muted\'}" onclick="{parent.toggle}" title="{option}"> <i riot-class="uk-icon-{parent.selected.indexOf(option)!==-1 ? \'circle\':\'circle-o\'} uk-margin-small-right"></i> {option} </a> </div> </div> <span class="uk-text-small uk-text-muted" if="{options.length > 10}">{selected.length} {App.i18n.get(\'selected\')}</span>', '', '', function(opts) {
 
         var $this = this;
 
-        this.on('mount', function() {
+        this.selected = [];
+        this.options  = [];
 
-            this.selected   = [];
-            this.options = opts.options || []
+        this.on('mount', function() {
+            this.trigger('update');
+        });
+
+        this.on('update', function() {
+
+            this.options = opts.options || [];
 
             if (typeof(this.options) === 'string') {
 
