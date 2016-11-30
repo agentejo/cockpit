@@ -11,7 +11,7 @@
                 <span class="uk-text-primary uk-badge uk-badget-outline">{ App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</span>
             </div>
 
-            <cp-field type="{ field.type || 'text' }" bind="items[{ idx }].value" opts="{ field.options || {} }"></cp-field>
+            <cp-field type="{ item.field.type || 'text' }" bind="items[{ idx }].value" opts="{ item.field.options || {} }"></cp-field>
 
             <div class="uk-panel-box-footer uk-bg-light">
                 <a onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a>
@@ -52,8 +52,8 @@
         riot.util.bind(this);
 
         this.items  = [];
-        this.field  = opts.field || {type:'text'};
-        this.fields = opts.fields && Array.isArray(opts.fields) && opts.fields  || false;
+        this.field  = {type:'text'};
+        this.fields = false;
         this.mode   = 'edit';
 
         this.on('mount', function() {
@@ -61,7 +61,14 @@
             UIkit.sortable(this.refs.itemscontainer, {
                 animation: false
             });
+
+            this.trigger('update');
         });
+
+        this.on('update', function() {
+            this.field  = opts.field || {type:'text'};
+            this.fields = opts.fields && Array.isArray(opts.fields) && opts.fields  || false;
+        })
 
         this.$initBind = function() {
             this.root.$value = this.items;
