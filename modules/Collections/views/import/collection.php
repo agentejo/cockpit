@@ -26,21 +26,21 @@
 
 <div class="uk-margin-top" riot-view>
 
-    <div class="uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" name="parse" data-step="parse" show="{step=='parse'}">
+    <div class="uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" ref="parse" data-step="parse" show="{step=='parse'}">
         <div class="uk-text-center">
             <i class="uk-h1 uk-icon-spinner uk-icon-spin"></i>
             <p class="uk-text-muted uk-text-large">@lang('Parsing file...')</p>
         </div>
     </div>
 
-    <div class="uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" name="process" data-step="process" show="{step=='process'}">
+    <div class="uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" ref="process" data-step="process" show="{step=='process'}">
         <div class="uk-text-center">
             <i class="uk-h1 uk-icon-spinner uk-icon-spin"></i>
-            <p class="uk-text-muted uk-text-large"><span name="progress"></span></p>
+            <p class="uk-text-muted uk-text-large"><span ref="progress"></span></p>
         </div>
     </div>
 
-    <div name="step1" class="uk-pabel uk-panel-box uk-panel-card uk-text-center uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" data-step="1" show="{step==1}">
+    <div ref="step1" class="uk-pabel uk-panel-box uk-panel-card uk-text-center uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" data-step="1" show="{step==1}">
         <div>
 
             <p>
@@ -53,7 +53,7 @@
         </div>
     </div>
 
-    <div name="step2" data-step="1" show="{step==2}">
+    <div ref="step2" data-step="1" if="{step==2}" show="{step==2}">
 
         <h2>{ file.name }</h2>
         <div class="uk-margin uk-text-muted">{ data.rows.length } @lang('Entries found.')</div>
@@ -132,6 +132,45 @@
                 window._COL_ = collections;
             });
 
+            this.refs.step1.addEventListener('dragenter', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                this.classList.add('uk-dragover');
+            }, false);
+
+            this.refs.step1.addEventListener('dragleave', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                this.classList.remove('uk-dragover');
+            }, false);
+
+            this.refs.step1.addEventListener('dragover', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }, false);
+
+            this.refs.step1.addEventListener('drop', function(e){
+
+                e.stopPropagation();
+                e.preventDefault();
+
+                $this.selectFile(e.dataTransfer.files[0]);
+
+            }, false);
+
+            this.refs.step1.addEventListener('change', function(e){
+                e.stopPropagation();
+                e.preventDefault();
+
+                $this.selectFile(e.target.files[0]);
+
+                // loosy hack
+                setTimeout(function() {
+                    App.$(e.target).replaceWith(e.target.outerHTML);
+                }, 100);
+
+            }, false);
+
         });
 
         this.collection.fields.forEach(function(field) {
@@ -162,7 +201,7 @@
             this.filterData = {};
 
             this.step = 1;
-            this.step1.classList.remove('uk-dragover');
+            this.refs.step1.classList.remove('uk-dragover');
         }
 
         // STEP 1
@@ -197,46 +236,6 @@
             });
         }
 
-        this.step1.addEventListener('dragenter', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            this.classList.add('uk-dragover');
-        }, false);
-
-        this.step1.addEventListener('dragleave', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            this.classList.remove('uk-dragover');
-        }, false);
-
-        this.step1.addEventListener('dragover', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-        }, false);
-
-        this.step1.addEventListener('drop', function(e){
-
-            e.stopPropagation();
-            e.preventDefault();
-
-            $this.selectFile(e.dataTransfer.files[0]);
-
-        }, false);
-
-        this.step1.addEventListener('change', function(e){
-            e.stopPropagation();
-            e.preventDefault();
-
-            $this.selectFile(e.target.files[0]);
-
-            // loosy hack
-            setTimeout(function() {
-                App.$(e.target).replaceWith(e.target.outerHTML);
-            }, 100);
-
-        }, false);
-
-        // STEP 2
 
 
         // HELPER
@@ -265,7 +264,7 @@
                 chain  = Promise.resolve(),
                 progress = 0;
 
-            this.progress.innerHTML  = '0 %';
+            this.refs.progress.innerHTML  = '0 %';
             this.step = 'process';
 
             chunks.forEach(function(chunk){
@@ -313,7 +312,7 @@
                                     progress = $this.data.rows.length;
                                 }
 
-                                $this.progress.innerHTML = Math.ceil((progress/$this.data.rows.length)*100)+' %';
+                                $this.refs.progress.innerHTML = Math.ceil((progress/$this.data.rows.length)*100)+' %';
 
                                 if (progress == $this.data.rows.length) {
                                     App.ui.notify("Import completed.", "success");
@@ -333,7 +332,7 @@
                                 progress = $this.data.rows.length;
                             }
 
-                            $this.progress.innerHTML = Math.ceil((progress/$this.data.rows.length)*100)+' %';
+                            $this.refs.progress.innerHTML = Math.ceil((progress/$this.data.rows.length)*100)+' %';
 
                             if (progress == $this.data.rows.length) {
                                 App.ui.notify("Import completed.", "success");

@@ -75,7 +75,7 @@
                 <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted">
 
                     <i class="uk-icon-search"></i>
-                    <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" name="txtfilter" placeholder="@lang('Filter items...')" onchange="{ updatefilter }">
+                    <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="@lang('Filter items...')" onchange="{ updatefilter }">
 
                 </div>
             </div>
@@ -84,7 +84,7 @@
             <div class="uk-float-right">
 
                 @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
-                <a class="uk-button uk-button-large uk-button-danger uk-animation-fade" onclick="{ removeselected }" if="{ selected.length }">
+                <a class="uk-button uk-button-large uk-button-danger uk-animation-fade uk-margin-small-right" onclick="{ removeselected }" if="{ selected.length }">
                     @lang('Delete') <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
                 </a>
                 @endif
@@ -96,7 +96,7 @@
         </div>
 
 
-        <div class="uk-margin-top" if="{ !loading && (entries.length || filter) }">
+        <div class="uk-margin-top" show="{ !loading && (entries.length || filter) }">
 
             @render('collections:views/partials/entries'.($collection['sortable'] ? '.sortable':'').'.php', compact('collection'))
 
@@ -160,40 +160,43 @@
                 $this.update();
             });
 
-
-            if (this.collection.sortable) {
-
-                this.sort = {'_order': 1};
-
-                UIkit.sortable(this.sortableroot, {
-
-                    animation: false
-
-                }).element.on("change.uk.sortable", function(e, sortable, ele){
-
-                    if (App.$(e.target).is(':input')) return;
-
-                    var updates = [];
-
-                    App.$($this.sortableroot).children().each(function(idx) {
-
-                        updates.push({'_id':this.getAttribute('data-id'),'_order':idx});
-
-                    });
-
-                    if (updates.length) {
-
-                        App.callmodule('collections:save',[$this.collection.name, updates]).then(function(){
-                            App.ui.notify("Entries reordered", "success");
-                        });
-                    }
-
-                });
+            if (this.collection.sortable && this.refs.sortableroot) {
+                this.initSortable();
             }
 
             this.load();
 
         });
+
+        initSortable() {
+
+            this.sort = {'_order': 1};
+
+            UIkit.sortable(this.refs.sortableroot, {
+
+                animation: false
+
+            }).element.on("change.uk.sortable", function(e, sortable, ele){
+
+                if (App.$(e.target).is(':input')) return;
+
+                var updates = [];
+
+                App.$($this.refs.sortableroot).children().each(function(idx) {
+
+                    updates.push({'_id':this.getAttribute('data-id'),'_order':idx});
+
+                });
+
+                if (updates.length) {
+
+                    App.callmodule('collections:save',[$this.collection.name, updates]).then(function(){
+                        App.ui.notify("Entries reordered", "success");
+                    });
+                }
+
+            });
+        }
 
         remove(e, entry, idx) {
 
@@ -363,7 +366,7 @@
 
             var load = this.filter ? true:false;
 
-            this.filter = this.txtfilter.value || null;
+            this.filter = this.refs.txtfilter.value || null;
 
             if (this.filter || load) {
                 this.entries = [];

@@ -171,7 +171,7 @@ $app->on('admin.init', function() {
 
 $app->on('cockpit.search', function($search, $list) {
 
-    if (!$this->module('cockpit')->hasaccess('accounts')) {
+    if (!$this->module('cockpit')->hasaccess('cockpit', 'accounts')) {
         return;
     }
 

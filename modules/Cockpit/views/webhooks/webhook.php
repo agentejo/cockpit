@@ -58,7 +58,7 @@
                                 <div class="uk-flex-item-1"><input class="uk-width-1-1" type="text" placeholder="Key" bind="webhook.headers[{idx}].k"></div>
                                 <div>:</div>
                                 <div class="uk-flex-item-1"><input class="uk-width-1-1" type="text" placeholder="Value" bind="webhook.headers[{idx}].v"></div>
-                                <div><a onclick="{ parent.removeHeader}"><i class="uk-text-danger uk-icon-trash"></i></a></div>
+                                <div><a onclick="{ this.parent.removeHeader}"><i class="uk-text-danger uk-icon-trash"></i></a></div>
                             </div>
 
                             <div class="uk-margin uk-text-center {!webhook.headers.length && 'uk-placeholder'}">
@@ -100,7 +100,7 @@
                     <div class="uk-margin uk-form">
                         <div class="uk-form-icon uk-width-1-1 uk-display-block">
                             <i class="uk-icon-bolt"></i>
-                            <input class="uk-width-1-1 uk-form-large" type="text" name="event" placeholder="@lang('Add event...')">
+                            <input class="uk-width-1-1 uk-form-large" type="text" ref="event" placeholder="@lang('Add event...')">
                         </div>
                     </div>
 
@@ -148,18 +148,18 @@
 
         this.on('mount', function(){
 
-            App.$(this.event).on('keydown', function(e) {
+            App.$(this.refs.event).on('keydown', function(e) {
 
                 if (e.keyCode == 13) {
                     e.preventDefault();
 
-                    if ($this.webhook.events.indexOf($this.event.value.trim()) != -1) {
+                    if ($this.webhook.events.indexOf($this.refs.event.value.trim()) != -1) {
                         App.ui.notify("Event already exists");
                     } else {
-                        $this.webhook.events.push($this.event.value.trim());
+                        $this.webhook.events.push($this.refs.event.value.trim());
                     }
 
-                    $this.event.value = '';
+                    $this.refs.event.value = '';
                     $this.update();
 
                     return false;
@@ -179,7 +179,9 @@
             this.webhook.events.splice(evt.item.idx, 1);
         }
 
-        submit() {
+        submit(e) {
+
+            if(e) e.preventDefault();
 
             App.request('/webhooks/save', {webhook: this.webhook}).then(function(data) {
 

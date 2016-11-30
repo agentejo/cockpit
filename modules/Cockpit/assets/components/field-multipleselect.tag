@@ -1,9 +1,8 @@
 <field-multipleselect>
-
-    <div name="container" class="{ options.length > 10 ? 'uk-scrollable-box':'' }">
+    <div riot-class="{ options.length > 10 ? 'uk-scrollable-box':'' }">
         <div class="uk-margin-small-top" each="{option in options}">
-            <a data-value="{ option }" class="{ parent.selected.indexOf(option)!==-1 ? 'uk-text-primary':'uk-text-muted' }" onclick="{ toggle }" title="{ option }">
-                <i class="uk-icon-{ parent.selected.indexOf(option)!==-1 ? 'circle':'circle-o' } uk-margin-small-right"></i>
+            <a data-value="{ option }" riot-class="{ parent.selected.indexOf(option)!==-1 ? 'uk-text-primary':'uk-text-muted' }" onclick="{ parent.toggle }" title="{ option }">
+                <i riot-class="uk-icon-{ parent.selected.indexOf(option)!==-1 ? 'circle':'circle-o' } uk-margin-small-right"></i>
                 { option }
             </a>
         </div>
@@ -14,22 +13,27 @@
 
         var $this = this;
 
-        this.selected   = [];
-        this.options = opts.options || []
-
-        if (typeof(this.options) === 'string') {
-
-            var options = [];
-
-            this.options.split(',').forEach(function(option) {
-                options.push(option.trim());
-            });
-
-            this.options = options;
-        }
+        this.selected = [];
+        this.options  = [];
 
         this.on('mount', function() {
+            this.trigger('update');
+        });
 
+        this.on('update', function() {
+
+            this.options = opts.options || [];
+
+            if (typeof(this.options) === 'string') {
+
+                var options = [];
+
+                this.options.split(',').forEach(function(option) {
+                    options.push(option.trim());
+                });
+
+                this.options = options;
+            }
         });
 
         this.$initBind = function() {

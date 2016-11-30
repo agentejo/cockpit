@@ -140,7 +140,7 @@
 
     Filter._getCollections = new Promise(function(resolve){
 
-        App.request('/collections/collections', {nc: Math.random()}).then(function(collections) {
+        App.request('/collections/_collections', {nc: Math.random()}).then(function(collections) {
             var collections = _.keyBy(collections, 'name');
             resolve(collections);
         });

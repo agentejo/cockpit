@@ -14,7 +14,7 @@
 
     <div if="{opts.link && collection}">
 
-        <div class="uk-alert" if="{!link || (opts.multiple && !link.length)}">
+        <div class="uk-alert" if="{!link || (link && opts.multiple && !link.length)}">
             { App.i18n.get('Nothing linked yet') }. <a onclick="{ showDialog }">{ App.i18n.get('Create link to') } { collection.label || opts.link }</a>
         </div>
 
@@ -32,7 +32,7 @@
 
         </div>
 
-        <div if="{opts.multiple && link.length}">
+        <div if="{link && opts.multiple && link.length}">
 
             <div class="uk-panel uk-panel-card uk-panel-box">
 
@@ -57,7 +57,7 @@
 
     <div class="uk-modal">
 
-        <div class="uk-modal-dialog uk-modal-dialog-large">
+        <div class="uk-modal-dialog uk-modal-dialog-large" if="{collection}">
             <a href="" class="uk-modal-close uk-close"></a>
             <h3>{ collection.label || opts.link }</h3>
 
@@ -66,7 +66,7 @@
                 <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted">
 
                     <i class="uk-icon-search"></i>
-                    <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" name="txtfilter" placeholder="{ App.i18n.get('Filter items...') }" onchange="{ updatefilter }">
+                    <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="{ App.i18n.get('Filter items...') }" onchange="{ updatefilter }">
 
                 </div>
 
@@ -140,9 +140,8 @@
 
     }.bind(this);
 
-    this.link       = null;
-    this.sort       = {'_created': -1};
-
+    this.link = null;
+    this.sort = {'_created': -1};
 
     this.$updateValue = function(value, field) {
 
@@ -169,7 +168,7 @@
             _init();
         });
 
-        App.$(this.txtfilter).on('keydown', function(e){
+        App.$(this.refs.txtfilter).on('keydown', function(e){
 
             if (e.keyCode == 13) {
                 e.preventDefault();
@@ -189,7 +188,7 @@
 
     showDialog(){
 
-        if (opts.multiple && opts.limit && this.link.length >= Number(opts.limit)) {
+        if (opts.multiple && opts.limit && this.link && this.link.length >= Number(opts.limit)) {
             App.ui.notify('Maximum amount of items reached');
             return;
         }
@@ -204,6 +203,11 @@
         var entry = {_id:_entry._id, display: _entry[opts.display] || _entry[this.collection.fields[0].name] || 'n/a'};
 
         if (opts.multiple) {
+
+            if (!this.link) {
+                this.link = [];
+            }
+
             this.link.push(entry);
         } else {
             this.link = entry;
@@ -267,9 +271,9 @@
 
         this.filter = null;
 
-        if (this.txtfilter.value) {
+        if (this.refs.txtfilter.value) {
 
-            var filter       = this.txtfilter.value,
+            var filter       = this.refs.txtfilter.value,
                 criterias    = [],
                 allowedtypes = ['text','longtext','boolean','select','html','wysiwyg','markdown','code'],
                 criteria;

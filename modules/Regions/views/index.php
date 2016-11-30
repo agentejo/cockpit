@@ -13,7 +13,7 @@
             <div class="uk-form-icon uk-form uk-text-muted">
 
                 <i class="uk-icon-filter"></i>
-                <input class="uk-form-large uk-form-blank" type="text" name="txtfilter" placeholder="@lang('Filter regions...')" onkeyup="{ updatefilter }">
+                <input class="uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="@lang('Filter regions...')" onkeyup="{ updatefilter }">
 
             </div>
 
@@ -46,7 +46,7 @@
 
         <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4 uk-margin-top">
 
-            <div each="{ region, meta in regions }" if="{ parent.infilter(meta) }">
+            <div each="{ meta, region in regions }" show="{ infilter(meta) }">
 
                 <div class="uk-panel uk-panel-box uk-panel-card">
 
@@ -73,13 +73,15 @@
                                     <li if="{ meta.allowed.region_edit }" class="uk-nav-divider"></li>
                                     <li if="{ meta.allowed.region_edit }"><a href="@route('/regions/region')/{ region }">@lang('Edit')</a></li>
                                     @hasaccess?('regions', 'delete')
-                                    <li><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
+                                    <li><a class="uk-dropdown-close" onclick="{ this.parent.remove }">@lang('Delete')</a></li>
                                     @end
                                 </ul>
                             </div>
                         </div>
-
-                        <a class="uk-text-bold uk-flex-item-1 uk-text-center uk-link-muted" href="@route('/regions/form')/{region}">{ meta.label || region }</a>
+                        <div class="uk-flex-item-1 uk-text-center">
+                            <a class="uk-text-bold uk-link-muted" href="@route('/regions/form')/{region}">{ meta.label || region }</a>
+                        </div>
+                        <div>&nbsp;</div>
 
                     </div>
 
@@ -122,11 +124,11 @@
 
         infilter(region, value, name, label) {
 
-            if (!this.txtfilter.value) {
+            if (!this.refs.txtfilter.value) {
                 return true;
             }
 
-            value = this.txtfilter.value.toLowerCase();
+            value = this.refs.txtfilter.value.toLowerCase();
             name  = [region.name.toLowerCase(), region.label.toLowerCase()].join(' ');
 
             return name.indexOf(value) !== -1;

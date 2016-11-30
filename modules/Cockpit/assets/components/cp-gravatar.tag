@@ -1,10 +1,15 @@
 <cp-gravatar>
 
-    <canvas name="image" class="uk-responsive-width uk-border-circle" width="{ size }" height="{ size }"></canvas>
+    <canvas ref="image" class="uk-responsive-width uk-border-circle" width="{ size }" height="{ size }"></canvas>
 
     <script>
 
         this.url = '';
+        this.size  = opts.size || 100;
+
+        this.on('mount', function(){
+            this.trigger('update');
+        });
 
         this.on('update', function() {
 
@@ -13,11 +18,11 @@
 
             var img = new Image(), url, release = function() {
                 setTimeout(function() {
-                    this.image.getContext("2d").drawImage(img,0,0);
-                    sessionStorage[url] = this.image.toDataURL();
+                    this.refs.image.getContext("2d").drawImage(img,0,0);
+                    sessionStorage[url] = this.refs.image.toDataURL();
                 }.bind(this), 10);
             }.bind(this);
-            
+
             url = '//www.gravatar.com/avatar/'+md5(this.email)+'?d=404&s='+this.size;
 
             img.crossOrigin = 'Anonymous';

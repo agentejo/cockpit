@@ -16,7 +16,7 @@
 
                    <div class="uk-margin">
                        <label class="uk-text-small">@lang('Name')</label>
-                       <input class="uk-width-1-1 uk-form-large" type="text" name="name" bind="collection.name" pattern="[a-zA-Z0-9_]+" required>
+                       <input class="uk-width-1-1 uk-form-large" type="text" ref="name" bind="collection.name" pattern="[a-zA-Z0-9_]+" required>
                        <p class="uk-text-small uk-text-muted" if="{!collection._id}">
                            @lang('Only alpha nummeric value is allowed')
                        </p>
@@ -24,7 +24,7 @@
 
                    <div class="uk-margin">
                        <label class="uk-text-small">@lang('Label')</label>
-                       <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="collection.label">
+                       <input class="uk-width-1-1 uk-form-large" type="text" ref="label" bind="collection.label">
                    </div>
 
                    <div class="uk-margin">
@@ -72,8 +72,8 @@
             <div class="uk-width-medium-3-4">
 
                 <ul class="uk-tab uk-margin-large-bottom">
-                    <li class="{ tab=='fields' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }">{ App.i18n.get('Fields') }</a></li>
-                    <li class="{ tab=='acl' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }">{ App.i18n.get('Access') }</a></li>
+                    <li riot-class="{ tab=='fields' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }">{ App.i18n.get('Fields') }</a></li>
+                    <li riot-class="{ tab=='acl' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }">{ App.i18n.get('Access') }</a></li>
                 </ul>
 
                 <div class="uk-form-row" show="{tab=='fields'}">
@@ -162,11 +162,13 @@
 
             // lock name if saved
             if (this.collection._id) {
-                this.name.disabled = true;
+                this.refs.name.disabled = true;
             }
         });
 
         this.on('mount', function(){
+
+            this.trigger('update');
 
             // bind clobal command + save
             Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
@@ -185,7 +187,9 @@
             this.collection.icon = e.target.getAttribute('icon');
         }
 
-        submit() {
+        submit(e) {
+
+            if(e) e.preventDefault();
 
             var collection = this.collection;
 

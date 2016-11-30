@@ -24,7 +24,7 @@
         var ASSETS_URL = '{{ rtrim($app->pathToUrl('#uploads:'), '/') }}';
     </script>
     <script src="@base('assets:lib/fuc.js.php')"></script>
-    {{ $app->assets($app('admin')->data->get('assets'), $app['cockpit/version']) }}
+    {{ $app->assets($app('admin')->data->get('assets'), $app['debug'] ? time() : $app['cockpit/version']) }}
 
     <script src="@route('/cockpit.i18n.data')"></script>
 

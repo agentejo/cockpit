@@ -13,7 +13,7 @@
             <div class="uk-form-icon uk-form uk-text-muted">
 
                 <i class="uk-icon-filter"></i>
-                <input class="uk-form-large uk-form-blank" type="text" name="txtfilter" placeholder="@lang('Filter collections...')" onkeyup="{ updatefilter }">
+                <input class="uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="@lang('Filter collections...')" onkeyup="{ updatefilter }">
 
             </div>
 
@@ -44,7 +44,7 @@
 
         <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4 uk-margin-top">
 
-            <div each="{ collection, meta in collections }" if="{ parent.infilter(meta) }">
+            <div each="{ meta, collection in collections }" show="{ infilter(meta) }">
 
                 <div class="uk-panel uk-panel-box uk-panel-card">
 
@@ -83,7 +83,7 @@
 
                         <a class="uk-text-bold uk-flex-item-1 uk-text-center uk-link-muted" href="@route('/collections/entries')/{collection}">{ meta.label || collection }</a>
                         <div>
-                            <span class="uk-badge" style="background-color:{ (meta.color) }">{ meta.itemsCount }</span>
+                            <span class="uk-badge" riot-style="background-color:{ (meta.color) }">{ meta.itemsCount }</span>
                         </div>
                     </div>
 
@@ -126,11 +126,11 @@
 
         infilter(collection, value, name, label) {
 
-            if (!this.txtfilter.value) {
+            if (!this.refs.txtfilter.value) {
                 return true;
             }
 
-            value = this.txtfilter.value.toLowerCase();
+            value = this.refs.txtfilter.value.toLowerCase();
             name  = [collection.name.toLowerCase(), collection.label.toLowerCase()].join(' ');
 
             return name.indexOf(value) !== -1;

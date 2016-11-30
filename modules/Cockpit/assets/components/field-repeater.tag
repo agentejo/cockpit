@@ -11,7 +11,7 @@
                 <span class="uk-text-primary uk-badge uk-badget-outline">{ App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</span>
             </div>
 
-            <cp-field class="uk-width-1-1" field="{ item.field }" bind="items[{ idx }].value"></cp-field>
+            <cp-field type="{ field.type || 'text' }" bind="items[{ idx }].value" opts="{ field.options || {} }"></cp-field>
 
             <div class="uk-panel-box-footer uk-bg-light">
                 <a onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a>
@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <div name="itemscontainer" class="uk-sortable" show="{ mode=='reorder' && items.length }">
+    <div ref="itemscontainer" class="uk-sortable" show="{ mode=='reorder' && items.length }">
         <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
             <div class="uk-grid uk-grid-small">
                 <div class="uk-flex-item-1"><i class="uk-icon-bars uk-margin-small-right"></i> { App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</div>
@@ -56,6 +56,13 @@
         this.fields = opts.fields && Array.isArray(opts.fields) && opts.fields  || false;
         this.mode   = 'edit';
 
+        this.on('mount', function() {
+
+            UIkit.sortable(this.refs.itemscontainer, {
+                animation: false
+            });
+        });
+
         this.$initBind = function() {
             this.root.$value = this.items;
         };
@@ -75,14 +82,6 @@
 
         this.on('bindingupdated', function() {
             $this.$setValue(this.items);
-        });
-
-        this.on('mount', function() {
-
-            UIkit.sortable(this.itemscontainer, {
-                animation: false
-            });
-
         });
 
         add(e) {
@@ -111,7 +110,7 @@
 
             var items = [];
 
-            App.$(this.itemscontainer).children().each(function(){
+            App.$(this.refs.itemscontainer).children().each(function(){
                 items.push($this.items[Number(this.getAttribute('data-idx'))]);
             });
 

@@ -47,8 +47,8 @@
             <div class="uk-width-medium-3-4 uk-grid-margin">
 
                 <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center" show="{ App.Utils.count(groups) > 1 }">
-                    <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
-                    <li class="{ group==parent.group && 'uk-active'}" each="{group, items in groups}" if="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+                    <li riot-class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
+                    <li riot-class="{ group==parent.group && 'uk-active'}" each="{items,group in groups}" show="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
                 </ul>
 
                 <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
@@ -69,7 +69,7 @@
                                 </div>
 
                                 <div class="uk-margin">
-                                    <cp-field field="{ field }" bind="data.{field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" cls="uk-form-large"></cp-field>
+                                    <cp-field type="{field.type || 'text'}" bind="{ parent.getBindValue(field) }" opts="{ field.options || {} }"></cp-field>
                                 </div>
 
                             </div>
@@ -99,7 +99,7 @@
 
                             <select bind="lang">
                                 <option value="">@lang('Default')</option>
-                                <option each="{language,idx in languages}" value="{language.code}">{language.label}</option>
+                                <option each="{language in languages}" value="{language.code}">{language.label}</option>
                             </select>
                         </div>
 
@@ -168,10 +168,17 @@
             });
 
             toggleGroup(e) {
+                e.preventDefault();
                 this.group = e.item && e.item.group || false;
             }
 
-            submit() {
+            getBindValue(field) {
+                return 'data.'+(field.localize && this.lang ? (field.name+'_'+this.lang):field.name);
+            }
+
+            submit(e) {
+
+                if(e) e.preventDefault();
 
                 App.request('/regions/update_region/'+this.region.name, {data:this.data}).then(function(region) {
 

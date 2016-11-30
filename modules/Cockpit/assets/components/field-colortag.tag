@@ -2,7 +2,7 @@
 
 
     <div class="uk-display-inline-block" data-uk-dropdown="pos:'right-center'">
-        <a style="font-size:{size};color:{value || '#ccc'}"><i class="uk-icon-circle"></i></a>
+        <a riot-style="font-size:{size};color:{value || '#ccc'}"><i class="uk-icon-circle"></i></a>
 
         <div class="uk-dropdown uk-text-center">
 
