@@ -1,40 +1,24 @@
 <cp-field>
 
+    <div ref="field" data-is="{ 'field-'+opts.type }" bind="{ opts.bind }" cls="{ opts.cls }"></div>
+
     <script>
 
-        this._field = null;
+        this.on('mount', function() {
+            this.trigger('update');
+        });
 
         this.on('update', function() {
 
-            if (opts.bind && opts.bind != this._field) {
+            this.refs.field.opts.bind = opts.bind;
+            this.refs.field.opts.bind = opts.opts || {};
 
-                App.$(this.root).children('div').remove();
-
-                var container = App.$('<div name="fieldcontainer" type="{ field.type }"></div>').appendTo(this.root);
-
-                var field   = typeof(opts.field) == 'string' ? {type:opts.field} : ( opts.field || {}),
-                    type    = field.type || 'text',
-                    options = field.options || {},
-                    fc      = 'field-'+type;
-
-                if (!riot.tags[fc]) {
-                    fc = 'field-text';
-                }
-
-                if (opts.cls) {
-                    container[0].setAttribute('cls', opts.cls);
-                }
-
-                if (opts.bind) {
-                    container[0].setAttribute('bind', opts.bind);
-                }
-
-                riot.mount(container[0], fc, options);
-
-                this._field = opts.bind;
+            if (opts.opts) {
+                App.$.extend(this.refs.field.opts, opts.opts);
             }
-        })
+
+            this.refs.field.update();
+        });
 
     </script>
-
 </cp-field>

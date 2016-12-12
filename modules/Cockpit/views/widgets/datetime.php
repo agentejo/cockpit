@@ -29,12 +29,11 @@
             <strong>{{ date('d. M Y') }}</strong>
         </div>
 
-
         <div id="{{ $uid }}" class="uk-grid">
 
             <div class="uk-width-medium-1-1">
 
-                <div name="weekdays" class="uk-text-small uk-text-muted uk-margin uk-text-uppercase date-widget-weekdays uk-margin">
+                <div ref="weekdays" class="uk-text-small uk-text-muted uk-margin uk-text-uppercase date-widget-weekdays uk-margin">
                     <span data-day="1">{{ $weekdays[0] }}</span>
                     <span data-day="2">{{ $weekdays[1] }}</span>
                     <span data-day="3">{{ $weekdays[2] }}</span>
@@ -45,7 +44,7 @@
                 </div>
 
                 <div class="date-widget-clock">
-                    <i class="uk-icon-clock-o"></i> <span name="time">&nbsp;</span>
+                    <i class="uk-icon-clock-o"></i> <span ref="time">&nbsp;</span>
                 </div>
             </div>
         </div>
@@ -53,26 +52,29 @@
 
         <script type="view/script">
 
-            var $time     = App.$(this.time),
-                $weekdays = App.$(this.weekdays).find('span[data-day="'+(new Date().getDay())+'"]').addClass('active');
-                timer     = setInterval((function(){
+            this.on('mount', function() {
 
-                    var date = new Date(), minutes, hours, fn = function(){
+                var $time     = App.$(this.refs.time),
+                    $weekdays = App.$(this.refs.weekdays).find('span[data-day="'+(new Date().getDay())+'"]').addClass('active');
+                    timer     = setInterval((function(){
 
-                        hours   = date.getHours();
-                        minutes = date.getMinutes();
+                        var date = new Date(), minutes, hours, fn = function(){
 
-                        if (hours < 10) hours = '0'+hours;
-                        if (minutes < 10) minutes = '0'+minutes;
+                            hours   = date.getHours();
+                            minutes = date.getMinutes();
 
-                        $time.text(hours+":"+minutes);
-                    };
+                            if (hours < 10) hours = '0'+hours;
+                            if (minutes < 10) minutes = '0'+minutes;
 
-                    fn();
+                            $time.text(hours+":"+minutes);
 
-                    return fn;
+                            return fn;
+                        };
 
-                })(), 60000);
+                        return fn();
+
+                    })(), 60000);
+            });
 
         </script>
 

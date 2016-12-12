@@ -43,6 +43,8 @@ if (!function_exists('spyc_dump')) {
   }
 }
 
+if (!class_exists('Spyc')) {
+
 /**
    * The Simple PHP YAML Class.
    *
@@ -265,6 +267,7 @@ class Spyc {
      * @param $indent The indent of the current node
      */
   private function _yamlize($key,$value,$indent, $previous_key = -1, $first_key = 0, $source_array = null) {
+    if(is_object($value)) $value = (array)$value;
     if (is_array($value)) {
       if (empty ($value))
         return $this->_dumpNode($key, array(), $indent, $previous_key, $first_key, $source_array);
@@ -609,7 +612,9 @@ class Spyc {
 
     if ($is_quoted) {
       $value = str_replace('\n', "\n", $value);
-      return strtr(substr ($value, 1, -1), array ('\\"' => '"', '\'\'' => '\'', '\\\'' => '\''));
+      if ($first_character == "'")
+        return strtr(substr ($value, 1, -1), array ('\'\'' => '\'', '\\\''=> '\''));
+      return strtr(substr ($value, 1, -1), array ('\\"' => '"', '\\\''=> '\''));
     }
 
     if (strpos($value, ' #') !== false && !$is_quoted)
@@ -662,7 +667,7 @@ class Spyc {
 
     if ( is_numeric($value) && preg_match ('/^(-|)[1-9]+[0-9]*$/', $value) ){
       $intvalue = (int)$value;
-      if ($intvalue != PHP_INT_MAX)
+      if ($intvalue != PHP_INT_MAX && $intvalue != ~PHP_INT_MAX)
         $value = $intvalue;
       return $value;
     }
@@ -1141,6 +1146,7 @@ class Spyc {
     $line = trim(str_replace($group, '', $line));
     return $line;
   }
+}
 }
 
 // Enable use of Spyc from command line

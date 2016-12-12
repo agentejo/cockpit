@@ -12,7 +12,6 @@
             App.assets.require([
                 '/assets/lib/codemirror/lib/codemirror.js'
             ], function() {
-
                 $textarea = App.$('<textarea style="visibility:hidden;"></textarea>');
 
                 $root.append($textarea);
@@ -39,7 +38,8 @@
                 init();
 
                 if (opts.syntax) {
-                    editor.setOption("mode", CodeMirror.findModeByName(opts.syntax).mode || 'text');
+                    var mode = CodeMirror.findModeByName(opts.syntax) || {mode:'text'};
+                    editor.setOption("mode", mode.mode);
                 }
 
                 this.trigger('ready');

@@ -1,6 +1,6 @@
 <field-object>
 
-    <div name="input" style="height: {opts.height || '300px'}"></div>
+    <div ref="input" style="height: {opts.height || '300px'}"></div>
 
     <script>
 
@@ -8,16 +8,15 @@
 
         this.value = {};
 
-        if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
-        }
-
-        if (opts.required) {
-            this.input.setAttribute('required', 'required');
-        }
-
         this.on('mount', function(){
 
+            if (opts.cls) {
+                App.$(this.refs.input).addClass(opts.cls);
+            }
+
+            if (opts.required) {
+                this.refs.input.setAttribute('required', 'required');
+            }
             App.assets.require([
 
                 '/assets/lib/jsoneditor/jsoneditor.min.css',
@@ -25,7 +24,7 @@
 
             ], function() {
 
-                editor = new JSONEditor(this.input, {
+                editor = new JSONEditor(this.refs.input, {
                     modes: ['tree', 'code'],
                     mode: 'code',
                     onChange: function(){

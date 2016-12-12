@@ -3,7 +3,7 @@
     <figure class="uk-display-block uk-panel uk-panel-box uk-panel-card uk-overlay uk-overlay-hover">
 
         <div class="uk-flex uk-flex-middle uk-flex-center uk-text-muted">
-            <div class="uk-width-1-1" show="{ image.path }" style="min-height:160px;background-size:contain;background-repeat:no-repeat;background-position:50% 50%;{ image.path ? 'background-image: url('+encodeURI(SITE_URL+'/'+image.path)+')':''}"></div>
+            <div class="uk-width-1-1" show="{ image.path }" riot-style="min-height:160px;background-size:contain;background-repeat:no-repeat;background-position:50% 50%;{ image.path ? 'background-image: url('+encodeURI(SITE_URL+'/'+image.path)+')':''}"></div>
             <div class="uk-width-1-1 uk-text-large" show="{ !image.path }"><i class="uk-icon-image" ></i></div>
         </div>
 
@@ -20,14 +20,14 @@
         </figcaption>
     </figure>
 
-    <div class="uk-modal uk-sortable-nodrag" name="modalmeta">
+    <div class="uk-modal uk-sortable-nodrag" ref="modalmeta">
         <div class="uk-modal-dialog">
 
             <div class="uk-modal-header"><h3>{ App.i18n.get('Image Meta') }</h3></div>
 
             <div class="uk-grid uk-grid-match uk-grid-gutter" if="{_meta}">
 
-                <div class="uk-grid-margin uk-width-medium-{field.width}" each="{name,field in meta}" no-reorder>
+                <div riot-class="uk-grid-margin uk-width-medium-{field.width}" each="{field, name in meta}" no-reorder>
 
                     <div class="uk-panel">
 
@@ -40,7 +40,7 @@
                         </div>
 
                         <div class="uk-margin">
-                            <cp-field field="{ field }" bind="_meta['{name}']"></cp-field>
+                            <cp-field type="{ field.type || 'text' }" bind="image.meta['{name}']" opts="{ field.options || {} }"></cp-field>
                         </div>
                     </div>
 
@@ -53,8 +53,10 @@
     </div>
 
 
-
     <script>
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         riot.util.bind(this);
 
@@ -62,11 +64,14 @@
 
         this.image = {path:'', meta:{title:''}};
 
-        this.meta  = App.$.extend(opts.meta || {}, {
-            title: {
-                type: 'text',
-                label: 'Title'
-            }
+        this.on('mount', function() {
+
+            this.meta  = App.$.extend(opts.meta || {}, {
+                title: {
+                    type: 'text',
+                    label: 'Title'
+                }
+            });
         });
 
         this.$updateValue = function(value, field) {
@@ -98,7 +103,7 @@
             this._meta = this.image.meta;
 
             setTimeout(function() {
-                UIkit.modal($this.modalmeta).show().on('close.uk.modal', function(){
+                UIkit.modal($this.refs.modalmeta).show().on('close.uk.modal', function(){
                     $this._meta = null;
                 });
             }, 50)

@@ -1110,7 +1110,7 @@ class SimpleImage {
      *
      * @param int           $width
      * @param int|null      $height If omitted - assumed equal to $width
-     * @param string        $focal 
+     * @param string        $focal
      *
      * @return SimpleImage
      *
@@ -1180,7 +1180,7 @@ class SimpleImage {
                 $top = $this->height - $height;
                 $bottom = $this->height;
                 break;
-            case 'center': 
+            case 'center':
             default:
                 $left = floor(($this->width / 2) - ($width / 2));
                 $right = $width + $left;

@@ -30,7 +30,6 @@
 
                     <form id="account-form" class="uk-form" onsubmit="{ submit }">
 
-
                         <div class="uk-form-row">
                             <label class="uk-text-small">@lang('Name')</label>
                             <input class="uk-width-1-1 uk-form-large" type="text" bind="account.name" autocomplete="off" required>
@@ -96,7 +95,7 @@
             <div class="uk-form-controls uk-margin-small-top">
                 <div class="uk-form-select">
                     <a>{ _.result(_.find(languages, { 'i18n': account.i18n }), 'language') || account.i18n }</a>
-                    <select class="uk-width-1-1 uk-form-large" name="i18n" bind="account.i18n">
+                    <select class="uk-width-1-1 uk-form-large" ref="i18n" bind="account.i18n">
                         @foreach($languages as $lang)
                         <option value="{{ $lang['i18n'] }}">{{ $lang['language'] }}</option>
                         @endforeach
@@ -112,7 +111,7 @@
             <div class="uk-form-controls uk-margin-small-top">
                 <div class="uk-form-select">
                     <a>{ account.group }</a>
-                    <select class="uk-width-1-1 uk-form-large" name="group" bind="account.group">
+                    <select class="uk-width-1-1 uk-form-large" ref="group" bind="account.group">
                         @foreach($groups as $group)
                         <option value="{{ $group }}">{{ $group }}</option>
                         @endforeach
@@ -151,7 +150,9 @@
             this.account.active = !(this.account.active);
         }
 
-        submit() {
+        submit(e) {
+
+            if(e) e.preventDefault();
 
             App.request("/accounts/save", {"account": this.account}).then(function(data){
                 $this.account = data;

@@ -18,7 +18,7 @@
 
                    <div class="uk-margin">
                        <label class="uk-text-small">@lang('Name')</label>
-                       <input class="uk-width-1-1 uk-form-large" type="text" name="name" bind="region.name" pattern="[a-zA-Z0-9_]+" required>
+                       <input class="uk-width-1-1 uk-form-large" type="text" ref="name" bind="region.name" pattern="[a-zA-Z0-9_]+" required>
                        <p class="uk-text-small uk-text-muted" if="{!region._id}">
                            @lang('Only alpha nummeric value is allowed')
                        </p>
@@ -26,7 +26,7 @@
 
                    <div class="uk-margin">
                        <label class="uk-text-small">@lang('Label')</label>
-                       <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="region.label">
+                       <input class="uk-width-1-1 uk-form-large" type="text" ref="label" bind="region.label">
                    </div>
 
                    <div class="uk-margin">
@@ -68,9 +68,9 @@
                 <div class="uk-form-row">
 
                     <ul class="uk-tab uk-flex uk-flex-right uk-margin">
-                        <li class="{ view==='template' ? 'uk-active':'' }" data-view="template"><a onclick="{ toggleview }">@lang('Template')</a></li>
-                        <li class="{ view==='fields' ? 'uk-active':'' }" data-view="fields"><a onclick="{ toggleview }">@lang('Fields')</a></li>
-                        <li class="{ view==='acl' ? 'uk-active':'' }" data-view="acl"><a onclick="{ toggleview }">@lang('Access')</a></li>
+                        <li riot-class="{ view==='template' ? 'uk-active':'' }" data-view="template"><a onclick="{ toggleview }">@lang('Template')</a></li>
+                        <li riot-class="{ view==='fields' ? 'uk-active':'' }" data-view="fields"><a onclick="{ toggleview }">@lang('Fields')</a></li>
+                        <li riot-class="{ view==='acl' ? 'uk-active':'' }" data-view="acl"><a onclick="{ toggleview }">@lang('Access')</a></li>
                     </ul>
 
                     <div class="uk-margin-large-top" show="{ view==='fields' }">
@@ -156,6 +156,8 @@
 
         this.on('mount', function(){
 
+            this.trigger('update');
+
             // bind clobal command + save
             Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
 
@@ -169,7 +171,7 @@
 
             // lock name if saved
             if (this.region._id) {
-                this.name.disabled = true;
+                this.refs.name.disabled = true;
             }
         });
 
@@ -177,7 +179,9 @@
             this.region.icon = e.target.getAttribute('icon');
         }
 
-        submit() {
+        submit(e) {
+
+            if(e) e.preventDefault();
 
             var region = this.region;
 

@@ -1,8 +1,8 @@
 <cp-fieldsmanager>
 
-    <div name="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form">
+    <div ref="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form">
 
-        <div class="uk-width-{field.width}" data-idx="{idx}" each="{ field,idx in fields }">
+        <div riot-class="uk-width-{field.width}" data-idx="{idx}" each="{ field,idx in fields }">
 
             <div class="uk-panel uk-panel-box uk-panel-card">
 
@@ -195,7 +195,7 @@
 
         this.one('mount', function(){
 
-            UIkit.sortable(this.fieldscontainer, {
+            UIkit.sortable(this.refs.fieldscontainer, {
 
                 dragCustomClass:'uk-form'
 
@@ -214,7 +214,7 @@
                 fields.splice(cidx, 0, fields.splice(oidx, 1)[0]);
 
                 // hack to force complete fields rebuild
-                App.$($this.fieldscontainer).css('height', App.$($this.fieldscontainer).height());
+                App.$($this.refs.fieldscontainer).css('height', App.$($this.refs.fieldscontainer).height());
 
                 $this.fields = [];
                 $this.reorder = true;
@@ -227,7 +227,7 @@
                     $this.$setValue(fields);
 
                     setTimeout(function(){
-                        $this.fieldscontainer.style.height = '';
+                        $this.refs.fieldscontainer.style.height = '';
                     }, 30)
                 }, 0);
 

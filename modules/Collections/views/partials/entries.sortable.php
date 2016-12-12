@@ -1,5 +1,5 @@
 
-<table class="uk-table uk-table-border uk-table-striped" if="{ entries.length }">
+<table class="uk-table uk-table-border uk-table-striped" show="{ entries.length }">
     <thead>
         <tr>
             @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
@@ -11,7 +11,7 @@
             <th width="20"></th>
         </tr>
     </thead>
-    <tbody name="sortableroot">
+    <tbody ref="sortableroot">
         <tr class="uk-visible-hover" each="{entry,idx in entries}" data-id="{ entry._id }">
             @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
             <td><input type="checkbox" data-check data-id="{ entry._id }"></td>

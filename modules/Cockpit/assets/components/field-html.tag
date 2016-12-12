@@ -1,6 +1,6 @@
 <field-html>
 
-    <textarea name="input" class="uk-visibility-hidden"></textarea>
+    <textarea ref="input" class="uk-visibility-hidden"></textarea>
 
     <script>
 
@@ -36,9 +36,9 @@
 
             ], function() {
 
-                $this.input.value = $this.value;
+                $this.refs.input.value = $this.value;
 
-                editor = UIkit.htmleditor(this.input, opts);
+                editor = UIkit.htmleditor(this.refs.input, opts);
                 editor.editor.on('change', function() {
                     $this.$setValue(editor.editor.getValue());
                 });
