@@ -58,7 +58,7 @@ class RestApi extends \LimeExtra\Controller {
             $fields[$field["name"]] = [
                 "name" => $field["name"],
                 "type" => $field["type"],
-                "localize" => $field["type"],
+                "localize" => $field["localize"],
                 "options" => $field["options"],
             ];
         }
