@@ -52,7 +52,10 @@ foreach ($webhooks as &$webhook) {
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-                curl_exec($ch);
+                if( curl_exec($ch) === false) {
+                    trigger_error(curl_error($ch));
+                }
+                curl_close($ch);
 
             }, -1000);
         }
