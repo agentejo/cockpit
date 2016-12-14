@@ -50,7 +50,7 @@
 
                 <div class="uk-grid uk-grid-match uk-grid-gutter">
 
-                    <div riot-class="uk-width-medium-{field.width}" each="{field,idx in fields}" show="{!parent.group || (parent.group == field.group) }" no-reorder>
+                    <div riot-class="uk-width-medium-{field.width}" each="{field,idx in fields}" show="{!group || (group == field.group) }" no-reorder>
 
                         <div class="uk-panel">
 

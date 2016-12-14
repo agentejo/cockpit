@@ -5,7 +5,11 @@ class RestApi extends \LimeExtra\Controller {
 
     public function get($collection=null) {
 
-        if (!$collection || !$this->app->module('collections')->exists($collection)) {
+        if (!$collection) {
+            return false;
+        }
+
+        if (!$this->app->module('collections')->exists($collection)) {
             return false;
         }
 
