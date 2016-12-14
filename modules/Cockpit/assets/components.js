@@ -1394,19 +1394,22 @@ riot.tag2('field-date', '<input ref="input" class="uk-width-1-1" bind="{opts.bin
 
 });
 
-riot.tag2('field-file', '<div class="uk-panel uk-panel-box uk-panel-card"> {input.$value} <button type="button" class="uk-button uk-margin-small-right" ref="picker" title="{App.i18n.get(\'Pick file\')}"><i class="uk-icon-paperclip"></i></button> <input class="uk-form-blank" type="text" ref="input" bind="{opts.bind}" placeholder="{opts.placeholder || App.i18n.get(\'No file selected...\')}"> </div>', '', '', function(opts) {
+riot.tag2('field-file', '<div class="uk-panel uk-panel-box uk-panel-card"> <button type="button" class="uk-button uk-margin-small-right" ref="picker" title="{App.i18n.get(\'Pick file\')}"><i class="uk-icon-paperclip"></i></button> <input class="uk-form-blank" type="text" ref="input" bind="{opts.bind}" placeholder="{opts.placeholder || App.i18n.get(\'No file selected...\')}"> </div>', '', '', function(opts) {
 
-        var $this = this, $input = App.$(this.refs.input);
+        this.on('mount', function() {
 
-        if (opts.cls) {
-            App.$(this.refs.input).addClass(opts.cls);
-            App.$(this.refs.picker).addClass(opts.cls);
-        }
+            var $this = this, $input = App.$(this.refs.input);
 
-        App.$(this.refs.picker).on('click', function() {
+            if (opts.cls) {
+                App.$(this.refs.input).addClass(opts.cls);
+                App.$(this.refs.picker).addClass(opts.cls);
+            }
 
-            App.media.select(function(selected) {
-                $this.refs.input.$setValue(selected[0]);
+            App.$(this.refs.picker).on('click', function() {
+
+                App.media.select(function(selected) {
+                    $this.refs.input.$setValue(selected[0]);
+                });
             });
         });
 
