@@ -2047,6 +2047,8 @@ riot.tag2('field-select', '<select ref="input" riot-class="uk-width-1-1 {opts.cl
 
                 this.options = options;
             }
+
+            this.refs.input.value = this.root.$value;
         });
 
 });

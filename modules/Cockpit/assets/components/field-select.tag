@@ -27,6 +27,8 @@
 
                 this.options = options;
             }
+
+            this.refs.input.value = this.root.$value;
         });
 
     </script>
