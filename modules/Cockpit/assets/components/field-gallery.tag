@@ -80,21 +80,22 @@
 
         this.images = [];
         this._field = null;
-
-        this.meta   = App.$.extend(opts.meta || {}, {
+        this.meta = {
             title: {
                 type: 'text',
                 label: 'Title'
             }
-        });
+        };
 
         this.on('mount', function() {
+            
+            this.meta = App.$.extend(this.meta, opts.meta || {});
 
             UIkit.sortable(this.refs.imagescontainer, {
 
                 animation: false
 
-            }).element.on("change.uk.sortable", function(e, sortable, ele) {
+            }).element.on('change.uk.sortable', function(e, sortable, ele) {
 
                 ele = App.$(ele);
 

@@ -33,7 +33,7 @@
 
                         <ul class="uk-subnav">
 
-                            <li show="{parent.opts.listoption}">
+                            <li show="{opts.listoption}">
                                 <a class="uk-text-{ field.lst ? 'success':'muted'}" onclick="{ parent.togglelist }" title="{ App.i18n.get('Show field on list view') }">
                                     <i class="uk-icon-list"></i>
                                 </a>
