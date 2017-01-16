@@ -673,18 +673,18 @@ riot.tag2('cp-finder', '<div show="{data}"> <div class="uk-clearfix" data-uk-mar
                             options.params.path = $this.currentpath;
                         },
                         loadstart: function() {
-                            $this.uploadprogress.classList.remove('uk-hidden');
+                            $this.refs.uploadprogress.classList.remove('uk-hidden');
                         },
                         progress: function(percent) {
 
                             percent = Math.ceil(percent) + '%';
 
-                            $this.progressbar.innerHTML   = '<span>'+percent+'</span>';
-                            $this.progressbar.style.width = percent;
+                            $this.refs.progressbar.innerHTML   = '<span>'+percent+'</span>';
+                            $this.refs.progressbar.style.width = percent;
                         },
                         allcomplete: function(response) {
 
-                            $this.uploadprogress.classList.add('uk-hidden');
+                            $this.refs.uploadprogress.classList.add('uk-hidden');
 
                             if (response && response.failed && response.failed.length) {
                                 App.ui.notify("File(s) failed to uploaded.", "danger");
