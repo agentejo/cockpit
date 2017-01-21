@@ -122,6 +122,9 @@
 
                 return vals[0];
             }
+            else if (typeof v.display === 'object') {
+                return App.Utils.renderer.collectionlink(v.display);
+            }
 
             return v.display ? v.display: App.Utils.renderer.default(v);
         };
