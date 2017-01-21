@@ -22,7 +22,7 @@
 
             <div class="uk-panel uk-panel-card uk-panel-box">
 
-                <div>{ link.display }</div>
+                <div>{ App.Utils.renderer.collectionlink(link) }</div>
 
                 <div class="uk-panel-box-footer uk-text-small uk-padding-bottom-remove">
                     <a class="uk-margin-small-right" onclick="{ showDialog }"><i class="uk-icon-link"></i> { App.i18n.get('Link item') }</a>
