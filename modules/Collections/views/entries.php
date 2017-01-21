@@ -107,28 +107,6 @@
 
     <script type="view/script">
 
-        App.Utils.renderer.collectionlink = function(v) {
-
-            if (Array.isArray(v)) {
-                var vals = [];
-
-                v.forEach(function(val) {
-                    vals.push(val.display ? val.display: App.Utils.renderer.default(val));
-                });
-
-                if (vals.length > 1) {
-                    return '<span class="uk-badge" title="'+vals.join(', ')+'" data-uk-tooltip>'+vals.length+'</span>';
-                }
-
-                return vals[0];
-            }
-            else if (typeof v.display === 'object') {
-                return App.Utils.renderer.collectionlink(v.display);
-            }
-
-            return v.display ? v.display: App.Utils.renderer.default(v);
-        };
-
         var $this = this, $root = App.$(this.root), limit = 20;
 
         this.ready      = false;
