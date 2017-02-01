@@ -25,7 +25,7 @@
 
             $this.refs.canvas.getContext("2d").clearRect(0, 0, $this.refs.canvas.width, $this.refs.canvas.height);
 
-            App.request('/cockpit/utils/thumb_url', {src:opts.src,w:opts.width,h:opts.height}, 'text').then(function(url){
+            App.request('/cockpit/utils/thumb_url', {src:opts.src,w:opts.width,h:opts.height,m:opts.mode}, 'text').then(function(url){
 
                 var img = new Image();
 
