@@ -107,12 +107,14 @@
 
             ele.$updateValue = function(value) {};
 
+            var nodeType = ele.nodeName.toLowerCase(),
+                defaultEvt = ('oninput' in ele) && nodeType=='input' ? 'input':'change';
 
-            if (['input', 'select', 'textarea'].indexOf(ele.nodeName.toLowerCase()) !== -1) {
+            if (['input', 'select', 'textarea'].indexOf(nodeType) !== -1) {
 
                 var isCheckbox = (ele.nodeName == 'INPUT' && ele.getAttribute('type') == 'checkbox');
 
-                ele.addEventListener(ele.getAttribute('bind-event') || 'change', function() {
+                ele.addEventListener(ele.getAttribute('bind-event') || defaultEvt, function() {
 
                     try {
 
@@ -137,6 +139,11 @@
                     fn = new Function('input', 'val', 'try{'+body+'}catch(e){}');
 
                     return function(value) {
+                        
+                        if (document.activeElement === ele && nodeType == 'input' && !isCheckbox) {
+                            return;
+                        }
+
                         fn(ele, value);
                     };
 
