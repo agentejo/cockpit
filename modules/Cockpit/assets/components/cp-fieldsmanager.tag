@@ -33,7 +33,7 @@
 
                         <ul class="uk-subnav">
 
-                            <li show="{opts.listoption}">
+                            <li show="{parent.opts.listoption}">
                                 <a class="uk-text-{ field.lst ? 'success':'muted'}" onclick="{ parent.togglelist }" title="{ App.i18n.get('Show field on list view') }">
                                     <i class="uk-icon-list"></i>
                                 </a>
@@ -145,7 +145,7 @@
 
 
     <script>
-
+        
         riot.util.bind(this, 'fields');
 
         var $this = this;
