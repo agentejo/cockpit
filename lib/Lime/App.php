@@ -270,13 +270,23 @@ class App implements \ArrayAccess {
     /**
     * stop application (exit)
     */
-    public function stop($data = false){
+    public function stop($data = false, $status = null){
 
         $this->exit = true;
 
-        if ($data!==false) {
-            echo $data;
+        if (is_string($data) && $data) {
+           $this->response->body = $data;
         }
+
+        if (is_numeric($data) && $data) {
+           $this->response->status = $data;
+        }
+
+        if ($status) {
+           $this->response->status = $status;
+        }
+
+        echo $this->response->flush();
 
         exit;
     }
