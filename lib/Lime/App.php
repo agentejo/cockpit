@@ -286,7 +286,9 @@ class App implements \ArrayAccess {
            $this->response->status = $status;
         }
 
-        echo $this->response->flush();
+        if ($data || $status) {
+            echo $this->response->flush();
+        }
 
         exit;
     }
