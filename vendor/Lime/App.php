@@ -270,12 +270,24 @@ class App implements \ArrayAccess {
     /**
     * stop application (exit)
     */
-    public function stop($data = false){
+    public function stop($data = false, $status = null){
 
         $this->exit = true;
 
-        if ($data!==false) {
-            echo $data;
+        if (is_string($data) && $data) {
+           $this->response->body = $data;
+        }
+
+        if (is_numeric($data) && $data) {
+           $this->response->status = $data;
+        }
+
+        if ($status) {
+           $this->response->status = $status;
+        }
+
+        if ($data || $status) {
+            echo $this->response->flush();
         }
 
         exit;
@@ -462,9 +474,8 @@ class App implements \ArrayAccess {
     }
 
     /**
-     * [pathToUrl description]
-     * @param  [type] $path [description]
-     * @return [type]       [description]
+     * @param $path
+     * @return bool|string
      */
     public function pathToUrl($path) {
 
@@ -476,6 +487,7 @@ class App implements \ArrayAccess {
             $root = str_replace(DIRECTORY_SEPARATOR, '/', $this['docs_root']);
 
             $url = '/'.ltrim(str_replace($root, '', $file), '/');
+            $url = implode('/', array_map('rawurlencode', explode('/', $url)));
         }
 
         /*
@@ -779,7 +791,7 @@ class App implements \ArrayAccess {
 
         $this->bind('/'.$clean.'/*', function() use($self, $class, $clean) {
 
-            $parts      = explode('/', trim(str_replace($clean,"",$self["route"]),'/'));
+            $parts      = explode('/', trim(preg_replace("#$clean#","",$self["route"],1),'/'));
             $action     = isset($parts[0]) ? $parts[0]:"index";
             $params     = count($parts)>1 ? array_slice($parts, 1):[];
 
@@ -804,7 +816,7 @@ class App implements \ArrayAccess {
 
         $this->bind('/'.$clean.'/*', function() use($self, $namespace, $clean) {
 
-            $parts      = explode('/', trim(str_replace($clean,"",$self["route"]),'/'));
+            $parts      = explode('/', trim(preg_replace("#$clean#","",$self["route"],1),'/'));
             $class      = $namespace.'\\'.$parts[0];
             $action     = isset($parts[1]) ? $parts[1]:"index";
             $params     = count($parts)>2 ? array_slice($parts, 2):[];
@@ -871,7 +883,7 @@ class App implements \ArrayAccess {
                 $self->response->status = "500";
                 $self->response->body   = $self["debug"] ? json_encode($error, JSON_PRETTY_PRINT):'Internal Error.';
 
-            } elseif (!$self->response->body && !is_string($self->response->body)) {
+            } elseif (!$self->response->body && !is_string($self->response->body) && !is_array($self->response->body)) {
                 $self->response->status = "404";
                 $self->response->body   = "Path not found.";
             }
@@ -958,7 +970,7 @@ class App implements \ArrayAccess {
                             }
 
                             if ($matched){
-                                $found = $this->render_route($route, $params);;
+                                $found = $this->render_route($route, $params);
                                 break;
                             }
                         }
@@ -1119,9 +1131,8 @@ class App implements \ArrayAccess {
     * Create Hash
     * @return String
     */
-    public function hash($text) {
-
-        return md5($this->encode($text, $this["sec-key"], true));
+    public function hash($text, $algo = PASSWORD_BCRYPT) {
+        return password_hash($text, $algo);
     }
 
     /**
@@ -1209,7 +1220,7 @@ class App implements \ArrayAccess {
         return $this->registry["modules"][$name];
     }
 
-    public function loadModules($dirs, $autoload = true) {
+    public function loadModules($dirs, $autoload = true, $prefix = false) {
 
         $modules = [];
         $dirs    = (array)$dirs;
@@ -1218,12 +1229,16 @@ class App implements \ArrayAccess {
 
             if (file_exists($dir)){
 
+                $pfx = is_bool($prefix) ? strtolower(basename($dir)) : $prefix;
+
                 // load modules
                 foreach (new \DirectoryIterator($dir) as $module) {
 
-                    if($module->isFile() || $module->isDot()) continue;
+                    if ($module->isFile() || $module->isDot()) continue;
 
-                    $this->registerModule($module->getBasename(), $module->getRealPath());
+                    $name = $prefix ? "{$pfx}-".$module->getBasename() : $module->getBasename();
+
+                    $this->registerModule($name, $module->getRealPath());
 
                     $modules[] = strtolower($module);
                 }
@@ -1349,6 +1364,11 @@ class AppAware {
         return $this->app->helper($helper);
     }
 
+    // accces to services
+    public function __get($name) {
+        return $this->app[$name];
+    }
+
 }
 
 class Module extends AppAware {
@@ -1387,7 +1407,7 @@ class Module extends AppAware {
         }
 
         if(isset($this->apis['__call']) && is_callable($this->apis['__call'])) {
-            return call_user_func_array($this->apis['__call'], $arguments);
+            return call_user_func_array($this->apis['__call'], [$name, $arguments]);
         }
 
         return null;

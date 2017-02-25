@@ -17,11 +17,11 @@ $this->module("auth")->extend([
 
         $user = $app->db->findOne("cockpit/accounts", [
             "user"     => $data["user"],
-            "password" => $app->hash($data["password"]),
+            // "password" => $app->hash($data["password"]),
             "active"   => 1
         ]);
 
-        if (count($user)) {
+        if (count($user) && password_verify($data["password"], $user["password"])) {
 
             $user = array_merge($data, (array)$user);
 
