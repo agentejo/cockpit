@@ -71,7 +71,7 @@ class Utils extends \Cockpit\AuthController {
                 if ($rebuild || !file_exists($savepath)) {
 
                     try {
-                        $this->app->helper("image")->take($path)->{$method}($width, $height)->save($savepath, $quality);
+                        $this->app->helper("image")->take($path)->{$method}($width, $height)->toFile($savepath, null, $quality);
                     } catch(Exception $e) {
                         return $url;
                     }
