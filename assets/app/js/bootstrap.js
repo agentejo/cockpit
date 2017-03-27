@@ -96,25 +96,28 @@
     // Material Ripple effect
     $('html').on('click', 'a, button, input, .ripple', function(e) {
 
-        var trigger = $(this), w = trigger.outerWidth(), h = trigger.outerHeight(), d = Math.min(w, h), surface;
+        var trigger = $(this), w = trigger.outerWidth(), h = trigger.outerHeight(), 
+            d = Math.min(w, h), isInput = trigger.is('input'), surfaceCSS, surface;
 
-        surface = $('<div class="material-ripple"><div class="material-ink"></div></div>').css({
+        surfaceCSS = {
             top      : trigger.offset().top,
             left     : trigger.offset().left,
             width    : w,
             height   : h,
             overflow : d > 100 || trigger.is('button,.uk-button') ? 'hidden' : ''
-        }).appendTo('body');
+        };
+
+        surface = $('<div class="material-ripple"><div class="material-ink"></div></div>').css(surfaceCSS).appendTo('body');
 
         surface.find('.material-ink').css({
             height     : d,
             width      : d,
-            top        : Math.floor(h/2 - d/2)+'px',
-            left       : Math.floor(w/2 - d/2)+'px',
+            top: Math.floor(h/2 - d/2),
+            left: isInput ? e.clientX - surfaceCSS.left : Math.floor(w/2 - d/2),
             background : trigger.attr('ripple-color') || ''
         }).on('animationend', function() {
             surface.remove();
-        }).addClass("animate").width();
+        }).addClass('animate-ink').width();
 
         setTimeout(function(){
             surface.remove();
