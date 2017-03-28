@@ -2175,6 +2175,12 @@ riot.tag2('field-text', '<input ref="input" class="uk-width-1-1" bind="{opts.bin
             if (opts.required) {
                 this.refs.input.setAttribute('required', 'required');
             }
+
+            if (opts.slug) {
+                this.slug = this.$getValue(opts.bind+'_slug') || '';
+            }
+
+            this.update();
         });
 
         this.$updateValue = function(value) {

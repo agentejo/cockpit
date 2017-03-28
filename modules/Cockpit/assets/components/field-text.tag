@@ -16,6 +16,12 @@
             if (opts.required) {
                 this.refs.input.setAttribute('required', 'required');
             }
+
+            if (opts.slug) {
+                this.slug = this.$getValue(opts.bind+'_slug') || '';
+            }
+
+            this.update();
         });
 
         this.$updateValue = function(value) {
