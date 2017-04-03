@@ -64,6 +64,10 @@
 
     App.Utils.count = function(value) {
 
+        if (!value) {
+            return 0;
+        }
+
         if (App.Utils.isObject(value)) {
             return Object.keys(value).length;
         }

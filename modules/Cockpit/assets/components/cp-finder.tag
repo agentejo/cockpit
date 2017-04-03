@@ -18,7 +18,7 @@
 
     </style>
 
-    <div show="{ data }">
+    <div show="{ App.Utils.count(data) }">
 
         <div class="uk-clearfix" data-uk-margin>
             <div class="uk-float-left">
@@ -225,7 +225,7 @@
 
         this.currentpath = opts.path || App.session.get('app.finder.path', opts.root);
 
-        this.data;
+        this.data = null;
         this.breadcrumbs = [];
         this.selected    = {count:0, paths:{}};
         this.bookmarks   = {"folders":[], "files":[]};
@@ -518,7 +518,7 @@
             path  = path || $this.currentpath;
             defer = App.deferred();
 
-            requestapi({"cmd":"ls", "path": path}, function(data){
+            requestapi({cmd:"ls", path: path}, function(data){
 
                 $this.currentpath = path;
                 $this.breadcrumbs = [];
