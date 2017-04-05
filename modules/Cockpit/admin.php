@@ -10,10 +10,9 @@ include(__DIR__.'/Helper/Admin.php');
 
 $app->helpers['admin']  = 'Cockpit\\Helper\\Admin';
 
-
 // ACL
 $app('acl')->addResource('cockpit', [
-    'finder'
+    'backend', 'finder',
 ]);
 
 
@@ -21,36 +20,35 @@ $app('acl')->addResource('cockpit', [
 
 $app('acl')->addGroup('admin', true);
 
-if ($user = $app->module('cockpit')->getUser()) {
+/*
+groups:
+    author:
+        $admin: false
+        $vars:
+            finder.path: /upload
+        cockpit:
+            finder: true
 
-    $aclsettings = $app->retrieve('config/groups', []);
+*/
 
-    /*
-    groups:
-        author:
-            $admin: false
-            $vars:
-                finder.path: /upload
-            cockpit:
-                finder: true
+$aclsettings = $app->retrieve('config/groups', []);
 
-    */
+foreach ($aclsettings as $group => $settings) {
 
-    foreach ($aclsettings as $group => $settings) {
+    $isSuperAdmin = $settings === true || (isset($settings['$admin']) && $settings['$admin']);
+    $vars         = isset($settings['$vars']) ? $settings['$vars'] : [];
 
-        $isSuperAdmin = $settings === true || (isset($settings['$admin']) && $settings['$admin']);
-        $vars         = isset($settings['$vars']) ? $settings['$vars'] : [];
+    $app('acl')->addGroup($group, $isSuperAdmin, $vars);
 
-        $app('acl')->addGroup($group, $isSuperAdmin, $vars);
+    if (!$isSuperAdmin && is_array($settings)) {
 
-        if (!$isSuperAdmin && is_array($settings)) {
+        foreach ($settings as $resource => $actions) {
 
-            foreach ($settings as $resource => $actions) {
+            if ($resource == '$vars' || $resource == '$admin') continue;
 
-                if ($resource == '$vars' || $resource == '$admin') continue;
-
-                foreach ((array)$actions as $action => $allow) {
-                    if ($allow) $app('acl')->allow($group, $resource, $action);
+            foreach ((array)$actions as $action => $allow) {
+                if ($allow) {
+                    $app('acl')->allow($group, $resource, $action);
                 }
             }
         }
@@ -160,7 +158,7 @@ $app->on('admin.init', function() {
         $this["user"] = $this->module('cockpit')->getUser();
         return $this->view('cockpit:views/base/finder.php');
 
-    }, $this->module("cockpit")->hasaccess('cockpit', 'media'));
+    }, $this->module("cockpit")->hasaccess('cockpit', 'finder'));
 
 }, 0);
 

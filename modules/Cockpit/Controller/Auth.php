@@ -11,6 +11,10 @@ class Auth extends \LimeExtra\Controller {
 
             $user = $this->module('cockpit')->authenticate($data);
 
+            if ($user && !$this->module("cockpit")->hasaccess('cockpit', 'backend', @$user['group'])) {
+                $user = null;
+            }
+
             if ($user) {
                 $this->app->trigger("cockpit.account.login", [&$user]);
                 $this->module('cockpit')->setUser($user);

@@ -133,12 +133,15 @@ $this->module("cockpit")->extend([
         $app("session")->delete('cockpit.app.auth');
     },
 
-    "hasaccess" => function($resource, $action) use($app) {
+    "hasaccess" => function($resource, $action, $group = null) use($app) {
 
-        $user = $this->getUser();
-
-        if (isset($user["group"])) {
-            if ($app("acl")->hasaccess($user["group"], $resource, $action)) return true;
+        if (!$group) {
+            $user = $this->getUser();
+            $group = isset($user["group"]) ? $user["group"] : null;
+        }
+        
+        if ($group) {
+            if ($app("acl")->hasaccess($group, $resource, $action)) return true;
         }
 
         return false;
