@@ -115,12 +115,18 @@ $this->module("cockpit")->extend([
         return false;
     },
 
-    "setUser" => function($user) use($app) {
-        $app("session")->write('cockpit.app.auth', $user);
+    "setUser" => function($user, $permanent = true) use($app) {
+
+        if ($permanent) {
+            $app("session")->write('cockpit.app.auth', $user);
+        }
+        
+        $app['cockpit.auth.user'] = $user;
     },
 
     "getUser" => function() use($app) {
-        return $app("session")->read('cockpit.app.auth', null);
+        $user = $app->retrieve('cockpit.auth.user', $app("session")->read('cockpit.app.auth', null));
+        return $user;
     },
 
     "logout" => function() use($app) {

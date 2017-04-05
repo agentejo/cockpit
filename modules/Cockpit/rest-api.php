@@ -17,10 +17,26 @@ $this->on("before", function() {
             return false;
         }
 
-        // api key check
-        $apikeys = $this->module('cockpit')->loadApiKeys();
-        $allowed = (isset($apikeys['master']) && trim($apikeys['master']) && $apikeys['master'] == $this->param('token'));
+        $token = $this->param('token');
 
+        // api key check
+        #
+        $allowed = false;
+
+        if (preg_match('/account-/', $token)) {
+            
+            $account = $this->storage->findOne("cockpit/accounts", ["api_key" => $token]);
+
+            if ($account) {
+                $allowed = true;
+                $this->module('cockpit')->setUser($account, false);
+            }
+
+        } else {
+            $apikeys = $this->module('cockpit')->loadApiKeys();
+            $allowed = (isset($apikeys['master']) && trim($apikeys['master']) && $apikeys['master'] == $token);
+        }
+        
         if (!$allowed) {
             return false;
         }

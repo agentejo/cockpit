@@ -9,8 +9,14 @@ class RestApi extends \LimeExtra\Controller {
             return false;
         }
 
-        if (!$this->app->module('collections')->exists($collection)) {
+        if (!$this->module('collections')->exists($collection)) {
             return false;
+        }
+
+        if ($this->module('cockpit')->getUser()) {
+            if (!$this->module('collections')->hasaccess($collection, 'entries_view')) {
+                return false;
+            }
         }
 
         $options = [];

@@ -1,59 +1,5 @@
 <?php
 
-// ACL
-$app("acl")->addResource("regions", ['create', 'delete']);
-
-
-$this->module("regions")->extend([
-
-    'getRegionsInGroup' => function($group = null) {
-
-        if (!$group) {
-            $group = $this->app->module('cockpit')->getGroup();
-        }
-
-        $_regions = $this->regions();
-        $regions = [];
-
-        if ($this->app->module('cockpit')->isSuperAdmin()) {
-            return $_regions;
-        }
-
-        foreach ($_regions as $region => $meta) {
-
-            if (isset($meta['acl'][$group]['form']) && $meta['acl'][$group]['form']) {
-                $regions[$region] = $meta;
-            }
-        }
-
-        return $regions;
-    },
-
-    'hasaccess' => function($region, $action, $group = null) {
-
-        $region = $this->region($region);
-
-        if (!$region) {
-            return false;
-        }
-
-        if ($this->app->module('cockpit')->isSuperAdmin()) {
-            return true;
-        }
-
-        if (!$group) {
-            $group = $this->app->module('cockpit')->getGroup();
-        }
-
-        if (isset($region['acl'][$group][$action])) {
-            return $region['acl'][$group][$action];
-        }
-
-        return false;
-    }
-]);
-
-
 $app->on('admin.init', function() {
 
 
