@@ -171,7 +171,7 @@ $this->module("collections")->extend([
         $entries = (array)$this->app->storage->find("collections/{$collection}", $options);
 
         if (isset($options['populate']) && $options['populate']) {
-            $entries = $this->_populate($_collection, $entries, is_numeric($options['populate']) ? intval($options['populate']) : false);
+            $entries = $this->_populate($entries, is_numeric($options['populate']) ? intval($options['populate']) : false);
         }
 
         $this->app->trigger('collections.find.after', [$name, &$entries, false]);
@@ -195,7 +195,7 @@ $this->module("collections")->extend([
         $entry = $this->app->storage->findOne("collections/{$collection}", $criteria, $projection);
 
         if ($entry && $populate) {
-           $entry = $this->_populate($_collection, [$entry], is_numeric($populate) ? intval($populate) : false);
+           $entry = $this->_populate([$entry], is_numeric($populate) ? intval($populate) : false);
            $entry = $entry[0];
         }
 
@@ -335,7 +335,7 @@ $this->module("collections")->extend([
         return $this->app->storage->count("collections/{$collection}", $criteria);
     },
 
-    '_resolveField' => function($fieldValue, $field, $deep, $_deeplevel) {
+    '_resolveLinedkItem' => function($link, $_id) {
 
         static $cache;
 
@@ -343,151 +343,41 @@ $this->module("collections")->extend([
             $cache = [];
         }
 
-        switch ($field['type']) {
-
-            case 'collectionlink':
-
-                if (isset($field['options']['multiple']) && $field['options']['multiple']) {
-
-                    if (isset($fieldValue) && $fieldValue && is_array($fieldValue)) {
-
-                        $links = [];
-
-                        foreach ($fieldValue as $data) {
-
-                            if (!isset($data['_id'])) continue;
-
-                            if (!is_string($data['_id'])) {
-                                $data['_id'] = (string)$data['_id'];
-                            }
-
-                            if (!isset($cache[$field['options']['link']])) {
-                                $cache[$field['options']['link']] = [];
-                            }
-
-                            if (!isset($cache[$field['options']['link']][$data['_id']])) {
-                                $cache[$field['options']['link']][$data['_id']] = $this->findOne($field['options']['link'], ['_id' => $data['_id']]);
-                            }
-
-                            if ($cache[$field['options']['link']][$data['_id']]) {
-                                $links[] = $cache[$field['options']['link']][$data['_id']];
-                            }
-                        }
-
-                        if ($deep && count($links)) {
-                            $links = $this->_populate($this->collection($field['options']['link']), $links, $deep, ($_deeplevel+1));
-                        }
-
-                        return $links;
-                    }
-
-                } else {
-
-                    if (isset($fieldValue['_id'])) {
-
-                        if (!is_string($fieldValue['_id'])) {
-                            $fieldValue['_id'] = (string)$fieldValue['_id'];
-                        }
-
-                        if (!isset($cache[$field['options']['link']])) {
-                            $cache[$field['options']['link']] = [];
-                        }
-
-                        if (!isset($cache[$field['options']['link']][$fieldValue['_id']])) {
-                            $cache[$field['options']['link']][$fieldValue['_id']] = $this->findOne($field['options']['link'], ['_id' => $fieldValue['_id']]);
-                        }
-
-                        $fieldValue = $cache[$field['options']['link']][$fieldValue['_id']];
-
-                        if ($fieldValue && $deep) {
-                            $_entry = $this->_populate($this->collection($field['options']['link']), [$fieldValue], $deep, ($_deeplevel+1));
-                            return $_entry[0];
-                        }
-                    }
-                }
-
-                break;
-
-            case 'repeater':
-
-                foreach($field['options']['fields'] as $linkField) {
-
-                    foreach($fieldValue as $i => $fieldEntry) {
-
-                        if ($fieldEntry['field']['name'] == $linkField['name']) {
-                            $fieldValue[$i]['value'] = $this->_resolveField($fieldEntry['value'], $linkField, $this);
-                        }
-                    }
-                }
-
-                return $fieldValue;
-
-            case 'set':
-
-                foreach($field['options']['fields'] as $linkField) {
-
-                    if (isset($fieldValue[$linkField['name']]) && $fieldValue[$linkField['name']]) {
-                        $fieldValue[$linkField['name']] = $this->_resolveField($fieldValue[$linkField['name']], $linkField, $this);
-                    }
-                }
-
-                return $fieldValue;
+        if (!isset($cache[$link])) {
+            $cache[$link] = [];
         }
 
-        return $fieldValue;
+        if (!isset($cache[$link][$_id])) {
+            $cache[$link][$_id] = $this->findOne($link, ['_id' => $_id]);
+        }
+
+        return $cache[$link][$_id];
     },
 
-    '_filterNonLinkFields' => function($fields) {
+    '_populate' => function($items, $maxlevel=-1, $level=0) {
 
-        return array_filter($fields, function($field) {
-
-            if (!in_array($field['type'], ['collectionlink','repeater','set'])) {
-                return false;
-            }
-
-            switch ($field['type']) {
-                case 'collectionlink':
-                    return (isset($field['options']['link']) && $field['options']['link']);
-                    break;
-
-                case 'repeater':
-                case 'set':
-
-                    if (is_array($field['options']['fields']) && count($field['options']['fields'])) {
-
-                        $field['options']['fields'] = $this->_filterNonLinkFields($field['options']['fields']);
-
-                        if (count($field['options']['fields'])) {
-                            return true;
-                        }
-                    }
-                    break;
-            }
-
-            return false;
-        });
-    },
-
-    '_populate' => function($collection, $entries, $deep = false, $_deeplevel = -1) {
-
-        // a maximum of recursive level
-        if (is_numeric($deep) && $_deeplevel == $deep) {
-            return $entries;
+        if (!is_array($items)) {
+            return $items;
         }
 
-        if (!$collection || !count($entries)) {
-            return $entries;
+        if (is_numeric($maxlevel) && $maxlevel==$level) {
+            return $items;
         }
 
-        $fieldsWithLinks = $this->_filterNonLinkFields($collection['fields']);
-
-        foreach ($entries as &$entry) {
-            foreach($fieldsWithLinks as $field) {
-                $entry[$field['name']] = $this->_resolveField($entry[$field['name']], $field, $deep, $_deeplevel);
+        foreach ($items as $k => &$v) {
+            
+            if (is_array($items[$k])) {
+                $items[$k] = $this->_populate($items[$k], $maxlevel, ++$level);
             }
+
+            if (isset($v['_id'], $v['link'])) {
+                $v = $this->_resolveLinedkItem($v['link'], $v['_id']);
+            }
+
+            $items[$k] = $v;
         }
 
-        return $entries;
+        return $items;
     }
 ]);
 

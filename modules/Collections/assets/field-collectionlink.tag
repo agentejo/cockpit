@@ -168,7 +168,7 @@
             _init();
         });
 
-        App.$(this.refs.txtfilter).on('keydown', function(e){
+        App.$(this.root).on('keydown', 'input',function(e){
 
             if (e.keyCode == 13) {
                 e.preventDefault();
@@ -200,7 +200,11 @@
     linkItem(e) {
 
         var _entry = e.item.entry;
-        var entry = {_id:_entry._id, display: _entry[opts.display] || _entry[this.collection.fields[0].name] || 'n/a'};
+        var entry = {
+            _id: _entry._id, 
+            link: this.collection.name, 
+            display: _entry[opts.display] || _entry[this.collection.fields[0].name] || 'n/a'
+        };
 
         if (opts.multiple) {
 
