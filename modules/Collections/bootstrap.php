@@ -359,28 +359,33 @@ $this->module("collections")->extend([
         if (!is_array($items)) {
             return $items;
         }
-
-        if (is_numeric($maxlevel) && $maxlevel==$level) {
-            return $items;
-        }
-
-        foreach ($items as $k => &$v) {
-            
-            if (is_array($items[$k])) {
-                $items[$k] = $this->_populate($items[$k], $maxlevel, ++$level);
-            }
-
-            if (isset($v['_id'], $v['link'])) {
-                $v = $this->_resolveLinedkItem($v['link'], $v['_id']);
-            }
-
-            $items[$k] = $v;
-        }
-
-        return $items;
+        return cockpit_populate_collection($items);
     }
 ]);
 
+function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0) {
+
+    if (!is_array($items)) {
+        return $items;
+    }
+
+    if (is_numeric($maxlevel) && $maxlevel==$level) {
+        return $items;
+    }
+
+    foreach ($items as $k => &$v) {
+
+        if (is_array($items[$k])) {
+            $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ++$level);
+        }
+
+        if (isset($v['_id'], $v['link'])) {
+            $items[$k] = cockpit('collections')->_resolveLinedkItem($v['link'], $v['_id']);
+        }
+    }
+
+    return $items;
+}
 
 // ACL
 $app("acl")->addResource("collections", ['create', 'delete']);
