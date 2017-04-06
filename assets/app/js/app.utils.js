@@ -236,7 +236,27 @@
     };
 
     App.Utils.renderer.asset = function(v) {
-        return v && v.mime ? '<span class="uk-badge">'+v.mime+'</span>' : App.Utils.renderer.default(v);
+
+        if (v && v.mime) {
+            if (v.mime.match(/^image\//)) {
+
+                var id = 'img'+Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);;
+
+                App.request('/cockpit/utils/thumb_url', {src:ASSETS_URL+v.path,w:30,h:30}, 'text').then(function(url){
+
+                    App.$('#'+id).attr('src', url);
+                
+                }).catch(function(e){
+                    // todo
+                });
+
+                return '<img id="'+id+'" width="20" height="20">';
+            }
+
+            return '<span class="uk-badge">'+v.mime+'</span>';
+        }
+
+        return App.Utils.renderer.default(v);
     };
 
     App.Utils.renderer.gallery = function(v) {
