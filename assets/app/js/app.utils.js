@@ -235,6 +235,10 @@
         return v && v.path ? '<a href="'+encodeURI(SITE_URL+'/'+v.path)+'" data-uk-lightbox title="'+App.i18n.get('Preview')+'"><i class="uk-icon-image"></i></a>' : App.Utils.renderer.default(v);
     };
 
+    App.Utils.renderer.asset = function(v) {
+        return v && v.mime ? '<span class="uk-badge">'+v.mime+'</span>' : App.Utils.renderer.default(v);
+    };
+
     App.Utils.renderer.gallery = function(v) {
         return Array.isArray(Array.isArray(v)) ? v.length+' '+App.i18n.get('Image(s)') : App.Utils.renderer.default(v);
     };
