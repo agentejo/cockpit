@@ -62,6 +62,11 @@ class Mailer {
             if(isset($this->options['encryption']) && $this->options['encryption']) {
                 $mail->SMTPSecure = $this->options['encryption']; // Enable encryption: 'ssl' , 'tls' accepted
             }
+
+            // Extra smtp options
+            if (isset($this->options['smtp']) && is_array($this->options['smtp'])) {
+                $mail->SMTPOptions = $this->options['smtp'];
+            }
         }
 
         $mail->Subject = $subject;
