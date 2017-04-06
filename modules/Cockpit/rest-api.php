@@ -10,6 +10,8 @@ $this->on("before", function() {
     */
     $this->trigger("cockpit.rest.init", [$routes])->bind("/api/*", function($params) use($routes) {
 
+        $this->module('cockpit')->setUser(false, false);
+
         $route = $this['route'];
         $path  = $params[":splat"][0];
 

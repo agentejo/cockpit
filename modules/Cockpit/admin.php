@@ -10,50 +10,6 @@ include(__DIR__.'/Helper/Admin.php');
 
 $app->helpers['admin']  = 'Cockpit\\Helper\\Admin';
 
-// ACL
-$app('acl')->addResource('cockpit', [
-    'backend', 'finder',
-]);
-
-
-// init acl groups + permissions + settings
-
-$app('acl')->addGroup('admin', true);
-
-/*
-groups:
-    author:
-        $admin: false
-        $vars:
-            finder.path: /upload
-        cockpit:
-            finder: true
-
-*/
-
-$aclsettings = $app->retrieve('config/groups', []);
-
-foreach ($aclsettings as $group => $settings) {
-
-    $isSuperAdmin = $settings === true || (isset($settings['$admin']) && $settings['$admin']);
-    $vars         = isset($settings['$vars']) ? $settings['$vars'] : [];
-
-    $app('acl')->addGroup($group, $isSuperAdmin, $vars);
-
-    if (!$isSuperAdmin && is_array($settings)) {
-
-        foreach ($settings as $resource => $actions) {
-
-            if ($resource == '$vars' || $resource == '$admin') continue;
-
-            foreach ((array)$actions as $action => $allow) {
-                if ($allow) {
-                    $app('acl')->allow($group, $resource, $action);
-                }
-            }
-        }
-    }
-}
 
 // init + load i18n
 $app('i18n')->locale = 'en';

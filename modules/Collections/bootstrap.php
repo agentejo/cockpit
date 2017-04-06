@@ -528,12 +528,12 @@ $this->module("collections")->extend([
             return false;
         }
 
-        if (!$group && $this->app->module('cockpit')->isSuperAdmin()) {
-            return true;
-        }
-
         if (!$group) {
             $group = $this->app->module('cockpit')->getGroup();
+        }
+
+        if ($this->app->module('cockpit')->isSuperAdmin($group)) {
+            return true;
         }
 
         if (isset($collection['acl'][$group][$action])) {

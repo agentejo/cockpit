@@ -125,7 +125,13 @@ $this->module("cockpit")->extend([
     },
 
     "getUser" => function() use($app) {
-        $user = $app->retrieve('cockpit.auth.user', $app("session")->read('cockpit.app.auth', null));
+
+        $user = $app->retrieve('cockpit.auth.user');
+
+        if (is_null($user)) {
+            $user = $app("session")->read('cockpit.app.auth', null);
+        }
+
         return $user;
     },
 
@@ -230,6 +236,52 @@ $this->module("cockpit")->extend([
         return false;
     }
 ]);
+
+// ACL
+$app('acl')->addResource('cockpit', [
+    'backend', 'finder',
+]);
+
+
+// init acl groups + permissions + settings
+
+$app('acl')->addGroup('admin', true);
+
+/*
+groups:
+    author:
+        $admin: false
+        $vars:
+            finder.path: /upload
+        cockpit:
+            finder: true
+
+*/
+
+$aclsettings = $app->retrieve('config/groups', []);
+
+foreach ($aclsettings as $group => $settings) {
+
+    $isSuperAdmin = $settings === true || (isset($settings['$admin']) && $settings['$admin']);
+    $vars         = isset($settings['$vars']) ? $settings['$vars'] : [];
+
+    $app('acl')->addGroup($group, $isSuperAdmin, $vars);
+
+    if (!$isSuperAdmin && is_array($settings)) {
+
+        foreach ($settings as $resource => $actions) {
+
+            if ($resource == '$vars' || $resource == '$admin') continue;
+
+            foreach ((array)$actions as $action => $allow) {
+                if ($allow) {
+                    $app('acl')->allow($group, $resource, $action);
+                }
+            }
+        }
+    }
+}
+
 
 // REST
 if (COCKPIT_REST) {

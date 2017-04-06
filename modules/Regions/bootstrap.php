@@ -206,12 +206,12 @@ $this->module("regions")->extend([
             return false;
         }
 
-        if (!$group && $this->app->module('cockpit')->isSuperAdmin()) {
-            return true;
-        }
-
         if (!$group) {
             $group = $this->app->module('cockpit')->getGroup();
+        }
+
+        if ($this->app->module('cockpit')->isSuperAdmin($group)) {
+            return true;
         }
 
         if (isset($region['acl'][$group][$action])) {
