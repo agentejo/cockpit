@@ -38,8 +38,8 @@
                 </ul>
             </div>
         </span>
-        <a class="uk-button" onclick="{ updateorder }" show="{ mode=='reorder' }"><i class="uk-icon-plus-circle"></i> { App.i18n.get('Update order') }</a>
-        <a class="uk-button" onclick="{ switchreorder }" show="{ items.length > 1 }">
+        <a class="uk-button uk-button-success" onclick="{ updateorder }" show="{ mode=='reorder' }"><i class="uk-icon-check"></i> { App.i18n.get('Update order') }</a>
+        <a class="uk-button uk-button-link uk-link-reset" onclick="{ switchreorder }" show="{ items.length > 1 }">
             <span show="{ mode=='edit' }"><i class="uk-icon-arrows"></i> { App.i18n.get('Reorder') }</span>
             <span show="{ mode=='reorder' }">{ App.i18n.get('Cancel') }</span>
         </a>
