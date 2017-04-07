@@ -23,9 +23,11 @@
         this.fields = [];
 
         riot.util.bind(this);
-
+        
         this.on('mount', function() {
+            this.fields = opts.fields || [];
             this.trigger('update');
+            this.update();
         });
 
         this.on('update', function() {
