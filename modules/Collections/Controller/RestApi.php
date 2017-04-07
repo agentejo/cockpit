@@ -62,4 +62,26 @@ class RestApi extends \LimeExtra\Controller {
 
         return $entries;
     }
+
+    public function save($collection=null) {
+
+        $user = $this->module('cockpit')->getUser();
+        $data = $this->param('data', null);
+
+        if (!$collection || !$data) {
+            return false;
+        }
+
+        if (!$this->module('collections')->exists($collection)) {
+            return false;
+        }
+
+        if (!$this->module('collections')->hasaccess($collection, isset($data['_id']) ? 'entries_create':'entries_edit')) {
+            return false;
+        }
+
+        $data = $this->module('collections')->save($collection, $data);
+
+        return $data;
+    }
 }
