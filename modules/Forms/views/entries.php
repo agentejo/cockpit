@@ -72,10 +72,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr each="{entry,idx in entries}">
+                <tr each="{entry, idx in entries}">
                     <td width="20"><input type="checkbox" data-check data-id="{ entry._id }"></td>
                     <td>
-                        <div class="uk-text-small uk-margin-small-top" each="{ name, value in entry.data }">
+                        <div class="uk-text-small uk-margin-small-top" each="{ value, name in entry.data }">
                             <strong>{name}:</strong>
                             <div>
                                 {value}
