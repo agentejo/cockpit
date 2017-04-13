@@ -17,7 +17,7 @@ class MongoLegacy {
 
     public function getCollection($name, $db = null){
 
-        if($db) {
+        if ($db) {
             $name = "{$db}/{$name}";
         }
 
@@ -28,23 +28,24 @@ class MongoLegacy {
 
     public function findOneById($collection, $id){
 
-        if(is_string($id)) $id = new \MongoId($id);
+        if (is_string($id)) $id = new \MongoId($id);
 
         $doc =  $this->getCollection($collection)->findOne(["_id" => $id]);
 
-        if(isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
+        if (isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
 
         return $doc;
     }
 
     public function findOne($collection, $filter = [], $projection = []) {
 
-        if (isset($filter["_id"]) && is_string($filter["_id"])) $filter["_id"] = new \MongoId($filter["_id"]);
+        $filter = $this->_fixMongoIds($filter);
+
         if (!$projection) $projection = [];
 
         $doc =  $this->getCollection($collection)->findOne($filter, $projection);
 
-        if(isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
+        if (isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
 
         return $doc;
     }
@@ -57,22 +58,20 @@ class MongoLegacy {
         $sort   = isset($options["sort"])   && $options["sort"]   ? $options["sort"]   : null;
         $skip   = isset($options["skip"])   && $options["skip"]   ? $options["skip"]   : null;
 
-        if($filter && isset($filter["_id"])) {
-            $filter["_id"] = new \MongoId($filter["_id"]);
-        }
+        $filter = $this->_fixMongoIds($filter);
 
         $cursor = $this->getCollection($collection)->find($filter, $fields);
 
-        if($limit) $cursor->limit($limit);
-        if($sort)  $cursor->sort($sort);
-        if($skip)  $cursor->skip($skip);
+        if ($limit) $cursor->limit($limit);
+        if ($sort)  $cursor->sort($sort);
+        if ($skip)  $cursor->skip($skip);
 
         if ($cursor->count()) {
 
             $docs = array_values(iterator_to_array($cursor));
 
             foreach ($docs as &$doc) {
-                if(isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
+                if (isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
             }
 
         } else {
@@ -87,13 +86,12 @@ class MongoLegacy {
 
     public function insert($collection, &$doc) {
 
-        if(isset($doc["_id"]) && is_string($doc["_id"])) $doc["_id"] = new \MongoId($doc["_id"]);
-
+        $doc = $this->_fixMongoIds($doc);
         $ref = $doc;
 
         $return = $this->getCollection($collection)->insert($ref);
 
-        if(isset($ref["_id"])) $ref["_id"] = (string) $ref["_id"];
+        if (isset($ref["_id"])) $ref["_id"] = (string) $ref["_id"];
 
         $doc = $ref;
 
@@ -102,13 +100,12 @@ class MongoLegacy {
 
     public function save($collection, &$data) {
 
-        if(isset($data["_id"]) && is_string($data["_id"])) $data["_id"] = new \MongoId($data["_id"]);
-
-        $ref = $data;
+        $data = $this->_fixMongoIds($data);
+        $ref  = $data;
 
         $return = $this->getCollection($collection)->save($ref);
 
-        if(isset($ref["_id"])) $ref["_id"] = (string) $ref["_id"];
+        if (isset($ref["_id"])) $ref["_id"] = (string) $ref["_id"];
 
         $data = $ref;
 
@@ -118,23 +115,57 @@ class MongoLegacy {
 
     public function update($collection, $criteria, $data) {
 
-        if(isset($criteria["_id"]) && is_string($criteria["_id"])) $criteria["_id"] = new \MongoId($criteria["_id"]);
-        if(isset($data["_id"]) && is_string($data["_id"])) $data["_id"] = new \MongoId($data["_id"]);
+        $criteria = $this->_fixMongoIds($criteria);
+        $data     = $this->_fixMongoIds($data);
 
         return $this->getCollection($collection)->update($criteria, $data);
     }
 
     public function remove($collection, $filter=[]) {
 
-        if(isset($filter["_id"]) && is_string($filter["_id"])) $filter["_id"] = new \MongoId($filter["_id"]);
+        $filter = $this->_fixMongoIds($filter);
 
         return $this->getCollection($collection)->remove($filter);
     }
 
     public function count($collection, $filter=[]) {
 
+        $filter = $this->_fixMongoIds($filter);
+
         return $this->getCollection($collection)->count($filter);
     }
 
+    protected function _fixMongoIds(&$data) {
 
+        if (!is_array($data)) {
+            return $data;
+        }
+
+        foreach ($data as $k => $v) {
+            
+            if (is_array($data[$k])) {
+                $data[$k] = $this->_fixMongoIds($data[$k]);
+            }
+
+            if ($k === '_id') {
+
+                if (is_string($v)) {
+                    
+                    $v = new \MongoId($v);
+
+                } elseif (is_array($v) && isset($v['$in'])) {
+                    
+                    foreach ($v['$in'] as &$id) {
+                        if (is_string($id)) {
+                            $id = new \MongoId($id);
+                        }
+                    }
+                }
+            }
+
+            $data[$k] = $v;
+        }
+
+        return $data;
+    }
 }

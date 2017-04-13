@@ -1,32 +1,35 @@
 <field-select>
 
-    <select name="input" class="uk-width-1-1" bind="{ opts.bind }">
+    <select ref="input" riot-class="uk-width-1-1 {opts.cls}" bind="{ opts.bind }">
         <option value=""></option>
         <option each="{ option,idx in options }" value="{ option }">{ option }</option>
     </select>
 
     <script>
 
-        this.options = opts.options || []
+        this.on('mount', function() { this.trigger('update'); });
 
-        if (typeof(this.options) === 'string') {
+        this.on('update', function() {
 
-            var options = [];
+            if (opts.required) {
+                this.refs.input.setAttribute('required', 'required');
+            }
 
-            this.options.split(',').forEach(function(option) {
-                options.push(option.trim());
-            });
+            this.options = opts.options || []
 
-            this.options = options;
-        }
+            if (typeof(this.options) === 'string') {
 
-        if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
-        }
+                var options = [];
 
-        if (opts.required) {
-            this.input.setAttribute('required', 'required');
-        }
+                this.options.split(',').forEach(function(option) {
+                    options.push(option.trim());
+                });
+
+                this.options = options;
+            }
+
+            this.refs.input.value = this.root.$value;
+        });
 
     </script>
 

@@ -1,17 +1,17 @@
 <field-password>
 
     <div class="uk-form-password uk-width-1-1">
-        <input name="input" class="uk-width-1-1" bind="{ opts.bind }" type="password">
+        <input ref="input" class="uk-width-1-1" bind="{ opts.bind }" type="password">
         <a href="" class="uk-form-password-toggle" data-uk-form-password>Show</a>
     </div>
 
     <script>
 
-        if (opts.cls) {
-            App.$(this.input).addClass(opts.cls);
-        }
-
         this.on('mount', function(){
+
+            if (opts.cls) {
+                App.$(this.refs.input).addClass(opts.cls);
+            }
 
             App.assets.require(['/assets/lib/uikit/js/components/form-password.js'], function() {
 

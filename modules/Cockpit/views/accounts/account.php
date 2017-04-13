@@ -2,7 +2,7 @@
 
 <div>
     <ul class="uk-breadcrumb">
-        @hasaccess?('cockpit', 'manage.accounts')
+        @hasaccess?('cockpit', 'accounts')
         <li><a href="@route('/settings')">@lang('Settings')</a></li>
         <li><a href="@route('/accounts')">@lang('Accounts')</a></li>
         @endif
@@ -30,7 +30,6 @@
 
                     <form id="account-form" class="uk-form" onsubmit="{ submit }">
 
-
                         <div class="uk-form-row">
                             <label class="uk-text-small">@lang('Name')</label>
                             <input class="uk-width-1-1 uk-form-large" type="text" bind="account.name" autocomplete="off" required>
@@ -54,6 +53,14 @@
                             </div>
                             <div class="uk-alert">
                                 @lang('Leave the password field empty to keep your current password.')
+                            </div>
+                        </div>
+
+                        <div class="uk-form-row">
+                            <label class="uk-text-small">@lang('API Key')</label>
+                            <div class="uk-form-icon uk-form-icon-flip uk-display-block">
+                                <a class="uk-icon-refresh uk-text-primary" onclick="{ generateApiToken }" style="pointer-events:auto;"></a>
+                                <input class="uk-form-large uk-width-1-1" type="text" bind="account.api_key" placeholder="@lang('No token generated yet')" bind="account.apikey" disabled>
                             </div>
                         </div>
 
@@ -96,7 +103,7 @@
             <div class="uk-form-controls uk-margin-small-top">
                 <div class="uk-form-select">
                     <a>{ _.result(_.find(languages, { 'i18n': account.i18n }), 'language') || account.i18n }</a>
-                    <select class="uk-width-1-1 uk-form-large" name="i18n" bind="account.i18n">
+                    <select class="uk-width-1-1 uk-form-large" ref="i18n" bind="account.i18n">
                         @foreach($languages as $lang)
                         <option value="{{ $lang['i18n'] }}">{{ $lang['language'] }}</option>
                         @endforeach
@@ -105,14 +112,14 @@
             </div>
         </div>
 
-        @if($app["user"]["group"]=="admin" AND @$account["_id"]!=$app["user"]["_id"])
+        @if($app->module('cockpit')->isSuperAdmin() AND @$account["_id"] != $app["user"]["_id"])
         <div class="uk-form-row">
             <label class="uk-text-small">@lang('Group')</label>
 
             <div class="uk-form-controls uk-margin-small-top">
                 <div class="uk-form-select">
                     <a>{ account.group }</a>
-                    <select class="uk-width-1-1 uk-form-large" name="group" bind="account.group">
+                    <select class="uk-width-1-1 uk-form-large" ref="group" bind="account.group">
                         @foreach($groups as $group)
                         <option value="{{ $group }}">{{ $group }}</option>
                         @endforeach
@@ -147,11 +154,17 @@
             });
         });
 
+        generateApiToken() {
+            this.account.api_key = 'account-'+App.Utils.generateToken(120);
+        }
+
         toggleactive() {
             this.account.active = !(this.account.active);
         }
 
-        submit() {
+        submit(e) {
+
+            if(e) e.preventDefault();
 
             App.request("/accounts/save", {"account": this.account}).then(function(data){
                 $this.account = data;

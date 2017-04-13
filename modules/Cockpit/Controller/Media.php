@@ -9,7 +9,7 @@ class Media extends \Cockpit\AuthController {
     public function api() {
 
         $cmd       = $this->param("cmd", false);
-        $mediapath = '';
+        $mediapath = $this->module('cockpit')->getGroupVar('finder.path', '');
 
         $this->root = rtrim($this->app->path("site:{$mediapath}"), '/');
 
@@ -32,6 +32,8 @@ class Media extends \Cockpit\AuthController {
         ];
 
         $cpfolder = $this->app->path('#root:');
+        $sitefolder = $this->app->path('site:');
+        $isSuperAdmin = $this->module('cockpit')->isSuperAdmin();
 
         if ($path = $this->param("path", false)){
 
@@ -43,7 +45,7 @@ class Media extends \Cockpit\AuthController {
                foreach (new \DirectoryIterator($dir) as $file) {
 
                     if ($file->isDot()) continue;
-                    if ($file->isDir() && $file->getRealPath() == $cpfolder && $this->app['user']['group'] != 'admin' ) continue;
+                    if ($file->isDir() && $file->getRealPath() == $cpfolder && !$isSuperAdmin ) continue;
 
                     $filename = $file->getFilename();
 
@@ -57,6 +59,7 @@ class Media extends \Cockpit\AuthController {
                         "is_writable" => is_writable($file->getPathname()),
                         "name" => $filename,
                         "path" => trim($path.'/'.$file->getFilename(), '/'),
+                        "rel_site_path" => trim(str_replace($sitefolder, '', $file->getPathname()), '/'),
                         "url"  => $this->app->pathToUrl($file->getPathname()),
                         "size" => $isDir ? "" : $this->app->helper("utils")->formatSize($file->getSize()),
                         "ext"  => $isDir ? "" : strtolower($file->getExtension()),

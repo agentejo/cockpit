@@ -1,6 +1,6 @@
 {
     "name"            : "cockpit-next",
-    "version"         : "0.2.5",
+    "version"         : "0.3.1",
     "license"         : "MIT",
 
     "scripts": {
@@ -18,7 +18,7 @@
 
     "devDependencies": {
         "less": "^2.6.0",
-        "riot": "^2.3.16",
+        "riot": "^3.0.0",
         "watch-run": "^1.2.4"
     }
 }

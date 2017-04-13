@@ -3,7 +3,14 @@
     <div class="uk-panel-box uk-panel-card">
 
         <div class="uk-panel-box-header uk-flex">
-            <strong class="uk-panel-box-header-title uk-flex-item-1">@lang('Regions')</strong>
+            <strong class="uk-panel-box-header-title uk-flex-item-1">
+                @lang('Regions')
+
+                @hasaccess?('regions', 'create')
+                <a href="@route('/regions/region')" class="uk-icon-plus uk-margin-small-left" title="@lang('Create Region')" data-uk-tooltip></a>
+                @end
+            </strong>
+
             @if(count($regions))
             <span class="uk-badge uk-flex uk-flex-middle"><span>{{ count($regions) }}</span></span>
             @endif
@@ -18,11 +25,7 @@
                     <li>
                         <a href="@route('/regions/form/'.$region['name'])">
 
-                            @if(isset($region['color']) && $region['color'])
-                            <i class="uk-icon-justify uk-icon-th" style="color:{{ $region['color'] }}"></i>
-                            @else
-                            <i class="uk-icon-justify uk-icon-th"></i>
-                            @endif
+                            <img class="uk-margin-small-right uk-svg-adjust" src="@url(isset($region['icon']) && $region['icon'] ? 'assets:app/media/icons/'.$region['icon']:'regions:icon.svg')" width="18px" alt="icon" data-uk-svg>
 
                             {{ @$region['label'] ? $region['label'] : $region['name'] }}
                         </a>
@@ -44,7 +47,11 @@
                     <img src="@url('regions:icon.svg')" width="30" height="30" alt="Regions" data-uk-svg />
                 </p>
 
-                @lang('No regions'). <a href="@route('/regions/region')">@lang('Create a region')</a>.
+                @lang('No regions').
+
+                @hasaccess?('regions', 'create')
+                <a href="@route('/regions/region')">@lang('Create a region')</a>.
+                @end
 
             </div>
 

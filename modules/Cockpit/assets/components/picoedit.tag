@@ -9,7 +9,7 @@
 
     </style>
 
-    <div class="picoedit">
+    <div class="picoedit" show="{isReady}">
 
         <div class="picoedit-toolbar uk-flex" if="{path}">
             <div class="uk-flex-item-1 uk-text-truncate">
@@ -20,7 +20,7 @@
             </div>
         </div>
 
-        <codemirror name="codemirror"></codemirror>
+        <codemirror ref="codemirror"></codemirror>
     </div>
 
     <script>
@@ -30,28 +30,25 @@
             editor;
 
         this.isReady = false;
-
-        this.ready = new Promise(function(resolve){
-
-            $this.tags.codemirror.on('ready', function(){
-                editor = $this.codemirror.editor;
-
-                editor.addKeyMap({
-                    'Ctrl-S': function(){ $this.save(); },
-                    'Cmd-S': function(){ $this.save(); }
-                });
-
-                $this.isReady = true;
-
-                resolve();
-            });
-        });
-
         root.picoedit = this;
 
         this.path = null;
 
         this.on('mount', function() {
+
+            this.ready = new Promise(function(resolve){
+
+                $this.tags.codemirror.on('ready', function(){
+                    editor = $this.refs.codemirror.editor;
+
+                    editor.addKeyMap({
+                        'Ctrl-S': function(){ $this.save(); },
+                        'Cmd-S': function(){ $this.save(); }
+                    });
+
+                    resolve();
+                });
+            });
 
             if (opts.path) {
 
@@ -71,11 +68,13 @@
                 requestapi({"cmd":"readfile", "path":path}, function(content){
 
                     editor.setOption("mode", getMode(path));
-                    editor.setValue(content);
                     editor.focus();
-                    editor.refresh();
+                    $this.isReady = true;
 
                     this.update();
+
+                    editor.setValue(content);
+                    editor.refresh();
 
                 }.bind(this), "text");
 

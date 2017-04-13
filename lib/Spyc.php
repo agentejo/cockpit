@@ -1,7 +1,7 @@
 <?php
 /**
    * Spyc -- A Simple PHP YAML Class
-   * @version 0.5.1
+   * @version 0.6.2
    * @author Vlad Andersen <vlad.andersen@gmail.com>
    * @author Chris Wanstrath <chris@ozmm.org>
    * @link https://github.com/mustangostang/spyc/
@@ -42,6 +42,8 @@ if (!function_exists('spyc_dump')) {
     return Spyc::YAMLDump($data, false, false, true);
   }
 }
+
+if (!class_exists('Spyc')) {
 
 /**
    * The Simple PHP YAML Class.
@@ -119,7 +121,7 @@ class Spyc {
  * @return array
  */
   public function load ($input) {
-    return $this->__loadString($input);
+    return $this->_loadString($input);
   }
 
  /**
@@ -128,7 +130,7 @@ class Spyc {
  * @return array
  */
   public function loadFile ($file) {
-    return $this->__load($file);
+    return $this->_load($file);
   }
 
   /**
@@ -148,7 +150,7 @@ class Spyc {
      */
   public static function YAMLLoad($input) {
     $Spyc = new Spyc;
-    return $Spyc->__load($input);
+    return $Spyc->_load($input);
   }
 
   /**
@@ -172,7 +174,7 @@ class Spyc {
      */
   public static function YAMLLoadString($input) {
     $Spyc = new Spyc;
-    return $Spyc->__loadString($input);
+    return $Spyc->_loadString($input);
   }
 
   /**
@@ -191,10 +193,10 @@ class Spyc {
      *
      * @access public
      * @return string
-     * @param array $array PHP array
+     * @param array|\stdClass $array PHP array
      * @param int $indent Pass in false to use the default, which is 2
      * @param int $wordwrap Pass in 0 for no wordwrap, false for default (40)
-     * @param int $no_opening_dashes Do not start YAML file with "---\n"
+     * @param bool $no_opening_dashes Do not start YAML file with "---\n"
      */
   public static function YAMLDump($array, $indent = false, $wordwrap = false, $no_opening_dashes = false) {
     $spyc = new Spyc;
@@ -265,6 +267,7 @@ class Spyc {
      * @param $indent The indent of the current node
      */
   private function _yamlize($key,$value,$indent, $previous_key = -1, $first_key = 0, $source_array = null) {
+    if(is_object($value)) $value = (array)$value;
     if (is_array($value)) {
       if (empty ($value))
         return $this->_dumpNode($key, array(), $indent, $previous_key, $first_key, $source_array);
@@ -468,12 +471,12 @@ class Spyc {
 
 // LOADING FUNCTIONS
 
-  private function __load($input) {
+  private function _load($input) {
     $Source = $this->loadFromSource($input);
     return $this->loadWithSource($Source);
   }
 
-  private function __loadString($input) {
+  private function _loadString($input) {
     $Source = $this->loadFromString($input);
     return $this->loadWithSource($Source);
   }
@@ -609,7 +612,9 @@ class Spyc {
 
     if ($is_quoted) {
       $value = str_replace('\n', "\n", $value);
-      return strtr(substr ($value, 1, -1), array ('\\"' => '"', '\'\'' => '\'', '\\\'' => '\''));
+      if ($first_character == "'")
+        return strtr(substr ($value, 1, -1), array ('\'\'' => '\'', '\\\''=> '\''));
+      return strtr(substr ($value, 1, -1), array ('\\"' => '"', '\\\''=> '\''));
     }
 
     if (strpos($value, ' #') !== false && !$is_quoted)
@@ -662,12 +667,12 @@ class Spyc {
 
     if ( is_numeric($value) && preg_match ('/^(-|)[1-9]+[0-9]*$/', $value) ){
       $intvalue = (int)$value;
-      if ($intvalue != PHP_INT_MAX)
+      if ($intvalue != PHP_INT_MAX && $intvalue != ~PHP_INT_MAX)
         $value = $intvalue;
       return $value;
     }
 
-    if (is_numeric($value) && preg_match('/^0[xX][0-9a-fA-F]+$/', $value)) {
+    if ( is_string($value) && preg_match('/^0[xX][0-9a-fA-F]+$/', $value)) {
       // Hexadecimal value.
       return hexdec($value);
     }
@@ -1141,6 +1146,7 @@ class Spyc {
     $line = trim(str_replace($group, '', $line));
     return $line;
   }
+}
 }
 
 // Enable use of Spyc from command line

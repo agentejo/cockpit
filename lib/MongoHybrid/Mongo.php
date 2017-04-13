@@ -41,9 +41,8 @@ class Mongo {
 
     public function findOne($collection, $filter = [], $projection = []) {
 
-        if (isset($filter["_id"]) && is_string($filter["_id"])) $filter["_id"] = new \MongoDB\BSON\ObjectID($filter["_id"]);
-
-        $doc =  $this->getCollection($collection)->findOne($filter, ['projection' => $projection]);
+        $filter = $this->_fixMongoIds($filter);
+        $doc    = $this->getCollection($collection)->findOne($filter, ['projection' => $projection]);
 
         if (isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
 
@@ -58,9 +57,7 @@ class Mongo {
         $sort   = isset($options["sort"])   && $options["sort"]   ? $options["sort"]   : null;
         $skip   = isset($options["skip"])   && $options["skip"]   ? $options["skip"]   : null;
 
-        if ($filter && isset($filter["_id"])) {
-            $filter["_id"] = new \MongoDB\BSON\ObjectID($filter["_id"]);
-        }
+        $filter = $this->_fixMongoIds($filter);
 
         $cursor = $this->getCollection($collection)->find($filter, [
             'projection' => $fields,
@@ -88,8 +85,7 @@ class Mongo {
 
     public function insert($collection, &$doc) {
 
-        if (isset($doc["_id"]) && is_string($doc["_id"])) $doc["_id"] = new \MongoDB\BSON\ObjectID($doc["_id"]);
-
+        $doc = $this->_fixMongoIds($doc);
         $ref = $doc;
 
         $return = $this->getCollection($collection)->insertOne($ref);
@@ -105,7 +101,7 @@ class Mongo {
 
     public function save($collection, &$data) {
 
-        if (isset($data["_id"]) && is_string($data["_id"])) $data["_id"] = new \MongoDB\BSON\ObjectID($data["_id"]);
+        $data = $this->_fixMongoIds($data);
 
         $ref = $data;
 
@@ -125,15 +121,15 @@ class Mongo {
 
     public function update($collection, $criteria, $data) {
 
-        if (isset($criteria["_id"]) && is_string($criteria["_id"])) $criteria["_id"] = new \MongoDB\BSON\ObjectID($criteria["_id"]);
-        if (isset($data["_id"]) && is_string($data["_id"])) $data["_id"] = new \MongoDB\BSON\ObjectID($data["_id"]);
+        $criteria = $this->_fixMongoIds($criteria);
+        $data     = $this->_fixMongoIds($data);
 
         return $this->getCollection($collection)->updateMany($criteria, $data);
     }
 
     public function remove($collection, $filter=[]) {
 
-        if (isset($filter["_id"]) && is_string($filter["_id"])) $filter["_id"] = new \MongoDB\BSON\ObjectID($filter["_id"]);
+        $filter = $this->_fixMongoIds($filter);
 
         return $this->getCollection($collection)->deleteMany($filter);
     }
@@ -142,6 +138,38 @@ class Mongo {
 
         return $this->getCollection($collection)->count($filter);
     }
+    
+    protected function _fixMongoIds(&$data) {
 
+        if (!is_array($data)) {
+            return $data;
+        }
 
+        foreach ($data as $k => $v) {
+            
+            if (is_array($data[$k])) {
+                $data[$k] = $this->_fixMongoIds($data[$k]);
+            }
+
+            if ($k === '_id') {
+
+                if (is_string($v)) {
+                    
+                    $v = new \MongoDB\BSON\ObjectID($v);
+
+                } elseif (is_array($v) && isset($v['$in'])) {
+                    
+                    foreach ($v['$in'] as &$id) {
+                        if (is_string($id)) {
+                            $id = new \MongoDB\BSON\ObjectID($id);
+                        }
+                    }
+                }
+            }
+
+            $data[$k] = $v;
+        }
+
+        return $data;
+    }
 }

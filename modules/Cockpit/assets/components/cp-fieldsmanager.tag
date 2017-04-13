@@ -1,8 +1,8 @@
 <cp-fieldsmanager>
 
-    <div name="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form">
+    <div ref="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form">
 
-        <div class="uk-width-{field.width}" data-idx="{idx}" each="{ field,idx in fields }">
+        <div riot-class="uk-width-{field.width}" data-idx="{idx}" each="{ field,idx in fields }">
 
             <div class="uk-panel uk-panel-box uk-panel-card">
 
@@ -86,16 +86,21 @@
                     </div>
 
                     <div class="uk-form-row">
+                        <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Group') }:</label>
+                        <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="fields[{idx}].group" placeholder="{ App.i18n.get('Group name') }">
+                    </div>
+
+                    <div class="uk-form-row">
                         <label class="uk-text-small uk-text-bold uk-margin-small-bottom">{ App.i18n.get('Options') } <span class="uk-text-muted">JSON</span></label>
                         <field-object cls="uk-width-1-1" fields-bind="fields[{idx}].options" rows="6" allowtabs="2"></field-object>
                     </div>
 
                     <div class="uk-form-row">
-                        <input type="checkbox" fields-bind="fields[{idx}].required"> { App.i18n.get('Required') }
+                        <field-boolean fields-bind="fields[{idx}].required" label="{ App.i18n.get('Required') }"></field-boolean>
                     </div>
 
                     <div class="uk-form-row">
-                        <input type="checkbox" fields-bind="fields[{idx}].localize"> { App.i18n.get('Localize') }
+                        <field-boolean fields-bind="fields[{idx}].localize" label="{ App.i18n.get('Localize') }"></field-boolean>
                     </div>
 
                     <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{ App.i18n.get('Close') }</button></div>
@@ -116,12 +121,23 @@
         <div class="uk-animation-fade">
 
             <p class="uk-text-xlarge">
-                <i class="uk-icon-list-alt"></i>
+                <img riot-src="{ App.base('/assets/app/media/icons/form-editor.svg') }" width="100" height="100" >
             </p>
 
             <hr>
 
-            { App.i18n.get('No fields added yet') }. <a onclick="{ addfield }">{ App.i18n.get('Add field') }.</a>
+            { App.i18n.get('No fields added yet') }.
+            <span data-uk-dropdown="pos:'bottom-center'">
+                <a onclick="{ addfield }">{ App.i18n.get('Add field') }.</a>
+                <div class="uk-dropdown uk-dropdown-scrollable uk-text-left" if="{opts.templates && opts.templates.length}">
+                    <ul class="uk-nav uk-nav-dropdown">
+                        <li class="uk-nav-header">{ App.i18n.get('Choose from template') }</li>
+                        <li each="{template in opts.templates}">
+                            <a onclick="{ parent.fromTemplate.bind(parent, template) }"><i class="uk-icon-sliders uk-margin-small-right"></i> { template.label || template.name }</a>
+                        </li>
+                    </ul>
+                </div>
+            <span>
 
         </div>
 
@@ -129,7 +145,7 @@
 
 
     <script>
-
+        
         riot.util.bind(this, 'fields');
 
         var $this = this;
@@ -179,7 +195,7 @@
 
         this.one('mount', function(){
 
-            UIkit.sortable(this.fieldscontainer, {
+            UIkit.sortable(this.refs.fieldscontainer, {
 
                 dragCustomClass:'uk-form'
 
@@ -198,7 +214,7 @@
                 fields.splice(cidx, 0, fields.splice(oidx, 1)[0]);
 
                 // hack to force complete fields rebuild
-                App.$($this.fieldscontainer).css('height', App.$($this.fieldscontainer).height());
+                App.$($this.refs.fieldscontainer).css('height', App.$($this.refs.fieldscontainer).height());
 
                 $this.fields = [];
                 $this.reorder = true;
@@ -211,7 +227,7 @@
                     $this.$setValue(fields);
 
                     setTimeout(function(){
-                        $this.fieldscontainer.style.height = '';
+                        $this.refs.fieldscontainer.style.height = '';
                     }, 30)
                 }, 0);
 
@@ -227,6 +243,7 @@
                 'type'    : 'text',
                 'default' : '',
                 'info'    : '',
+                'group'   : '',
                 'localize': false,
                 'options' : {},
                 'width'   : '1-1',
@@ -243,6 +260,14 @@
 
         togglelist(e) {
             e.item.field.lst = !e.item.field.lst;
+        }
+
+        fromTemplate(template) {
+
+            if (template && Array.isArray(template.fields) && template.fields.length) {
+                this.fields = template.fields;
+                $this.$setValue(this.fields);
+            }
         }
 
     </script>

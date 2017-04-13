@@ -1,15 +1,15 @@
-/*! UIkit 2.27.1 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.27.2 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(addon) {
 
     var component;
 
-    if (window.UIkit) {
-        component = addon(UIkit);
+    if (window.UIkit2) {
+        component = addon(UIkit2);
     }
 
     if (typeof define == 'function' && define.amd) {
         define('uikit-slideshow', ['uikit'], function() {
-            return component || addon(UIkit);
+            return component || addon(UIkit2);
         });
     }
 
@@ -145,7 +145,7 @@
             });
 
             this.on('display.uk.check', function(){
-                if ($this.element.is(":visible")) {
+                if ($this.element.is(':visible')) {
 
                     $this.resize();
 
@@ -157,7 +157,7 @@
             });
 
             UI.domObserve(this.element, function(e) {
-                if ($this.container.children(':not([data-slide])').length) {
+                if ($this.container.children(':not([data-slideshow-slide])').not('.uk-slideshow-ghost').length) {
                     $this.update(true);
                 }
             });
@@ -279,7 +279,7 @@
                 }
 
                 slide.data('processed', ++processed);
-                slide.attr('data-slide', type);
+                slide.attr('data-slideshow-slide', type);
             });
 
             if (processed) {

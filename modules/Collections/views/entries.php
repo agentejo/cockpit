@@ -1,11 +1,20 @@
 
+@if($collection['color'])
+<style>
+    .app-header { border-top: 8px {{ $collection['color'] }} solid; }
+</style>
+@endif
+
+
 <div>
+
     <ul class="uk-breadcrumb">
         <li><a href="@route('/collections')">@lang('Collections')</a></li>
         <li class="uk-active" data-uk-dropdown="mode:'hover', delay:300">
 
             <a><i class="uk-icon-bars"></i> {{ @$collection['label'] ? $collection['label']:$collection['name'] }}</a>
 
+            @if($app->module('collections')->hasaccess($collection['name'], 'collection_edit'))
             <div class="uk-dropdown">
                 <ul class="uk-nav uk-nav-dropdown">
                     <li class="uk-nav-header">@lang('Actions')</li>
@@ -15,26 +24,22 @@
                     <li class="uk-text-truncate"><a href="@route('/collections/import/collection/'.$collection['name'])">@lang('Import entries')</a></li>
                 </ul>
             </div>
+            @endif
 
         </li>
     </ul>
 
 </div>
 
-@if(isset($collection['color']) && $collection['color'])
-<style>
-    .app-header { border-top: 8px {{ $collection['color'] }} solid; }
-</style>
-@endif
+<div class="uk-margin uk-text-center uk-text-muted">
 
-@if(isset($collection['description']) && $collection['description'])
-<div class="uk-text-muted uk-panel-box">
-    <div class="uk-grid uk-grid-small">
-        <div><i class="uk-icon-info-circle"></i></div>
-        <div class="uk-flex-item-1">{{ $collection['description'] }}</div>
+    <img class="uk-svg-adjust" src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="50" alt="icon" data-uk-svg>
+    @if($collection['description'])
+    <div class="uk-container-center uk-margin-top uk-width-medium-1-2">
+        {{ $collection['description'] }}
     </div>
+    @endif
 </div>
-@endif
 
 <div class="uk-margin-top" riot-view>
 
@@ -53,15 +58,9 @@
 
         </div>
 
-        <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ !loading && !entries.length && !filter }">
+        <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-center uk-flex-middle" if="{ !loading && !entries.length && !filter }">
 
             <div class="uk-animation-fade">
-
-                <p class="uk-text-xlarge">
-                    <i class="uk-icon-list"></i>
-                </p>
-
-                <hr>
 
                 <span class="uk-text-large uk-text-muted">@lang('No entries'). <a href="@route('/collections/entry/'.$collection['name'])">@lang('Create an entry').</a></span>
 
@@ -76,7 +75,7 @@
                 <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted">
 
                     <i class="uk-icon-search"></i>
-                    <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" name="txtfilter" placeholder="@lang('Filter items...')" onchange="{ updatefilter }">
+                    <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="@lang('Filter items...')" onchange="{ updatefilter }">
 
                 </div>
             </div>
@@ -84,17 +83,20 @@
 
             <div class="uk-float-right">
 
-                <a class="uk-button uk-button-large uk-button-danger uk-animation-fade" onclick="{ removeselected }" if="{ selected.length }">
+                @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
+                <a class="uk-button uk-button-large uk-button-danger uk-animation-fade uk-margin-small-right" onclick="{ removeselected }" if="{ selected.length }">
                     @lang('Delete') <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
                 </a>
+                @endif
 
+                @if($app->module('collections')->hasaccess($collection['name'], 'entries_create'))
                 <a class="uk-button uk-button-large uk-button-primary" href="@route('/collections/entry/'.$collection['name'])"><i class="uk-icon-plus-circle uk-icon-justify"></i> @lang('Entry')</a>
-
+                @endif
             </div>
         </div>
 
 
-        <div class="uk-margin-top" if="{ !loading && (entries.length || filter) }">
+        <div class="uk-margin-top" show="{ !loading && (entries.length || filter) }">
 
             @render('collections:views/partials/entries'.($collection['sortable'] ? '.sortable':'').'.php', compact('collection'))
 
@@ -106,6 +108,21 @@
     <script type="view/script">
 
         App.Utils.renderer.collectionlink = function(v) {
+
+            if (Array.isArray(v)) {
+                var vals = [];
+
+                v.forEach(function(val) {
+                    vals.push(val.display ? val.display: App.Utils.renderer.default(val));
+                });
+
+                if (vals.length > 1) {
+                    return '<span class="uk-badge" title="'+vals.join(', ')+'" data-uk-tooltip>'+vals.length+'</span>';
+                }
+
+                return vals[0];
+            }
+
             return v.display ? v.display: App.Utils.renderer.default(v);
         };
 
@@ -143,40 +160,43 @@
                 $this.update();
             });
 
-
-            if (this.collection.sortable) {
-
-                this.sort = {'_order': 1};
-
-                UIkit.sortable(this.sortableroot, {
-
-                    animation: false
-
-                }).element.on("change.uk.sortable", function(e, sortable, ele){
-
-                    if (App.$(e.target).is(':input')) return;
-
-                    var updates = [];
-
-                    App.$($this.sortableroot).children().each(function(idx) {
-
-                        updates.push({'_id':this.getAttribute('data-id'),'_order':idx});
-
-                    });
-
-                    if (updates.length) {
-
-                        App.callmodule('collections:save',[$this.collection.name, updates]).then(function(){
-                            App.ui.notify("Entries reordered", "success");
-                        });
-                    }
-
-                });
+            if (this.collection.sortable && this.refs.sortableroot) {
+                this.initSortable();
             }
 
             this.load();
 
         });
+
+        initSortable() {
+
+            this.sort = {'_order': 1};
+
+            UIkit.sortable(this.refs.sortableroot, {
+
+                animation: false
+
+            }).element.on("change.uk.sortable", function(e, sortable, ele){
+
+                if (App.$(e.target).is(':input')) return;
+
+                var updates = [];
+
+                App.$($this.refs.sortableroot).children().each(function(idx) {
+
+                    updates.push({'_id':this.getAttribute('data-id'),'_order':idx});
+
+                });
+
+                if (updates.length) {
+
+                    App.callmodule('collections:save',[$this.collection.name, updates]).then(function(){
+                        App.ui.notify("Entries reordered", "success");
+                    });
+                }
+
+            });
+        }
 
         remove(e, entry, idx) {
 
@@ -185,7 +205,7 @@
 
             App.ui.confirm("Are you sure?", function() {
 
-                App.callmodule('collections:remove', [this.collection.name, {'_id':entry._id}]).then(function(data) {
+                App.request('/collections/delete_entries/'+$this.collection.name, {filter: {'_id':entry._id}}).then(function(data) {
 
                     App.ui.notify("Entry removed", "success");
 
@@ -218,7 +238,7 @@
                         yepp = ($this.selected.indexOf(entry._id) === -1);
 
                         if (!yepp) {
-                            promises.push(App.callmodule('collections:remove', [$this.collection.name, {'_id':entry._id}]));
+                            promises.push(App.request('/collections/delete_entries/'+$this.collection.name, {filter: {'_id':entry._id}}));
                         }
 
                         return yepp;
@@ -346,68 +366,7 @@
 
             var load = this.filter ? true:false;
 
-            this.filter = null;
-
-
-            if (this.txtfilter.value) {
-
-                var filter       = this.txtfilter.value,
-                    criterias    = [],
-                    allowedtypes = ['text','longtext','boolean','select','html','wysiwyg','markdown','code'],
-                    criteria;
-
-                if (App.Utils.str2json('{'+filter+'}')) {
-
-                    filter = App.Utils.str2json('{'+filter+'}');
-
-                    var key, field;
-
-                    for (key in filter) {
-
-                        field = this.fieldsidx[key] || {};
-
-                        if (allowedtypes.indexOf(field.type) !== -1) {
-
-                            criteria = {};
-                            criteria[key] = field.type == 'boolean' ? filter[key]: {'$regex':filter[key]};
-                            criterias.push(criteria);
-                        }
-                    }
-
-                    if (criterias.length) {
-                        this.filter = {'$and':criterias};
-                    }
-
-                } else {
-
-                    this.collection.fields.forEach(function(field){
-
-                       if (field.type != 'boolean' && allowedtypes.indexOf(field.type) !== -1) {
-                           criteria = {};
-                           criteria[field.name] = {'$regex':filter};
-                           criterias.push(criteria);
-                       }
-
-                       if (field.type=='collectionlink') {
-                           criteria = {};
-                           criteria[field.name+'.display'] = {'$regex':filter};
-                           criterias.push(criteria);
-                       }
-
-                       if (field.type=='location') {
-                           criteria = {};
-                           criteria[field.name+'.address'] = {'$regex':filter};
-                           criterias.push(criteria);
-                       }
-
-                    });
-
-                    if (criterias.length) {
-                        this.filter = {'$or':criterias};
-                    }
-                }
-
-            }
+            this.filter = this.refs.txtfilter.value || null;
 
             if (this.filter || load) {
                 this.entries = [];
@@ -425,11 +384,11 @@
 
             delete entry._id;
 
-            App.callmodule('collections:save',[this.collection.name, entry]).then(function(data) {
+            App.request('/collections/save_entry/'+this.collection.name, {"entry": entry}).then(function(entry) {
 
-                if (data.result) {
+                if (entry) {
 
-                    $this.entries.unshift(data.result);
+                    $this.entries.unshift(entry);
                     App.ui.notify("Entry duplicated", "success");
                     $this.update();
                 }

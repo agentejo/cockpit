@@ -14,7 +14,7 @@
 
     <div if="{opts.link && collection}">
 
-        <div class="uk-alert" if="{!link || (opts.multiple && !link.length)}">
+        <div class="uk-alert" if="{!link || (link && opts.multiple && !link.length)}">
             { App.i18n.get('Nothing linked yet') }. <a onclick="{ showDialog }">{ App.i18n.get('Create link to') } { collection.label || opts.link }</a>
         </div>
 
@@ -32,7 +32,7 @@
 
         </div>
 
-        <div if="{opts.multiple && link.length}">
+        <div if="{link && opts.multiple && link.length}">
 
             <div class="uk-panel uk-panel-card uk-panel-box">
 
@@ -57,7 +57,7 @@
 
     <div class="uk-modal">
 
-        <div class="uk-modal-dialog uk-modal-dialog-large">
+        <div class="uk-modal-dialog uk-modal-dialog-large" if="{collection}">
             <a href="" class="uk-modal-close uk-close"></a>
             <h3>{ collection.label || opts.link }</h3>
 
@@ -66,7 +66,7 @@
                 <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted">
 
                     <i class="uk-icon-search"></i>
-                    <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" name="txtfilter" placeholder="{ App.i18n.get('Filter items...') }" onchange="{ updatefilter }">
+                    <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="{ App.i18n.get('Filter items...') }" onchange="{ updatefilter }">
 
                 </div>
 
@@ -140,9 +140,8 @@
 
     }.bind(this);
 
-    this.link       = null;
-    this.sort       = {'_created': -1};
-
+    this.link = null;
+    this.sort = {'_created': -1};
 
     this.$updateValue = function(value, field) {
 
@@ -163,15 +162,15 @@
 
         modal = UIkit.modal(App.$('.uk-modal', this.root));
 
-        Cockpit.callmodule('collections:collections').then(function(data){
-            collections = data.result;
+        App.request('/collections/_collections').then(function(data){
+            collections = data;
             $this.collection  = collections[opts.link] || null;
             _init();
         });
 
-        App.$(this.txtfilter).on('keydown', function(e){
+        App.$(this.root).on('keydown', 'input',function(e){
 
-            if(e.keyCode == 13) {
+            if (e.keyCode == 13) {
                 e.preventDefault();
                 e.stopPropagation();
 
@@ -188,6 +187,12 @@
     });
 
     showDialog(){
+
+        if (opts.multiple && opts.limit && this.link && this.link.length >= Number(opts.limit)) {
+            App.ui.notify('Maximum amount of items reached');
+            return;
+        }
+
         modal.show();
         this.load();
     }
@@ -195,9 +200,18 @@
     linkItem(e) {
 
         var _entry = e.item.entry;
-        var entry = {_id:_entry._id, display: _entry[opts.display] || _entry[this.collection.fields[0].name] || 'n/a'};
+        var entry = {
+            _id: _entry._id, 
+            link: this.collection.name, 
+            display: _entry[opts.display] || _entry[this.collection.fields[0].name] || 'n/a'
+        };
 
         if (opts.multiple) {
+
+            if (!this.link) {
+                this.link = [];
+            }
+
             this.link.push(entry);
         } else {
             this.link = entry;
@@ -241,12 +255,12 @@
 
         this.loading = true;
 
-        return App.callmodule('collections:find', [this.collection.name, options]).then(function(data){
+        return App.request('/collections/_find', {collection:this.collection.name, options: options}).then(function(data){
 
-            this.entries = this.entries.concat(data.result);
+            this.entries = this.entries.concat(data);
 
             this.ready    = true;
-            this.loadmore = data.result.length && data.result.length == limit;
+            this.loadmore = data.length && data.length == limit;
 
             this.loading = false;
 
@@ -261,9 +275,9 @@
 
         this.filter = null;
 
-        if (this.txtfilter.value) {
+        if (this.refs.txtfilter.value) {
 
-            var filter       = this.txtfilter.value,
+            var filter       = this.refs.txtfilter.value,
                 criterias    = [],
                 allowedtypes = ['text','longtext','boolean','select','html','wysiwyg','markdown','code'],
                 criteria;

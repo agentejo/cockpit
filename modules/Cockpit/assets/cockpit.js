@@ -19,7 +19,7 @@
             }
 
             args = args || [];
-            acl  = acl || 'manage.'+module;
+            acl  = acl || 'manage';
 
             if (!Array.isArray(args)) args = [args];
 
@@ -79,7 +79,8 @@
                         Object.keys(s.paths).forEach(function(path) {
 
                             if (options.pattern == '*' || App.Utils.fnmatch(options.pattern, path)) {
-                                selected.push(path);
+
+                                selected.push(s.paths[path].rel_site_path);
                             }
                         });
                     }

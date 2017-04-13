@@ -3,7 +3,14 @@
     <div class="uk-panel-box uk-panel-card">
 
         <div class="uk-panel-box-header uk-flex">
-            <strong class="uk-panel-box-header-title uk-flex-item-1">@lang('Forms')</strong>
+            <strong class="uk-panel-box-header-title uk-flex-item-1">
+                @lang('Forms')
+
+                @hasaccess?('forms', 'create')
+                <a href="@route('/forms/form')" class="uk-icon-plus uk-margin-small-left" title="@lang('Create Form')" data-uk-tooltip></a>
+                @end
+            </strong>
+
             @if(count($forms))
             <span class="uk-badge uk-flex uk-flex-middle"><span>{{ count($forms) }}</span></span>
             @endif
@@ -18,11 +25,7 @@
                     <li>
                         <a href="@route('/forms/entries/'.$form['name'])">
 
-                            @if(isset($form['color']) && $form['color'])
-                            <i class="uk-icon-justify uk-icon-inbox" style="color:{{ $form['color'] }}"></i>
-                            @else
-                            <i class="uk-icon-justify uk-icon-inbox"></i>
-                            @endif
+                            <img class="uk-margin-small-right uk-svg-adjust" src="@url(isset($form['icon']) && $form['icon'] ? 'assets:app/media/icons/'.$form['icon']:'forms:icon.svg')" width="18px" alt="icon" data-uk-svg>
 
                             {{ @$form['label'] ? $form['label'] : $form['name'] }}
                         </a>
@@ -44,7 +47,11 @@
                     <img src="@url('forms:icon.svg')" width="30" height="30" alt="Forms" data-uk-svg />
                 </p>
 
-                @lang('No forms'). <a href="@route('/forms/form')">@lang('Create a form')</a>.
+                @lang('No forms'). 
+
+                @hasaccess?('forms', 'create')
+                <a href="@route('/forms/form')">@lang('Create a form')</a>.
+                @end
 
             </div>
 

@@ -21,13 +21,19 @@ class Admin extends \Lime\Helper {
         $this->user['data'] = new \ContainerArray(isset($this->user['data']) && is_array($this->user['data']) ? $this->user['data']:[]);
     }
 
-
     public function init() {
 
         // extend lexy parser
         $this->app->renderer->extend(function($content){
             return preg_replace('/(\s*)@hasaccess\?\((.+?)\)/', '$1<?php if ($app->module("cockpit")->hasaccess($2)) { ?>', $content);
         });
+
+        $languages = [];
+
+        foreach($this->app->retrieve('config/languages', []) as $key => $val) {
+            if (is_numeric($key)) $key = $val;
+            $languages[] = ['code'=>$key,'label'=>$val];
+        }
 
         $this->data->extend([
 
@@ -64,7 +70,7 @@ class Admin extends \Lime\Helper {
                 'user'      => $this->user,
                 'locale'    => $this->app('i18n')->locale,
                 'site_url'  => $this->app->pathToUrl('site:'),
-                'languages' => $this->app->retrieve('config/languages', []),
+                'languages' => $languages,
                 'groups'    => $this->app->helper('acl')->getGroups()
             ]
         ]);
@@ -130,5 +136,16 @@ class Admin extends \Lime\Helper {
         $this->user['data']->set($key, $value);
 
         return $this->app->module('cockpit')->updateUserOption($key, $value);
+    }
+
+    public function denyRequest($message = null) {
+
+        if ($this->app->module('cockpit')->getUser()) {
+            $this->app->response->status = 401;
+        } else {
+            $this->app->response->status = 404;
+        }
+
+        return '';
     }
 }

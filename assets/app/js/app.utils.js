@@ -50,7 +50,7 @@
         var str;
 
         if (window.moment) {
-            return window.moment(date).format(format || 'LL');
+            return window.moment(date).format(format || 'll');
         }
 
         if (window.Intl && Intl.DateTimeFormat) {
@@ -64,23 +64,19 @@
 
     App.Utils.count = function(value) {
 
-        var length = 0, key;
+        if (!value) {
+            return 0;
+        }
 
         if (App.Utils.isObject(value)) {
-            for (key in value) {
-                if (value.hasOwnProperty(key) && !(key.charAt(0) === '$')) {
-                    length++;
-                }
-            }
-
-            return length;
+            return Object.keys(value).length;
         }
 
         if (App.Utils.isString(value) || Array.isArray(value)) {
             return value.length;
         }
 
-        return length;
+        return 0;
     };
 
     // Unix filename pattern matching *.jpg
@@ -239,6 +235,30 @@
         return v && v.path ? '<a href="'+encodeURI(SITE_URL+'/'+v.path)+'" data-uk-lightbox title="'+App.i18n.get('Preview')+'"><i class="uk-icon-image"></i></a>' : App.Utils.renderer.default(v);
     };
 
+    App.Utils.renderer.asset = function(v) {
+
+        if (v && v.mime) {
+            if (v.mime.match(/^image\//)) {
+
+                var id = 'img'+Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);;
+
+                App.request('/cockpit/utils/thumb_url', {src:ASSETS_URL+v.path,w:30,h:30}, 'text').then(function(url){
+
+                    App.$('#'+id).attr('src', url);
+                
+                }).catch(function(e){
+                    // todo
+                });
+
+                return '<img id="'+id+'" width="20" height="20">';
+            }
+
+            return '<span class="uk-badge">'+v.mime+'</span>';
+        }
+
+        return App.Utils.renderer.default(v);
+    };
+
     App.Utils.renderer.gallery = function(v) {
         return Array.isArray(Array.isArray(v)) ? v.length+' '+App.i18n.get('Image(s)') : App.Utils.renderer.default(v);
     };
@@ -267,6 +287,20 @@
 
     App.Utils.renderer.html = App.Utils.renderer.code = function(v) {
         return v ? '<i class="uk-icon-code" title="Code..." data-uk-tooltip></i>':null;
+    };
+
+    App.Utils.renderer.repeater = function(v) {
+        var cnt = Array.isArray(v) ? v.length : 0;
+        return '<span class="uk-badge">'+(cnt+(cnt ==1 ? ' Item' : ' Items'))+'</span>';
+    };
+
+    App.Utils.renderer.tags = App.Utils.renderer.multipleselect = function(v) {
+
+        if (Array.isArray(v) && v.length > 1) {
+            return '<span class="uk-badge" title="'+v.join(', ')+'" data-uk-tooltip>'+v.length+'</span>';
+        }
+
+        return Array.isArray(v) ? v.join(', ') : App.Utils.renderer.default(v);
     };
 
 
@@ -339,6 +373,32 @@
         return multiline;
 
     })();
+
+    App.Utils.generateToken = function(bits, base) {
+        
+        if (!base) base = 16;
+        if (bits === undefined) bits = 128;
+        if (bits <= 0) return '0';
+        var digits = Math.log(Math.pow(2, bits)) / Math.log(base);
+        for (var i = 2; digits === Infinity; i *= 2) {
+            digits = Math.log(Math.pow(2, bits / i)) / Math.log(base) * i;
+        }
+        var rem = digits - Math.floor(digits), res = '';
+        for (var i = 0; i < Math.floor(digits); i++) {
+            var x = Math.floor(Math.random() * base).toString(base);
+            res = x + res;
+        }
+        if (rem) {
+            var b = Math.pow(base, rem);
+            var x = Math.floor(Math.random() * b).toString(base);
+            res = x + res;
+        }
+        var parsed = parseInt(res, base);
+        if (parsed !== Infinity && parsed >= Math.pow(2, bits)) {
+            return hat(bits, base)
+        }
+        else return res;
+    };
 
 
 })(App, riot);

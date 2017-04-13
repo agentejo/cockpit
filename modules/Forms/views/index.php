@@ -13,7 +13,7 @@
             <div class="uk-form-icon uk-form uk-text-muted">
 
                 <i class="uk-icon-filter"></i>
-                <input class="uk-form-large uk-form-blank" type="text" name="txtfilter" placeholder="@lang('Filter forms...')" onkeyup="{ updatefilter }">
+                <input class="uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="@lang('Filter forms...')" onkeyup="{ updatefilter }">
 
             </div>
 
@@ -40,17 +40,26 @@
         </div>
 
 
-        <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-margin-top">
+        <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4 uk-margin-top">
 
-            <div each="{ form, meta in forms }" if="{ parent.infilter(meta) }">
+            <div each="{ meta, form in forms }" show="{ infilter(meta) }">
 
                 <div class="uk-panel uk-panel-box uk-panel-card">
+
+                    <div class="uk-panel-teaser uk-position-relative">
+                        <canvas width="600" height="350"></canvas>
+                        <a href="@route('/forms/entries')/{form}" class="uk-position-cover uk-flex uk-flex-middle uk-flex-center">
+                            <div class="uk-width-1-4 uk-svg-adjust" style="color:{ (meta.color) }">
+                                <img riot-src="{ meta.icon ? '@url('assets:app/media/icons/')'+meta.icon : '@url('forms:icon.svg')'}" alt="icon" data-uk-svg>
+                            </div>
+                        </a>
+                    </div>
 
                     <div class="uk-grid uk-grid-small">
 
                         <div data-uk-dropdown="delay:300">
 
-                            <a class="uk-icon-cog" style="color:{ (meta.color) }"></a>
+                            <a class="uk-icon-cog" style="color:{ (meta.color) }" href="@route('/forms/form')/{ form }"></a>
 
                             <div class="uk-dropdown">
                                 <ul class="uk-nav uk-nav-dropdown">
@@ -65,10 +74,10 @@
                             </div>
                         </div>
 
-                        <a class="uk-text-bold uk-flex-item-1 uk-link-muted" href="@route('/forms/entries')/{form}">{ meta.label || form }</a>
+                        <a class="uk-text-bold uk-flex-item-1 uk-text-center uk-link-muted" href="@route('/forms/entries')/{form}">{ meta.label || form }</a>
 
                         <div>
-                            <span class="uk-badge">{ meta.itemsCount }</span>
+                            <span class="uk-badge" style="background-color:{ (meta.color) }">{ meta.itemsCount }</span>
                         </div>
                     </div>
 
@@ -122,11 +131,11 @@
 
         infilter(form, value, name, label) {
 
-            if (!this.txtfilter.value) {
+            if (!this.refs.txtfilter.value) {
                 return true;
             }
 
-            value = this.txtfilter.value.toLowerCase();
+            value = this.refs.txtfilter.value.toLowerCase();
             name  = [form.name.toLowerCase(), form.label.toLowerCase()].join(' ');
 
             return name.indexOf(value) !== -1;

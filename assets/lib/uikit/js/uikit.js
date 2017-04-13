@@ -1,11 +1,11 @@
-/*! UIkit 2.27.1 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.27.2 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(core) {
 
     if (typeof define == 'function' && define.amd) { // AMD
 
         define('uikit', function(){
 
-            var uikit = window.UIkit || core(window, window.jQuery, window.document);
+            var uikit = window.UIkit2 || core(window, window.jQuery, window.document);
 
             uikit.load = function(res, req, onload, config) {
 
@@ -30,21 +30,20 @@
     }
 
     if (!window.jQuery) {
-        throw new Error('UIkit requires jQuery');
+        throw new Error('UIkit 2.x requires jQuery');
     }
 
-    if (window && window.jQuery) {
+    if (window && window.jQuery && !window.UIkit2) {
         core(window, window.jQuery, window.document);
     }
-
 
 })(function(global, $, doc) {
 
     "use strict";
 
-    var UI = {}, _UI = global.UIkit ? Object.create(global.UIkit) : undefined;
+    var UI = {}, _UI = global.UIkit || undefined;
 
-    UI.version = '2.27.1';
+    UI.version = '2.27.2';
 
     UI.noConflict = function() {
         // restore UIkit version
@@ -57,9 +56,11 @@
         return UI;
     };
 
-    UI.prefix = function(str) {
-        return str;
-    };
+    global.UIkit2 = UI;
+
+    if (!_UI) {
+        global.UIkit = UI;
+    }
 
     // cache jQuery
     UI.$ = $;
@@ -408,8 +409,6 @@
     UI.Utils.events       = {};
     UI.Utils.events.click = UI.support.touch ? 'tap' : 'click';
 
-    global.UIkit = UI;
-
     // deprecated
 
     UI.fn = function(command, options) {
@@ -435,7 +434,11 @@
 
     UI.components    = {};
 
-    UI.component = function(name, def) {
+    UI.component = function(name, def, override) {
+
+        if (UI.components[name] && !override) {
+            return UI.components[name];
+        }
 
         var fn = function(element, options) {
 
@@ -903,7 +906,7 @@
         longTapTimeout = setTimeout(longTap, longTapDelay);
 
         // adds the current touch contact for IE gesture recognition
-        if (gesture && ( e.type == 'MSPointerDown' || e.type == 'pointerdown' || e.type == 'touchstart' ) ) {
+        if (e.originalEvent && e.originalEvent.pointerId && gesture && ( e.type == 'MSPointerDown' || e.type == 'pointerdown' || e.type == 'touchstart' ) ) {
           gesture.addPointer(e.originalEvent.pointerId);
         }
 
@@ -1327,7 +1330,7 @@
         return val;
     }
 
-})(UIkit);
+})(UIkit2);
 
 (function(UI) {
 
@@ -1389,7 +1392,7 @@
         UI.$.easing.easeOutExpo = function(x, t, b, c, d) { return (t == d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b; };
     }
 
-})(UIkit);
+})(UIkit2);
 
 (function(UI) {
 
@@ -1598,7 +1601,7 @@
         }
     });
 
-})(UIkit);
+})(UIkit2);
 
 (function(UI){
 
@@ -1722,7 +1725,7 @@
         }
     });
 
-})(UIkit);
+})(UIkit2);
 
 (function(UI) {
 
@@ -1788,7 +1791,7 @@
 
     });
 
-})(UIkit);
+})(UIkit2);
 
 (function(UI) {
 
@@ -1944,7 +1947,7 @@
         }
     });
 
-})(UIkit);
+})(UIkit2);
 
 (function(UI) {
 
@@ -2017,7 +2020,7 @@
             var triggerevent = UI.support.touch ? 'click' : 'mouseenter';
 
             // init code
-            UI.$html.on(triggerevent+'.dropdown.uikit focus', '[data-uk-dropdown]', function(e) {
+            UI.$html.on(triggerevent+'.dropdown.uikit focus pointerdown', '[data-uk-dropdown]', function(e) {
 
                 var ele = UI.$(this);
 
@@ -2025,11 +2028,11 @@
 
                     var dropdown = UI.dropdown(ele, UI.Utils.options(ele.attr('data-uk-dropdown')));
 
-                    if (triggerevent=='click' || (triggerevent=='mouseenter' && dropdown.options.mode=='hover')) {
+                    if (e.type=='click' || (e.type=='mouseenter' && dropdown.options.mode=='hover')) {
                         dropdown.element.trigger(triggerevent);
                     }
 
-                    if (dropdown.element.find(dropdown.options.dropdownSelector).length) {
+                    if (dropdown.dropdown.length) {
                         e.preventDefault();
                     }
                 }
@@ -2248,7 +2251,7 @@
             if (!this.dropdown.length) return;
 
             // reset
-            this.dropdown.removeClass('uk-dropdown-top uk-dropdown-bottom uk-dropdown-left uk-dropdown-right uk-dropdown-stack').css({
+            this.dropdown.removeClass('uk-dropdown-top uk-dropdown-bottom uk-dropdown-left uk-dropdown-right uk-dropdown-stack uk-dropdown-autoflip').css({
                 topLeft :'',
                 left :'',
                 marginLeft :'',
@@ -2315,6 +2318,7 @@
 
                         pp  = fdpos.split('-');
                         css = variants[fdpos] ? variants[fdpos] : variants['bottom-left'];
+                        dropdown.addClass('uk-dropdown-autoflip');
 
                         // check flipped
                         if (this.checkBoundary(pos.left + css.left, pos.top + css.top, width, height, boundarywidth)) {
@@ -2477,7 +2481,7 @@
         }
     }
 
-})(UIkit);
+})(UIkit2);
 
 (function(UI) {
 
@@ -2594,7 +2598,7 @@
         }
     });
 
-})(UIkit);
+})(UIkit2);
 
 (function(UI) {
 
@@ -2973,7 +2977,7 @@
                 content = UI.$('<div></div>').html(content);
         }else {
                 // unsupported data type!
-                content = UI.$('<div></div>').html('UIkit.modal Error: Unsupported data type: ' + typeof content);
+                content = UI.$('<div></div>').html('UIkit2.modal Error: Unsupported data type: ' + typeof content);
         }
 
         content.appendTo(modal.element.find('.uk-modal-dialog'));
@@ -2981,7 +2985,7 @@
         return modal;
     }
 
-})(UIkit);
+})(UIkit2);
 
 (function(UI) {
 
@@ -3134,7 +3138,7 @@
         return height;
     }
 
-})(UIkit);
+})(UIkit2);
 
 (function(UI) {
 
@@ -3331,7 +3335,7 @@
 
     UI.offcanvas = Offcanvas;
 
-})(UIkit);
+})(UIkit2);
 
 (function(UI) {
 
@@ -3638,7 +3642,7 @@
         return d.promise();
     }
 
-})(UIkit);
+})(UIkit2);
 
 (function(UI) {
 
@@ -3732,7 +3736,7 @@
 
             // init UIkit components
             if (this.options.connect) {
-                
+
                 this.switcher = UI.switcher(this.element, {
                     toggle    : '>li:not(.uk-tab-responsive)',
                     connect   : this.options.connect,
@@ -3792,7 +3796,8 @@
 
                         if (!item.hasClass('uk-disabled')) {
 
-                            clone = item[0].outerHTML.replace('<a ', '<a data-index="'+i+'" ');
+                            clone = UI.$(item[0].outerHTML);
+                            clone.find('a').data('index', i);
 
                             this.responsivetab.lst.append(clone);
                         }
@@ -3806,7 +3811,7 @@
         }
     });
 
-})(UIkit);
+})(UIkit2);
 
 (function(UI){
 
@@ -3893,4 +3898,4 @@
         }
     });
 
-})(UIkit);
+})(UIkit2);

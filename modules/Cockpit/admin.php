@@ -11,54 +11,6 @@ include(__DIR__.'/Helper/Admin.php');
 $app->helpers['admin']  = 'Cockpit\\Helper\\Admin';
 
 
-// ACL
-$app('acl')->addResource('cockpit', [
-    'manage.backups',
-    'manage.media',
-]);
-
-
-// init acl groups + permissions + settings
-
-$app('acl')->addGroup('admin', true);
-
-if ($user = $app->module('cockpit')->getUser()) {
-
-    $aclsettings = $app->retrieve('config/acl', []);
-
-    /*
-    acl:
-        author:
-            $admin: false
-            $vars:
-                mediapath: /upload
-            cockpit:
-                manage.media: true
-                manage.backups: true
-
-    */
-
-    foreach ($aclsettings as $group => $settings) {
-
-        $isSuperAdmin = $settings === true || (isset($settings['$admin']) && $settings['$admin']);
-        $vars         = isset($settings['$vars']) ? $settings['$vars'] : [];
-
-        $app('acl')->addGroup($group, $isSuperAdmin, $vars);
-
-        if (!$isSuperAdmin && is_array($settings)) {
-
-            foreach ($settings as $resource => $actions) {
-
-                if ($resource == '$vars' || $resource == '$admin') continue;
-
-                foreach ((array)$actions as $action => $allow) {
-                    if ($allow) $app('acl')->allow($group, $resource, $action);
-                }
-            }
-        }
-    }
-}
-
 // init + load i18n
 $app('i18n')->locale = 'en';
 
@@ -162,7 +114,7 @@ $app->on('admin.init', function() {
         $this["user"] = $this->module('cockpit')->getUser();
         return $this->view('cockpit:views/base/finder.php');
 
-    }, $this->module("cockpit")->hasaccess('cockpit', 'manage.media'));
+    }, $this->module("cockpit")->hasaccess('cockpit', 'finder'));
 
 }, 0);
 
@@ -173,7 +125,7 @@ $app->on('admin.init', function() {
 
 $app->on('cockpit.search', function($search, $list) {
 
-    if (!$this->module('cockpit')->userInGroup('admin')) {
+    if (!$this->module('cockpit')->hasaccess('cockpit', 'accounts')) {
         return;
     }
 
@@ -230,6 +182,17 @@ $app->on("after", function() {
             }
 
             $this->trigger("cockpit.request.error", ['500']);
+            break;
+
+        case 401:
+
+            if ($this->req_is('ajax')) {
+                $this->response->body = '{"error": "401", "message":"Unauthorized"}';
+            } else {
+                $this->response->body = $this->view("cockpit:views/errors/401.php");
+            }
+
+            $this->trigger("cockpit.request.error", ['401']);
             break;
 
         case 404:

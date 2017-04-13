@@ -1,14 +1,15 @@
 <?php
 
-// ACL
-$app("acl")->addResource("collections", ['manage.collections']);
-
-
 $app->on('admin.init', function() {
 
     $this->helper('admin')->addAssets('collections:assets/field-collectionlink.tag');
 
-    if (!$this->module('cockpit')->hasaccess('collections', ['manage.collections'])) {
+    if (!$this->module('cockpit')->getGroupRights('collections') && !$this->module('collections')->getCollectionsInGroup()) {
+
+        $this->bind('/collections/*', function() {
+            return $this('admin')->denyRequest();
+        });
+
         return;
     }
 
@@ -29,7 +30,7 @@ $app->on('admin.init', function() {
      */
     $this->on('cockpit.search', function($search, $list) {
 
-        foreach ($this->module('collections')->collections() as $collection => $meta) {
+        foreach ($this->module('collections')->getCollectionsInGroup() as $collection => $meta) {
 
             if (stripos($collection, $search)!==false || stripos($meta['label'], $search)!==false) {
 
@@ -44,7 +45,7 @@ $app->on('admin.init', function() {
 
     $this->on('cockpit.menu.aside', function() {
 
-        $cols        = $this->module('collections')->collections();
+        $cols        = $this->module('collections')->getCollectionsInGroup();
         $collections = [];
 
         foreach($cols as $collection) {
@@ -59,7 +60,7 @@ $app->on('admin.init', function() {
     // dashboard widgets
     $this->on("admin.dashboard.widgets", function($widgets) {
 
-        $collections = $this->module("collections")->collections(true);
+        $collections = $this->module("collections")->getCollectionsInGroup(null, true);
 
         $widgets[] = [
             "name"    => "collections",

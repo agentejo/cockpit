@@ -1,4 +1,4 @@
-/*! UIkit 2.27.1 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.27.2 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(UI) {
 
     "use strict";
@@ -91,7 +91,7 @@
 
             // init UIkit components
             if (this.options.connect) {
-                
+
                 this.switcher = UI.switcher(this.element, {
                     toggle    : '>li:not(.uk-tab-responsive)',
                     connect   : this.options.connect,
@@ -151,7 +151,8 @@
 
                         if (!item.hasClass('uk-disabled')) {
 
-                            clone = item[0].outerHTML.replace('<a ', '<a data-index="'+i+'" ');
+                            clone = UI.$(item[0].outerHTML);
+                            clone.find('a').data('index', i);
 
                             this.responsivetab.lst.append(clone);
                         }
@@ -165,4 +166,4 @@
         }
     });
 
-})(UIkit);
+})(UIkit2);

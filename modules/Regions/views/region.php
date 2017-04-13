@@ -10,33 +10,55 @@
 
     <form class="uk-form" onsubmit="{ submit }">
 
-        <div class="uk-grid uk-grid-divider">
+        <div class="uk-grid">
 
             <div class="uk-width-medium-1-4">
 
-               <div class="uk-margin">
-                   <label class="uk-text-small">@lang('Name')</label>
-                   <input class="uk-width-1-1 uk-form-large" type="text" name="name" bind="region.name" pattern="[a-zA-Z0-9_]+" required>
-                   <p class="uk-text-small uk-text-muted" if="{!region._id}">
-                       @lang('Only alpha nummeric value is allowed')
-                   </p>
-               </div>
+                <div class="uk-panel uk-panel-box uk-panel-card">
 
-               <div class="uk-margin">
-                   <label class="uk-text-small">@lang('Label')</label>
-                   <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="region.label">
-               </div>
-
-               <div class="uk-margin">
-                   <label class="uk-text-small">@lang('Color')</label>
-                   <div class="uk-margin-small-top">
-                       <field-colortag bind="region.color" title="@lang('Color')" size="20px"></field-colortag>
+                   <div class="uk-margin">
+                       <label class="uk-text-small">@lang('Name')</label>
+                       <input class="uk-width-1-1 uk-form-large" type="text" ref="name" bind="region.name" pattern="[a-zA-Z0-9_]+" required>
+                       <p class="uk-text-small uk-text-muted" if="{!region._id}">
+                           @lang('Only alpha nummeric value is allowed')
+                       </p>
                    </div>
-               </div>
 
-               <div class="uk-grid-margin">
-                   <label class="uk-text-small">@lang('Description')</label>
-                   <textarea class="uk-width-1-1 uk-form-large" name="description" bind="region.description" rows="5"></textarea>
+                   <div class="uk-margin">
+                       <label class="uk-text-small">@lang('Label')</label>
+                       <input class="uk-width-1-1 uk-form-large" type="text" ref="label" bind="region.label">
+                   </div>
+
+                   <div class="uk-margin">
+                       <label class="uk-text-small">@lang('Icon')</label>
+                       <div data-uk-dropdown="pos:'right-center', mode:'click'">
+                           <a><img class="uk-display-block uk-margin uk-container-center" riot-src="{ region.icon ? '@url('assets:app/media/icons/')'+region.icon : '@url('regions:icon.svg')'}" alt="icon" width="100"></a>
+                           <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-width-2">
+                                <div class="uk-grid uk-grid-gutter">
+                                    <div>
+                                        <a class="uk-dropdown-close" onclick="{ selectIcon }" icon=""><img src="@url('regions:icon.svg')" width="30" icon=""></a>
+                                    </div>
+                                    @foreach($app->helper("fs")->ls('*.svg', 'assets:app/media/icons') as $icon)
+                                    <div>
+                                        <a class="uk-dropdown-close" onclick="{ selectIcon }" icon="{{ $icon->getFilename() }}"><img src="@url($icon->getRealPath())" width="30" icon="{{ $icon->getFilename() }}"></a>
+                                    </div>
+                                    @endforeach
+                                </div>
+                           </div>
+                       </div>
+                   </div>
+
+                   <div class="uk-margin">
+                       <label class="uk-text-small">@lang('Color')</label>
+                       <div class="uk-margin-small-top">
+                           <field-colortag bind="region.color" title="@lang('Color')" size="20px"></field-colortag>
+                       </div>
+                   </div>
+
+                   <div class="uk-grid-margin">
+                       <label class="uk-text-small">@lang('Description')</label>
+                       <textarea class="uk-width-1-1 uk-form-large" name="description" bind="region.description" rows="5"></textarea>
+                   </div>
                </div>
 
             </div>
@@ -46,21 +68,52 @@
                 <div class="uk-form-row">
 
                     <ul class="uk-tab uk-flex uk-flex-right uk-margin">
-                        <li class="{ view==='template' ? 'uk-active':'' }"><a onclick="{ toggleview }">Template</a></li>
-                        <li class="{ view==='fields' ? 'uk-active':'' }"><a onclick="{ toggleview }">Fields</a></li>
+                        <li riot-class="{ view==='template' ? 'uk-active':'' }" data-view="template"><a onclick="{ toggleview }">@lang('Template')</a></li>
+                        <li riot-class="{ view==='fields' ? 'uk-active':'' }" data-view="fields"><a onclick="{ toggleview }">@lang('Fields')</a></li>
+                        <li riot-class="{ view==='acl' ? 'uk-active':'' }" data-view="acl"><a onclick="{ toggleview }">@lang('Access')</a></li>
                     </ul>
 
-                    <div class="uk-margin-large-top" show="{ view==='fields'}">
-
-                        <h4>@lang('Fields')</h4>
+                    <div class="uk-margin-large-top" show="{ view==='fields' }">
 
                         <cp-fieldsmanager bind="region.fields"></cp-fieldsmanager>
 
                     </div>
 
-                    <div class="uk-margin-large-top" show="{ view==='template'}">
-                        <h4>@lang('Template')</h4>
+                    <div class="uk-margin-large-top" show="{ view==='template' }">
                         <field-code bind="region.template" syntax="php"></field-code>
+                    </div>
+
+                    <div class="uk-margin-large-top" show="{ view==='acl' }">
+
+                        <div class="uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" if="{!aclgroups.length}">
+                            <div class="uk-text-center uk-text-muted">
+                                <img class="uk-svg-adjust" src="@url('assets:app/media/icons/accounts.svg')" alt="icon" data-uk-svg>
+                                <p class="uk-text-large">
+                                    @lang('No groups')
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="uk-panel uk-panel-box uk-panel-space uk-panel-card uk-margin" each="{group in aclgroups}">
+
+                            <div class="uk-grid">
+                                <div class="uk-width-1-3 uk-flex uk-flex-middle uk-flex-center">
+                                    <div class="uk-text-center">
+                                        <p class="uk-text-uppercase uk-text-small">{ group }</p>
+                                        <img class="uk-text-muted uk-svg-adjust" src="@url('assets:app/media/icons/accounts.svg')" alt="icon" width="80" data-uk-svg>
+                                    </div>
+                                </div>
+                                <div class="uk-flex-item-1">
+                                    <div class="uk-margin uk-text-small">
+                                        <strong class="uk-text-uppercase">@lang('Region')</strong>
+                                        <div class="uk-margin-top"><field-boolean bind="region.acl.{group}.form" label="@lang('Form')"></field-boolean></div>
+                                        <div class="uk-margin-top"><field-boolean bind="region.acl.{group}.edit" label="@lang('Edit Region')"></field-boolean></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
 
                     <div class="uk-margin-large-top">
@@ -91,8 +144,19 @@
         this.view = 'template';
 
         this.region = {{ json_encode($region) }};
+        this.aclgroups  = {{ json_encode($aclgroups) }};
+
+        if (!this.region.acl) {
+            this.region.acl = {};
+        }
+
+        if (Array.isArray(this.region.acl)) {
+            this.region.acl = {};
+        }
 
         this.on('mount', function(){
+
+            this.trigger('update');
 
             // bind clobal command + save
             Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
@@ -107,11 +171,17 @@
 
             // lock name if saved
             if (this.region._id) {
-                this.name.disabled = true;
+                this.refs.name.disabled = true;
             }
         });
 
-        submit() {
+        selectIcon(e) {
+            this.region.icon = e.target.getAttribute('icon');
+        }
+
+        submit(e) {
+
+            if(e) e.preventDefault();
 
             var region = this.region;
 
@@ -130,8 +200,8 @@
             });
         }
 
-        toggleview() {
-            this.view = this.view=='template' ? 'fields':'template';
+        toggleview(e) {
+            this.view = e.target.parentElement.getAttribute('data-view');
         }
 
     </script>

@@ -8,7 +8,7 @@
 
     </style>
 
-    <codemirror name="codemirror" syntx="{ opts.syntax || 'text' }"></codemirror>
+    <codemirror ref="codemirror" syntax="{ opts.syntax || 'text' }"></codemirror>
 
     <script>
 
@@ -16,15 +16,6 @@
 
         this.value  = null;
         this._field = null;
-
-        this.ready = new Promise(function(resolve){
-
-            $this.tags.codemirror.on('ready', function(){
-                editor = $this.codemirror.editor;
-                $this.isReady = true;
-                resolve();
-            });
-        });
 
         this.$updateValue = function(value, field) {
 
@@ -43,12 +34,17 @@
 
         this.on('mount', function(){
 
-            this.ready.then(function() {
-                editor.setValue($this.value || '');
-            });
+            this.refs.codemirror.on('ready', function(){
+                editor = $this.refs.codemirror.editor;
 
-            this.codemirror.on('input', function() {
-                $this.$setValue($this.codemirror.editor.getValue(), true);
+                editor.setValue($this.value || '');
+
+                editor.on('change', function() {
+                    $this.$setValue(editor.getValue(), true);
+                });
+
+                $this.isReady = true;
+                $this.update();
             });
         });
 

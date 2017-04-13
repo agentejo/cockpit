@@ -19,6 +19,7 @@
 @form-focus-color:                              @global-color;
 @form-focus-background:                         @form-background;
 
+@form-disabled-background:                      none;
 @form-disabled-border:                          @global-border;
 @form-disabled-color:                           @global-muted-color;
 
@@ -99,4 +100,55 @@
 // Miscellaneous
 // ========================================================================
 
-.hook-form-misc() {}
+.hook-form-misc() {
+
+    .uk-form-switch {
+        display: inline-block;
+        position: relative;
+        padding-right: 3.5em;
+        height: 1em;
+    }
+
+    .uk-form-switch input[type="checkbox"] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        z-index: -2;
+        border: none;
+        outline: none;
+    }
+
+    .uk-form-switch label {
+        width: 2.5em;
+        height: 1em;
+        border-radius: 1em;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: #fff;
+        padding: 4px;
+        margin-top: -2px;
+        box-shadow: 0 0 1em rgba(0,0,0,.1);
+        transition: background .2s ease-in-out;
+        cursor: pointer;
+    }
+
+    .uk-form-switch label:after {
+        content: '';
+        width: 1em;
+        height: 1em;
+        background: red;
+        border-radius: 50%;
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        transition: all .1s linear;
+    }
+
+    .uk-form-switch input[type="checkbox"]:checked + label:after {
+        left : calc(100% - 4px);
+        background: green;
+        transform: translateX(-100%);
+    }
+}

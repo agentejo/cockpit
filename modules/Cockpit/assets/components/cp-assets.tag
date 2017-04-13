@@ -1,6 +1,6 @@
 <cp-assets>
 
-    <div class="uk-form" name="list" show="{ mode=='list' }">
+    <div class="uk-form" ref="list" show="{ mode=='list' }">
 
         <div class="uk-grid uk-grid-width-1-2">
             <div>
@@ -8,9 +8,9 @@
                     <div>
                         <div class="uk-form-select">
 
-                            <span class="uk-button uk-button-large {filtertype.value && 'uk-button-primary'} uk-text-capitalize"><i class="uk-icon-eye uk-margin-small-right"></i> { filtertype.value || 'All' }</span>
+                            <span class="uk-button uk-button-large { getRefValue('filtertype') && 'uk-button-primary'} uk-text-capitalize"><i class="uk-icon-eye uk-margin-small-right"></i> { getRefValue('filtertype') || App.i18n.get('All') }</span>
 
-                            <select name="filtertype" onchange="{ updateFilter }">
+                            <select ref="filtertype" onchange="{ updateFilter }">
                                 <option value="">All</option>
                                 <option value="image">Image</option>
                                 <option value="video">Video</option>
@@ -19,12 +19,13 @@
                                 <option value="archive">Archive</option>
                                 <option value="code">Code</option>
                             </select>
+
                         </div>
                     </div>
                     <div class="uk-flex-item-1">
                         <div class="uk-form-icon uk-display-block uk-width-1-1">
                             <i class="uk-icon-search"></i>
-                            <input class="uk-width-1-1 uk-form-large" type="text" name="filtertitle" onchange="{ updateFilter }">
+                            <input class="uk-width-1-1 uk-form-large" type="text" ref="filtertitle" onchange="{ updateFilter }">
                         </div>
                     </div>
                 </div>
@@ -47,9 +48,9 @@
             </div>
         </div>
 
-        <div name="uploadprogress" class="uk-margin uk-hidden">
+        <div ref="uploadprogress" class="uk-margin uk-hidden">
             <div class="uk-progress">
-                <div name="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div>
+                <div ref="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div>
             </div>
         </div>
 
@@ -148,12 +149,12 @@
                 <div class="uk-width-2-3">
                     <div class="uk-form-row">
                         <label class="uk-text-small uk-text-bold">{ App.i18n.get('Title') }</label>
-                        <input class="uk-width-1-1" type="text" name="assettitle" required>
+                        <input class="uk-width-1-1" type="text" ref="assettitle" required>
                     </div>
 
                     <div class="uk-form-row">
                         <label class="uk-text-small uk-text-bold">{ App.i18n.get('Description') }</label>
-                        <textarea class="uk-width-1-1" name="assetdescription"></textarea>
+                        <textarea class="uk-width-1-1" ref="assetdescription"></textarea>
                     </div>
 
                     <div class="uk-margin uk-panel uk-panel-box uk-panel-card uk-panel-space uk-text-center">
@@ -161,7 +162,7 @@
                         <cp-thumbnail src="{asset && ASSETS_URL+asset.path}" width="400" height="250" if="{ asset && asset.mime.match(/^image\//) }"></cp-thumbnail>
                     </div>
                 </div>
-                <div class="uk-width-1-3">
+                <div class="uk-width-1-3" if="{ asset }">
 
                     <div class="uk-margin">
                         <label class="uk-text-small uk-text-bold">{ App.i18n.get('Id') }</label>
@@ -211,6 +212,7 @@
         this.mode     = 'list';
         this.listmode = App.session.get('app.assets.listmode', 'list');
         this.loading  = false;
+        this.assets   = [];
         this.selected = [];
 
         // pagination
@@ -235,18 +237,18 @@
 
                         },
                         loadstart: function() {
-                            $this.uploadprogress.classList.remove('uk-hidden');
+                            $this.refs.uploadprogress.classList.remove('uk-hidden');
                         },
                         progress: function(percent) {
 
                             percent = Math.ceil(percent) + '%';
 
-                            $this.progressbar.innerHTML   = '<span>'+percent+'</span>';
-                            $this.progressbar.style.width = percent;
+                            $this.refs.progressbar.innerHTML   = '<span>'+percent+'</span>';
+                            $this.refs.progressbar.style.width = percent;
                         },
                         allcomplete: function(response) {
 
-                            $this.uploadprogress.classList.add('uk-hidden');
+                            $this.refs.uploadprogress.classList.add('uk-hidden');
 
                             if (response && response.failed && response.failed.length) {
                                 App.ui.notify("File(s) failed to uploaded.", "danger");
@@ -275,7 +277,7 @@
                 },
 
                 uploadselect = UIkit.uploadSelect(App.$('.js-upload-select', $this.root)[0], uploadSettings),
-                uploaddrop   = UIkit.uploadDrop($this.list, uploadSettings);
+                uploaddrop   = UIkit.uploadDrop($this.refs.list, uploadSettings);
 
                 UIkit.init(this.root);
             });
@@ -314,16 +316,16 @@
 
             this.filter = null;
 
-            if (this.filtertitle.value || this.filtertype.value) {
+            if (this.refs.filtertitle.value || this.refs.filtertype.value) {
                 this.filter = {};
             }
 
-            if (this.filtertitle.value) {
-                this.filter.title = {'$regex':this.filtertitle.value};
+            if (this.refs.filtertitle.value) {
+                this.filter.title = {'$regex':this.refs.filtertitle.value};
             }
 
-            if (this.filtertype.value) {
-                this.filter[this.filtertype.value] = true;
+            if (this.refs.filtertype.value) {
+                this.filter[this.refs.filtertype.value] = true;
             }
 
             this.listAssets(1);
@@ -375,8 +377,8 @@
         edit(e) {
             this.asset = e.item.asset;
             this.mode  = 'edit';
-            this.assettitle.value = this.asset.title;
-            this.assetdescription.value = this.asset.description;
+            this.refs.assettitle.value = this.asset.title;
+            this.refs.assetdescription.value = this.asset.description;
         }
 
         cancelEdit() {
@@ -388,8 +390,8 @@
 
             e.preventDefault();
 
-            this.asset.title = this.assettitle.value;
-            this.asset.description = this.assetdescription.value;
+            this.asset.title = this.refs.assettitle.value;
+            this.asset.description = this.refs.assetdescription.value;
 
             App.request('/assetsmanager/updateAsset', {asset:$this.asset}).then(function(asset) {
 
@@ -449,6 +451,10 @@
             } else {
                 return 'paperclip';
             }
+        }
+
+        getRefValue(name) {
+            return this.refs[name] && this.refs[name].value;
         }
 
 

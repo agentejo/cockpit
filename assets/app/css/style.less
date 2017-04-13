@@ -22,6 +22,11 @@
     background: @global-selected-background;
 }
 
+.uk-animation-fast {
+    -webkit-animation-duration: .35s;
+    animation-duration: .35s;
+}
+
 .app-header {
     position: relative;
     background-color: @global-background;
@@ -73,6 +78,27 @@
 
 .app-footer {
     margin: (2 * @global-margin-large) 0;
+}
+
+.material-ripple {
+    position: absolute;
+    pointer-events: none;
+    z-index: 100000;
+}
+.material-ink {
+    position: absolute;
+    background: rgba(0,0,0,.1);
+    border-radius: 50%;
+    transform: scale(0);
+}
+.material-ink.animate-ink {
+    animation: matrial-ripple .6s linear
+}
+@keyframes matrial-ripple {
+    to {
+        transform: scale(2.5);
+        opacity: 0
+    }
 }
 
 

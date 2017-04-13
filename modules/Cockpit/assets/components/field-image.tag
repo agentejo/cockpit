@@ -3,7 +3,7 @@
     <figure class="uk-display-block uk-panel uk-panel-box uk-panel-card uk-overlay uk-overlay-hover">
 
         <div class="uk-flex uk-flex-middle uk-flex-center uk-text-muted">
-            <div class="uk-width-1-1" show="{ image.path }" style="min-height:160px;background-size:contain;background-repeat:no-repeat;background-position:50% 50%;{ image.path ? 'background-image: url('+encodeURI(SITE_URL+'/'+image.path)+')':''}"></div>
+            <div class="uk-width-1-1" show="{ image.path }" riot-style="min-height:160px;background-size:contain;background-repeat:no-repeat;background-position:50% 50%;{ image.path ? 'background-image: url('+encodeURI(SITE_URL+'/'+image.path)+')':''}"></div>
             <div class="uk-width-1-1 uk-text-large" show="{ !image.path }"><i class="uk-icon-image" ></i></div>
         </div>
 
@@ -11,7 +11,7 @@
 
             <ul class="uk-subnav">
                 <li><a onclick="{ selectimage }" title="{ App.i18n.get('Select image') }" data-uk-tooltip><i class="uk-icon-image"></i></a></li>
-                <li><a onclick="{ title }" title="{ App.i18n.get('Set title') }" data-uk-tooltip><i class="uk-icon-tag"></i></a></li>
+                <li><a onclick="{ showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
                 <li><a onclick="{ remove }" title="{ App.i18n.get('Reset') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
             </ul>
 
@@ -20,15 +20,63 @@
         </figcaption>
     </figure>
 
+    <div class="uk-modal uk-sortable-nodrag" ref="modalmeta">
+        <div class="uk-modal-dialog">
+
+            <div class="uk-modal-header"><h3>{ App.i18n.get('Image Meta') }</h3></div>
+
+            <div class="uk-grid uk-grid-match uk-grid-gutter" if="{_meta}">
+
+                <div riot-class="uk-grid-margin uk-width-medium-{field.width}" each="{field, name in meta}" no-reorder>
+
+                    <div class="uk-panel">
+
+                        <label class="uk-text-bold">
+                            { field.label || name }
+                        </label>
+
+                        <div class="uk-margin uk-text-small uk-text-muted">
+                            { field.info || ' ' }
+                        </div>
+
+                        <div class="uk-margin">
+                            <cp-field type="{ field.type || 'text' }" bind="image.meta['{name}']" opts="{ field.options || {} }"></cp-field>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{ App.i18n.get('Close') }</button></div>
+
+        </div>
+    </div>
+
+
     <script>
+
+        this.on('mount', function() { this.trigger('update'); });
+        this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
+
+        riot.util.bind(this);
 
         var $this = this;
 
-        this.image = {path:'', title:''};
+        this.image = {path:'', meta:{title:''}};
+
+        this.on('mount', function() {
+
+            this.meta  = App.$.extend(opts.meta || {}, {
+                title: {
+                    type: 'text',
+                    label: 'Title'
+                }
+            });
+        });
 
         this.$updateValue = function(value, field) {
 
-            if (value && this.image !== value) {
+            if (value && JSON.stringify(this.image) !== JSON.stringify(value)) {
                 this.image = value;
                 this.update();
             }
@@ -47,16 +95,18 @@
         }
 
         remove() {
-            this.$setValue({path:'', title:''});
+            this.$setValue({path:'', title:'', meta:{title:''}});
         }
 
-        title() {
+        showMeta() {
 
-            App.ui.prompt('Title', this.image.title, function(value) {
-                $this.image.title = value;
-                $this.$setValue($this.image);
-                $this.update();
-            });
+            this._meta = this.image.meta;
+
+            setTimeout(function() {
+                UIkit.modal($this.refs.modalmeta).show().on('close.uk.modal', function(){
+                    $this._meta = null;
+                });
+            }, 50)
         }
 
     </script>

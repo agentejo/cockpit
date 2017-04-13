@@ -243,6 +243,8 @@ $this->module("forms")->extend([
     },
 ]);
 
+// ACL
+$app("acl")->addResource("forms", ['manage']);
 
 $this->bind("/api/forms/submit/:form", function($params) {
 

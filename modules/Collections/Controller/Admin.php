@@ -8,12 +8,44 @@ class Admin extends \Cockpit\AuthController {
 
     public function index() {
 
-        return $this->render('collections:views/index.php');
+        $collections = $this->module('collections')->getCollectionsInGroup(null, true);
+
+        foreach ($collections as $collection => $meta) {
+            $collections[$collection]['allowed'] = [
+                'delete' => $this->module('cockpit')->hasaccess('collections', 'delete'),
+                'create' => $this->module('cockpit')->hasaccess('collections', 'create'),
+                'edit' => $this->module('collections')->hasaccess($collection, 'collection_edit'),
+                'entries_create' => $this->module('collections')->hasaccess($collection, 'collection_create')
+            ];
+        }
+
+        return $this->render('collections:views/index.php', compact('collections'));
+    }
+
+    public function _collections() {
+        return $this->module('collections')->collections();
+    }
+
+    public function _find() {
+
+        if ($this->param('collection') && $this->param('options')) {
+            return $this->module('collections')->find($this->param('collection'), $this->param('options'));
+        }
+
+        return false;
     }
 
     public function collection($name = null) {
 
-        $collection = [ 'name'=>'', 'label' => '', 'color'=>'', 'fields'=>[], 'sortable' => false, 'in_menu' => false ];
+        if ($name && !$this->module('collections')->hasaccess($name, 'collection_edit')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        if (!$name && !$this->module('cockpit')->hasaccess('collections', 'create')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        $collection = [ 'name' => '', 'label' => '', 'color' => '', 'fields'=>[], 'acl' => new \ArrayObject, 'sortable' => false, 'in_menu' => false ];
 
         if ($name) {
 
@@ -24,10 +56,33 @@ class Admin extends \Cockpit\AuthController {
             }
         }
 
-        return $this->render('collections:views/collection.php', compact('collection'));
+        // get field templates
+        $templates = [];
+
+        foreach ($this->app->helper("fs")->ls('*.php', 'collections:fields-templates') as $file) {
+            $templates[] = include($file->getRealPath());
+        }
+
+        foreach ($this->app->module("collections")->collections() as $col) {
+            $templates[] = $col;
+        }
+
+        // acl groups
+        $aclgroups = [];
+
+        foreach ($this->app->helper("acl")->getGroups() as $group => $superAdmin) {
+
+            if (!$superAdmin) $aclgroups[] = $group;
+        }
+
+        return $this->render('collections:views/collection.php', compact('collection', 'templates', 'aclgroups'));
     }
 
     public function entries($collection) {
+
+        if (!$this->module('collections')->hasaccess($collection, 'entries_view')) {
+            return $this->helper('admin')->denyRequest();
+        }
 
         $collection = $this->module('collections')->collection($collection);
 
@@ -38,7 +93,10 @@ class Admin extends \Cockpit\AuthController {
         $count = $this->module('collections')->count($collection['name']);
 
         $collection = array_merge([
-            'sortable' => false
+            'sortable' => false,
+            'color' => '',
+            'icon' => '',
+            'description' => ''
         ], $collection);
 
         $view = 'collections:views/entries.php';
@@ -52,12 +110,27 @@ class Admin extends \Cockpit\AuthController {
 
     public function entry($collection, $id = null) {
 
+        if ($id && !$this->module('collections')->hasaccess($collection, 'entries_view')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        if (!$id && !$this->module('collections')->hasaccess($collection, 'entries_create')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
         $collection = $this->module('collections')->collection($collection);
         $entry      = new \ArrayObject([]);
 
         if (!$collection) {
             return false;
         }
+
+        $collection = array_merge([
+            'sortable' => false,
+            'color' => '',
+            'icon' => '',
+            'description' => ''
+        ], $collection);
 
         if ($id) {
 
@@ -77,9 +150,60 @@ class Admin extends \Cockpit\AuthController {
         return $this->render($view, compact('collection', 'entry'));
     }
 
+    public function save_entry($collection) {
+
+        $collection = $this->module('collections')->collection($collection);
+
+        if (!$collection) {
+            return false;
+        }
+
+        $entry = $this->param('entry', false);
+
+        if (!$entry) {
+            return false;
+        }
+
+        if (!isset($entry['_id']) && !$this->module('collections')->hasaccess($collection['name'], 'entries_create')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        if (isset($entry['_id']) && !$this->module('collections')->hasaccess($collection['name'], 'entries_edit')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        $entry = $this->module('collections')->save($collection['name'], $entry);
+
+        return $entry;
+    }
+
+    public function delete_entries($collection) {
+
+        $collection = $this->module('collections')->collection($collection);
+
+        if (!$collection) {
+            return false;
+        }
+
+        if (!$this->module('collections')->hasaccess($collection['name'], 'entries_delete')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        $filter = $this->param('filter', false);
+
+        if (!$filter) {
+            return false;
+        }
+
+        $this->module('collections')->remove($collection['name'], $filter);
+
+
+        return true;
+    }
+
     public function export($collection) {
 
-        if (!$this->app->module("cockpit")->hasaccess("collections", 'manage.collections')) {
+        if (!$this->app->module("cockpit")->hasaccess("collections", 'manage')) {
             return false;
         }
 
@@ -99,8 +223,14 @@ class Admin extends \Cockpit\AuthController {
 
         if (!$collection) return false;
 
-        $entries = $this->app->module('collections')->find($collection, $options);
-        $count   = $this->app->module('collections')->count($collection, isset($options['filter']) ? $options['filter'] : []);
+        $collection = $this->app->module('collections')->collection($collection);
+
+        if (isset($options['filter']) && is_string($options['filter'])) {
+            $options['filter'] = $this->_filter($options['filter'], $collection);
+        }
+
+        $entries = $this->app->module('collections')->find($collection['name'], $options);
+        $count   = $this->app->module('collections')->count($collection['name'], isset($options['filter']) ? $options['filter'] : []);
         $pages   = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
         $page    = 1;
 
@@ -109,5 +239,101 @@ class Admin extends \Cockpit\AuthController {
         }
 
         return compact('entries', 'count', 'pages', 'page');
+    }
+
+    protected function _filter($filter, $collection) {
+
+        if ($this->app->storage->type == 'mongolite') {
+            return $this->_filterLight($filter, $collection);
+        }
+
+        if ($this->app->storage->type == 'mongodb') {
+            return $this->_filterMongo($filter, $collection);
+        }
+
+        return null;
+
+    }
+
+    protected function _filterLight($filter, $collection) {
+
+        $allowedtypes = ['text','longtext','boolean','select','html','wysiwyg','markdown','code'];
+        $criterias    = [];
+        $_filter      = null;
+
+        foreach($collection['fields'] as $field) {
+
+            if ($field['type'] != 'boolean' && in_array($field['type'], $allowedtypes)) {
+                $criteria = [];
+                $criteria[$field['name']] = ['$regex' => $filter];
+                $criterias[] = $criteria;
+            }
+
+            if ($field['type']=='collectionlink') {
+                $criteria = [];
+                $criteria[$field['name'].'.display'] = ['$regex' => $filter];
+                $criterias[] = $criteria;
+            }
+
+            if ($field['type']=='location') {
+                $criteria = [];
+                $criteria[$field['name'].'.address'] = ['$regex' => $filter];
+                $criterias[] = $criteria;
+            }
+
+            if ($field['type']=='tags') {
+                $criteria = [];
+                $criteria[$field['name']] = ['$all' => [$filter]];
+                $criterias[] = $criteria;
+            }
+
+        }
+
+        if (count($criterias)) {
+            $_filter = ['$or' => $criterias];
+        }
+
+        return $_filter;
+    }
+
+    protected function _filterMongo($filter, $collection) {
+
+        $allowedtypes = ['text','longtext','boolean','select','html','wysiwyg','markdown','code'];
+        $criterias    = [];
+        $_filter      = null;
+
+        foreach($collection['fields'] as $field) {
+
+            if ($field['type'] != 'boolean' && in_array($field['type'], $allowedtypes)) {
+                $criteria = [];
+                $criteria[$field['name']] = ['$regex' => $filter, '$options' => 'i'];
+                $criterias[] = $criteria;
+            }
+
+            if ($field['type']=='collectionlink') {
+                $criteria = [];
+                $criteria[$field['name'].'.display'] = ['$regex' => $filter, '$options' => 'i'];
+                $criterias[] = $criteria;
+            }
+
+            if ($field['type']=='location') {
+                $criteria = [];
+                $criteria[$field['name'].'.address'] = ['$regex' => $filter, '$options' => 'i'];
+                $criterias[] = $criteria;
+            }
+
+            if ($field['type']=='tags') {
+                $criteria = [];
+                $criteria[$field['name']] = ['$all' => [$filter]];
+                $criterias[] = $criteria;
+            }
+
+        }
+
+        if (count($criterias)) {
+            $_filter = ['$or' => $criterias];
+        }
+
+        return $_filter;
     }
 }

@@ -9,6 +9,7 @@ class Utils extends \Cockpit\AuthController {
         $src    = $this->param('src', false);
         $width  = $this->param('w', null);
         $height = $this->param('h', null);
+        $mode   = $this->param('m', 'crop');
 
         if ($src) {
 
@@ -21,10 +22,10 @@ class Utils extends \Cockpit\AuthController {
 
             $options = array(
                 "rebuild"     => false,
-                "cachefolder" => "#thumbs:",
+                "cachefolder" => '#thumbs:',
                 "quality"     => 100,
                 "base64"      => false,
-                "mode"        => "crop",
+                "mode"        => $mode,
                 "domain"      => false
             );
 
@@ -70,7 +71,7 @@ class Utils extends \Cockpit\AuthController {
                 if ($rebuild || !file_exists($savepath)) {
 
                     try {
-                        $this->app->helper("image")->take($path)->{$method}($width, $height)->save($savepath, $quality);
+                        $this->app->helper("image")->take($path)->{$method}($width, $height)->toFile($savepath, null, $quality);
                     } catch(Exception $e) {
                         return $url;
                     }

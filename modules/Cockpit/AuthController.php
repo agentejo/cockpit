@@ -11,15 +11,15 @@ class AuthController extends \LimeExtra\Controller {
 
         $user = $app->module('cockpit')->getUser();
 
-        if (!$user){
+        if (!$user) {
             $app->reroute('/auth/login');
             $app->stop();
         }
 
         parent::__construct($app);
 
-        $this->user   = $app["user"] = $user;
-        $this->db     = $app->db;
+        $this->user = $app["user"] = $user;
+        $this->db   = $app->db;
 
         $controller = strtolower(str_replace('\\', '.', get_class($this)));
 

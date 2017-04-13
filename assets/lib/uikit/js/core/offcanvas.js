@@ -1,4 +1,4 @@
-/*! UIkit 2.27.1 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.27.2 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(UI) {
 
     "use strict";
@@ -194,4 +194,4 @@
 
     UI.offcanvas = Offcanvas;
 
-})(UIkit);
+})(UIkit2);

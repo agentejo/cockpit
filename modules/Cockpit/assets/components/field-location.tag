@@ -6,9 +6,9 @@
 
     <div show="{apiready}">
         <div class="uk-form uk-position-relative uk-margin-small-bottom uk-width-1-1" style="z-index:1001">
-            <input name="autocomplete" class="uk-width-1-1" placeholder="{ latlng.address || [latlng.lat, latlng.lng].join(', ') }">
+            <input ref="autocomplete" class="uk-width-1-1" placeholder="{ latlng.address || [latlng.lat, latlng.lng].join(', ') }">
         </div>
-        <div name="map" style="min-height:300px;">
+        <div ref="map" style="min-height:300px;">
             Loading map...
         </div>
    </div>
@@ -21,9 +21,9 @@
         var locale = document.documentElement.lang.toUpperCase();
 
         var loadApi = App.assets.require([
-            'https://cdn.jsdelivr.net/leaflet/1.0.0-rc.3/leaflet.css',
+            'https://cdn.jsdelivr.net/leaflet/1.0.0/leaflet.css',
             'https://cdn.jsdelivr.net/places.js/1/places.min.js',
-            'https://cdn.jsdelivr.net/leaflet/1.0.0-rc.3/leaflet.js'
+            'https://cdn.jsdelivr.net/leaflet/1.0.0/leaflet.js'
         ]);
 
         var $this = this, defaultpos = {lat:53.55909862554551, lng:9.998652343749995};
@@ -57,7 +57,7 @@
 
                 setTimeout(function(){
 
-                    var map = L.map($this.map).setView([$this.latlng.lat, $this.latlng.lng], opts.zoomlevel || 13);
+                    var map = L.map($this.refs.map).setView([$this.latlng.lat, $this.latlng.lng], opts.zoomlevel || 13);
 
                     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
                         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -72,7 +72,7 @@
                     map.addLayer(marker);
 
                     var pla = places({
-                        container: $this.autocomplete
+                        container: $this.refs.autocomplete
                     }).on('change', function(e) {
                         e.suggestion.latlng.address = e.suggestion.value;
                         $this.$setValue(e.suggestion.latlng);

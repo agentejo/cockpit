@@ -5,6 +5,7 @@ namespace MongoHybrid;
 class Client {
 
     protected $driver;
+    public $type;
 
     public function __construct($server, $options=[]) {
 
@@ -13,10 +14,12 @@ class Client {
             $cls = class_exists('\MongoClient') ? 'MongoHybrid\\MongoLegacy':'MongoHybrid\\Mongo';
 
             $this->driver = new $cls($server, $options);
+            $this->type = 'mongodb';
         }
 
         if (strpos($server, 'mongolite://')===0) {
             $this->driver = new MongoLite($server, $options);
+            $this->type = 'mongolite';
         }
     }
 

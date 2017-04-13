@@ -24,7 +24,7 @@
         var ASSETS_URL = '{{ rtrim($app->pathToUrl('#uploads:'), '/') }}';
     </script>
     <script src="@base('assets:lib/fuc.js.php')"></script>
-    {{ $app->assets($app('admin')->data->get('assets'), $app['cockpit/version']) }}
+    {{ $app->assets($app('admin')->data->get('assets'), $app['debug'] ? time() : $app['cockpit/version']) }}
 
     <script src="@route('/cockpit.i18n.data')"></script>
 
@@ -71,19 +71,17 @@
 
                                             <li class="{{ strpos($app['route'],'/assetsmanager')===0 ? 'uk-active':'' }}"><a href="@route('/assetsmanager')"><img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/assets.svg')" width="30" height="30" data-uk-svg alt="assets" /> @lang('Assets')</a></li>
 
+                                            @hasaccess?('cockpit', 'accounts')
                                             <li class="uk-nav-divider"></li>
-
-                                            @hasaccess?('cockpit', 'manage.accounts')
                                             <li class="{{ strpos($app['route'],'/accounts')===0 ? 'uk-active':'' }}"><a href="@route('/accounts')"><img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/accounts.svg')" width="30" height="30" data-uk-svg alt="assets" /> @lang('Accounts')</a></li>
                                             @end
 
+                                            @hasaccess?('cockpit', 'finder')
                                             <li class="uk-nav-divider"></li>
-
-                                            @hasaccess?('cockpit', 'manage.media')
                                             <li class="{{ strpos($app['route'],'/finder')===0 ? 'uk-active':'' }}"><a href="@route('/finder')"><img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/finder.svg')" width="30" height="30" data-uk-svg alt="assets" /> @lang('Finder')</a></li>
                                             @end
 
-                                            @hasaccess?('cockpit', 'manage.settings')
+                                            @hasaccess?('cockpit', 'settings')
                                             <li class="{{ strpos($app['route'],'/settings')===0 ? 'uk-active':'' }}"><a href="@route('/settings')"><img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/settings.svg')" width="30" height="30" data-uk-svg alt="assets" /> @lang('Settings')</a></li>
                                             @end
 

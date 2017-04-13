@@ -15,7 +15,7 @@ foreach ($webhooks as &$webhook) {
 
             $app->on($evt, function() use($evt, $webhook) {
 
-                $ch      = curl_init($webhook['url']);
+                $ch      = curl_init(trim($webhook['url']));
                 $data    = json_encode([
                     'event' => $evt,
                     'hook'  => $webhook['name'],
@@ -40,17 +40,23 @@ foreach ($webhooks as &$webhook) {
                     }
                 }
 
-                // add basic hhtp auth
+                // add basic http auth
                 if (isset($webhook['auth']) && $webhook['auth']['user'] && $webhook['auth']['pass']) {
                     curl_setopt($ch, CURLOPT_USERPWD, $webhook['auth']['user'] . ":" . $webhook['auth']['pass']);
                 }
 
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-                curl_exec($ch);
+                if (curl_exec($ch) === false) {
+                    trigger_error(curl_error($ch));
+                }
+
+                curl_close($ch);
 
             }, -1000);
         }

@@ -1,4 +1,4 @@
-/*! UIkit 2.27.1 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.27.2 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(UI) {
 
     "use strict";
@@ -70,7 +70,7 @@
             var triggerevent = UI.support.touch ? 'click' : 'mouseenter';
 
             // init code
-            UI.$html.on(triggerevent+'.dropdown.uikit focus', '[data-uk-dropdown]', function(e) {
+            UI.$html.on(triggerevent+'.dropdown.uikit focus pointerdown', '[data-uk-dropdown]', function(e) {
 
                 var ele = UI.$(this);
 
@@ -78,11 +78,11 @@
 
                     var dropdown = UI.dropdown(ele, UI.Utils.options(ele.attr('data-uk-dropdown')));
 
-                    if (triggerevent=='click' || (triggerevent=='mouseenter' && dropdown.options.mode=='hover')) {
+                    if (e.type=='click' || (e.type=='mouseenter' && dropdown.options.mode=='hover')) {
                         dropdown.element.trigger(triggerevent);
                     }
 
-                    if (dropdown.element.find(dropdown.options.dropdownSelector).length) {
+                    if (dropdown.dropdown.length) {
                         e.preventDefault();
                     }
                 }
@@ -301,7 +301,7 @@
             if (!this.dropdown.length) return;
 
             // reset
-            this.dropdown.removeClass('uk-dropdown-top uk-dropdown-bottom uk-dropdown-left uk-dropdown-right uk-dropdown-stack').css({
+            this.dropdown.removeClass('uk-dropdown-top uk-dropdown-bottom uk-dropdown-left uk-dropdown-right uk-dropdown-stack uk-dropdown-autoflip').css({
                 topLeft :'',
                 left :'',
                 marginLeft :'',
@@ -368,6 +368,7 @@
 
                         pp  = fdpos.split('-');
                         css = variants[fdpos] ? variants[fdpos] : variants['bottom-left'];
+                        dropdown.addClass('uk-dropdown-autoflip');
 
                         // check flipped
                         if (this.checkBoundary(pos.left + css.left, pos.top + css.top, width, height, boundarywidth)) {
@@ -530,4 +531,4 @@
         }
     }
 
-})(UIkit);
+})(UIkit2);

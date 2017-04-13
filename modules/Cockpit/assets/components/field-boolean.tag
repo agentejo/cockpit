@@ -1,17 +1,23 @@
 <field-boolean>
 
-    <button type="button" name="button" class="uk-button uk-button-{ value ? 'success':'default'}" onclick="{ toggle }">
+    <div ref="container" class="uk-display-inline-block" onclick="{ toggle }" style="cursor:pointer;">
+        <div class="uk-form-switch">
+            <input ref="check" type="checkbox" id="{ id }"/>
+            <label for="{ id }"></label>
+        </div>
 
-        <span show="{value}">{ opts.label || 'On' }</span>
-        <span show="{!value}">{ opts.label || 'Off' }</span>
+        <span show="{value && (opts.label !== 'false' && opts.label !== false)}">{ opts.label || 'On' }</span>
+        <span class="uk-text-muted" show="{!value && (opts.label !== 'false' && opts.label !== false)}">{ opts.label || 'Off' }</span>
 
-    </button>
+    </div>
 
 
     <script>
 
+        this.id = 'switch'+Math.ceil(Math.random()*10000000);
+
         if (opts.cls) {
-            App.$(this.button).addClass(opts.cls.replace(/uk\-form\-/g, 'uk-button-'));
+            App.$(this.refs.container).addClass(opts.cls);
         }
 
         this.value = opts.default || false;
@@ -19,14 +25,16 @@
         this.$updateValue = function(value) {
 
             if (this.value != value) {
-
                 this.value = value;
                 this.update();
             }
 
+            document.getElementById(this.id).checked = Boolean(this.value);
+
         }.bind(this);
 
-        toggle() {
+        toggle(e) {
+            e.preventDefault();
             this.$setValue(!this.value);
         }
 

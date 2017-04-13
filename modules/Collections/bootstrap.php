@@ -57,7 +57,7 @@ $this->module("collections")->extend([
 
         $collection  = include($metapath);
         $collection  = array_merge($collection, $data);
-        $export = var_export($collection, true);
+        $export      = var_export($collection, true);
 
         if (!$this->app->helper('fs')->write($metapath, "<?php\n return {$export};")) {
             return false;
@@ -81,8 +81,6 @@ $this->module("collections")->extend([
     'removeCollection' => function($name) {
 
         if ($collection = $this->collection($name)) {
-
-            $collection = $collections["_id"];
 
             $this->app->helper("fs")->delete("#storage:collections/{$name}.collection.php");
             $this->app->storage->dropCollection("collections/{$collection}");
@@ -144,26 +142,26 @@ $this->module("collections")->extend([
 
     'entries' => function($name) use($app) {
 
-        $collections = $this->collection($name);
+        $_collection = $this->collection($name);
 
-        if (!$collections) return false;
+        if (!$_collection) return false;
 
-        $collection = $collections["_id"];
+        $collection = $_collection['_id'];
 
         return $this->app->storage->getCollection("collections/{$collection}");
     },
 
     'find' => function($collection, $options = []) {
 
-        $collections = $this->collection($collection);
+        $_collection = $this->collection($collection);
 
-        if (!$collections) return false;
+        if (!$_collection) return false;
 
         $name       = $collection;
-        $collection = $collections["_id"];
+        $collection = $_collection['_id'];
 
         // sort by custom order if collection is sortable
-        if (isset($collections['sortable']) && $collections['sortable'] && !isset($options['sort'])) {
+        if (isset($_collection['sortable']) && $_collection['sortable'] && !isset($options['sort'])) {
             $options['sort'] = ['_order' => 1];
         }
 
@@ -172,25 +170,34 @@ $this->module("collections")->extend([
 
         $entries = (array)$this->app->storage->find("collections/{$collection}", $options);
 
+        if (isset($options['populate']) && $options['populate']) {
+            $entries = $this->_populate($entries, is_numeric($options['populate']) ? intval($options['populate']) : false);
+        }
+
         $this->app->trigger('collections.find.after', [$name, &$entries, false]);
         $this->app->trigger("collections.find.after.{$name}", [$name, &$entries, false]);
 
         return $entries;
     },
 
-    'findOne' => function($collection, $criteria = [], $projection = null) {
+    'findOne' => function($collection, $criteria = [], $projection = null, $populate = false) {
 
-        $collections = $this->collection($collection);
+        $_collection = $this->collection($collection);
 
-        if (!$collections) return false;
+        if (!$_collection) return false;
 
         $name       = $collection;
-        $collection = $collections["_id"];
+        $collection = $_collection['_id'];
 
         $this->app->trigger('collections.find.before', [$name, &$criteria, true]);
         $this->app->trigger("collections.find.before.{$name}", [$name, &$criteria, true]);
 
         $entry = $this->app->storage->findOne("collections/{$collection}", $criteria, $projection);
+
+        if ($entry && $populate) {
+           $entry = $this->_populate([$entry], is_numeric($populate) ? intval($populate) : false);
+           $entry = $entry[0];
+        }
 
         $this->app->trigger('collections.find.after', [$name, &$entry, true]);
         $this->app->trigger("collections.find.after.{$name}", [$name, &$entry, true]);
@@ -200,25 +207,25 @@ $this->module("collections")->extend([
 
     'save' => function($collection, $data) {
 
-        $collections = $this->collection($collection);
+        $_collection = $this->collection($collection);
 
-        if (!$collections) return false;
+        if (!$_collection) return false;
 
         $name       = $collection;
-        $collection = $collections["_id"];
+        $collection = $_collection['_id'];
         $data       = isset($data[0]) ? $data : [$data];
         $return     = [];
         $modified   = time();
 
         foreach($data as $entry) {
 
-            $isUpdate = isset($entry["_id"]);
+            $isUpdate = isset($entry['_id']);
 
             $entry['_modified'] = $modified;
 
-            if (isset($collections['fields'])) {
+            if (isset($_collection['fields'])) {
 
-                foreach($collections['fields'] as $field) {
+                foreach($_collection['fields'] as $field) {
 
                     // skip missing fields on update
                     if (!isset($entry[$field['name']]) && $isUpdate) {
@@ -299,12 +306,12 @@ $this->module("collections")->extend([
 
     'remove' => function($collection, $criteria) {
 
-        $collections = $this->collection($collection);
+        $_collection = $this->collection($collection);
 
-        if (!$collections) return false;
+        if (!$_collection) return false;
 
         $name       = $collection;
-        $collection = $collections["_id"];
+        $collection = $_collection['_id'];
 
         $this->app->trigger('collections.remove.before', [$name, &$criteria]);
         $this->app->trigger("collections.remove.before.{$name}", [$name, &$criteria]);
@@ -319,13 +326,116 @@ $this->module("collections")->extend([
 
     'count' => function($collection, $criteria = []) {
 
-        $collections = $this->collection($collection);
+        $_collection = $this->collection($collection);
 
-        if (!$collections) return false;
+        if (!$_collection) return false;
 
-        $collection = $collections["_id"];
+        $collection = $_collection['_id'];
 
         return $this->app->storage->count("collections/{$collection}", $criteria);
+    },
+
+    '_resolveLinedkItem' => function($link, $_id) {
+
+        static $cache;
+
+        if (null === $cache) {
+            $cache = [];
+        }
+
+        if (!isset($cache[$link])) {
+            $cache[$link] = [];
+        }
+
+        if (!isset($cache[$link][$_id])) {
+            $cache[$link][$_id] = $this->findOne($link, ['_id' => $_id]);
+        }
+
+        return $cache[$link][$_id];
+    },
+
+    '_populate' => function($items, $maxlevel=-1, $level=0) {
+
+        if (!is_array($items)) {
+            return $items;
+        }
+        return cockpit_populate_collection($items);
+    }
+]);
+
+function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0) {
+
+    if (!is_array($items)) {
+        return $items;
+    }
+
+    if (is_numeric($maxlevel) && $maxlevel==$level) {
+        return $items;
+    }
+
+    foreach ($items as $k => &$v) {
+
+        if (is_array($items[$k])) {
+            $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ++$level);
+        }
+
+        if (isset($v['_id'], $v['link'])) {
+            $items[$k] = cockpit('collections')->_resolveLinedkItem($v['link'], $v['_id']);
+        }
+    }
+
+    return $items;
+}
+
+// ACL
+$app("acl")->addResource("collections", ['create', 'delete']);
+
+$this->module("collections")->extend([
+
+    'getCollectionsInGroup' => function($group = null, $extended = false) {
+
+        if (!$group) {
+            $group = $this->app->module('cockpit')->getGroup();
+        }
+
+        $_collections = $this->collections($extended);
+        $collections = [];
+
+        if ($this->app->module('cockpit')->isSuperAdmin()) {
+            return $_collections;
+        }
+
+        foreach ($_collections as $collection => $meta) {
+
+            if (isset($meta['acl'][$group]['entries_view']) && $meta['acl'][$group]['entries_view']) {
+                $collections[$collection] = $meta;
+            }
+        }
+
+        return $collections;
+    },
+
+    'hasaccess' => function($collection, $action, $group = null) {
+
+        $collection = $this->collection($collection);
+
+        if (!$collection) {
+            return false;
+        }
+
+        if (!$group) {
+            $group = $this->app->module('cockpit')->getGroup();
+        }
+
+        if ($this->app->module('cockpit')->isSuperAdmin($group)) {
+            return true;
+        }
+
+        if (isset($collection['acl'][$group][$action])) {
+            return $collection['acl'][$group][$action];
+        }
+
+        return false;
     }
 ]);
 

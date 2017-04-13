@@ -7,7 +7,11 @@
     <div show="{mode=='edit' && items.length}">
         <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
 
-            <cp-field class="uk-width-1-1" field="{ item.field }" options="{ opts.options }" bind="items[{ idx }].value"></cp-field>
+            <div class="uk-text-small uk-margin">
+                <span class="uk-text-primary uk-badge uk-badget-outline">{ App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</span>
+            </div>
+
+            <cp-field type="{ item.field.type || 'text' }" bind="items[{ idx }].value" opts="{ item.field.options || {} }"></cp-field>
 
             <div class="uk-panel-box-footer uk-bg-light">
                 <a onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a>
@@ -15,11 +19,11 @@
         </div>
     </div>
 
-    <div name="itemscontainer" class="uk-sortable" show="{ mode=='reorder' && items.length }">
+    <div ref="itemscontainer" class="uk-sortable" show="{ mode=='reorder' && items.length }">
         <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
             <div class="uk-grid uk-grid-small">
-                <div class="uk-flex-item-1"><i class="uk-icon-bars"></i> Item { (idx+1) }</div>
-                <div class="uk-text-muted uk-text-small">{ App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field:item.field.type) }</div>
+                <div class="uk-flex-item-1"><i class="uk-icon-bars uk-margin-small-right"></i> { App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</div>
+                <div class="uk-text-muted uk-text-small">Item { (idx+1) }</div>
             </div>
         </div>
     </div>
@@ -34,8 +38,8 @@
                 </ul>
             </div>
         </span>
-        <a class="uk-button" onclick="{ updateorder }" show="{ mode=='reorder' }"><i class="uk-icon-plus-circle"></i> { App.i18n.get('Update order') }</a>
-        <a class="uk-button" onclick="{ switchreorder }" show="{ items.length > 1 }">
+        <a class="uk-button uk-button-success" onclick="{ updateorder }" show="{ mode=='reorder' }"><i class="uk-icon-check"></i> { App.i18n.get('Update order') }</a>
+        <a class="uk-button uk-button-link uk-link-reset" onclick="{ switchreorder }" show="{ items.length > 1 }">
             <span show="{ mode=='edit' }"><i class="uk-icon-arrows"></i> { App.i18n.get('Reorder') }</span>
             <span show="{ mode=='reorder' }">{ App.i18n.get('Cancel') }</span>
         </a>
@@ -48,9 +52,23 @@
         riot.util.bind(this);
 
         this.items  = [];
-        this.field  = opts.field || {type:'text'};
-        this.fields = opts.fields && Array.isArray(opts.fields) && opts.fields  || false;
+        this.field  = {type:'text'};
+        this.fields = false;
         this.mode   = 'edit';
+
+        this.on('mount', function() {
+
+            UIkit.sortable(this.refs.itemscontainer, {
+                animation: false
+            });
+
+            this.trigger('update');
+        });
+
+        this.on('update', function() {
+            this.field  = opts.field || {type:'text'};
+            this.fields = opts.fields && Array.isArray(opts.fields) && opts.fields  || false;
+        })
 
         this.$initBind = function() {
             this.root.$value = this.items;
@@ -70,18 +88,15 @@
         }.bind(this);
 
         this.on('bindingupdated', function() {
-            this.$setValue(this.items);
-        });
-
-        this.on('mount', function() {
-
-            UIkit.sortable(this.itemscontainer, {
-                animation: false
-            });
-
+            $this.$setValue(this.items);
         });
 
         add(e) {
+
+            if (opts.limit && this.items.length >= opts.limit) {
+                App.ui.notify('Maximum amount of items reached');
+                return;
+            }
 
             if (this.fields) {
                 this.items.push({field:e.item.field, value:null});
@@ -102,26 +117,22 @@
 
             var items = [];
 
-            App.$($this.root).css('height', App.$($this.root).height());
-
-            App.$(this.itemscontainer).children().each(function(){
+            App.$(this.refs.itemscontainer).children().each(function(){
                 items.push($this.items[Number(this.getAttribute('data-idx'))]);
             });
-
 
             $this.items = [];
             $this.update();
 
             setTimeout(function() {
-                $this.mode = 'edit'
+                $this.mode = 'edit';
                 $this.items = items;
                 $this.$setValue(items);
-                $this.update();
 
                 setTimeout(function(){
-                    $this.root.style.height = '';
-                }, 30)
-            }, 10);
+                    $this.update();
+                }, 50)
+            }, 50);
         }
 
     </script>

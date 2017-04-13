@@ -35,7 +35,7 @@ class Settings extends \Cockpit\AuthController {
 
     public function edit($createconfig = false) {
 
-        if ($this->app['user']['group'] !== 'admin') {
+        if (!$this->module('cockpit')->isSuperAdmin()) {
             return false;
         }
 

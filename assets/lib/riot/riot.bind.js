@@ -76,7 +76,7 @@
 
                             for (var i = 0;i<segments.length;i++) {
 
-                                if (segments[i].idexOf('[')!=-1) break;
+                                if (segments[i].indexOf('[') != -1) break;
 
                                 if (current[segments[i]] === undefined ) {
 
@@ -95,7 +95,7 @@
                         cache[field] = true;
                     }
 
-                    body = 'try{ tag.'+field+' = val; if(!silent) { tag.update(); } tag.trigger("bindingupdated", ["'+field+'", val]);return true;}catch(e){ return false; }';
+                    body = 'try{ tag.'+field+' = val; if(!silent) { tag.update(); } tag.trigger("bindingupdated", ["'+field+'", val]);return true;}catch(e){ console.log(e);return false; }';
 
                     fn = new Function('tag', 'val', 'silent', body);
 
@@ -107,12 +107,14 @@
 
             ele.$updateValue = function(value) {};
 
+            var nodeType = ele.nodeName.toLowerCase(),
+                defaultEvt = ('oninput' in ele) && nodeType=='input' ? 'input':'change';
 
-            if (['input', 'select', 'textarea'].indexOf(ele.nodeName.toLowerCase()) !== -1) {
+            if (['input', 'select', 'textarea'].indexOf(nodeType) !== -1) {
 
                 var isCheckbox = (ele.nodeName == 'INPUT' && ele.getAttribute('type') == 'checkbox');
 
-                ele.addEventListener(ele.getAttribute('bind-event') || 'change', function() {
+                ele.addEventListener(ele.getAttribute('bind-event') || defaultEvt, function() {
 
                     try {
 
@@ -137,6 +139,11 @@
                     fn = new Function('input', 'val', 'try{'+body+'}catch(e){}');
 
                     return function(value) {
+                        
+                        if (document.activeElement === ele && nodeType == 'input' && !isCheckbox) {
+                            return;
+                        }
+
                         fn(ele, value);
                     };
 
@@ -167,9 +174,18 @@
         }
 
         // init values
-        tag.on('mount updated bind', function() {
+        tag.on('mount', function() {
             update();
         });
+
+        tag.on('updated', function() {
+            update();
+        });
+
+        tag.on('bind', function() {
+            update();
+        });
+
 
         tag.$bindUpdate = function() {
             update();

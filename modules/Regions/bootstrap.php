@@ -170,6 +170,59 @@ $this->module("regions")->extend([
 
 ]);
 
+// ACL
+$app("acl")->addResource("regions", ['create', 'delete']);
+
+$this->module("regions")->extend([
+
+    'getRegionsInGroup' => function($group = null) {
+
+        if (!$group) {
+            $group = $this->app->module('cockpit')->getGroup();
+        }
+
+        $_regions = $this->regions();
+        $regions = [];
+
+        if ($this->app->module('cockpit')->isSuperAdmin()) {
+            return $_regions;
+        }
+
+        foreach ($_regions as $region => $meta) {
+
+            if (isset($meta['acl'][$group]['form']) && $meta['acl'][$group]['form']) {
+                $regions[$region] = $meta;
+            }
+        }
+
+        return $regions;
+    },
+
+    'hasaccess' => function($region, $action, $group = null) {
+
+        $region = $this->region($region);
+
+        if (!$region) {
+            return false;
+        }
+
+        if (!$group) {
+            $group = $this->app->module('cockpit')->getGroup();
+        }
+
+        if ($this->app->module('cockpit')->isSuperAdmin($group)) {
+            return true;
+        }
+
+        if (isset($region['acl'][$group][$action])) {
+            return $region['acl'][$group][$action];
+        }
+
+        return false;
+    }
+]);
+
+
 // extend app lexy parser
 $app->renderer->extend(function($content){
     $content = preg_replace('/(\s*)@region\((.+?)\)/', '$1<?php echo cockpit("regions")->render($2); ?>', $content);

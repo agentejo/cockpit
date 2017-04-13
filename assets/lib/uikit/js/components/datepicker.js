@@ -1,15 +1,15 @@
-/*! UIkit 2.27.1 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.27.2 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(addon) {
 
     var component;
 
-    if (window.UIkit) {
-        component = addon(UIkit);
+    if (window.UIkit2) {
+        component = addon(UIkit2);
     }
 
     if (typeof define == 'function' && define.amd) {
         define('uikit-datepicker', ['uikit'], function(){
-            return component || addon(UIkit);
+            return component || addon(UIkit2);
         });
     }
 
@@ -161,7 +161,7 @@
             this.current  = this.element.val() ? moment(this.element.val(), this.options.format) : moment();
 
             this.on('click focus', function(){
-                if (active!==$this) $this.pick(this.value ? this.value:($this.options.minDate ? $this.options.minDate :''));
+                if (active!==$this) $this.pick(this.value ? this.value:'');
             }).on('change', function(){
 
                 if ($this.element.val() && !moment($this.element.val(), $this.options.format).isValid()) {
