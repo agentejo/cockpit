@@ -98,7 +98,7 @@
                             @lang('Select input format:')
                             <div class="uk-form-select">
                                 <a>{parent.filterData[field.name] || '(Select format...)'}</a>
-                                <select bind="filterData['{field.name}']">
+                                <select onchange="{ setFilterData(field.name) }">
                                     <option value=""></option>
                                     <option value="{v}" each="{v in ['Unix timestamp: s', 'Unix timestamp: ms']}">{v}</option>
                                 </select>
@@ -109,7 +109,7 @@
                             @lang('Select input format:')
                             <div class="uk-form-select">
                                 <a>{parent.filterData[field.name] || '(Select format...)'}</a>
-                                <select bind="filterData['{field.name}']">
+                                <select onchange="{ setFilterData(field.name) }">
                                     <option value=""></option>
                                     <option value="{v}" each="{v in ['Unix timestamp: s', 'Unix timestamp: ms']}">{v}</option>
                                 </select>
