@@ -103,19 +103,15 @@ class Accounts extends \Cockpit\AuthController {
 
     protected function getLanguages() {
 
-        $languages = [];
+        $languages = [['i18n' => 'en', 'language' => 'English']];
 
-        foreach ($this->app->helper("fs")->ls('*.php', '#config:cockpit/i18n') as $file) {
+        foreach ($this->app->helper('fs')->ls('*.php', '#config:cockpit/i18n') as $file) {
 
             $lang     = include($file->getRealPath());
             $i18n     = $file->getBasename('.php');
             $language = isset($lang['@meta']['language']) ? $lang['@meta']['language'] : $i18n;
 
-            $languages[] = ["i18n" => $i18n, "language"=> $language];
-        }
-
-        if (!count($languages)) {
-            $languages[] = ["i18n" => 'en', "language" => 'English'];
+            $languages[] = ['i18n' => $i18n, 'language'=> $language];
         }
 
         return $languages;
