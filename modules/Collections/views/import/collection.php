@@ -77,7 +77,7 @@
                     <td>
                         <div class="uk-form-select">
                             <a class="{ parent.mapping[field.name] ? 'uk-link-muted':''}"><i class="uk-icon-exchange" show="{parent.mapping[field.name]}"></i> { parent.mapping[field.name] || 'Select...'}</a>
-                            <select class="uk-width-1-1" bind="mapping['{field.name}']">
+                            <select class="uk-width-1-1" onchange="{ setMapping(field.name) }">
                                 <option></option>
                                 <option each="{h,hidx in data.headers}" value="{h}">{h}</option>
                             </select>
@@ -87,7 +87,7 @@
                             @lang('Match against:')
                             <div class="uk-form-select">
                                 {field.options.link}.<a>{parent.filterData[field.name] || '(Select field...)'}</a>
-                                <select bind="filterData['{field.name}']">
+                                <select onchange="{ setFilterData(field.name) }">
                                     <option value=""></option>
                                     <option value="{f.name}" each="{f in _COL_[field.options.link].fields}">{f.name}</option>
                                 </select>
@@ -96,7 +96,7 @@
                     </td>
                     <td>
                         <div class="uk-text-center">
-                            <input type="checkbox" bind="filter['{field.name}']" />
+                            <input type="checkbox" onchange="{ setFilter(field.name) }" />
                         </div>
                     </td>
                 </tr>
@@ -115,6 +115,8 @@
         var $this = this;
 
         this.mixin(RiotBindMixin);
+
+
 
         this.collection = {{ json_encode($collection) }};
         this.file = null;
@@ -192,6 +194,24 @@
                 });
             }
         });
+
+        setFilter(fieldName) {
+            return function(evt) {
+                this.filter[fieldName] = evt.currentTarget.checked;
+            }
+        }
+
+        setMapping(fieldName) {
+            return function(evt) {
+                this.mapping[fieldName] = evt.currentTarget.value;
+            }
+        }
+
+        setFilterData(fieldName) {
+            return function(evt){
+                this.filterData[fieldName] = evt.currentTarget.value;
+            }
+        }
 
         restart() {
 
