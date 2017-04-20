@@ -2,7 +2,7 @@
 
     <div ref="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form">
 
-        <div riot-class="uk-width-{field.width}" data-idx="{idx}" each="{ field,idx in fields }">
+        <div class="uk-width-{field.width}" data-idx="{idx}" each="{ field,idx in fields }">
 
             <div class="uk-panel uk-panel-box uk-panel-card">
 

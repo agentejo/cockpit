@@ -2,7 +2,7 @@
 
     <ul class="uk-grid uk-grid-small">
         <li show="{value}"><a onclick="{removeRating}"><i class="uk-icon-trash-o"></i></a></li>
-        <li riot-class="{(!hoverValue && Math.ceil(value) >= n) || (hoverValue && Math.ceil(hoverValue) >= n) ? 'uk-text-primary' : ''}" each={n,idx in ratingRange} onmousemove={hoverRating} onmouseleave={leaveHoverRating} onclick={setRating}><i class="uk-icon-{opts.icon ? opts.icon : 'star'}" title="{ (idx+1) }" data-uk-tooltip></i></li>
+        <li class="{(!hoverValue && Math.ceil(value) >= n) || (hoverValue && Math.ceil(hoverValue) >= n) ? 'uk-text-primary' : ''}" each={n,idx in ratingRange} onmousemove={hoverRating} onmouseleave={leaveHoverRating} onclick={setRating}><i class="uk-icon-{opts.icon ? opts.icon : 'star'}" title="{ (idx+1) }" data-uk-tooltip></i></li>
         <li show="{value}"><span class="uk-badge">{!hoverValue && value || hoverValue}</span></li>
     </ul>
 

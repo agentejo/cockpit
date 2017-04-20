@@ -27,7 +27,7 @@
 
             <div class="uk-grid uk-grid-match uk-grid-gutter" if="{_meta}">
 
-                <div riot-class="uk-grid-margin uk-width-medium-{field.width}" each="{field, name in meta}" no-reorder>
+                <div class="uk-grid-margin uk-width-medium-{field.width}" each="{field, name in meta}" no-reorder>
 
                     <div class="uk-panel">
 

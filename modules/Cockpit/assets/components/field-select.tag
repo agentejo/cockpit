@@ -1,6 +1,6 @@
 <field-select>
 
-    <select ref="input" riot-class="uk-width-1-1 {opts.cls}" bind="{ opts.bind }">
+    <select ref="input" class="uk-width-1-1 {opts.cls}" bind="{ opts.bind }">
         <option value=""></option>
         <option each="{ option,idx in options }" value="{ option }">{ option }</option>
     </select>

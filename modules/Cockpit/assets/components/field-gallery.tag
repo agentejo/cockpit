@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <div riot-class="{images && images.length ? 'uk-margin-top':'' }">
+        <div class="{images && images.length ? 'uk-margin-top':'' }">
             <div class="uk-alert" if="{ images && !images.length }">{ App.i18n.get('Gallery is empty') }.</div>
             <a class="uk-button uk-button-link" onclick="{ selectimages }">
                 <i class="uk-icon-plus-circle"></i>
@@ -45,7 +45,7 @@
 
                 <div class="uk-grid uk-grid-match uk-grid-gutter" if="{image}">
 
-                    <div riot-class="uk-grid-margin uk-width-medium-{field.width}" each="{field,name in meta}" no-reorder>
+                    <div class="uk-grid-margin uk-width-medium-{field.width}" each="{field,name in meta}" no-reorder>
 
                         <div class="uk-panel">
 

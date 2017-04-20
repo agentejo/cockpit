@@ -1,4 +1,4 @@
-/* Riot v3.3.2, @license MIT */
+/* Riot v3.4.2, @license MIT */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -16,6 +16,7 @@ var LOOP_DIRECTIVE = 'each';
 var LOOP_NO_REORDER_DIRECTIVE = 'no-reorder';
 var SHOW_DIRECTIVE = 'show';
 var HIDE_DIRECTIVE = 'hide';
+var RIOT_EVENTS_KEY = '__riot-events__';
 var T_STRING = 'string';
 var T_OBJECT = 'object';
 var T_UNDEF  = 'undefined';
@@ -25,6 +26,7 @@ var XLINK_REGEX = /^xlink:(\w+)/;
 var WIN = typeof window === T_UNDEF ? undefined : window;
 var RE_SPECIAL_TAGS = /^(?:t(?:body|head|foot|[rhd])|caption|col(?:group)?|opt(?:ion|group))$/;
 var RE_SPECIAL_TAGS_NO_OPTION = /^(?:t(?:body|head|foot|[rhd])|caption|col(?:group)?)$/;
+var RE_EVENTS_PREFIX = /^on/;
 var RE_RESERVED_NAMES = /^(?:_(?:item|id|parent)|update|root|(?:un)?mount|mixin|is(?:Mounted|Loop)|tags|refs|parent|opts|trigger|o(?:n|ff|ne))$/;
 var RE_HTML_ATTRS = /([-\w]+) ?= ?(?:"([^"]*)|'([^']*)|({[^}]*}))/g;
 var CASE_SENSITIVE_ATTRIBUTES = { 'viewbox': 'viewBox' };
@@ -190,12 +192,36 @@ function setInnerHTML(container, html) {
 }
 
 /**
+ * Toggle the visibility of any DOM node
+ * @param   { Object }  dom - DOM node we want to hide
+ * @param   { Boolean } show - do we want to show it?
+ */
+
+function toggleVisibility(dom, show) {
+  dom.style.display = show ? '' : 'none';
+  dom['hidden'] = show ? false : true;
+}
+
+/**
  * Remove any DOM attribute from a node
  * @param   { Object } dom - DOM node we want to update
  * @param   { String } name - name of the property we want to remove
  */
 function remAttr(dom, name) {
   dom.removeAttribute(name);
+}
+
+/**
+ * Convert a style object to a string
+ * @param   { Object } style - style object we need to parse
+ * @returns { String } resulting css string
+ * @example
+ * styleObjectToString({ color: 'red', height: '10px'}) // => 'color: red; height: 10px'
+ */
+function styleObjectToString(style) {
+  return Object.keys(style).reduce(function (acc, prop) {
+    return (acc + " " + prop + ": " + (style[prop]) + ";")
+  }, '')
 }
 
 /**
@@ -275,7 +301,9 @@ var dom = Object.freeze({
 	createDOMPlaceholder: createDOMPlaceholder,
 	mkEl: mkEl,
 	setInnerHTML: setInnerHTML,
+	toggleVisibility: toggleVisibility,
 	remAttr: remAttr,
+	styleObjectToString: styleObjectToString,
 	getAttr: getAttr,
 	setAttr: setAttr,
 	safeInsert: safeInsert,
@@ -997,8 +1025,6 @@ var settings$1 = extend(Object.create(brackets.settings), {
   skipAnonymousTags: true
 });
 
-var EVENTS_PREFIX_REGEX = /^on/;
-
 /**
  * Trigger DOM events
  * @param   { HTMLElement } dom - dom element target of the event
@@ -1045,30 +1071,26 @@ function setEventHandler(name, handler, dom, tag) {
   var eventName,
     cb = handleEvent.bind(tag, dom, handler);
 
-  // avoid to bind twice the same event
-  dom[name] = null;
-
   // normalize event name
-  eventName = name.replace(EVENTS_PREFIX_REGEX, '');
+  eventName = name.replace(RE_EVENTS_PREFIX, '');
 
-  // cache the callback directly on the DOM node
-  if (!dom._riotEvents) { dom._riotEvents = {}; }
+  // cache the listener into the listeners array
+  if (!contains(tag.__.listeners, dom)) { tag.__.listeners.push(dom); }
+  if (!dom[RIOT_EVENTS_KEY]) { dom[RIOT_EVENTS_KEY] = {}; }
+  if (dom[RIOT_EVENTS_KEY][name]) { dom.removeEventListener(eventName, dom[RIOT_EVENTS_KEY][name]); }
 
-  if (dom._riotEvents[name])
-    { dom.removeEventListener(eventName, dom._riotEvents[name]); }
-
-  dom._riotEvents[name] = cb;
+  dom[RIOT_EVENTS_KEY][name] = cb;
   dom.addEventListener(eventName, cb, false);
 }
 
 /**
  * Update dynamically created data-is tags with changing expressions
  * @param { Object } expr - expression tag and expression info
- * @param { Tag } parent - parent for tag creation
+ * @param { Tag }    parent - parent for tag creation
+ * @param { String } tagName - tag implementation we want to use
  */
-function updateDataIs(expr, parent) {
-  var tagName = tmpl(expr.value, parent),
-    conf, isVirtual, head, ref;
+function updateDataIs(expr, parent, tagName) {
+  var conf, isVirtual, head, ref;
 
   if (expr.tag && expr.tagName === tagName) {
     expr.tag.update();
@@ -1110,6 +1132,18 @@ function updateDataIs(expr, parent) {
 }
 
 /**
+ * Nomalize any attribute removing the "riot-" prefix
+ * @param   { String } attrName - original attribute name
+ * @returns { String } valid html attribute name
+ */
+function normalizeAttrName(attrName) {
+  if (!attrName) { return null }
+  attrName = attrName.replace(ATTRS_PREFIX, '');
+  if (CASE_SENSITIVE_ATTRIBUTES[attrName]) { attrName = CASE_SENSITIVE_ATTRIBUTES[attrName]; }
+  return attrName
+}
+
+/**
  * Update on single tag expression
  * @this Tag
  * @param { Object } expr - expression logic
@@ -1119,46 +1153,67 @@ function updateExpression(expr) {
   if (this.root && getAttr(this.root,'virtualized')) { return }
 
   var dom = expr.dom,
-    attrName = expr.attr,
+    // remove the riot- prefix
+    attrName = normalizeAttrName(expr.attr),
     isToggle = contains([SHOW_DIRECTIVE, HIDE_DIRECTIVE], attrName),
-    value = tmpl(expr.expr, this),
-    isValueAttr = attrName === 'riot-value',
     isVirtual = expr.root && expr.root.tagName === 'VIRTUAL',
     parent = dom && (expr.parent || dom.parentNode),
-    old;
+    // detect the style attributes
+    isStyleAttr = attrName === 'style',
+    isClassAttr = attrName === 'class',
+    isObj,
+    value;
 
-  if (expr.bool)
-    { value = value ? attrName : false; }
-  else if (isUndefined(value) || value === null)
-    { value = ''; }
-
-  if (expr._riot_id) { // if it's a tag
+  // if it's a tag we could totally skip the rest
+  if (expr._riot_id) {
     if (expr.isMounted) {
       expr.update();
-
     // if it hasn't been mounted yet, do that now.
     } else {
       expr.mount();
-
-      if (isVirtual)
-        { makeReplaceVirtual(expr, expr.root); }
-
+      if (isVirtual) {
+        makeReplaceVirtual(expr, expr.root);
+      }
     }
     return
   }
+  // if this expression has the update method it means it can handle the DOM changes by itself
+  if (expr.update) { return expr.update() }
 
-  old = expr.value;
-  expr.value = value;
+  // ...it seems to be a simple expression so we try to calculat its value
+  value = tmpl(expr.expr, this);
+  isObj = isObject(value);
 
-  if (expr.update) {
-    expr.update();
-    return
+  // convert the style/class objects to strings
+  if (isObj) {
+    isObj = !isClassAttr && !isStyleAttr;
+    if (isClassAttr) {
+      value = tmpl(JSON.stringify(value), this);
+    } else if (isStyleAttr) {
+      value = styleObjectToString(value);
+    }
   }
 
-  if (expr.isRtag && value) { return updateDataIs(expr, this) }
-  if (old === value) { return }
-  // no change, so nothing more to do
-  if (isValueAttr && dom.value === value) { return }
+  // remove original attribute
+  if (expr.attr && (!expr.isAttrRemoved || !value)) {
+    remAttr(dom, expr.attr);
+    expr.isAttrRemoved = true;
+  }
+
+  // for the boolean attributes we don't need the value
+  // we can convert it to checked=true to checked=checked
+  if (expr.bool) { value = value ? attrName : false; }
+  if (expr.isRtag) { return updateDataIs(expr, this, value) }
+  if (expr.wasParsedOnce && expr.value === value) { return }
+
+  // update the expression value
+  expr.value = value;
+  expr.wasParsedOnce = true;
+
+  // if the value is an object we can not do much more with it
+  if (isObj && !isToggle) { return }
+  // avoid to render undefined/null values
+  if (isBlank(value)) { value = ''; }
 
   // textarea and text nodes have no attribute name
   if (!attrName) {
@@ -1179,38 +1234,30 @@ function updateExpression(expr) {
     return
   }
 
-  // remove original attribute
-  if (!expr.isAttrRemoved || !value) {
-    remAttr(dom, attrName);
-    expr.isAttrRemoved = true;
-  }
 
   // event handler
   if (isFunction(value)) {
     setEventHandler(attrName, value, dom, this);
   // show / hide
   } else if (isToggle) {
-    if (attrName === HIDE_DIRECTIVE) { value = !value; }
-    dom.style.display = value ? '' : 'none';
-  // field value
-  } else if (isValueAttr) {
-    dom.value = value;
-  // <img src="{ expr }">
-  } else if (startsWith(attrName, ATTRS_PREFIX) && attrName !== IS_DIRECTIVE) {
-    attrName = attrName.slice(ATTRS_PREFIX.length);
-    if (CASE_SENSITIVE_ATTRIBUTES[attrName])
-      { attrName = CASE_SENSITIVE_ATTRIBUTES[attrName]; }
-    if (value != null)
-      { setAttr(dom, attrName, value); }
+    toggleVisibility(dom, attrName === HIDE_DIRECTIVE ? !value : value);
+  // handle attributes
   } else {
     if (expr.bool) {
       dom[attrName] = value;
-      if (!value) { return }
     }
 
-    if (value === 0 || value && typeof value !== T_OBJECT) {
+    if (attrName === 'value' && dom.value !== value) {
+      dom.value = value;
+    }
+
+    if (!isBlank(value) && value !== false) {
       setAttr(dom, attrName, value);
     }
+
+    // make sure that in case of style changes
+    // the element stays hidden
+    if (isStyleAttr && dom.hidden) { toggleVisibility(dom, false); }
   }
 }
 
@@ -1238,25 +1285,25 @@ var IfExpr = {
     return this
   },
   update: function update() {
-    var newValue = tmpl(this.expr, this.tag);
+    this.value = tmpl(this.expr, this.tag);
 
-    if (newValue && !this.current) { // insert
+    if (this.value && !this.current) { // insert
       this.current = this.pristine.cloneNode(true);
       this.stub.parentNode.insertBefore(this.current, this.stub);
-
       this.expressions = [];
       parseExpressions.apply(this.tag, [this.current, this.expressions, true]);
-    } else if (!newValue && this.current) { // remove
+    } else if (!this.value && this.current) { // remove
       unmountAll(this.expressions);
       if (this.current._tag) {
         this.current._tag.unmount();
-      } else if (this.current.parentNode)
-        { this.current.parentNode.removeChild(this.current); }
+      } else if (this.current.parentNode) {
+        this.current.parentNode.removeChild(this.current);
+      }
       this.current = null;
       this.expressions = [];
     }
 
-    if (newValue) { updateAllExpressions.call(this.tag, this.expressions); }
+    if (this.value) { updateAllExpressions.call(this.tag, this.expressions); }
   },
   unmount: function unmount() {
     unmountAll(this.expressions || []);
@@ -1273,46 +1320,35 @@ var RefExpr = {
     this.rawValue = attrValue;
     this.parent = parent;
     this.hasExp = tmpl.hasExpr(attrValue);
-    this.firstRun = true;
-
     return this
   },
   update: function update() {
-    var value = this.rawValue;
-    if (this.hasExp)
-      { value = tmpl(this.rawValue, this.parent); }
-
-    // if nothing changed, we're done
-    if (!this.firstRun && value === this.value) { return }
-
+    var old = this.value;
     var customParent = this.parent && getImmediateCustomParentTag(this.parent);
-
     // if the referenced element is a custom tag, then we set the tag itself, rather than DOM
     var tagOrDom = this.tag || this.dom;
 
-    // the name changed, so we need to remove it from the old key (if present)
-    if (!isBlank(this.value) && customParent)
-      { arrayishRemove(customParent.refs, this.value, tagOrDom); }
+    this.value = this.hasExp ? tmpl(this.rawValue, this.parent) : this.rawValue;
 
-    if (isBlank(value)) {
+    // the name changed, so we need to remove it from the old key (if present)
+    if (!isBlank(old) && customParent) { arrayishRemove(customParent.refs, old, tagOrDom); }
+
+    if (isBlank(this.value)) {
       // if the value is blank, we remove it
       remAttr(this.dom, this.attr);
     } else {
       // add it to the refs of parent tag (this behavior was changed >=3.0)
       if (customParent) { arrayishAdd(
         customParent.refs,
-        value,
+        this.value,
         tagOrDom,
         // use an array if it's a looped node and the ref is not an expression
         null,
         this.parent.__.index
       ); }
       // set the actual DOM attr
-      setAttr(this.dom, this.attr, value);
+      setAttr(this.dom, this.attr, this.value);
     }
-
-    this.value = value;
-    this.firstRun = false;
   },
   unmount: function unmount() {
     var tagOrDom = this.tag || this.dom;
@@ -1464,8 +1500,10 @@ function _each(dom, parent, expr) {
 
   expr.update = function updateEach() {
     // get the new items collection
-    var items = tmpl(expr.val, parent),
-      frag = createFrag(),
+    expr.value = tmpl(expr.val, parent);
+
+    var frag = createFrag(),
+      items = expr.value,
       isObject$$1 = !isArray(items) && !isString(items),
       root = placeholder.parentNode;
 
@@ -1652,8 +1690,6 @@ function parseExpressions(root, expressions, mustIncludeRoot) {
     // If this element had an if-attr, that's the parent for all child elements
     return {parent: parent}
   }, tree);
-
-  return { tree: tree, root: root }
 }
 
 /**
@@ -1673,7 +1709,7 @@ function parseAttributes(dom, attrs, fn) {
     if (contains(REF_DIRECTIVES, name)) {
       expr =  Object.create(RefExpr).init(dom, this$1, name, attr.value);
     } else if (tmpl.hasExpr(attr.value)) {
-      expr = {dom: dom, expr: attr.value, attr: attr.name, bool: bool};
+      expr = {dom: dom, expr: attr.value, attr: name, bool: bool};
     }
 
     fn(attr, expr);
@@ -1980,7 +2016,7 @@ function unregister$1(name) {
   delete __TAG_IMPL[name];
 }
 
-var version = 'v3.3.2';
+var version$1 = 'v3.4.2';
 
 
 var core = Object.freeze({
@@ -1991,7 +2027,7 @@ var core = Object.freeze({
 	mixin: mixin$1,
 	update: update$1,
 	unregister: unregister$1,
-	version: version
+	version: version$1
 });
 
 // counter to give a unique id to all the Tag instances
@@ -2016,7 +2052,8 @@ function updateOpts(isLoop, parent, isAnonymous, opts, instAttrs) {
   var ctx = !isAnonymous && isLoop ? this : parent || this;
   each(instAttrs, function (attr) {
     if (attr.expr) { updateAllExpressions.call(ctx, [attr.expr]); }
-    opts[toCamel(attr.name)] = attr.expr ? attr.expr.value : attr.value;
+    // normalize the attribute names
+    opts[toCamel(attr.name).replace(ATTRS_PREFIX, '')] = attr.expr ? attr.expr.value : attr.value;
   });
 }
 
@@ -2031,7 +2068,6 @@ function updateOpts(isLoop, parent, isAnonymous, opts, instAttrs) {
 function Tag$1(impl, conf, innerHTML) {
   if ( impl === void 0 ) impl = {};
   if ( conf === void 0 ) conf = {};
-
 
   var opts = extend({}, conf.opts),
     parent = conf.parent,
@@ -2064,6 +2100,9 @@ function Tag$1(impl, conf, innerHTML) {
     tagName: tagName,
     index: index,
     isLoop: isLoop,
+    // tags having event listeners
+    // it would be better to use weak maps here but we can not introduce breaking changes now
+    listeners: [],
     // these vars will be needed only for the virtual tags
     virts: [],
     tail: null,
@@ -2098,7 +2137,10 @@ function Tag$1(impl, conf, innerHTML) {
     data = cleanUpData(data);
     extend(this, data);
     updateOpts.apply(this, [isLoop, parent, isAnonymous, nextOpts, instAttrs]);
-    if (this.isMounted && isFunction(this.shouldUpdate) && !this.shouldUpdate(data, nextOpts)) { return this }
+
+    if (canTrigger && this.isMounted && isFunction(this.shouldUpdate) && !this.shouldUpdate(data, nextOpts)) {
+      return this
+    }
 
     // inherit properties from the parent, but only for isAnonymous tags
     if (isLoop && isAnonymous) { inheritFrom.apply(this, [this.parent, propsInSyncWithParent]); }
@@ -2260,6 +2302,13 @@ function Tag$1(impl, conf, innerHTML) {
       remAttr(root, name);
     });
 
+    // remove all the event listeners
+    this.__.listeners.forEach(function (dom) {
+      Object.keys(dom[RIOT_EVENTS_KEY]).forEach(function (eventName) {
+        dom.removeEventListener(eventName, dom[RIOT_EVENTS_KEY][eventName]);
+      });
+    });
+
     // remove this tag instance from the global virtualDom variable
     if (tagIndex !== -1)
       { __TAGS_CACHE.splice(tagIndex, 1); }
@@ -2278,16 +2327,11 @@ function Tag$1(impl, conf, innerHTML) {
             { arrayishRemove(parent.tags, tagName, this); }
         }
       } else {
-        while (el.firstChild) { el.removeChild(el.firstChild); }
+        // remove the tag contents
+        setInnerHTML(el, '');
       }
 
-      if (p)
-        { if (!mustKeepRoot) {
-          p.removeChild(el);
-        } else {
-          // the riot-tag and the data-is attributes aren't needed anymore, remove them
-          remAttr(p, IS_DIRECTIVE);
-        } }
+      if (p && !mustKeepRoot) { p.removeChild(el); }
     }
 
     if (this.__.virts) {
@@ -2422,6 +2466,7 @@ function getImmediateCustomParentTag(tag) {
 function unmountAll(expressions) {
   each(expressions, function(expr) {
     if (expr instanceof Tag$1) { expr.unmount(true); }
+    else if (expr.tagName) { expr.tag.unmount(true); }
     else if (expr.unmount) { expr.unmount(); }
   });
 }
@@ -2676,6 +2721,7 @@ var mount$1 = mount$2;
 var mixin$$1 = mixin$1;
 var update$$1 = update$1;
 var unregister$$1 = unregister$1;
+var version$$1 = version$1;
 var observable = observable$1;
 
 var riot$1 = extend({}, core, {
@@ -2695,6 +2741,7 @@ var riot$2 = Object.freeze({
 	mixin: mixin$$1,
 	update: update$$1,
 	unregister: unregister$$1,
+	version: version$$1,
 	observable: observable,
 	default: riot$1
 });
@@ -3431,7 +3478,7 @@ function compile$1 (src, opts, url) {
   return src
 }
 
-var version$1 = 'v3.2.1';
+var version$2 = 'v3.2.1';
 
 var compiler = {
   compile: compile$1,
@@ -3439,7 +3486,7 @@ var compiler = {
   compileCSS: compileCSS,
   compileJS: compileJS,
   parsers: parsers$1,
-  version: version$1
+  version: version$2
 };
 
 var promise;
