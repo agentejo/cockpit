@@ -455,7 +455,7 @@ $this->module("collections")->extend([
                 
                 foreach ($localfields as $name => $local) {
 
-                    if ($lang !== true && isset($entry[$name])) {
+                    if ($lang !== 'default' && isset($entry[$name])) {
                         unset($entry[$name]);
                         unset($entry["{$name}_slug"]);
                     }
