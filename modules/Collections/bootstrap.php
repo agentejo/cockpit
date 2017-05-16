@@ -383,6 +383,7 @@ $this->module("collections")->extend([
     '_filterFields' => function($items, $collection, $filter) {
 
         static $cache;
+        static $languages;
 
         $filter = array_merge([
             'user' => false,
@@ -393,6 +394,16 @@ $this->module("collections")->extend([
 
         if (null === $cache) {
             $cache = [];
+        }
+
+        if (null === $languages) {
+                
+            $languages = [];
+
+            foreach($this->app->retrieve('config/languages', []) as $key => $val) {
+                if (is_numeric($key)) $key = $val;
+                $languages[] = $key;
+            }
         }
 
         if (is_string($collection)) {
@@ -422,7 +433,6 @@ $this->module("collections")->extend([
 
         if ($user && count($cache[$collection['name']]['acl'])) {
             
-
             $aclfields = $cache[$collection['name']]['acl'];
             $items     = array_map(function($entry) use($user, $aclfields) {
                 
@@ -438,16 +448,9 @@ $this->module("collections")->extend([
             }, $items);
         }
 
-        if ($lang && count($cache[$collection['name']]['localize'])) {
+        if ($lang && count($languages) && count($cache[$collection['name']]['localize'])) {
             
             $localfields = $cache[$collection['name']]['localize'];
-            $languages   = [];
-
-            foreach($this->app->retrieve('config/languages', []) as $key => $val) {
-                if (is_numeric($key)) $key = $val;
-                $languages[] = $key;
-            }
-         
             $items = array_map(function($entry) use($localfields, $lang, $languages) {
                 
                 foreach ($localfields as $name => $local) {
