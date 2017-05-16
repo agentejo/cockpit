@@ -90,3 +90,105 @@ $this->on("before", function() {
     });
 
 });
+
+
+$this->bind('/api/image', function() {
+
+    $src      = $this->param('src', false);
+    $mode     = $this->param('m', 'thumbnail');
+    $width    = intval($this->param('w', null));
+    $height   = intval($this->param('h', null));
+    $quality  = intval($this->param('q', 100));
+    $rebuild  = intval($this->param('r', false));
+    $base64   = intval($this->param('b64', false));
+
+    if (!$width) {
+        return ['error' => 'Target width parameter is missing'];
+    }
+
+    if (!$height) {
+        return ['error' => 'Target height parameter is missing'];
+    }
+
+    if ($src) {
+
+        $src = rawurldecode($src);
+
+        if (!preg_match('/\.(png|jpg|jpeg|gif)/i', $src)) {
+            
+            if ($asset = $this->storage->findOne("cockpit/assets", ['_id' => $src])) {
+                $asset['path'] = trim($asset['path'], '/');
+                $src = $this->path("#uploads:{$asset['path']}");
+            }
+        }
+
+        // check if absolute url
+        if (substr($src, 0,1) == '/' && file_exists($this['docs_root'].$src)) {
+            $src = $this['docs_root'].$src;
+        }
+
+        $options = array(
+            "cachefolder" => '#thumbs:',
+            "domain"      => false
+        );
+
+        extract($options);
+
+        $path  = $this->path($src);
+        $ext   = pathinfo($path, PATHINFO_EXTENSION);
+        $url   = "data:image/gif;base64,R0lGODlhAQABAJEAAAAAAP///////wAAACH5BAEHAAIALAAAAAABAAEAAAICVAEAOw=="; // transparent 1px gif
+
+        if (!file_exists($path) || is_dir($path)) {
+            return false;
+        }
+
+        if (!in_array(strtolower($ext), array('png','jpg','jpeg','gif'))) {
+            return $url;
+        }
+
+        if (is_null($width) && is_null($height)) {
+            return $this->pathToUrl($path);
+        }
+
+        if (!in_array($mode, ['thumbnail', 'best_fit', 'resize','fit_to_width'])) {
+            $mode = 'thumbnail';
+        }
+
+        $method = $mode == 'crop' ? 'thumbnail' : $mode;
+
+        if ($base64) {
+
+            try {
+                $data = $this->helper("image")->take($path)->{$method}($width, $height)->base64data(null, $quality);
+            } catch(Exception $e) {
+                return $url;
+            }
+
+            $url = $data;
+
+        } else {
+
+            $filetime = filemtime($path);
+            $savepath = rtrim($this->path($cachefolder), '/').'/'.md5($path)."_{$width}x{$height}_{$quality}_{$filetime}_{$mode}.{$ext}";
+
+            if ($rebuild || !file_exists($savepath)) {
+
+                try {
+                    $this->helper("image")->take($path)->{$method}($width, $height)->toFile($savepath, null, $quality);
+                } catch(Exception $e) {
+                    return $url;
+                }
+            }
+
+            $url = $this->pathToUrl($savepath);
+
+            if ($domain) {
+                $url = rtrim($this->getSiteUrl(true), '/').$url;
+            }
+
+            return $url;
+        }
+    }
+
+    return false;
+});

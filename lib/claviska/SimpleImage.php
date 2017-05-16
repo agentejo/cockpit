@@ -221,8 +221,9 @@ class SimpleImage {
     // Format defaults to the original mime type
     $mimeType = $mimeType ?: $this->mimeType;
 
-    // Enforce quality range
-    $quality = self::keepWithin($quality, 0, 100);
+    // Ensure quality is a valid integer
+    if($quality === null) $quality = 100;
+    $quality = self::keepWithin((int) $quality, 0, 100);
 
     // Capture output
     ob_start();
@@ -503,6 +504,11 @@ class SimpleImage {
   // Returns a SimpleImage object.
   //
   public function bestFit($maxWidth, $maxHeight) {
+    // If the image already fits, there's nothing to do
+    if($this->getWidth() <= $maxWidth && $this->getHeight() <= $maxHeight) {
+      return $this;
+    }
+
     // Calculate max width or height based on orientation
     if($this->getOrientation() === 'portrait') {
       $height = $maxHeight;
