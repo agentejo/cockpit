@@ -30,6 +30,7 @@ class RestApi extends \LimeExtra\Controller {
         if ($sort     = $this->param('sort', null))     $options['sort'] = $sort;
         if ($skip     = $this->param('skip', null))     $options['skip'] = intval($skip);
         if ($populate = $this->param('populate', null)) $options['populate'] = $populate;
+        if ($lang = $this->param('lang', null)) $options['lang'] = $lang;
         if ($user) $options["user"] = $user;
 
         if (isset($options["sort"])) {

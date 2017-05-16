@@ -170,12 +170,22 @@ $this->module("collections")->extend([
 
         $entries = (array)$this->app->storage->find("collections/{$collection}", $options);
 
+        $fieldsFilter = [];
+
         if (isset($options['user']) && $options['user']) {
-           $entries = $this->_filterFieldsByAccess($entries, $_collection, $options['user']);
+            $fieldsFilter['user'] = $options['user'];
+        }
+
+        if (isset($options['lang']) && $options['lang']) {
+            $fieldsFilter['lang'] = $options['lang'];
+        }
+
+        if (count($fieldsFilter)) {
+           $entries = $this->_filterFields($entries, $_collection, $fieldsFilter);
         }
 
         if (isset($options['populate']) && $options['populate']) {
-            $entries = $this->_populate($entries, is_numeric($options['populate']) ? intval($options['populate']) : false, 0, isset($options['user']) ? $options['user'] : false );
+            $entries = $this->_populate($entries, is_numeric($options['populate']) ? intval($options['populate']) : false, 0, $fieldsFilter);
         }
 
         $this->app->trigger('collections.find.after', [$name, &$entries, false]);
@@ -184,7 +194,7 @@ $this->module("collections")->extend([
         return $entries;
     },
 
-    'findOne' => function($collection, $criteria = [], $projection = null, $populate = false, $user = false) {
+    'findOne' => function($collection, $criteria = [], $projection = null, $populate = false, $fieldsFilter = []) {
 
         $_collection = $this->collection($collection);
 
@@ -198,13 +208,12 @@ $this->module("collections")->extend([
 
         $entry = $this->app->storage->findOne("collections/{$collection}", $criteria, $projection);
 
-        if ($entry && $user) {
-           $entry = $this->_filterFieldsByAccess([$entry], $_collection, $user);
-           $entry = $entry[0];
+        if (count($fieldsFilter)) {
+           $entries = $this->_filterFields($entries, $_collection, $fieldsFilter);
         }
 
         if ($entry && $populate) {
-           $entry = $this->_populate([$entry], is_numeric($populate) ? intval($populate) : false, 0, $user);
+           $entry = $this->_populate([$entry], is_numeric($populate) ? intval($populate) : false, 0, $fieldsFilter);
            $entry = $entry[0];
         }
 
@@ -344,7 +353,7 @@ $this->module("collections")->extend([
         return $this->app->storage->count("collections/{$collection}", $criteria);
     },
 
-    '_resolveLinedkItem' => function($link, $_id, $user) {
+    '_resolveLinedkItem' => function($link, $_id, $fieldsFilter = []) {
 
         static $cache;
 
@@ -357,36 +366,33 @@ $this->module("collections")->extend([
         }
 
         if (!isset($cache[$link][$_id])) {
-            
-            $cache[$link][$_id] = $this->findOne($link, ['_id' => $_id]);
-
-            if ($user && $cache[$link][$_id]) {
-                $entry = $this->_filterFieldsByAccess([$cache[$link][$_id]], $link, $user);
-                $cache[$link][$_id] = $entry[0];
-            }
+            $cache[$link][$_id] = $this->findOne($link, ['_id' => $_id], null, false, $fieldsFilter);
         }
 
         return $cache[$link][$_id];
     },
 
-    '_populate' => function($items, $maxlevel=-1, $level=0, $user = false) {
+    '_populate' => function($items, $maxlevel=-1, $level=0, $fieldsFilter = []) {
 
         if (!is_array($items)) {
             return $items;
         }
-        return cockpit_populate_collection($items, -1, 0, $user);
+        return cockpit_populate_collection($items, -1, 0, $fieldsFilter);
     },
 
-    '_filterFieldsByAccess' => function($items, $collection, $user) {
+    '_filterFields' => function($items, $collection, $filter) {
 
         static $cache;
 
+        $filter = array_merge([
+            'user' => false,
+            'lang' => false
+        ], $filter);
+
+        extract($filter);
+
         if (null === $cache) {
             $cache = [];
-        }
-
-        if (!$user || $user === true) {
-            $user = $this->app->module('cockpit')->getUser();
         }
 
         if (is_string($collection)) {
@@ -395,28 +401,67 @@ $this->module("collections")->extend([
 
         if (!isset($cache[$collection['name']])) {
 
-            $filterfields = [];
+            $fields = [
+                "acl" => [],
+                "localize" => []
+            ];
 
             foreach ($collection["fields"] as $field) {
 
                 if (isset($field['acl']) && is_array($field['acl']) && count($field['acl'])) {
-                    $filterfields[$field['name']] = $field['acl'];
+                    $fields['acl'][$field['name']] = $field['acl'];
+                }
+
+                if (isset($field['localize']) && $field['localize']) {
+                    $fields['localize'][$field['name']] = true;
                 }
             }
 
-            $cache[$collection['name']] = $filterfields;
+            $cache[$collection['name']] = $fields;
         }
 
-        $filterfields = $cache[$collection['name']];
+        if ($user && count($cache[$collection['name']]['acl'])) {
+            
 
-        if (count($filterfields)) {
-
-            $items = array_map(function($entry) use($user, $filterfields) {
+            $aclfields = $cache[$collection['name']]['acl'];
+            $items     = array_map(function($entry) use($user, $aclfields) {
                 
-                foreach ($filterfields as $name => $acl) {
+                foreach ($aclfields as $name => $acl) {
 
                     if (!( in_array($user['group'], $acl) || in_array($user['_id'], $acl) )) {
                         unset($entry[$name]);
+                    }
+                }
+
+                return $entry;
+
+            }, $items);
+        }
+
+        if ($lang && count($cache[$collection['name']]['localize'])) {
+            
+            $localfields = $cache[$collection['name']]['localize'];
+            $languages   = [];
+
+            foreach($this->app->retrieve('config/languages', []) as $key => $val) {
+                if (is_numeric($key)) $key = $val;
+                $languages[] = $key;
+            }
+         
+            $items = array_map(function($entry) use($localfields, $lang, $languages) {
+                
+                foreach ($localfields as $name => $local) {
+
+                    if ($lang !== true && isset($entry[$name])) {
+                        unset($entry[$name]);
+                        unset($entry["{$name}_slug"]);
+                    }
+
+                    foreach($languages as $l) {
+                        if (isset($entry["{$name}_{$l}"]) && $l !== $lang) {
+                            unset($entry["{$name}_{$l}"]);
+                            unset($entry["{$name}_{$l}_slug"]);
+                        }
                     }
                 }
 
@@ -429,7 +474,7 @@ $this->module("collections")->extend([
     }
 ]);
 
-function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $user = false) {
+function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $fieldsFilter = []) {
 
     if (!is_array($items)) {
         return $items;
@@ -442,11 +487,11 @@ function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $user 
     foreach ($items as $k => &$v) {
 
         if (is_array($items[$k])) {
-            $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ++$level, $user);
+            $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ++$level, $fieldsFilter);
         }
 
         if (isset($v['_id'], $v['link'])) {
-            $items[$k] = cockpit('collections')->_resolveLinedkItem($v['link'], $v['_id'], $user);
+            $items[$k] = cockpit('collections')->_resolveLinedkItem($v['link'], $v['_id'], $fieldsFilter);
         }
     }
 
