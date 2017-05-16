@@ -170,8 +170,12 @@ $this->module("collections")->extend([
 
         $entries = (array)$this->app->storage->find("collections/{$collection}", $options);
 
+        if (isset($options['user']) && $options['user']) {
+           $entries = $this->_filterFieldsByAccess($entries, $_collection, $options['user']);
+        }
+
         if (isset($options['populate']) && $options['populate']) {
-            $entries = $this->_populate($entries, is_numeric($options['populate']) ? intval($options['populate']) : false);
+            $entries = $this->_populate($entries, is_numeric($options['populate']) ? intval($options['populate']) : false, 0, isset($options['user']) ? $options['user'] : false );
         }
 
         $this->app->trigger('collections.find.after', [$name, &$entries, false]);
@@ -180,7 +184,7 @@ $this->module("collections")->extend([
         return $entries;
     },
 
-    'findOne' => function($collection, $criteria = [], $projection = null, $populate = false) {
+    'findOne' => function($collection, $criteria = [], $projection = null, $populate = false, $user = false) {
 
         $_collection = $this->collection($collection);
 
@@ -194,8 +198,13 @@ $this->module("collections")->extend([
 
         $entry = $this->app->storage->findOne("collections/{$collection}", $criteria, $projection);
 
+        if ($entry && $user) {
+           $entry = $this->_filterFieldsByAccess([$entry], $_collection, $user);
+           $entry = $entry[0];
+        }
+
         if ($entry && $populate) {
-           $entry = $this->_populate([$entry], is_numeric($populate) ? intval($populate) : false);
+           $entry = $this->_populate([$entry], is_numeric($populate) ? intval($populate) : false, 0, $user);
            $entry = $entry[0];
         }
 
@@ -335,7 +344,7 @@ $this->module("collections")->extend([
         return $this->app->storage->count("collections/{$collection}", $criteria);
     },
 
-    '_resolveLinedkItem' => function($link, $_id) {
+    '_resolveLinedkItem' => function($link, $_id, $user) {
 
         static $cache;
 
@@ -348,22 +357,79 @@ $this->module("collections")->extend([
         }
 
         if (!isset($cache[$link][$_id])) {
+            
             $cache[$link][$_id] = $this->findOne($link, ['_id' => $_id]);
+
+            if ($user && $cache[$link][$_id]) {
+                $entry = $this->_filterFieldsByAccess([$cache[$link][$_id]], $link, $user);
+                $cache[$link][$_id] = $entry[0];
+            }
         }
 
         return $cache[$link][$_id];
     },
 
-    '_populate' => function($items, $maxlevel=-1, $level=0) {
+    '_populate' => function($items, $maxlevel=-1, $level=0, $user = false) {
 
         if (!is_array($items)) {
             return $items;
         }
-        return cockpit_populate_collection($items);
+        return cockpit_populate_collection($items, -1, 0, $user);
+    },
+
+    '_filterFieldsByAccess' => function($items, $collection, $user) {
+
+        static $cache;
+
+        if (null === $cache) {
+            $cache = [];
+        }
+
+        if (!$user || $user === true) {
+            $user = $this->app->module('cockpit')->getUser();
+        }
+
+        if (is_string($collection)) {
+            $collection = $this->collection($collection);
+        }
+
+        if (!isset($cache[$collection['name']])) {
+
+            $filterfields = [];
+
+            foreach ($collection["fields"] as $field) {
+
+                if (isset($field['acl']) && is_array($field['acl']) && count($field['acl'])) {
+                    $filterfields[$field['name']] = $field['acl'];
+                }
+            }
+
+            $cache[$collection['name']] = $filterfields;
+        }
+
+        $filterfields = $cache[$collection['name']];
+
+        if (count($filterfields)) {
+
+            $items = array_map(function($entry) use($user, $filterfields) {
+                
+                foreach ($filterfields as $name => $acl) {
+
+                    if (!( in_array($user['group'], $acl) || in_array($user['_id'], $acl) )) {
+                        unset($entry[$name]);
+                    }
+                }
+
+                return $entry;
+
+            }, $items);
+        }
+
+        return $items;
     }
 ]);
 
-function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0) {
+function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $user = false) {
 
     if (!is_array($items)) {
         return $items;
@@ -376,11 +442,11 @@ function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0) {
     foreach ($items as $k => &$v) {
 
         if (is_array($items[$k])) {
-            $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ++$level);
+            $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ++$level, $user);
         }
 
         if (isset($v['_id'], $v['link'])) {
-            $items[$k] = cockpit('collections')->_resolveLinedkItem($v['link'], $v['_id']);
+            $items[$k] = cockpit('collections')->_resolveLinedkItem($v['link'], $v['_id'], $user);
         }
     }
 
