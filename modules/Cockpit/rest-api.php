@@ -38,22 +38,22 @@ $this->on("before", function() {
             $apikeys = $this->module('cockpit')->loadApiKeys();
             $allowed = (isset($apikeys['master']) && trim($apikeys['master']) && $apikeys['master'] == $token);
         }
-        
-        if (!$allowed) {
-            return false;
-        }
 
         $parts      = explode('/', $path, 2);
         $resource   = $parts[0];
         $params     = isset($parts[1]) ? explode('/', $parts[1]) : [];
         $output     = false;
+        $user       = $this->module('cockpit')->getUser();
 
-        if ($resourcefile = $this->path("#config:api/{$resource}.php")) {
-
-            $user = $this->module('cockpit')->getUser();
+        if ($resourcefile = $this->path("#config:api/public/{$resource}.php")) {
+            
             $output = include($resourcefile);
 
-        } elseif (isset($routes[$resource])) {
+        } elseif ($allowed && $resourcefile = $this->path("#config:api/{$resource}.php")) {
+
+            $output = include($resourcefile);
+
+        } elseif ($allowed && isset($routes[$resource])) {
 
             try {
 
