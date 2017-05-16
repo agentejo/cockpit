@@ -48,7 +48,12 @@ $this->on("before", function() {
         $params     = isset($parts[1]) ? explode('/', $parts[1]) : [];
         $output     = false;
 
-        if (isset($routes[$resource])) {
+        if ($resourcefile = $this->path("#config:api/{$resource}.php")) {
+
+            $user = $this->module('cockpit')->getUser();
+            $output = include($resourcefile);
+
+        } elseif (isset($routes[$resource])) {
 
             try {
 
