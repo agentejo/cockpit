@@ -50,7 +50,7 @@
 
                 <div class="uk-grid uk-grid-match uk-grid-gutter">
 
-                    <div class="uk-width-medium-{field.width}" each="{field,idx in fields}" show="{!group || (group == field.group) }" no-reorder>
+                    <div class="uk-width-medium-{field.width}" each="{field,idx in fields}" show="{!group || (group == field.group) }" if="{ hasFieldAccess(field.name) }" no-reorder>
 
                         <div class="uk-panel">
 
@@ -126,6 +126,7 @@
 
         this.collection   = {{ json_encode($collection) }};
         this.fields       = this.collection.fields;
+        this.fieldsidx    = {};
 
         this.entry        = {{ json_encode($entry) }};
 
@@ -135,6 +136,8 @@
 
         // fill with default values
         this.fields.forEach(function(field){
+
+            $this.fieldsidx[field.name] = field;
 
             if ($this.entry[field.name] === undefined) {
                 $this.entry[field.name] = field.options && field.options.default || null;
@@ -199,6 +202,22 @@
             }, function(res) {
                 App.ui.notify(res && res.message ? res.message : "Saving failed.", "danger");
             });
+        }
+
+        hasFieldAccess(field) {
+
+            var acl = this.fieldsidx[field] && this.fieldsidx[field].acl || [];
+
+            if (field == '_modified' || 
+                App.$data.user.group == 'admin' || 
+                !acl ||
+                (Array.isArray(acl) && !acl.length) ||
+                acl.indexOf(App.$data.user.group) > -1 ||
+                acl.indexOf(App.$data.user._id) > -1
+            
+            ) { return true; }
+
+            return false;
         }
 
     </script>

@@ -101,6 +101,37 @@ class Accounts extends \Cockpit\AuthController {
         return false;
     }
 
+    public function find() {
+
+        $options = [
+            "sort"   => ["user" => 1]
+        ];
+
+        if ($filter = $this->param('filter')) {
+
+            $options['filter'] = $filter;
+
+            if (is_string($filter)) {
+
+                $options['filter'] = [
+                    '$or' => [
+                        ['name' => ['$regex' => $filter]],
+                        ['user' => ['$regex' => $filter]],
+                        ['email' => ['$regex' => $filter]],
+                    ]
+                ];
+            }
+        }
+
+        $accounts = $this->storage->find("cockpit/accounts", $options)->toArray();
+
+        foreach ($accounts as &$account) {
+            $account["md5email"] = md5(@$account["email"]);
+        }
+
+        return $accounts;
+    }
+
     protected function getLanguages() {
 
         $languages = [['i18n' => 'en', 'language' => 'English']];

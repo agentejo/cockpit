@@ -31,7 +31,7 @@ class PHPMailer
      * The PHPMailer Version number.
      * @var string
      */
-    public $Version = '5.2.16';
+    public $Version = '5.2.23';
 
     /**
      * Email priority.
@@ -692,7 +692,7 @@ class PHPMailer
             $subject = $this->encodeHeader($this->secureHeader($subject));
         }
 
-        //Can't use additional_parameters in safe_mode
+        //Can't use additional_parameters in safe_mode, calling mail() with null params breaks
         //@link http://php.net/manual/en/function.mail.php
         if (ini_get('safe_mode') or !$this->UseSendmailOptions or is_null($params)) {
             $result = @mail($to, $subject, $body, $header);
@@ -1364,19 +1364,24 @@ class PHPMailer
      */
     protected function sendmailSend($header, $body)
     {
-        if ($this->Sender != '') {
+        // CVE-2016-10033, CVE-2016-10045: Don't pass -f if characters will be escaped.
+        if (!empty($this->Sender) and self::isShellSafe($this->Sender)) {
             if ($this->Mailer == 'qmail') {
-                $sendmail = sprintf('%s -f%s', escapeshellcmd($this->Sendmail), escapeshellarg($this->Sender));
+                $sendmailFmt = '%s -f%s';
             } else {
-                $sendmail = sprintf('%s -oi -f%s -t', escapeshellcmd($this->Sendmail), escapeshellarg($this->Sender));
+                $sendmailFmt = '%s -oi -f%s -t';
             }
         } else {
             if ($this->Mailer == 'qmail') {
-                $sendmail = sprintf('%s', escapeshellcmd($this->Sendmail));
+                $sendmailFmt = '%s';
             } else {
-                $sendmail = sprintf('%s -oi -t', escapeshellcmd($this->Sendmail));
+                $sendmailFmt = '%s -oi -t';
             }
         }
+
+        // TODO: If possible, this should be changed to escapeshellarg.  Needs thorough testing.
+        $sendmail = sprintf($sendmailFmt, escapeshellcmd($this->Sendmail), $this->Sender);
+
         if ($this->SingleTo) {
             foreach ($this->SingleToArray as $toAddr) {
                 if (!@$mail = popen($sendmail, 'w')) {
@@ -1423,6 +1428,40 @@ class PHPMailer
     }
 
     /**
+     * Fix CVE-2016-10033 and CVE-2016-10045 by disallowing potentially unsafe shell characters.
+     *
+     * Note that escapeshellarg and escapeshellcmd are inadequate for our purposes, especially on Windows.
+     * @param string $string The string to be validated
+     * @see https://github.com/PHPMailer/PHPMailer/issues/924 CVE-2016-10045 bug report
+     * @access protected
+     * @return boolean
+     */
+    protected static function isShellSafe($string)
+    {
+        // Future-proof
+        if (escapeshellcmd($string) !== $string
+            or !in_array(escapeshellarg($string), array("'$string'", "\"$string\""))
+        ) {
+            return false;
+        }
+
+        $length = strlen($string);
+
+        for ($i = 0; $i < $length; $i++) {
+            $c = $string[$i];
+
+            // All other characters have a special meaning in at least one common shell, including = and +.
+            // Full stop (.) has a special meaning in cmd.exe, but its impact should be negligible here.
+            // Note that this does permit non-Latin alphanumeric characters based on the current locale.
+            if (!ctype_alnum($c) && strpos('@_-.', $c) === false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Send mail using the PHP mail() function.
      * @param string $header The message headers
      * @param string $body The message body
@@ -1441,10 +1480,13 @@ class PHPMailer
 
         $params = null;
         //This sets the SMTP envelope sender which gets turned into a return-path header by the receiver
-        if (!empty($this->Sender)) {
-            $params = sprintf('-f%s', $this->Sender);
+        if (!empty($this->Sender) and $this->validateAddress($this->Sender)) {
+            // CVE-2016-10033, CVE-2016-10045: Don't pass -f if characters will be escaped.
+            if (self::isShellSafe($this->Sender)) {
+                $params = sprintf('-f%s', $this->Sender);
+            }
         }
-        if ($this->Sender != '' and !ini_get('safe_mode')) {
+        if (!empty($this->Sender) and !ini_get('safe_mode') and $this->validateAddress($this->Sender)) {
             $old_from = ini_get('sendmail_from');
             ini_set('sendmail_from', $this->Sender);
         }
@@ -1498,10 +1540,10 @@ class PHPMailer
         if (!$this->smtpConnect($this->SMTPOptions)) {
             throw new phpmailerException($this->lang('smtp_connect_failed'), self::STOP_CRITICAL);
         }
-        if ('' == $this->Sender) {
-            $smtp_from = $this->From;
-        } else {
+        if (!empty($this->Sender) and $this->validateAddress($this->Sender)) {
             $smtp_from = $this->Sender;
+        } else {
+            $smtp_from = $this->From;
         }
         if (!$this->smtp->mail($smtp_from)) {
             $this->setError($this->lang('from_failed') . $smtp_from . ' : ' . implode(',', $this->smtp->getError()));
@@ -1580,7 +1622,7 @@ class PHPMailer
 
         foreach ($hosts as $hostentry) {
             $hostinfo = array();
-            if (!preg_match('/^((ssl|tls):\/\/)*([a-zA-Z0-9\.-]*):?([0-9]*)$/', trim($hostentry), $hostinfo)) {
+            if (!preg_match('/^((ssl|tls):\/\/)*([a-zA-Z0-9:\[\]\.-]*):?([0-9]*)$/', trim($hostentry), $hostinfo)) {
                 // Not a valid host entry
                 continue;
             }
@@ -1982,10 +2024,7 @@ class PHPMailer
     {
         $result = '';
 
-        if ($this->MessageDate == '') {
-            $this->MessageDate = self::rfcDate();
-        }
-        $result .= $this->headerLine('Date', $this->MessageDate);
+        $result .= $this->headerLine('Date', $this->MessageDate == '' ? self::rfcDate() : $this->MessageDate);
 
         // To be created automatically by mail()
         if ($this->SingleTo) {
@@ -2450,6 +2489,7 @@ class PHPMailer
 
     /**
      * Add an attachment from a path on the filesystem.
+     * Never use a user-supplied path to a file!
      * Returns false if the file could not be found or read.
      * @param string $path Path to the attachment.
      * @param string $name Overrides the attachment name.
@@ -2975,6 +3015,7 @@ class PHPMailer
      * displayed inline with the message, not just attached for download.
      * This is used in HTML messages that embed the images
      * the HTML refers to using the $cid value.
+     * Never use a user-supplied path to a file!
      * @param string $path Path to the attachment.
      * @param string $cid Content ID of the attachment; Use this to reference
      *        the content when using an embedded image in HTML.
@@ -3338,12 +3379,14 @@ class PHPMailer
      * Create a message body from an HTML string.
      * Automatically inlines images and creates a plain-text version by converting the HTML,
      * overwriting any existing values in Body and AltBody.
-     * $basedir is used when handling relative image paths, e.g. <img src="images/a.png">
+     * Do not source $message content from user input!
+     * $basedir is prepended when handling relative URLs, e.g. <img src="/images/a.png"> and must not be empty
      * will look for an image file in $basedir/images/a.png and convert it to inline.
-     * If you don't want to apply these transformations to your HTML, just set Body and AltBody yourself.
+     * If you don't provide a $basedir, relative paths will be left untouched (and thus probably break in email)
+     * If you don't want to apply these transformations to your HTML, just set Body and AltBody directly.
      * @access public
      * @param string $message HTML message string
-     * @param string $basedir base directory for relative paths to images
+     * @param string $basedir Absolute path to a base directory to prepend to relative paths to images
      * @param boolean|callable $advanced Whether to use the internal HTML to text converter
      *    or your own custom converter @see PHPMailer::html2text()
      * @return string $message The transformed message Body
@@ -3352,6 +3395,10 @@ class PHPMailer
     {
         preg_match_all('/(src|background)=["\'](.*)["\']/Ui', $message, $images);
         if (array_key_exists(2, $images)) {
+            if (strlen($basedir) > 1 && substr($basedir, -1) != '/') {
+                // Ensure $basedir has a trailing /
+                $basedir .= '/';
+            }
             foreach ($images[2] as $imgindex => $url) {
                 // Convert data URIs into embedded images
                 if (preg_match('#^data:(image[^;,]*)(;base64)?,#', $url, $match)) {
@@ -3369,18 +3416,24 @@ class PHPMailer
                             $message
                         );
                     }
-                } elseif (substr($url, 0, 4) !== 'cid:' && !preg_match('#^[a-z][a-z0-9+.-]*://#i', $url)) {
-                    // Do not change urls for absolute images (thanks to corvuscorax)
+                    continue;
+                }
+                if (
+                    // Only process relative URLs if a basedir is provided (i.e. no absolute local paths)
+                    !empty($basedir)
+                    // Ignore URLs containing parent dir traversal (..)
+                    && (strpos($url, '..') === false)
                     // Do not change urls that are already inline images
+                    && substr($url, 0, 4) !== 'cid:'
+                    // Do not change absolute URLs, including anonymous protocol
+                    && !preg_match('#^[a-z][a-z0-9+.-]*:?//#i', $url)
+                ) {
                     $filename = basename($url);
                     $directory = dirname($url);
                     if ($directory == '.') {
                         $directory = '';
                     }
                     $cid = md5($url) . '@phpmailer.0'; // RFC2392 S 2
-                    if (strlen($basedir) > 1 && substr($basedir, -1) != '/') {
-                        $basedir .= '/';
-                    }
                     if (strlen($directory) > 1 && substr($directory, -1) != '/') {
                         $directory .= '/';
                     }

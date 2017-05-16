@@ -9,7 +9,7 @@
             @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
             <th width="20"><input type="checkbox" data-check="all"></th>
             @endif
-            <th width="{field.name == '_modified' ? '120':''}" class="uk-text-small" each="{field,idx in fields}">
+            <th width="{field.name == '_modified' ? '120':''}" class="uk-text-small" each="{field,idx in fields}" if="{ hasFieldAccess(field.name) }">
                 <a class="uk-link-muted { parent.sortedBy == field.name ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
 
                     { field.label || field.name }
@@ -25,7 +25,7 @@
             @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
             <td><input type="checkbox" data-check data-id="{ entry._id }"></td>
             @endif
-            <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' }">
+            <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' && hasFieldAccess(field.name) }">
                 <a class="uk-link-muted" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
                     <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }"></raw>
                 </a>

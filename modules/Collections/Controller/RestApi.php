@@ -28,6 +28,7 @@ class RestApi extends \LimeExtra\Controller {
         if ($populate = $this->param("populate", null)) $options["populate"] = $populate;
 
         if (isset($options["sort"])) {
+            
             foreach ($sort as $key => &$value) {
                 $options["sort"][$key]= intval($value);
             }

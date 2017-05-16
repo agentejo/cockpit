@@ -254,6 +254,7 @@ groups:
         $vars:
             finder.path: /upload
         cockpit:
+            backend: true
             finder: true
 
 */
