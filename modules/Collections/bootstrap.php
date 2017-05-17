@@ -434,12 +434,23 @@ $this->module("collections")->extend([
         if ($user && count($cache[$collection['name']]['acl'])) {
             
             $aclfields = $cache[$collection['name']]['acl'];
-            $items     = array_map(function($entry) use($user, $aclfields) {
+            $items     = array_map(function($entry) use($user, $aclfields, $languages) {
                 
                 foreach ($aclfields as $name => $acl) {
 
                     if (!( in_array($user['group'], $acl) || in_array($user['_id'], $acl) )) {
+                        
                         unset($entry[$name]);
+
+                        if (count($languages)) {
+
+                            foreach($languages as $l) {
+                                if (isset($entry["{$name}_{$l}"])) {
+                                    unset($entry["{$name}_{$l}"]);
+                                    unset($entry["{$name}_{$l}_slug"]);
+                                }
+                            }
+                        }
                     }
                 }
 
