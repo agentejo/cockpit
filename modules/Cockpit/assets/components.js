@@ -367,7 +367,7 @@ riot.tag2('cp-assets', '<div class="uk-form" ref="list" show="{mode==\'list\'}">
                     App.ui.notify("Asset removed", "success");
 
                     $this.assets.splice(idx, 1);
-
+                    $this.selected = [];
                     $this.update();
                 });
             });

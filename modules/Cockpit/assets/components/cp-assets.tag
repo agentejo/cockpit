@@ -349,7 +349,7 @@
                     App.ui.notify("Asset removed", "success");
 
                     $this.assets.splice(idx, 1);
-
+                    $this.selected = [];
                     $this.update();
                 });
             });
