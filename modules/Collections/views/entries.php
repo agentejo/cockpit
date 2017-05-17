@@ -260,6 +260,7 @@
                     });
 
                     this.loading = true;
+                    this.update();
                     this.checkselected(true);
 
                 }.bind(this));

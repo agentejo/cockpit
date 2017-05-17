@@ -76,7 +76,7 @@
                     </td>
                     <td>
                         <div class="uk-form-select">
-                            <a class="{ parent.mapping[field.name] ? 'uk-link-muted':''}"><i class="uk-icon-exchange" show="{parent.mapping[field.name]}"></i> { parent.mapping[field.name] || 'Select...'}</a>
+                            <a class="{ parent.mapping[field.name] ? 'uk-link-muted':''}"><i class="uk-icon-exchange" show="{mapping[field.name]}"></i> { parent.mapping[field.name] || 'Select...'}</a>
                             <select class="uk-width-1-1" onchange="{ setMapping(field.name) }">
                                 <option></option>
                                 <option each="{h,hidx in data.headers}" value="{h}">{h}</option>
@@ -115,8 +115,6 @@
         var $this = this;
 
         this.mixin(RiotBindMixin);
-
-
 
         this.collection = {{ json_encode($collection) }};
         this.file = null;
@@ -300,15 +298,15 @@
                             entry = {};
 
                             Object.keys($this.mapping).forEach(function(k, val, d){
+                                
                                 val = c[$this.mapping[k]];
-
                                 d   = $this.filterData[k];
 
                                 if ($this.filter[k]) {
                                     promises.push(ImportFilter.filter(fields[k], val, d).then(function(val){
                                         entry[k] = val;
                                     }));
-                                } else if (_.isObject(val)) {
+                                } else if (_.isObject(val) && !Array.isArray(val)) {
                                     entry[k] = val.type == fields[k].type ? val : null;
                                 } else {
                                     entry[k] = val;
