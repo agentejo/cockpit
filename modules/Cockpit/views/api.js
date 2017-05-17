@@ -2,85 +2,62 @@
 
     var Cockpit = {
         token  : '{{ $token }}',
-        apiurl : '@route('/api')',
+        apiurl : '{{ $apiurl }}',
         pathToUrl: function(path) {
-            return String(path).replace("site:", "{{ $app->pathToUrl('site:') }}");
+            return String(path).replace('site:', '{{ $app->pathToUrl("site:") }}')
+                               .replace('#root:', '{{ $app->pathToUrl("#root:") }}')
+                               .replace('#uploads:', '{{ $app->pathToUrl("#uploads:") }}')
         },
-        request: function(route, params, type){
+        request: function(route, params, type) {
 
             type   = type || 'auto';
             params = params || {};
 
-            var xhr    = new XMLHttpRequest(),
-                status = status,
-                ret    = {
-                    "_s": [],
-                    "_f": [],
-                    "success": function(fn){
-                        if (!status) {
-                            this._s.push(fn);
-                        } else {
-                            if (status===1) fn(ret._r, ret._req);
+            var promise = new Promise(function(resolve, reject) {
+
+                 var xhr = new XMLHttpRequest();
+
+                 xhr.onloadend = function() {
+
+                    var data  = xhr.responseText;
+
+                    if (this.status == 200) {
+                        if (type=='auto' && String(data).match(/^(\{(.*)\}|\[(.*)\])$/g)) {
+                            type = 'json';
                         }
 
-                        return ret;
-                    },
-                    "fail": function(fn){
-                        if (!status) {
-                            this._f.push(fn)
-                        } else {
-                            if (status===-1) fn(ret._r, ret._req);
+                        if (type == 'json') {
+                            try { data = JSON.parse(data); } catch(e){ data = null; }
                         }
-                        return ret;
+
+                        resolve(data, xhr);
+
+                    } else {
+                        reject(xhr);
                     }
                 };
 
-            xhr.onloadend = function(){
+                xhr.open('POST', [Cockpit.apiurl, route, '?token='+Cockpit.token].join(''), true);
 
-                ret._r   = xhr.responseText;
-                ret._req = xhr;
-
-                if (this.status == 200) {
-
-                    status = 1;
-
-                    if (type=="auto" && String(ret._r).match(/^(\{(.*)\}|\[(.*)\])$/g)) {
-                        type = "json";
-                    }
-
-                    if (type=="json") {
-                        try { ret._r = JSON.parse(ret._r); } catch(e){ ret._r = null; }
-                    }
-
-                } else {
-                    status = -1;
+                if (typeof(params) === 'object' && params instanceof HTMLFormElement) {
+                    params = new FormData(params);
+                } else if (typeof(params) === 'object' && params instanceof FormData) {
+                    // do nothing
+                } else if (typeof(params) === 'object') {
+                    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+                    params = JSON.stringify(params || {});
+                } else if (typeof(params) === 'string') {
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 }
 
-                for (var stat=((status===1) ? '_s':'_f'),  i = ret[stat].length - 1; i >= 0; i--) {
-                    ret[stat][i](ret._r, ret._req);
-                }
-            };
+                xhr.send(params);
+            });
 
-            xhr.open('POST', [this.apiurl, route, '?token='+this.token].join(''), true);
-
-            if (typeof(params) === 'object' && params instanceof HTMLFormElement) {
-                params = new FormData(params);
-            } else if (typeof(params) === 'object' && params instanceof FormData) {
-                // do nothing
-            } else if (typeof(params) === 'object') {
-                xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-                params = JSON.stringify(params || {});
-            } else if (typeof(params) === 'string') {
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            }
-
-            xhr.send(params);
-
-            return ret;
+            return promise;
         }
     };
 
-    {{ $app->trigger('cockpit.api.js') }}
+    <?php $app->trigger('cockpit.api.js') ?>
 
     // AMD support
     if (typeof define === 'function' && define.amd) {

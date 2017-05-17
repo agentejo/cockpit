@@ -103,6 +103,7 @@ $this->bind('/api/image', function() {
         'rebuild' => intval($this->param('r', false)),
         'base64' => intval($this->param('b64', false)),
         'output' => intval($this->param('o', false)),
+        'domain' => intval($this->param('d', false)),
     ];
 
     foreach([

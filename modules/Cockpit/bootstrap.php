@@ -192,7 +192,16 @@ $this->module("cockpit")->extend([
         $url = $this->app->pathToUrl($savepath);
 
         if ($domain) {
-            $url = rtrim($this->app->getSiteUrl(true), '/').$url;
+            
+            $_url = ($this->app->req_is('ssl') ? 'https':'http').'://';
+
+            if (!in_array($this->app['base_port'], ['80', '443'])) {
+                $_url .= $this->app['base_host'].":".$this->app['base_port'];
+            } else {
+                $_url .= $this->app['base_host'];
+            }
+
+            $url = rtrim($_url, '/').$url;
         }
 
         return $url;
@@ -415,10 +424,20 @@ if (COCKPIT_ADMIN) {
 
     $this->bind("/api.js", function() {
 
-        $token                = $this->param("token", "");
+        $token                = $this->param('token', '');
         $this->response->mime = 'js';
 
-        return $this->view('cockpit:views/api.js', compact('token'));
+        $apiurl = ($this->req_is('ssl') ? 'https':'http').'://';
+
+        if (!in_array($this->registry['base_port'], ['80', '443'])) {
+            $apiurl .= $this->registry['base_host'].":".$this->registry['base_port'];
+        } else {
+            $apiurl .= $this->registry['base_host'];
+        }
+
+        $apiurl .= $this->routeUrl('/api');
+
+        return $this->view('cockpit:views/api.js', compact('token', 'apiurl'));
     });
 }
 
