@@ -1,4 +1,19 @@
 <?php
+/*
+ * Copyright 2015-2017 MongoDB, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 namespace MongoDB\Operation;
 
@@ -6,8 +21,12 @@ use MongoDB\Driver\Command;
 use MongoDB\Driver\ReadConcern;
 use MongoDB\Driver\ReadPreference;
 use MongoDB\Driver\Server;
+use MongoDB\Driver\WriteConcern;
+use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnexpectedValueException;
+use MongoDB\Exception\UnsupportedException;
+use MongoDB\Model\TypeMapArrayIterator;
 use ArrayIterator;
 use stdClass;
 use Traversable;
@@ -16,14 +35,16 @@ use Traversable;
  * Operation for the aggregate command.
  *
  * @api
- * @see MongoDB\Collection::aggregate()
+ * @see \MongoDB\Collection::aggregate()
  * @see http://docs.mongodb.org/manual/reference/command/aggregate/
  */
 class Aggregate implements Executable
 {
+    private static $wireVersionForCollation = 5;
     private static $wireVersionForCursor = 2;
     private static $wireVersionForDocumentLevelValidation = 4;
     private static $wireVersionForReadConcern = 4;
+    private static $wireVersionForWriteConcern = 5;
 
     private $databaseName;
     private $collectionName;
@@ -48,22 +69,24 @@ class Aggregate implements Executable
      *    For servers < 3.2, this option is ignored as document level validation
      *    is not available.
      *
+     *  * collation (document): Collation specification.
+     *
+     *    This is not supported for server versions < 3.4 and will result in an
+     *    exception at execution time if used.
+     *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
      *    run.
      *
      *  * readConcern (MongoDB\Driver\ReadConcern): Read concern. Note that a
      *    "majority" read concern is not compatible with the $out stage.
      *
-     *    For servers < 3.2, this option is ignored as read concern is not
-     *    available.
+     *    This is not supported for server versions < 3.2 and will result in an
+     *    exception at execution time if used.
      *
      *  * readPreference (MongoDB\Driver\ReadPreference): Read preference.
      *
      *  * typeMap (array): Type map for BSON deserialization. This will be
      *    applied to the returned Cursor (it is not sent to the server).
-     *
-     *    This is not supported for inline aggregation results (i.e. useCursor
-     *    option is false or the server versions < 2.6).
      *
      *  * useCursor (boolean): Indicates whether the command will request that
      *    the server provide results using a cursor. The default is true.
@@ -74,11 +97,17 @@ class Aggregate implements Executable
      *    For servers >= 2.6, this option allows users to turn off cursors if
      *    necessary to aid in mongod/mongos upgrades.
      *
+     *  * writeConcern (MongoDB\Driver\WriteConcern): Write concern. This only
+     *    applies when the $out stage is specified.
+     *
+     *    This is not supported for server versions < 3.4 and will result in an
+     *    exception at execution time if used.
+     *
      * @param string $databaseName   Database name
      * @param string $collectionName Collection name
      * @param array  $pipeline       List of pipeline operations
      * @param array  $options        Command options
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException for parameter/option parsing errors
      */
     public function __construct($databaseName, $collectionName, array $pipeline, array $options = [])
     {
@@ -117,6 +146,10 @@ class Aggregate implements Executable
             throw InvalidArgumentException::invalidType('"bypassDocumentValidation" option', $options['bypassDocumentValidation'], 'boolean');
         }
 
+        if (isset($options['collation']) && ! is_array($options['collation']) && ! is_object($options['collation'])) {
+            throw InvalidArgumentException::invalidType('"collation" option', $options['collation'], 'array or object');
+        }
+
         if (isset($options['maxTimeMS']) && ! is_integer($options['maxTimeMS'])) {
             throw InvalidArgumentException::invalidType('"maxTimeMS" option', $options['maxTimeMS'], 'integer');
         }
@@ -135,6 +168,10 @@ class Aggregate implements Executable
 
         if ( ! is_bool($options['useCursor'])) {
             throw InvalidArgumentException::invalidType('"useCursor" option', $options['useCursor'], 'boolean');
+        }
+
+        if (isset($options['writeConcern']) && ! $options['writeConcern'] instanceof WriteConcern) {
+            throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], 'MongoDB\Driver\WriteConcern');
         }
 
         if (isset($options['batchSize']) && ! $options['useCursor']) {
@@ -158,9 +195,23 @@ class Aggregate implements Executable
      * @param Server $server
      * @return Traversable
      * @throws UnexpectedValueException if the command response was malformed
+     * @throws UnsupportedException if collation, read concern, or write concern is used and unsupported
+     * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
     public function execute(Server $server)
     {
+        if (isset($this->options['collation']) && ! \MongoDB\server_supports_feature($server, self::$wireVersionForCollation)) {
+            throw UnsupportedException::collationNotSupported();
+        }
+
+        if (isset($this->options['readConcern']) && ! \MongoDB\server_supports_feature($server, self::$wireVersionForReadConcern)) {
+            throw UnsupportedException::readConcernNotSupported();
+        }
+
+        if (isset($this->options['writeConcern']) && ! \MongoDB\server_supports_feature($server, self::$wireVersionForWriteConcern)) {
+            throw UnsupportedException::writeConcernNotSupported();
+        }
+
         $isCursorSupported = \MongoDB\server_supports_feature($server, self::$wireVersionForCursor);
         $readPreference = isset($this->options['readPreference']) ? $this->options['readPreference'] : null;
 
@@ -168,9 +219,6 @@ class Aggregate implements Executable
         $cursor = $server->executeCommand($this->databaseName, $command, $readPreference);
 
         if ($isCursorSupported && $this->options['useCursor']) {
-            /* The type map can only be applied to command cursors until
-             * https://jira.mongodb.org/browse/PHPC-314 is implemented.
-             */
             if (isset($this->options['typeMap'])) {
                 $cursor->setTypeMap($this->options['typeMap']);
             }
@@ -182,6 +230,10 @@ class Aggregate implements Executable
 
         if ( ! isset($result->result) || ! is_array($result->result)) {
             throw new UnexpectedValueException('aggregate command did not return a "result" array');
+        }
+
+        if (isset($this->options['typeMap'])) {
+            return new TypeMapArrayIterator($result->result, $this->options['typeMap']);
         }
 
         return new ArrayIterator($result->result);
@@ -212,12 +264,20 @@ class Aggregate implements Executable
             $cmd['bypassDocumentValidation'] = $this->options['bypassDocumentValidation'];
         }
 
+        if (isset($this->options['collation'])) {
+            $cmd['collation'] = (object) $this->options['collation'];
+        }
+
         if (isset($this->options['maxTimeMS'])) {
             $cmd['maxTimeMS'] = $this->options['maxTimeMS'];
         }
 
-        if (isset($this->options['readConcern']) && \MongoDB\server_supports_feature($server, self::$wireVersionForReadConcern)) {
+        if (isset($this->options['readConcern'])) {
             $cmd['readConcern'] = \MongoDB\read_concern_as_document($this->options['readConcern']);
+        }
+
+        if (isset($this->options['writeConcern'])) {
+            $cmd['writeConcern'] = \MongoDB\write_concern_as_document($this->options['writeConcern']);
         }
 
         if ($this->options['useCursor']) {

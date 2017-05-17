@@ -1,4 +1,19 @@
 <?php
+/*
+ * Copyright 2015-2017 MongoDB, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 namespace MongoDB\Operation;
 
@@ -7,13 +22,15 @@ use MongoDB\Driver\Query;
 use MongoDB\Driver\ReadConcern;
 use MongoDB\Driver\ReadPreference;
 use MongoDB\Driver\Server;
+use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
+use MongoDB\Exception\UnsupportedException;
 
 /**
  * Operation for the find command.
  *
  * @api
- * @see MongoDB\Collection::find()
+ * @see \MongoDB\Collection::find()
  * @see http://docs.mongodb.org/manual/tutorial/query-documents/
  * @see http://docs.mongodb.org/manual/reference/operator/query-modifier/
  */
@@ -22,6 +39,9 @@ class Find implements Executable
     const NON_TAILABLE = 1;
     const TAILABLE = 2;
     const TAILABLE_AWAIT = 3;
+
+    private static $wireVersionForCollation = 5;
+    private static $wireVersionForReadConcern = 4;
 
     private $databaseName;
     private $collectionName;
@@ -38,6 +58,11 @@ class Find implements Executable
      *
      *  * batchSize (integer): The number of documents to return per batch.
      *
+     *  * collation (document): Collation specification.
+     *
+     *    This is not supported for server versions < 3.4 and will result in an
+     *    exception at execution time if used.
+     *
      *  * comment (string): Attaches a comment to the query. If "$comment" also
      *    exists in the modifiers document, this option will take precedence.
      *
@@ -51,8 +76,9 @@ class Find implements Executable
      *    run. If "$maxTimeMS" also exists in the modifiers document, this
      *    option will take precedence.
      *
-     *  * modifiers (document): Meta-operators modifying the output or behavior
-     *    of a query.
+     *  * modifiers (document): Meta operators that modify the output or
+     *    behavior of a query. Use of these operators is deprecated in favor of
+     *    named options.
      *
      *  * noCursorTimeout (boolean): The server normally times out idle cursors
      *    after an inactivity period (10 minutes) to prevent excess memory use.
@@ -66,8 +92,8 @@ class Find implements Executable
      *
      *  * readConcern (MongoDB\Driver\ReadConcern): Read concern.
      *
-     *    For servers < 3.2, this option is ignored as read concern is not
-     *    available.
+     *    This is not supported for server versions < 3.2 and will result in an
+     *    exception at execution time if used.
      *
      *  * readPreference (MongoDB\Driver\ReadPreference): Read preference.
      *
@@ -84,7 +110,7 @@ class Find implements Executable
      * @param string       $collectionName Collection name
      * @param array|object $filter         Query by which to filter documents
      * @param array        $options        Command options
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException for parameter/option parsing errors
      */
     public function __construct($databaseName, $collectionName, $filter, array $options = [])
     {
@@ -98,6 +124,10 @@ class Find implements Executable
 
         if (isset($options['batchSize']) && ! is_integer($options['batchSize'])) {
             throw InvalidArgumentException::invalidType('"batchSize" option', $options['batchSize'], 'integer');
+        }
+
+        if (isset($options['collation']) && ! is_array($options['collation']) && ! is_object($options['collation'])) {
+            throw InvalidArgumentException::invalidType('"collation" option', $options['collation'], 'array or object');
         }
 
         if (isset($options['comment']) && ! is_string($options['comment'])) {
@@ -172,9 +202,19 @@ class Find implements Executable
      * @see Executable::execute()
      * @param Server $server
      * @return Cursor
+     * @throws UnsupportedException if collation or read concern is used and unsupported
+     * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
     public function execute(Server $server)
     {
+        if (isset($this->options['collation']) && ! \MongoDB\server_supports_feature($server, self::$wireVersionForCollation)) {
+            throw UnsupportedException::collationNotSupported();
+        }
+
+        if (isset($this->options['readConcern']) && ! \MongoDB\server_supports_feature($server, self::$wireVersionForReadConcern)) {
+            throw UnsupportedException::readConcernNotSupported();
+        }
+
         $readPreference = isset($this->options['readPreference']) ? $this->options['readPreference'] : null;
 
         $cursor = $server->executeQuery($this->databaseName . '.' . $this->collectionName, $this->createQuery(), $readPreference);
@@ -195,10 +235,6 @@ class Find implements Executable
     {
         $options = [];
 
-        if ( ! empty($this->options['allowPartialResults'])) {
-            $options['partial'] = true;
-        }
-
         if (isset($this->options['cursorType'])) {
             if ($this->options['cursorType'] === self::TAILABLE) {
                 $options['tailable'] = true;
@@ -209,21 +245,17 @@ class Find implements Executable
             }
         }
 
-        foreach (['batchSize', 'limit', 'skip', 'sort', 'noCursorTimeout', 'oplogReplay', 'projection', 'readConcern'] as $option) {
+        foreach (['allowPartialResults', 'batchSize', 'comment', 'limit', 'maxTimeMS', 'noCursorTimeout', 'oplogReplay', 'projection', 'readConcern', 'skip', 'sort'] as $option) {
             if (isset($this->options[$option])) {
                 $options[$option] = $this->options[$option];
             }
         }
 
+        if (isset($this->options['collation'])) {
+            $options['collation'] = (object) $this->options['collation'];
+        }
+
         $modifiers = empty($this->options['modifiers']) ? [] : (array) $this->options['modifiers'];
-
-        if (isset($this->options['comment'])) {
-            $modifiers['$comment'] = $this->options['comment'];
-        }
-
-        if (isset($this->options['maxTimeMS'])) {
-            $modifiers['$maxTimeMS'] = $this->options['maxTimeMS'];
-        }
 
         if ( ! empty($modifiers)) {
             $options['modifiers'] = $modifiers;

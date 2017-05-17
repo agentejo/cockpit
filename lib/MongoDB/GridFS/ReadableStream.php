@@ -1,9 +1,25 @@
 <?php
+/*
+ * Copyright 2016-2017 MongoDB, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 namespace MongoDB\GridFS;
 
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\GridFS\Exception\CorruptFileException;
+use IteratorIterator;
 use stdClass;
 
 /**
@@ -14,18 +30,15 @@ use stdClass;
 class ReadableStream
 {
     private $buffer;
-    private $bufferEmpty;
-    private $bufferFresh;
-    private $bytesSeen = 0;
+    private $bufferOffset = 0;
     private $chunkSize;
     private $chunkOffset = 0;
     private $chunksIterator;
     private $collectionWrapper;
+    private $expectedLastChunkSize = 0;
     private $file;
-    private $firstCheck = true;
-    private $iteratorEmpty = false;
     private $length;
-    private $numChunks;
+    private $numChunks = 0;
 
     /**
      * Constructs a readable GridFS stream.
@@ -49,13 +62,15 @@ class ReadableStream
         }
 
         $this->file = $file;
-        $this->chunkSize = $file->chunkSize;
-        $this->length = $file->length;
+        $this->chunkSize = (integer) $file->chunkSize;
+        $this->length = (integer) $file->length;
 
-        $this->chunksIterator = $collectionWrapper->getChunksIteratorByFilesId($file->_id);
         $this->collectionWrapper = $collectionWrapper;
-        $this->numChunks = ceil($this->length / $this->chunkSize);
-        $this->initEmptyBuffer();
+
+        if ($this->length > 0) {
+            $this->numChunks = (integer) ceil($this->length / $this->chunkSize);
+            $this->expectedLastChunkSize = ($this->length - (($this->numChunks - 1) * $this->chunkSize));
+        }
     }
 
     /**
@@ -75,56 +90,7 @@ class ReadableStream
 
     public function close()
     {
-        fclose($this->buffer);
-    }
-
-    /**
-     * Read bytes from the stream.
-     *
-     * Note: this method may return a string smaller than the requested length
-     * if data is not available to be read.
-     * 
-     * @param integer $numBytes Number of bytes to read
-     * @return string
-     * @throws InvalidArgumentException if $numBytes is negative
-     */
-    public function downloadNumBytes($numBytes)
-    {
-        if ($numBytes < 0) {
-            throw new InvalidArgumentException(sprintf('$numBytes must be >= zero; given: %d', $numBytes));
-        }
-
-        if ($numBytes == 0) {
-            return '';
-        }
-
-        if ($this->bufferFresh) {
-            rewind($this->buffer);
-            $this->bufferFresh = false;
-        }
-
-        // TODO: Should we be checking for fread errors here?
-        $output = fread($this->buffer, $numBytes);
-
-        if (strlen($output) == $numBytes) {
-            return $output;
-        }
-
-        $this->initEmptyBuffer();
-
-        $bytesLeft = $numBytes - strlen($output);
-
-        while (strlen($output) < $numBytes && $this->advanceChunks()) {
-            $bytesLeft = $numBytes - strlen($output);
-            $output .= substr($this->chunksIterator->current()->data->getData(), 0, $bytesLeft);
-        }
-
-        if ( ! $this->iteratorEmpty && $this->length > 0 && $bytesLeft < strlen($this->chunksIterator->current()->data->getData())) {
-            fwrite($this->buffer, substr($this->chunksIterator->current()->data->getData(), $bytesLeft));
-            $this->bufferEmpty = false;
-        }
-
-        return $output;
+        // Nothing to do
     }
 
     /**
@@ -147,58 +113,161 @@ class ReadableStream
         return $this->length;
     }
 
+    /**
+    * Return whether the current read position is at the end of the stream.
+    *
+    * @return boolean
+    */
     public function isEOF()
     {
-        return ($this->iteratorEmpty && $this->bufferEmpty);
-    }
-
-    private function advanceChunks()
-    {
-        if ($this->chunkOffset >= $this->numChunks) {
-            $this->iteratorEmpty = true;
-
-            return false;
+        if ($this->chunkOffset === $this->numChunks - 1) {
+            return $this->bufferOffset >= $this->expectedLastChunkSize;
         }
 
-        if ($this->firstCheck) {
-            $this->chunksIterator->rewind();
-            $this->firstCheck = false;
-        } else {
-            $this->chunksIterator->next();
+        return $this->chunkOffset >= $this->numChunks;
+    }
+
+    /**
+     * Read bytes from the stream.
+     *
+     * Note: this method may return a string smaller than the requested length
+     * if data is not available to be read.
+     * 
+     * @param integer $length Number of bytes to read
+     * @return string
+     * @throws InvalidArgumentException if $length is negative
+     */
+    public function readBytes($length)
+    {
+        if ($length < 0) {
+            throw new InvalidArgumentException(sprintf('$length must be >= 0; given: %d', $length));
+        }
+
+        if ($this->chunksIterator === null) {
+            $this->initChunksIterator();
+        }
+
+        if ($this->buffer === null && ! $this->initBufferFromCurrentChunk()) {
+            return '';
+        }
+
+        $data = '';
+
+        while (strlen($data) < $length) {
+            if ($this->bufferOffset >= strlen($this->buffer) && ! $this->initBufferFromNextChunk()) {
+                break;
+            }
+
+            $initialDataLength = strlen($data);
+            $data .= substr($this->buffer, $this->bufferOffset, $length - $initialDataLength);
+            $this->bufferOffset += strlen($data) - $initialDataLength;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Seeks the chunk and buffer offsets for the next read operation.
+     *
+     * @param integer $offset
+     * @throws InvalidArgumentException if $offset is out of range
+     */
+    public function seek($offset)
+    {
+        if ($offset < 0 || $offset > $this->file->length) {
+            throw new InvalidArgumentException(sprintf('$offset must be >= 0 and <= %d; given: %d', $length, $offset));
+        }
+
+        /* Compute the offsets for the chunk and buffer (i.e. chunk data) from
+         * which we will expect to read after seeking. If the chunk offset
+         * changed, we'll also need to reset the buffer.
+         */
+        $lastChunkOffset = $this->chunkOffset;
+        $this->chunkOffset = (integer) floor($offset / $this->chunkSize);
+        $this->bufferOffset = $offset % $this->chunkSize;
+
+        if ($lastChunkOffset !== $this->chunkOffset) {
+            $this->buffer = null;
+            $this->chunksIterator = null;
+        }
+    }
+
+    /**
+     * Return the current position of the stream.
+     *
+     * This is the offset within the stream where the next byte would be read.
+     *
+     * @return integer
+     */
+    public function tell()
+    {
+        return ($this->chunkOffset * $this->chunkSize) + $this->bufferOffset;
+    }
+
+    /**
+     * Initialize the buffer to the current chunk's data.
+     *
+     * @return boolean Whether there was a current chunk to read
+     * @throws CorruptFileException if an expected chunk could not be read successfully
+     */
+    private function initBufferFromCurrentChunk()
+    {
+        if ($this->chunkOffset === 0 && $this->numChunks === 0) {
+            return false;
         }
 
         if ( ! $this->chunksIterator->valid()) {
             throw CorruptFileException::missingChunk($this->chunkOffset);
         }
 
-        if ($this->chunksIterator->current()->n != $this->chunkOffset) {
-            throw CorruptFileException::unexpectedIndex($this->chunksIterator->current()->n, $this->chunkOffset);
+        $currentChunk = $this->chunksIterator->current();
+
+        if ($currentChunk->n !== $this->chunkOffset) {
+            throw CorruptFileException::unexpectedIndex($currentChunk->n, $this->chunkOffset);
         }
 
-        $actualChunkSize = strlen($this->chunksIterator->current()->data->getData());
+        $this->buffer = $currentChunk->data->getData();
 
-        $expectedChunkSize = ($this->chunkOffset == $this->numChunks - 1)
-            ? ($this->length - $this->bytesSeen)
+        $actualChunkSize = strlen($this->buffer);
+
+        $expectedChunkSize = ($this->chunkOffset === $this->numChunks - 1)
+            ? $this->expectedLastChunkSize
             : $this->chunkSize;
 
-        if ($actualChunkSize != $expectedChunkSize) {
+        if ($actualChunkSize !== $expectedChunkSize) {
             throw CorruptFileException::unexpectedSize($actualChunkSize, $expectedChunkSize);
         }
-
-        $this->bytesSeen += $actualChunkSize;
-        $this->chunkOffset++;
 
         return true;
     }
 
-    private function initEmptyBuffer()
+    /**
+     * Advance to the next chunk and initialize the buffer to its data.
+     *
+     * @return boolean Whether there was a next chunk to read
+     * @throws CorruptFileException if an expected chunk could not be read successfully
+     */
+    private function initBufferFromNextChunk()
     {
-        if (isset($this->buffer)) {
-            fclose($this->buffer);
+        if ($this->chunkOffset === $this->numChunks - 1) {
+            return false;
         }
 
-        $this->buffer = fopen("php://temp", "w+");
-        $this->bufferEmpty = true;
-        $this->bufferFresh = true;
+        $this->bufferOffset = 0;
+        $this->chunkOffset++;
+        $this->chunksIterator->next();
+
+        return $this->initBufferFromCurrentChunk();
+    }
+
+    /**
+     * Initializes the chunk iterator starting from the current offset.
+     */
+    private function initChunksIterator()
+    {
+        $cursor = $this->collectionWrapper->findChunksByFileId($this->file->_id, $this->chunkOffset);
+
+        $this->chunksIterator = new IteratorIterator($cursor);
+        $this->chunksIterator->rewind();
     }
 }

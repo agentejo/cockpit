@@ -1,4 +1,19 @@
 <?php
+/*
+ * Copyright 2016-2017 MongoDB, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 namespace MongoDB\GridFS;
 
@@ -7,7 +22,6 @@ use MongoDB\UpdateResult;
 use MongoDB\Driver\Cursor;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\ReadPreference;
-use IteratorIterator;
 use stdClass;
 
 /**
@@ -68,8 +82,29 @@ class CollectionWrapper
      */
     public function dropCollections()
     {
-        $this->filesCollection->drop();
-        $this->chunksCollection->drop();
+        $this->filesCollection->drop(['typeMap' => []]);
+        $this->chunksCollection->drop(['typeMap' => []]);
+    }
+
+    /**
+     * Finds GridFS chunk documents for a given file ID and optional offset.
+     *
+     * @param mixed   $id        File ID
+     * @param integer $fromChunk Starting chunk (inclusive)
+     * @return Cursor
+     */
+    public function findChunksByFileId($id, $fromChunk = 0)
+    {
+        return $this->chunksCollection->find(
+            [
+                'files_id' => $id,
+                'n' => ['$gte' => $fromChunk],
+            ],
+            [
+                'sort' => ['n' => 1],
+                'typeMap' => ['root' => 'stdClass'],
+            ]
+        );
     }
 
     /**
@@ -141,6 +176,18 @@ class CollectionWrapper
     }
 
     /**
+     * Finds a single document from the GridFS bucket's files collection.
+     *
+     * @param array|object $filter  Query by which to filter documents
+     * @param array        $options Additional options
+     * @return array|object|null
+     */
+    public function findOneFile($filter, array $options = [])
+    {
+        return $this->filesCollection->findOne($filter, $options);
+    }
+
+    /**
      * Return the bucket name.
      *
      * @return string
@@ -148,25 +195,6 @@ class CollectionWrapper
     public function getBucketName()
     {
         return $this->bucketName;
-    }
-
-    /**
-     * Returns a chunks iterator for a given file ID.
-     *
-     * @param mixed $id
-     * @return IteratorIterator
-     */
-    public function getChunksIteratorByFilesId($id)
-    {
-        $cursor = $this->chunksCollection->find(
-            ['files_id' => $id],
-            [
-                'sort' => ['n' => 1],
-                'typeMap' => ['root' => 'stdClass'],
-            ]
-        );
-
-        return new IteratorIterator($cursor);
     }
 
     /**
@@ -284,6 +312,7 @@ class CollectionWrapper
         return null === $this->filesCollection->findOne([], [
             'readPreference' => new ReadPreference(ReadPreference::RP_PRIMARY),
             'projection' => ['_id' => 1],
+            'typeMap' => [],
         ]);
     }
 }
