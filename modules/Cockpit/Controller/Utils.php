@@ -17,6 +17,16 @@ class Utils extends \Cockpit\AuthController {
             'output' => intval($this->param('o', false)),
         ];
 
+        foreach([
+            'blur', 'brighten', 
+            'colorize', 'contrast', 
+            'darken', 'desaturate', 
+            'edge detect', 'emboss', 
+            'flip', 'invert', 'opacity', 'pixelate', 'sepia', 'sharpen', 'sketch'
+        ] as $f) {
+            if ($this->param($f)) $options[$f] = $this->param($f);
+        }
+
         return $this->module('cockpit')->thumbnail($options);
     }
 }

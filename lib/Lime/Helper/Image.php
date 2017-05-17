@@ -42,6 +42,10 @@ class Img {
         $this->image->output($format, $quality);
     }
 
+    public function blur($passes = 1, $type = 'gaussian') {
+        return $this->image->blur($type, $passes);
+    }
+
     public function __call($method, $args) {
         call_user_func_array([$this->image, $method], $args);
         return $this;

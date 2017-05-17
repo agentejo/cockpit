@@ -87,6 +87,7 @@ $this->module("cockpit")->extend([
             'cachefolder' => '#thumbs:',
             'src' => '',
             'mode' => 'thumbnail',
+            'filter' => '',
             'width' => false,
             'height' => false,
             'quality' => 100,
@@ -148,12 +149,30 @@ $this->module("cockpit")->extend([
         $method = $mode == 'crop' ? 'thumbnail' : $mode;
 
         $filetime = filemtime($path);
-        $savepath = rtrim($this->app->path($cachefolder), '/').'/'.md5($path)."_{$width}x{$height}_{$quality}_{$filetime}_{$mode}.{$ext}";
+        $hash = md5($path.json_encode($options))."_{$width}x{$height}_{$quality}_{$filetime}_{$mode}.{$ext}";
+        $savepath = rtrim($this->app->path($cachefolder), '/')."/{$hash}";
 
         if ($rebuild || !file_exists($savepath)) {
 
             try {
-                $this->app->helper("image")->take($path)->{$method}($width, $height)->toFile($savepath, null, $quality);
+                $img = $this->app->helper("image")->take($path)->{$method}($width, $height);
+                
+                $_filters = [
+                    'blur', 'brighten', 
+                    'colorize', 'contrast', 
+                    'darken', 'desaturate', 
+                    'edge detect', 'emboss', 
+                    'flip', 'invert', 'opacity', 'pixelate', 'sepia', 'sharpen', 'sketch'
+                ];
+
+                foreach($_filters as $f) {
+                    
+                    if (isset($options[$f])) {
+                        $img->{$f}($options[$f]);
+                    }
+                }
+
+                $img->toFile($savepath, null, $quality);
             } catch(Exception $e) {
                 return $url;
             }
