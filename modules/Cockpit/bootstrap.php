@@ -79,8 +79,105 @@ $this->module("cockpit")->extend([
         $container = $this->app->path('#storage:').'/api.keys.php';
 
         return $this->app->helper('fs')->write($container, "<?php\n return {$export};");
-    }
+    },
 
+    "thumbnail" => function($options) {
+
+        $options = array_merge(array(
+            'cachefolder' => '#thumbs:',
+            'src' => '',
+            'mode' => 'thumbnail',
+            'width' => false,
+            'height' => false,
+            'quality' => 100,
+            'rebuild' => false,
+            'base64' => false,
+            'output' => false,
+            'domain' => false
+        ), $options);
+
+        extract($options);
+
+        if (!$width) {
+            return ['error' => 'Target width parameter is missing'];
+        }
+
+        if (!$height) {
+            return ['error' => 'Target height parameter is missing'];
+        }
+
+        if (!$src) {
+            return ['error' => 'Missing src parameter'];
+        }
+
+        $src = rawurldecode($src);
+
+        if (!preg_match('/\.(png|jpg|jpeg|gif)$/i', $src)) {
+            
+            if ($asset = $this->app->storage->findOne("cockpit/assets", ['_id' => $src])) {
+                $asset['path'] = trim($asset['path'], '/');
+                $src = $this->app->path("#uploads:{$asset['path']}");
+            }
+        }
+
+        // check if absolute url
+        if (substr($src, 0,1) == '/' && file_exists($this->app['docs_root'].$src)) {
+            $src = $this->app['docs_root'].$src;
+        }
+
+        $path  = $this->app->path($src);
+        $ext   = pathinfo($path, PATHINFO_EXTENSION);
+        $url   = "data:image/gif;base64,R0lGODlhAQABAJEAAAAAAP///////wAAACH5BAEHAAIALAAAAAABAAEAAAICVAEAOw=="; // transparent 1px gif
+
+        if (!file_exists($path) || is_dir($path)) {
+            return false;
+        }
+
+        if (!in_array(strtolower($ext), array('png','jpg','jpeg','gif'))) {
+            return $url;
+        }
+
+        if (is_null($width) && is_null($height)) {
+            return $this->app->pathToUrl($path);
+        }
+
+        if (!in_array($mode, ['thumbnail', 'best_fit', 'resize','fit_to_width'])) {
+            $mode = 'thumbnail';
+        }
+
+        $method = $mode == 'crop' ? 'thumbnail' : $mode;
+
+        $filetime = filemtime($path);
+        $savepath = rtrim($this->app->path($cachefolder), '/').'/'.md5($path)."_{$width}x{$height}_{$quality}_{$filetime}_{$mode}.{$ext}";
+
+        if ($rebuild || !file_exists($savepath)) {
+
+            try {
+                $this->app->helper("image")->take($path)->{$method}($width, $height)->toFile($savepath, null, $quality);
+            } catch(Exception $e) {
+                return $url;
+            }
+        }
+
+        if ($base64) {
+            return "data:image/{$ext};base64,".base64_encode(file_get_contents($savepath));
+        }
+
+        if ($output) {
+            header("Content-Type: image/{$ext}");
+            header('Content-Length: '.filesize($savepath));
+            readfile($savepath);
+            $this->app->stop();
+        }
+
+        $url = $this->app->pathToUrl($savepath);
+
+        if ($domain) {
+            $url = rtrim($this->app->getSiteUrl(true), '/').$url;
+        }
+
+        return $url;
+    }
 ]);
 
 

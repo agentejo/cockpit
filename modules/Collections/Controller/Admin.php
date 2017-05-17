@@ -197,7 +197,6 @@ class Admin extends \Cockpit\AuthController {
 
         $this->module('collections')->remove($collection['name'], $filter);
 
-
         return true;
     }
 
