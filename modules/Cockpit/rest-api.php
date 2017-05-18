@@ -19,10 +19,9 @@ $this->on("before", function() {
             return false;
         }
 
-        $token = $this->param('token');
+        $token = $this->param('token', isset($_SERVER['HTTP_COCKPIT_TOKEN']) ? $_SERVER['HTTP_COCKPIT_TOKEN'] : null);
 
         // api key check
-        #
         $allowed = false;
 
         if (preg_match('/account-/', $token)) {
