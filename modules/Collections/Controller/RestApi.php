@@ -13,7 +13,7 @@ class RestApi extends \LimeExtra\Controller {
             return false;
         }
 
-        $collection = $this->app->module('collections')->collection($collection);
+        $collection = $this->module('collections')->collection($collection);
         $user = $this->module('cockpit')->getUser();
         
         if ($user) {
@@ -40,7 +40,7 @@ class RestApi extends \LimeExtra\Controller {
             }
         }
 
-        $entries = $this->app->module('collections')->find($collection['name'], $options);
+        $entries = $this->module('collections')->find($collection['name'], $options);
 
         // return only entries array - due to legacy
         if ((boolean) $this->param('simple', false)) {
@@ -89,4 +89,63 @@ class RestApi extends \LimeExtra\Controller {
 
         return $data;
     }
+
+    public function createCollection() {
+
+        $user = $this->module('cockpit')->getUser();
+        $name = $this->param('name', null);
+        $data = $this->param('data', null);
+
+        if (!$name || !$data || !$user) {
+            return false;
+        }
+
+        if (!$this->module('cockpit')->isSuperAdmin()) {
+            return false;
+        }
+
+        $collection = $this->module('collections')->createCollection($name, $data);
+
+        return $collection;
+    }
+
+    public function updateCollection() {
+
+        $user = $this->module('cockpit')->getUser();
+        $name = $this->param('name', null);
+        $data = $this->param('data', null);
+
+        if (!$name || !$data || !$user) {
+            return false;
+        }
+
+        $collection = $this->module('collections')->collection($name);
+
+        if (!$this->module('cockpit')->isSuperAdmin()) {
+            return false;
+        }
+
+        $collection = $this->module('collections')->updateCollection($name, $data);
+
+        return $collection;
+    }
+
+    public function collection($name) {
+
+        $user = $this->module('cockpit')->getUser();
+
+        if (!$name || !$user) {
+            return false;
+        }
+
+        $collections = $this->module("collections")->getCollectionsInGroup($user['group'], true);
+
+        if (!isset($collections[$name])) {
+            return false;
+        }
+
+        return $collections[$name];
+    }
+
+
 }
