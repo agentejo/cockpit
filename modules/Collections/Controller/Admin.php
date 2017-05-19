@@ -172,6 +172,8 @@ class Admin extends \Cockpit\AuthController {
             return $this->helper('admin')->denyRequest();
         }
 
+        $entry['_by'] = $this->module('cockpit')->getUser('_id');
+
         if (isset($entry['_id'])) {
             $_entry = $this->module('collections')->findOne($collection['name'], ['_id' => $entry['_id']]);
             $revision = !(json_encode($_entry) == json_encode($entry));

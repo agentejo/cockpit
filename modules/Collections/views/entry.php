@@ -122,6 +122,13 @@
                     </div>
                 </div>
 
+                <div class="uk-margin" if="{entry._id && entry._by}">
+                    <label class="uk-text-small">@lang('Last update by')</label>
+                    <div class="uk-margin-small-top">
+                        <cp-account account="{entry._by}"></cp-account>
+                    </div>
+                </div>
+
             </div>
 
         </div>

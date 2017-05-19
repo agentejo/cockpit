@@ -253,12 +253,16 @@ $this->module("cockpit")->extend([
         $app['cockpit.auth.user'] = $user;
     },
 
-    "getUser" => function() use($app) {
+    "getUser" => function($prop = null, $default = null) use($app) {
 
         $user = $app->retrieve('cockpit.auth.user');
 
         if (is_null($user)) {
             $user = $app("session")->read('cockpit.app.auth', null);
+        }
+
+        if (!is_null($prop)) {
+            return $user && isset($user[$prop]) ? $user[$prop] : $default;
         }
 
         return $user;
