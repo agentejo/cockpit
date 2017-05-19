@@ -147,6 +147,24 @@
         }
     };
 
+
+    var _accounts = {}; // cache
+
+    Cockpit.account = function(id) {
+
+        if (!_accounts[id]) {
+            
+            _accounts[id] = new Promise(function(resolve, reject) {
+
+                App.request('/accounts/find', {filter:{_id:id}}).then(function(accounts) {
+                    resolve(Array.isArray(accounts) && accounts[0] ? accounts[0] : null);
+                });
+            });
+        }
+
+        return _accounts[id];
+    }
+
     App.$.extend(true, App, Cockpit);
 
     window.Cockpit = Cockpit;

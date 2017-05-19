@@ -71,7 +71,7 @@ class Controller extends \Lime\AppAware {
     /**
      *
      */
-    protected function stop() {
-        $this->app->stop();
+    protected function stop($data = false, $status = null) {
+        $this->app->stop($data, $status);
     }
 }

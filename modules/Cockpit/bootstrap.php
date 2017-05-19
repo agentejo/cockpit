@@ -1,5 +1,9 @@
 <?php
 
+// Helpers
+
+$this->helpers['revisions']  = 'Cockpit\\Helper\\Revisions';
+
 // API
 
 $this->module("cockpit")->extend([

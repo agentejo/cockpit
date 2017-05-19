@@ -29,4 +29,15 @@ class Utils extends \Cockpit\AuthController {
 
         return $this->module('cockpit')->thumbnail($options);
     }
+
+
+    public function revisionsCount() {
+        
+        if ($id = $this->param('id')) {
+            $cnt = $this->app->helper('revisions')->count($id);
+            return (string)$cnt;
+        }
+
+        return 0;
+    }
 }

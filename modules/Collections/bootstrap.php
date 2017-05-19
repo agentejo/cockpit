@@ -223,7 +223,11 @@ $this->module("collections")->extend([
         return $entry;
     },
 
-    'save' => function($collection, $data) {
+    'save' => function($collection, $data, $options = []) {
+
+        $options = array_merge([
+            'revision' => false
+        ], $options);
 
         $_collection = $this->collection($collection);
 
@@ -315,6 +319,10 @@ $this->module("collections")->extend([
 
             $this->app->trigger('collections.save.after', [$name, &$entry, $isUpdate]);
             $this->app->trigger("collections.save.after.{$name}", [$name, &$entry, $isUpdate]);
+
+            if ($ret && $options['revision']) {
+                $this->app->helper('revisions')->add($entry['_id'], $entry, "collections/{$collection}", true);
+            }
 
             $return[] = $ret ? $entry : false;
         }

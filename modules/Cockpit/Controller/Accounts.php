@@ -39,7 +39,7 @@ class Accounts extends \Cockpit\AuthController {
         unset($account["password"]);
 
         $languages = $this->getLanguages();
-        $groups    = $this->app->module('cockpit')->getGroups();
+        $groups    = $this->module('cockpit')->getGroups();
 
         return $this->render('cockpit:views/accounts/account.php', compact('account', 'uid', 'languages', 'groups'));
     }
@@ -50,7 +50,7 @@ class Accounts extends \Cockpit\AuthController {
         $account   = ["user"=>"", "email"=>"", "active"=>true, "group"=>"admin", "i18n"=>$this->app->helper("i18n")->locale];
 
         $languages = $this->getLanguages();
-        $groups    = $this->app->module('cockpit')->getGroups();
+        $groups    = $this->module('cockpit')->getGroups();
 
         return $this->render('cockpit:views/accounts/account.php', compact('account', 'uid', 'languages', 'groups'));
     }

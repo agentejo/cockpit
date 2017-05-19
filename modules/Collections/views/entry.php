@@ -112,6 +112,16 @@
                     <div class="uk-margin-small-top uk-text-muted" if="{!entry._id}">@lang('Not saved yet')</div>
                 </div>
 
+                <div class="uk-margin" if="{entry._id}">
+                    <label class="uk-text-small">@lang('Revisions')</label>
+                    <div class="uk-margin-small-top">
+                        <span class="uk-position-relative">
+                            <cp-revisions-info class="uk-badge uk-text-large" rid="{entry._id}" parent="true"></cp-revisions-info>
+                            <a class="uk-position-cover" href="@route('/collections/revisions/'.$collection['name'])/{entry._id}"></a>
+                        </span>
+                    </div>
+                </div>
+
             </div>
 
         </div>
