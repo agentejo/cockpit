@@ -1762,6 +1762,15 @@ riot.tag2('field-html', '<textarea ref="input" class="uk-visibility-hidden"></te
 
                 $this.refs.input.value = $this.value;
 
+                //get codemirror options from JSON options and merge in opts
+                if(opts.htmleditoroptions){
+                    var co=opts.htmleditoroptions;
+                    for(var prop in co){
+                        if(!(prop in opts) || opts[prop] === undefined)
+                        opts[prop]=co[prop];
+                    }
+                }
+
                 editor = UIkit.htmleditor(this.refs.input, opts);
                 editor.editor.on('change', function() {
                     $this.$setValue(editor.editor.getValue());
@@ -1923,7 +1932,7 @@ riot.tag2('field-location', '<div class="uk-alert" if="{!apiready}"> Loading map
 
 });
 
-riot.tag2('field-markdown', '<field-html ref="input" markdown="true" bind="{opts.bind}" height="{opts.height}"></field-html>', '', '', function(opts) {
+riot.tag2('field-markdown', '<field-html ref="input" markdown="true" bind="{opts.bind}" htmleditoroptions="{opts.htmleditor}" height="{opts.height}"></field-html>', '', '', function(opts) {
 });
 
 riot.tag2('field-multipleselect', '<div class="{options.length > 10 ? \'uk-scrollable-box\':\'\'}"> <div class="uk-margin-small-top" each="{option in options}"> <a data-value="{option}" class="{parent.selected.indexOf(option)!==-1 ? \'uk-text-primary\':\'uk-text-muted\'}" onclick="{parent.toggle}" title="{option}"> <i class="uk-icon-{parent.selected.indexOf(option)!==-1 ? \'circle\':\'circle-o\'} uk-margin-small-right"></i> {option} </a> </div> </div> <span class="uk-text-small uk-text-muted" if="{options.length > 10}">{selected.length} {App.i18n.get(\'selected\')}</span>', '', '', function(opts) {
