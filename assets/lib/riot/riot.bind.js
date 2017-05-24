@@ -51,14 +51,19 @@
                     return;
                 }
 
-                try {
-                    value = (new Function('tag', 'return tag.'+field+';'))(tag);
-                } catch(e) {}
+                var lastObject = tag;
+                var segments = field.split('.');
 
-                return value;
+                // Retrieve last object by segments
+                for (var j = 0; j < segments.length - 1; j++) {
+                  lastObject = lastObject[segments[j]];
+                }
+
+                // Get value by referring last segment of object
+                return lastObject[segments[segments.length - 1]];
             };
 
-            ele.$setValue = (function(fn, body) {
+            ele.$setValue = (function() {
 
                 var field, segments, cache = {};
 
@@ -95,11 +100,33 @@
                         cache[field] = true;
                     }
 
-                    body = 'try{ tag.'+field+' = val; if(!silent) { tag.update(); } tag.trigger("bindingupdated", ["'+field+'", val]);return true;}catch(e){ console.log(e);return false; }';
+                    try {
 
-                    fn = new Function('tag', 'val', 'silent', body);
+                        var lastObject = tag;
+                        segments = field.split('.');
 
-                    return fn(tag, value, silent);
+                        // Retrieve last object by segments
+                        for (var j = 0; j < segments.length - 1; j++) {
+                            lastObject = lastObject[segments[j]];
+                        }
+
+                        // Set value by referring to last segment of object
+                        lastObject[segments[segments.length - 1]] = value;
+
+                        if (!silent) {
+                            tag.update();
+                        }
+
+                        tag.trigger('bindingupdated', ['"' + field + '"', value]);
+
+                        return true;
+
+                    } catch (e) {
+
+                        console.log(e);
+
+                        return false;
+                    }
                 };
 
             })();
