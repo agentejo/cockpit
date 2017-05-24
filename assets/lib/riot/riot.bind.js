@@ -51,15 +51,9 @@
                     return;
                 }
 
-                var lastObject = tag;
                 var segments = field.split('.');
+                var lastObject = getLastObject(tag, segments);
 
-                // Retrieve last object by segments
-                for (var j = 0; j < segments.length - 1; j++) {
-                  lastObject = lastObject[segments[j]];
-                }
-
-                // Get value by referring last segment of object
                 return lastObject[segments[segments.length - 1]];
             };
 
@@ -101,14 +95,8 @@
                     }
 
                     try {
-
-                        var lastObject = tag;
                         segments = field.split('.');
-
-                        // Retrieve last object by segments
-                        for (var j = 0; j < segments.length - 1; j++) {
-                            lastObject = lastObject[segments[j]];
-                        }
+                        var lastObject = getLastObject(tag, segments);
 
                         // Set value by referring to last segment of object
                         lastObject[segments[segments.length - 1]] = value;
@@ -218,6 +206,33 @@
             update();
         };
     };
+
+    /**
+     * Retrieve last object in by segments (helper)
+     * @param {Tag} tag
+     * @param {array} segments
+     * @return {Object}
+     */
+    function getLastObject(tag, segments) {
+
+        var lastObject = tag;
+
+        for (var i = 0, arrayString; i < segments.length - 1; i++) {
+
+            // Match format `fields[0]`
+            arrayString = segments[i].match(/^(.+)\[(\d+)\]$/);
+
+            // It's a key with an array
+            if (arrayString) {
+                lastObject = lastObject[arrayString[1]][arrayString[2]];
+            // It's a key
+            } else {
+                lastObject = lastObject[segments[i]];
+            }
+        }
+
+        return lastObject;
+    }
 
     var Mixin = {
         init: function() {
