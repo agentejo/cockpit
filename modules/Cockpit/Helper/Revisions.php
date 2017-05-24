@@ -15,7 +15,7 @@ class Revisions extends \Lime\Helper {
         return $this->storage->count("cockpit/revisions", ["_oid" => $id]);
     }
 
-    public function list($id) {
+    public function getList($id) {
 
         return $this->storage->find("cockpit/revisions", [
             "filter" => ["_oid" => $id],

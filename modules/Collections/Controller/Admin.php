@@ -268,7 +268,7 @@ class Admin extends \Cockpit\AuthController {
             return false;
         }
 
-        $revisions = $this->app->helper('revisions')->list($id);
+        $revisions = $this->app->helper('revisions')->getList($id);
 
         
         return $this->render('collections:views/revisions.php', compact('collection', 'entry', 'revisions'));
