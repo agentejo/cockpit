@@ -51,14 +51,10 @@
                     return;
                 }
 
-                try {
-                    value = (new Function('tag', 'return tag.'+field+';'))(tag);
-                } catch(e) {}
-
-                return value;
+                return _.get(tag, field);
             };
 
-            ele.$setValue = (function(fn, body) {
+            ele.$setValue = (function() {
 
                 var field, segments, cache = {};
 
@@ -95,11 +91,23 @@
                         cache[field] = true;
                     }
 
-                    body = 'try{ tag.'+field+' = val; if(!silent) { tag.update(); } tag.trigger("bindingupdated", ["'+field+'", val]);return true;}catch(e){ console.log(e);return false; }';
+                    try {
+                        _.set(tag, field, value);
 
-                    fn = new Function('tag', 'val', 'silent', body);
+                        if (!silent) {
+                            tag.update();
+                        }
 
-                    return fn(tag, value, silent);
+                        tag.trigger('bindingupdated', ['"' + field + '"', value]);
+
+                        return true;
+
+                    } catch (e) {
+
+                        console.log(e);
+
+                        return false;
+                    }
                 };
 
             })();
