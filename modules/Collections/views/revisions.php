@@ -79,15 +79,20 @@
 
                     <div if="{ hasDiffs() }">
 
-                        <h3>@lang('Changes')</h3>
+                        <div class="uk-margin uk-flex uk-flex-middle">
+                            <div class="uk-h3 uk-flex-item-1">@lang('Changes')</div>
+                            <div class="uk-margin-left">
+                                <field-boolean bind="showOnlyChanged" label="@lang('Show only changed fields')"></field-boolean>
+                            </div>
+                        </div>
 
-                        <div class="uk-panel uk-margin" each="{value,key in active.data}" if="{['_id','_modified','_created','_by'].indexOf(key) < 0 && JSON.stringify(value) !== JSON.stringify(current[key])}">
+                        <div class="uk-panel uk-margin" each="{value,key in active.data}" if="{['_id','_modified','_created','_by'].indexOf(key) < 0 && (showOnlyChanged ? JSON.stringify(value) !== JSON.stringify(current[key]) : true)}">
                             
                             <div class="uk-margin uk-panel uk-panel-box uk-panel-card">
                                 
                                 <div class="uk-margin uk-grid uk-flex-middle">
                                     <div class="uk-flex-item-1"><span class="uk-badge uk-badge-outline uk-badge-primary">{ key }</span></div>
-                                    <div><a onclick="{restoreValue}" title="@lang('Restore value')" data-uk-tooltip><i class="uk-icon-refresh"></i></a></div>
+                                    <div show="{JSON.stringify(value) !== JSON.stringify(current[key])}"><a onclick="{restoreValue}" title="@lang('Restore value')" data-uk-tooltip><i class="uk-icon-refresh"></i></a></div>
                                 </div>
 
                                 <cp-diff oldtxt="{ value }" newtxt="{ parent.current[key] || '' }"></cp-diff>
@@ -116,6 +121,8 @@
 
 
     <script type="view/script">
+
+        this.mixin(RiotBindMixin);
 
         var $this = this;
 
