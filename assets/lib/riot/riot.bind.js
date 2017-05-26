@@ -56,40 +56,9 @@
 
             ele.$setValue = (function() {
 
-                var field, segments, cache = {};
-
                 return function(value, silent, field) {
 
                     field = field || ele.getAttribute(attr);
-
-                    if (!cache[field]) {
-
-                        segments = field.split('.');
-
-                        var current = tag;
-
-                        try {
-
-                            for (var i = 0;i<segments.length;i++) {
-
-                                if (segments[i].indexOf('[') != -1) break;
-
-                                if (current[segments[i]] === undefined ) {
-
-                                    if (segments[ i + 1 ]) {
-                                        current[segments[i]] = {};
-                                    } else {
-                                        current[segments[i]] = null;
-                                    }
-                                }
-
-                                current = current[segments[i]];
-                            }
-
-                        }catch(e){}
-
-                        cache[field] = true;
-                    }
 
                     try {
                         _.set(tag, field, value);
@@ -98,7 +67,7 @@
                             tag.update();
                         }
 
-                        tag.trigger('bindingupdated', ['"' + field + '"', value]);
+                        tag.trigger('bindingupdated', [field, value]);
 
                         return true;
 
