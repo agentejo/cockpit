@@ -474,13 +474,19 @@ $this->module("collections")->extend([
                 
                 foreach ($localfields as $name => $local) {
 
-                    if ($lang !== 'default' && isset($entry[$name])) {
-                        unset($entry[$name]);
-                        unset($entry["{$name}_slug"]);
-                    }
-
                     foreach($languages as $l) {
-                        if (isset($entry["{$name}_{$l}"]) && $l !== $lang) {
+                        
+                        if (isset($entry["{$name}_{$l}"])) {
+
+                            if ($l == $lang) {
+                                
+                                $entry[$name] = $entry["{$name}_{$l}"];
+
+                                if (isset($entry["{$name}_{$l}_slug"])) {
+                                    $entry["{$name}_slug"] = $entry["{$name}_{$l}_slug"];
+                                }
+                            }
+
                             unset($entry["{$name}_{$l}"]);
                             unset($entry["{$name}_{$l}_slug"]);
                         }
