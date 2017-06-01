@@ -296,14 +296,14 @@ class UtilArrayQuery {
                 break;
             case '$gte' :
             case '$gt' :
-                if (is_numeric($a) && is_numeric($b)) {
+                if ( (is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b)) ) {
                     $r = $a > $b;
                 }
                 break;
 
             case '$lte' :
             case '$lt' :
-                if (is_numeric($a) && is_numeric($b)) {
+                if ( (is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b)) ) {
                     $r = $a < $b;
                 }
                 break;

@@ -62,7 +62,7 @@ class RestApi extends \LimeExtra\Controller {
         return [
             'fields'   => $fields,
             'entries'  => $entries,
-            'total'    => count($entries)
+            'total'    => $this->module('collections')->count($collection['name'], $filter ? $filter : [])
         ];
 
         return $entries;
