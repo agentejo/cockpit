@@ -83,6 +83,7 @@ AddType application/x-shockwave-flash   swf
     ExpiresByType video/x-flv                   "access plus 1 year"
     ExpiresByType application/vnd.bw-fontobject "access plus 1 year"
     ExpiresByType application/x-font-ttf        "access plus 1 year"
+    ExpiresByType application/x-font-woff       "access plus 1 year"
     ExpiresByType application/font-woff         "access plus 1 year"
     ExpiresByType font/opentype                 "access plus 1 year"
     ExpiresByType image/webp                    "access plus 1 year"
