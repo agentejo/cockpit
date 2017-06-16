@@ -43,8 +43,26 @@ class RestApi extends \LimeExtra\Controller {
 
 
         // new user needs a password
-        if (!isset($data["_id"]) && !isset($data["password"])) {
-            return false;
+        if (!isset($data["_id"])) {
+
+            // new user needs a password
+            if (!isset($data["password"])) {
+                return false;
+            }
+
+            // new user needs a username
+            if (!isset($data["user"])) {
+                return false;
+            }
+
+            $data = array_merge($account = [
+                "user"     => "admin",
+                "name"     => "",
+                "email"    => "",
+                "active"   => true,
+                "group"    => "user",
+                "i18n"     => "en"
+            ], $data);
         }
 
         if (isset($data["password"])) {
@@ -126,5 +144,5 @@ class RestApi extends \LimeExtra\Controller {
 
         return $this->module('cockpit')->thumbnail($options);
     }
-    
+
 }
