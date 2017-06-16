@@ -35,7 +35,38 @@ $this->on("before", function() {
 
         } else {
             $apikeys = $this->module('cockpit')->loadApiKeys();
+            
+            // check master for master key
             $allowed = (isset($apikeys['master']) && trim($apikeys['master']) && $apikeys['master'] == $token);
+
+            if (!$allowed && count($apikeys['special'])) {
+
+                foreach ($apikeys['special'] as &$apikey) {
+                    
+                    if ($apikey['token'] == $token) {
+
+                        $rules =  trim($apikey['rules']);
+
+                        if ($rules == '*') {
+                            $allowed = true;
+                            break;
+                        }
+
+                        foreach(explode("\n", $rules) as $rule) {
+
+                            $rule = trim($rule);
+                            if (!$rule) continue;
+
+                            if (preg_match("#{$rule}#", COCKPIT_ADMIN_ROUTE)) {
+                                $allowed = true;
+                                break;
+                            }
+                        }
+
+                        break;
+                    }
+                }
+            }
         }
 
         $parts      = explode('/', $path, 2);
@@ -88,32 +119,4 @@ $this->on("before", function() {
         return $output;
     });
 
-});
-
-
-$this->bind('/api/image', function() {
-
-    $options = [
-        'src' => $this->param('src', false),
-        'mode' => $this->param('m', 'thumbnail'),
-        'width' => intval($this->param('w', null)),
-        'height' => intval($this->param('h', null)),
-        'quality' => intval($this->param('q', 100)),
-        'rebuild' => intval($this->param('r', false)),
-        'base64' => intval($this->param('b64', false)),
-        'output' => intval($this->param('o', false)),
-        'domain' => intval($this->param('d', false)),
-    ];
-
-    foreach([
-        'blur', 'brighten', 
-        'colorize', 'contrast', 
-        'darken', 'desaturate', 
-        'edge detect', 'emboss', 
-        'flip', 'invert', 'opacity', 'pixelate', 'sepia', 'sharpen', 'sketch'
-    ] as $f) {
-        if ($this->param($f)) $options[$f] = $this->param($f);
-    }
-
-    return $this->module('cockpit')->thumbnail($options);
 });
