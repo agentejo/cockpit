@@ -47,7 +47,7 @@
 
                         <div class="uk-form-row">
                             <label class="uk-text-small">@lang('Info')</label>
-                            <input class="uk-width-1-1 uk-form-large uk-text-muted uk-form-blank" type="text" placeholder="@lang('No key generated')" bind="keys.special[{idx}].info">
+                            <input class="uk-width-1-1 uk-form-large uk-text-muted uk-form-blank" type="text" placeholder="..." bind="keys.special[{idx}].info">
                         </div>
 
                     </div>
