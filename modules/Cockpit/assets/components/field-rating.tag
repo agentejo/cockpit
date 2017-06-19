@@ -1,14 +1,10 @@
 <field-rating>
 
     <ul class="uk-grid uk-grid-small">
-        <li show="{value}"><a onclick="{removeRating}"><i class="uk-icon-trash-o"></i></a></li>
-        <li class="{(!hoverValue && Math.ceil(value) >= n) || (hoverValue && Math.ceil(hoverValue) >= n) ? 'uk-text-primary' : ''}" each={n,idx in ratingRange} onmousemove={hoverRating} onmouseleave={leaveHoverRating} onclick={setRating}><i class="uk-icon-{opts.icon ? opts.icon : 'star'}" title="{ (idx+1) }" data-uk-tooltip></i></li>
+        <li class="{(!hoverValue && Math.ceil(value) >= n) || (hoverValue && Math.ceil(hoverValue) >= n) ? 'uk-text-primary' : ''}" each="{n,idx in ratingRange}" onmousemove="{hoverRating}" onmouseleave="{leaveHoverRating}" onclick="{setRating}" style="cursor:pointer;"><i class="uk-icon-{opts.icon ? opts.icon : 'star'}" title="{ (idx+1) }" data-uk-tooltip></i></li>
         <li show="{value}"><span class="uk-badge">{!hoverValue && value || hoverValue}</span></li>
+        <li show="{value}"><a class="uk-text-danger" onclick="{removeRating}"><i class="uk-icon-trash-o"></i></a></li>
     </ul>
-
-    <style scoped>
-        .uk-grid > * { cursor: pointer; }
-    </style>
 
     <script>
 
@@ -18,7 +14,7 @@
 
             this.mininmum  = opts.mininmum  || 0;
             this.maximum   = opts.maximum   || 5;
-            this.precision = opts.this.precision || 0;
+            this.precision = opts.precision || 0;
 
             if (this.precision < 0 || this.precision > 0.5) {
                 this.precision = this.precision - Math.floor(this.precision);
@@ -36,6 +32,8 @@
             for (var j = this.mininmum + 1; j <= this.maximum; j = j +1) {
                 this.ratingRange.push(j);
             }
+
+            this.update();
         });
 
         setRating(e) {
