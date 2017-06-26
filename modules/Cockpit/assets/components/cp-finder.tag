@@ -67,7 +67,7 @@
                         <ul class="uk-nav uk-nav-dropdown">
                             <li class="uk-nav-header">Sort by</li>
                             <li><a class="uk-dropdown-close" onclick="{ doSortBy.bind(this, 'name') }">Name</a></li>
-                            <li><a class="uk-dropdown-close" onclick="{ doSortBy.bind(this, 'filesize') }">Size</a></li>
+                            <li><a class="uk-dropdown-close" onclick="{ doSortBy.bind(this, 'filesize') }">Filesize</a></li>
                             <li><a class="uk-dropdown-close" onclick="{ doSortBy.bind(this, 'modified') }">Modified</a></li>
                         </ul>
                     </div>
@@ -562,8 +562,8 @@
                 $this.data = data;
 
                 $this.data.files = $this.data.files.sort(function(a,b) {
-                    a = $this.sortBy == 'name' ? String(a[$this.sortBy]).toLowerCase() : a[$this.sortBy];
-                    b =  $this.sortBy == 'name' ? String(b[$this.sortBy]).toLowerCase() : b[$this.sortBy];
+                    a = $this.sortBy == 'name' ? a[$this.sortBy].toLowerCase() : a[$this.sortBy];
+                    b =  $this.sortBy == 'name' ? b[$this.sortBy].toLowerCase() : b[$this.sortBy];
                     if (a < b) return -1;
                     if (a> b) return 1;
                     return 0;
@@ -659,8 +659,8 @@
             this.sortBy = sortby;
 
             $this.data.files = $this.data.files.sort(function(a,b) {
-                a = $this.sortBy == 'name' ? String(a[$this.sortBy]).toLowerCase() : a[$this.sortBy];
-                b =  $this.sortBy == 'name' ? String(b[$this.sortBy]).toLowerCase() : b[$this.sortBy];
+                a = $this.sortBy == 'name' ? a[$this.sortBy].toLowerCase() : a[$this.sortBy];
+                b =  $this.sortBy == 'name' ? b[$this.sortBy].toLowerCase() : b[$this.sortBy];
                 if (a < b) return -1;
                 if (a> b) return 1;
                 return 0;
