@@ -10,6 +10,10 @@
 
         // Code based on work of https://github.com/attitude
 
+        this.value = null;
+        this.hoverValue = null;
+        this.ratingRange = [];
+
         this.on('mount', function() {
 
             this.mininmum  = opts.mininmum  || 0;
@@ -23,11 +27,6 @@
                     this.precision = this.precision - 0.5;
                 }
             }
-
-            this.value = null;
-            this.hoverValue = null;
-
-            this.ratingRange = [];
 
             for (var j = this.mininmum + 1; j <= this.maximum; j = j +1) {
                 this.ratingRange.push(j);

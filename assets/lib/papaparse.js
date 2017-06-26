@@ -1,6 +1,6 @@
 /*!
 	Papa Parse
-	v4.1.2
+	v4.3.2
 	https://github.com/mholt/PapaParse
 */
 (function(root, factory)
@@ -26,7 +26,20 @@
 {
 	'use strict';
 
-	var global = Function('return this')();
+	var global = (function () {
+		// alternative method, similar to `Function('return this')()`
+		// but without using `eval` (which is disabled when
+		// using Content Security Policy).
+
+		if (typeof self !== 'undefined') { return self; }
+		if (typeof window !== 'undefined') { return window; }
+		if (typeof global !== 'undefined') { return global; }
+
+        // When running tests none of the above have been defined
+        return {};
+	})();
+
+
 	var IS_WORKER = !global.document && !!global.postMessage,
 		IS_PAPA_WORKER = IS_WORKER && /(\?|&)papaworker(=|&|$)/.test(global.location.search),
 		LOADED_SYNC = false, AUTO_SCRIPT_PATH;
@@ -55,6 +68,7 @@
 	Papa.NetworkStreamer = NetworkStreamer;
 	Papa.FileStreamer = FileStreamer;
 	Papa.StringStreamer = StringStreamer;
+	Papa.ReadableStreamStreamer = ReadableStreamStreamer;
 
 	if (global.jQuery)
 	{
@@ -179,7 +193,13 @@
 	function CsvToJson(_input, _config)
 	{
 		_config = _config || {};
-		_config.dynamicTyping = _config.dynamicTyping || false;
+        var dynamicTyping = _config.dynamicTyping || false;
+        if (isFunction(dynamicTyping)) {
+            _config.dynamicTypingFunction = dynamicTyping;
+            // Will be filled on first row call
+            dynamicTyping = {};
+        }
+        _config.dynamicTyping = dynamicTyping;
 
 		if (_config.worker && Papa.WORKERS_SUPPORTED)
 		{
@@ -213,6 +233,10 @@
 			else
 				streamer = new StringStreamer(_config);
 		}
+		else if (_input.readable === true && isFunction(_input.read) && isFunction(_input.on))
+		{
+			streamer = new ReadableStreamStreamer(_config);
+		}
 		else if ((global.File && _input instanceof File) || _input instanceof Object)	// ...Safari. (see issue #106)
 			streamer = new FileStreamer(_config);
 
@@ -234,13 +258,21 @@
 		/** whether to surround every datum with quotes */
 		var _quotes = false;
 
+		/** whether to write headers */
+		var _writeHeader = true;
+
 		/** delimiting character */
 		var _delimiter = ',';
 
 		/** newline character(s) */
 		var _newline = '\r\n';
 
+		/** quote character */
+		var _quoteChar = '"';
+
 		unpackConfig();
+
+		var quoteCharRegex = new RegExp(_quoteChar, 'g');
 
 		if (typeof _input === 'string')
 			_input = JSON.parse(_input);
@@ -296,6 +328,12 @@
 
 			if (typeof _config.newline === 'string')
 				_newline = _config.newline;
+
+			if (typeof _config.quoteChar === 'string')
+				_quoteChar = _config.quoteChar;
+
+			if (typeof _config.header === 'boolean')
+				_writeHeader = _config.header;
 		}
 
 
@@ -324,7 +362,7 @@
 			var dataKeyedByField = !(data[0] instanceof Array);
 
 			// If there a header row, write it first
-			if (hasHeader)
+			if (hasHeader && _writeHeader)
 			{
 				for (var i = 0; i < fields.length; i++)
 				{
@@ -362,7 +400,7 @@
 			if (typeof str === 'undefined' || str === null)
 				return '';
 
-			str = str.toString().replace(/"/g, '""');
+			str = str.toString().replace(quoteCharRegex, _quoteChar+_quoteChar);
 
 			var needsQuotes = (typeof _quotes === 'boolean' && _quotes)
 							|| (_quotes instanceof Array && _quotes[col])
@@ -371,7 +409,7 @@
 							|| str.charAt(0) === ' '
 							|| str.charAt(str.length - 1) === ' ';
 
-			return needsQuotes ? '"' + str + '"' : str;
+			return needsQuotes ? _quoteChar + str + _quoteChar : str;
 		}
 
 		function hasAny(str, substrings)
@@ -549,6 +587,16 @@
 			}
 
 			xhr.open('GET', this._input, !IS_WORKER);
+			// Headers can only be set when once the request state is OPENED
+			if (this._config.downloadRequestHeaders)
+			{
+				var headers = this._config.downloadRequestHeaders;
+
+				for (var headerName in headers)
+				{
+					xhr.setRequestHeader(headerName, headers[headerName]);
+				}
+			}
 
 			if (this._config.chunkSize)
 			{
@@ -594,6 +642,9 @@
 		function getFileSize(xhr)
 		{
 			var contentRange = xhr.getResponseHeader('Content-Range');
+			if (contentRange === null) { // no content range, then finish!
+        			return -1;
+            		}
 			return parseInt(contentRange.substr(contentRange.lastIndexOf('/') + 1));
 		}
 	}
@@ -695,6 +746,77 @@
 	StringStreamer.prototype.constructor = StringStreamer;
 
 
+	function ReadableStreamStreamer(config)
+	{
+		config = config || {};
+
+		ChunkStreamer.call(this, config);
+
+		var queue = [];
+		var parseOnData = true;
+
+		this.stream = function(stream)
+		{
+			this._input = stream;
+
+			this._input.on('data', this._streamData);
+			this._input.on('end', this._streamEnd);
+			this._input.on('error', this._streamError);
+		}
+
+		this._nextChunk = function()
+		{
+			if (queue.length)
+			{
+				this.parseChunk(queue.shift());
+			}
+			else
+			{
+				parseOnData = true;
+			}
+		}
+
+		this._streamData = bindFunction(function(chunk)
+		{
+			try
+			{
+				queue.push(typeof chunk === 'string' ? chunk : chunk.toString(this._config.encoding));
+
+				if (parseOnData)
+				{
+					parseOnData = false;
+					this.parseChunk(queue.shift());
+				}
+			}
+			catch (error)
+			{
+				this._streamError(error);
+			}
+		}, this);
+
+		this._streamError = bindFunction(function(error)
+		{
+			this._streamCleanUp();
+			this._sendError(error.message);
+		}, this);
+
+		this._streamEnd = bindFunction(function()
+		{
+			this._streamCleanUp();
+			this._finished = true;
+			this._streamData('');
+		}, this);
+
+		this._streamCleanUp = bindFunction(function()
+		{
+			this._input.removeListener('data', this._streamData);
+			this._input.removeListener('end', this._streamEnd);
+			this._input.removeListener('error', this._streamError);
+		}, this);
+	}
+	ReadableStreamStreamer.prototype = Object.create(ChunkStreamer.prototype);
+	ReadableStreamStreamer.prototype.constructor = ReadableStreamStreamer;
+
 
 	// Use one ParserHandle per entire CSV file or string
 	function ParserHandle(_config)
@@ -763,6 +885,11 @@
 					_delimiterError = true;	// add error after parsing (otherwise it would be overwritten)
 					_config.delimiter = Papa.DefaultDelimiter;
 				}
+				_results.meta.delimiter = _config.delimiter;
+			}
+			else if(isFunction(_config.delimiter))
+			{
+				_config.delimiter = _config.delimiter(input);
 				_results.meta.delimiter = _config.delimiter;
 			}
 
@@ -846,9 +973,17 @@
 			_results.data.splice(0, 1);
 		}
 
+        function shouldApplyDynamicTyping(field) {
+            // Cache function values to avoid calling it for each row
+            if (_config.dynamicTypingFunction && _config.dynamicTyping[field] === undefined) {
+                _config.dynamicTyping[field] = _config.dynamicTypingFunction(field);
+            }
+            return (_config.dynamicTyping[field] || _config.dynamicTyping) === true
+        }
+
 		function parseDynamic(field, value)
 		{
-			if ((_config.dynamicTyping[field] || _config.dynamicTyping) === true)
+			if (shouldApplyDynamicTyping(field))
 			{
 				if (value === 'true' || value === 'TRUE')
 					return true;
@@ -1048,7 +1183,7 @@
 				delimLen = delim.length,
 				newlineLen = newline.length,
 				commentsLen = comments.length;
-			var stepIsFunction = typeof step === 'function';
+			var stepIsFunction = isFunction(step);
 
 			// Establish starting state
 			cursor = 0;
@@ -1128,7 +1263,7 @@
 						if (quoteSearch === inputLen-1)
 						{
 							// Closing quote at EOF
-							var value = input.substring(cursor, quoteSearch).replace(quoteCharRegex, '"');
+							var value = input.substring(cursor, quoteSearch).replace(quoteCharRegex, quoteChar);
 							return finish(value);
 						}
 
@@ -1142,7 +1277,7 @@
 						if (input[quoteSearch+1] === delim)
 						{
 							// Closing quote followed by delimiter
-							row.push(input.substring(cursor, quoteSearch).replace(quoteCharRegex, '"'));
+							row.push(input.substring(cursor, quoteSearch).replace(quoteCharRegex, quoteChar));
 							cursor = quoteSearch + 1 + delimLen;
 							nextDelim = input.indexOf(delim, cursor);
 							nextNewline = input.indexOf(newline, cursor);
@@ -1152,7 +1287,7 @@
 						if (input.substr(quoteSearch+1, newlineLen) === newline)
 						{
 							// Closing quote followed by newline
-							row.push(input.substring(cursor, quoteSearch).replace(quoteCharRegex, '"'));
+							row.push(input.substring(cursor, quoteSearch).replace(quoteCharRegex, quoteChar));
 							saveRow(quoteSearch + 1 + newlineLen);
 							nextDelim = input.indexOf(delim, cursor);	// because we may have skipped the nextDelim in the quoted field
 

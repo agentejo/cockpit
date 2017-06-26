@@ -2060,6 +2060,10 @@ riot.tag2('field-password', '<div class="uk-form-password uk-width-1-1"> <input 
 riot.tag2('field-rating', '<ul class="uk-grid uk-grid-small"> <li class="{(!hoverValue && Math.ceil(value) >= n) || (hoverValue && Math.ceil(hoverValue) >= n) ? \'uk-text-primary\' : \'\'}" each="{n,idx in ratingRange}" onmousemove="{hoverRating}" onmouseleave="{leaveHoverRating}" onclick="{setRating}" style="cursor:pointer;"><i class="uk-icon-{opts.icon ? opts.icon : \'star\'}" title="{(idx+1)}" data-uk-tooltip></i></li> <li show="{value}"><span class="uk-badge">{!hoverValue && value || hoverValue}</span></li> <li show="{value}"><a class="uk-text-danger" onclick="{removeRating}"><i class="uk-icon-trash-o"></i></a></li> </ul>', '', '', function(opts) {
 
 
+        this.value = null;
+        this.hoverValue = null;
+        this.ratingRange = [];
+
         this.on('mount', function() {
 
             this.mininmum  = opts.mininmum  || 0;
@@ -2073,11 +2077,6 @@ riot.tag2('field-rating', '<ul class="uk-grid uk-grid-small"> <li class="{(!hove
                     this.precision = this.precision - 0.5;
                 }
             }
-
-            this.value = null;
-            this.hoverValue = null;
-
-            this.ratingRange = [];
 
             for (var j = this.mininmum + 1; j <= this.maximum; j = j +1) {
                 this.ratingRange.push(j);
