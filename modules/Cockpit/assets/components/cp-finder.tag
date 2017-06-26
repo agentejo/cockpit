@@ -58,6 +58,21 @@
                         </ul>
                     </div>
                 </span>
+
+                <span class="uk-margin-left" data-uk-dropdown="mode:'click'">
+
+                    <a class="uk-text-muted" title="Sort files" data-uk-tooltip="pos:'right'"><i class="uk-icon-sort"></i> { App.Utils.ucfirst(sortBy) }</a>
+
+                    <div class="uk-dropdown uk-margin-top uk-text-left">
+                        <ul class="uk-nav uk-nav-dropdown">
+                            <li class="uk-nav-header">Sort by</li>
+                            <li><a class="uk-dropdown-close" onclick="{ doSortBy.bind(this, 'name') }">Name</a></li>
+                            <li><a class="uk-dropdown-close" onclick="{ doSortBy.bind(this, 'filesize') }">Size</a></li>
+                            <li><a class="uk-dropdown-close" onclick="{ doSortBy.bind(this, 'modified') }">Modified</a></li>
+                        </ul>
+                    </div>
+
+                </span>
             </div>
 
             <div class="uk-float-right">
@@ -225,7 +240,7 @@
 
         this.currentpath = opts.path || App.session.get('app.finder.path', opts.root);
 
-        this.data = null;
+        this.data        = null;
         this.breadcrumbs = [];
         this.selected    = {count:0, paths:{}};
         this.bookmarks   = {"folders":[], "files":[]};
@@ -237,6 +252,7 @@
         this.dirlist    = false;
         this.selected   = {};
 
+        this.sortBy     = 'name';
 
         App.$(this.refs.editor).on('click', function(e){
 
@@ -545,6 +561,14 @@
 
                 $this.data = data;
 
+                $this.data.files = $this.data.files.sort(function(a,b) {
+                    a = $this.sortBy == 'name' ? String(a[$this.sortBy]).toLowerCase() : a[$this.sortBy];
+                    b =  $this.sortBy == 'name' ? String(b[$this.sortBy]).toLowerCase() : b[$this.sortBy];
+                    if (a < b) return -1;
+                    if (a> b) return 1;
+                    return 0;
+                });
+
                 $this.resetselected();
                 $this.update();
 
@@ -629,6 +653,18 @@
             data = Object.assign({"cmd":""}, data);
 
             App.request('/media/api', data).then(fn);
+        }
+
+        doSortBy(sortby) {
+            this.sortBy = sortby;
+
+            $this.data.files = $this.data.files.sort(function(a,b) {
+                a = $this.sortBy == 'name' ? String(a[$this.sortBy]).toLowerCase() : a[$this.sortBy];
+                b =  $this.sortBy == 'name' ? String(b[$this.sortBy]).toLowerCase() : b[$this.sortBy];
+                if (a < b) return -1;
+                if (a> b) return 1;
+                return 0;
+            });
         }
 
 

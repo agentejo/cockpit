@@ -4,10 +4,13 @@
 
         <div class="uk-flex uk-flex-middle uk-flex-center uk-text-muted">
             <div class="uk-width-1-1" show="{ image.path }" riot-style="min-height:160px;background-size:contain;background-repeat:no-repeat;background-position:50% 50%;{ image.path ? 'background-image: url('+encodeURI(SITE_URL+'/'+image.path)+')':''}"></div>
-            <div class="uk-width-1-1 uk-text-large" show="{ !image.path }"><i class="uk-icon-image" ></i></div>
+            <div class="uk-text-center uk-margin-top uk-margin-bottom" show="{ !image.path }">
+                <img class="uk-svg-adjust uk-text-muted" riot-src="{App.base('/assets/app/media/icons/photo.svg')}" width="60" data-uk-svg>
+                <div><a class="uk-button uk-button-link" onclick="{ selectimage }">{ App.i18n.get('Select image') }</a></div>
+            </div>
         </div>
 
-        <figcaption class="uk-overlay-panel uk-overlay-background">
+        <figcaption class="uk-overlay-panel uk-overlay-background" show="{ image.path }">
 
             <ul class="uk-subnav">
                 <li><a onclick="{ selectimage }" title="{ App.i18n.get('Select image') }" data-uk-tooltip><i class="uk-icon-image"></i></a></li>

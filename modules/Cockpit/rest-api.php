@@ -34,6 +34,7 @@ $this->on("before", function() {
             }
 
         } else {
+            
             $apikeys = $this->module('cockpit')->loadApiKeys();
             
             // check master for master key
@@ -75,11 +76,10 @@ $this->on("before", function() {
         $output     = false;
         $user       = $this->module('cockpit')->getUser();
 
-        if ($resourcefile = $this->path("#config:api/public/{$resource}.php")) {
-            
+        if ($resource == 'public' && $resourcefile = $this->path("#config:api/{$path}.php")) {
             $output = include($resourcefile);
 
-        } elseif ($allowed && $resourcefile = $this->path("#config:api/{$resource}.php")) {
+        } elseif ($allowed && $resourcefile = $this->path("#config:api/{$path}.php")) {
 
             $output = include($resourcefile);
 
@@ -114,6 +114,10 @@ $this->on("before", function() {
 
         if (is_object($output) || is_array($output)) {
             $this->response->mime = 'json';
+        }
+
+        if ($output === false && !$allowed) {
+            $this->stop(401);
         }
 
         return $output;

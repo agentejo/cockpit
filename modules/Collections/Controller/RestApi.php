@@ -19,7 +19,7 @@ class RestApi extends \LimeExtra\Controller {
         if ($user) {
             
             if (!$this->module('collections')->hasaccess($collection['name'], 'entries_view')) {
-                return false;
+                return $this->stop(401);
             }
         }
 
@@ -82,7 +82,7 @@ class RestApi extends \LimeExtra\Controller {
         }
 
         if (!$this->module('collections')->hasaccess($collection, isset($data['_id']) ? 'entries_create':'entries_edit')) {
-            return false;
+            return $this->stop(401);
         }
 
         $data = $this->module('collections')->save($collection, $data);
@@ -101,7 +101,7 @@ class RestApi extends \LimeExtra\Controller {
         }
 
         if (!$this->module('cockpit')->isSuperAdmin()) {
-            return false;
+            return $this->stop(401);
         }
 
         $collection = $this->module('collections')->createCollection($name, $data);
@@ -122,7 +122,7 @@ class RestApi extends \LimeExtra\Controller {
         $collection = $this->module('collections')->collection($name);
 
         if (!$this->module('cockpit')->isSuperAdmin()) {
-            return false;
+            return $this->stop(401);
         }
 
         $collection = $this->module('collections')->updateCollection($name, $data);
@@ -135,7 +135,7 @@ class RestApi extends \LimeExtra\Controller {
         $user = $this->module('cockpit')->getUser();
 
         if (!$name || !$user) {
-            return false;
+            return $user ? $this->stop(401) : false;
         }
 
         $collections = $this->module("collections")->getCollectionsInGroup($user['group'], true);

@@ -280,6 +280,10 @@ class App implements \ArrayAccess {
 
         if (is_numeric($data) && $data) {
            $this->response->status = $data;
+
+           if (isset(self::$statusCodes[$data])) {
+               $this->response->body = self::$statusCodes[$data]; 
+           }
         }
 
         if ($status) {

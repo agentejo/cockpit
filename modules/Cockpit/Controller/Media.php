@@ -62,8 +62,10 @@ class Media extends \Cockpit\AuthController {
                         "rel_site_path" => trim(str_replace($sitefolder, '', $file->getPathname()), '/'),
                         "url"  => $this->app->pathToUrl($file->getPathname()),
                         "size" => $isDir ? "" : $this->app->helper("utils")->formatSize($file->getSize()),
+                        "filesize" => $isDir ? "" : $file->getSize(),
                         "ext"  => $isDir ? "" : strtolower($file->getExtension()),
                         "lastmodified" => $file->isDir() ? "" : date("d.m.y H:i", $file->getMTime()),
+                        "modified" => $file->isDir() ? "" : $file->getMTime(),
                     );
                 }
             }
