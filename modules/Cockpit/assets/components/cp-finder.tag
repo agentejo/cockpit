@@ -77,7 +77,12 @@
 
             <div class="uk-float-right">
 
-                <div class="uk-form uk-form-icon uk-width-1-1">
+                <span class="uk-button-group uk-margin-right">
+                    <button class="uk-button {listmode=='list' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-list"></i></button>
+                    <button class="uk-button {listmode=='grid' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-th"></i></button>
+                </span>
+
+                <div class="uk-form uk-form-icon uk-display-inline-block">
                     <i class="uk-icon-filter"></i>
                     <input ref="filter" type="text" onkeyup="{ updatefilter }">
                 </div>
@@ -165,7 +170,7 @@
 
                         <strong class="uk-text-small uk-text-muted" if="{ !(this.typefilter || this.refs.filter.value) }"><i class="uk-icon-file-o uk-margin-small-right"></i> { data.files.length } Files</strong>
 
-                        <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4">
+                        <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4" if="{ listmode=='grid' }">
 
                             <li class="uk-grid-margin" each="{file, idx in data.files}" onclick="{ select }" if="{ infilter(file) }">
                                 <div class="uk-panel uk-panel-box finder-file { file.selected ? 'uk-selected':'' }">
@@ -178,13 +183,13 @@
                                                 <span class="uk-margin-small-right" data-uk-dropdown="mode:'click'">
                                                     <a><i class="uk-icon-{ parent.getIconCls(file) } js-no-item-select"></i>
                                                     <div class="uk-dropdown">
-                                                        <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
+                                                        <ul class="uk-nav uk-nav-dropdown">
                                                             <li class="uk-nav-header uk-text-truncate">{ file.name }</li>
-                                                            <li> <a class="uk-link-muted js-no-item-select" onclick="{ parent.open }">Open</a></li>
-                                                            <li><a onclick="{ parent.rename }">Rename</a></li>
+                                                            <li> <a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">Open</a></li>
+                                                            <li><a class="uk-dropdown-close" onclick="{ parent.rename }">Rename</a></li>
                                                             <li if="{ file.ext == 'zip' }"><a onclick="{ parent.unzip }">Unzip</a></li>
                                                             <li class="uk-nav-divider"></li>
-                                                            <li><a onclick="{ parent.remove }">Delete</a></li>
+                                                            <li><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
                                                         </ul>
                                                     </div>
                                                 </span>
@@ -207,6 +212,46 @@
                                 </div>
                             </li>
                         </ul>
+
+                        <table class="uk-table uk-panel-card" if="{ listmode=='list' }">
+                            <thead>
+                                <tr>
+                                    <td width="30"></td>
+                                    <th>{ App.i18n.get('Name') }</th>
+                                    <th width="10%">{ App.i18n.get('Size') }</th>
+                                    <th width="15%">{ App.i18n.get('Updated') }</th>
+                                    <th width="30"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="{ file.selected ? 'uk-selected':'' }" each="{file, idx in data.files}" onclick="{ select }" if="{ infilter(file) }">
+                                    <td class="uk-text-center">
+                                        <span if="{ parent.getIconCls(file) != 'image' }"><i class="uk-icon-{ parent.getIconCls(file) }"></i></span>
+                                        <cp-thumbnail src="{file.url}" width="400" height="300" if="{ parent.getIconCls(file) == 'image' }"></cp-thumbnail>
+                                    </td>
+                                    <td><a onclick="{ parent.edit }">{ file.name }</a></td>
+                                    <td class="uk-text-small">{ file.size }</td>
+                                    <td class="uk-text-small">{ App.Utils.dateformat( new Date( 1000 * file.modified )) }</td>
+                                    <td>
+                                        <span class="uk-float-right" data-uk-dropdown="mode:'click'">
+
+                                            <a class="uk-icon-bars"></a>
+
+                                            <div class="uk-dropdown uk-dropdown-flip">
+                                                <ul class="uk-nav uk-nav-dropdown">
+                                                    <li class="uk-nav-header">{ App.i18n.get('Actions') }</li>
+                                                    <li> <a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">Open</a></li>
+                                                    <li><a class="uk-dropdown-close" onclick="{ parent.rename }">Rename</a></li>
+                                                    <li if="{ file.ext == 'zip' }"><a onclick="{ parent.unzip }">Unzip</a></li>
+                                                    <li class="uk-nav-divider"></li>
+                                                    <li><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
                     </div>
                 </div>
@@ -253,6 +298,7 @@
         this.selected   = {};
 
         this.sortBy     = 'name';
+        this.listmode   = App.session.get('app.finder.listmode', 'list');;
 
         App.$(this.refs.editor).on('click', function(e){
 
@@ -665,6 +711,11 @@
                 if (a> b) return 1;
                 return 0;
             });
+        }
+
+        toggleListMode() {
+            this.listmode = this.listmode=='list' ? 'grid':'list';
+            App.session.set('app.finder.listmode', this.listmode);
         }
 
 
