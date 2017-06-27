@@ -229,7 +229,7 @@
                                         <span if="{ parent.getIconCls(file) != 'image' }"><i class="uk-icon-{ parent.getIconCls(file) }"></i></span>
                                         <cp-thumbnail src="{file.url}" width="400" height="300" if="{ parent.getIconCls(file) == 'image' }"></cp-thumbnail>
                                     </td>
-                                    <td><a onclick="{ parent.edit }">{ file.name }</a></td>
+                                    <td><a class="js-no-item-select" onclick="{ parent.open }">{ file.name }</a></td>
                                     <td class="uk-text-small">{ file.size }</td>
                                     <td class="uk-text-small">{ App.Utils.dateformat( new Date( 1000 * file.modified )) }</td>
                                     <td>
