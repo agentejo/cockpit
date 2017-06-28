@@ -112,12 +112,13 @@ $this->on("before", function() {
             }
         }
 
-        if (is_object($output) || is_array($output)) {
+        if ($output === false && !$allowed) {
             $this->response->mime = 'json';
+            $this->stop(401);
         }
 
-        if ($output === false && !$allowed) {
-            $this->stop(401);
+        if (is_object($output) || is_array($output)) {
+            $this->response->mime = 'json';
         }
 
         return $output;

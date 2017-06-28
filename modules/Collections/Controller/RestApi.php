@@ -3,14 +3,18 @@ namespace Collections\Controller;
 
 class RestApi extends \LimeExtra\Controller {
 
+    protected function before() {
+        $this->app->response->mime = 'json';
+    }
+
     public function get($collection=null) {
 
         if (!$collection) {
-            return false;
+            return $this->stop('{"error": "Missing collection name"}', 412);
         }
 
         if (!$this->module('collections')->exists($collection)) {
-            return false;
+            return $this->stop('{"error": "Collection not found"}', 412);
         }
 
         $collection = $this->module('collections')->collection($collection);
@@ -19,7 +23,7 @@ class RestApi extends \LimeExtra\Controller {
         if ($user) {
             
             if (!$this->module('collections')->hasaccess($collection['name'], 'entries_view')) {
-                return $this->stop(401);
+                return $this->stop('{"error": "Unauthorized"}', 401);
             }
         }
 
@@ -78,11 +82,11 @@ class RestApi extends \LimeExtra\Controller {
         }
 
         if (!$this->module('collections')->exists($collection)) {
-            return false;
+            return $this->stop('{"error": "Collection not found"}', 412);
         }
 
         if (!$this->module('collections')->hasaccess($collection, isset($data['_id']) ? 'entries_create':'entries_edit')) {
-            return $this->stop(401);
+            return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
         $data = $this->module('collections')->save($collection, $data);
@@ -101,7 +105,7 @@ class RestApi extends \LimeExtra\Controller {
         }
 
         if (!$this->module('cockpit')->isSuperAdmin()) {
-            return $this->stop(401);
+            return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
         $collection = $this->module('collections')->createCollection($name, $data);
@@ -122,7 +126,7 @@ class RestApi extends \LimeExtra\Controller {
         $collection = $this->module('collections')->collection($name);
 
         if (!$this->module('cockpit')->isSuperAdmin()) {
-            return $this->stop(401);
+            return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
         $collection = $this->module('collections')->updateCollection($name, $data);
@@ -135,13 +139,13 @@ class RestApi extends \LimeExtra\Controller {
         $user = $this->module('cockpit')->getUser();
 
         if (!$name || !$user) {
-            return $user ? $this->stop(401) : false;
+            return $user ? $this->stop('{"error": "Unauthorized"}', 401) : false;
         }
 
         $collections = $this->module("collections")->getCollectionsInGroup($user['group'], true);
 
         if (!isset($collections[$name])) {
-            return false;
+           return $this->stop('{"error": "Collection not found"}', 412);
         }
 
         return $collections[$name];

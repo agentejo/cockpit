@@ -3,6 +3,10 @@ namespace Cockpit\Controller;
 
 class RestApi extends \LimeExtra\Controller {
 
+    protected function before() {
+        $this->app->response->mime = 'json';
+    }
+
     public function authUser() {
 
         $response = ['error' => 'Authentication failed'];
@@ -41,18 +45,17 @@ class RestApi extends \LimeExtra\Controller {
             }
         }
 
-
         // new user needs a password
         if (!isset($data["_id"])) {
 
             // new user needs a password
             if (!isset($data["password"])) {
-                return false;
+                return $this->stop('{"error": "User password required"}', 412);
             }
 
             // new user needs a username
             if (!isset($data["user"])) {
-                return false;
+                return $this->stop('{"error": "User password required"}', 412);
             }
 
             $data = array_merge($account = [
@@ -63,6 +66,15 @@ class RestApi extends \LimeExtra\Controller {
                 "group"    => "user",
                 "i18n"     => "en"
             ], $data);
+
+            if (isset($data['api_key'])) {
+                $data['api_key'] = uniqid('account-').uniqid('', true);
+            }
+
+            // check for duplicate users
+            if ($user = $app->storage->findOne("cockpit/accounts", ["user" => $data["user"]])) {
+                return $this->stop('{"error": "User already exists"}', 412);
+            }
         }
 
         if (isset($data["password"])) {
