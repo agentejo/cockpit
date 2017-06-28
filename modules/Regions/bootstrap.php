@@ -230,7 +230,7 @@ $app->renderer->extend(function($content){
 });
 
 // REST
-if (COCKPIT_REST) {
+if (COCKPIT_API_REQUEST) {
 
     $app->on('cockpit.rest.init', function($routes) {
         $routes['regions'] = 'Regions\\Controller\\RestApi';
@@ -238,6 +238,6 @@ if (COCKPIT_REST) {
 }
 
 // ADMIN
-if (COCKPIT_ADMIN && !COCKPIT_REST) {
+if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
     include_once(__DIR__.'/admin.php');
 }

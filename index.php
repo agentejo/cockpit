@@ -19,5 +19,19 @@ if (COCKPIT_ADMIN && !defined('COCKPIT_ADMIN_ROUTE')) {
     define('COCKPIT_ADMIN_ROUTE', $route == '' ? '/' : $route);
 }
 
+if (COCKPIT_API_REQUEST) {
+
+    header("Access-Control-Allow-Origin: *");
+    header("Access-Control-Allow-Credentials: true");
+    header("Access-Control-Max-Age: 1000");
+    header("Access-Control-Allow-Headers: X-Requested-With, Content-Type, Origin, Cache-Control, Pragma, Authorization, Accept, Accept-Encoding");
+    header("Access-Control-Allow-Methods: PUT, POST, GET, OPTIONS, DELETE");
+
+    if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
+        exit(0);
+    }
+}
+
+
 // run backend
 $cockpit->set('route', COCKPIT_ADMIN_ROUTE)->trigger("admin.init")->run();

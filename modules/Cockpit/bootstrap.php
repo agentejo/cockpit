@@ -418,7 +418,7 @@ foreach ($aclsettings as $group => $settings) {
 
 
 // REST
-if (COCKPIT_REST) {
+if (COCKPIT_API_REQUEST) {
 
     // INIT REST API HANDLER
     include_once(__DIR__.'/rest-api.php');
@@ -451,7 +451,7 @@ if (COCKPIT_ADMIN) {
 
 
 // ADMIN
-if (COCKPIT_ADMIN && !COCKPIT_REST) {
+if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
 
     include_once(__DIR__.'/admin.php');
 }
