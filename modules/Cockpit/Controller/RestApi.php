@@ -9,20 +9,19 @@ class RestApi extends \LimeExtra\Controller {
 
     public function authUser() {
 
-        $response = ['error' => 'Authentication failed'];
-        $data     = [ 'user' => $this->param('user'), 'password' => $this->param('password') ];
+        $data = [ 'user' => $this->param('user'), 'password' => $this->param('password') ];
 
         if (!$data['user'] || !$data['password']) {
-            return $response;
+            return $this->stop('{"error": "Missing user or password"}', 412);
         }
 
         $user = $this->module('cockpit')->authenticate($data);
 
-        if ($user) {
-            $response = $user;
+        if (!$user) {
+            return $this->stop('{"error": "Authentication failed"}', 400);
         }
 
-        return $response;
+        return $user;
     }
 
     public function saveUser() {
