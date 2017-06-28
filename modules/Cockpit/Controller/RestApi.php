@@ -68,11 +68,11 @@ class RestApi extends \LimeExtra\Controller {
             ], $data);
 
             if (isset($data['api_key'])) {
-                $data['api_key'] = uniqid('account-').uniqid('', true);
+                $data['api_key'] = uniqid('account-').uniqid();
             }
 
             // check for duplicate users
-            if ($user = $app->storage->findOne("cockpit/accounts", ["user" => $data["user"]])) {
+            if ($user = $this->app->storage->findOne("cockpit/accounts", ["user" => $data["user"]])) {
                 return $this->stop('{"error": "User already exists"}', 412);
             }
         }
