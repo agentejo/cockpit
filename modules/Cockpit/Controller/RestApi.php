@@ -18,7 +18,7 @@ class RestApi extends \LimeExtra\Controller {
         $user = $this->module('cockpit')->authenticate($data);
 
         if (!$user) {
-            return $this->stop('{"error": "Authentication failed"}', 400);
+            return $this->stop('{"error": "Authentication failed"}', 401);
         }
 
         return $user;
