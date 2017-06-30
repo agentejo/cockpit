@@ -14,6 +14,11 @@ spl_autoload_register(function($class){
     if(file_exists($class_path)) include_once($class_path);
 });
 
+// check for custom defines
+if (file_exists(__DIR__.'/defines.php')) {
+    include(__DIR__.'/defines.php');
+}
+
 /*
  * Collect needed paths
  */
@@ -79,8 +84,8 @@ function cockpit($module = null) {
                 '#data'    => COCKPIT_STORAGE_FOLDER.'/data',
                 '#cache'   => COCKPIT_STORAGE_FOLDER.'/cache',
                 '#tmp'     => COCKPIT_STORAGE_FOLDER.'/tmp',
-                '#thumbs'  => COCKPIT_STORAGE_FOLDER.'/thumbs',
-                '#uploads' => COCKPIT_STORAGE_FOLDER.'/uploads',
+                '#thumbs'  => COCKPIT_DIR.'/storage/thumbs',
+                '#uploads' => COCKPIT_DIR.'/storage/uploads',
                 '#modules' => COCKPIT_DIR.'/modules',
                 '#addons' => COCKPIT_DIR.'/addons',
                 '#config'  => defined('COCKPIT_CONFIG_PATH') ? dirname(COCKPIT_CONFIG_PATH) : COCKPIT_DIR.'/config',
