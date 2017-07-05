@@ -1477,14 +1477,15 @@ riot.tag2('field-boolean', '<div ref="container" class="uk-display-inline-block"
                 this.value = value;
                 this.update();
             }
-
-            document.getElementById(this.id).checked = Boolean(this.value);
+            this.refs.check.checked = Boolean(this.value);
 
         }.bind(this);
 
         this.toggle = function(e) {
             e.preventDefault();
-            this.$setValue(!this.value);
+            this.value = !Boolean(this.value);
+            this.refs.check.checked = this.value;
+            this.$setValue(this.value);
         }.bind(this)
 
 });

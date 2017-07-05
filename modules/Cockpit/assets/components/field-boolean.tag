@@ -23,19 +23,20 @@
         this.value = opts.default || false;
 
         this.$updateValue = function(value) {
-
+            
             if (this.value != value) {
                 this.value = value;
                 this.update();
             }
-
-            document.getElementById(this.id).checked = Boolean(this.value);
+            this.refs.check.checked = Boolean(this.value);
 
         }.bind(this);
 
         toggle(e) {
             e.preventDefault();
-            this.$setValue(!this.value);
+            this.value = !Boolean(this.value);
+            this.refs.check.checked = this.value;
+            this.$setValue(this.value);
         }
 
     </script>
