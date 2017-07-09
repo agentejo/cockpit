@@ -4,6 +4,7 @@
  * Cockpit start time
  */
 define('COCKPIT_START_TIME', microtime(true));
+if (!defined('COCKPIT_CLI')) define('COCKPIT_CLI', PHP_SAPI == 'cli');
 
 /*
  * Autoload from lib folder (PSR-0)
@@ -67,7 +68,7 @@ function cockpit($module = null) {
         // load config
         $config = array_replace_recursive([
 
-            'debug'        => preg_match('/(localhost|::1|\.dev)$/', $_SERVER['SERVER_NAME']),
+            'debug'        => preg_match('/(localhost|::1|\.dev)$/', @$_SERVER['SERVER_NAME']),
             'app.name'     => 'Cockpit',
             'base_url'     => COCKPIT_BASE_URL,
             'base_route'   => COCKPIT_BASE_ROUTE,
