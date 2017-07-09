@@ -486,6 +486,19 @@ class App implements \ArrayAccess {
     }
 
     /**
+     * @param $namespace
+     * @return array
+     */
+    public function paths($namespace = null) {
+
+        if (!$namespace) {
+            return $this->paths;
+        }
+
+        return isset($this->paths[$namespace]) ? $this->paths[$namespace] : [];
+    }
+
+    /**
      * @param $path
      * @return bool|string
      */
