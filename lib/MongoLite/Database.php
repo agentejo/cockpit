@@ -259,8 +259,12 @@ class UtilArrayQuery {
                     } else {
                         $d .= '["'.$key.'"]';
                     }
-                    
-                    $fn[] = is_array($value) ? "\\MongoLite\\UtilArrayQuery::check((isset({$d}) ? {$d} : null), ".var_export($value, true).")": "(isset({$d}) && {$d}==".(is_string($value) ? "'{$value}'": var_export($value, true)).")";
+
+                    if (is_array($value)) {
+                        $fn[] = "\\MongoLite\\UtilArrayQuery::check((isset({$d}) ? {$d} : null), ".var_export($value, true).")";
+                    } else {
+                        $fn[] = "(isset({$d}) && {$d}==".(is_string($value) ? "'{$value}'": var_export($value, true)).")";
+                    }
             }
         }
 
@@ -270,12 +274,11 @@ class UtilArrayQuery {
 
     public static function check($value, $condition) {
 
-        if(is_null($value)) return false;
-
-        $keys  = array_keys($condition);
+        $keys = array_keys($condition);
 
         foreach ($keys as &$key) {
-            if(!self::evaluate($key, $value, $condition[$key])) {
+
+            if (!self::evaluate($key, $value, $condition[$key])) {
                 return false;
             }
         }
@@ -286,6 +289,10 @@ class UtilArrayQuery {
     private static function evaluate($func, $a, $b) {
 
         $r = false;
+
+        if (is_null($a) && $func != '$exists') {
+            return false;
+        }
 
         switch ($func) {
             case '$eq' :
@@ -351,6 +358,10 @@ class UtilArrayQuery {
                 if (! is_callable($b))
                     throw new \InvalidArgumentException('Function should be callable');
                 $r = $b($a);
+                break;
+            
+            case '$exists':
+                $r = $b ? !is_null($a) : is_null($a);
                 break;
 
             default :
