@@ -227,10 +227,10 @@ class UtilArrayQuery {
                     $_fn = array();
 
                     foreach($value as $v) {
-                        $_fn[] = '('.self::buildCondition($v, ' && ').')';
+                        $_fn[] = self::buildCondition($v, ' && ');
                     }
 
-                    $fn[] = implode(' || ', $_fn);
+                    $fn[] = '('.implode(' && ', $_fn).')';
 
                     break;
                 case '$or':
@@ -238,10 +238,10 @@ class UtilArrayQuery {
                     $_fn = array();
 
                     foreach($value as $v) {
-                        $_fn[] = '('.self::buildCondition($v, ' || ').')';
+                        $_fn[] = self::buildCondition($v, ' && ');
                     }
 
-                    $fn[] = implode(' || ', $_fn);
+                    $fn[] = '('.implode(' || ', $_fn).')';
 
                     break;
                 default:
