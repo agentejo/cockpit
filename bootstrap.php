@@ -4,6 +4,7 @@
  * Cockpit start time
  */
 define('COCKPIT_START_TIME', microtime(true));
+
 if (!defined('COCKPIT_CLI')) define('COCKPIT_CLI', PHP_SAPI == 'cli');
 
 /*

@@ -110,10 +110,11 @@
         App.Utils.renderer.collectionlink = function(v) {
 
             if (Array.isArray(v)) {
+
                 var vals = [];
 
                 v.forEach(function(val) {
-                    vals.push(val.display ? val.display: App.Utils.renderer.default(val));
+                    vals.push(val && val.display ? val.display: App.Utils.renderer.default(val));
                 });
 
                 if (vals.length > 1) {
@@ -123,7 +124,7 @@
                 return vals[0];
             }
 
-            return v.display ? v.display: App.Utils.renderer.default(v);
+            return v && v.display ? v.display : App.Utils.renderer.default(v);
         };
 
         var $this = this, $root = App.$(this.root), limit = 20;
