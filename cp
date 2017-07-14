@@ -2,7 +2,7 @@
 <?php
 
 if (PHP_SAPI !== 'cli') {
-    return;
+    exit('Script needs to be run from Command Line Interface (cli)');
 }
 
 if (!defined('COCKPIT_CLI')) define('COCKPIT_CLI', true);

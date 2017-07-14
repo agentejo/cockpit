@@ -3,6 +3,11 @@
   Deny from all
 </Files>
 
+<Files "cp">
+Order Allow,Deny
+Deny from all
+</Files>
+
 # Don't show directory listings
 Options -Indexes
 
