@@ -42,7 +42,7 @@ class Utils extends \Lime\Helper {
 
             foreach ($matches[0] as $i => $match) {
                 
-                if ($matches[2][$i]) {
+                if (trim($matches[2][$i])) {
                     $content = str_replace($match, " {$matches[1][$i]}=\"{$base}{$matches[2][$i]}\"", $content);
                 }
             }
