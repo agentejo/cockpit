@@ -393,6 +393,10 @@ $this->module("collections")->extend([
         static $cache;
         static $languages;
 
+        if (null === $items) {
+            return $items;
+        }
+
         $filter = array_merge([
             'user' => false,
             'lang' => false
