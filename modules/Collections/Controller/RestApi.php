@@ -89,6 +89,8 @@ class RestApi extends \LimeExtra\Controller {
             return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
+        $data['_by'] = $this->module('cockpit')->getUser('_id');
+
         $data = $this->module('collections')->save($collection, $data);
 
         return $data;
@@ -138,8 +140,8 @@ class RestApi extends \LimeExtra\Controller {
 
         $user = $this->module('cockpit')->getUser();
 
-        if (!$name || !$user) {
-            return $user ? $this->stop('{"error": "Unauthorized"}', 401) : false;
+        if (!$user) {
+            return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
         $collections = $this->module("collections")->getCollectionsInGroup($user['group'], true);
