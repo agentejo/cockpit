@@ -85,7 +85,7 @@ class RestApi extends \LimeExtra\Controller {
             return $this->stop('{"error": "Collection not found"}', 412);
         }
 
-        if (!$this->module('collections')->hasaccess($collection, isset($data['_id']) ? 'entries_create':'entries_edit')) {
+        if (!$this->module('collections')->hasaccess($collection, isset($data['_id']) ? 'entries_edit':'entries_create')) {
             return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
