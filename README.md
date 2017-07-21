@@ -36,7 +36,7 @@ b) Run `npm run watch` - For continuous build every time styles or components ch
 
 You need [docker](https://docker.com/) installed on your system: https://www.docker.com/docker-mac.
 
-Run `npm start` to setup an Apache environment suited for Cockpit on port 3000 (this folder mapped to /var/www/html).
+Run `npm run start-docker` to setup an Apache environment suited for Cockpit on port 3000 (this folder mapped to /var/www/html).
 
 ### Copyright and license
 
