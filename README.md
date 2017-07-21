@@ -23,7 +23,6 @@ make also sure that <code>$_SERVER['DOCUMENT_ROOT']</code> exists and is set cor
 3. Go to __/cockpit/install__ via Browser
 4. You're ready to use Cockpit :-)
 
-
 ### Build
 
 You need [nodejs](https://nodejs.org/) installed on your system.
@@ -33,6 +32,11 @@ First run `npm install` to install development dependencies
 a) Run `npm run build` - For one-time build of styles and components
 b) Run `npm run watch` - For continuous build every time styles or components change
 
+### Dockerized Development environment for Mac
+
+You need [docker](https://docker.com/) installed on your system: https://www.docker.com/docker-mac.
+
+Run `npm start` to setup an Apache environment suited for Cockpit on port 3000 (this folder mapped to /var/www/html).
 
 ### Copyright and license
 
