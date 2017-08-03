@@ -42,8 +42,11 @@
 
         <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ready && !entries.length}">
 
-            <div class="uk-animation-fade uk-width-1-1">
+            <div class="uk-animation-scale uk-width-1-1">
 
+
+                <div class="uk-margin"><img src="@base('assets:app/media/icons/items.svg')" width="80" data-uk-svg></div>
+                <hr>
                 <span class="uk-text-large uk-text-muted">@lang('No entries').</span>
 
             </div>

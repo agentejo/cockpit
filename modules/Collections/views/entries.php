@@ -60,8 +60,10 @@
 
         <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-center uk-flex-middle" if="{ !loading && !entries.length && !filter }">
 
-            <div class="uk-animation-fade">
-
+            <div class="uk-animation-scale">
+                
+                <div class="uk-margin"><img src="@base('assets:app/media/icons/items.svg')" width="80" data-uk-svg></div>
+                <hr>
                 <span class="uk-text-large uk-text-muted">@lang('No entries'). <a href="@route('/collections/entry/'.$collection['name'])">@lang('Create an entry').</a></span>
 
             </div>

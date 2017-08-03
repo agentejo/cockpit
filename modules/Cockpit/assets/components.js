@@ -1525,6 +1525,10 @@ riot.tag2('field-code', '<codemirror ref="codemirror" syntax="{opts.syntax || \'
 
                 $this.isReady = true;
                 $this.update();
+
+                $this.parent.on('update', function() {
+                    if (!editor.hasFocus()) editor.refresh();
+                });
             });
         });
 

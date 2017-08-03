@@ -52,10 +52,18 @@
 
 .uk-svg-adjust path,
 .uk-svg-adjust rect,
-.uk-svg-adjust circle,
+.uk-svg-adjust circle:not([fill="none"]),
 .uk-svg-adjust polygon,
 .uk-svg-adjust line {
     fill: currentColor;
+}
+
+.uk-svg-adjust path[stroke],
+.uk-svg-adjust rect[stroke],
+.uk-svg-adjust circle[stroke],
+.uk-svg-adjust polygon[stroke],
+.uk-svg-adjust line[stroke] {
+    stroke: currentColor;
 }
 
 .app-panel-dropdown {
