@@ -213,7 +213,7 @@
                             </li>
                         </ul>
 
-                        <table class="uk-table uk-panel-card" if="{ listmode=='list' }">
+                        <table class="uk-table uk-panel-card" if="{ listmode=='list' && data.files.length }">
                             <thead>
                                 <tr>
                                     <td width="30"></td>

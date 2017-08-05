@@ -41,7 +41,7 @@
                 { App.i18n.get('Components') }
             </h3>
 
-            <div class="uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-3">
+            <div class="uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-4">
                  <div class="uk-grid-margin" each="{component,name in components}">
                     <div class="uk-panel uk-panel-framed uk-text-center">
                         <img riot-src="{ component.icon || App.base('/assets/app/media/icons/component.svg')}" width="30">
@@ -59,11 +59,32 @@
 
     <div class="uk-modal uk-sortable-nodrag" ref="modalSettings">
         <div class="uk-modal-dialog" if="{settingsComponent}">
+            
             <h3>
-                <i class="uk-icon-cogs uk-margin-small-right"></i>
+                <img class="uk-margin-small-right" riot-src="{ components[settingsComponent.component].icon ? components[settingsComponent.component].icon : App.base('/assets/app/media/icons/settings.svg')}" width="30">
                 { components[settingsComponent.component].label || App.Utils.ucfirst(settingsComponent.component) }
             </h3>
-            <field-set class="uk-margin" bind="settingsComponent.settings" fields="{components[settingsComponent.component].fields}"></field-set>
+
+            <ul class="uk-tab uk-flex uk-flex-center uk-margin settings-tabs">
+                <li class="{components[settingsComponent.component].fields && 'uk-active'}" if="{components[settingsComponent.component].fields}">
+                    <a>{ App.i18n.get('Main') }</a>
+                </li>
+                <li class="{!components[settingsComponent.component].fields && 'uk-active'}"><a>{ App.i18n.get('General') }</a></li>
+            </ul>
+
+            <div class="uk-switcher settings-panels">
+                <div class="{components[settingsComponent.component].fields && 'uk-active'}" if="{components[settingsComponent.component].fields}">
+                    <field-set class="uk-margin" bind="settingsComponent.settings" fields="{components[settingsComponent.component].fields}"></field-set>
+                </div>
+                <div class="{!components[settingsComponent.component].fields && 'uk-active'}">
+                    <field-set class="uk-margin" bind="settingsComponent.settings" fields="{generalSettingsFields}"></field-set>
+                </div>
+            </div>
+
+            <div class="uk-text-right uk-margin-top">
+                <a class="uk-button uk-button-link uk-button-large uk-modal-close">{ App.i18n.get('Close') }</a>
+            </div>
+            
         </div>
     </div>
 
@@ -76,6 +97,11 @@
         this.mode = 'edit';
         this.items = [];
         this.settingsComponent = null;
+        this.generalSettingsFields  = [
+            {name: "id", type: "text" },
+            {name: "class", type: "text" },
+            {name: "style", type: "code" }
+        ];
 
         this.on('mount', function() {
 
@@ -91,6 +117,15 @@
                     $this.$setValue(items);
                     $this.update();
                 }
+            });
+
+            UIkit.modal(this.refs.modalSettings, {modal:false}).on('hide.uk.modal', function() {
+                $this.settingsComponent = false;
+                $this.update();
+            }).on('click', '.settings-tabs li', function() {
+                
+                App.$(this).parent().children().removeClass('uk-active').filter(this).addClass('uk-active');
+                App.$($this.refs.modalSettings).find('.settings-panels').children().removeClass('uk-active').eq(App.$(this).index()).addClass('uk-active');
             });
 
             this.trigger('update');
@@ -124,7 +159,7 @@
 
             var item = {
                 component: e.item.name,
-                settings: {}
+                settings: { id: '', 'class': '', style: '' }
             };
 
             if (this.components[e.item.name].children) {
@@ -133,6 +168,7 @@
 
             if (this.refs.modalComponents.afterComponent !== false) {
                 this.items.splice(this.refs.modalComponents.afterComponent + 1, 0, item);
+                this.refs.modalComponents.afterComponent = false;
             } else {
                 this.items.push(item);
             }
@@ -159,16 +195,11 @@
 
         this.components = {
             "section": {
-                "children":true,
-                "fields": [
-                    {"name": "layout", "type": "layout" },
-                ]
+                "children":true
             },
             
             "grid": {
-                "fields": [
-                    {"name": "text", "type": "text"},
-                ]
+
             },
 
             "heading": {
@@ -188,22 +219,19 @@
             "image": {
                 "icon": App.base('/assets/app/media/icons/photo.svg'),
                 "fields": [
-                    {"name": "image", "type": "image"},
-                    {"name": "alt", "type": "text"},
+                    {"name": "image", "type": "image"}
                 ]
             },
 
             "divider": {
                 "icon": App.base('/assets/app/media/icons/divider.svg'),
-                "fields": [
-                    {"name": "text", "type": "text"},
-                ]
             },
 
             "button": {
                 "icon": App.base('/assets/app/media/icons/button.svg'),
                 "fields": [
                     {"name": "text", "type": "text"},
+                    {"name": "url", "type": "text"},
                 ]
             }
         };
@@ -236,11 +264,16 @@
 
     <div class="uk-modal uk-sortable-nodrag" ref="modalSettings">
         <div class="uk-modal-dialog" if="{settingsComponent}">
-            <h3>
-                <i class="uk-icon-cogs uk-margin-small-right"></i>
+            <h3 class="uk-flex uk-flex-middle uk-margin-large-bottom">
+                <img class="uk-margin-small-right" riot-src="{App.base('/assets/app/media/icons/settings.svg')}" width="30">
                 { App.i18n.get('Column') }
             </h3>
             <field-set class="uk-margin" bind="settingsComponent.settings" fields="{fields}"></field-set>
+        
+            <div class="uk-text-right uk-margin-top">
+                <a class="uk-button uk-button-link uk-button-large uk-modal-close">{ App.i18n.get('Close') }</a>
+            </div>
+
         </div>
     </div>
 
@@ -252,8 +285,9 @@
 
         this.columns = [];
         this.fields  = [
-            {"name": "id", "type": "text" },
-            {"name": "class", "type": "text" },
+            {name: "id", type: "text" },
+            {name: "class", type: "text" },
+            {name: "style", type: "code" }
         ];
         this.settingsComponent = null;
 
@@ -298,7 +332,7 @@
         addColumn() {
             
             var column = {
-                settings: {},
+                settings: { id: '', 'class': '', style: '' },
                 children: []
             };
 
