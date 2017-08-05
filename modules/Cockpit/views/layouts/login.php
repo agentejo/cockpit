@@ -35,7 +35,7 @@
 </head>
 <body class="login-page uk-height-viewport uk-flex uk-flex-middle uk-flex-center">
 
-    <div class="uk-position-relative login-container uk-animation-fade" riot-view>
+    <div class="uk-position-relative login-container uk-animation-scale" riot-view>
 
         <form class="uk-form" method="post" action="@route('/auth/check')" onsubmit="{ submit }">
 

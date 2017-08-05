@@ -303,6 +303,10 @@
         return Array.isArray(v) ? v.join(', ') : App.Utils.renderer.default(v);
     };
 
+    App.Utils.renderer.layout = function(v) {
+        return Array.isArray(v) ? '<span class="uk-badge">'+v.length+(v.length==1 ? ' Component':' Components')+'</span>' : App.Utils.renderer.default(v);
+    };
+
 
     App.Utils.renderValue = function(renderer, v) {
         return (this.renderer[renderer] || this.renderer.default)(v);

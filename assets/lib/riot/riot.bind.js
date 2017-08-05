@@ -36,7 +36,6 @@
             });
         }
 
-
         function init(ele) {
 
             ele.$boundTo = tag;
@@ -162,7 +161,6 @@
         tag.on('bind', function() {
             update();
         });
-
 
         tag.$bindUpdate = function() {
             update();
