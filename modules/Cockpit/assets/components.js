@@ -1897,7 +1897,7 @@ riot.tag2('field-layout', '<div class="uk-text-center {opts.child ? \'uk-text-sm
         this.generalSettingsFields  = [
             {name: "id", type: "text" },
             {name: "class", type: "text" },
-            {name: "style", type: "code" }
+            {name: "style", type: "code", options: {syntax: "css"} }
         ];
 
         this.on('mount', function() {
@@ -1916,7 +1916,8 @@ riot.tag2('field-layout', '<div class="uk-text-center {opts.child ? \'uk-text-sm
                 }
             });
 
-            UIkit.modal(this.refs.modalSettings, {modal:false}).on('hide.uk.modal', function() {
+            UIkit.modal(this.refs.modalSettings, {modal:false}).on('hide.uk.modal', function(e) {
+                if (e.target !== $this.refs.modalSettings) return;
                 $this.settingsComponent = false;
                 $this.update();
             });
@@ -2048,7 +2049,7 @@ riot.tag2('field-layout-grid', '<div class="uk-text-center uk-placeholder" if="{
         this.fields  = [
             {name: "id", type: "text" },
             {name: "class", type: "text" },
-            {name: "style", type: "code" }
+            {name: "style", type: "code", options: {syntax: "css"}  }
         ];
         this.settingsComponent = null;
 

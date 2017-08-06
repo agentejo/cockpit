@@ -92,7 +92,7 @@
         this.generalSettingsFields  = [
             {name: "id", type: "text" },
             {name: "class", type: "text" },
-            {name: "style", type: "code" }
+            {name: "style", type: "code", options: {syntax: "css"} }
         ];
 
         this.on('mount', function() {
@@ -111,7 +111,8 @@
                 }
             });
 
-            UIkit.modal(this.refs.modalSettings, {modal:false}).on('hide.uk.modal', function() {
+            UIkit.modal(this.refs.modalSettings, {modal:false}).on('hide.uk.modal', function(e) {
+                if (e.target !== $this.refs.modalSettings) return;
                 $this.settingsComponent = false;
                 $this.update();
             });
@@ -282,7 +283,7 @@
         this.fields  = [
             {name: "id", type: "text" },
             {name: "class", type: "text" },
-            {name: "style", type: "code" }
+            {name: "style", type: "code", options: {syntax: "css"}  }
         ];
         this.settingsComponent = null;
 
