@@ -8,7 +8,6 @@
 
     <div class="uk-text-center uk-text-muted {opts.child ? 'uk-text-small':'uk-placeholder'}" show="{ !items.length }">
         <img class="uk-svg-adjust" src="{ App.base('/assets/app/media/icons/layout.svg') }" width="100" data-uk-svg>
-        <div>{ App.i18n.get('No Components') }</div>
     </div>
 
     <div class="uk-sortable layout-components" ref="components" show="{mode=='edit' && items.length}" data-uk-sortable>
@@ -145,9 +144,7 @@
         }.bind(this);
 
         addComponent(e) {
-
             this.refs.modalComponents.afterComponent = e.item && e.item.item ? e.item.idx : false;
-
             UIkit.modal(this.refs.modalComponents, {modal:false}).show();
         }
 
@@ -163,7 +160,6 @@
             }
 
             if (App.Utils.isNumber(this.refs.modalComponents.afterComponent)) {
-                console.log(this.refs.modalComponents.afterComponent)
                 this.items.splice(this.refs.modalComponents.afterComponent + 1, 0, item);
                 this.refs.modalComponents.afterComponent = false;
             } else {
@@ -239,6 +235,12 @@
                 ]
             }
         };
+
+        if (window.CP_LAYOUT_COMPONENTS && App.Utils.isObject(window.CP_LAYOUT_COMPONENTS)) {
+            this.components = App.$.extend(true, this.components, window.CP_LAYOUT_COMPONENTS);
+        }
+
+        App.trigger('field.layout.components', {components:this.components});
         
     </script>
 
