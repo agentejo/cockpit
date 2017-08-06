@@ -60,7 +60,7 @@
     <div class="uk-modal uk-sortable-nodrag" ref="modalSettings">
         <div class="uk-modal-dialog" if="{settingsComponent}">
             
-            <h3>
+            <h3 class="uk-margin-large-bottom">
                 <img class="uk-margin-small-right" riot-src="{ components[settingsComponent.component].icon ? components[settingsComponent.component].icon : App.base('/assets/app/media/icons/settings.svg')}" width="30">
                 { components[settingsComponent.component].label || App.Utils.ucfirst(settingsComponent.component) }
             </h3>
@@ -70,7 +70,6 @@
             </div>
 
             <div class="uk-margin">
-                <h4>General</h4>
                 <field-set class="uk-margin" bind="settingsComponent.settings" fields="{generalSettingsFields}"></field-set>
             </div>
 
@@ -115,9 +114,6 @@
             UIkit.modal(this.refs.modalSettings, {modal:false}).on('hide.uk.modal', function() {
                 $this.settingsComponent = false;
                 $this.update();
-            }).on('click', '.settings-tabs li', function() {
-                App.$(this).parent().children().removeClass('uk-active').filter(this).addClass('uk-active');
-                App.$($this.refs.modalSettings).find('.settings-panels').children().removeClass('uk-active').eq(App.$(this).index()).addClass('uk-active');
             });
 
             this.trigger('update');
@@ -194,17 +190,24 @@
 
             },
 
-            "heading": {
-                "icon": App.base('/assets/app/media/icons/heading.svg'),
-                "fields": [
-                    {"name": "text", "type": "text"},
-                ]
-            },
-
             "text": {
                 "icon": App.base('/assets/app/media/icons/text.svg'),
                 "fields": [
                     {"name": "text", "type": "wysiwyg"},
+                ]
+            },
+
+            "html": {
+                "icon": App.base('/assets/app/media/icons/code.svg'),
+                "fields": [
+                    {"name": "html", "type": "html"},
+                ]
+            },
+
+            "heading": {
+                "icon": App.base('/assets/app/media/icons/heading.svg'),
+                "fields": [
+                    {"name": "text", "type": "text"},
                 ]
             },
 
