@@ -12,7 +12,7 @@
 
     <script>
 
-        var $this = this, editor;
+        var $this = this, editor, idle;
 
         this.value  = null;
         this._field = null;
@@ -46,9 +46,15 @@
                 $this.isReady = true;
                 $this.update();
 
-                $this.parent.on('update', function() {
-                    if (!editor.hasFocus()) editor.refresh();
-                });
+                idle = setInterval(function() {
+
+                    if (App.$($this.root).is(':visible')) {
+                        if(!editor.hasFocus()) editor.refresh();
+                    } else {
+                        if (!App.$($this.root).closest('body').length) clearInterval(idle);
+                    }
+                }, 500)
+
             });
         });
 

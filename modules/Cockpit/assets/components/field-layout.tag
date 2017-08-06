@@ -65,20 +65,13 @@
                 { components[settingsComponent.component].label || App.Utils.ucfirst(settingsComponent.component) }
             </h3>
 
-            <ul class="uk-tab uk-flex uk-flex-center uk-margin settings-tabs">
-                <li class="{components[settingsComponent.component].fields && 'uk-active'}" if="{components[settingsComponent.component].fields}">
-                    <a>{ App.i18n.get('Main') }</a>
-                </li>
-                <li class="{!components[settingsComponent.component].fields && 'uk-active'}"><a>{ App.i18n.get('General') }</a></li>
-            </ul>
+            <div class="uk-margin" if="{components[settingsComponent.component].fields}">
+                <field-set class="uk-margin" bind="settingsComponent.settings" fields="{components[settingsComponent.component].fields}"></field-set>
+            </div>
 
-            <div class="uk-switcher settings-panels">
-                <div class="{components[settingsComponent.component].fields && 'uk-active'}" if="{components[settingsComponent.component].fields}">
-                    <field-set class="uk-margin" bind="settingsComponent.settings" fields="{components[settingsComponent.component].fields}"></field-set>
-                </div>
-                <div class="{!components[settingsComponent.component].fields && 'uk-active'}">
-                    <field-set class="uk-margin" bind="settingsComponent.settings" fields="{generalSettingsFields}"></field-set>
-                </div>
+            <div class="uk-margin">
+                <h4>General</h4>
+                <field-set class="uk-margin" bind="settingsComponent.settings" fields="{generalSettingsFields}"></field-set>
             </div>
 
             <div class="uk-text-right uk-margin-top">
@@ -123,7 +116,6 @@
                 $this.settingsComponent = false;
                 $this.update();
             }).on('click', '.settings-tabs li', function() {
-                
                 App.$(this).parent().children().removeClass('uk-active').filter(this).addClass('uk-active');
                 App.$($this.refs.modalSettings).find('.settings-panels').children().removeClass('uk-active').eq(App.$(this).index()).addClass('uk-active');
             });
@@ -173,7 +165,7 @@
                 this.items.push(item);
             }
 
-            this.$setValue(this.items);
+            this.$setValue(this.items, true);
 
             setTimeout(function() {
                 UIkit.modal(this.refs.modalComponents).hide();

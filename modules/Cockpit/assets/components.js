@@ -1492,7 +1492,7 @@ riot.tag2('field-boolean', '<div ref="container" class="uk-display-inline-block"
 
 riot.tag2('field-code', '<codemirror ref="codemirror" syntax="{opts.syntax || \'text\'}"></codemirror>', 'field-code .CodeMirror { height: auto; }', '', function(opts) {
 
-        var $this = this, editor;
+        var $this = this, editor, idle;
 
         this.value  = null;
         this._field = null;
@@ -1526,9 +1526,15 @@ riot.tag2('field-code', '<codemirror ref="codemirror" syntax="{opts.syntax || \'
                 $this.isReady = true;
                 $this.update();
 
-                $this.parent.on('update', function() {
-                    if (!editor.hasFocus()) editor.refresh();
-                });
+                idle = setInterval(function() {
+
+                    if (App.$($this.root).is(':visible')) {
+                        if(!editor.hasFocus()) editor.refresh();
+                    } else {
+                        if (!App.$($this.root).closest('body').length) clearInterval(idle);
+                    }
+                }, 500)
+
             });
         });
 
@@ -1879,7 +1885,7 @@ riot.tag2('field-image', '<figure class="uk-display-block uk-panel uk-panel-box 
 
 });
 
-riot.tag2('field-layout', '<div class="uk-text-center {opts.child ? \'uk-text-small\':\'uk-placeholder\'}" show="{!items.length}"> {App.i18n.get(\'No Components\')} </div> <div class="uk-sortable" ref="components" show="{mode==\'edit\' && items.length}" data-uk-sortable> <div class="uk-margin uk-panel-box uk-panel-card" each="{item,idx in items}" data-idx="{idx}"> <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover"> <img class="uk-margin-small-right" riot-src="{parent.components[item.component].icon ? parent.components[item.component].icon : App.base(\'/assets/app/media/icons/component.svg\')}" width="16"> <div class="uk-text-bold uk-text-truncate uk-flex-item-1"> {parent.components[item.component].label || App.Utils.ucfirst(item.component)} </div> <div class="uk-button-group uk-invisible"> <a class="uk-button uk-button-small" onclick="{parent.addComponent}" title="{App.i18n.get(\'Add Colum\')}"><i class="uk-icon-plus"></i></a> <a class="uk-button uk-button-small" onclick="{parent.settings}"><i class="uk-icon-cogs"></i></a> <a class="uk-button uk-button-small uk-button-danger" onclick="{parent.remove}"><i class="uk-icon-trash-o"></i></a> </div> </div> <div class="uk-margin" if="{parent.components[item.component].children}"> <field-layout bind="items[{idx}].children" child="true"></field-layout> </div> <div class="uk-margin" if="{item.component == \'grid\'}"> <field-layout-grid bind="items[{idx}].columns"></field-layout-grid> </div> </div> </div> <div class="uk-margin uk-text-center"> <a class="uk-button {!opts.child ? \'uk-button-primary uk-button-large\':\'uk-button-small\'}" onclick="{addComponent}" title="{App.i18n.get(\'Add component\')}" data-uk-tooltip="pos:\'bottom\'"><i class="uk-icon-plus-circle"></i></a> </div> <div class="uk-modal uk-sortable-nodrag" ref="modalComponents"> <div class="uk-modal-dialog"> <h3 class="uk-flex uk-flex-middle"> <img class="uk-margin-small-right" riot-src="{App.base(\'/assets/app/media/icons/component.svg\')}" width="30"> {App.i18n.get(\'Components\')} </h3> <div class="uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-4"> <div class="uk-grid-margin" each="{component,name in components}"> <div class="uk-panel uk-panel-framed uk-text-center"> <img riot-src="{component.icon || App.base(\'/assets/app/media/icons/component.svg\')}" width="30"> <p class="uk-text-small">{component.label || App.Utils.ucfirst(name)}</p> <a class="uk-position-cover" onclick="{add}"></a> </div> </div> </div> <div class="uk-text-right uk-margin-top"> <a class="uk-button uk-button-link uk-button-large uk-modal-close">{App.i18n.get(\'Close\')}</a> </div> </div> </div> <div class="uk-modal uk-sortable-nodrag" ref="modalSettings"> <div class="uk-modal-dialog" if="{settingsComponent}"> <h3> <img class="uk-margin-small-right" riot-src="{components[settingsComponent.component].icon ? components[settingsComponent.component].icon : App.base(\'/assets/app/media/icons/settings.svg\')}" width="30"> {components[settingsComponent.component].label || App.Utils.ucfirst(settingsComponent.component)} </h3> <ul class="uk-tab uk-flex uk-flex-center uk-margin settings-tabs"> <li class="{components[settingsComponent.component].fields && \'uk-active\'}" if="{components[settingsComponent.component].fields}"> <a>{App.i18n.get(\'Main\')}</a> </li> <li class="{!components[settingsComponent.component].fields && \'uk-active\'}"><a>{App.i18n.get(\'General\')}</a></li> </ul> <div class="uk-switcher settings-panels"> <div class="{components[settingsComponent.component].fields && \'uk-active\'}" if="{components[settingsComponent.component].fields}"> <field-set class="uk-margin" bind="settingsComponent.settings" fields="{components[settingsComponent.component].fields}"></field-set> </div> <div class="{!components[settingsComponent.component].fields && \'uk-active\'}"> <field-set class="uk-margin" bind="settingsComponent.settings" fields="{generalSettingsFields}"></field-set> </div> </div> <div class="uk-text-right uk-margin-top"> <a class="uk-button uk-button-link uk-button-large uk-modal-close">{App.i18n.get(\'Close\')}</a> </div> </div> </div>', '', '', function(opts) {
+riot.tag2('field-layout', '<div class="uk-text-center {opts.child ? \'uk-text-small\':\'uk-placeholder\'}" show="{!items.length}"> {App.i18n.get(\'No Components\')} </div> <div class="uk-sortable" ref="components" show="{mode==\'edit\' && items.length}" data-uk-sortable> <div class="uk-margin uk-panel-box uk-panel-card" each="{item,idx in items}" data-idx="{idx}"> <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover"> <img class="uk-margin-small-right" riot-src="{parent.components[item.component].icon ? parent.components[item.component].icon : App.base(\'/assets/app/media/icons/component.svg\')}" width="16"> <div class="uk-text-bold uk-text-truncate uk-flex-item-1"> {parent.components[item.component].label || App.Utils.ucfirst(item.component)} </div> <div class="uk-button-group uk-invisible"> <a class="uk-button uk-button-small" onclick="{parent.addComponent}" title="{App.i18n.get(\'Add Colum\')}"><i class="uk-icon-plus"></i></a> <a class="uk-button uk-button-small" onclick="{parent.settings}"><i class="uk-icon-cogs"></i></a> <a class="uk-button uk-button-small uk-button-danger" onclick="{parent.remove}"><i class="uk-icon-trash-o"></i></a> </div> </div> <div class="uk-margin" if="{parent.components[item.component].children}"> <field-layout bind="items[{idx}].children" child="true"></field-layout> </div> <div class="uk-margin" if="{item.component == \'grid\'}"> <field-layout-grid bind="items[{idx}].columns"></field-layout-grid> </div> </div> </div> <div class="uk-margin uk-text-center"> <a class="uk-button {!opts.child ? \'uk-button-primary uk-button-large\':\'uk-button-small\'}" onclick="{addComponent}" title="{App.i18n.get(\'Add component\')}" data-uk-tooltip="pos:\'bottom\'"><i class="uk-icon-plus-circle"></i></a> </div> <div class="uk-modal uk-sortable-nodrag" ref="modalComponents"> <div class="uk-modal-dialog"> <h3 class="uk-flex uk-flex-middle"> <img class="uk-margin-small-right" riot-src="{App.base(\'/assets/app/media/icons/component.svg\')}" width="30"> {App.i18n.get(\'Components\')} </h3> <div class="uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-4"> <div class="uk-grid-margin" each="{component,name in components}"> <div class="uk-panel uk-panel-framed uk-text-center"> <img riot-src="{component.icon || App.base(\'/assets/app/media/icons/component.svg\')}" width="30"> <p class="uk-text-small">{component.label || App.Utils.ucfirst(name)}</p> <a class="uk-position-cover" onclick="{add}"></a> </div> </div> </div> <div class="uk-text-right uk-margin-top"> <a class="uk-button uk-button-link uk-button-large uk-modal-close">{App.i18n.get(\'Close\')}</a> </div> </div> </div> <div class="uk-modal uk-sortable-nodrag" ref="modalSettings"> <div class="uk-modal-dialog" if="{settingsComponent}"> <h3> <img class="uk-margin-small-right" riot-src="{components[settingsComponent.component].icon ? components[settingsComponent.component].icon : App.base(\'/assets/app/media/icons/settings.svg\')}" width="30"> {components[settingsComponent.component].label || App.Utils.ucfirst(settingsComponent.component)} </h3> <div class="uk-margin" if="{components[settingsComponent.component].fields}"> <field-set class="uk-margin" bind="settingsComponent.settings" fields="{components[settingsComponent.component].fields}"></field-set> </div> <div class="uk-margin"> <h4>General</h4> <field-set class="uk-margin" bind="settingsComponent.settings" fields="{generalSettingsFields}"></field-set> </div> <div class="uk-text-right uk-margin-top"> <a class="uk-button uk-button-link uk-button-large uk-modal-close">{App.i18n.get(\'Close\')}</a> </div> </div> </div>', '', '', function(opts) {
 
         var $this = this;
 
@@ -1914,7 +1920,6 @@ riot.tag2('field-layout', '<div class="uk-text-center {opts.child ? \'uk-text-sm
                 $this.settingsComponent = false;
                 $this.update();
             }).on('click', '.settings-tabs li', function() {
-
                 App.$(this).parent().children().removeClass('uk-active').filter(this).addClass('uk-active');
                 App.$($this.refs.modalSettings).find('.settings-panels').children().removeClass('uk-active').eq(App.$(this).index()).addClass('uk-active');
             });
@@ -1964,7 +1969,7 @@ riot.tag2('field-layout', '<div class="uk-text-center {opts.child ? \'uk-text-sm
                 this.items.push(item);
             }
 
-            this.$setValue(this.items);
+            this.$setValue(this.items, true);
 
             setTimeout(function() {
                 UIkit.modal(this.refs.modalComponents).hide();
