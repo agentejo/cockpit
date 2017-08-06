@@ -2043,6 +2043,10 @@ riot.tag2('field-layout', '<div class="uk-text-center uk-text-muted {opts.child 
             this.components = App.$.extend(true, this.components, window.CP_LAYOUT_COMPONENTS);
         }
 
+        if (opts.components && App.Utils.isObject(opts.components)) {
+            this.components = App.$.extend(true, this.components, opts.components);
+        }
+
         App.trigger('field.layout.components', {components:this.components});
 
 });
