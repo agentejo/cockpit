@@ -146,7 +146,7 @@
 
         addComponent(e) {
 
-            this.refs.modalComponents.afterComponent = e.item.idx || e.item.idx === 0 ? e.item.idx : false;
+            this.refs.modalComponents.afterComponent = e.item && e.item.item ? e.item.idx : false;
 
             UIkit.modal(this.refs.modalComponents, {modal:false}).show();
         }
@@ -162,7 +162,8 @@
                 item.children = [];
             }
 
-            if (this.refs.modalComponents.afterComponent !== false) {
+            if (App.Utils.isNumber(this.refs.modalComponents.afterComponent)) {
+                console.log(this.refs.modalComponents.afterComponent)
                 this.items.splice(this.refs.modalComponents.afterComponent + 1, 0, item);
                 this.refs.modalComponents.afterComponent = false;
             } else {
