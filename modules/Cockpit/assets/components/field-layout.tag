@@ -1,11 +1,18 @@
 <field-layout>
 
-    <div class="uk-text-center {opts.child ? 'uk-text-small':'uk-placeholder'}" show="{ !items.length }">
-        { App.i18n.get('No Components') }
+    <style>
+        .layout-components > div {
+            margin-bottom: 5px;
+        }
+    </style>
+
+    <div class="uk-text-center uk-text-muted {opts.child ? 'uk-text-small':'uk-placeholder'}" show="{ !items.length }">
+        <img class="uk-svg-adjust" src="{ App.base('/assets/app/media/icons/layout.svg') }" width="100" data-uk-svg>
+        <div>{ App.i18n.get('No Components') }</div>
     </div>
 
-    <div class="uk-sortable" ref="components" show="{mode=='edit' && items.length}" data-uk-sortable>
-        <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
+    <div class="uk-sortable layout-components" ref="components" show="{mode=='edit' && items.length}" data-uk-sortable>
+        <div class="uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
             
             <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">
                 <img class="uk-margin-small-right" riot-src="{ parent.components[item.component].icon ? parent.components[item.component].icon : App.base('/assets/app/media/icons/component.svg')}" width="16">
@@ -92,7 +99,7 @@
         this.generalSettingsFields  = [
             {name: "id", type: "text" },
             {name: "class", type: "text" },
-            {name: "style", type: "code", options: {syntax: "css"} }
+            {name: "style", type: "code", options: {syntax: "css", height: "100px"} }
         ];
 
         this.on('mount', function() {
@@ -283,7 +290,7 @@
         this.fields  = [
             {name: "id", type: "text" },
             {name: "class", type: "text" },
-            {name: "style", type: "code", options: {syntax: "css"}  }
+            {name: "style", type: "code", options: {syntax: "css", height: "100px"}  }
         ];
         this.settingsComponent = null;
 

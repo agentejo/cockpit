@@ -41,6 +41,10 @@
                     var mode = CodeMirror.findModeByName(opts.syntax) || {mode:'text'};
                     editor.setOption("mode", mode.mode);
                 }
+                
+                if (opts.height) {
+                    editor.setSize(opts.width || '100%', opts.height);
+                }
 
                 this.trigger('ready');
 
