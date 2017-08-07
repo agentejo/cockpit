@@ -198,14 +198,14 @@
             "text": {
                 "icon": App.base('/assets/app/media/icons/text.svg'),
                 "fields": [
-                    {"name": "text", "type": "wysiwyg"},
+                    {"name": "text", "type": "wysiwyg"}
                 ]
             },
 
             "html": {
                 "icon": App.base('/assets/app/media/icons/code.svg'),
                 "fields": [
-                    {"name": "html", "type": "html"},
+                    {"name": "html", "type": "html"}
                 ]
             },
 
@@ -213,13 +213,15 @@
                 "icon": App.base('/assets/app/media/icons/heading.svg'),
                 "fields": [
                     {"name": "text", "type": "text"},
+                    {"name": "tag", "type": "select", "options":{"options":['h1','h2','h3','h4','h5','h6']}}
                 ]
             },
 
             "image": {
                 "icon": App.base('/assets/app/media/icons/photo.svg'),
                 "fields": [
-                    {"name": "image", "type": "image"}
+                    {"name": "image", "type": "image"},
+                    {"name": "url", "type": "text"}
                 ]
             },
 
@@ -231,7 +233,7 @@
                 "icon": App.base('/assets/app/media/icons/button.svg'),
                 "fields": [
                     {"name": "text", "type": "text"},
-                    {"name": "url", "type": "text"},
+                    {"name": "url", "type": "text"}
                 ]
             }
         };
