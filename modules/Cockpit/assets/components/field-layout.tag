@@ -64,8 +64,10 @@
     </div>
 
     <div class="uk-modal uk-sortable-nodrag" ref="modalSettings">
-        <div class="uk-modal-dialog" if="{settingsComponent}">
+        <div class="uk-modal-dialog uk-modal-dialog-large" if="{settingsComponent}">
             
+            <a class="uk-modal-close uk-close"></a>
+
             <h3 class="uk-margin-large-bottom">
                 <img class="uk-margin-small-right" riot-src="{ components[settingsComponent.component].icon ? components[settingsComponent.component].icon : App.base('/assets/app/media/icons/settings.svg')}" width="30">
                 { components[settingsComponent.component].label || App.Utils.ucfirst(settingsComponent.component) }
