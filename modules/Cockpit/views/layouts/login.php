@@ -76,7 +76,7 @@
                 </div>
 
                 <div class="uk-margin-large-top">
-                    <button class="uk-button uk-button-large uk-button-primary uk-width-1-1">@lang('Authenticate')</button>
+                    <button class="uk-button uk-button-outline uk-button-large uk-button-primary uk-width-1-1">@lang('Authenticate')</button>
                 </div>
             </div>
 
@@ -126,6 +126,15 @@
         </script>
 
     </div>
+
+
+<style>
+
+html, body {
+    background: #0e0f19; 
+}
+
+</style>
 
 </body>
 </html>

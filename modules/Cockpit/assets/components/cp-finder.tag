@@ -342,13 +342,13 @@
                                 App.ui.notify("File(s) failed to uploaded.", "danger");
                             }
 
+                            if (!response) {
+                                App.ui.notify("Something went wrong.", "danger");
+                            }
+
                             if (response && response.uploaded && response.uploaded.length) {
                                 App.ui.notify("File(s) uploaded.", "success");
                                 $this.loadPath();
-                            }
-
-                            if (!response) {
-                                App.ui.notify("Something went wrong.", "danger");
                             }
 
                         }
@@ -431,9 +431,16 @@
 
                 if (e.shiftKey) {
 
-                    var prev, items = this.data[item.is_file ? 'files' : 'folders'];
+                    var prev, i, closest = idx, items = this.data[item.is_file ? 'files' : 'folders'];
 
-                    for (var i=idx;i>=0;i--) {
+                    for (i=idx;i>=0;i--) {
+                        if (items[i].selected) {
+                            closest = i;
+                            break;
+                        }
+                    }
+
+                    for (i=idx;i>=closest;i--) {
                         if (items[i].selected) break;
 
                         items[i].selected = true;
