@@ -6,19 +6,28 @@
     <script src="../assets/lib/jquery.js"></script>
     <script src="../assets/lib/uikit/js/uikit.min.js"></script>
     <link rel="stylesheet" href="../assets/app/css/style.css">
+    <style>
+        html, body { background: #0e0f19; }
+        .info-container {
+            width: 460px;
+            max-width: 90%;
+        }
+    </style>
 </head>
-<body class="uk-bg-light uk-height-viewport uk-flex uk-flex-middle">
+<body class="uk-height-viewport uk-flex uk-flex-middle">
 
 
-    <div class="uk-width-medium-1-3 uk-width-large-1-4 uk-container-center uk-text-center uk-animation-slide-fade">
+    <div class="info-container uk-container-center uk-text-center uk-animation-slide-fade">
 
-        <div class="uk-panel uk-panel-box uk-panel-space uk-panel-card">
+        <div class="uk-panel uk-panel-box uk-panel-space uk-panel-card uk-animation-scale">
 
             <img src="../favicon.ico" width="50" height="50" alt="logo">
 
             <h1>Installation completed</h1>
 
-            <div class="uk-panel uk-panel-box">
+            <img src="../assets/app/media/icons/login.svg" width="100" alt="success">
+
+            <div class="uk-margin-large">
 
                 <strong>LOGIN</strong>
 
@@ -30,7 +39,7 @@
             </div>
 
             <div class="uk-margin-top">
-                <a href="../" class="uk-button uk-button-large uk-button-link uk-width-1-1">Login now</a>
+                <a href="../" class="uk-button uk-button-large uk-button-primary uk-button-outline uk-width-1-1">Login now</a>
             </div>
 
         </div>

@@ -11,13 +11,13 @@
 
     <style>
 
+        html, body {
+            background: #0e0f19; 
+        }
+
         .login-container {
             width: 360px;
             max-width: 90%;
-        }
-
-        html {
-            background: #222228;
         }
 
         .uk-panel-box-header {
@@ -126,15 +126,6 @@
         </script>
 
     </div>
-
-
-<style>
-
-html, body {
-    background: #0e0f19; 
-}
-
-</style>
 
 </body>
 </html>
