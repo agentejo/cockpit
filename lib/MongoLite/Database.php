@@ -364,6 +364,22 @@ class UtilArrayQuery {
                 $r = $b ? !is_null($a) : is_null($a);
                 break;
 
+            case '$fuzzy':
+
+                $distance = 3;
+                $minScore = 0.7;
+
+                if (is_array($b) && isset($b['search'])) {
+
+                    if (isset($b['minScore']) && is_numeric($b['minScore'])) $minScore = $b['minScore']; 
+                    if (isset($b['distance']) && is_numeric($b['distance'])) $distance = $b['distance']; 
+
+                    $b = $b['search'];
+                }
+
+                $r = fuzzy_search($b, $a, $distance) >= $minScore;
+                break;
+
             default :
                 throw new \ErrorException("Condition not valid ... Use {$func} for custom operations");
                 break;
@@ -371,4 +387,57 @@ class UtilArrayQuery {
 
         return $r;
     }
+}
+
+
+// Helper Functions
+function levenshtein_utf8($s1, $s2) {
+
+    $map = [];
+    $utf8_to_extended_ascii = function($str) use($map) {
+       
+        // find all multibyte characters (cf. utf-8 encoding specs)
+        $matches = array();
+        
+        if (!preg_match_all('/[\xC0-\xF7][\x80-\xBF]+/', $str, $matches)) return $str; // plain ascii string
+        
+        // update the encoding map with the characters not already met
+        foreach ($matches[0] as $mbc) {
+            if (!isset($map[$mbc])) $map[$mbc] = chr(128 + count($map));
+        }
+        
+        // finally remap non-ascii characters
+        return strtr($str, $map);
+    };
+
+    return levenshtein($utf8_to_extended_ascii($s1), $utf8_to_extended_ascii($s2));
+}
+
+function fuzzy_search($search, $text, $distance = 3){
+
+    $needles = explode(' ', mb_strtolower($search, 'UTF-8'));
+    $tokens  = explode(' ', mb_strtolower($text, 'UTF-8'));
+    $score   = 0;
+
+    foreach ($needles as $needle){
+
+        foreach ($tokens as $token) {
+
+            if (strpos($token, $needle) !== false) {
+                $score += 1;
+            } else {
+
+                $d = levenshtein_utf8($needle, $token);
+
+                if ($d <= $distance) {
+                    $l       = mb_strlen($token, 'UTF-8');
+                    $matches = $l - $d;
+                    $score  += ($matches / $l);
+                }
+            }
+        }
+        
+    }
+
+    return $score / count($needles);
 }
