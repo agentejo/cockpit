@@ -3,10 +3,13 @@
     <figure class="uk-display-block uk-panel uk-panel-box uk-panel-card uk-overlay uk-overlay-hover">
 
         <div class="uk-flex uk-flex-middle uk-flex-center uk-text-muted">
-            <div class="uk-width-1-1" show="{ image.path }" riot-style="min-height:160px;background-size:contain;background-repeat:no-repeat;background-position:50% 50%;{ image.path ? 'background-image: url('+encodeURI(SITE_URL+'/'+image.path)+')':''}"></div>
+            <div class="uk-width-1-1" show="{ image.path }" riot-style="min-height:160px;background-size:contain;background-repeat:no-repeat;background-position:50% 50%;{ image.path ? 'background-image: url('+(image.path.match(/^(http\:|https\:|\/\/)/) ? image.path:encodeURI(SITE_URL+'/'+image.path))+')':''}"></div>
             <div class="uk-text-center uk-margin-top uk-margin-bottom" show="{ !image.path }">
                 <img class="uk-svg-adjust uk-text-muted" riot-src="{App.base('/assets/app/media/icons/photo.svg')}" width="60" data-uk-svg>
-                <div><a class="uk-button uk-button-link" onclick="{ selectimage }">{ App.i18n.get('Select image') }</a></div>
+                <div class="uk-margin-top">
+                    <a class="uk-button uk-button-link" onclick="{ selectimage }">{ App.i18n.get('Select image') }</a>
+                    <a class="uk-button uk-button-link" onclick="{ editUrl }">{ App.i18n.get('Enter Image Url') }</a>
+                </div>
             </div>
         </div>
 
@@ -14,6 +17,7 @@
 
             <ul class="uk-subnav">
                 <li><a onclick="{ selectimage }" title="{ App.i18n.get('Select image') }" data-uk-tooltip><i class="uk-icon-image"></i></a></li>
+                <li><a onclick="{ editUrl }" title="{ App.i18n.get('Edit Image Url') }" data-uk-tooltip><i class="uk-icon-link"></i></a></li>
                 <li><a onclick="{ showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
                 <li><a onclick="{ remove }" title="{ App.i18n.get('Reset') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
             </ul>
@@ -106,10 +110,18 @@
             this._meta = this.image.meta;
 
             setTimeout(function() {
-                UIkit.modal($this.refs.modalmeta).show().on('close.uk.modal', function(){
+                UIkit.modal($this.refs.modalmeta, {modal:false}).show().on('close.uk.modal', function(){
                     $this._meta = null;
                 });
             }, 50)
+        }
+
+        editUrl() {
+            App.ui.prompt('Image Url', this.image.path, function (url) {
+                $this.image.path = url;
+                $this.$setValue($this.image);
+                $this.update();
+            });
         }
 
     </script>
