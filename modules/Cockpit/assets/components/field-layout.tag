@@ -73,12 +73,27 @@
                 { components[settingsComponent.component].label || App.Utils.ucfirst(settingsComponent.component) }
             </h3>
 
-            <div class="uk-margin" if="{components[settingsComponent.component].fields}">
-                <field-set class="uk-margin" bind="settingsComponent.settings" fields="{components[settingsComponent.component].fields}"></field-set>
-            </div>
+            <ul class="uk-tab uk-margin-bottom uk-flex uk-flex-center">
+                <li class="{ !settingsGroup && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
+                <li class="{ group==parent.settingsGroup && 'uk-active'}" each="{items,group in settingsGroups}" show="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+            </ul>
 
-            <div class="uk-margin">
-                <field-set class="uk-margin" bind="settingsComponent.settings" fields="{generalSettingsFields}"></field-set>
+            <div class="uk-grid uk-grid-small uk-grid-match">
+                
+                <div class="uk-grid-margin uk-width-medium-{field.width}" each="{field,idx in settingsFields}" show="{!settingsGroup || (settingsGroup == field.group) }" no-reorder>
+
+                    <div class="uk-panel">
+
+                        <label class="uk-text-bold">{ field.label || field.name }</label>
+
+                            <div class="uk-margin uk-text-small uk-text-muted">{ field.info || ' ' }</div>
+
+                            <div class="uk-margin">
+                                <cp-field type="{field.type || 'text'}" bind="settingsComponent.settings[{field.name}]" opts="{ field.options || {} }"></cp-field>
+                            </div>
+                    </div>
+
+                </div>
             </div>
 
             <div class="uk-text-right uk-margin-top">
@@ -98,9 +113,9 @@
         this.items = [];
         this.settingsComponent = null;
         this.generalSettingsFields  = [
-            {name: "id", type: "text" },
-            {name: "class", type: "text" },
-            {name: "style", type: "code", options: {syntax: "css", height: "100px"} }
+            {name: "id", type: "text", group: "General" },
+            {name: "class", type: "text", group: "General" },
+            {name: "style", type: "code", group: "General", options: {syntax: "css", height: "100px"}}
         ];
 
         this.on('mount', function() {
@@ -181,11 +196,45 @@
 
         settings(e) {
             
+            var component = e.item.item;
+
             this.settingsComponent = e.item.item;
+
+            this.settingsFields    = (this.components[component.component].fields || []).concat(this.generalSettingsFields);
+            this.settingsFieldsIdx = {};
+            this.settingsGroups    = {main:[]};
+            this.settingsGroup     = 'main';
+
+            // fill with default values
+            this.settingsFields.forEach(function(field){
+
+                $this.settingsFieldsIdx[field.name] = field;
+
+                if (component.settings[field.name] === undefined) {
+                    component.settings[field.name] = field.options && field.options.default || null;
+                }
+
+                if (field.group && !$this.settingsGroups[field.group]) {
+                    $this.settingsGroups[field.group] = [];
+                } else if (!field.group) {
+                    field.group = 'main';
+                }
+
+                $this.settingsGroups[field.group || 'main'].push(field);
+            });
+
+            if (!this.settingsGroups[this.settingsGroup].length) {
+                this.settingsGroup = Object.keys(this.settingsGroups)[1];
+            }
 
             setTimeout(function() {
                 UIkit.modal(this.refs.modalSettings, {modal:false}).show();
             }.bind(this));
+        }
+
+        toggleGroup(e) {
+            e.preventDefault();
+            this.settingsGroup = e.item && e.item.group || false;
         }
 
         this.components = {
@@ -222,8 +271,7 @@
             "image": {
                 "icon": App.base('/assets/app/media/icons/photo.svg'),
                 "fields": [
-                    {"name": "image", "type": "image"},
-                    {"name": "url", "type": "text"}
+                    {"name": "image", "type": "image"}
                 ]
             },
 
