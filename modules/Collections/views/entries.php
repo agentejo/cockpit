@@ -145,7 +145,11 @@
             return field.lst;
         });
 
-        this.fields.push({name:'_modified', 'label':'@lang('Modified')'});
+        this.fieldsidx['_created'] = {name:'_created', 'label':'@lang('Created')', type: 'text'};
+        this.fieldsidx['_modified'] = {name:'_modified', 'label':'@lang('Modified')', type: 'text'};
+
+        this.fields.push(this.fieldsidx['_created']);
+        this.fields.push(this.fieldsidx['_modified']);
 
         this.sort     = {'_created': -1};
         this.selected = [];

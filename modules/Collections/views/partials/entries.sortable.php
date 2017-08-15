@@ -5,7 +5,7 @@
             @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
             <th width="20"><input type="checkbox" data-check="all"></th>
             @endif
-            <th width="{field.name == '_modified' ? '120':''}" class="uk-text-small" each="{field,idx in fields}" if="{ hasFieldAccess(field.name) }">
+            <th width="{field.name == '_modified' ? '80':''}" class="uk-text-small" each="{field,idx in fields}" if="{ field.name != '_created' && hasFieldAccess(field.name) }">
                 { field.label || field.name }
             </th>
             <th width="20"></th>
@@ -16,12 +16,12 @@
             @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
             <td><input type="checkbox" data-check data-id="{ entry._id }"></td>
             @endif
-            <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' && hasFieldAccess(field.name) }">
+            <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' && field.name != '_created' && hasFieldAccess(field.name) }">
                 <a class="uk-link-muted" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
                     <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }"></raw>
                 </a>
             </td>
-            <td class="uk-text-muted">{  App.Utils.dateformat( new Date( 1000 * entry._modified )) }</td>
+            <td><span class="uk-badge uk-badge-outline uk-text-primary">{  App.Utils.dateformat( new Date( 1000 * entry._modified )) }</span></td>
             <td>
                 <span data-uk-dropdown="mode:'click'">
 
