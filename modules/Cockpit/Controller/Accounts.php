@@ -59,6 +59,12 @@ class Accounts extends \Cockpit\AuthController {
 
         if ($data = $this->param("account", false)) {
 
+            $data["_modified"] = time();
+
+            if (!isset($data['_id'])) {
+                $data["_created"] = $data["_modified"];
+            }
+
             if (isset($data["password"])) {
 
                 if (strlen($data["password"])){

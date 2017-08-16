@@ -85,6 +85,12 @@ class RestApi extends \LimeExtra\Controller {
             }
         }
 
+        $data["_modified"] = time();
+        
+        if (!isset($data['_id'])) {
+            $data["_created"] = $data["_modified"];
+        }
+
         $this->app->storage->save("cockpit/accounts", $data);
 
         if (isset($data["password"])) {

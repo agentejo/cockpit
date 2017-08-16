@@ -335,10 +335,10 @@
             }
 
             if (!this.sort[col]) {
-                this.sort        = {};
+                this.sort      = {};
                 this.sort[col] = 1;
             } else {
-                this.sort[col] = this.sort[col] == 1 ? -1:1;
+                this.sort[col] = this.sort[col] == 1 ? -1 : 1;
             }
 
             this.sortedBy = field;
