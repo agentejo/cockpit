@@ -80,6 +80,9 @@
                 </div>
             </div>
 
+            <p class="uk-text-center" if="{!$user}"><a href="@route('/auth/forgotpassword')">@lang('Forgot Password?')</a></p>
+
+
         </form>
 
 
