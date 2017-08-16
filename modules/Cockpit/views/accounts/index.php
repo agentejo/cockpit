@@ -29,11 +29,11 @@
         <thead>
             <tr>
                 <th width="30"></th>
-                <th class="uk-text-small" data-sort="name"><a class="uk-link-muted">@lang('Name') <span if="{sort.by == 'name'}" class="uk-icon-long-arrow-{ sort.order == 1 ? 'up':'down'}"></span></a></th>
-                <th class="uk-text-small" width="30%" data-sort="email"><a class="uk-link-muted">@lang('Email') <span if="{sort.by == 'email'}" class="uk-icon-long-arrow-{ sort.order == 1 ? 'up':'down'}"></span></a></th>
-                <th class="uk-text-small" width="150" data-sort="group"><a class="uk-link-muted">@lang('Group') <span if="{sort.by == 'group'}" class="uk-icon-long-arrow-{ sort.order == 1 ? 'up':'down'}"></span></a></th>
-                <th class="uk-text-small" width="80" data-sort="_created"><a class="uk-link-muted">@lang('Created') <span if="{sort.by == '_created'}" class="uk-icon-long-arrow-{ sort.order == 1 ? 'up':'down'}"></span></a></th>
-                <th class="uk-text-small" width="80" data-sort="_modified"><a class="uk-link-muted">@lang('Modified')  <span if="{sort.by == '_modified'}" class="uk-icon-long-arrow-{ sort.order == 1 ? 'up':'down'}"></span></a></th>
+                <th class="uk-text-small" data-sort="name"><a class="uk-link-muted">@lang('Name') <span if="{sort.by == 'name'}" class="uk-icon-long-arrow-{ sort.order == -1 ? 'up':'down'}"></span></a></th>
+                <th class="uk-text-small" width="30%" data-sort="email"><a class="uk-link-muted">@lang('Email') <span if="{sort.by == 'email'}" class="uk-icon-long-arrow-{ sort.order == -1 ? 'up':'down'}"></span></a></th>
+                <th class="uk-text-small" width="150" data-sort="group"><a class="uk-link-muted">@lang('Group') <span if="{sort.by == 'group'}" class="uk-icon-long-arrow-{ sort.order == -1 ? 'up':'down'}"></span></a></th>
+                <th class="uk-text-small" width="80" data-sort="_created"><a class="uk-link-muted">@lang('Created') <span if="{sort.by == '_created'}" class="uk-icon-long-arrow-{ sort.order == -1 ? 'up':'down'}"></span></a></th>
+                <th class="uk-text-small" width="80" data-sort="_modified"><a class="uk-link-muted">@lang('Modified')  <span if="{sort.by == '_modified'}" class="uk-icon-long-arrow-{ sort.order == -1 ? 'up':'down'}"></span></a></th>
                 <th width="20"></th>
             </tr>
         </thead>
@@ -78,7 +78,7 @@
         this.accounts = {{ json_encode($accounts) }};
         this.current  = {{ json_encode($current) }};
         this.filter   = '';
-        this.sort     = {by: 'name', order: 1};
+        this.sort     = {by: '', order: 1};
 
         this.on('mount', function() {
             
