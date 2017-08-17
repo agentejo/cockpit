@@ -67,9 +67,9 @@
 
         riot.util.bind(this);
 
-        var $this = this;
+        var $this = this, _default = {path:'', meta:{title:''}};
 
-        this.image = {path:'', meta:{title:''}};
+        this.image = Object.create(_default);
 
         this.on('mount', function() {
 
@@ -83,7 +83,9 @@
 
         this.$updateValue = function(value, field) {
 
-            if (value && JSON.stringify(this.image) !== JSON.stringify(value)) {
+            value = value || Object.create(_default);
+
+            if (JSON.stringify(this.image) !== JSON.stringify(value)) {
                 this.image = value;
                 this.update();
             }
