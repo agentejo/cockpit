@@ -21,7 +21,7 @@
         <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
             <div class="uk-grid uk-grid-small">
                 <div class="uk-flex-item-1"><i class="uk-icon-bars uk-margin-small-right"></i> { App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</div>
-                <div class="uk-text-muted uk-text-small">Item { (idx+1) }</div>
+                <div class="uk-text-muted uk-text-small uk-text-truncate"> <raw content="{ parent.getOrderPreview(item,idx) }"></raw></div>
             </div>
         </div>
     </div>
@@ -131,6 +131,24 @@
                     $this.update();
                 }, 50)
             }, 50);
+        }
+
+        getOrderPreview(item, idx) {
+
+            if (item.field && item.field.type && item.field.options && (opts.display || item.field.options.display)) {
+                
+                var value, display = opts.display || item.field.options.display;
+
+                if (item.field.options.display == '$value') {
+                    value = item.value;
+                } else {
+                    value = _.get(item.value, display) || 'Item '+(idx+1);
+                }
+                
+                return App.Utils.renderValue(item.field.type, value);
+            }
+
+            return 'Item '+(idx+1);
         }
 
     </script>
