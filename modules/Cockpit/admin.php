@@ -201,6 +201,11 @@ $app->on("after", function() {
             if ($this->req_is('ajax')) {
                 $this->response->body = '{"error": "404", "message":"File not found"}';
             } else {
+
+                if (!$this->module('cockpit')->getUser()) {
+                    $this->reroute('/auth/login');
+                }
+
                 $this->response->body = $this->view("cockpit:views/errors/404.php");
             }
 
