@@ -363,7 +363,7 @@
                 });
             }
 
-            $root.find('[data-check="all"]').prop('checked', checkboxes.length === selected.length);
+            $root.find('[data-check="all"]').prop('checked', checkboxes.length && checkboxes.length === selected.length);
 
             if (update) {
                 this.update();
