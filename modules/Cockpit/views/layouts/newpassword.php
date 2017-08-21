@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="uk-height-1-1" lang="en" data-base="@base('/')" data-route="@route('/')">
+<html class="uk-height-1-1 uk-bg-dark" lang="en" data-base="@base('/')" data-route="@route('/')">
 <head>
     <meta charset="UTF-8">
     <title>@lang('Password Reset!')</title>
@@ -10,10 +10,6 @@
     {{ $app->assets(['assets:lib/uikit/js/components/form-password.min.js'], $app['cockpit/version']) }}
 
     <style>
-
-        html, body {
-            background: #0e0f19; 
-        }
 
         .container {
             width: 360px;
@@ -57,7 +53,7 @@
                 </div>
 
                 <div class="uk-text-center uk-animation-slide-bottom" if="{ reset }">
-                    <a class="uk-button uk-button-outline uk-button-large uk-button-primary uk-width-1-1" href="@route('/auth/login')">@lang('Go to login')</a>
+                    <a class="uk-button uk-button-outline uk-button-large uk-button-primary uk-width-1-1" href="{{ $app->retrieve('cockpit.login.url', $app->routeUrl('/auth/login')) }}">@lang('Go to login')</a>
                 </div>
 
                 <div class="uk-form-row" show="{ !reset }">

@@ -10,7 +10,6 @@ include(__DIR__.'/Helper/Admin.php');
 
 $app->helpers['admin']  = 'Cockpit\\Helper\\Admin';
 
-
 // init + load i18n
 $app('i18n')->locale = 'en';
 

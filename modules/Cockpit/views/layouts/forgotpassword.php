@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="uk-height-1-1" lang="en" data-base="@base('/')" data-route="@route('/')">
+<html class="uk-height-1-1 uk-bg-dark" lang="en" data-base="@base('/')" data-route="@route('/')">
 <head>
     <meta charset="UTF-8">
     <title>@lang('Password Reset!')</title>
@@ -10,11 +10,6 @@
     {{ $app->assets(['assets:lib/uikit/js/components/form-password.min.js'], $app['cockpit/version']) }}
 
     <style>
-
-        html, body {
-            background: #0e0f19; 
-        }
-
         .container {
             width: 360px;
             max-width: 90%;
@@ -33,7 +28,7 @@
     </style>
 
 </head>
-<body class="reset-page uk-height-viewport uk-flex uk-flex-middle uk-flex-center">
+<body class="passwordreset-page uk-height-viewport uk-flex uk-flex-middle uk-flex-center">
 
     <div class="uk-position-relative container uk-animation-slide-bottom" riot-view>
 
@@ -69,7 +64,7 @@
                 </div>
             </div>
 
-            <p class="uk-text-center"><a href="@route('/auth/login')">@lang('Back to Login')</a></p>
+            <p class="uk-text-center"><a href="{{ $app->retrieve('cockpit.login.url', $app->routeUrl('/auth/login')) }}">@lang('Back to Login')</a></p>
 
         </form>
 
