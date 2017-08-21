@@ -64,7 +64,7 @@
     </div>
 
     <div class="uk-modal uk-sortable-nodrag" ref="modalSettings">
-        <div class="uk-modal-dialog uk-modal-dialog-large" if="{settingsComponent}">
+        <div class="uk-modal-dialog { components[settingsComponent.component].dialog=='large' && 'uk-modal-dialog-large' }" if="{settingsComponent}">
             
             <a class="uk-modal-close uk-close"></a>
 
@@ -248,6 +248,7 @@
 
             "text": {
                 "icon": App.base('/assets/app/media/icons/text.svg'),
+                "dialog": "large",
                 "fields": [
                     {"name": "text", "type": "wysiwyg"}
                 ]
@@ -255,6 +256,7 @@
 
             "html": {
                 "icon": App.base('/assets/app/media/icons/code.svg'),
+                "dialog": "large",
                 "fields": [
                     {"name": "html", "type": "html"}
                 ]
