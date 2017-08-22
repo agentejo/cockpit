@@ -170,7 +170,13 @@
                     </div>
                     <div class="uk-margin">
                         <label class="uk-text-small uk-text-bold">{ App.i18n.get('Type') }</label>
-                        <div class="uk-margin-small-top uk-text-muted">{ asset.mime }</div>
+                        <div class="uk-margin-small-top uk-text-muted"><span class="uk-badge uk-badge-outline">{ asset.mime }</span></div>
+                    </div>
+                    <div class="uk-margin" if="{asset.colors && Array.isArray(asset.colors) && asset.colors.length}">
+                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Colors') }</label>
+                        <div class="uk-margin-small-top uk-text-muted">
+                            <span class="uk-icon-circle uk-text-large uk-margin-small-right" each="{color in asset.colors}" riot-style="color: #{color}"></span>
+                        </div>
                     </div>
                     <div class="uk-margin">
                         <label class="uk-text-small uk-text-bold">{ App.i18n.get('Size') }</label>
@@ -182,7 +188,14 @@
                     </div>
                     <div class="uk-margin">
                         <label class="uk-text-small uk-text-bold">{ App.i18n.get('Url') }</label>
-                        <div class="uk-margin-small-top uk-text-truncate uk-text-muted"><a href="{ASSETS_URL+asset.path}" target="_blank">{ASSETS_URL+asset.path}</a></div>
+                        <div class="uk-margin-small-top uk-text-truncate uk-text-small uk-text-muted"><a href="{ASSETS_URL+asset.path}" target="_blank">{ASSETS_URL+asset.path}</a></div>
+                    </div>
+
+                    <div class="uk-margin">
+                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Tags') }</label>
+                        <div class="uk-margin-small-top">
+                            <field-tags bind="asset.tags"></field-tags>
+                        </div>
                     </div>
 
                 </div>
@@ -199,6 +212,8 @@
 
 
     <script>
+
+        this.mixin(RiotBindMixin);
 
         var $this = this, typefilters = {
             'image'    : /\.(jpg|jpeg|png|gif|svg)$/i,

@@ -150,7 +150,7 @@ $this->module("cockpit")->extend([
             return $this->app->pathToUrl($path);
         }
 
-        if (!in_array($mode, ['thumbnail', 'best_fit', 'resize','fit_to_width'])) {
+        if (!in_array($mode, ['thumbnail', 'bestFit', 'resize','fitToWidth','fitToHeight'])) {
             $mode = 'thumbnail';
         }
 
