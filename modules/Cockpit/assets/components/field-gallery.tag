@@ -2,13 +2,13 @@
 
     <div ref="panel">
 
-        <div ref="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-grid-width-medium-1-4" show="{ images && images.length }">
+        <div ref="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-flex-center uk-grid-gutter uk-grid-width-medium-1-4" show="{ images && images.length }">
             <div data-idx="{ idx }" each="{ img,idx in images }">
                 <div class="uk-panel uk-panel-box uk-panel-thumbnail uk-panel-card">
                     <figure class="uk-display-block uk-overlay uk-overlay-hover">
                         <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;">
                             <div class="uk-width-1-1 uk-text-center">
-                                <img class="uk-display-inline-block uk-responsive-width" riot-src="{ (SITE_URL+'/'+img.path) }">
+                                <cp-thumbnail src="{ (SITE_URL+'/'+img.path) }" width="400" height="250"></cp-thumbnail>
                             </div>
                         </div>
                         <figcaption class="uk-overlay-panel uk-overlay-background uk-flex uk-flex-middle uk-flex-center">
@@ -30,12 +30,23 @@
             </div>
         </div>
 
-        <div class="{images && images.length ? 'uk-margin-top':'' }">
-            <div class="uk-alert" if="{ images && !images.length }">{ App.i18n.get('Gallery is empty') }.</div>
-            <a class="uk-button uk-button-link" onclick="{ selectimages }">
-                <i class="uk-icon-plus-circle"></i>
-                { App.i18n.get('Add images') }
-            </a>
+        <div class="uk-text-center {images && images.length ? 'uk-margin-top':'' }">
+            <div class="uk-text-muted" if="{ images && !images.length }">
+                <img class="uk-svg-adjust" riot-src="{ App.base('/assets/app/media/icons/gallery.svg') }" width="100" data-uk-svg>
+                <p>{ App.i18n.get('Gallery is empty') }</p>
+            </div>
+            <div class="uk-display-inline-block uk-position-relative" data-uk-dropdown="pos:'bottom-center'">
+                <a class="uk-button uk-button-primary uk-button-large" onclick="{ selectimages }">
+                    <i class="uk-icon-plus-circle" title="{ App.i18n.get('Add images') }" data-uk-tooltip></i>
+                </a>
+                <div class="uk-dropdown">
+                    <ul class="uk-nav uk-nav-dropdown uk-text-left uk-dropdown-close">
+                        <li class="uk-nav-header">{ App.i18n.get('Select') }</li>
+                        <li><a onclick="{ selectimages }">File</a></li>
+                        <li><a onclick="{ selectAssetsImages }">Asset</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <div class="uk-modal uk-sortable-nodrag" ref="modalmeta">
@@ -158,7 +169,6 @@
             }, 50)
         }
 
-
         selectimages() {
 
             App.media.select(function(selected) {
@@ -172,6 +182,30 @@
                 $this.$setValue($this.images.concat(images));
 
             }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
+
+        }
+
+        selectAssetsImages() {
+
+            App.assets.select(function(assets){
+
+                if (Array.isArray(assets)) {
+
+                    var images = [];
+
+                    assets.forEach(function(asset){
+
+                        if (asset.mime.match(/^image\//)) {
+                            images.push({
+                                meta:{title:'', asset: asset._id}, 
+                                path: ASSETS_URL.replace(SITE_URL, '')+asset.path
+                            });
+                        } 
+                    });
+
+                    $this.$setValue($this.images.concat(images));
+                }
+            });
         }
 
         remove(e) {

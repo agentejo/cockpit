@@ -162,7 +162,7 @@
                         <div class="uk-margin-large-top uk-text-center" if="{asset}">
                             <span class="uk-h1" if="{asset.mime.match(/^image\//) == null }"><i class="uk-icon-{ getIconCls(asset.path) }"></i></span>
                             <cp-thumbnail src="{ASSETS_URL+asset.path}" width="400" height="250" if="{asset.mime.match(/^image\//) }"></cp-thumbnail>
-                            <div class="uk-margin-small-top uk-text-truncate uk-text-small uk-text-muted">
+                            <div class="uk-margin-top uk-text-truncate uk-text-small uk-text-muted">
                                 <a href="{ASSETS_URL+asset.path}" target="_blank">{ASSETS_URL+asset.path}</a>
                             </div>
                         </div>
