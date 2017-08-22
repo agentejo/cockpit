@@ -1,8 +1,10 @@
 <field-asset>
 
-    <div class="uk-placeholder uk-text-center" if="{!asset}">
+    <div class="uk-placeholder uk-text-center uk-text-muted" if="{!asset}">
 
-        { App.i18n.get('No asset selected') }. <a onclick="{ selectAsset }">{ App.i18n.get('Select one') }</a>
+        <img class="uk-svg-adjust" riot-src="{ App.base('/assets/app/media/icons/assets.svg') }" width="100" data-uk-svg>
+
+        <p>{ App.i18n.get('No asset selected') }. <a onclick="{ selectAsset }">{ App.i18n.get('Select one') }</a></p>
 
     </div>
 
@@ -16,7 +18,7 @@
                     <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-h1 uk-text-muted uk-icon-{ getIconCls(asset.path) }"></i></span>
 
                     <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
-                        <cp-thumbnail src="{asset && ASSETS_URL+asset.path}" width="100" height="75"></cp-thumbnail>
+                        <cp-thumbnail riot-src="{asset && ASSETS_URL+asset.path}" width="100" height="75"></cp-thumbnail>
                     </a>
                 </div>
             </div>
