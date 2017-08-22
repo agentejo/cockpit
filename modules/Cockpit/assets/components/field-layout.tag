@@ -37,7 +37,7 @@
     </div>
 
     <div class="uk-margin uk-text-center">
-        <a class="uk-button { !opts.child ? 'uk-button-primary uk-button-large':'uk-button-small'}" onclick="{ addComponent }" title="{ App.i18n.get('Add component') }" data-uk-tooltip="pos:'bottom'"><i class="uk-icon-plus-circle"></i></a>
+        <a class="uk-button uk-button-outline uk-text-primary { !opts.child ? 'uk-button-large':'uk-button-small'}" onclick="{ addComponent }" title="{ App.i18n.get('Add component') }" data-uk-tooltip="pos:'bottom'"><i class="uk-icon-plus-circle"></i></a>
     </div>
 
     <div class="uk-modal uk-sortable-nodrag" ref="modalComponents">

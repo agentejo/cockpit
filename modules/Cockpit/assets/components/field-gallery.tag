@@ -36,7 +36,7 @@
                 <p>{ App.i18n.get('Gallery is empty') }</p>
             </div>
             <div class="uk-display-inline-block uk-position-relative" data-uk-dropdown="pos:'bottom-center'">
-                <a class="uk-button uk-button-primary uk-button-large" onclick="{ selectimages }">
+                <a class="uk-button uk-text-primary uk-button-outline uk-button-large" onclick="{ selectimages }">
                     <i class="uk-icon-plus-circle" title="{ App.i18n.get('Add images') }" data-uk-tooltip></i>
                 </a>
                 <div class="uk-dropdown">

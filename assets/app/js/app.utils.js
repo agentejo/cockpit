@@ -260,7 +260,7 @@
     };
 
     App.Utils.renderer.gallery = function(v) {
-        return Array.isArray(Array.isArray(v)) ? v.length+' '+App.i18n.get('Image(s)') : App.Utils.renderer.default(v);
+        return Array.isArray(v) ? '<span class="uk-badge">'+(v.length+' '+App.i18n.get(v.length == 1 ? 'Image':'Images'))+'</span>' : App.Utils.renderer.default(v);
     };
 
     App.Utils.renderer.boolean = function(v) {
