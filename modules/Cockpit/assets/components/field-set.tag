@@ -7,8 +7,8 @@
         </div>
 
         <div class="uk-margin" each="{field,idx in fields}">
-            <label class="uk-display-block uk-margin-small"><span class="uk-badge uk-badge-outline uk-display-inline-block uk-badge-primary" style="min-width: 80px;max-width:100%;">{ field.label || field.name || ''}</span></label>
-            <cp-field type="{ field.type || 'text' }" bind="value.{field.name}" opts="{ field.options || {} }"></cp-field>
+            <label class="uk-block uk-text-bold uk-text-small">{ field.label || field.name || ''}</label>
+            <cp-field class="uk-display-block uk-margin-small-top" type="{ field.type || 'text' }" bind="value.{field.name}" opts="{ field.options || {} }"></cp-field>
         </div>
 
     </div>
