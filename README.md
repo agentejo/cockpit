@@ -24,14 +24,14 @@ make also sure that <code>$_SERVER['DOCUMENT_ROOT']</code> exists and is set cor
 4. You're ready to use Cockpit :-)
 
 
-### Build
+### Build (Only if you modify JS components)
 
 You need [nodejs](https://nodejs.org/) installed on your system.
 
 First run `npm install` to install development dependencies
 
-a) Run `npm run build` - For one-time build of styles and components
-b) Run `npm run watch` - For continuous build every time styles or components change
+1. Run `npm run build` - For one-time build of styles and components
+2. Run `npm run watch` - For continuous build every time styles or components change
 
 
 ## Backers
