@@ -5,9 +5,10 @@
         .field-tag {
             display: inline-block;
             border: 1px currentColor solid;
-            padding: .1em .5em;
+            padding: .4em .5em;
             font-size: .9em;
             border-radius: 3px;
+            line-height: 1;
         }
 
     </style>
