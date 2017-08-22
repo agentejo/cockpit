@@ -132,7 +132,7 @@
                     This is an empty folder
                 </div>
 
-                <div class="{modal ? 'uk-overflow-container':''}">
+                <div>
 
                     <div class="uk-margin-top" if="{data && data.folders.length}">
 
@@ -298,7 +298,10 @@
         this.selected   = {};
 
         this.sortBy     = 'name';
-        this.listmode   = App.session.get('app.finder.listmode', 'list');;
+        this.listmode   = App.session.get('app.finder.listmode', 'list');
+
+        this.modal = opts.modal;
+
 
         App.$(this.refs.editor).on('click', function(e){
 
@@ -308,8 +311,6 @@
         });
 
         this.on('mount', function(){
-
-            this.modal = App.$(this.root).closest('.uk-modal').length ? UIkit.modal(App.$(this.root).closest('.uk-modal')):false;
 
             this.loadPath()
 

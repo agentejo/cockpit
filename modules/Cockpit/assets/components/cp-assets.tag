@@ -62,7 +62,7 @@
             <i class="uk-icon-spinner uk-icon-spin"></i>
         </div>
 
-        <div class="uk-margin-large-top {modal ? 'uk-overflow-container':''}" if="{ !loading && assets.length }">
+        <div class="uk-margin-large-top" if="{ !loading && assets.length }">
 
             <div class="uk-grid uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
                 <div class="uk-grid-margin" each="{ asset,idx in assets }" each="{ asset,idx in assets }" onclick="{ select }">
@@ -109,7 +109,10 @@
                                 <cp-thumbnail src="{ASSETS_URL+asset.path}" width="20" height="20"></cp-thumbnail>
                             </a>
                         </td>
-                        <td><a onclick="{ parent.edit }">{ asset.title }</a></td>
+                        <td>
+                            <a if="{!parent.modal}" onclick="{ parent.edit }">{ asset.title }</a>
+                            <span if="{parent.modal}">{ asset.title }</span>
+                        </td>
                         <td class="uk-text-small">{ asset.mime }</td>
                         <td class="uk-text-small">{ App.Utils.formatSize(asset.size) }</td>
                         <td class="uk-text-small">{ App.Utils.dateformat( new Date( 1000 * asset.modified )) }</td>
@@ -237,14 +240,14 @@
         this.assets   = [];
         this.selected = [];
 
+        this.modal    = opts.modal;
+
         // pagination
         this.count    = 0;
         this.page     = 1;
         this.limit    = opts.limit || 30;
 
         this.on('mount', function() {
-
-            this.modal = App.$(this.root).closest('.uk-modal').length ? UIkit.modal(App.$(this.root).closest('.uk-modal')):false;
 
             this.listAssets(1);
 
