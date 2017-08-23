@@ -27,7 +27,13 @@ class RestApi extends \LimeExtra\Controller {
             return false;
         }
 
-        $region = $this->region($name);
+        $region = $this->module('regions')->region($name);
+
+        if ($this->module('cockpit')->getUser()) {
+            if (!$this->module('regions')->hasaccess($name, 'form')) {
+                return $this->stop(401);
+            }
+        }
 
         if (!$region) {
             return false;
