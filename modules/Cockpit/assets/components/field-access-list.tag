@@ -18,7 +18,10 @@
 
     <div class="uk-clearfix {!_entries.length && 'uk-text-center'}">
         
-        <span class="uk-margin-small-right uk-margin-small-top uk-text-muted" if="{!_entries.length}">{ App.i18n.get('Nothing selected') }</span>
+        <div class="uk-margin uk-text-muted" if="{!_entries.length}">
+            <img class="uk-svg-adjust" riot-src="{ App.base('/assets/app/media/icons/acl.svg') }" width="50" data-uk-svg>
+            <p>{ App.i18n.get('Nothing selected') }</p>
+        </div>
         
         <span class="badge-label uk-margin-small-right uk-margin-small-top {(entry in App.$data.groups) ? '':'uk-text-danger'}" each="{entry,idx in _entries}">
             <i class="uk-icon-users uk-margin-small-right" show="{ (entry in App.$data.groups) }"></i>
@@ -26,7 +29,7 @@
         </span>    
     
         <span class="uk-position-relative uk-margin-small-top" data-uk-dropdown="mode:'click', pos:'bottom-center'">
-            <a><i class="uk-icon-plus"></i></a>
+            <a><i class="uk-icon-plus-circle uk-text-large"></i></a>
 
             <div class="uk-dropdown uk-dropdown-width-2 uk-text-left">
                 
@@ -49,8 +52,8 @@
                     </div>
 
                     <div class="uk-margin-small-top">
-                        <span class="badge-label uk-text-danger uk-margin-small-right uk-margin-small-top" each="{ user in _users}" if="{_entries.indexOf(user._id)<0}">
-                            {user.name} <a class="uk-margin-small-left" onclick="{parent.add}"><i class="uk-icon-plus"></i></a>
+                        <span class="badge-label uk-text-danger uk-margin-small-right uk-margin-small-top uk-flex-inline uk-flex-middle" each="{ user in _users}" if="{_entries.indexOf(user._id)<0}">
+                            <cp-account account="{user._id}" size="15"></cp-account> <a class="uk-margin-small-left" onclick="{parent.add}"><i class="uk-icon-plus"></i></a>
                         </span>
                     </div>
                 </div>
@@ -86,6 +89,13 @@
                 $this.update();
 
             }, 500));
+
+            App.$(this.refs.txtfilter).on('keydown', function(e) {
+
+                if (e.keyCode == 13) {
+                    return false;
+                }
+            });
         });
 
         this.$updateValue = function(value) {
