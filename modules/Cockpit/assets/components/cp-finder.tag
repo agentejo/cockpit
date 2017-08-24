@@ -626,11 +626,6 @@
                 $this.resetselected();
                 $this.update();
 
-                if ($this.modal) {
-                    setTimeout(function(){
-                        $this.modal.resize();
-                    }, 100);
-                }
             });
 
             return defer;

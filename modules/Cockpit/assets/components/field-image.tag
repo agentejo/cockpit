@@ -7,7 +7,8 @@
             <div class="uk-text-center uk-margin-top uk-margin-bottom" show="{ !image.path }">
                 <img class="uk-svg-adjust uk-text-muted" riot-src="{App.base('/assets/app/media/icons/photo.svg')}" width="60" data-uk-svg>
                 <div class="uk-margin-top">
-                    <a class="uk-button uk-button-link" onclick="{ selectimage }">{ App.i18n.get('Select image') }</a>
+                    <a class="uk-button uk-button-link" onclick="{ selectImage }">{ App.i18n.get('Select Image') }</a>
+                    <a class="uk-button uk-button-link" onclick="{ selectAsset }">{ App.i18n.get('Select Asset') }</a>
                     <a class="uk-button uk-button-link" onclick="{ editUrl }">{ App.i18n.get('Enter Image Url') }</a>
                 </div>
             </div>
@@ -16,7 +17,7 @@
         <figcaption class="uk-overlay-panel uk-overlay-background" show="{ image.path }">
 
             <ul class="uk-subnav">
-                <li><a onclick="{ selectimage }" title="{ App.i18n.get('Select image') }" data-uk-tooltip><i class="uk-icon-image"></i></a></li>
+                <li><a onclick="{ selectImage }" title="{ App.i18n.get('Select image') }" data-uk-tooltip><i class="uk-icon-image"></i></a></li>
                 <li><a onclick="{ editUrl }" title="{ App.i18n.get('Edit Image Url') }" data-uk-tooltip><i class="uk-icon-link"></i></a></li>
                 <li><a onclick="{ showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
                 <li><a onclick="{ remove }" title="{ App.i18n.get('Reset') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
@@ -92,7 +93,7 @@
 
         }.bind(this);
 
-        selectimage() {
+        selectImage() {
 
             App.media.select(function(selected) {
 
@@ -101,6 +102,19 @@
                 $this.update();
 
             }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
+        }
+
+        selectAsset() {
+
+            App.assets.select(function(assets){
+
+                if (Array.isArray(assets) && assets[0]) {
+
+                    $this.image.path = ASSETS_URL.replace(SITE_URL, '')+assets[0].path;
+                    $this.$setValue($this.image);
+                    $this.update();
+                }
+            });
         }
 
         remove() {
