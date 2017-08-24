@@ -314,12 +314,6 @@ class Admin extends \Cockpit\AuthController {
                 $criterias[] = $criteria;
             }
 
-            if ($field['type']=='tags') {
-                $criteria = [];
-                $criteria[$field['name']] = ['$all' => [$filter]];
-                $criterias[] = $criteria;
-            }
-
         }
 
         if (count($criterias)) {
@@ -352,12 +346,6 @@ class Admin extends \Cockpit\AuthController {
             if ($field['type']=='location') {
                 $criteria = [];
                 $criteria[$field['name'].'.address'] = ['$regex' => $filter, '$options' => 'i'];
-                $criterias[] = $criteria;
-            }
-
-            if ($field['type']=='tags') {
-                $criteria = [];
-                $criteria[$field['name']] = ['$all' => [$filter]];
                 $criterias[] = $criteria;
             }
 
