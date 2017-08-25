@@ -28,6 +28,10 @@
 
             App.request('/cockpit/utils/thumb_url', {src:_src,w:opts.width,h:opts.height,m:mode}, 'text').then(function(url){
 
+                if (_src.match(/\.svg$/i)) {
+                    url = _src;
+                }
+
                 App.$($this.refs.canvas).css({
                     background: '50% 50% url('+url+') no-repeat',
                     backgroundSize: 'contain'  
@@ -36,6 +40,7 @@
                 $this.refs.spinner.classList.add('uk-hidden');
 
                 src = _src;
+                
             }).catch(function(e){
 
             });

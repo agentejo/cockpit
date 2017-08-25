@@ -132,7 +132,7 @@
                     This is an empty folder
                 </div>
 
-                <div>
+                <div class="{modal && 'uk-overflow-container'}">
 
                     <div class="uk-margin-top" if="{data && data.folders.length}">
 

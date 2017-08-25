@@ -62,7 +62,7 @@
             <i class="uk-icon-spinner uk-icon-spin"></i>
         </div>
 
-        <div class="uk-margin-large-top" if="{ !loading && assets.length }">
+        <div class="uk-margin-large-top {modal && 'uk-overflow-container'}" if="{ !loading && assets.length }">
 
             <div class="uk-grid uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
                 <div class="uk-grid-margin" each="{ asset,idx in assets }" each="{ asset,idx in assets }" onclick="{ select }">
