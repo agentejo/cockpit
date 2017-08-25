@@ -172,6 +172,10 @@ $this->module("collections")->extend([
 
         $fieldsFilter = [];
 
+        if (isset($options['fieldsFilter']) && is_array($options['fieldsFilter'])) {
+            $fieldsFilter = $options['fieldsFilter'];
+        }
+
         if (isset($options['user']) && $options['user']) {
             $fieldsFilter['user'] = $options['user'];
         }
@@ -406,11 +410,12 @@ $this->module("collections")->extend([
 
         $filter = array_merge([
             'user' => false,
-            'lang' => false
+            'lang' => false,
+            'ignoreDefaultFallback' => false
         ], $filter);
 
         extract($filter);
-
+        
         if (null === $cache) {
             $cache = [];
         }
@@ -479,9 +484,9 @@ $this->module("collections")->extend([
         }
 
         if ($lang && count($languages) && count($cache[$collection['name']]['localize'])) {
-            
+
             $localfields = $cache[$collection['name']]['localize'];
-            $items = array_map(function($entry) use($localfields, $lang, $languages) {
+            $items = array_map(function($entry) use($localfields, $lang, $languages, $ignoreDefaultFallback) {
                 
                 foreach ($localfields as $name => $local) {
 
@@ -500,6 +505,12 @@ $this->module("collections")->extend([
 
                             unset($entry["{$name}_{$l}"]);
                             unset($entry["{$name}_{$l}_slug"]);
+
+                        } elseif ($l == $lang && $ignoreDefaultFallback) {
+
+                            if ($ignoreDefaultFallback === true || (is_array($ignoreDefaultFallback) && in_array($name, $ignoreDefaultFallback))) {
+                                $entry[$name] = null;
+                            }
                         }
                     }
                 }
