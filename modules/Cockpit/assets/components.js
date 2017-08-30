@@ -2640,7 +2640,7 @@ riot.tag2('field-select', '<select ref="input" class="uk-width-1-1 {opts.cls}" b
                 this.refs.input.setAttribute('required', 'required');
             }
 
-            this.options = opts.options || []
+            this.options = opts.options || [];
 
             if (typeof(this.options) === 'string') {
 

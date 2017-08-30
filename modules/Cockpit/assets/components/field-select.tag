@@ -15,7 +15,7 @@
                 this.refs.input.setAttribute('required', 'required');
             }
 
-            this.options = opts.options || []
+            this.options = opts.options || [];
 
             if (typeof(this.options) === 'string') {
 
