@@ -40,6 +40,15 @@
             this.resolve(value);
         },
 
+        tags: function(value) {
+
+            if (typeof(value) == 'string') {
+                value = value.split(',').map(function(tag) { return tag.trim()});
+            }
+
+            this.resolve(Array.isArray(value) ? value : []);
+        },
+
         collectionlink: function(value, field, extra) {
 
             if (field.options && field.options.link && extra && value) {

@@ -2939,7 +2939,7 @@ riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" 
                                 var form = App.$($this.root).closest('form');
 
                                 if (form.length) {
-                                    form.trigger('submit');
+                                    form.trigger('submit', [ed]);
                                 }
                               };
 

@@ -185,8 +185,9 @@
                 return false;
             });
 
-            App.$(this.root).on('submit', function(e) {
-                $this.submit(e);
+            // wysiwyg cmd + save hack
+            App.$(this.root).on('submit', function(e, component) {
+                if (component) $this.submit(e);
             });
         });
 

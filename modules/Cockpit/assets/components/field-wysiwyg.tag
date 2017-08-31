@@ -89,7 +89,7 @@
                                 var form = App.$($this.root).closest('form');
 
                                 if (form.length) {
-                                    form.trigger('submit');
+                                    form.trigger('submit', [ed]);
                                 }
                               };
 
