@@ -42,9 +42,7 @@ class RestApi extends \LimeExtra\Controller {
         if ($lang = $this->param('lang', false)) $fieldsFilter['lang'] = $lang;
         if ($ignoreDefaultFallback = $this->param('ignoreDefaultFallback', false)) $fieldsFilter['ignoreDefaultFallback'] = $ignoreDefaultFallback;
         if ($user) $fieldsFilter["user"] = $user;
-
-        $fieldsFilter['ignoreDefaultFallback'] = ['date'];
-
+        
         if (count($fieldsFilter)) {
             $options['fieldsFilter'] = $fieldsFilter;
         }
