@@ -7,7 +7,7 @@
         </div>
 
         <div class="uk-margin" each="{field,idx in fields}">
-            <label class="uk-block uk-text-bold uk-text-small">{ field.label || field.name || ''}</label>
+            <label class="uk-display-block uk-text-bold uk-text-small">{ field.label || field.name || ''}</label>
             <cp-field class="uk-display-block uk-margin-small-top" type="{ field.type || 'text' }" bind="value.{field.name}" opts="{ field.options || {} }"></cp-field>
         </div>
 
@@ -23,7 +23,7 @@
         this.fields = [];
 
         riot.util.bind(this);
-        
+
         this.on('mount', function() {
             this.fields = opts.fields || [];
             this.trigger('update');
