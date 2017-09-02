@@ -64,7 +64,7 @@
 
                 <img class="uk-svg-adjust" src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="50" alt="icon" data-uk-svg>
                 @if($collection['description'])
-                <div class="uk-container-center uk-margin-top uk-text-small">
+                <div class="uk-margin-top uk-text-small">
                     {{ $collection['description'] }}
                 </div>
                 @endif
