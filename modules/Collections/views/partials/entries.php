@@ -1,6 +1,6 @@
 
-<div class="uk-alert" if="{ !entries.length && filter && !loading }">
-    @lang('No entries found').
+<div class="uk-text-xlarge uk-text-muted uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" if="{ !entries.length && filter && !loading }">
+    <div>@lang('No entries found')</div>
 </div>
 
 <table class="uk-table uk-table-border uk-table-striped" if="{ entries.length && !loading }">
