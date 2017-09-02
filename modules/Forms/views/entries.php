@@ -45,9 +45,11 @@
             <div class="uk-animation-scale uk-width-1-1 uk-text-muted">
 
                 <img class="uk-svg-adjust" src="@url($form['icon'] ? 'assets:app/media/icons/'.$form['icon']:'forms:icon.svg')" width="50" alt="icon" data-uk-svg>
+                @if($form['description'])
                 <div class="uk-margin-top uk-text-small">
                     {{ $form['description'] }}
                 </div>
+                @endif
                 <hr>
                 <span class="uk-text-large">@lang('No entries')</span>
 
