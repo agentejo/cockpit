@@ -1,7 +1,8 @@
 /*!
 	Papa Parse
-	v4.3.2
+	v4.3.5
 	https://github.com/mholt/PapaParse
+	License: MIT
 */
 (function(root, factory)
 {
@@ -10,7 +11,7 @@
 		// AMD. Register as an anonymous module.
 		define([], factory);
 	}
-	else if (typeof module === 'object' && module.exports)
+	else if (typeof module === 'object' && typeof exports !== 'undefined')
 	{
 		// Node. Does not work with strict CommonJS, but
 		// only CommonJS-like environments that support module.exports,
@@ -35,8 +36,8 @@
 		if (typeof window !== 'undefined') { return window; }
 		if (typeof global !== 'undefined') { return global; }
 
-        // When running tests none of the above have been defined
-        return {};
+		// When running tests none of the above have been defined
+		return {};
 	})();
 
 
@@ -193,13 +194,13 @@
 	function CsvToJson(_input, _config)
 	{
 		_config = _config || {};
-        var dynamicTyping = _config.dynamicTyping || false;
-        if (isFunction(dynamicTyping)) {
-            _config.dynamicTypingFunction = dynamicTyping;
-            // Will be filled on first row call
-            dynamicTyping = {};
-        }
-        _config.dynamicTyping = dynamicTyping;
+		var dynamicTyping = _config.dynamicTyping || false;
+		if (isFunction(dynamicTyping)) {
+			_config.dynamicTypingFunction = dynamicTyping;
+			// Will be filled on first row call
+			dynamicTyping = {};
+		}
+		_config.dynamicTyping = dynamicTyping;
 
 		if (_config.worker && Papa.WORKERS_SUPPORTED)
 		{
@@ -643,8 +644,8 @@
 		{
 			var contentRange = xhr.getResponseHeader('Content-Range');
 			if (contentRange === null) { // no content range, then finish!
-        			return -1;
-            		}
+					return -1;
+					}
 			return parseInt(contentRange.substr(contentRange.lastIndexOf('/') + 1));
 		}
 	}
@@ -829,7 +830,7 @@
 		var _input;				// The input being parsed
 		var _parser;			// The core parser being used
 		var _paused = false;	// Whether we are paused or not
-		var _aborted = false;   // Whether the parser has aborted or not
+		var _aborted = false;	// Whether the parser has aborted or not
 		var _delimiterError;	// Temporary state between delimiter detection and processing results
 		var _fields = [];		// Fields are from the header row of the input, if there is one
 		var _results = {		// The last results returned from the parser
@@ -877,7 +878,7 @@
 			_delimiterError = false;
 			if (!_config.delimiter)
 			{
-				var delimGuess = guessDelimiter(input, _config.newline);
+				var delimGuess = guessDelimiter(input, _config.newline, _config.skipEmptyLines);
 				if (delimGuess.successful)
 					_config.delimiter = delimGuess.bestDelimiter;
 				else
@@ -973,13 +974,13 @@
 			_results.data.splice(0, 1);
 		}
 
-        function shouldApplyDynamicTyping(field) {
-            // Cache function values to avoid calling it for each row
-            if (_config.dynamicTypingFunction && _config.dynamicTyping[field] === undefined) {
-                _config.dynamicTyping[field] = _config.dynamicTypingFunction(field);
-            }
-            return (_config.dynamicTyping[field] || _config.dynamicTyping) === true
-        }
+		function shouldApplyDynamicTyping(field) {
+			// Cache function values to avoid calling it for each row
+			if (_config.dynamicTypingFunction && _config.dynamicTyping[field] === undefined) {
+				_config.dynamicTyping[field] = _config.dynamicTypingFunction(field);
+			}
+			return (_config.dynamicTyping[field] || _config.dynamicTyping) === true
+		}
 
 		function parseDynamic(field, value)
 		{
@@ -1039,7 +1040,7 @@
 			return _results;
 		}
 
-		function guessDelimiter(input, newline)
+		function guessDelimiter(input, newline, skipEmptyLines)
 		{
 			var delimChoices = [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP];
 			var bestDelim, bestDelta, fieldCountPrevRow;
@@ -1047,7 +1048,7 @@
 			for (var i = 0; i < delimChoices.length; i++)
 			{
 				var delim = delimChoices[i];
-				var delta = 0, avgFieldCount = 0;
+				var delta = 0, avgFieldCount = 0, emptyLinesCount = 0;
 				fieldCountPrevRow = undefined;
 
 				var preview = new Parser({
@@ -1058,6 +1059,10 @@
 
 				for (var j = 0; j < preview.data.length; j++)
 				{
+					if (skipEmptyLines && preview.data[j].length === 1 && preview.data[j][0].length === 0) {
+						emptyLinesCount++
+						continue
+					}
 					var fieldCount = preview.data[j].length;
 					avgFieldCount += fieldCount;
 
@@ -1074,7 +1079,7 @@
 				}
 
 				if (preview.data.length > 0)
-					avgFieldCount /= preview.data.length;
+					avgFieldCount /= (preview.data.length - emptyLinesCount);
 
 				if ((typeof bestDelta === 'undefined' || delta < bestDelta)
 					&& avgFieldCount > 1.99)
