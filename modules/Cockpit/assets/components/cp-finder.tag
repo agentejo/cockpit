@@ -278,7 +278,7 @@
                 'audio'    : /\.(mp3|weba|ogg|wav|flac)$/i,
                 'archive'  : /\.(zip|rar|7zip|gz)$/i,
                 'document' : /\.(htm|html|pdf|md)$/i,
-                'text'     : /\.(txt|htm|html|php|css|less|js|json|md|markdown|yaml|xml|htaccess)$/i
+                'text'     : /\.(csv|txt|htm|html|php|css|less|js|json|md|markdown|yaml|xml|htaccess)$/i
             };
 
         opts.root = opts.root || '/';

@@ -1,5 +1,5 @@
 <field-access-list>
-    
+
     <style>
 
         .badge-label {
@@ -12,27 +12,27 @@
         }
 
         .badge-label a { color: currentColor; }
-    
+
     </style>
 
 
     <div class="uk-clearfix {!_entries.length && 'uk-text-center'}">
-        
+
         <div class="uk-margin uk-text-muted" if="{!_entries.length}">
             <img class="uk-svg-adjust" riot-src="{ App.base('/assets/app/media/icons/acl.svg') }" width="50" data-uk-svg>
             <p>{ App.i18n.get('Nothing selected') }</p>
         </div>
-        
+
         <span class="badge-label uk-margin-small-right uk-margin-small-top {(entry in App.$data.groups) ? '':'uk-text-danger'}" each="{entry,idx in _entries}">
             <i class="uk-icon-users uk-margin-small-right" show="{ (entry in App.$data.groups) }"></i>
             <span data-entry="{entry}">{ parent.getEntryDisplay(entry) }</span> <a class="uk-margin-small-left" onclick="{ parent.remove }"><i class="uk-icon-minus"></i></a>
-        </span>    
-    
-        <span class="uk-position-relative uk-margin-small-top" data-uk-dropdown="mode:'click', pos:'bottom-center'">
+        </span>
+
+        <span class="uk-position-relative uk-margin-small-top" data-uk-dropdown="mode:'click', pos:'right-bottom'">
             <a><i class="uk-icon-plus-circle uk-text-large"></i></a>
 
             <div class="uk-dropdown uk-dropdown-width-2 uk-text-left">
-                
+
                 <div class="uk-margin">
                     <strong>{ App.i18n.get('Groups') }</strong>
                     <div class="uk-margin-small-top">
@@ -47,7 +47,7 @@
                     <strong>{ App.i18n.get('Users') }</strong>
                     <div class="uk-margin-small-top">
                         <div class="uk-form-icon uk-form uk-text-muted uk-display-block">
-                            <i class="uk-icon-search"></i> <input class="uk-width-1-1" type="text" ref="txtfilter" placeholder="Filter users..."> 
+                            <i class="uk-icon-search"></i> <input class="uk-width-1-1" type="text" ref="txtfilter" placeholder="Filter users...">
                         </div>
                     </div>
 
@@ -60,7 +60,7 @@
 
             </div>
         </span>
-    
+
     </div>
 
     <script>
@@ -131,7 +131,7 @@
 
                 cache[entry] = new Promise(function(resolve, reject){
                     App.request('/accounts/find', {filter: {_id:entry}}).then(function(response) {
-                        
+
                         if (Array.isArray(response) && response[0]) {
                             resolve(response[0].name);
                         } else {
@@ -149,7 +149,7 @@
 
             return '...';
         }
-    
+
     </script>
 
 </field-access-list>

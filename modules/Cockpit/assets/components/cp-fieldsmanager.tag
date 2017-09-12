@@ -40,7 +40,7 @@
                             </li>
 
                             <li>
-                                <a onclick="UIkit.modal('#field-{idx}').show()"><i class="uk-icon-cog uk-text-primary"></i></a>
+                                <a onclick="{ parent.fieldSettings }"><i class="uk-icon-cog uk-text-primary"></i></a>
                             </li>
 
                             <li>
@@ -57,72 +57,72 @@
 
             </div>
 
-            <div class="uk-modal uk-sortable-nodrag" id="field-{idx}">
-                <div class="uk-modal-dialog">
+        </div>
 
-                    <div class="uk-form-row uk-text-large uk-text-bold">
-                        { field.name || 'Field' }
-                    </div>
+    </div>
 
-                    <div class="uk-tab uk-flex uk-flex-center uk-margin" data-uk-tab>
-                        <li class="uk-active"><a>{ App.i18n.get('General') }</a></li>
-                        <li><a>{ App.i18n.get('Access') }</a></li>
-                    </div>
+    <div class="uk-modal uk-sortable-nodrag" ref="modalField">
+        <div class="uk-modal-dialog" if="{field}">
 
-                    <div class="uk-margin-top ref-tab">
-                        <div>
-                            <div class="uk-form-row">
+            <div class="uk-form-row uk-text-large uk-text-bold">
+                { field.name || 'Field' }
+            </div>
 
-                                <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Type') }:</label>
-                                <div class="uk-form-select uk-width-1-1 uk-margin-small-top">
-                                    <a class="uk-text-capitalize">{ field.type }</a>
-                                    <select class="uk-width-1-1 uk-text-capitalize" fields-bind="fields[{idx}].type">
-                                        <option each="{type,typeidx in parent.fieldtypes}" value="{type.value}">{type.name}</option>
-                                    </select>
-                                </div>
-                            </div>
+            <div class="uk-tab uk-flex uk-flex-center uk-margin" data-uk-tab>
+                <li class="uk-active"><a>{ App.i18n.get('General') }</a></li>
+                <li><a>{ App.i18n.get('Access') }</a></li>
+            </div>
 
-                            <div class="uk-form-row">
-                                <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Label') }:</label>
-                                <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="fields[{idx}].label" placeholder="{ App.i18n.get('Label') }">
-                            </div>
+            <div class="uk-margin-top ref-tab">
+                <div>
+                    <div class="uk-form-row">
 
-                            <div class="uk-form-row">
-                                <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Info') }:</label>
-                                <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="fields[{idx}].info" placeholder="{ App.i18n.get('Info') }">
-                            </div>
-
-                            <div class="uk-form-row">
-                                <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Group') }:</label>
-                                <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="fields[{idx}].group" placeholder="{ App.i18n.get('Group name') }">
-                            </div>
-
-                            <div class="uk-form-row">
-                                <label class="uk-text-small uk-text-bold uk-margin-small-bottom">{ App.i18n.get('Options') } <span class="uk-text-muted">JSON</span></label>
-                                <field-object cls="uk-width-1-1" fields-bind="fields[{idx}].options" rows="6" allowtabs="2"></field-object>
-                            </div>
-
-                            <div class="uk-form-row">
-                                <field-boolean fields-bind="fields[{idx}].required" label="{ App.i18n.get('Required') }"></field-boolean>
-                            </div>
-
-                            <div class="uk-form-row">
-                                <field-boolean fields-bind="fields[{idx}].localize" label="{ App.i18n.get('Localize') }"></field-boolean>
-                            </div>
-                        
-                        </div>
-                        <div class="uk-hidden">
-                            <field-access-list class="uk-margin-large uk-margin-large-top uk-display-block" fields-bind="fields[{idx}].acl"></field-access-list>
+                        <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Type') }:</label>
+                        <div class="uk-form-select uk-width-1-1 uk-margin-small-top">
+                            <a class="uk-text-capitalize">{ field.type }</a>
+                            <select class="uk-width-1-1 uk-text-capitalize" fields-bind="field.type">
+                                <option each="{type,typeidx in fieldtypes}" value="{type.value}">{type.name}</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{ App.i18n.get('Close') }</button></div>
+                    <div class="uk-form-row">
+                        <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Label') }:</label>
+                        <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="field.label" placeholder="{ App.i18n.get('Label') }">
+                    </div>
 
+                    <div class="uk-form-row">
+                        <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Info') }:</label>
+                        <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="field.info" placeholder="{ App.i18n.get('Info') }">
+                    </div>
+
+                    <div class="uk-form-row">
+                        <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Group') }:</label>
+                        <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="field.group" placeholder="{ App.i18n.get('Group name') }">
+                    </div>
+
+                    <div class="uk-form-row">
+                        <label class="uk-text-small uk-text-bold uk-margin-small-bottom">{ App.i18n.get('Options') } <span class="uk-text-muted">JSON</span></label>
+                        <field-object cls="uk-width-1-1" fields-bind="field.options" rows="6" allowtabs="2"></field-object>
+                    </div>
+
+                    <div class="uk-form-row">
+                        <field-boolean fields-bind="field.required" label="{ App.i18n.get('Required') }"></field-boolean>
+                    </div>
+
+                    <div class="uk-form-row">
+                        <field-boolean fields-bind="field.localize" label="{ App.i18n.get('Localize') }"></field-boolean>
+                    </div>
+
+                </div>
+                <div class="uk-hidden">
+                    <field-access-list class="uk-margin-large uk-margin-large-top uk-display-block" fields-bind="field.acl"></field-access-list>
                 </div>
             </div>
 
-        </div>
+            <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{ App.i18n.get('Close') }</button></div>
 
+        </div>
     </div>
 
     <div class="uk-margin-top" show="{fields.length}">
@@ -158,12 +158,13 @@
 
 
     <script>
-        
+
         riot.util.bind(this, 'fields');
 
         var $this = this;
 
         this.fields  = [];
+        this.field = null;
         this.reorder = false;
 
         // get all available fields
@@ -278,6 +279,13 @@
         removefield(e) {
             this.fields.splice(e.item.idx, 1);
             $this.$setValue(this.fields);
+        }
+
+        fieldSettings(e) {
+
+            this.field = e.item.field;
+
+            UIkit.modal(this.refs.modalField).show()
         }
 
         togglelist(e) {

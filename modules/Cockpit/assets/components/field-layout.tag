@@ -277,6 +277,13 @@
                 ]
             },
 
+            "gallery": {
+                "icon": App.base('/assets/app/media/icons/gallery.svg'),
+                "fields": [
+                    {"name": "gallery", "type": "gallery"}
+                ]
+            },
+
             "divider": {
                 "icon": App.base('/assets/app/media/icons/divider.svg'),
             },
