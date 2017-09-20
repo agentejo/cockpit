@@ -45,7 +45,7 @@ class Auth extends \LimeExtra\Controller {
         if ($this->req_is('ajax')) {
             return '{"logout":1}';
         } else {
-            $this->reroute('/auth/login');
+            $this->reroute('/auth/login?logout=1');
         }
     }
 
@@ -55,9 +55,9 @@ class Auth extends \LimeExtra\Controller {
     }
 
     public function requestreset() {
-        
+
         if ($user = $this->param('user')) {
-            
+
             $query = ['active' => true];
 
             if (filter_var($user, FILTER_VALIDATE_EMAIL)) {
@@ -73,7 +73,7 @@ class Auth extends \LimeExtra\Controller {
             }
 
             $token  = uniqid('rp-').'-'.time();
-            $target = $this->app->param('', $this->app->getSiteUrl(true).'/auth/newpassword'); 
+            $target = $this->app->param('', $this->app->getSiteUrl(true).'/auth/newpassword');
             $data   = ['_id' => $user['_id'], '_reset_token' => $token];
 
             $this->app->storage->save("cockpit/accounts", $data);
@@ -82,8 +82,8 @@ class Auth extends \LimeExtra\Controller {
             file_put_contents(COCKPIT_DIR.'/message.txt', $message);
 
             $this->app->mailer->mail(
-                $user['email'], 
-                $this->param('subject', $this->app->getSiteUrl().' - Pasword Recovery'), 
+                $user['email'],
+                $this->param('subject', $this->app->getSiteUrl().' - Pasword Recovery'),
                 $message
             );
 

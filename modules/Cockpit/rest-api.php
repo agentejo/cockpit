@@ -25,7 +25,7 @@ $this->on("before", function() {
         $allowed = false;
 
         if (preg_match('/account-/', $token)) {
-            
+
             $account = $this->storage->findOne("cockpit/accounts", ["api_key" => $token]);
 
             if ($account) {
@@ -33,17 +33,17 @@ $this->on("before", function() {
                 $this->module('cockpit')->setUser($account, false);
             }
 
-        } else {
-            
+        } elseif ($token) {
+
             $apikeys = $this->module('cockpit')->loadApiKeys();
-            
+
             // check master for master key
             $allowed = (isset($apikeys['master']) && trim($apikeys['master']) && $apikeys['master'] == $token);
 
             if (!$allowed && count($apikeys['special'])) {
 
                 foreach ($apikeys['special'] as &$apikey) {
-                    
+
                     if ($apikey['token'] == $token) {
 
                         $rules =  trim($apikey['rules']);
@@ -67,6 +67,25 @@ $this->on("before", function() {
                         break;
                     }
                 }
+            }
+
+        }
+
+        // trigger authenticate event
+        if (!$allowed) {
+
+            $data = new ArrayObject([
+                'token' => $token,
+                'authenticated' => false,
+                'user'=>null
+            ]);
+
+            $this->trigger('cockpit.api.authenticate', [&$allowed]);
+
+            $allowed = $data['authenticated'];
+
+            if ($data['user']) {
+                $this->module('cockpit')->setUser($data['user'], false);
             }
         }
 
