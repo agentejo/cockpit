@@ -114,10 +114,10 @@ class ReadableStream
     }
 
     /**
-    * Return whether the current read position is at the end of the stream.
-    *
-    * @return boolean
-    */
+     * Return whether the current read position is at the end of the stream.
+     *
+     * @return boolean
+     */
     public function isEOF()
     {
         if ($this->chunkOffset === $this->numChunks - 1) {
