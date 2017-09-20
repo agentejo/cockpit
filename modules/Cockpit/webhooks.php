@@ -40,7 +40,7 @@ foreach ($webhooks as &$webhook) {
                     }
                 }
 
-                // add basic hhtp auth
+                // add basic http auth
                 if (isset($webhook['auth']) && $webhook['auth']['user'] && $webhook['auth']['pass']) {
                     curl_setopt($ch, CURLOPT_USERPWD, $webhook['auth']['user'] . ":" . $webhook['auth']['pass']);
                 }
@@ -52,9 +52,10 @@ foreach ($webhooks as &$webhook) {
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-                if( curl_exec($ch) === false) {
+                if (curl_exec($ch) === false) {
                     trigger_error(curl_error($ch));
                 }
+
                 curl_close($ch);
 
             }, -1000);

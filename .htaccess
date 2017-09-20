@@ -1,6 +1,11 @@
-# Deny access to database files
-<Files ~ "\.(sqlite|sdb|s3db|db)$">
+# Deny access to database + config files
+<Files ~ "\.(sqlite|sdb|s3db|db|yaml|yml)$">
   Deny from all
+</Files>
+
+<Files "cp">
+Order Allow,Deny
+Deny from all
 </Files>
 
 # Don't show directory listings
@@ -21,13 +26,6 @@ Options -Indexes
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule .* index.php [L]
 
-</IfModule>
-
-# Allow Cross-Origin-Resource-Sharing
-<IfModule mod_headers.c>
-Header add Access-Control-Allow-Origin "*"
-Header add Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
-Header set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept"
 </IfModule>
 
 AddDefaultCharset utf-8
@@ -83,6 +81,7 @@ AddType application/x-shockwave-flash   swf
     ExpiresByType video/x-flv                   "access plus 1 year"
     ExpiresByType application/vnd.bw-fontobject "access plus 1 year"
     ExpiresByType application/x-font-ttf        "access plus 1 year"
+    ExpiresByType application/x-font-woff       "access plus 1 year"
     ExpiresByType application/font-woff         "access plus 1 year"
     ExpiresByType font/opentype                 "access plus 1 year"
     ExpiresByType image/webp                    "access plus 1 year"

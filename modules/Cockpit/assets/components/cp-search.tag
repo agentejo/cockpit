@@ -25,7 +25,7 @@
             });
 
             UIkit.$doc.on("keydown", function(e) {
-
+                
                 //ctrl-c, ctrl-v etc.
                 if (e.ctrlKey || e.altKey || e.metaKey) return;
 

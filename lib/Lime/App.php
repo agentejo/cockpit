@@ -270,12 +270,34 @@ class App implements \ArrayAccess {
     /**
     * stop application (exit)
     */
-    public function stop($data = false){
+    public function stop($data = false, $status = null){
 
         $this->exit = true;
 
-        if ($data!==false) {
-            echo $data;
+        if (is_string($data) && $data) {
+           $this->response->body = $data;
+        }
+
+        if (is_numeric($data) && $data) {
+            
+            $this->response->status = $data;
+
+            if (isset(self::$statusCodes[$data])) {
+                
+                if ($this->response->mime == 'json') {
+                    $this->response->body = json_encode(["error" => self::$statusCodes[$data]]); 
+                } else {
+                    $this->response->body = self::$statusCodes[$data]; 
+                }
+            }
+        }
+
+        if ($status) {
+           $this->response->status = $status;
+        }
+
+        if ($data || $status) {
+            echo $this->response->flush();
         }
 
         exit;
@@ -402,6 +424,8 @@ class App implements \ArrayAccess {
             break;
         }
 
+        
+
         return $this;
     }
 
@@ -459,6 +483,19 @@ class App implements \ArrayAccess {
         }
 
         return null;
+    }
+
+    /**
+     * @param $namespace
+     * @return array
+     */
+    public function paths($namespace = null) {
+
+        if (!$namespace) {
+            return $this->paths;
+        }
+
+        return isset($this->paths[$namespace]) ? $this->paths[$namespace] : [];
     }
 
     /**
@@ -701,8 +738,16 @@ class App implements \ArrayAccess {
 
         foreach((array)$href as $style) {
 
-            $ispath = strpos($style, ':') !== false && !preg_match('#^(|http\:|https\:)//#', $style);
-            $list[] = '<link href="'.($ispath ? $this->pathToUrl($style):$style).($version ? "?ver={$version}":"").'" type="text/css" rel="stylesheet">';
+            $type = 'text/css';
+            $rel  = 'stylesheet';
+            $src  = $style;
+
+            if (is_array($style)) {
+                extract($style);
+            }
+
+            $ispath = strpos($src, ':') !== false && !preg_match('#^(|http\:|https\:)//#', $src);
+            $list[] = '<link href="'.($ispath ? $this->pathToUrl($src):$src).($version ? "?ver={$version}":"").'" type="'.$type.'" rel="'.$rel.'">';
         }
 
         return implode("\n", $list);
@@ -718,8 +763,17 @@ class App implements \ArrayAccess {
         $list = [];
 
         foreach((array)$src as $script) {
-            $ispath = strpos($script, ':') !== false && !preg_match('#^(|http\:|https\:)//#', $script);
-            $list[] = '<script src="'.($ispath ? $this->pathToUrl($script):$script).($version ? "?ver={$version}":"").'" type="text/javascript"></script>';
+
+            $type = 'text/javascript';
+            $src  = $script;
+            $load = '';
+
+            if (is_array($script)) {
+                extract($script);
+            }
+
+            $ispath = strpos($src, ':') !== false && !preg_match('#^(|http\:|https\:)//#', $src);
+            $list[] = '<script src="'.($ispath ? $this->pathToUrl($src):$src).($version ? "?ver={$version}":"").'" type="'.$type.'" '.$load.'></script>';
         }
 
         return implode("\n", $list);
@@ -729,14 +783,20 @@ class App implements \ArrayAccess {
 
         $list = [];
 
-        foreach((array)$src as $script) {
+        foreach((array)$src as $asset) {
 
-            if (@substr($script, -3) == ".js") {
-                $list[] = $this->script($script, $version);
+            $src = $asset;
+
+            if (is_array($asset)) {
+                extract($asset);
             }
 
-            if (@substr($script, -4) == ".css") {
-                $list[] = $this->style($script, $version);
+            if (@substr($src, -3) == ".js") {
+                $list[] = $this->script($asset, $version);
+            }
+
+            if (@substr($src, -4) == ".css") {
+                $list[] = $this->style($asset, $version);
             }
         }
 

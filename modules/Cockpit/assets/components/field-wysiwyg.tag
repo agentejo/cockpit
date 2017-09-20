@@ -59,6 +59,7 @@
                         if (!App.$('#'+this.refs.input.id).length) return;
 
                         tinymce.init(App.$.extend(true, {
+                            branding: false,
                             resize: true,
                             height: 350,
                             menubar: 'edit insert view format table tools',

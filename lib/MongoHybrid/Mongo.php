@@ -41,6 +41,8 @@ class Mongo {
 
     public function findOne($collection, $filter = [], $projection = []) {
 
+        if (!$filter) $filter = [];
+
         $filter = $this->_fixMongoIds($filter);
         $doc    = $this->getCollection($collection)->findOne($filter, ['projection' => $projection]);
 
@@ -84,6 +86,15 @@ class Mongo {
     }
 
     public function insert($collection, &$doc) {
+
+        if (isset($doc[0])) {
+
+            foreach($doc as &$d) {
+                $this->insert($collection, $d);
+            }
+
+            return $doc;
+        }
 
         $doc = $this->_fixMongoIds($doc);
         $ref = $doc;
@@ -129,12 +140,16 @@ class Mongo {
 
     public function remove($collection, $filter=[]) {
 
+        if (!$filter) $filter = [];
+
         $filter = $this->_fixMongoIds($filter);
 
         return $this->getCollection($collection)->deleteMany($filter);
     }
 
     public function count($collection, $filter=[]) {
+
+        if (!$filter) $filter = [];
 
         return $this->getCollection($collection)->count($filter);
     }

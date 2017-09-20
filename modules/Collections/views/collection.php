@@ -72,8 +72,8 @@
             <div class="uk-width-medium-3-4">
 
                 <ul class="uk-tab uk-margin-large-bottom">
-                    <li riot-class="{ tab=='fields' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }">{ App.i18n.get('Fields') }</a></li>
-                    <li riot-class="{ tab=='acl' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }">{ App.i18n.get('Access') }</a></li>
+                    <li class="{ tab=='fields' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }">{ App.i18n.get('Fields') }</a></li>
+                    <li class="{ tab=='acl' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }">{ App.i18n.get('Access') }</a></li>
                 </ul>
 
                 <div class="uk-form-row" show="{tab=='fields'}">

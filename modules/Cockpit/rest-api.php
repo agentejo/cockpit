@@ -10,6 +10,8 @@ $this->on("before", function() {
     */
     $this->trigger("cockpit.rest.init", [$routes])->bind("/api/*", function($params) use($routes) {
 
+        $this->module('cockpit')->setUser(false, false);
+
         $route = $this['route'];
         $path  = $params[":splat"][0];
 
@@ -17,20 +19,71 @@ $this->on("before", function() {
             return false;
         }
 
-        // api key check
-        $apikeys = $this->module('cockpit')->loadApiKeys();
-        $allowed = (isset($apikeys['master']) && trim($apikeys['master']) && $apikeys['master'] == $this->param('token'));
+        $token = $this->param('token', isset($_SERVER['HTTP_COCKPIT_TOKEN']) ? $_SERVER['HTTP_COCKPIT_TOKEN'] : null);
 
-        if (!$allowed) {
-            return false;
+        // api key check
+        $allowed = false;
+
+        if (preg_match('/account-/', $token)) {
+            
+            $account = $this->storage->findOne("cockpit/accounts", ["api_key" => $token]);
+
+            if ($account) {
+                $allowed = true;
+                $this->module('cockpit')->setUser($account, false);
+            }
+
+        } else {
+            
+            $apikeys = $this->module('cockpit')->loadApiKeys();
+            
+            // check master for master key
+            $allowed = (isset($apikeys['master']) && trim($apikeys['master']) && $apikeys['master'] == $token);
+
+            if (!$allowed && count($apikeys['special'])) {
+
+                foreach ($apikeys['special'] as &$apikey) {
+                    
+                    if ($apikey['token'] == $token) {
+
+                        $rules =  trim($apikey['rules']);
+
+                        if ($rules == '*') {
+                            $allowed = true;
+                            break;
+                        }
+
+                        foreach(explode("\n", $rules) as $rule) {
+
+                            $rule = trim($rule);
+                            if (!$rule) continue;
+
+                            if (preg_match("#{$rule}#", COCKPIT_ADMIN_ROUTE)) {
+                                $allowed = true;
+                                break;
+                            }
+                        }
+
+                        break;
+                    }
+                }
+            }
         }
 
         $parts      = explode('/', $path, 2);
         $resource   = $parts[0];
         $params     = isset($parts[1]) ? explode('/', $parts[1]) : [];
         $output     = false;
+        $user       = $this->module('cockpit')->getUser();
 
-        if (isset($routes[$resource])) {
+        if ($resource == 'public' && $resourcefile = $this->path("#config:api/{$path}.php")) {
+            $output = include($resourcefile);
+
+        } elseif ($allowed && $resourcefile = $this->path("#config:api/{$path}.php")) {
+
+            $output = include($resourcefile);
+
+        } elseif ($allowed && isset($routes[$resource])) {
 
             try {
 
@@ -57,6 +110,11 @@ $this->on("before", function() {
                     $output['message'] = 'Oooops, something went wrong.';
                 }
             }
+        }
+
+        if ($output === false && !$allowed) {
+            $this->response->mime = 'json';
+            $this->stop(401);
         }
 
         if (is_object($output) || is_array($output)) {

@@ -10,8 +10,9 @@
 /addons/*/*
 /tests/*
 /node_modules
-
+addons/
 !.gitignore
 !.gitkeep
 !/storage/*/index.html
 !/storage/*/.htaccess
+defines.php

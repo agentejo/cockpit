@@ -8,7 +8,7 @@
 
     @if($app['user']['group']=='admin')
     <div>
-        <div class="uk-panel uk-panel-box uk-panel-card">
+        <div class="uk-panel uk-panel-space uk-panel-box uk-panel-card">
             <img src="@url('assets:app/media/icons/settings.svg')" width="50" height="50" alt="@lang('Settings')" />
 
             <div class="uk-text-truncate uk-margin">
@@ -21,7 +21,7 @@
 
     @hasaccess?('cockpit', 'accounts')
     <div>
-        <div class="uk-panel uk-panel-box uk-panel-card">
+        <div class="uk-panel uk-panel-space uk-panel-box uk-panel-card">
 
             <img src="@url('assets:app/media/icons/accounts.svg')" width="50" height="50" alt="@lang('Accounts')" />
 
@@ -35,7 +35,7 @@
 
     @hasaccess?('cockpit', 'rest')
     <div>
-        <div class="uk-panel uk-panel-box uk-panel-card">
+        <div class="uk-panel uk-panel-space uk-panel-box uk-panel-card">
 
             <img src="@url('assets:app/media/icons/api.svg')" width="50" height="50" alt="@lang('API Access')" />
 
@@ -49,7 +49,7 @@
 
     @hasaccess?('cockpit', 'webhooks')
     <div>
-        <div class="uk-panel uk-panel-box uk-panel-card">
+        <div class="uk-panel uk-panel-space uk-panel-box uk-panel-card">
 
             <img src="@url('assets:app/media/icons/webhooks.svg')" width="50" height="50" alt="@lang('Webhooks')" />
 
@@ -63,7 +63,7 @@
 
     @hasaccess?('cockpit', 'info')
     <div>
-        <div class="uk-panel uk-panel-box uk-panel-card">
+        <div class="uk-panel uk-panel-space uk-panel-box uk-panel-card">
 
             <img src="@url('assets:app/media/icons/info.svg')" width="50" height="50" alt="@lang('System')" />
 

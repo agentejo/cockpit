@@ -56,6 +56,14 @@
                             </div>
                         </div>
 
+                        <div class="uk-form-row">
+                            <label class="uk-text-small">@lang('API Key')</label>
+                            <div class="uk-form-icon uk-form-icon-flip uk-display-block">
+                                <a class="uk-icon-refresh uk-text-primary" onclick="{ generateApiToken }" style="pointer-events:auto;"></a>
+                                <input class="uk-form-large uk-width-1-1" type="text" bind="account.api_key" placeholder="@lang('No token generated yet')" bind="account.apikey" disabled>
+                            </div>
+                        </div>
+
                         @trigger('cockpit.account.editview')
 
                         <div class="uk-form-row">
@@ -145,6 +153,10 @@
                 return false;
             });
         });
+
+        generateApiToken() {
+            this.account.api_key = 'account-'+App.Utils.generateToken(120);
+        }
 
         toggleactive() {
             this.account.active = !(this.account.active);

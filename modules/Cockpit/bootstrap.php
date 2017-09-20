@@ -1,5 +1,9 @@
 <?php
 
+// Helpers
+
+$this->helpers['revisions']  = 'Cockpit\\Helper\\Revisions';
+
 // API
 
 $this->module("cockpit")->extend([
@@ -79,8 +83,137 @@ $this->module("cockpit")->extend([
         $container = $this->app->path('#storage:').'/api.keys.php';
 
         return $this->app->helper('fs')->write($container, "<?php\n return {$export};");
-    }
+    },
 
+    "thumbnail" => function($options) {
+
+        $options = array_merge(array(
+            'cachefolder' => '#thumbs:',
+            'src' => '',
+            'mode' => 'thumbnail',
+            'filter' => '',
+            'width' => false,
+            'height' => false,
+            'quality' => 100,
+            'rebuild' => false,
+            'base64' => false,
+            'output' => false,
+            'domain' => false
+        ), $options);
+
+        extract($options);
+
+        if (!$width && !$height) {
+            return ['error' => 'Target width or height parameter is missing'];
+        }
+
+        if (!$src) {
+            return ['error' => 'Missing src parameter'];
+        }
+
+        $src = rawurldecode($src);
+
+        if (!preg_match('/\.(png|jpg|jpeg|gif)$/i', $src)) {
+            
+            if ($asset = $this->app->storage->findOne("cockpit/assets", ['_id' => $src])) {
+                $asset['path'] = trim($asset['path'], '/');
+                $src = $this->app->path("#uploads:{$asset['path']}");
+            }
+        }
+
+        // check if absolute url
+        if (substr($src, 0,1) == '/' && file_exists($this->app['docs_root'].$src)) {
+            $src = $this->app['docs_root'].$src;
+        }
+
+        $path  = $this->app->path($src);
+        $ext   = pathinfo($path, PATHINFO_EXTENSION);
+        $url   = "data:image/gif;base64,R0lGODlhAQABAJEAAAAAAP///////wAAACH5BAEHAAIALAAAAAABAAEAAAICVAEAOw=="; // transparent 1px gif
+
+        if (!file_exists($path) || is_dir($path)) {
+            return false;
+        }
+
+        if (!in_array(strtolower($ext), array('png','jpg','jpeg','gif'))) {
+            return $url;
+        }
+
+        if (!$width || !$height) {
+            
+            list($w, $h, $type, $attr)  = getimagesize($path);
+
+            if (!$width) $width = ceil($w * ($height/$h));
+            if (!$height) $height = ceil($h * ($width/$w));
+        }
+
+        if (is_null($width) && is_null($height)) {
+            return $this->app->pathToUrl($path);
+        }
+
+        if (!in_array($mode, ['thumbnail', 'bestFit', 'resize','fitToWidth','fitToHeight'])) {
+            $mode = 'thumbnail';
+        }
+
+        $method = $mode == 'crop' ? 'thumbnail' : $mode;
+
+        $filetime = filemtime($path);
+        $hash = md5($path.json_encode($options))."_{$width}x{$height}_{$quality}_{$filetime}_{$mode}.{$ext}";
+        $savepath = rtrim($this->app->path($cachefolder), '/')."/{$hash}";
+
+        if ($rebuild || !file_exists($savepath)) {
+
+            try {
+                $img = $this->app->helper("image")->take($path)->{$method}($width, $height);
+                
+                $_filters = [
+                    'blur', 'brighten', 
+                    'colorize', 'contrast', 
+                    'darken', 'desaturate', 
+                    'edge detect', 'emboss', 
+                    'flip', 'invert', 'opacity', 'pixelate', 'sepia', 'sharpen', 'sketch'
+                ];
+
+                foreach($_filters as $f) {
+                    
+                    if (isset($options[$f])) {
+                        $img->{$f}($options[$f]);
+                    }
+                }
+
+                $img->toFile($savepath, null, $quality);
+            } catch(Exception $e) {
+                return $url;
+            }
+        }
+
+        if ($base64) {
+            return "data:image/{$ext};base64,".base64_encode(file_get_contents($savepath));
+        }
+
+        if ($output) {
+            header("Content-Type: image/{$ext}");
+            header('Content-Length: '.filesize($savepath));
+            readfile($savepath);
+            $this->app->stop();
+        }
+
+        $url = $this->app->pathToUrl($savepath);
+
+        if ($domain) {
+            
+            $_url = ($this->app->req_is('ssl') ? 'https':'http').'://';
+
+            if (!in_array($this->app['base_port'], ['80', '443'])) {
+                $_url .= $this->app['base_host'].":".$this->app['base_port'];
+            } else {
+                $_url .= $this->app['base_host'];
+            }
+
+            $url = rtrim($_url, '/').$url;
+        }
+
+        return $url;
+    }
 ]);
 
 
@@ -115,24 +248,43 @@ $this->module("cockpit")->extend([
         return false;
     },
 
-    "setUser" => function($user) use($app) {
-        $app("session")->write('cockpit.app.auth', $user);
+    "setUser" => function($user, $permanent = true) use($app) {
+
+        if ($permanent) {
+            $app("session")->write('cockpit.app.auth', $user);
+        }
+        
+        $app['cockpit.auth.user'] = $user;
     },
 
-    "getUser" => function() use($app) {
-        return $app("session")->read('cockpit.app.auth', null);
+    "getUser" => function($prop = null, $default = null) use($app) {
+
+        $user = $app->retrieve('cockpit.auth.user');
+
+        if (is_null($user)) {
+            $user = $app("session")->read('cockpit.app.auth', null);
+        }
+
+        if (!is_null($prop)) {
+            return $user && isset($user[$prop]) ? $user[$prop] : $default;
+        }
+
+        return $user;
     },
 
     "logout" => function() use($app) {
         $app("session")->delete('cockpit.app.auth');
     },
 
-    "hasaccess" => function($resource, $action) use($app) {
+    "hasaccess" => function($resource, $action, $group = null) use($app) {
 
-        $user = $this->getUser();
-
-        if (isset($user["group"])) {
-            if ($app("acl")->hasaccess($user["group"], $resource, $action)) return true;
+        if (!$group) {
+            $user = $this->getUser();
+            $group = isset($user["group"]) ? $user["group"] : null;
+        }
+        
+        if ($group) {
+            if ($app("acl")->hasaccess($group, $resource, $action)) return true;
         }
 
         return false;
@@ -222,8 +374,55 @@ $this->module("cockpit")->extend([
     }
 ]);
 
+// ACL
+$app('acl')->addResource('cockpit', [
+    'backend', 'finder',
+]);
+
+
+// init acl groups + permissions + settings
+
+$app('acl')->addGroup('admin', true);
+
+/*
+groups:
+    author:
+        $admin: false
+        $vars:
+            finder.path: /upload
+        cockpit:
+            backend: true
+            finder: true
+
+*/
+
+$aclsettings = $app->retrieve('config/groups', []);
+
+foreach ($aclsettings as $group => $settings) {
+
+    $isSuperAdmin = $settings === true || (isset($settings['$admin']) && $settings['$admin']);
+    $vars         = isset($settings['$vars']) ? $settings['$vars'] : [];
+
+    $app('acl')->addGroup($group, $isSuperAdmin, $vars);
+
+    if (!$isSuperAdmin && is_array($settings)) {
+
+        foreach ($settings as $resource => $actions) {
+
+            if ($resource == '$vars' || $resource == '$admin') continue;
+
+            foreach ((array)$actions as $action => $allow) {
+                if ($allow) {
+                    $app('acl')->allow($group, $resource, $action);
+                }
+            }
+        }
+    }
+}
+
+
 // REST
-if (COCKPIT_REST) {
+if (COCKPIT_API_REQUEST) {
 
     // INIT REST API HANDLER
     include_once(__DIR__.'/rest-api.php');
@@ -237,16 +436,26 @@ if (COCKPIT_ADMIN) {
 
     $this->bind("/api.js", function() {
 
-        $token                = $this->param("token", "");
+        $token                = $this->param('token', '');
         $this->response->mime = 'js';
 
-        return $this->view('cockpit:views/api.js', compact('token'));
+        $apiurl = ($this->req_is('ssl') ? 'https':'http').'://';
+
+        if (!in_array($this->registry['base_port'], ['80', '443'])) {
+            $apiurl .= $this->registry['base_host'].":".$this->registry['base_port'];
+        } else {
+            $apiurl .= $this->registry['base_host'];
+        }
+
+        $apiurl .= $this->routeUrl('/api');
+
+        return $this->view('cockpit:views/api.js', compact('token', 'apiurl'));
     });
 }
 
 
 // ADMIN
-if (COCKPIT_ADMIN && !COCKPIT_REST) {
+if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
 
     include_once(__DIR__.'/admin.php');
 }

@@ -36,7 +36,6 @@
             });
         }
 
-
         function init(ele) {
 
             ele.$boundTo = tag;
@@ -51,55 +50,32 @@
                     return;
                 }
 
-                try {
-                    value = (new Function('tag', 'return tag.'+field+';'))(tag);
-                } catch(e) {}
-
-                return value;
+                return _.get(tag, field);
             };
 
-            ele.$setValue = (function(fn, body) {
-
-                var field, segments, cache = {};
+            ele.$setValue = (function() {
 
                 return function(value, silent, field) {
 
                     field = field || ele.getAttribute(attr);
 
-                    if (!cache[field]) {
+                    try {
+                        _.set(tag, field, value);
 
-                        segments = field.split('.');
+                        if (!silent) {
+                            tag.update();
+                        }
 
-                        var current = tag;
+                        tag.trigger('bindingupdated', [field, value]);
 
-                        try {
+                        return true;
 
-                            for (var i = 0;i<segments.length;i++) {
+                    } catch (e) {
 
-                                if (segments[i].indexOf('[') != -1) break;
+                        console.log(e);
 
-                                if (current[segments[i]] === undefined ) {
-
-                                    if (segments[ i + 1 ]) {
-                                        current[segments[i]] = {};
-                                    } else {
-                                        current[segments[i]] = null;
-                                    }
-                                }
-
-                                current = current[segments[i]];
-                            }
-
-                        }catch(e){}
-
-                        cache[field] = true;
+                        return false;
                     }
-
-                    body = 'try{ tag.'+field+' = val; if(!silent) { tag.update(); } tag.trigger("bindingupdated", ["'+field+'", val]);return true;}catch(e){ console.log(e);return false; }';
-
-                    fn = new Function('tag', 'val', 'silent', body);
-
-                    return fn(tag, value, silent);
                 };
 
             })();
@@ -107,12 +83,14 @@
 
             ele.$updateValue = function(value) {};
 
+            var nodeType = ele.nodeName.toLowerCase(),
+                defaultEvt = ('oninput' in ele) && nodeType=='input' ? 'input':'change';
 
-            if (['input', 'select', 'textarea'].indexOf(ele.nodeName.toLowerCase()) !== -1) {
+            if (['input', 'select', 'textarea'].indexOf(nodeType) !== -1) {
 
                 var isCheckbox = (ele.nodeName == 'INPUT' && ele.getAttribute('type') == 'checkbox');
 
-                ele.addEventListener(ele.getAttribute('bind-event') || 'change', function() {
+                ele.addEventListener(ele.getAttribute('bind-event') || defaultEvt, function() {
 
                     try {
 
@@ -137,6 +115,11 @@
                     fn = new Function('input', 'val', 'try{'+body+'}catch(e){}');
 
                     return function(value) {
+                        
+                        if (document.activeElement === ele && nodeType == 'input' && !isCheckbox) {
+                            return;
+                        }
+
                         fn(ele, value);
                     };
 
@@ -178,7 +161,6 @@
         tag.on('bind', function() {
             update();
         });
-
 
         tag.$bindUpdate = function() {
             update();

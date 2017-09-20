@@ -73,13 +73,19 @@ class Assets extends \Cockpit\AuthController {
                         'document' => preg_match('/\.(txt|htm|html|pdf|md)$/i', $target) ? true:false,
                         'code' => preg_match('/\.(htm|html|php|css|less|js|json|md|markdown|yaml|xml|htaccess)$/i', $target) ? true:false,
                         'created' => $created,
-                        'modified' => $created
+                        'modified' => $created,
+                        '_by' => $this->module('cockpit')->getUser('_id')
                     ];
 
                     if ($asset['image'] && !preg_match('/\.svg$/i', $target)) {
                         $info = getimagesize($target);
                         $asset['width']  = $info[0];
                         $asset['height'] = $info[1];
+                        $asset['colors'] = \ColorThief\ColorThief::getPalette($target, 5);
+
+                        foreach($asset['colors'] as &$color) {
+                            $color = sprintf("%02x%02x%02x", $color[0], $color[1], $color[2]);
+                        }
                     }
 
                     $assets[] = $asset;
@@ -131,7 +137,12 @@ class Assets extends \Cockpit\AuthController {
 
         if ($asset = $this->param('asset', false)) {
 
+            $_asset = $this->storage->findOne("cockpit/assets", ['_id' => $asset['_id']]);
+
+            if (!$_asset) return false;
+
             $asset['modified'] = time();
+            $asset['_by'] = $this->module('cockpit')->getUser('_id');
 
             $this->app->storage->save("cockpit/assets", $asset);
 

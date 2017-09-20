@@ -1,12 +1,50 @@
 <?php
+/*
+ * Copyright 2015-2017 MongoDB, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 namespace MongoDB;
 
 use MongoDB\BSON\Serializable;
 use MongoDB\Driver\ReadConcern;
 use MongoDB\Driver\Server;
+use MongoDB\Driver\WriteConcern;
 use MongoDB\Exception\InvalidArgumentException;
 use stdClass;
+
+/**
+ * Applies a type map to a document.
+ *
+ * This function is used by operations where it is not possible to apply a type
+ * map to the cursor directly because the root document is a command response
+ * (e.g. findAndModify).
+ *
+ * @internal
+ * @param array|object $document Document to which the type map will be applied
+ * @param array        $typeMap  Type map for BSON deserialization.
+ * @return array|object
+ * @throws InvalidArgumentException
+ */
+function apply_type_map_to_document($document, array $typeMap)
+{
+    if ( ! is_array($document) && ! is_object($document)) {
+        throw InvalidArgumentException::invalidType('$document', $document, 'array or object');
+    }
+
+    return \MongoDB\BSON\toPHP(\MongoDB\BSON\fromPHP($document), $typeMap);
+}
 
 /**
  * Extracts an ID from an inserted document.
@@ -40,6 +78,10 @@ function extract_id_from_inserted_document($document)
  */
 function generate_index_name($document)
 {
+    if ($document instanceof Serializable) {
+        $document = $document->bsonSerialize();
+    }
+
     if (is_object($document)) {
         $document = get_object_vars($document);
     }
@@ -69,6 +111,10 @@ function generate_index_name($document)
  */
 function is_first_key_operator($document)
 {
+    if ($document instanceof Serializable) {
+        $document = $document->bsonSerialize();
+    }
+
     if (is_object($document)) {
         $document = get_object_vars($document);
     }
@@ -154,3 +200,29 @@ function is_string_array($input) {
     return true;
 }
 
+/**
+ * Converts a WriteConcern instance to a stdClass for use in a BSON document.
+ *
+ * @internal
+ * @see https://jira.mongodb.org/browse/PHPC-498
+ * @param WriteConcern $writeConcern Write concern
+ * @return stdClass
+ */
+function write_concern_as_document(WriteConcern $writeConcern)
+{
+    $document = [];
+
+    if ($writeConcern->getW() !== null) {
+        $document['w'] = $writeConcern->getW();
+    }
+
+    if ($writeConcern->getJournal() !== null) {
+        $document['j'] = $writeConcern->getJournal();
+    }
+
+    if ($writeConcern->getWtimeout() !== 0) {
+        $document['wtimeout'] = $writeConcern->getWtimeout();
+    }
+
+    return (object) $document;
+}

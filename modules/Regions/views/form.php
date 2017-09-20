@@ -47,15 +47,15 @@
             <div class="uk-width-medium-3-4 uk-grid-margin">
 
                 <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center" show="{ App.Utils.count(groups) > 1 }">
-                    <li riot-class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
-                    <li riot-class="{ group==parent.group && 'uk-active'}" each="{items,group in groups}" show="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+                    <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
+                    <li class="{ group==parent.group && 'uk-active'}" each="{items,group in groups}" show="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
                 </ul>
 
                 <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
 
                     <div class="uk-grid uk-grid-match uk-grid-gutter">
 
-                        <div class="uk-width-medium-{field.width}" each="{field,idx in fields}" show="{!parent.group || (parent.group == field.group) }" no-reorder>
+                        <div class="uk-width-medium-{field.width}" each="{field,idx in fields}" show="{!group || (group == field.group) }" if="{ hasFieldAccess(field.name) }" no-reorder>
 
                             <div class="uk-panel">
 
@@ -125,6 +125,7 @@
 
             this.region    = {{ json_encode($region) }};
             this.fields    = this.region.fields;
+            this.fieldsidx = {};
 
             this.data      = this.region.data || {};
 
@@ -134,6 +135,8 @@
 
             // fill with default values
             this.fields.forEach(function(field){
+
+                $this.fieldsidx[field.name] = field;
 
                 if ($this.data[field.name] === undefined) {
                     $this.data[field.name] = field.options && field.options.default || null;
@@ -201,6 +204,22 @@
                         App.ui.notify("Saving failed.", "danger");
                     }
                 });
+            }
+
+            hasFieldAccess(field) {
+
+                var acl = this.fieldsidx[field] && this.fieldsidx[field].acl || [];
+
+                if (field == '_modified' || 
+                    App.$data.user.group == 'admin' || 
+                    !acl ||
+                    (Array.isArray(acl) && !acl.length) ||
+                    acl.indexOf(App.$data.user.group) > -1 ||
+                    acl.indexOf(App.$data.user._id) > -1
+                
+                ) { return true; }
+
+                return false;
             }
 
         </script>

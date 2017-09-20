@@ -44,13 +44,13 @@
             <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
 
                 <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center" show="{ App.Utils.count(groups) > 1 }">
-                    <li riot-class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
-                    <li riot-class="{ group==parent.group && 'uk-active'}" each="{items,group in groups}" show="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+                    <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
+                    <li class="{ group==parent.group && 'uk-active'}" each="{items,group in groups}" show="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
                 </ul>
 
                 <div class="uk-grid uk-grid-match uk-grid-gutter">
 
-                    <div riot-class="uk-width-medium-{field.width}" each="{field,idx in fields}" show="{!parent.group || (parent.group == field.group) }" no-reorder>
+                    <div class="uk-width-medium-{field.width}" each="{field,idx in fields}" show="{!group || (group == field.group) }" if="{ hasFieldAccess(field.name) }" no-reorder>
 
                         <div class="uk-panel">
 
@@ -112,6 +112,23 @@
                     <div class="uk-margin-small-top uk-text-muted" if="{!entry._id}">@lang('Not saved yet')</div>
                 </div>
 
+                <div class="uk-margin" if="{entry._id}">
+                    <label class="uk-text-small">@lang('Revisions')</label>
+                    <div class="uk-margin-small-top">
+                        <span class="uk-position-relative">
+                            <cp-revisions-info class="uk-badge uk-text-large" rid="{entry._id}" parent="true"></cp-revisions-info>
+                            <a class="uk-position-cover" href="@route('/collections/revisions/'.$collection['name'])/{entry._id}"></a>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="uk-margin" if="{entry._id && entry._by}">
+                    <label class="uk-text-small">@lang('Last update by')</label>
+                    <div class="uk-margin-small-top">
+                        <cp-account account="{entry._by}"></cp-account>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -126,6 +143,7 @@
 
         this.collection   = {{ json_encode($collection) }};
         this.fields       = this.collection.fields;
+        this.fieldsidx    = {};
 
         this.entry        = {{ json_encode($entry) }};
 
@@ -135,6 +153,8 @@
 
         // fill with default values
         this.fields.forEach(function(field){
+
+            $this.fieldsidx[field.name] = field;
 
             if ($this.entry[field.name] === undefined) {
                 $this.entry[field.name] = field.options && field.options.default || null;
@@ -199,6 +219,22 @@
             }, function(res) {
                 App.ui.notify(res && res.message ? res.message : "Saving failed.", "danger");
             });
+        }
+
+        hasFieldAccess(field) {
+
+            var acl = this.fieldsidx[field] && this.fieldsidx[field].acl || [];
+
+            if (field == '_modified' || 
+                App.$data.user.group == 'admin' || 
+                !acl ||
+                (Array.isArray(acl) && !acl.length) ||
+                acl.indexOf(App.$data.user.group) > -1 ||
+                acl.indexOf(App.$data.user._id) > -1
+            
+            ) { return true; }
+
+            return false;
         }
 
     </script>

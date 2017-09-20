@@ -50,7 +50,7 @@
                 var selected = [], dialog = UIkit.modal.dialog([
                     '<div>',
                         '<div class="uk-modal-header uk-text-large">Select file</div>',
-                        '<cp-finder path="'+(options.path || '')+'" typefilter="'+(options.typefilter || '')+'"></cp-finder>',
+                        '<cp-finder path="'+(options.path || '')+'" typefilter="'+(options.typefilter || '')+'" modal="true"></cp-finder>',
                         '<div class="uk-modal-footer uk-text-right">',
                             '<button class="uk-button uk-button-primary uk-margin-right uk-button-large uk-hidden js-select-button">Select: <span></span> item(s)</button>',
                             '<button class="uk-button uk-button-large uk-modal-close">Close</button>',
@@ -104,7 +104,7 @@
                 var selected = [], dialog = UIkit.modal.dialog([
                     '<div>',
                         '<div class="uk-modal-header uk-text-large">Select asset</div>',
-                        '<cp-assets path="'+(options.path || '')+'" typefilter="'+(options.typefilter || '')+'"></cp-assets>',
+                        '<cp-assets path="'+(options.path || '')+'" typefilter="'+(options.typefilter || '')+'" modal="true"></cp-assets>',
                         '<div class="uk-modal-footer uk-text-right">',
                             '<button class="uk-button uk-button-primary uk-margin-right uk-button-large uk-hidden js-select-button">Select: <span></span> item(s)</button>',
                             '<button class="uk-button uk-button-large uk-modal-close">Close</button>',
@@ -146,6 +146,24 @@
             }
         }
     };
+
+
+    var _accounts = {}; // cache
+
+    Cockpit.account = function(id) {
+
+        if (!_accounts[id]) {
+            
+            _accounts[id] = new Promise(function(resolve, reject) {
+
+                App.request('/accounts/find', {filter:{_id:id}}).then(function(accounts) {
+                    resolve(Array.isArray(accounts) && accounts[0] ? accounts[0] : null);
+                });
+            });
+        }
+
+        return _accounts[id];
+    }
 
     App.$.extend(true, App, Cockpit);
 

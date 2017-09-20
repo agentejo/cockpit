@@ -29,14 +29,16 @@
         <thead>
             <tr>
                 <th width="30"></th>
-                <th class="uk-text-small">@lang('Name')</th>
-                <th class="uk-text-small" width="30%">@lang('Email')</th>
-                <th class="uk-text-small" width="150">@lang('Group')</th>
+                <th class="uk-text-small" data-sort="name"><a class="uk-link-muted">@lang('Name') <span if="{sort.by == 'name'}" class="uk-icon-long-arrow-{ sort.order == -1 ? 'up':'down'}"></span></a></th>
+                <th class="uk-text-small" width="30%" data-sort="email"><a class="uk-link-muted">@lang('Email') <span if="{sort.by == 'email'}" class="uk-icon-long-arrow-{ sort.order == -1 ? 'up':'down'}"></span></a></th>
+                <th class="uk-text-small" width="150" data-sort="group"><a class="uk-link-muted">@lang('Group') <span if="{sort.by == 'group'}" class="uk-icon-long-arrow-{ sort.order == -1 ? 'up':'down'}"></span></a></th>
+                <th class="uk-text-small" width="80" data-sort="_created"><a class="uk-link-muted">@lang('Created') <span if="{sort.by == '_created'}" class="uk-icon-long-arrow-{ sort.order == -1 ? 'up':'down'}"></span></a></th>
+                <th class="uk-text-small" width="80" data-sort="_modified"><a class="uk-link-muted">@lang('Modified')  <span if="{sort.by == '_modified'}" class="uk-icon-long-arrow-{ sort.order == -1 ? 'up':'down'}"></span></a></th>
                 <th width="20"></th>
             </tr>
         </thead>
         <tbody>
-            <tr each="{account, $index in accounts}"  if="{ infilter(account) }">
+            <tr each="{account, $index in accounts}" if="{ infilter(account) }">
                 <td class="uk-text-center">
                     <a class="uk-link-muted" href="@route('/accounts/account')/{ account._id }" title="@lang('Edit account')">
                         <cp-gravatar email="{ account.email }" size="25" alt="{ account.name || account.user }"></cp-gravatar>
@@ -49,6 +51,8 @@
                 </td>
                 <td class="uk-text-truncate"><a class="uk-link-muted" href="mailto:{ account.email }">{ account.email }</a></td>
                 <td><span class="{ account.group=='admin' && 'uk-badge' }">{ account.group }</span></td>
+                <td><span class="uk-badge uk-badge-outline uk-text-muted">{ App.Utils.dateformat( new Date( 1000 * account._created )) }</span></td>
+                <td><span class="uk-badge uk-badge-outline uk-text-primary">{ App.Utils.dateformat( new Date( 1000 * account._modified )) }</span></td>
                 <td>
                     <span data-uk-dropdown="pos:'bottom-right'">
 
@@ -74,6 +78,29 @@
         this.accounts = {{ json_encode($accounts) }};
         this.current  = {{ json_encode($current) }};
         this.filter   = '';
+        this.sort     = {by: '', order: 1};
+
+        this.on('mount', function() {
+            
+            App.$(this.root).on('click', '[data-sort]', function() {
+                
+                var col = this.getAttribute('data-sort');
+
+                if ($this.sort.by != col) {
+                    $this.sort = {by: col, order: 1};
+                } else {
+                    $this.sort.order = $this.sort.order == 1 ? -1 : 1;
+                }
+
+                $this.accounts = _.sortBy($this.accounts, $this.sort.by);
+
+                if ($this.sort.order == -1) {
+                    $this.accounts = $this.accounts.reverse();
+                }
+
+                $this.update();
+            });
+        });
 
         remove(evt) {
 

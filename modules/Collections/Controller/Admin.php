@@ -172,7 +172,16 @@ class Admin extends \Cockpit\AuthController {
             return $this->helper('admin')->denyRequest();
         }
 
-        $entry = $this->module('collections')->save($collection['name'], $entry);
+        $entry['_by'] = $this->module('cockpit')->getUser('_id');
+
+        if (isset($entry['_id'])) {
+            $_entry = $this->module('collections')->findOne($collection['name'], ['_id' => $entry['_id']]);
+            $revision = !(json_encode($_entry) == json_encode($entry));
+        } else {
+            $revision = true;
+        }
+
+        $entry = $this->module('collections')->save($collection['name'], $entry, ['revision' => $revision]);
 
         return $entry;
     }
@@ -196,7 +205,6 @@ class Admin extends \Cockpit\AuthController {
         }
 
         $this->module('collections')->remove($collection['name'], $filter);
-
 
         return true;
     }
@@ -241,6 +249,31 @@ class Admin extends \Cockpit\AuthController {
         return compact('entries', 'count', 'pages', 'page');
     }
 
+
+    public function revisions($collection, $id) {
+
+        if (!$this->module('collections')->hasaccess($collection, 'entries_edit')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        $collection = $this->module('collections')->collection($collection);
+
+        if (!$collection) {
+            return false;
+        }
+
+        $entry = $this->module('collections')->findOne($collection['name'], ['_id' => $id]);
+
+        if (!$entry) {
+            return false;
+        }
+
+        $revisions = $this->app->helper('revisions')->getList($id);
+
+        
+        return $this->render('collections:views/revisions.php', compact('collection', 'entry', 'revisions'));
+    }
+
     protected function _filter($filter, $collection) {
 
         if ($this->app->storage->type == 'mongolite') {
@@ -281,12 +314,6 @@ class Admin extends \Cockpit\AuthController {
                 $criterias[] = $criteria;
             }
 
-            if ($field['type']=='tags') {
-                $criteria = [];
-                $criteria[$field['name']] = ['$all' => [$filter]];
-                $criterias[] = $criteria;
-            }
-
         }
 
         if (count($criterias)) {
@@ -319,12 +346,6 @@ class Admin extends \Cockpit\AuthController {
             if ($field['type']=='location') {
                 $criteria = [];
                 $criteria[$field['name'].'.address'] = ['$regex' => $filter, '$options' => 'i'];
-                $criterias[] = $criteria;
-            }
-
-            if ($field['type']=='tags') {
-                $criteria = [];
-                $criteria[$field['name']] = ['$all' => [$filter]];
                 $criterias[] = $criteria;
             }
 

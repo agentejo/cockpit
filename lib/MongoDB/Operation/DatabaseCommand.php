@@ -1,4 +1,19 @@
 <?php
+/*
+ * Copyright 2015-2017 MongoDB, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 namespace MongoDB\Operation;
 
@@ -12,7 +27,7 @@ use MongoDB\Exception\InvalidArgumentException;
  * Operation for executing a database command.
  *
  * @api
- * @see MongoDB\Database::command()
+ * @see \MongoDB\Database::command()
  */
 class DatabaseCommand implements Executable
 {
@@ -37,7 +52,7 @@ class DatabaseCommand implements Executable
      * @param string       $databaseName   Database name
      * @param array|object $command        Command document
      * @param array        $options        Options for command execution
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException for parameter/option parsing errors
      */
     public function __construct($databaseName, $command, array $options = [])
     {

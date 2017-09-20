@@ -5,6 +5,8 @@
  */
 define('COCKPIT_START_TIME', microtime(true));
 
+if (!defined('COCKPIT_CLI')) define('COCKPIT_CLI', PHP_SAPI == 'cli');
+
 /*
  * Autoload from lib folder (PSR-0)
  */
@@ -13,6 +15,11 @@ spl_autoload_register(function($class){
     $class_path = __DIR__.'/lib/'.str_replace('\\', '/', $class).'.php';
     if(file_exists($class_path)) include_once($class_path);
 });
+
+// check for custom defines
+if (file_exists(__DIR__.'/defines.php')) {
+    include(__DIR__.'/defines.php');
+}
 
 /*
  * Collect needed paths
@@ -33,13 +40,14 @@ $COCKPIT_BASE_ROUTE  = $COCKPIT_BASE_URL;
 /*
  * SYSTEM DEFINES
  */
-if (!defined('COCKPIT_ADMIN'))       define('COCKPIT_ADMIN'      , 0);
-if (!defined('COCKPIT_REST'))        define('COCKPIT_REST'       , COCKPIT_ADMIN && strpos($_SERVER['REQUEST_URI'], $COCKPIT_BASE_URL.'/api/')!==false ? 1:0);
-if (!defined('COCKPIT_DIR'))         define('COCKPIT_DIR'        , $COCKPIT_DIR);
-if (!defined('COCKPIT_DOCS_ROOT'))   define('COCKPIT_DOCS_ROOT'  , $COCKPIT_DOCS_ROOT);
-if (!defined('COCKPIT_BASE_URL'))    define('COCKPIT_BASE_URL'   , $COCKPIT_BASE_URL);
-if (!defined('COCKPIT_BASE_ROUTE'))  define('COCKPIT_BASE_ROUTE' , $COCKPIT_BASE_ROUTE);
-if (!defined('COCKPIT_STORAGE_FOLDER'))  define('COCKPIT_STORAGE_FOLDER' , COCKPIT_DIR . '/storage');
+if (!defined('COCKPIT_ADMIN'))                  define('COCKPIT_ADMIN'          , 0);
+if (!defined('COCKPIT_API_REQUEST'))            define('COCKPIT_API_REQUEST'    , COCKPIT_ADMIN && strpos($_SERVER['REQUEST_URI'], $COCKPIT_BASE_URL.'/api/')!==false ? 1:0);
+if (!defined('COCKPIT_DIR'))                    define('COCKPIT_DIR'            , $COCKPIT_DIR);
+if (!defined('COCKPIT_DOCS_ROOT'))              define('COCKPIT_DOCS_ROOT'      , $COCKPIT_DOCS_ROOT);
+if (!defined('COCKPIT_BASE_URL'))               define('COCKPIT_BASE_URL'       , $COCKPIT_BASE_URL);
+if (!defined('COCKPIT_BASE_ROUTE'))             define('COCKPIT_BASE_ROUTE'     , $COCKPIT_BASE_ROUTE);
+if (!defined('COCKPIT_STORAGE_FOLDER'))         define('COCKPIT_STORAGE_FOLDER' , COCKPIT_DIR . '/storage');
+if (!defined('COCKPIT_PUBLIC_STORAGE_FOLDER'))  define('COCKPIT_PUBLIC_STORAGE_FOLDER' , COCKPIT_DIR . '/storage');
 
 function cockpit($module = null) {
 
@@ -62,7 +70,7 @@ function cockpit($module = null) {
         // load config
         $config = array_replace_recursive([
 
-            'debug'        => preg_match('/(localhost|::1|\.dev)$/', $_SERVER['SERVER_NAME']),
+            'debug'        => preg_match('/(localhost|::1|\.dev)$/', @$_SERVER['SERVER_NAME']),
             'app.name'     => 'Cockpit',
             'base_url'     => COCKPIT_BASE_URL,
             'base_route'   => COCKPIT_BASE_ROUTE,
@@ -73,19 +81,20 @@ function cockpit($module = null) {
             'database'     => [ "server" => "mongolite://".(COCKPIT_STORAGE_FOLDER."/data"), "options" => ["db" => "cockpitdb"] ],
             'memory'       => [ "server" => "redislite://".(COCKPIT_STORAGE_FOLDER."/data/cockpit.memory.sqlite"), "options" => [] ],
 
-            'paths'        => [
-                '#root'    => COCKPIT_DIR,
-                '#storage' => COCKPIT_STORAGE_FOLDER,
-                '#data'    => COCKPIT_STORAGE_FOLDER.'/data',
-                '#cache'   => COCKPIT_STORAGE_FOLDER.'/cache',
-                '#tmp'     => COCKPIT_STORAGE_FOLDER.'/tmp',
-                '#thumbs'  => COCKPIT_STORAGE_FOLDER.'/thumbs',
-                '#uploads' => COCKPIT_STORAGE_FOLDER.'/uploads',
-                '#modules' => COCKPIT_DIR.'/modules',
-                '#addons' => COCKPIT_DIR.'/addons',
-                '#config'  => defined('COCKPIT_CONFIG_PATH') ? dirname(COCKPIT_CONFIG_PATH) : COCKPIT_DIR.'/config',
-                'assets'   => COCKPIT_DIR.'/assets',
-                'site'     => COCKPIT_DIR == COCKPIT_DOCS_ROOT ? COCKPIT_DIR : dirname(COCKPIT_DIR)
+            'paths'         => [
+                '#root'     => COCKPIT_DIR,
+                '#storage'  => COCKPIT_STORAGE_FOLDER,
+                '#pstorage' => COCKPIT_PUBLIC_STORAGE_FOLDER,
+                '#data'     => COCKPIT_STORAGE_FOLDER.'/data',
+                '#cache'    => COCKPIT_STORAGE_FOLDER.'/cache',
+                '#tmp'      => COCKPIT_STORAGE_FOLDER.'/tmp',
+                '#thumbs'   => COCKPIT_PUBLIC_STORAGE_FOLDER.'/thumbs',
+                '#uploads'  => COCKPIT_PUBLIC_STORAGE_FOLDER.'/uploads',
+                '#modules'  => COCKPIT_DIR.'/modules',
+                '#addons'   => COCKPIT_DIR.'/addons',
+                '#config'   => defined('COCKPIT_CONFIG_PATH') ? dirname(COCKPIT_CONFIG_PATH) : COCKPIT_DIR.'/config',
+                'assets'    => COCKPIT_DIR.'/assets',
+                'site'      => COCKPIT_DIR == COCKPIT_DOCS_ROOT ? COCKPIT_DIR : dirname(COCKPIT_DIR)
             ]
 
         ], is_array($customconfig) ? $customconfig : []);

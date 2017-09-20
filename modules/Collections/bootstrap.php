@@ -170,8 +170,22 @@ $this->module("collections")->extend([
 
         $entries = (array)$this->app->storage->find("collections/{$collection}", $options);
 
+        $fieldsFilter = [];
+
+        if (isset($options['user']) && $options['user']) {
+            $fieldsFilter['user'] = $options['user'];
+        }
+
+        if (isset($options['lang']) && $options['lang']) {
+            $fieldsFilter['lang'] = $options['lang'];
+        }
+
+        if (count($fieldsFilter)) {
+           $entries = $this->_filterFields($entries, $_collection, $fieldsFilter);
+        }
+
         if (isset($options['populate']) && $options['populate']) {
-            $entries = $this->_populate($_collection, $entries, is_numeric($options['populate']) ? intval($options['populate']) : false);
+            $entries = $this->_populate($entries, is_numeric($options['populate']) ? intval($options['populate']) : false, 0, $fieldsFilter);
         }
 
         $this->app->trigger('collections.find.after', [$name, &$entries, false]);
@@ -180,7 +194,7 @@ $this->module("collections")->extend([
         return $entries;
     },
 
-    'findOne' => function($collection, $criteria = [], $projection = null, $populate = false) {
+    'findOne' => function($collection, $criteria = [], $projection = null, $populate = false, $fieldsFilter = []) {
 
         $_collection = $this->collection($collection);
 
@@ -194,8 +208,12 @@ $this->module("collections")->extend([
 
         $entry = $this->app->storage->findOne("collections/{$collection}", $criteria, $projection);
 
+        if (count($fieldsFilter)) {
+           $entry = $this->_filterFields($entry, $_collection, $fieldsFilter);
+        }
+
         if ($entry && $populate) {
-           $entry = $this->_populate($_collection, [$entry], is_numeric($populate) ? intval($populate) : false);
+           $entry = $this->_populate([$entry], is_numeric($populate) ? intval($populate) : false, 0, $fieldsFilter);
            $entry = $entry[0];
         }
 
@@ -205,7 +223,11 @@ $this->module("collections")->extend([
         return $entry;
     },
 
-    'save' => function($collection, $data) {
+    'save' => function($collection, $data, $options = []) {
+
+        $options = array_merge([
+            'revision' => false
+        ], $options);
 
         $_collection = $this->collection($collection);
 
@@ -298,6 +320,10 @@ $this->module("collections")->extend([
             $this->app->trigger('collections.save.after', [$name, &$entry, $isUpdate]);
             $this->app->trigger("collections.save.after.{$name}", [$name, &$entry, $isUpdate]);
 
+            if ($ret && $options['revision']) {
+                $this->app->helper('revisions')->add($entry['_id'], $entry, "collections/{$collection}", true);
+            }
+
             $return[] = $ret ? $entry : false;
         }
 
@@ -335,7 +361,7 @@ $this->module("collections")->extend([
         return $this->app->storage->count("collections/{$collection}", $criteria);
     },
 
-    '_resolveField' => function($fieldValue, $field, $deep, $_deeplevel) {
+    '_resolveLinedkItem' => function($link, $_id, $fieldsFilter = []) {
 
         static $cache;
 
@@ -343,157 +369,229 @@ $this->module("collections")->extend([
             $cache = [];
         }
 
-        switch ($field['type']) {
-
-            case 'collectionlink':
-
-                if (isset($field['options']['multiple']) && $field['options']['multiple']) {
-
-                    if (isset($fieldValue) && $fieldValue && is_array($fieldValue)) {
-
-                        $links = [];
-
-                        foreach ($fieldValue as $data) {
-
-                            if (!isset($data['_id'])) continue;
-
-                            if (!is_string($data['_id'])) {
-                                $data['_id'] = (string)$data['_id'];
-                            }
-
-                            if (!isset($cache[$field['options']['link']])) {
-                                $cache[$field['options']['link']] = [];
-                            }
-
-                            if (!isset($cache[$field['options']['link']][$data['_id']])) {
-                                $cache[$field['options']['link']][$data['_id']] = $this->findOne($field['options']['link'], ['_id' => $data['_id']]);
-                            }
-
-                            if ($cache[$field['options']['link']][$data['_id']]) {
-                                $links[] = $cache[$field['options']['link']][$data['_id']];
-                            }
-                        }
-
-                        if ($deep && count($links)) {
-                            $links = $this->_populate($this->collection($field['options']['link']), $links, $deep, ($_deeplevel+1));
-                        }
-
-                        return $links;
-                    }
-
-                } else {
-
-                    if (isset($fieldValue['_id'])) {
-
-                        if (!is_string($fieldValue['_id'])) {
-                            $fieldValue['_id'] = (string)$fieldValue['_id'];
-                        }
-
-                        if (!isset($cache[$field['options']['link']])) {
-                            $cache[$field['options']['link']] = [];
-                        }
-
-                        if (!isset($cache[$field['options']['link']][$fieldValue['_id']])) {
-                            $cache[$field['options']['link']][$fieldValue['_id']] = $this->findOne($field['options']['link'], ['_id' => $fieldValue['_id']]);
-                        }
-
-                        $fieldValue = $cache[$field['options']['link']][$fieldValue['_id']];
-
-                        if ($fieldValue && $deep) {
-                            $_entry = $this->_populate($this->collection($field['options']['link']), [$fieldValue], $deep, ($_deeplevel+1));
-                            return $_entry[0];
-                        }
-                    }
-                }
-
-                break;
-
-            case 'repeater':
-
-                foreach($field['options']['fields'] as $linkField) {
-
-                    foreach($fieldValue as $i => $fieldEntry) {
-
-                        if ($fieldEntry['field']['name'] == $linkField['name']) {
-                            $fieldValue[$i]['value'] = $this->_resolveField($fieldEntry['value'], $linkField, $this);
-                        }
-                    }
-                }
-
-                return $fieldValue;
-
-            case 'set':
-
-                foreach($field['options']['fields'] as $linkField) {
-
-                    if (isset($fieldValue[$linkField['name']]) && $fieldValue[$linkField['name']]) {
-                        $fieldValue[$linkField['name']] = $this->_resolveField($fieldValue[$linkField['name']], $linkField, $this);
-                    }
-                }
-
-                return $fieldValue;
+        if (!isset($cache[$link])) {
+            $cache[$link] = [];
         }
 
-        return $fieldValue;
+        if (!isset($cache[$link][$_id])) {
+            $cache[$link][$_id] = $this->findOne($link, ['_id' => $_id], null, false, $fieldsFilter);
+        }
+
+        return $cache[$link][$_id];
     },
 
-    '_filterNonLinkFields' => function($fields) {
+    '_populate' => function($items, $maxlevel=-1, $level=0, $fieldsFilter = []) {
 
-        return array_filter($fields, function($field) {
+        if (!is_array($items)) {
+            return $items;
+        }
+        return cockpit_populate_collection($items, -1, 0, $fieldsFilter);
+    },
 
-            if (!in_array($field['type'], ['collectionlink','repeater','set'])) {
-                return false;
+    '_filterFields' => function($items, $collection, $filter) {
+
+        static $cache;
+        static $languages;
+
+        if (null === $items) {
+            return $items;
+        }
+
+        $single = false;
+
+        if (!isset($items[0]) && count($items)) {
+            $items = [$items];
+            $single = true;
+        }
+
+        $filter = array_merge([
+            'user' => false,
+            'lang' => false
+        ], $filter);
+
+        extract($filter);
+
+        if (null === $cache) {
+            $cache = [];
+        }
+
+        if (null === $languages) {
+                
+            $languages = [];
+
+            foreach($this->app->retrieve('config/languages', []) as $key => $val) {
+                if (is_numeric($key)) $key = $val;
+                $languages[] = $key;
+            }
+        }
+
+        if (is_string($collection)) {
+            $collection = $this->collection($collection);
+        }
+
+        if (!isset($cache[$collection['name']])) {
+
+            $fields = [
+                "acl" => [],
+                "localize" => []
+            ];
+
+            foreach ($collection["fields"] as $field) {
+
+                if (isset($field['acl']) && is_array($field['acl']) && count($field['acl'])) {
+                    $fields['acl'][$field['name']] = $field['acl'];
+                }
+
+                if (isset($field['localize']) && $field['localize']) {
+                    $fields['localize'][$field['name']] = true;
+                }
             }
 
-            switch ($field['type']) {
-                case 'collectionlink':
-                    return (isset($field['options']['link']) && $field['options']['link']);
-                    break;
+            $cache[$collection['name']] = $fields;
+        }
 
-                case 'repeater':
-                case 'set':
+        if ($user && count($cache[$collection['name']]['acl'])) {
+            
+            $aclfields = $cache[$collection['name']]['acl'];
+            $items     = array_map(function($entry) use($user, $aclfields, $languages) {
+                
+                foreach ($aclfields as $name => $acl) {
 
-                    if (is_array($field['options']['fields']) && count($field['options']['fields'])) {
+                    if (!( in_array($user['group'], $acl) || in_array($user['_id'], $acl) )) {
+                        
+                        unset($entry[$name]);
 
-                        $field['options']['fields'] = $this->_filterNonLinkFields($field['options']['fields']);
+                        if (count($languages)) {
 
-                        if (count($field['options']['fields'])) {
-                            return true;
+                            foreach($languages as $l) {
+                                if (isset($entry["{$name}_{$l}"])) {
+                                    unset($entry["{$name}_{$l}"]);
+                                    unset($entry["{$name}_{$l}_slug"]);
+                                }
+                            }
                         }
                     }
-                    break;
-            }
+                }
 
+                return $entry;
+
+            }, $items);
+        }
+
+        if ($lang && count($languages) && count($cache[$collection['name']]['localize'])) {
+            
+            $localfields = $cache[$collection['name']]['localize'];
+            $items = array_map(function($entry) use($localfields, $lang, $languages) {
+                
+                foreach ($localfields as $name => $local) {
+
+                    foreach($languages as $l) {
+                        
+                        if (isset($entry["{$name}_{$l}"])) {
+
+                            if ($l == $lang) {
+                                
+                                $entry[$name] = $entry["{$name}_{$l}"];
+
+                                if (isset($entry["{$name}_{$l}_slug"])) {
+                                    $entry["{$name}_slug"] = $entry["{$name}_{$l}_slug"];
+                                }
+                            }
+
+                            unset($entry["{$name}_{$l}"]);
+                            unset($entry["{$name}_{$l}_slug"]);
+                        }
+                    }
+                }
+
+                return $entry;
+
+            }, $items);
+        }
+
+        return $single ? $items[0] : $items;
+    }
+]);
+
+function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $fieldsFilter = []) {
+
+    if (!is_array($items)) {
+        return $items;
+    }
+
+    if (is_numeric($maxlevel) && $maxlevel==$level) {
+        return $items;
+    }
+
+    foreach ($items as $k => &$v) {
+
+        if (is_array($items[$k])) {
+            $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ++$level, $fieldsFilter);
+        }
+
+        if (isset($v['_id'], $v['link'])) {
+            $items[$k] = cockpit('collections')->_resolveLinedkItem($v['link'], $v['_id'], $fieldsFilter);
+        }
+    }
+
+    return $items;
+}
+
+// ACL
+$app("acl")->addResource("collections", ['create', 'delete']);
+
+$this->module("collections")->extend([
+
+    'getCollectionsInGroup' => function($group = null, $extended = false) {
+
+        if (!$group) {
+            $group = $this->app->module('cockpit')->getGroup();
+        }
+
+        $_collections = $this->collections($extended);
+        $collections = [];
+
+        if ($this->app->module('cockpit')->isSuperAdmin()) {
+            return $_collections;
+        }
+
+        foreach ($_collections as $collection => $meta) {
+
+            if (isset($meta['acl'][$group]['entries_view']) && $meta['acl'][$group]['entries_view']) {
+                $collections[$collection] = $meta;
+            }
+        }
+
+        return $collections;
+    },
+
+    'hasaccess' => function($collection, $action, $group = null) {
+
+        $collection = $this->collection($collection);
+
+        if (!$collection) {
             return false;
-        });
-    },
-
-    '_populate' => function($collection, $entries, $deep = false, $_deeplevel = -1) {
-
-        // a maximum of recursive level
-        if (is_numeric($deep) && $_deeplevel == $deep) {
-            return $entries;
         }
 
-        if (!$collection || !count($entries)) {
-            return $entries;
+        if (!$group) {
+            $group = $this->app->module('cockpit')->getGroup();
         }
 
-        $fieldsWithLinks = $this->_filterNonLinkFields($collection['fields']);
-
-        foreach ($entries as &$entry) {
-            foreach($fieldsWithLinks as $field) {
-                $entry[$field['name']] = $this->_resolveField($entry[$field['name']], $field, $deep, $_deeplevel);
-            }
+        if ($this->app->module('cockpit')->isSuperAdmin($group)) {
+            return true;
         }
 
-        return $entries;
+        if (isset($collection['acl'][$group][$action])) {
+            return $collection['acl'][$group][$action];
+        }
+
+        return false;
     }
 ]);
 
 
 // REST
-if (COCKPIT_REST) {
+if (COCKPIT_API_REQUEST) {
 
     $app->on('cockpit.rest.init', function($routes) {
         $routes['collections'] = 'Collections\\Controller\\RestApi';
@@ -502,7 +600,7 @@ if (COCKPIT_REST) {
 
 
 // ADMIN
-if (COCKPIT_ADMIN && !COCKPIT_REST) {
+if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
 
     include_once(__DIR__.'/admin.php');
 }

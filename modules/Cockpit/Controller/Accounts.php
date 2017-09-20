@@ -39,7 +39,7 @@ class Accounts extends \Cockpit\AuthController {
         unset($account["password"]);
 
         $languages = $this->getLanguages();
-        $groups    = $this->app->module('cockpit')->getGroups();
+        $groups    = $this->module('cockpit')->getGroups();
 
         return $this->render('cockpit:views/accounts/account.php', compact('account', 'uid', 'languages', 'groups'));
     }
@@ -50,7 +50,7 @@ class Accounts extends \Cockpit\AuthController {
         $account   = ["user"=>"", "email"=>"", "active"=>true, "group"=>"admin", "i18n"=>$this->app->helper("i18n")->locale];
 
         $languages = $this->getLanguages();
-        $groups    = $this->app->module('cockpit')->getGroups();
+        $groups    = $this->module('cockpit')->getGroups();
 
         return $this->render('cockpit:views/accounts/account.php', compact('account', 'uid', 'languages', 'groups'));
     }
@@ -58,6 +58,12 @@ class Accounts extends \Cockpit\AuthController {
     public function save() {
 
         if ($data = $this->param("account", false)) {
+
+            $data["_modified"] = time();
+
+            if (!isset($data['_id'])) {
+                $data["_created"] = $data["_modified"];
+            }
 
             if (isset($data["password"])) {
 
@@ -101,21 +107,48 @@ class Accounts extends \Cockpit\AuthController {
         return false;
     }
 
+    public function find() {
+
+        $options = [
+            "sort"   => ["user" => 1]
+        ];
+
+        if ($filter = $this->param('filter')) {
+
+            $options['filter'] = $filter;
+
+            if (is_string($filter)) {
+
+                $options['filter'] = [
+                    '$or' => [
+                        ['name' => ['$regex' => $filter]],
+                        ['user' => ['$regex' => $filter]],
+                        ['email' => ['$regex' => $filter]],
+                    ]
+                ];
+            }
+        }
+
+        $accounts = $this->storage->find("cockpit/accounts", $options)->toArray();
+
+        foreach ($accounts as &$account) {
+            $account["md5email"] = md5(@$account["email"]);
+        }
+
+        return $accounts;
+    }
+
     protected function getLanguages() {
 
-        $languages = [];
+        $languages = [['i18n' => 'en', 'language' => 'English']];
 
-        foreach ($this->app->helper("fs")->ls('*.php', '#config:cockpit/i18n') as $file) {
+        foreach ($this->app->helper('fs')->ls('*.php', '#config:cockpit/i18n') as $file) {
 
             $lang     = include($file->getRealPath());
             $i18n     = $file->getBasename('.php');
             $language = isset($lang['@meta']['language']) ? $lang['@meta']['language'] : $i18n;
 
-            $languages[] = ["i18n" => $i18n, "language"=> $language];
-        }
-
-        if (!count($languages)) {
-            $languages[] = ["i18n" => 'en', "language" => 'English'];
+            $languages[] = ['i18n' => $i18n, 'language'=> $language];
         }
 
         return $languages;

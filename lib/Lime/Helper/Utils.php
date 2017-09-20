@@ -34,9 +34,21 @@ class Utils extends \Lime\Helper {
     public function fixRelativeUrls($content, $base = '/'){
 
         $protocols = '[a-zA-Z0-9\-]+:';
-
         $regex     = '#\s+(src|href|poster)="(?!/|' . $protocols . '|\#|\')([^"]*)"#m';
-        $content   = preg_replace($regex, " $1=\"$base\$2\"", $content);
+
+        preg_match_all($regex, $content, $matches);
+        
+        if (isset($matches[0])) {
+
+            foreach ($matches[0] as $i => $match) {
+                
+                if (trim($matches[2][$i])) {
+                    $content = str_replace($match, " {$matches[1][$i]}=\"{$base}{$matches[2][$i]}\"", $content);
+                }
+            }
+        }
+
+        //$content = preg_replace($regex, " $1=\"$base\$2\"", $content);
 
         // Background image.
         $regex     = '#style\s*=\s*[\'\"](.*):\s*url\s*\([\'\"]?(?!/|' . $protocols . '|\#)([^\)\'\"]+)[\'\"]?\)#m';

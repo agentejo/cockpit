@@ -227,10 +227,10 @@ class UtilArrayQuery {
                     $_fn = array();
 
                     foreach($value as $v) {
-                        $_fn[] = '('.self::buildCondition($v, ' && ').')';
+                        $_fn[] = self::buildCondition($v, ' && ');
                     }
 
-                    $fn[] = implode(' || ', $_fn);
+                    $fn[] = '('.implode(' && ', $_fn).')';
 
                     break;
                 case '$or':
@@ -238,10 +238,10 @@ class UtilArrayQuery {
                     $_fn = array();
 
                     foreach($value as $v) {
-                        $_fn[] = '('.self::buildCondition($v, ' || ').')';
+                        $_fn[] = self::buildCondition($v, ' && ');
                     }
 
-                    $fn[] = implode(' || ', $_fn);
+                    $fn[] = '('.implode(' || ', $_fn).')';
 
                     break;
                 default:
@@ -259,8 +259,12 @@ class UtilArrayQuery {
                     } else {
                         $d .= '["'.$key.'"]';
                     }
-                    
-                    $fn[] = is_array($value) ? "\\MongoLite\\UtilArrayQuery::check((isset({$d}) ? {$d} : null), ".var_export($value, true).")": "(isset({$d}) && {$d}==".(is_string($value) ? "'{$value}'": var_export($value, true)).")";
+
+                    if (is_array($value)) {
+                        $fn[] = "\\MongoLite\\UtilArrayQuery::check((isset({$d}) ? {$d} : null), ".var_export($value, true).")";
+                    } else {
+                        $fn[] = "(isset({$d}) && {$d}==".(is_string($value) ? "'{$value}'": var_export($value, true)).")";
+                    }
             }
         }
 
@@ -270,12 +274,11 @@ class UtilArrayQuery {
 
     public static function check($value, $condition) {
 
-        if(is_null($value)) return false;
-
-        $keys  = array_keys($condition);
+        $keys = array_keys($condition);
 
         foreach ($keys as &$key) {
-            if(!self::evaluate($key, $value, $condition[$key])) {
+
+            if (!self::evaluate($key, $value, $condition[$key])) {
                 return false;
             }
         }
@@ -287,6 +290,10 @@ class UtilArrayQuery {
 
         $r = false;
 
+        if (is_null($a) && $func != '$exists') {
+            return false;
+        }
+
         switch ($func) {
             case '$eq' :
                 $r = $a == $b;
@@ -296,14 +303,14 @@ class UtilArrayQuery {
                 break;
             case '$gte' :
             case '$gt' :
-                if (is_numeric($a) && is_numeric($b)) {
+                if ( (is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b)) ) {
                     $r = $a > $b;
                 }
                 break;
 
             case '$lte' :
             case '$lt' :
-                if (is_numeric($a) && is_numeric($b)) {
+                if ( (is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b)) ) {
                     $r = $a < $b;
                 }
                 break;
@@ -352,6 +359,26 @@ class UtilArrayQuery {
                     throw new \InvalidArgumentException('Function should be callable');
                 $r = $b($a);
                 break;
+            
+            case '$exists':
+                $r = $b ? !is_null($a) : is_null($a);
+                break;
+
+            case '$fuzzy':
+
+                $distance = 3;
+                $minScore = 0.7;
+
+                if (is_array($b) && isset($b['search'])) {
+
+                    if (isset($b['minScore']) && is_numeric($b['minScore'])) $minScore = $b['minScore']; 
+                    if (isset($b['distance']) && is_numeric($b['distance'])) $distance = $b['distance']; 
+
+                    $b = $b['search'];
+                }
+
+                $r = fuzzy_search($b, $a, $distance) >= $minScore;
+                break;
 
             default :
                 throw new \ErrorException("Condition not valid ... Use {$func} for custom operations");
@@ -360,4 +387,57 @@ class UtilArrayQuery {
 
         return $r;
     }
+}
+
+
+// Helper Functions
+function levenshtein_utf8($s1, $s2) {
+
+    $map = [];
+    $utf8_to_extended_ascii = function($str) use($map) {
+       
+        // find all multibyte characters (cf. utf-8 encoding specs)
+        $matches = array();
+        
+        if (!preg_match_all('/[\xC0-\xF7][\x80-\xBF]+/', $str, $matches)) return $str; // plain ascii string
+        
+        // update the encoding map with the characters not already met
+        foreach ($matches[0] as $mbc) {
+            if (!isset($map[$mbc])) $map[$mbc] = chr(128 + count($map));
+        }
+        
+        // finally remap non-ascii characters
+        return strtr($str, $map);
+    };
+
+    return levenshtein($utf8_to_extended_ascii($s1), $utf8_to_extended_ascii($s2));
+}
+
+function fuzzy_search($search, $text, $distance = 3){
+
+    $needles = explode(' ', mb_strtolower($search, 'UTF-8'));
+    $tokens  = explode(' ', mb_strtolower($text, 'UTF-8'));
+    $score   = 0;
+
+    foreach ($needles as $needle){
+
+        foreach ($tokens as $token) {
+
+            if (strpos($token, $needle) !== false) {
+                $score += 1;
+            } else {
+
+                $d = levenshtein_utf8($needle, $token);
+
+                if ($d <= $distance) {
+                    $l       = mb_strlen($token, 'UTF-8');
+                    $matches = $l - $d;
+                    $score  += ($matches / $l);
+                }
+            }
+        }
+        
+    }
+
+    return $score / count($needles);
 }

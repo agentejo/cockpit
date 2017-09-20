@@ -68,9 +68,9 @@
                 <div class="uk-form-row">
 
                     <ul class="uk-tab uk-flex uk-flex-right uk-margin">
-                        <li riot-class="{ view==='template' ? 'uk-active':'' }" data-view="template"><a onclick="{ toggleview }">@lang('Template')</a></li>
-                        <li riot-class="{ view==='fields' ? 'uk-active':'' }" data-view="fields"><a onclick="{ toggleview }">@lang('Fields')</a></li>
-                        <li riot-class="{ view==='acl' ? 'uk-active':'' }" data-view="acl"><a onclick="{ toggleview }">@lang('Access')</a></li>
+                        <li class="{ view==='template' ? 'uk-active':'' }" data-view="template"><a onclick="{ toggleview }">@lang('Template')</a></li>
+                        <li class="{ view==='fields' ? 'uk-active':'' }" data-view="fields"><a onclick="{ toggleview }">@lang('Fields')</a></li>
+                        <li class="{ view==='acl' ? 'uk-active':'' }" data-view="acl"><a onclick="{ toggleview }">@lang('Access')</a></li>
                     </ul>
 
                     <div class="uk-margin-large-top" show="{ view==='fields' }">

@@ -1,4 +1,19 @@
 <?php
+/*
+ * Copyright 2015-2017 MongoDB, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 namespace MongoDB\Operation;
 
@@ -6,7 +21,9 @@ use MongoDB\DeleteResult;
 use MongoDB\Driver\BulkWrite as Bulk;
 use MongoDB\Driver\Server;
 use MongoDB\Driver\WriteConcern;
+use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
+use MongoDB\Exception\UnsupportedException;
 
 /**
  * Operation for the delete command.
@@ -19,6 +36,8 @@ use MongoDB\Exception\InvalidArgumentException;
  */
 class Delete implements Executable
 {
+    private static $wireVersionForCollation = 5;
+
     private $databaseName;
     private $collectionName;
     private $filter;
@@ -30,6 +49,11 @@ class Delete implements Executable
      *
      * Supported options:
      *
+     *  * collation (document): Collation specification.
+     *
+     *    This is not supported for server versions < 3.4 and will result in an
+     *    exception at execution time if used.
+     *
      *  * writeConcern (MongoDB\Driver\WriteConcern): Write concern.
      *
      * @param string       $databaseName   Database name
@@ -39,7 +63,7 @@ class Delete implements Executable
      *                                     delete. Must be 0 or 1, for all or a
      *                                     single document, respectively.
      * @param array        $options        Command options
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException for parameter/option parsing errors
      */
     public function __construct($databaseName, $collectionName, $filter, $limit, array $options = [])
     {
@@ -49,6 +73,10 @@ class Delete implements Executable
 
         if ($limit !== 0 && $limit !== 1) {
             throw new InvalidArgumentException('$limit must be 0 or 1');
+        }
+
+        if (isset($options['collation']) && ! is_array($options['collation']) && ! is_object($options['collation'])) {
+            throw InvalidArgumentException::invalidType('"collation" option', $options['collation'], 'array or object');
         }
 
         if (isset($options['writeConcern']) && ! $options['writeConcern'] instanceof WriteConcern) {
@@ -68,11 +96,22 @@ class Delete implements Executable
      * @see Executable::execute()
      * @param Server $server
      * @return DeleteResult
+     * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
     public function execute(Server $server)
     {
+        if (isset($this->options['collation']) && ! \MongoDB\server_supports_feature($server, self::$wireVersionForCollation)) {
+            throw UnsupportedException::collationNotSupported();
+        }
+
+        $deleteOptions = ['limit' => $this->limit];
+
+        if (isset($this->options['collation'])) {
+            $deleteOptions['collation'] = (object) $this->options['collation'];
+        }
+
         $bulk = new Bulk();
-        $bulk->delete($this->filter, ['limit' => $this->limit]);
+        $bulk->delete($this->filter, $deleteOptions);
 
         $writeConcern = isset($this->options['writeConcern']) ? $this->options['writeConcern'] : null;
         $writeResult = $server->executeBulkWrite($this->databaseName . '.' . $this->collectionName, $bulk, $writeConcern);

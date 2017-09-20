@@ -1,7 +1,23 @@
 <?php
+/*
+ * Copyright 2016-2017 MongoDB, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 namespace MongoDB\GridFS;
 
+use MongoDB\BSON\UTCDateTime;
 use Exception;
 
 /**
@@ -103,21 +119,55 @@ class StreamWrapper
      * if data is not available to be read.
      * 
      * @see http://php.net/manual/en/streamwrapper.stream-read.php
-     * @param integer $count Number of bytes to read
+     * @param integer $length Number of bytes to read
      * @return string
      */
-    public function stream_read($count)
+    public function stream_read($length)
     {
         if ( ! $this->stream instanceof ReadableStream) {
             return '';
         }
 
         try {
-            return $this->stream->downloadNumBytes($count);
+            return $this->stream->readBytes($length);
         } catch (Exception $e) {
             trigger_error(sprintf('%s: %s', get_class($e), $e->getMessage()), \E_USER_WARNING);
             return false;
         }
+    }
+
+    /**
+     * Return the current position of the stream.
+     *
+     * @see http://php.net/manual/en/streamwrapper.stream-seek.php
+     * @param integer $offset Stream offset to seek to
+     * @param integer $whence One of SEEK_SET, SEEK_CUR, or SEEK_END
+     * @return boolean True if the position was updated and false otherwise
+     */
+    public function stream_seek($offset, $whence = \SEEK_SET)
+    {
+        $size = $this->stream->getSize();
+
+        if ($whence === \SEEK_CUR) {
+            $offset += $this->stream->tell();
+        }
+
+        if ($whence === \SEEK_END) {
+            $offset += $size;
+        }
+
+        // WritableStreams are always positioned at the end of the stream
+        if ($this->stream instanceof WritableStream) {
+            return $offset === $size;
+        }
+
+        if ($offset < 0 || $offset > $size) {
+            return false;
+        }
+
+        $this->stream->seek($offset);
+
+        return true;
     }
 
     /**
@@ -130,10 +180,35 @@ class StreamWrapper
     {
         $stat = $this->getStatTemplate();
 
-        $stat[2] = $stat['mode'] = $this->mode;
+        $stat[2] = $stat['mode'] = $this->stream instanceof ReadableStream
+            ? 0100444  // S_IFREG & S_IRUSR & S_IRGRP & S_IROTH
+            : 0100222; // S_IFREG & S_IWUSR & S_IWGRP & S_IWOTH
         $stat[7] = $stat['size'] = $this->stream->getSize();
 
+        $file = $this->stream->getFile();
+
+        if (isset($file->uploadDate) && $file->uploadDate instanceof UTCDateTime) {
+            $timestamp = $file->uploadDate->toDateTime()->getTimestamp();
+            $stat[9] = $stat['mtime'] = $timestamp;
+            $stat[10] = $stat['ctime'] = $timestamp;
+        }
+
+        if (isset($file->chunkSize) && is_integer($file->chunkSize)) {
+            $stat[11] = $stat['blksize'] = $file->chunkSize;
+        }
+
         return $stat;
+    }
+
+    /**
+     * Return the current position of the stream.
+     *
+     * @see http://php.net/manual/en/streamwrapper.stream-tell.php
+     * @return integer The current position of the stream
+     */
+    public function stream_tell()
+    {
+        return $this->stream->tell();
     }
 
     /**
@@ -150,7 +225,7 @@ class StreamWrapper
         }
 
         try {
-            return $this->stream->insertChunks($data);
+            return $this->stream->writeBytes($data);
         } catch (Exception $e) {
             trigger_error(sprintf('%s: %s', get_class($e), $e->getMessage()), \E_USER_WARNING);
             return false;

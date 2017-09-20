@@ -7,9 +7,7 @@
     <div show="{mode=='edit' && items.length}">
         <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
 
-            <div class="uk-text-small uk-margin">
-                <span class="uk-text-primary uk-badge uk-badget-outline">{ App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</span>
-            </div>
+            <div class="uk-badge uk-display-block uk-margin">{ App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</div>
 
             <cp-field type="{ item.field.type || 'text' }" bind="items[{ idx }].value" opts="{ item.field.options || {} }"></cp-field>
 
@@ -23,7 +21,7 @@
         <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
             <div class="uk-grid uk-grid-small">
                 <div class="uk-flex-item-1"><i class="uk-icon-bars uk-margin-small-right"></i> { App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</div>
-                <div class="uk-text-muted uk-text-small">Item { (idx+1) }</div>
+                <div class="uk-text-muted uk-text-small uk-text-truncate"> <raw content="{ parent.getOrderPreview(item,idx) }"></raw></div>
             </div>
         </div>
     </div>
@@ -38,8 +36,8 @@
                 </ul>
             </div>
         </span>
-        <a class="uk-button" onclick="{ updateorder }" show="{ mode=='reorder' }"><i class="uk-icon-plus-circle"></i> { App.i18n.get('Update order') }</a>
-        <a class="uk-button" onclick="{ switchreorder }" show="{ items.length > 1 }">
+        <a class="uk-button uk-button-success" onclick="{ updateorder }" show="{ mode=='reorder' }"><i class="uk-icon-check"></i> { App.i18n.get('Update order') }</a>
+        <a class="uk-button uk-button-link uk-link-reset" onclick="{ switchreorder }" show="{ items.length > 1 }">
             <span show="{ mode=='edit' }"><i class="uk-icon-arrows"></i> { App.i18n.get('Reorder') }</span>
             <span show="{ mode=='reorder' }">{ App.i18n.get('Cancel') }</span>
         </a>
@@ -133,6 +131,24 @@
                     $this.update();
                 }, 50)
             }, 50);
+        }
+
+        getOrderPreview(item, idx) {
+
+            if (item.field && item.field.type && item.field.options && (opts.display || item.field.options.display)) {
+                
+                var value, display = opts.display || item.field.options.display;
+
+                if (item.field.options.display == '$value') {
+                    value = item.value;
+                } else {
+                    value = _.get(item.value, display) || 'Item '+(idx+1);
+                }
+                
+                return App.Utils.renderValue(item.field.type, value);
+            }
+
+            return 'Item '+(idx+1);
         }
 
     </script>

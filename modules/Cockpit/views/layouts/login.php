@@ -11,13 +11,13 @@
 
     <style>
 
+        html, body {
+            background: #0e0f19; 
+        }
+
         .login-container {
             width: 360px;
             max-width: 90%;
-        }
-
-        html {
-            background: #222228;
         }
 
         .uk-panel-box-header {
@@ -35,7 +35,7 @@
 </head>
 <body class="login-page uk-height-viewport uk-flex uk-flex-middle uk-flex-center">
 
-    <div class="uk-position-relative login-container uk-animation-fade" riot-view>
+    <div class="uk-position-relative login-container uk-animation-scale" riot-view>
 
         <form class="uk-form" method="post" action="@route('/auth/check')" onsubmit="{ submit }">
 
@@ -76,9 +76,12 @@
                 </div>
 
                 <div class="uk-margin-large-top">
-                    <button class="uk-button uk-button-large uk-button-primary uk-width-1-1">@lang('Authenticate')</button>
+                    <button class="uk-button uk-button-outline uk-button-large uk-button-primary uk-width-1-1">@lang('Authenticate')</button>
                 </div>
             </div>
+
+            <p class="uk-text-center" if="{!$user}"><a href="@route('/auth/forgotpassword')">@lang('Forgot Password?')</a></p>
+
 
         </form>
 

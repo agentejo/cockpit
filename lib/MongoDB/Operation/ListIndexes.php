@@ -1,11 +1,26 @@
 <?php
+/*
+ * Copyright 2015-2017 MongoDB, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 namespace MongoDB\Operation;
 
 use MongoDB\Driver\Command;
 use MongoDB\Driver\Query;
 use MongoDB\Driver\Server;
-use MongoDB\Driver\Exception\RuntimeException;
+use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Model\IndexInfoIterator;
 use MongoDB\Model\IndexInfoIteratorIterator;
@@ -15,7 +30,7 @@ use EmptyIterator;
  * Operation for the listIndexes command.
  *
  * @api
- * @see MongoDB\Collection::listIndexes()
+ * @see \MongoDB\Collection::listIndexes()
  * @see http://docs.mongodb.org/manual/reference/command/listIndexes/
  */
 class ListIndexes implements Executable
@@ -39,7 +54,7 @@ class ListIndexes implements Executable
      * @param string $databaseName   Database name
      * @param string $collectionName Collection name
      * @param array  $options        Command options
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException for parameter/option parsing errors
      */
     public function __construct($databaseName, $collectionName, array $options = [])
     {
@@ -58,6 +73,7 @@ class ListIndexes implements Executable
      * @see Executable::execute()
      * @param Server $server
      * @return IndexInfoIterator
+     * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
     public function execute(Server $server)
     {
@@ -72,6 +88,7 @@ class ListIndexes implements Executable
      *
      * @param Server $server
      * @return IndexInfoIteratorIterator
+     * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
     private function executeCommand(Server $server)
     {
@@ -83,7 +100,7 @@ class ListIndexes implements Executable
 
         try {
             $cursor = $server->executeCommand($this->databaseName, new Command($cmd));
-        } catch (RuntimeException $e) {
+        } catch (DriverRuntimeException $e) {
             /* The server may return an error if the collection does not exist.
              * Check for possible error codes (see: SERVER-20463) and return an
              * empty iterator instead of throwing.
@@ -106,6 +123,7 @@ class ListIndexes implements Executable
      *
      * @param Server $server
      * @return IndexInfoIteratorIterator
+     * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
     private function executeLegacy(Server $server)
     {

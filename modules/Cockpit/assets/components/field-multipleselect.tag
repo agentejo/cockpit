@@ -1,8 +1,8 @@
 <field-multipleselect>
-    <div riot-class="{ options.length > 10 ? 'uk-scrollable-box':'' }">
+    <div class="{ options.length > 10 ? 'uk-scrollable-box':'' }">
         <div class="uk-margin-small-top" each="{option in options}">
-            <a data-value="{ option }" riot-class="{ parent.selected.indexOf(option)!==-1 ? 'uk-text-primary':'uk-text-muted' }" onclick="{ parent.toggle }" title="{ option }">
-                <i riot-class="uk-icon-{ parent.selected.indexOf(option)!==-1 ? 'circle':'circle-o' } uk-margin-small-right"></i>
+            <a data-value="{ option }" class="{ parent.selected.indexOf(option)!==-1 ? 'uk-text-primary':'uk-text-muted' }" onclick="{ parent.toggle }" title="{ option }">
+                <i class="uk-icon-{ parent.selected.indexOf(option)!==-1 ? 'circle':'circle-o' } uk-margin-small-right"></i>
                 { option }
             </a>
         </div>

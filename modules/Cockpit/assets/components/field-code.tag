@@ -8,11 +8,11 @@
 
     </style>
 
-    <codemirror ref="codemirror" syntax="{ opts.syntax || 'text' }"></codemirror>
+    <codemirror ref="codemirror" syntax="{ opts.syntax || 'text' }" height="{ opts.height || 200 }"></codemirror>
 
     <script>
 
-        var $this = this, editor;
+        var $this = this, editor, idle;
 
         this.value  = null;
         this._field = null;
@@ -45,6 +45,16 @@
 
                 $this.isReady = true;
                 $this.update();
+
+                idle = setInterval(function() {
+
+                    if (App.$($this.root).is(':visible')) {
+                        if(!editor.hasFocus()) editor.refresh();
+                    } else {
+                        if (!App.$($this.root).closest('body').length) clearInterval(idle);
+                    }
+                }, 500)
+
             });
         });
 

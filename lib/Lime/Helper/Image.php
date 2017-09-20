@@ -2,7 +2,7 @@
 
 namespace Lime\Helper;
 
-use abeautifulsite\SimpleImage;
+use claviska\SimpleImage;
 
 
 class Image extends \Lime\Helper {
@@ -35,11 +35,15 @@ class Img {
     }
 
     public function base64data($format=null, $quality=100) {
-        return $this->image->output_base64($format, $quality);
+        return $this->image->toDataUri($format, $quality);
     }
 
     public function show($format=null, $quality=100) {
         $this->image->output($format, $quality);
+    }
+
+    public function blur($passes = 1, $type = 'gaussian') {
+        return $this->image->blur($type, $passes);
     }
 
     public function __call($method, $args) {

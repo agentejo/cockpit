@@ -1,9 +1,5 @@
 <?php
 
-// ACL
-$app("acl")->addResource("forms", ['manage']);
-
-
 $app->on('admin.init', function() {
 
     if (!$this->module('cockpit')->getGroupRights('forms')) {

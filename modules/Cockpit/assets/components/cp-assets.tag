@@ -62,7 +62,7 @@
             <i class="uk-icon-spinner uk-icon-spin"></i>
         </div>
 
-        <div class="uk-margin-large-top {modal ? 'uk-overflow-container':''}" if="{ !loading && assets.length }">
+        <div class="uk-margin-large-top {modal && 'uk-overflow-container'}" if="{ !loading && assets.length }">
 
             <div class="uk-grid uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
                 <div class="uk-grid-margin" each="{ asset,idx in assets }" each="{ asset,idx in assets }" onclick="{ select }">
@@ -109,7 +109,10 @@
                                 <cp-thumbnail src="{ASSETS_URL+asset.path}" width="20" height="20"></cp-thumbnail>
                             </a>
                         </td>
-                        <td><a onclick="{ parent.edit }">{ asset.title }</a></td>
+                        <td>
+                            <a if="{!parent.modal}" onclick="{ parent.edit }">{ asset.title }</a>
+                            <span if="{parent.modal}">{ asset.title }</span>
+                        </td>
                         <td class="uk-text-small">{ asset.mime }</td>
                         <td class="uk-text-small">{ App.Utils.formatSize(asset.size) }</td>
                         <td class="uk-text-small">{ App.Utils.dateformat( new Date( 1000 * asset.modified )) }</td>
@@ -147,19 +150,25 @@
         <form onsubmit="{ updateAsset }">
             <div class="uk-grid">
                 <div class="uk-width-2-3">
-                    <div class="uk-form-row">
-                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Title') }</label>
-                        <input class="uk-width-1-1" type="text" ref="assettitle" required>
-                    </div>
 
-                    <div class="uk-form-row">
-                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Description') }</label>
-                        <textarea class="uk-width-1-1" ref="assetdescription"></textarea>
-                    </div>
+                    <div class="uk-panel uk-panel-box uk-panel-card uk-panel-space">
+                        <div class="uk-form-row">
+                            <label class="uk-text-small uk-text-bold">{ App.i18n.get('Title') }</label>
+                            <input class="uk-width-1-1" type="text" ref="assettitle" required>
+                        </div>
 
-                    <div class="uk-margin uk-panel uk-panel-box uk-panel-card uk-panel-space uk-text-center">
-                        <span class="uk-h1" if="{ asset && asset.mime.match(/^image\//) == null }"><i class="uk-icon-{ getIconCls(asset.path) }"></i></span>
-                        <cp-thumbnail src="{asset && ASSETS_URL+asset.path}" width="400" height="250" if="{ asset && asset.mime.match(/^image\//) }"></cp-thumbnail>
+                        <div class="uk-form-row">
+                            <label class="uk-text-small uk-text-bold">{ App.i18n.get('Description') }</label>
+                            <textarea class="uk-width-1-1" ref="assetdescription"></textarea>
+                        </div>
+
+                        <div class="uk-margin-large-top uk-text-center" if="{asset}">
+                            <span class="uk-h1" if="{asset.mime.match(/^image\//) == null }"><i class="uk-icon-{ getIconCls(asset.path) }"></i></span>
+                            <cp-thumbnail src="{ASSETS_URL+asset.path}" width="400" height="250" if="{asset.mime.match(/^image\//) }"></cp-thumbnail>
+                            <div class="uk-margin-top uk-text-truncate uk-text-small uk-text-muted">
+                                <a href="{ASSETS_URL+asset.path}" target="_blank">{ASSETS_URL+asset.path}</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="uk-width-1-3" if="{ asset }">
@@ -170,19 +179,33 @@
                     </div>
                     <div class="uk-margin">
                         <label class="uk-text-small uk-text-bold">{ App.i18n.get('Type') }</label>
-                        <div class="uk-margin-small-top uk-text-muted">{ asset.mime }</div>
+                        <div class="uk-margin-small-top uk-text-muted"><span class="uk-badge uk-badge-outline">{ asset.mime }</span></div>
+                    </div>
+                    <div class="uk-margin" if="{asset.colors && Array.isArray(asset.colors) && asset.colors.length}">
+                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Colors') }</label>
+                        <div class="uk-margin-small-top uk-text-muted">
+                            <span class="uk-icon-circle uk-text-large uk-margin-small-right" each="{color in asset.colors}" riot-style="color: #{color}"></span>
+                        </div>
                     </div>
                     <div class="uk-margin">
                         <label class="uk-text-small uk-text-bold">{ App.i18n.get('Size') }</label>
                         <div class="uk-margin-small-top uk-text-muted">{ App.Utils.formatSize(asset.size) }</div>
                     </div>
                     <div class="uk-margin">
-                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Created') }</label>
-                        <div class="uk-margin-small-top uk-text-muted">{ App.Utils.dateformat( new Date( 1000 * asset.modified )) }</div>
+                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Modified') }</label>
+                        <div class="uk-margin-small-top uk-text-primary"><span class="uk-badge uk-badge-outline">{ App.Utils.dateformat( new Date( 1000 * asset.modified )) }</span></div>
                     </div>
                     <div class="uk-margin">
-                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Url') }</label>
-                        <div class="uk-margin-small-top uk-text-truncate uk-text-muted"><a href="{ASSETS_URL+asset.path}" target="_blank">{ASSETS_URL+asset.path}</a></div>
+                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Tags') }</label>
+                        <div class="uk-margin-small-top">
+                            <field-tags bind="asset.tags"></field-tags>
+                        </div>
+                    </div>
+                    <div class="uk-margin" if="{ asset._by }">
+                        <label class="uk-text-small">{ App.i18n.get('Last update by') }</label>
+                        <div class="uk-margin-small-top">
+                            <cp-account account="{asset._by}"></cp-account>
+                        </div>
                     </div>
 
                 </div>
@@ -200,6 +223,8 @@
 
     <script>
 
+        this.mixin(RiotBindMixin);
+
         var $this = this, typefilters = {
             'image'    : /\.(jpg|jpeg|png|gif|svg)$/i,
             'video'    : /\.(mp4|mov|ogv|webv|wmv|flv|avi)$/i,
@@ -215,14 +240,14 @@
         this.assets   = [];
         this.selected = [];
 
+        this.modal    = opts.modal;
+
         // pagination
         this.count    = 0;
         this.page     = 1;
         this.limit    = opts.limit || 30;
 
         this.on('mount', function() {
-
-            this.modal = App.$(this.root).closest('.uk-modal').length ? UIkit.modal(App.$(this.root).closest('.uk-modal')):false;
 
             this.listAssets(1);
 
@@ -349,7 +374,7 @@
                     App.ui.notify("Asset removed", "success");
 
                     $this.assets.splice(idx, 1);
-
+                    $this.selected = [];
                     $this.update();
                 });
             });
@@ -395,7 +420,7 @@
 
             App.request('/assetsmanager/updateAsset', {asset:$this.asset}).then(function(asset) {
 
-                $this.asset = asset;
+                App.$.extend($this.asset, asset);
 
                 App.ui.notify("Asset updated", "success");
 
