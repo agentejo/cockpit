@@ -7,12 +7,27 @@ class RestApi extends \LimeExtra\Controller {
         $this->app->response->mime = 'json';
     }
 
-    public function get($collection=null) {
-
+    public function get($collection=null)
+    {
         if (!$collection) {
-            return $this->stop('{"error": "Missing collection name"}', 412);
-        }
+            $collections = $this->app->module('collections')->collections();
 
+            $entries = [];
+            foreach ($collections as $collection) {
+                $collectionEntries = $this->getEntriesFromCollection($collection['name']);
+                if ($collectionEntries['total'] > 0) {
+                    $entries[$collection['name']] = $collectionEntries;
+                }
+            }
+
+            return $entries;
+        } else {
+            return $this->getEntriesFromCollection($collection);
+        }
+    }
+
+    private function getEntriesFromCollection($collection)
+    {
         if (!$this->module('collections')->exists($collection)) {
             return $this->stop('{"error": "Collection not found"}', 412);
         }
@@ -68,8 +83,6 @@ class RestApi extends \LimeExtra\Controller {
             'entries'  => $entries,
             'total'    => (!$skip && !$limit) ? count($entries) : $this->module('collections')->count($collection['name'], $filter ? $filter : [])
         ];
-
-        return $entries;
     }
 
     public function save($collection=null) {
