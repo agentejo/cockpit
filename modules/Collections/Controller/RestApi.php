@@ -19,9 +19,9 @@ class RestApi extends \LimeExtra\Controller {
 
         $collection = $this->module('collections')->collection($collection);
         $user = $this->module('cockpit')->getUser();
-        
+
         if ($user) {
-            
+
             if (!$this->module('collections')->hasaccess($collection['name'], 'entries_view')) {
                 return $this->stop('{"error": "Unauthorized"}', 401);
             }
@@ -42,13 +42,13 @@ class RestApi extends \LimeExtra\Controller {
         if ($lang = $this->param('lang', false)) $fieldsFilter['lang'] = $lang;
         if ($ignoreDefaultFallback = $this->param('ignoreDefaultFallback', false)) $fieldsFilter['ignoreDefaultFallback'] = $ignoreDefaultFallback;
         if ($user) $fieldsFilter["user"] = $user;
-        
+
         if (count($fieldsFilter)) {
             $options['fieldsFilter'] = $fieldsFilter;
         }
-        
+
         if (isset($options["sort"])) {
-            
+
             foreach ($sort as $key => &$value) {
                 $options["sort"][$key]= intval($value);
             }
@@ -104,6 +104,35 @@ class RestApi extends \LimeExtra\Controller {
         $data = $this->module('collections')->save($collection, $data);
 
         return $data;
+    }
+
+    public function remove($collection=null) {
+
+        $user = $this->module('cockpit')->getUser();
+        $filter = $this->param('filter', null);
+
+        if (!$collection || !$filter) {
+            return false;
+        }
+
+        // handele single item cases
+        if (is_string($filter)) {
+            $filter = ['_id' => $filter];
+        } elseif (isset($filter['_id'])) {
+            $filter = ['_id' => $filter['_id']];
+        }
+
+        if (!$this->module('collections')->exists($collection)) {
+            return $this->stop('{"error": "Collection not found"}', 412);
+        }
+
+        if (!$this->module('collections')->hasaccess($collection, 'entries_delete')) {
+            return $this->stop('{"error": "Unauthorized"}', 401);
+        }
+
+        $this->module('collections')->remove($collection, $filter);
+
+        return ['success' => true];
     }
 
     public function createCollection() {
