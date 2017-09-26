@@ -22,7 +22,7 @@
                 </div>
             </div>
 
-            <span class="uk-badge uk-badge-danger">@lang('Share with caution')</span>
+            <span class="uk-badge uk-badge-danger uk-margin-small-top">@lang('Share with caution')</span>
 
             <h3 class="uk-margin-large-top">@lang('Custom keys')</h3>
 
@@ -57,12 +57,12 @@
                         <button class="uk-button uk-button-small uk-button-success uk-display-block uk-margin-small-top" onclick="{ addKey }" title="@lang('Add Key')" data-uk-tooltip="pos:'right'"><i class="uk-icon-plus"></i></button>
                     </div>
                 </div>
-            
+
             </div>
 
             <div class="uk-placeholder uk-text-center" show="{!keys.special.length}">
                 <p class="uk-text-large uk-text-muted">@lang('You have no custom keys')</p>
-                <button class="uk-button uk-button-success" onclick="{ addKey }"><i class="uk-icon-plus"></i> @lang('API Key')</button>
+                <button class="uk-button uk-button-link" onclick="{ addKey }"><i class="uk-icon-plus"></i> @lang('API Key')</button>
             </div>
 
             <div class="uk-margin">
@@ -70,9 +70,9 @@
             </div>
 
         </div>
-        
+
         <div class="uk-width-1-3">
-            <!-- TODo: Quick Docs --> 
+            <!-- TODo: Quick Docs -->
         </div>
     </div>
 
@@ -96,7 +96,7 @@
         });
 
         addKey(e) {
-            
+
             this.keys.special.splice(e.item ? e.item.idx+1 : 0, 0, {
                 token: App.Utils.generateToken(120),
                 rules: '*',
