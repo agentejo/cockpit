@@ -38,10 +38,11 @@ class Accounts extends \Cockpit\AuthController {
 
         unset($account["password"]);
 
+        $fields    = $this->app->retrieve('config/accounts/fields', null);
         $languages = $this->getLanguages();
         $groups    = $this->module('cockpit')->getGroups();
 
-        return $this->render('cockpit:views/accounts/account.php', compact('account', 'uid', 'languages', 'groups'));
+        return $this->render('cockpit:views/accounts/account.php', compact('account', 'uid', 'languages', 'groups', 'fields'));
     }
 
     public function create() {
