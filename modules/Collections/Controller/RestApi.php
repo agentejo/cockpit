@@ -32,6 +32,7 @@ class RestApi extends \LimeExtra\Controller {
         if ($filter   = $this->param('filter', null))   $options['filter'] = $filter;
         if ($limit    = $this->param('limit', null))    $options['limit'] = intval($limit);
         if ($sort     = $this->param('sort', null))     $options['sort'] = $sort;
+        if ($fields   = $this->param('fields', null))   $options['fields'] = $fields;
         if ($skip     = $this->param('skip', null))     $options['skip'] = intval($skip);
         if ($populate = $this->param('populate', null)) $options['populate'] = $populate;
 
@@ -108,11 +109,12 @@ class RestApi extends \LimeExtra\Controller {
 
     public function remove($collection=null) {
 
-        $user = $this->module('cockpit')->getUser();
+        $user   = $this->module('cockpit')->getUser();
         $filter = $this->param('filter', null);
+        $count  = $this->param('count', false);
 
         if (!$collection || !$filter) {
-            return false;
+            return $this->stop('{"error": "Please provide a collection name and filter"}', 417);
         }
 
         // handele single item cases
@@ -130,9 +132,13 @@ class RestApi extends \LimeExtra\Controller {
             return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
+        if ($count) {
+            $count = $this->module('collections')->count($collection, $filter);
+        }
+
         $this->module('collections')->remove($collection, $filter);
 
-        return ['success' => true];
+        return ['success' => true, 'count' => $count];
     }
 
     public function createCollection() {
