@@ -92,10 +92,9 @@ class DataCollection implements \Iterator {
      */
     public function filter($criteria) {
 
-        $criteria = create_function('$item', "return ({$criteria});");
-
-        return $this->setItems(array_values(array_filter($this->items, $criteria)));
-
+        return $this->setItems(array_values(array_filter($this->items, function($item) use($criteria) {
+            return ($criteria);
+        })));
     }
 
     /**
@@ -111,7 +110,7 @@ class DataCollection implements \Iterator {
         $getValue = function($page, $expr) use($cache) {
 
             if (!isset($cache[$expr])) {
-                $cache[$expr] = create_function('$item', "return ({$expr});");
+                $cache[$expr] = function($item) use($expr) { return ($expr); };
             }
 
             $value = $cache[$expr]($page);

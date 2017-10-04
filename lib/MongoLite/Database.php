@@ -98,7 +98,17 @@ class Database {
         }
 
         if (is_array($criteria)) {
-            $this->document_criterias[$id] = create_function('$document','return '.UtilArrayQuery::buildCondition($criteria).';');
+
+            $fn = null;
+
+            if (!function_exists('create_function')) {
+                eval('$fn = function($document) { return '.UtilArrayQuery::buildCondition($criteria).'; };');
+            } else {
+                $fn = create_function('$document','return '.UtilArrayQuery::buildCondition($criteria).';');
+            }
+
+            $this->document_criterias[$id] = $fn;
+
             return $id;
         }
 
