@@ -96,7 +96,7 @@ class Media extends \Cockpit\AuthController {
                     $uploaded[]  = $files['name'][$i];
                     $_uploaded[] = $targetpath.'/'.$clean;
                 } else {
-                    $failed[]    = $files['name'][$i];
+                    $failed[]    = ['file' => $files['name'][$i], 'error' => $files['error'][$i]];
                     $_failed[]   = $targetpath.'/'.$clean;
                 }
             }
@@ -252,6 +252,10 @@ class Media extends \Cockpit\AuthController {
             $this->app->stop();
         }
 
+        if (is_dir($file)) {
+            return $this->downloadfolder();
+        }
+
         $pathinfo = $path_parts = pathinfo($file);
 
         header("Pragma: public");
@@ -265,6 +269,37 @@ class Media extends \Cockpit\AuthController {
         readfile($file);
 
         $this->app->stop();
+    }
+
+    protected function downloadfolder() {
+
+        $path   = $this->param('path', false);
+        $folder = $this->root.'/'.trim($path, '/');
+
+        if (!$path && !file_exists($folder)) {
+            $this->app->stop();
+        }
+
+        $files   = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folder), \RecursiveIteratorIterator::LEAVES_ONLY);
+        $zipfile = $this->app->path('#tmp:').'/'.basename($folder).'_'.md5($folder).'.zip';
+        $zip     = new \ZipArchive();
+
+        $zip->open($zipfile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+
+        foreach ($files as $name => $file) {
+
+            if ($file->isDir()) continue;
+
+            $filePath = $file->getRealPath();
+            $relativePath = substr($filePath, strlen($folder) + 1);
+            $zip->addFile($filePath, $relativePath);
+        }
+
+        $zip->close();
+
+        header('Location: '.$this->app->pathToUrl($zipfile));
+
+        $this->app-stop();
     }
 
     protected function getfilelist() {
