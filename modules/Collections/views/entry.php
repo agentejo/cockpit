@@ -34,7 +34,7 @@
 
     <h3 class="uk-flex uk-flex-middle uk-text-bold">
         <img class="uk-margin-small-right" src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="25" alt="icon">
-        { entry._id ? 'Edit':'Add' } @lang('Entry')
+        @lang(entry._id ? 'Edit Entry':'Add Entry')
     </h3>
 
     <div class="uk-grid">
