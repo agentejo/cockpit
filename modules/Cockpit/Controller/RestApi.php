@@ -104,6 +104,11 @@ class RestApi extends \LimeExtra\Controller {
 
         $user = $this->module('cockpit')->getUser();
 
+        // Restrict to admin
+        if (!$this->module('cockpit')->isSuperAdmin()) {
+            return $this->stop(401);
+        }
+
         if ($user) {
             // Todo: user specific checks
         }
