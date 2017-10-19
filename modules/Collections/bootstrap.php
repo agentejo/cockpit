@@ -389,7 +389,8 @@ $this->module("collections")->extend([
         if (!is_array($items)) {
             return $items;
         }
-        return cockpit_populate_collection($items, -1, 0, $fieldsFilter);
+
+        return cockpit_populate_collection($items, $maxlevel, 0, $fieldsFilter);
     },
 
     '_filterFields' => function($items, $collection, $filter) {
@@ -415,13 +416,13 @@ $this->module("collections")->extend([
         ], $filter);
 
         extract($filter);
-        
+
         if (null === $cache) {
             $cache = [];
         }
 
         if (null === $languages) {
-                
+
             $languages = [];
 
             foreach($this->app->retrieve('config/languages', []) as $key => $val) {
@@ -456,14 +457,14 @@ $this->module("collections")->extend([
         }
 
         if ($user && count($cache[$collection['name']]['acl'])) {
-            
+
             $aclfields = $cache[$collection['name']]['acl'];
             $items     = array_map(function($entry) use($user, $aclfields, $languages) {
-                
+
                 foreach ($aclfields as $name => $acl) {
 
                     if (!( in_array($user['group'], $acl) || in_array($user['_id'], $acl) )) {
-                        
+
                         unset($entry[$name]);
 
                         if (count($languages)) {
@@ -487,15 +488,15 @@ $this->module("collections")->extend([
 
             $localfields = $cache[$collection['name']]['localize'];
             $items = array_map(function($entry) use($localfields, $lang, $languages, $ignoreDefaultFallback) {
-                
+
                 foreach ($localfields as $name => $local) {
 
                     foreach($languages as $l) {
-                        
+
                         if (isset($entry["{$name}_{$l}"])) {
 
                             if ($l == $lang) {
-                                
+
                                 $entry[$name] = $entry["{$name}_{$l}"];
 
                                 if (isset($entry["{$name}_{$l}_slug"])) {
@@ -530,18 +531,19 @@ function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $field
         return $items;
     }
 
-    if (is_numeric($maxlevel) && $maxlevel==$level) {
+    if (is_numeric($maxlevel) && $maxlevel > -1 && $level > ($maxlevel+1)) {
         return $items;
     }
 
     foreach ($items as $k => &$v) {
 
         if (is_array($items[$k])) {
-            $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ++$level, $fieldsFilter);
+            $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ($level + 1), $fieldsFilter);
         }
 
         if (isset($v['_id'], $v['link'])) {
             $items[$k] = cockpit('collections')->_resolveLinedkItem($v['link'], $v['_id'], $fieldsFilter);
+            $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ($level + 1), $fieldsFilter);
         }
     }
 
