@@ -151,6 +151,7 @@
                                                         <li class="uk-nav-header uk-text-truncate">{ folder.name }</li>
                                                         <li><a onclick="{ parent.download }">Download</a></li>
                                                         <li><a onclick="{ parent.rename }">Rename</a></li>
+                                                        <li class="uk-nav-divider"></li>
                                                         <li><a onclick="{ parent.remove }">Delete</a></li>
                                                     </ul>
                                                 </div>
@@ -453,7 +454,7 @@
 
                     this.selected.count = Object.keys(this.selected.paths).length;
 
-                    return;
+                    return App.$(this.root).trigger('selectionchange', [this.selected]);
                 }
 
                 if (!(e.metaKey || e.ctrlKey)) {
