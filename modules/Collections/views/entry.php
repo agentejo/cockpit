@@ -160,6 +160,19 @@
                 $this.entry[field.name] = field.options && field.options.default || null;
             }
 
+            if (field.localize && $this.languages.length) {
+
+                $this.languages.forEach(function(lang) {
+
+                    var key = field.name+'_'+lang.code;
+
+                    if ($this.entry[key] === undefined) {
+                        $this.entry[key] = field.options && field.options.default || null;
+                        $this.entry[key] = field.options && field.options['default_'+lang.code] || $this.entry[key];
+                    }
+                });
+            }
+
             if (field.type == 'password') {
                 $this.entry[field.name] = '';
             }
@@ -230,13 +243,13 @@
 
             var acl = this.fieldsidx[field] && this.fieldsidx[field].acl || [];
 
-            if (field == '_modified' || 
-                App.$data.user.group == 'admin' || 
+            if (field == '_modified' ||
+                App.$data.user.group == 'admin' ||
                 !acl ||
                 (Array.isArray(acl) && !acl.length) ||
                 acl.indexOf(App.$data.user.group) > -1 ||
                 acl.indexOf(App.$data.user._id) > -1
-            
+
             ) { return true; }
 
             return false;
