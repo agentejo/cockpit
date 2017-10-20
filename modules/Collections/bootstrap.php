@@ -543,7 +543,7 @@ function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $field
 
         if (isset($v['_id'], $v['link'])) {
             $items[$k] = cockpit('collections')->_resolveLinedkItem($v['link'], $v['_id'], $fieldsFilter);
-            $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ($level + 1), $fieldsFilter);
+            $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, $level, $fieldsFilter);
         }
     }
 
