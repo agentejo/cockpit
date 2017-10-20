@@ -181,7 +181,7 @@
 
         this.tabs      = [];
         this.tab       = 'general';
-        this.fields    = {{ json_encode($fields) }} || {};
+        this.fields    = {{ (isset($fields)) ? json_encode($fields) : "null" }} || {};
         this.meta      = {};
 
         Object.keys(this.fields || {}).forEach(function(key, group){
