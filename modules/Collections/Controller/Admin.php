@@ -172,12 +172,13 @@ class Admin extends \Cockpit\AuthController {
             return $this->helper('admin')->denyRequest();
         }
 
-        $entry['_by'] = $this->module('cockpit')->getUser('_id');
+        $entry['_mby'] = $this->module('cockpit')->getUser('_id');
 
         if (isset($entry['_id'])) {
             $_entry = $this->module('collections')->findOne($collection['name'], ['_id' => $entry['_id']]);
             $revision = !(json_encode($_entry) == json_encode($entry));
         } else {
+            $entry['_by'] = $this->module('cockpit')->getUser('_id');
             $revision = true;
         }
 
@@ -270,7 +271,7 @@ class Admin extends \Cockpit\AuthController {
 
         $revisions = $this->app->helper('revisions')->getList($id);
 
-        
+
         return $this->render('collections:views/revisions.php', compact('collection', 'entry', 'revisions'));
     }
 
