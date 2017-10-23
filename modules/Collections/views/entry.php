@@ -167,6 +167,11 @@
                     var key = field.name+'_'+lang.code;
 
                     if ($this.entry[key] === undefined) {
+
+                        if (field.options && field.options['default_'+lang.code] === null) {
+                            return;
+                        }
+                        
                         $this.entry[key] = field.options && field.options.default || null;
                         $this.entry[key] = field.options && field.options['default_'+lang.code] || $this.entry[key];
                     }
