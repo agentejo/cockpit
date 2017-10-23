@@ -33,6 +33,13 @@ First run `npm install` to install development dependencies
 1. Run `npm run build` - For one-time build of styles and components
 2. Run `npm run watch` - For continuous build every time styles or components change
 
+### Dockerized Development
+
+You need docker installed on your system: https://www.docker.com.
+
+1. Run `npm run docker-init` to build the initial image.
+2. Run `npm run docker` to start an Apache environment suited for Cockpit on port 8080 (this folder mapped to /var/www/html).
+
 
 ## Backers
 
