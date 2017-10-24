@@ -122,10 +122,10 @@
                     </div>
                 </div>
 
-                <div class="uk-margin" if="{entry._id && entry._by}">
+                <div class="uk-margin" if="{entry._id && entry._mby}">
                     <label class="uk-text-small">@lang('Last update by')</label>
                     <div class="uk-margin-small-top">
-                        <cp-account account="{entry._by}"></cp-account>
+                        <cp-account account="{entry._mby}"></cp-account>
                     </div>
                 </div>
 
@@ -171,7 +171,7 @@
                         if (field.options && field.options['default_'+lang.code] === null) {
                             return;
                         }
-                        
+
                         $this.entry[key] = field.options && field.options.default || null;
                         $this.entry[key] = field.options && field.options['default_'+lang.code] || $this.entry[key];
                     }
