@@ -18,12 +18,19 @@
         })
 
         this.on('update', function(){
-            
+
             if (this.account && this.account._id == opts.account) {
                 return;
             }
 
             Cockpit.account(opts.account).then(function(account) {
+
+                if (!account) {
+                    account = {
+                        _id: opts.account
+                    };
+                }
+
                 $this.account = account;
                 $this.update();
             });
