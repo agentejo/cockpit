@@ -120,6 +120,14 @@
 
         this.on('mount', function() {
 
+            if (window.CP_LAYOUT_COMPONENTS && App.Utils.isObject(window.CP_LAYOUT_COMPONENTS)) {
+                this.components = App.$.extend(true, this.components, window.CP_LAYOUT_COMPONENTS);
+            }
+
+            if (opts.components && App.Utils.isObject(opts.components)) {
+                this.components = App.$.extend(true, this.components, opts.components);
+            }
+
             App.$(this.refs.components).on('change.uk.sortable', function(e, sortable, el, mode) {
                 if ($this.refs.components === sortable.element[0]) {
 
@@ -296,14 +304,6 @@
                 ]
             }
         };
-
-        if (window.CP_LAYOUT_COMPONENTS && App.Utils.isObject(window.CP_LAYOUT_COMPONENTS)) {
-            this.components = App.$.extend(true, this.components, window.CP_LAYOUT_COMPONENTS);
-        }
-
-        if (opts.components && App.Utils.isObject(opts.components)) {
-            this.components = App.$.extend(true, this.components, opts.components);
-        }
 
         App.trigger('field.layout.components', {components:this.components});
 
