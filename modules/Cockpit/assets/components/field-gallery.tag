@@ -99,7 +99,7 @@
         };
 
         this.on('mount', function() {
-            
+
             this.meta = App.$.extend(this.meta, opts.meta || {});
 
             UIkit.sortable(this.refs.imagescontainer, {
@@ -181,7 +181,7 @@
 
                 $this.$setValue($this.images.concat(images));
 
-            }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
+            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
 
         }
 
@@ -197,10 +197,10 @@
 
                         if (asset.mime.match(/^image\//)) {
                             images.push({
-                                meta:{title:'', asset: asset._id}, 
+                                meta:{title:'', asset: asset._id},
                                 path: ASSETS_URL.replace(SITE_URL, '')+asset.path
                             });
-                        } 
+                        }
                     });
 
                     $this.$setValue($this.images.concat(images));

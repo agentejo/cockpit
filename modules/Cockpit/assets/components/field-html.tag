@@ -53,7 +53,7 @@
                             editor['replaceSelection']('<img src="'+SITE_URL+'/'+selected[0]+'">');
                         }
 
-                    }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
+                    }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
 
                 });
 
