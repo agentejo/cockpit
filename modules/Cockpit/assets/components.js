@@ -1805,7 +1805,7 @@ riot.tag2('field-gallery', '<div ref="panel"> <div ref="imagescontainer" class="
 
                 $this.$setValue($this.images.concat(images));
 
-            }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
+            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
 
         }.bind(this)
 
@@ -1889,7 +1889,7 @@ riot.tag2('field-html', '<textarea ref="input" class="uk-visibility-hidden"></te
                             editor['replaceSelection']('<img src="'+SITE_URL+'/'+selected[0]+'">');
                         }
 
-                    }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
+                    }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
 
                 });
 
@@ -1940,7 +1940,7 @@ riot.tag2('field-image', '<figure class="uk-display-block uk-panel uk-panel-box 
                 $this.$setValue($this.image);
                 $this.update();
 
-            }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
+            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
         }.bind(this)
 
         this.selectAsset = function() {
@@ -3018,7 +3018,7 @@ riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" 
 
                         App.media.select(function(selected) {
                             editor.insertContent('<img src="' + SITE_URL+'/'+selected + '" alt="">');
-                        }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
+                        }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
                     },
                     context: 'insert',
                     prependToContext: true
