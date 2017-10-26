@@ -1303,18 +1303,37 @@ riot.tag2('cp-search', '<div ref="autocomplete" class="uk-autocomplete uk-form u
 
 });
 
-riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" class="uk-icon-spinner uk-icon-spin uk-position-center"></i> <canvas ref="canvas" width="{opts.width || \'\'}" height="{opts.height || \'\'}"></canvas> </div>', '', '', function(opts) {
+riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" class="uk-icon-spinner uk-icon-spin uk-position-center"></i> <canvas ref="canvas" width="{opts.width || \'\'}" height="{opts.height || \'\'}" style="background-size:contain;background-position:50% 50%;background-repeat:no-repeat;visibility:hidden;"></canvas> </div>', '', '', function(opts) {
 
         var $this = this, src;
 
         this.on('mount', function() {
-            this.trigger('update');
+
+            if (!('IntersectionObserver' in window)) {
+                this.load();
+                return;
+            }
+
+            var observer = new IntersectionObserver(function(entries, observer) {
+
+                if (!entries[0].intersectionRatio) return;
+
+                if (opts.src || opts.riotSrc || opts['riot-src']) {
+                    $this.load();
+                    observer.unobserve($this.refs.canvas);
+                }
+
+            }, {
+                rootMargin: '50px 0px',
+                threshold: 0.01
+            });
+
+            observer.observe($this.refs.canvas);
         })
 
-        this.on('update', function(){
+        this.load = function() {
 
             var _src = opts.src || opts.riotSrc || opts['riot-src'];
-
             var mode = opts.mode || 'bestFit';
 
             if (!_src || src === _src) {
@@ -1322,30 +1341,29 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
             }
 
             $this.refs.spinner.classList.remove('uk-hidden');
-            $this.refs.canvas.getContext("2d").clearRect(0, 0, $this.refs.canvas.width, $this.refs.canvas.height);
 
             requestAnimationFrame(function() {
 
                 App.request('/cockpit/utils/thumb_url', {src:_src,w:opts.width,h:opts.height,m:mode}, 'text').then(function(url){
 
-                        if (_src.match(/\.svg$/i)) {
-                            url = _src;
-                        }
+                    if (_src.match(/\.svg$/i)) {
+                        url = _src;
+                    }
 
-                        src = _src;
+                    src = _src;
 
-                        requestAnimationFrame(function() {
-                            App.$($this.refs.canvas).css({
-                                background: '50% 50% url('+url+') no-repeat',
-                                backgroundSize: 'contain'
-                            });
-
-                            $this.refs.spinner.classList.add('uk-hidden');
+                    setTimeout(function() {
+                        App.$($this.refs.canvas).css({
+                            backgroundImage: 'url('+url+')',
+                            visibility: 'visible'
                         });
+
+                        $this.refs.spinner.classList.add('uk-hidden');
+                    }, 50);
 
                 }).catch(function(e){});
             });
-        });
+        };
 
 });
 
