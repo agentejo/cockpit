@@ -44,7 +44,7 @@ class Admin extends \Cockpit\AuthController {
 
         $view = 'forms:views/entries.php';
 
-        if ($override = $this->app->path('#config:forms/'.$form['name'].'views/entries.php')) {
+        if ($override = $this->app->path('#config:forms/'.$form['name'].'/views/entries.php')) {
             $view = $override;
         }
 
