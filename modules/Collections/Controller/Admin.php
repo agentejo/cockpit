@@ -101,7 +101,7 @@ class Admin extends \Cockpit\AuthController {
 
         $view = 'collections:views/entries.php';
 
-        if ($override = $this->app->path('#config:collections/'.$collection['name'].'views/entries.php')) {
+        if ($override = $this->app->path('#config:collections/'.$collection['name'].'/views/entries.php')) {
             $view = $override;
         }
 
