@@ -45,7 +45,15 @@ class Admin extends \Cockpit\AuthController {
             return $this->helper('admin')->denyRequest();
         }
 
-        $collection = [ 'name' => '', 'label' => '', 'color' => '', 'fields'=>[], 'acl' => new \ArrayObject, 'sortable' => false, 'in_menu' => false ];
+        $collection = [
+            'name' => '',
+            'label' => '',
+            'color' => '',
+            'fields'=>[],
+            'acl' => new \ArrayObject,
+            'sortable' => false,
+            'in_menu' => false
+        ];
 
         if ($name) {
 
@@ -75,7 +83,15 @@ class Admin extends \Cockpit\AuthController {
             if (!$superAdmin) $aclgroups[] = $group;
         }
 
-        return $this->render('collections:views/collection.php', compact('collection', 'templates', 'aclgroups'));
+        // rules
+        $rules = [
+            'create' => !$name ? "<?php\n\n" : $this->app->helper('fs')->read("#storage:collections/rules/{$name}.create.php"),
+            'read'   => !$name ? "<?php\n\n" : $this->app->helper('fs')->read("#storage:collections/rules/{$name}.read.php"),
+            'update' => !$name ? "<?php\n\n" : $this->app->helper('fs')->read("#storage:collections/rules/{$name}.update.php"),
+            'delete' => !$name ? "<?php\n\n" : $this->app->helper('fs')->read("#storage:collections/rules/{$name}.delete.php"),
+        ];
+
+        return $this->render('collections:views/collection.php', compact('collection', 'templates', 'aclgroups', 'rules'));
     }
 
     public function entries($collection) {

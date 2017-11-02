@@ -72,8 +72,9 @@
             <div class="uk-width-medium-3-4">
 
                 <ul class="uk-tab uk-margin-large-bottom">
-                    <li class="{ tab=='fields' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }">{ App.i18n.get('Fields') }</a></li>
-                    <li class="{ tab=='acl' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }">{ App.i18n.get('Access') }</a></li>
+                    <li class="{ tab=='fields' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="fields">{ App.i18n.get('Fields') }</a></li>
+                    <li class="{ tab=='acl' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="acl">{ App.i18n.get('Access') }</a></li>
+                    <li class="{ tab=='rules' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="rules">{ App.i18n.get('Rules') }</a></li>
                 </ul>
 
                 <div class="uk-form-row" show="{tab=='fields'}">
@@ -119,6 +120,42 @@
 
                 </div>
 
+                <div class="uk-form-row" show="{tab=='rules'}">
+
+                    <div class="uk-margin uk-panel-box uk-panel-card">
+                        <div class="uk-flex uk-flex-middle">
+                            <div class="uk-flex-item-1"><span class="uk-badge uk-badge-success uk-text-uppercase uk-margin-small-bottom" style="width:50px">Create</span></div>
+                            <div><field-boolean bind="collection.rules.create.enabled" label="@lang('Enabled')"></field-boolean></div>
+                        </div>
+                        <field-code bind="rules.create" syntax="php" if="{collection.rules.create.enabled}" height="350"></field-code>
+                    </div>
+
+                    <div class="uk-margin uk-panel-box uk-panel-card">
+                        <div class="uk-flex uk-flex-middle">
+                            <div class="uk-flex-item-1"><span class="uk-badge uk-text-uppercase uk-margin-small-bottom" style="width:50px">Read</span></div>
+                            <div><field-boolean bind="collection.rules.read.enabled" label="@lang('Enabled')"></field-boolean></div>
+                        </div>
+                        <field-code bind="rules.read" syntax="php" if="{collection.rules.read.enabled}" height="350"></field-code>
+                    </div>
+
+                    <div class="uk-margin uk-panel-box uk-panel-card">
+                        <div class="uk-flex uk-flex-middle">
+                            <div class="uk-flex-item-1"><span class="uk-badge uk-badge-warning uk-text-uppercase uk-margin-small-bottom" style="width:50px">Update</span></div>
+                            <div><field-boolean bind="collection.rules.update.enabled" label="@lang('Enabled')"></field-boolean></div>
+                        </div>
+                        <field-code bind="rules.update" syntax="php" if="{collection.rules.update.enabled}" height="350"></field-code>
+                    </div>
+
+                    <div class="uk-margin uk-panel-box uk-panel-card">
+                        <div class="uk-flex uk-flex-middle">
+                            <div class="uk-flex-item-1"><span class="uk-badge uk-badge-danger uk-text-uppercase uk-margin-small-bottom" style="width:50px">Delete</span></div>
+                            <div><field-boolean bind="collection.rules.delete.enabled" label="@lang('Enabled')"></field-boolean></div>
+                        </div>
+                        <field-code bind="rules.delete" syntax="php" if="{collection.rules.delete.enabled}" height="350"></field-code>
+                    </div>
+
+                </div>
+
                 <div class="uk-margin-large-top" show="{ collection.fields.length }">
 
                     <div class="uk-button-group uk-margin-right">
@@ -147,6 +184,15 @@
         this.collection = {{ json_encode($collection) }};
         this.templates  = {{ json_encode($templates) }};
         this.aclgroups  = {{ json_encode($aclgroups) }};
+
+        this.collection.rules = this.collection.rules || {
+            create: {},
+            read: {},
+            update: {},
+            'delete': {},
+        };
+
+        this.rules = {{ json_encode($rules) }};
 
         this.tab = 'fields';
 
@@ -179,8 +225,8 @@
             });
         });
 
-        toggleTab() {
-            this.tab = this.tab == 'fields' ? 'acl' : 'fields';
+        toggleTab(e) {
+            this.tab = e.target.getAttribute('data-tab');
         }
 
         selectIcon(e) {
@@ -193,7 +239,7 @@
 
             var collection = this.collection;
 
-            App.callmodule('collections:saveCollection', [this.collection.name, collection]).then(function(data) {
+            App.callmodule('collections:saveCollection', [this.collection.name, collection, this.rules]).then(function(data) {
 
                 if (data.result) {
 

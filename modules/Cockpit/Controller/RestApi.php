@@ -86,7 +86,7 @@ class RestApi extends \LimeExtra\Controller {
         }
 
         $data["_modified"] = time();
-        
+
         if (!isset($data['_id'])) {
             $data["_created"] = $data["_modified"];
         }
@@ -136,7 +136,7 @@ class RestApi extends \LimeExtra\Controller {
     }
 
     public function image() {
-        
+
         $options = [
             'src' => $this->param('src', false),
             'mode' => $this->param('m', 'thumbnail'),
@@ -150,10 +150,10 @@ class RestApi extends \LimeExtra\Controller {
         ];
 
         foreach([
-            'blur', 'brighten', 
-            'colorize', 'contrast', 
-            'darken', 'desaturate', 
-            'edge detect', 'emboss', 
+            'blur', 'brighten',
+            'colorize', 'contrast',
+            'darken', 'desaturate',
+            'edge detect', 'emboss',
             'flip', 'invert', 'opacity', 'pixelate', 'sepia', 'sharpen', 'sketch'
         ] as $f) {
             if ($this->param($f)) $options[$f] = $this->param($f);

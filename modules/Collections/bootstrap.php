@@ -69,10 +69,31 @@ $this->module("collections")->extend([
         return $collection;
     },
 
-    'saveCollection' => function($name, $data) {
+    'saveCollection' => function($name, $data, $rules = null) {
 
         if (!trim($name)) {
             return false;
+        }
+
+        if ($rules) {
+
+            foreach (['create', 'read', 'update', 'delete'] as $method) {
+
+                if (isset($rules[$method])) {
+
+                    $code = trim($rules[$method]);
+
+                    if ($code == '<?php') {
+                        $code .= "\n\n";
+                    }
+
+                    if (strpos($code, '<?php')!==0) {
+                        $code = "<?php\n\n{$code}";
+                    }
+
+                    $this->app->helper('fs')->write("#storage:collections/rules/{$name}.{$method}.php", $code);
+                }
+            }
         }
 
         return isset($data['_id']) ? $this->updateCollection($name, $data) : $this->createCollection($name, $data);
@@ -83,6 +104,12 @@ $this->module("collections")->extend([
         if ($collection = $this->collection($name)) {
 
             $this->app->helper("fs")->delete("#storage:collections/{$name}.collection.php");
+
+            // remove rules
+            foreach (['create', 'read', 'update', 'delete'] as $method) {
+                $this->app->helper("fs")->delete("#storage:collections/rules/{$name}.{$method}.php");
+            }
+
             $this->app->storage->dropCollection("collections/{$collection}");
 
             $this->app->trigger('collections.removecollection', [$name]);
@@ -168,6 +195,16 @@ $this->module("collections")->extend([
         $this->app->trigger('collections.find.before', [$name, &$options, false]);
         $this->app->trigger("collections.find.before.{$name}", [$name, &$options, false]);
 
+        // check rule
+        $context = new \stdClass();
+        $context->options = $options;
+
+        if (_check_collection_rule($_collection, 'read', $context) === false) {
+            return [];
+        } else {
+            $options = $context->options;
+        }
+
         $entries = (array)$this->app->storage->find("collections/{$collection}", $options);
 
         $fieldsFilter = [];
@@ -206,32 +243,22 @@ $this->module("collections")->extend([
 
         $name       = $collection;
         $collection = $_collection['_id'];
+        $options    = [
+            'filter'       => $criteria,
+            'fields'       => $projection,
+            'populate'     => $populate,
+            'fieldsFilter' => $fieldsFilter,
+            'limit'        => 1
+        ];
 
-        $this->app->trigger('collections.find.before', [$name, &$criteria, true]);
-        $this->app->trigger("collections.find.before.{$name}", [$name, &$criteria, true]);
+        $entries = $this->find($name, $options);
 
-        $entry = $this->app->storage->findOne("collections/{$collection}", $criteria, $projection);
-
-        if (count($fieldsFilter)) {
-           $entry = $this->_filterFields($entry, $_collection, $fieldsFilter);
-        }
-
-        if ($entry && $populate) {
-           $entry = $this->_populate([$entry], is_numeric($populate) ? intval($populate) : false, 0, $fieldsFilter);
-           $entry = $entry[0];
-        }
-
-        $this->app->trigger('collections.find.after', [$name, &$entry, true]);
-        $this->app->trigger("collections.find.after.{$name}", [$name, &$entry, true]);
-
-        return $entry;
+        return isset($entries[0]) ? $entries[0] : null;
     },
 
     'save' => function($collection, $data, $options = []) {
 
-        $options = array_merge([
-            'revision' => false
-        ], $options);
+        $options = array_merge(['revision' => false], $options);
 
         $_collection = $this->collection($collection);
 
@@ -319,6 +346,18 @@ $this->module("collections")->extend([
             $this->app->trigger('collections.save.before', [$name, &$entry, $isUpdate]);
             $this->app->trigger("collections.save.before.{$name}", [$name, &$entry, $isUpdate]);
 
+            // check rule
+            $context = new \stdClass();
+            $context->options = $options;
+            $context->entry = $entry;
+
+            if (_check_collection_rule($_collection, $isUpdate ? 'update' : 'create', $context) === false) {
+                continue;
+            } else {
+                $entry   = $context->entry;
+                $options = $context->options;
+            }
+
             $ret = $this->app->storage->save("collections/{$collection}", $entry);
 
             $this->app->trigger('collections.save.after', [$name, &$entry, $isUpdate]);
@@ -346,6 +385,16 @@ $this->module("collections")->extend([
         $this->app->trigger('collections.remove.before', [$name, &$criteria]);
         $this->app->trigger("collections.remove.before.{$name}", [$name, &$criteria]);
 
+        // check rule
+        $context = new \stdClass();
+        $context->options = ['filter' => $criteria];
+
+        if (_check_collection_rule($_collection, 'remove', $context) === false) {
+            return false;
+        } else {
+            $criteria = $context->options['filter'];
+        }
+
         $result = $this->app->storage->remove("collections/{$collection}", $criteria);
 
         $this->app->trigger('collections.remove.after', [$name, $result]);
@@ -361,6 +410,16 @@ $this->module("collections")->extend([
         if (!$_collection) return false;
 
         $collection = $_collection['_id'];
+
+        // check rule
+        $context = new \stdClass();
+        $context->options = ['filter' => $criteria];
+
+        if (_check_collection_rule($_collection, 'read', $context) === false) {
+            return 0;
+        } else {
+            $criteria = $context->options['filter'];
+        }
 
         return $this->app->storage->count("collections/{$collection}", $criteria);
     },
@@ -548,6 +607,30 @@ function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $field
     }
 
     return $items;
+}
+
+function _check_collection_rule($collection, $rule, $context = null) {
+
+    if (isset($collection['rules'][$rule]['enabled']) && $collection['rules'][$rule]['enabled']) {
+
+        $_rulefile = cockpit()->path("#storage:collections/rules/{$collection['name']}.{$rule}.php");
+
+        if ($_rulefile) {
+
+            if (!$context) {
+                $context = new \stdClass();
+            }
+
+            $context->user = cockpit()->module('cockpit')->getUser();
+            $ret = include($_rulefile);
+
+            if (!is_null($ret) && is_numeric($ret) && $ret >= 400) {
+                cockpit()->stop($ret);
+            }
+        }
+    }
+
+    return null;
 }
 
 // ACL
