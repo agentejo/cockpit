@@ -270,7 +270,7 @@ $this->module("collections")->extend([
         $return     = [];
         $modified   = time();
 
-        foreach($data as $entry) {
+        foreach($data as &$entry) {
 
             $isUpdate = isset($entry['_id']);
 

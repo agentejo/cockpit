@@ -18,7 +18,8 @@
             @endif
             <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' && field.name != '_created' && hasFieldAccess(field.name) }">
                 <a class="uk-link-muted" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
-                    <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }"></raw>
+                    <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }" if="{parent.entry[field.name] !== undefined}"></raw>
+                    <span class="uk-icon-eye-slash uk-text-muted" if="{parent.entry[field.name] === undefined}"></span>
                 </a>
             </td>
             <td><span class="uk-badge uk-badge-outline uk-text-primary">{  App.Utils.dateformat( new Date( 1000 * entry._modified )) }</span></td>
