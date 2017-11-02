@@ -58,7 +58,7 @@ class Filesystem extends \Lime\Helper {
 
         $args[0] = $this->app->path($args[0]);
 
-        return call_user_func_array('file_get_contents', $args);
+        return $args[0] ? call_user_func_array('file_get_contents', $args) : '';
     }
 
     /**
