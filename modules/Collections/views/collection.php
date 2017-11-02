@@ -73,8 +73,7 @@
 
                 <ul class="uk-tab uk-margin-large-bottom">
                     <li class="{ tab=='fields' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="fields">{ App.i18n.get('Fields') }</a></li>
-                    <li class="{ tab=='acl' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="acl">{ App.i18n.get('Access') }</a></li>
-                    <li class="{ tab=='rules' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="rules">{ App.i18n.get('Rules') }</a></li>
+                    <li class="{ tab=='auth' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="auth">{ App.i18n.get('Authorization') }</a></li>
                 </ul>
 
                 <div class="uk-form-row" show="{tab=='fields'}">
@@ -83,7 +82,9 @@
 
                 </div>
 
-                <div class="uk-form-row" show="{tab=='acl'}">
+                <div class="uk-form-row" show="{tab=='auth'}">
+
+                    <h4>@lang('Collection')</h4>
 
                     <div class="uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" if="{!aclgroups.length}">
                         <div class="uk-text-center uk-text-muted">
@@ -118,13 +119,11 @@
 
                     </div>
 
-                </div>
-
-                <div class="uk-form-row" show="{tab=='rules'}">
+                    <h4>@lang('Entries')</h4>
 
                     <div class="uk-margin uk-panel-box uk-panel-card">
                         <div class="uk-flex uk-flex-middle">
-                            <div class="uk-flex-item-1"><span class="uk-badge uk-badge-success uk-text-uppercase uk-margin-small-bottom" style="width:50px">Create</span></div>
+                            <div class="uk-flex-item-1"><span class="uk-badge uk-badge-success uk-text-uppercase uk-margin-small-bottom badge-rule">Create</span></div>
                             <div><field-boolean bind="collection.rules.create.enabled" label="@lang('Enabled')"></field-boolean></div>
                         </div>
                         <field-code bind="rules.create" syntax="php" if="{collection.rules.create.enabled}" height="350"></field-code>
@@ -132,7 +131,7 @@
 
                     <div class="uk-margin uk-panel-box uk-panel-card">
                         <div class="uk-flex uk-flex-middle">
-                            <div class="uk-flex-item-1"><span class="uk-badge uk-text-uppercase uk-margin-small-bottom" style="width:50px">Read</span></div>
+                            <div class="uk-flex-item-1"><span class="uk-badge uk-text-uppercase uk-margin-small-bottom badge-rule">Read</span></div>
                             <div><field-boolean bind="collection.rules.read.enabled" label="@lang('Enabled')"></field-boolean></div>
                         </div>
                         <field-code bind="rules.read" syntax="php" if="{collection.rules.read.enabled}" height="350"></field-code>
@@ -140,7 +139,7 @@
 
                     <div class="uk-margin uk-panel-box uk-panel-card">
                         <div class="uk-flex uk-flex-middle">
-                            <div class="uk-flex-item-1"><span class="uk-badge uk-badge-warning uk-text-uppercase uk-margin-small-bottom" style="width:50px">Update</span></div>
+                            <div class="uk-flex-item-1"><span class="uk-badge uk-badge-warning uk-text-uppercase uk-margin-small-bottom badge-rule">Update</span></div>
                             <div><field-boolean bind="collection.rules.update.enabled" label="@lang('Enabled')"></field-boolean></div>
                         </div>
                         <field-code bind="rules.update" syntax="php" if="{collection.rules.update.enabled}" height="350"></field-code>
@@ -148,7 +147,7 @@
 
                     <div class="uk-margin uk-panel-box uk-panel-card">
                         <div class="uk-flex uk-flex-middle">
-                            <div class="uk-flex-item-1"><span class="uk-badge uk-badge-danger uk-text-uppercase uk-margin-small-bottom" style="width:50px">Delete</span></div>
+                            <div class="uk-flex-item-1"><span class="uk-badge uk-badge-danger uk-text-uppercase uk-margin-small-bottom badge-rule">Delete</span></div>
                             <div><field-boolean bind="collection.rules.delete.enabled" label="@lang('Enabled')"></field-boolean></div>
                         </div>
                         <field-code bind="rules.delete" syntax="php" if="{collection.rules.delete.enabled}" height="350"></field-code>
@@ -174,6 +173,14 @@
         </div>
 
     </form>
+
+    <style>
+
+        .badge-rule {
+            width: 50px;
+        }
+
+    </style>
 
     <script type="view/script">
 
