@@ -36,7 +36,7 @@
             <div class="uk-margin-large">
                 <a class="uk-button uk-button-large uk-button-primary" href="@route("/collections/entry/{$collection['name']}/{$entry['_id']}")">@lang('Back to entry')</a>
             </div>
-        </div>  
+        </div>
     </div>
 
     <div class="uk-grid" if="{revisions.length}">
@@ -87,9 +87,9 @@
                         </div>
 
                         <div class="uk-panel uk-margin" each="{value,key in active.data}" if="{['_id','_modified','_created','_by'].indexOf(key) < 0 && (showOnlyChanged ? JSON.stringify(value) !== JSON.stringify(current[key]) : true)}">
-                            
+
                             <div class="uk-margin uk-panel uk-panel-box uk-panel-card">
-                                
+
                                 <div class="uk-margin uk-grid uk-flex-middle">
                                     <div class="uk-flex-item-1"><span class="uk-badge uk-badge-outline uk-badge-primary">{ key }</span></div>
                                     <div show="{JSON.stringify(value) !== JSON.stringify(current[key])}"><a onclick="{restoreValue}" title="@lang('Restore value')" data-uk-tooltip><i class="uk-icon-refresh"></i></a></div>
@@ -130,13 +130,15 @@
         this.revisions = {{ json_encode($revisions) }};
         this.current   = {{ json_encode($entry) }};
 
+        this.showOnlyChanged = true;
+
         selectRevision(e) {
 
             this.active = e.item.rev;
         }
 
         hasDiffs() {
-            
+
             if (!this.active) {
                 return;
             }
@@ -161,7 +163,7 @@
                 $this.update();
 
                 $this.save("Value restored");
-            });   
+            });
         }
 
         restoreActive() {
@@ -176,11 +178,11 @@
                 $this.update();
 
                 $this.save("Entry restored");
-            }); 
+            });
         }
 
         save(message) {
-            
+
             App.request('/collections/save_entry/'+this.collection.name, {entry:this.current}).then(function(entry) {
 
                 if (entry) {
