@@ -115,6 +115,20 @@ class Admin extends \Cockpit\AuthController {
             'description' => ''
         ], $collection);
 
+
+        $context = new \stdClass();
+        $context->options = ['filter'=>[]];
+
+        _check_collection_rule($collection, 'read', $context);
+
+        if (isset($context->options['fields'])) {
+            foreach ($collection['fields'] as &$field) {
+                if (isset($context->options['fields'][$field['name']]) && !$context->options['fields'][$field['name']]) {
+                    $field['lst'] = false;
+                }
+            }
+        }
+
         $view = 'collections:views/entries.php';
 
         if ($override = $this->app->path('#config:collections/'.$collection['name'].'/views/entries.php')) {
@@ -134,8 +148,9 @@ class Admin extends \Cockpit\AuthController {
             return $this->helper('admin')->denyRequest();
         }
 
-        $collection = $this->module('collections')->collection($collection);
-        $entry      = new \ArrayObject([]);
+        $collection    = $this->module('collections')->collection($collection);
+        $entry         = new \ArrayObject([]);
+        $excludeFields = [];
 
         if (!$collection) {
             return false;
@@ -148,12 +163,25 @@ class Admin extends \Cockpit\AuthController {
             'description' => ''
         ], $collection);
 
+        $context = new \stdClass();
+        $context->options = ['filter'=>[]];
+
         if ($id) {
 
             $entry = $this->module('collections')->findOne($collection['name'], ['_id' => $id]);
 
             if (!$entry) {
                 return false;
+            }
+
+            $context->entry = $entry;
+        }
+
+        _check_collection_rule($collection, 'read', $context);
+
+        if (isset($context->options['fields'])) {
+            foreach ($context->options['fields'] as $field => $include) {
+                if(!$include) $excludeFields[] = $field;
             }
         }
 
@@ -163,7 +191,7 @@ class Admin extends \Cockpit\AuthController {
             $view = $override;
         }
 
-        return $this->render($view, compact('collection', 'entry'));
+        return $this->render($view, compact('collection', 'entry', 'excludeFields'));
     }
 
     public function save_entry($collection) {

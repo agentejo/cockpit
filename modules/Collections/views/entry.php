@@ -144,6 +144,7 @@
         this.collection   = {{ json_encode($collection) }};
         this.fields       = this.collection.fields;
         this.fieldsidx    = {};
+        this.excludeFields = {{ json_encode($excludeFields) }};
 
         this.entry        = {{ json_encode($entry) }};
 
@@ -152,7 +153,7 @@
         this.group        = 'main';
 
         // fill with default values
-        this.fields.forEach(function(field){
+        this.fields.forEach(function(field) {
 
             $this.fieldsidx[field.name] = field;
 
@@ -248,14 +249,19 @@
 
             var acl = this.fieldsidx[field] && this.fieldsidx[field].acl || [];
 
+            if (this.excludeFields.indexOf(field) > -1) {
+                return false;
+            }
+
             if (field == '_modified' ||
                 App.$data.user.group == 'admin' ||
                 !acl ||
                 (Array.isArray(acl) && !acl.length) ||
                 acl.indexOf(App.$data.user.group) > -1 ||
                 acl.indexOf(App.$data.user._id) > -1
-
-            ) { return true; }
+            ) {
+                return true;
+            }
 
             return false;
         }
