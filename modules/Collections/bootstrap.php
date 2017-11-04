@@ -347,11 +347,12 @@ $this->module("collections")->extend([
             $this->app->trigger("collections.save.before.{$name}", [$name, &$entry, $isUpdate]);
 
             // check rule
-            $context = new \stdClass();
-            $context->options = $options;
-            $context->entry = $entry;
+            $context = _check_collection_rule($_collection, 'read', [
+                'options' => $options,
+                'entry'   => $entry
+            ]);
 
-            if (_check_collection_rule($_collection, $isUpdate ? 'update' : 'create', $context) === false) {
+            if ($context === false) {
                 continue;
             } else {
                 $entry   = $context->entry;
@@ -386,10 +387,9 @@ $this->module("collections")->extend([
         $this->app->trigger("collections.remove.before.{$name}", [$name, &$criteria]);
 
         // check rule
-        $context = new \stdClass();
-        $context->options = ['filter' => $criteria];
+        $context = _check_collection_rule($_collection, 'remove', ['options' => ['filter' => $criteria]]);
 
-        if (_check_collection_rule($_collection, 'remove', $context) === false) {
+        if ($context === false) {
             return false;
         } else {
             $criteria = $context->options['filter'];
@@ -412,10 +412,9 @@ $this->module("collections")->extend([
         $collection = $_collection['_id'];
 
         // check rule
-        $context = new \stdClass();
-        $context->options = ['filter' => $criteria];
+        $context = _check_collection_rule($_collection, 'read', ['options' => ['filter' => $criteria]]);
 
-        if (_check_collection_rule($_collection, 'read', $context) === false) {
+        if ($context === false) {
             return 0;
         } else {
             $criteria = $context->options['filter'];
@@ -609,7 +608,9 @@ function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $field
     return $items;
 }
 
-function _check_collection_rule($collection, $rule, $context = null) {
+function _check_collection_rule($collection, $rule, $_context = null) {
+
+    $context = (object) $_context;
 
     if (isset($collection['rules'][$rule]['enabled']) && $collection['rules'][$rule]['enabled']) {
 
@@ -617,20 +618,18 @@ function _check_collection_rule($collection, $rule, $context = null) {
 
         if ($_rulefile) {
 
-            if (!$context) {
-                $context = new \stdClass();
-            }
-
             $context->user = cockpit()->module('cockpit')->getUser();
             $ret = include($_rulefile);
 
             if (!is_null($ret) && is_numeric($ret) && $ret >= 400) {
                 cockpit()->stop($ret);
             }
+
+            return $ret === false ? false : $context;
         }
     }
 
-    return null;
+    return $context;
 }
 
 // ACL

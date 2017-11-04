@@ -115,13 +115,9 @@ class Admin extends \Cockpit\AuthController {
             'description' => ''
         ], $collection);
 
+        $context = _check_collection_rule($collection, 'read', ['options' => ['filter'=>[]]]);
 
-        $context = new \stdClass();
-        $context->options = ['filter'=>[]];
-
-        _check_collection_rule($collection, 'read', $context);
-
-        if (isset($context->options['fields'])) {
+        if ($context && isset($context->options['fields'])) {
             foreach ($collection['fields'] as &$field) {
                 if (isset($context->options['fields'][$field['name']]) && !$context->options['fields'][$field['name']]) {
                     $field['lst'] = false;
@@ -163,23 +159,19 @@ class Admin extends \Cockpit\AuthController {
             'description' => ''
         ], $collection);
 
-        $context = new \stdClass();
-        $context->options = ['filter'=>[]];
-
         if ($id) {
 
-            $entry = $this->module('collections')->findOne($collection['name'], ['_id' => $id]);
+            //$entry = $this->module('collections')->findOne($collection['name'], ['_id' => $id]);
+            $entry = $this->app->storage->findOne("collections/{$collection['_id']}", ['_id' => $id]);
 
             if (!$entry) {
                 return false;
             }
-
-            $context->entry = $entry;
         }
 
-        _check_collection_rule($collection, 'read', $context);
+        $context = _check_collection_rule($collection, 'read', ['options' => ['filter'=>[]]]);
 
-        if (isset($context->options['fields'])) {
+        if ($context && isset($context->options['fields'])) {
             foreach ($context->options['fields'] as $field => $include) {
                 if(!$include) $excludeFields[] = $field;
             }
