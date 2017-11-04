@@ -183,6 +183,10 @@
                 $this.entry[field.name] = '';
             }
 
+            if ($this.excludeFields.indexOf(field.name) > -1) {
+                return;
+            }
+
             if (field.group && !$this.groups[field.group]) {
                 $this.groups[field.group] = [];
             } else if (!field.group) {
