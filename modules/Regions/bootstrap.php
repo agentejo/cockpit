@@ -235,6 +235,22 @@ if (COCKPIT_API_REQUEST) {
     $app->on('cockpit.rest.init', function($routes) {
         $routes['regions'] = 'Regions\\Controller\\RestApi';
     });
+
+    // allow access to public collections
+    $app->on('cockpit.api.authenticate', function($data) {
+
+        if ($data['user'] || $data['resource'] != 'regions') return;
+
+        if (isset($data['query']['params'][1])) {
+
+            $region = $this->module('regions')->region($data['query']['params'][1]);
+
+            if ($region && isset($region['acl']['public'])) {
+                $data['authenticated'] = true;
+                $data['user'] = ['_id' => null, 'group' => 'public'];
+            }
+        }
+    });
 }
 
 // ADMIN
