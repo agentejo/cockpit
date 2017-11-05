@@ -83,7 +83,7 @@
                         <field-code bind="region.template" syntax="php" height="400"></field-code>
                     </div>
 
-                    <div class="uk-margin-large-top" show="{ view==='acl' }">
+                    <div class="uk-margin-top" show="{ view==='acl' }">
 
                         <div class="uk-panel-space">
 
