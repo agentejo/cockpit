@@ -691,6 +691,22 @@ if (COCKPIT_API_REQUEST) {
     $app->on('cockpit.rest.init', function($routes) {
         $routes['collections'] = 'Collections\\Controller\\RestApi';
     });
+
+    // allow access to public collections
+    $app->on('cockpit.api.authenticate', function($data) {
+
+        if ($data['user'] || $data['resource'] != 'collections') return;
+
+        if (isset($data['query']['params'][1])) {
+
+            $collection = $this->module('collections')->collection($data['query']['params'][1]);
+
+            if ($collection && isset($collection['acl']['public'])) {
+                $data['authenticated'] = true;
+                $data['user'] = ['_id' => null, 'group' => 'public'];
+            }
+        }
+    });
 }
 
 

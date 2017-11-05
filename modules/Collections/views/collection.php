@@ -86,6 +86,26 @@
 
                     <h4>@lang('Collection')</h4>
 
+                    <div class="uk-grid uk-margin-large-bottom">
+                        <div class="uk-width-1-3 uk-flex uk-flex-middle uk-flex-center">
+                            <div class="uk-text-center">
+                                <p class="uk-text-uppercase uk-text-small">@lang('Public')</p>
+                                <img class="uk-text-muted uk-svg-adjust" src="@url('assets:app/media/icons/globe.svg')" alt="icon" width="80" data-uk-svg>
+                            </div>
+                        </div>
+                        <div class="uk-flex-item-1">
+                            <div class="uk-margin uk-text-small">
+                                <strong class="uk-text-uppercase">@lang('Collection')</strong>
+                                <div class="uk-margin-top"><field-boolean bind="collection.acl.{group}.collection_edit" label="@lang('Edit Collection')"></field-boolean></div>
+                                <strong class="uk-text-uppercase uk-display-block uk-margin-top">@lang('Entries')</strong>
+                                <div class="uk-margin-top"><field-boolean bind="collection.acl.public.entries_view" label="@lang('View Entries')"></field-boolean></div>
+                                <div class="uk-margin-top"><field-boolean bind="collection.acl.public.entries_edit" label="@lang('Edit Entries')"></field-boolean></div>
+                                <div class="uk-margin-top"><field-boolean bind="collection.acl.public.entries_create" label="@lang('Create Entries')"></field-boolean></div>
+                                <div class="uk-margin-top"><field-boolean bind="collection.acl.public.entries_delete" label="@lang('Delete Entries')"></field-boolean></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" if="{!aclgroups.length}">
                         <div class="uk-text-center uk-text-muted">
                             <img class="uk-svg-adjust" src="@url('assets:app/media/icons/accounts.svg')" alt="icon" data-uk-svg>

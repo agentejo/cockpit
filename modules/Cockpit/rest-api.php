@@ -71,16 +71,22 @@ $this->on("before", function() {
 
         }
 
+        $parts      = explode('/', $path, 2);
+        $resource   = $parts[0];
+        $params     = isset($parts[1]) ? explode('/', $parts[1]) : [];
+
         // trigger authenticate event
         if (!$allowed) {
 
             $data = new ArrayObject([
                 'token' => $token,
                 'authenticated' => false,
-                'user'=>null
+                'resource' => $resource,
+                'query' => ['path' => $path, 'parts' => $parts, 'params' => $params],
+                'user'=>null,
             ]);
 
-            $this->trigger('cockpit.api.authenticate', [&$allowed]);
+            $this->trigger('cockpit.api.authenticate', [$data]);
 
             $allowed = $data['authenticated'];
 
@@ -89,11 +95,8 @@ $this->on("before", function() {
             }
         }
 
-        $parts      = explode('/', $path, 2);
-        $resource   = $parts[0];
-        $params     = isset($parts[1]) ? explode('/', $parts[1]) : [];
-        $output     = false;
-        $user       = $this->module('cockpit')->getUser();
+        $output = false;
+        $user   = $this->module('cockpit')->getUser();
 
         if ($resource == 'public' && $resourcefile = $this->path("#config:api/{$path}.php")) {
             $output = include($resourcefile);
