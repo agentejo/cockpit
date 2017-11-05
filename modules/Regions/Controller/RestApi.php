@@ -10,8 +10,9 @@ class RestApi extends \LimeExtra\Controller {
         }
 
         if ($this->module('cockpit')->getUser()) {
-            if (!$this->module('regions')->hasaccess($name, 'form')) {
-                return $this->stop(401);
+
+            if (!$this->module('regions')->hasaccess($name, 'render')) {
+                return $this->stop('{"error": "Unauthorized"}', 401);
             }
         }
 
@@ -27,13 +28,14 @@ class RestApi extends \LimeExtra\Controller {
             return false;
         }
 
-        $region = $this->module('regions')->region($name);
-
         if ($this->module('cockpit')->getUser()) {
-            if (!$this->module('regions')->hasaccess($name, 'form')) {
-                return $this->stop(401);
+
+            if (!$this->module('regions')->hasaccess($name, 'data')) {
+                return $this->stop('{"error": "Unauthorized"}', 401);
             }
         }
+
+        $region = $this->module('regions')->region($name);
 
         if (!$region) {
             return false;
