@@ -107,15 +107,6 @@
 
                         </div>
 
-                        <div class="uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" if="{!aclgroups.length}">
-                            <div class="uk-text-center uk-text-muted">
-                                <img class="uk-svg-adjust" src="@url('assets:app/media/icons/accounts.svg')" alt="icon" data-uk-svg>
-                                <p class="uk-text-large">
-                                    @lang('No groups')
-                                </p>
-                            </div>
-                        </div>
-
                         <div class="uk-panel uk-panel-box uk-panel-space uk-panel-card uk-margin" each="{group in aclgroups}">
 
                             <div class="uk-grid">

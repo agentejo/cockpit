@@ -75,7 +75,7 @@
 
         </div>
 
-        <div class="uk-clearfix uk-margin-top" if="{ entries.length || filter }">
+        <div class="uk-clearfix uk-margin-top" if="{ !loading && (entries.length || filter) }">
 
             @if(!$collection['sortable'])
             <div class="uk-float-left uk-width-1-2">
