@@ -51,7 +51,7 @@
             <div class="uk-animation-fade uk-text-center">
 
                 <p class="uk-text-xlarge">
-                    <i class="uk-icon-spin uk-icon-spinner"></i>
+                    <i class="uk-text-primary uk-icon-spin uk-icon-spinner"></i>
                 </p>
 
             </div>
@@ -75,7 +75,7 @@
 
         </div>
 
-        <div class="uk-clearfix uk-margin-top" if="{ !loading && (entries.length || filter) }">
+        <div class="uk-clearfix uk-margin-top" show="{ !loading && (entries.length || filter) }">
 
             @if(!$collection['sortable'])
             <div class="uk-float-left uk-width-1-2">

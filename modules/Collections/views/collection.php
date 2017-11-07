@@ -108,7 +108,6 @@
 
                     </div>
 
-
                     <div class="uk-panel uk-panel-box uk-panel-space uk-panel-card uk-margin" each="{group in aclgroups}">
 
                         <div class="uk-grid">
