@@ -26,7 +26,11 @@
         },
 
         boolean: function(value) {
-            this.resolve(value == '1' || !!value);
+
+            if (value == 'true' || value == '1') value = true;
+            if (value == 'false' || value == '0') value = false;
+
+            this.resolve(!!value);
         },
 
         date: function(value) {

@@ -619,7 +619,16 @@ function _check_collection_rule($collection, $rule, $_context = null) {
         if ($_rulefile) {
 
             $context->user = cockpit()->module('cockpit')->getUser();
-            $ret = include($_rulefile);
+            $ret = null;
+
+            try {
+                $ret = include($_rulefile);
+            } catch(\Throwable $e) {
+
+                if (cockpit()->retrieve('config/debug')) {
+                    echo $e;
+                }
+            }
 
             if (!is_null($ret) && is_numeric($ret) && $ret >= 400) {
                 cockpit()->stop($ret);
