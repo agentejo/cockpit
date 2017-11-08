@@ -191,6 +191,7 @@
         this.on('mount', function() {
 
             App.$(this.refs.components).on('change.uk.sortable', function(e, sortable, el, mode) {
+
                 if ($this.refs.components === sortable.element[0]) {
 
                     var items = [];
