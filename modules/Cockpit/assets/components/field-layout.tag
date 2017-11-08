@@ -26,11 +26,11 @@
             </div>
 
             <div class="uk-margin" if="{parent.components[item.component].children}">
-                <field-layout bind="items[{idx}].children" child="true"></field-layout>
+                <field-layout bind="items[{idx}].children" child="true" components="{ parent.components }"></field-layout>
             </div>
 
             <div class="uk-margin" if="{item.component == 'grid'}">
-                <field-layout-grid bind="items[{idx}].columns"></field-layout-grid>
+                <field-layout-grid bind="items[{idx}].columns" components="{ parent.components }"></field-layout-grid>
             </div>
 
         </div>
@@ -118,15 +118,77 @@
             {name: "style", type: "code", group: "General", options: {syntax: "css", height: "100px"}}
         ];
 
+        this.components = {
+            "section": {
+                "children":true
+            },
+
+            "grid": {
+
+            },
+
+            "text": {
+                "icon": App.base('/assets/app/media/icons/text.svg'),
+                "dialog": "large",
+                "fields": [
+                    {"name": "text", "type": "wysiwyg"}
+                ]
+            },
+
+            "html": {
+                "icon": App.base('/assets/app/media/icons/code.svg'),
+                "dialog": "large",
+                "fields": [
+                    {"name": "html", "type": "html"}
+                ]
+            },
+
+            "heading": {
+                "icon": App.base('/assets/app/media/icons/heading.svg'),
+                "fields": [
+                    {"name": "text", "type": "text"},
+                    {"name": "tag", "type": "select", "options":{"options":['h1','h2','h3','h4','h5','h6']}}
+                ]
+            },
+
+            "image": {
+                "icon": App.base('/assets/app/media/icons/photo.svg'),
+                "fields": [
+                    {"name": "image", "type": "image"}
+                ]
+            },
+
+            "gallery": {
+                "icon": App.base('/assets/app/media/icons/gallery.svg'),
+                "fields": [
+                    {"name": "gallery", "type": "gallery"}
+                ]
+            },
+
+            "divider": {
+                "icon": App.base('/assets/app/media/icons/divider.svg'),
+            },
+
+            "button": {
+                "icon": App.base('/assets/app/media/icons/button.svg'),
+                "fields": [
+                    {"name": "text", "type": "text"},
+                    {"name": "url", "type": "text"}
+                ]
+            }
+        };
+
+        if (window.CP_LAYOUT_COMPONENTS && App.Utils.isObject(window.CP_LAYOUT_COMPONENTS)) {
+            this.components = App.$.extend(true, this.components, window.CP_LAYOUT_COMPONENTS);
+        }
+
+        if (opts.components && App.Utils.isObject(opts.components)) {
+            this.components = App.$.extend(true, this.components, opts.components);
+        }
+
+        App.trigger('field.layout.components', {components:this.components});
+
         this.on('mount', function() {
-
-            if (window.CP_LAYOUT_COMPONENTS && App.Utils.isObject(window.CP_LAYOUT_COMPONENTS)) {
-                this.components = App.$.extend(true, this.components, window.CP_LAYOUT_COMPONENTS);
-            }
-
-            if (opts.components && App.Utils.isObject(opts.components)) {
-                this.components = App.$.extend(true, this.components, opts.components);
-            }
 
             App.$(this.refs.components).on('change.uk.sortable', function(e, sortable, el, mode) {
                 if ($this.refs.components === sortable.element[0]) {
@@ -245,67 +307,7 @@
             this.settingsGroup = e.item && e.item.group || false;
         }
 
-        this.components = {
-            "section": {
-                "children":true
-            },
 
-            "grid": {
-
-            },
-
-            "text": {
-                "icon": App.base('/assets/app/media/icons/text.svg'),
-                "dialog": "large",
-                "fields": [
-                    {"name": "text", "type": "wysiwyg"}
-                ]
-            },
-
-            "html": {
-                "icon": App.base('/assets/app/media/icons/code.svg'),
-                "dialog": "large",
-                "fields": [
-                    {"name": "html", "type": "html"}
-                ]
-            },
-
-            "heading": {
-                "icon": App.base('/assets/app/media/icons/heading.svg'),
-                "fields": [
-                    {"name": "text", "type": "text"},
-                    {"name": "tag", "type": "select", "options":{"options":['h1','h2','h3','h4','h5','h6']}}
-                ]
-            },
-
-            "image": {
-                "icon": App.base('/assets/app/media/icons/photo.svg'),
-                "fields": [
-                    {"name": "image", "type": "image"}
-                ]
-            },
-
-            "gallery": {
-                "icon": App.base('/assets/app/media/icons/gallery.svg'),
-                "fields": [
-                    {"name": "gallery", "type": "gallery"}
-                ]
-            },
-
-            "divider": {
-                "icon": App.base('/assets/app/media/icons/divider.svg'),
-            },
-
-            "button": {
-                "icon": App.base('/assets/app/media/icons/button.svg'),
-                "fields": [
-                    {"name": "text", "type": "text"},
-                    {"name": "url", "type": "text"}
-                ]
-            }
-        };
-
-        App.trigger('field.layout.components', {components:this.components});
 
     </script>
 
@@ -327,7 +329,7 @@
                     <a class="uk-invisible" onclick="{ parent.remove }"><i class="uk-text-danger uk-icon-trash-o"></i></a>
                 </div>
                 <div class="uk-margin">
-                    <field-layout bind="columns[{idx}].children" child="true"></field-layout>
+                    <field-layout bind="columns[{idx}].children" child="true" components="{ opts.components }"></field-layout>
                 </div>
             </div>
         </div>
