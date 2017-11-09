@@ -50,7 +50,7 @@
                     <li class="{ group==parent.group && 'uk-active'}" each="{items,group in groups}" show="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
                 </ul>
 
-                <div class="uk-grid uk-grid-match uk-grid-gutter">
+                <div class="uk-grid uk-grid-match uk-grid-gutter" if="{ !preview }">
 
                     <div class="uk-width-medium-{field.width}" each="{field,idx in fields}" show="{!group || (group == field.group) }" if="{ hasFieldAccess(field.name) }" no-reorder>
 

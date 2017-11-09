@@ -9,7 +9,6 @@
             left:0;
             width: 100%;
             background: #fafafa;
-            animation-duration: 200ms;
             z-index: 1010;
         }
 
@@ -101,7 +100,7 @@
 
     </style>
 
-    <div class="collection-entrypreview uk-animation-fade">
+    <div class="collection-entrypreview">
         <div class="iframe-container uk-flex uk-flex-center uk-flex-middle"><iframe riot-src="{ url }" mode="{ mode }" ref="iframe"></iframe></div>
         <div class="preview-panel uk-animation-slide-left">
 
