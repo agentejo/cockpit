@@ -211,7 +211,7 @@
                 $this.update();
             });
 
-            this.trigger('update');
+            this.update();
         });
 
         this.$initBind = function() {
@@ -400,7 +400,7 @@
             });
 
 
-            this.trigger('update');
+            this.update();
         });
 
         addColumn() {

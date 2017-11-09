@@ -9,6 +9,8 @@
 
         var $this = this, src;
 
+        this.inView = false;
+
         this.on('mount', function() {
 
             if (!('IntersectionObserver' in window)) {
@@ -21,6 +23,7 @@
                 if (!entries[0].intersectionRatio) return;
 
                 if (opts.src || opts.riotSrc || opts['riot-src']) {
+                    $this.inView = true;
                     $this.load();
                     observer.unobserve($this.refs.canvas);
                 }
@@ -31,6 +34,12 @@
             });
 
             observer.observe($this.refs.canvas);
+        });
+
+        this.on('update', function() {
+            if (this.inView) {
+                this.load();
+            }
         })
 
         this.load = function() {

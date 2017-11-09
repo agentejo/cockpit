@@ -116,8 +116,7 @@
 
                     <div class="uk-margin-small-top uk-flex uk-flex-middle">
 
-
-                        <div class="uk-form-select" show="{ App.Utils.count(groups) > 1 }">
+                        <div class="uk-form-select uk-margin-right" show="{ App.Utils.count(groups) > 1 }">
                             <span class="uk-text-bold uk-text-uppercase {group && 'uk-text-primary'} ">{ group || App.i18n.get('All') }</span>
                             <select onchange="{toggleGroup}" ref="selectGroup">
                                 <option class="uk-text-capitalize" value="">{ App.i18n.get('All') }</option>
@@ -125,7 +124,7 @@
                             </select>
                         </div>
 
-                        <div class="uk-form-select uk-margin-left" if="{ languages.length }">
+                        <div class="uk-form-select" if="{ languages.length }">
 
                             <span class="{lang ? 'uk-text-primary':'uk-text-muted'}">
                                 <i class="uk-icon-globe uk-margin-small-right"></i>{ lang ? _.find(languages,{code:lang}).label:'Default' }

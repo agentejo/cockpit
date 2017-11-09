@@ -5,7 +5,7 @@
     <script>
 
         this.on('mount', function() {
-            this.trigger('update');
+            this.parent.update();
         });
 
         this.on('update', function() {

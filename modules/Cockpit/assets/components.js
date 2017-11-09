@@ -229,7 +229,7 @@ riot.tag2('cp-account', '<span class="uk-icon-spinner uk-icon-spin" show="{!acco
         this.account = null;
 
         this.on('mount', function() {
-            this.trigger('update');
+            this.update();
         })
 
         this.on('update', function(){
@@ -517,7 +517,7 @@ riot.tag2('cp-assets', '<div class="uk-form" ref="list" show="{mode==\'list\'}">
 riot.tag2('cp-field', '<div ref="field" data-is="{\'field-\'+opts.type}" bind="{opts.bind}" cls="{opts.cls}"></div>', '', '', function(opts) {
 
         this.on('mount', function() {
-            this.trigger('update');
+            this.parent.update();
         });
 
         this.on('update', function() {
@@ -1191,7 +1191,7 @@ riot.tag2('cp-gravatar', '<canvas ref="image" class="uk-responsive-width uk-bord
         this.size  = opts.size || 100;
 
         this.on('mount', function(){
-            this.trigger('update');
+            this.update();
         });
 
         this.on('update', function() {
@@ -1307,6 +1307,8 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
 
         var $this = this, src;
 
+        this.inView = false;
+
         this.on('mount', function() {
 
             if (!('IntersectionObserver' in window)) {
@@ -1319,6 +1321,7 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
                 if (!entries[0].intersectionRatio) return;
 
                 if (opts.src || opts.riotSrc || opts['riot-src']) {
+                    $this.inView = true;
                     $this.load();
                     observer.unobserve($this.refs.canvas);
                 }
@@ -1329,6 +1332,12 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
             });
 
             observer.observe($this.refs.canvas);
+        });
+
+        this.on('update', function() {
+            if (this.inView) {
+                this.load();
+            }
         })
 
         this.load = function() {
@@ -1456,7 +1465,7 @@ riot.tag2('field-access-list', '<div class="uk-clearfix {!_entries.length && \'u
 
 });
 
-riot.tag2('field-asset', '<div class="uk-placeholder uk-text-center uk-text-muted" if="{!asset}"> <img class="uk-svg-adjust" riot-src="{App.base(\'/assets/app/media/icons/assets.svg\')}" width="100" data-uk-svg> <p>{App.i18n.get(\'No asset selected\')}. <a onclick="{selectAsset}">{App.i18n.get(\'Select one\')}</a></p> </div> <div class="uk-panel uk-panel-box uk-panel-card uk-display-inline-block" if="{asset}"> <div class="uk-overlay uk-display-block uk-position-relative"> <canvas class="uk-responsive-width" width="200" height="150"></canvas> <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle"> <div class="uk-width-1-1 uk-text-center"> <span if="{asset.mime.match(/^image\\//) == null}"><i class="uk-h1 uk-text-muted uk-icon-{getIconCls(asset.path)}"></i></span> <a href="{ASSETS_URL+asset.path}" if="{asset.mime.match(/^image\\//)}" data-uk-lightbox="type:\'image\'" title="{asset.width && [asset.width, asset.height].join(\'x\')}"> <cp-thumbnail riot-src="{asset && ASSETS_URL+asset.path}" width="100" height="75"></cp-thumbnail> </a> </div> </div> </div> <div class="uk-margin-small-top uk-text-truncate"><a href="{ASSETS_URL+asset.path}" target="_blank">{asset.title}</a></div> <div class="uk-text-small uk-text-muted"> <strong>{asset.mime}</strong> {App.Utils.formatSize(asset.size)} </div> <hr> <div class="uk-text-small"> <a class="uk-margin-small-right" onclick="{selectAsset}">{App.i18n.get(\'Replace\')}</a> <a onclick="{reset}"><i class="uk-icon-trash-o"></i></a> </div> </div>', '', '', function(opts) {
+riot.tag2('field-asset', '<div class="uk-placeholder uk-text-center uk-text-muted" if="{!asset}"> <img class="uk-svg-adjust" riot-src="{App.base(\'/assets/app/media/icons/assets.svg\')}" width="100" data-uk-svg> <p>{App.i18n.get(\'No asset selected\')}. <a onclick="{selectAsset}">{App.i18n.get(\'Select one\')}</a></p> </div> <div class="uk-panel uk-panel-box uk-panel-card uk-display-inline-block" if="{asset}"> <div class="uk-overlay uk-display-block uk-position-relative"> <canvas class="uk-responsive-width" width="200" height="150"></canvas> <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle"> <div class="uk-width-1-1 uk-text-center"> <span if="{asset.mime.match(/^image\\//) == null}"><i class="uk-h1 uk-text-muted uk-icon-{getIconCls(asset.path)}"></i></span> <a riot-href="{ASSETS_URL+asset.path}" if="{asset.mime.match(/^image\\//)}" data-uk-lightbox="type:\'image\'" title="{asset.width && [asset.width, asset.height].join(\'x\')}"> <cp-thumbnail riot-src="{asset && ASSETS_URL+asset.path}" width="100" height="75"></cp-thumbnail> </a> </div> </div> </div> <div class="uk-margin-small-top uk-text-truncate"><a href="{ASSETS_URL+asset.path}" target="_blank">{asset.title}</a></div> <div class="uk-text-small uk-text-muted"> <strong>{asset.mime}</strong> {App.Utils.formatSize(asset.size)} </div> <hr> <div class="uk-text-small"> <a class="uk-margin-small-right" onclick="{selectAsset}">{App.i18n.get(\'Replace\')}</a> <a onclick="{reset}"><i class="uk-icon-trash-o"></i></a> </div> </div>', '', '', function(opts) {
 
         var $this = this, typefilters = {
             'image'    : /\.(jpg|jpeg|png|gif|svg)$/i,
@@ -1609,7 +1618,7 @@ riot.tag2('field-code', '<codemirror ref="codemirror" syntax="{opts.syntax || \'
 
 riot.tag2('field-color', '<input ref="input" class="uk-width-1-1" type="text">', '', '', function(opts) {
 
-        this.on('mount', function() { this.trigger('update'); });
+        this.on('mount', function() { this.update(); });
         this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         var $this = this;
@@ -1920,7 +1929,7 @@ riot.tag2('field-html', '<textarea ref="input" class="uk-visibility-hidden"></te
 
 riot.tag2('field-image', '<figure class="uk-display-block uk-panel uk-panel-box uk-panel-card uk-overlay uk-overlay-hover"> <div class="uk-flex uk-flex-middle uk-flex-center uk-text-muted"> <div class="uk-width-1-1" show="{image.path}" riot-style="min-height:160px;background-size:contain;background-repeat:no-repeat;background-position:50% 50%;{image.path ? \'background-image: url(\'+(image.path.match(/^(http\\:|https\\:|\\/\\/)/) ? image.path:encodeURI(SITE_URL+\'/\'+image.path))+\')\':\'\'}"></div> <div class="uk-text-center uk-margin-top uk-margin-bottom" show="{!image.path}"> <img class="uk-svg-adjust uk-text-muted" riot-src="{App.base(\'/assets/app/media/icons/photo.svg\')}" width="60" data-uk-svg> <div class="uk-margin-top"> <a class="uk-button uk-button-link" onclick="{selectImage}">{App.i18n.get(\'Select Image\')}</a> <a class="uk-button uk-button-link" onclick="{selectAsset}">{App.i18n.get(\'Select Asset\')}</a> <a class="uk-button uk-button-link" onclick="{editUrl}">{App.i18n.get(\'Enter Image Url\')}</a> </div> </div> </div> <figcaption class="uk-overlay-panel uk-overlay-background" show="{image.path}"> <ul class="uk-subnav"> <li><a onclick="{selectImage}" title="{App.i18n.get(\'Select image\')}" data-uk-tooltip><i class="uk-icon-image"></i></a></li> <li><a onclick="{editUrl}" title="{App.i18n.get(\'Edit Image Url\')}" data-uk-tooltip><i class="uk-icon-link"></i></a></li> <li><a onclick="{showMeta}" title="{App.i18n.get(\'Edit meta data\')}" data-uk-tooltip><i class="uk-icon-cog"></i></a></li> <li><a onclick="{remove}" title="{App.i18n.get(\'Reset\')}" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li> </ul> <p class="uk-text-small uk-text-truncate">{image.title}</p> </figcaption> </figure> <div class="uk-modal uk-sortable-nodrag" ref="modalmeta"> <div class="uk-modal-dialog"> <div class="uk-modal-header"><h3>{App.i18n.get(\'Image Meta\')}</h3></div> <div class="uk-grid uk-grid-match uk-grid-gutter" if="{_meta}"> <div class="uk-grid-margin uk-width-medium-{field.width}" each="{field, name in meta}" no-reorder> <div class="uk-panel"> <label class="uk-text-bold"> {field.label || name} </label> <div class="uk-margin uk-text-small uk-text-muted"> {field.info || \' \'} </div> <div class="uk-margin"> <cp-field type="{field.type || \'text\'}" bind="image.meta[\'{name}\']" opts="{field.options || {}}"></cp-field> </div> </div> </div> </div> <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{App.i18n.get(\'Close\')}</button></div> </div> </div>', '', '', function(opts) {
 
-        this.on('mount', function() { this.trigger('update'); });
+        this.on('mount', function() { this.update(); });
         this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         riot.util.bind(this);
@@ -2107,7 +2116,7 @@ riot.tag2('field-layout', '<div class="uk-text-center uk-text-muted {opts.child 
                 $this.update();
             });
 
-            this.trigger('update');
+            this.update();
         });
 
         this.$initBind = function() {
@@ -2253,7 +2262,7 @@ riot.tag2('field-layout-grid', '<div class="uk-text-center uk-placeholder" if="{
                 }
             });
 
-            this.trigger('update');
+            this.update();
         });
 
         this.addColumn = function() {
@@ -2370,7 +2379,7 @@ riot.tag2('field-multipleselect', '<div class="{options.length > 10 ? \'uk-scrol
         this.options  = [];
 
         this.on('mount', function() {
-            this.trigger('update');
+            this.update();
         });
 
         this.on('update', function() {
@@ -2593,7 +2602,7 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
                 animation: false
             });
 
-            this.trigger('update');
+            this.update();
         });
 
         this.on('update', function() {
@@ -2688,7 +2697,9 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
 
 riot.tag2('field-select', '<select ref="input" class="uk-width-1-1 {opts.cls}" bind="{opts.bind}"> <option value=""></option> <option each="{option,idx in options}" riot-value="{option}">{option}</option> </select>', '', '', function(opts) {
 
-        this.on('mount', function() { this.trigger('update'); });
+        this.on('mount', function() {
+            this.update();
+        });
 
         this.on('update', function() {
 
@@ -2727,7 +2738,7 @@ riot.tag2('field-set', '<div> <div class="uk-alert" if="{fields && !fields.lengt
 
         this.on('mount', function() {
             this.fields = opts.fields || [];
-            this.trigger('update');
+            this.update();
             this.update();
         });
 
@@ -2879,7 +2890,7 @@ riot.tag2('field-textarea', '<textarea ref="input" class="uk-width-1-1 {opts.cls
                 this.refs.input.setAttribute('required', 'required');
             }
 
-            this.trigger('update');
+            this.update();
         });
 
 });
@@ -3171,7 +3182,7 @@ riot.tag2('raw', '<span></span>', '', '', function(opts) {
         var cache = null;
 
         this.on('mount', function() {
-            this.trigger('update');
+            this.update();
         });
 
         this.on('update', function(){
