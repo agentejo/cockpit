@@ -35,6 +35,8 @@
     <h3 class="uk-flex uk-flex-middle uk-text-bold">
         <img class="uk-margin-small-right" src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="25" alt="icon">
         { App.i18n.get(entry._id ? 'Edit Entry':'Add Entry') }
+
+        <a class="uk-text-large uk-margin-small-left" onclick="{showPreview}" if="{ collection.contentpreview && collection.contentpreview.enabled }" title="@lang('Preview')"><i class="uk-icon-eye"></i></a>
     </h3>
 
     <div class="uk-grid">
@@ -135,6 +137,8 @@
 
     </div>
 
+    <collection-entrypreview entry="{entry}" groups="{ groups }" fields="{ fields }" fieldsidx="{ fieldsidx }" excludeFields="{ excludeFields }" languages="{ languages }" url="{ collection.contentpreview.url }" if="{ preview }"></collection-entrypreview>
+
     <script type="view/script">
 
         var $this = this;
@@ -149,8 +153,8 @@
         this.entry        = {{ json_encode($entry) }};
 
         this.languages    = App.$data.languages;
-        this.groups       = {main:[]};
-        this.group        = 'main';
+        this.groups       = {Main:[]};
+        this.group        = 'Main';
 
         // fill with default values
         this.fields.forEach(function(field) {
@@ -190,10 +194,10 @@
             if (field.group && !$this.groups[field.group]) {
                 $this.groups[field.group] = [];
             } else if (!field.group) {
-                field.group = 'main';
+                field.group = 'Main';
             }
 
-            $this.groups[field.group || 'main'].push(field);
+            $this.groups[field.group || 'Main'].push(field);
         });
 
         if (!this.groups[this.group].length) {
@@ -247,6 +251,10 @@
             });
 
             return false;
+        }
+
+        showPreview() {
+            this.preview = true;
         }
 
         hasFieldAccess(field) {

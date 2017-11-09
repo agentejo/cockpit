@@ -9,7 +9,7 @@
                 <div class="uk-grid uk-grid-small">
 
                     <div class="uk-flex-item-1 uk-flex">
-                        <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" fields-bind="fields[{idx}].name" placeholder="name" required>
+                        <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="fields[{idx}].name" placeholder="name" required>
                     </div>
 
                     <div class="uk-width-1-4">
@@ -18,7 +18,7 @@
                                 <i class="uk-icon-arrows-h"></i>
                                 <input class="uk-width-1-1 uk-form-small uk-form-blank" value="{ field.width }">
                             </div>
-                            <select fields-bind="fields[{idx}].width">
+                            <select bind="fields[{idx}].width">
                                 <option value="1-1">1-1</option>
                                 <option value="1-2">1-2</option>
                                 <option value="1-3">1-3</option>
@@ -80,7 +80,7 @@
                         <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Type') }:</label>
                         <div class="uk-form-select uk-width-1-1 uk-margin-small-top">
                             <a class="uk-text-capitalize">{ field.type }</a>
-                            <select class="uk-width-1-1 uk-text-capitalize" fields-bind="field.type">
+                            <select class="uk-width-1-1 uk-text-capitalize" bind="field.type">
                                 <option each="{type,typeidx in fieldtypes}" value="{type.value}">{type.name}</option>
                             </select>
                         </div>
@@ -88,35 +88,35 @@
 
                     <div class="uk-form-row">
                         <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Label') }:</label>
-                        <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="field.label" placeholder="{ App.i18n.get('Label') }">
+                        <input class="uk-width-1-1 uk-margin-small-top" type="text" bind="field.label" placeholder="{ App.i18n.get('Label') }">
                     </div>
 
                     <div class="uk-form-row">
                         <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Info') }:</label>
-                        <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="field.info" placeholder="{ App.i18n.get('Info') }">
+                        <input class="uk-width-1-1 uk-margin-small-top" type="text" bind="field.info" placeholder="{ App.i18n.get('Info') }">
                     </div>
 
                     <div class="uk-form-row">
                         <label class="uk-text-muted uk-text-small">{ App.i18n.get('Field Group') }:</label>
-                        <input class="uk-width-1-1 uk-margin-small-top" type="text" fields-bind="field.group" placeholder="{ App.i18n.get('Group name') }">
+                        <input class="uk-width-1-1 uk-margin-small-top" type="text" bind="field.group" placeholder="{ App.i18n.get('Group name') }">
                     </div>
 
                     <div class="uk-form-row">
                         <label class="uk-text-small uk-text-bold uk-margin-small-bottom">{ App.i18n.get('Options') } <span class="uk-text-muted">JSON</span></label>
-                        <field-object cls="uk-width-1-1" fields-bind="field.options" rows="6" allowtabs="2"></field-object>
+                        <field-object cls="uk-width-1-1" bind="field.options" rows="6" allowtabs="2"></field-object>
                     </div>
 
                     <div class="uk-form-row">
-                        <field-boolean fields-bind="field.required" label="{ App.i18n.get('Required') }"></field-boolean>
+                        <field-boolean bind="field.required" label="{ App.i18n.get('Required') }"></field-boolean>
                     </div>
 
                     <div class="uk-form-row">
-                        <field-boolean fields-bind="field.localize" label="{ App.i18n.get('Localize') }"></field-boolean>
+                        <field-boolean bind="field.localize" label="{ App.i18n.get('Localize') }"></field-boolean>
                     </div>
 
                 </div>
                 <div class="uk-hidden">
-                    <field-access-list class="uk-margin-large uk-margin-large-top uk-display-block" fields-bind="field.acl"></field-access-list>
+                    <field-access-list class="uk-margin-large uk-margin-large-top uk-display-block" bind="field.acl"></field-access-list>
                 </div>
             </div>
 
@@ -159,7 +159,7 @@
 
     <script>
 
-        riot.util.bind(this, 'fields');
+        riot.util.bind(this);
 
         var $this = this;
 
@@ -173,7 +173,7 @@
 
         for (var tag in riot.tags) {
 
-            if(tag.indexOf('field-')==0) {
+            if (tag.indexOf('field-')==0) {
 
                 f = tag.replace('field-', '');
 
