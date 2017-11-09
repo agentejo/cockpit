@@ -74,6 +74,7 @@
                 <ul class="uk-tab uk-margin-large-bottom">
                     <li class="{ tab=='fields' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="fields">{ App.i18n.get('Fields') }</a></li>
                     <li class="{ tab=='auth' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="auth">{ App.i18n.get('Permissions') }</a></li>
+                    <li class="{ tab=='other' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="other">{ App.i18n.get('Other') }</a></li>
                 </ul>
 
                 <div class="uk-form-row" show="{tab=='fields'}">
@@ -165,6 +166,21 @@
                     </div>
 
                 </div>
+
+
+                <div class="uk-form-row" show="{tab=='other'}">
+
+                    <div class="uk-form-row">
+                        <strong class="uk-text-small uk-text-uppercase">@lang('Content Preview')</strong>
+                        <div class="uk-margin-top"><field-boolean bind="collection.contentpreview.enabled" label="@lang('Enabled')"></field-boolean></div>
+                        <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted uk-margin-top" show="{collection.contentpreview && collection.contentpreview.enabled}">
+                            <i class="uk-icon-globe"></i>
+                            <input class="uk-width-1-1 uk-form-large uk-text-primary" type="url" placeholder="@lang('http://...')"  bind="collection.contentpreview.url">
+                        </div>
+                    </div>
+
+                </div>
+
 
                 <div class="uk-margin-large-top" show="{ collection.fields.length }">
 
