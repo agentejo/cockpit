@@ -26,7 +26,7 @@
 
         this.on('mount', function() {
             this.fields = opts.fields || [];
-            this.trigger('update');
+            this.update();
             this.update();
         });
 
