@@ -17,7 +17,7 @@
             top: 0;
             bottom: 0;
             left: 0;
-            width: 500px;
+            width: 600px;
             box-shadow: 0 0 50px rgba(0,0,0,.4);
             border-right: 1px rgba(0, 0, 0, 0.03) solid;
             background: #fafafa;
@@ -32,6 +32,7 @@
             bottom: 0;
             left: 0;
             right: 0;
+            animation-duration: 200ms;
         }
 
         .preview-panel-header,
@@ -53,8 +54,8 @@
         .iframe-container {
             position: absolute;
             top: 0;
-            left: 500px;
-            width: calc(100% - 500px);
+            left: 600px;
+            width: calc(100% - 600px);
             height: 100%;
             overflow: scroll;
             z-index: 0;

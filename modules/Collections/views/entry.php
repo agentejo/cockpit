@@ -1,4 +1,6 @@
 
+<script type="riot/tag" src="@base('collections:assets/collection-entrypreview.tag')"></script>
+
 @if(isset($collection['color']) && $collection['color'])
 <style>
     .app-header { border-top: 8px {{ $collection['color'] }} solid; }
