@@ -10,21 +10,25 @@
 
         <div class="uk-panel uk-panel-box uk-panel-card">
 
-            <div class="uk-panel-teaser uk-position-relative">
+            <div class="uk-position-relative">
                 <canvas width="400" height="250"></canvas>
                 <div class="uk-position-cover uk-flex uk-flex-center uk-flex-middle">
-                    <div class="uk-svg-adjust uk-text-primary" style="color:{{ @$collection['color'] }} !important;">
+
+                    <cp-thumbnail src="{ parent.isImageField(entry) }" width="400" height="250" if="{ parent.isImageField(entry) }"></cp-thumbnail>
+
+                    <div class="uk-svg-adjust uk-text-primary" style="color:{{ @$collection['color'] }} !important;" if="{ !parent.isImageField(entry) }">
                         <img src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="80" alt="icon" data-uk-svg>
                     </div>
                 </div>
                 <a class="uk-position-cover" href="@route('/collections/entry/'.$collection['name'])/{ entry._id }"></a>
             </div>
-            <div class="uk-flex uk-flex-middle uk-margin-small-top">
+            <div class="uk-flex uk-flex-middle uk-margin-top">
 
-                <div class="uk-flex-item-1 uk-margin-small-right">
-                    <span class="uk-badge uk-badge-outline uk-text-muted uk-margin-small-right">{ App.Utils.dateformat( new Date( 1000 * entry._created )) }</span>
-                    <span class="uk-badge uk-badge-outline uk-text-primary">{ App.Utils.dateformat( new Date( 1000 * entry._modified )) }</span>
+                <div class="uk-flex-item-1 uk-margin-small-right uk-text-small">
+                    <span class="uk-text-success uk-margin-small-right">{ App.Utils.dateformat( new Date( 1000 * entry._created )) }</span>
+                    <span class="uk-text-primary">{ App.Utils.dateformat( new Date( 1000 * entry._modified )) }</span>
                 </div>
+
                 <span data-uk-dropdown="mode:'click', pos:'bottom-right'">
 
                     <a class="uk-icon-bars"></a>
@@ -46,6 +50,7 @@
                     </div>
                 </span>
             </div>
+
             <div class="uk-margin-top uk-scrollable-box">
                 <div class="uk-margin-small-bottom" each="{field,idy in parent.fields}" if="{ field.name != '_modified' && field.name != '_created' && hasFieldAccess(field.name) }">
                     <span class="uk-text-small uk-text-uppercase uk-text-muted">{ field.label || field.name }</span>
