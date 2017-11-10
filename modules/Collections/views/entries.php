@@ -161,9 +161,14 @@
         this.page       = 1;
         this.entries    = [];
         this.fieldsidx  = {};
+        this.imageField = null;
         this.fields     = this.collection.fields.filter(function(field){
 
             $this.fieldsidx[field.name] = field;
+
+            if (!$this.imageField && (field.type=='image' || field.type=='asset')) {
+                $this.imageField = field;
+            }
 
             return field.lst;
         });
@@ -424,6 +429,33 @@
         toggleListMode() {
             this.listmode = this.listmode=='list' ? 'grid':'list';
             App.session.set('collections.entries.listmode', this.listmode);
+        }
+
+        isImageField(entry) {
+
+            if (!this.imageField) {
+                return false;
+            }
+
+            var data = entry[this.imageField.name];
+
+            if (!data) {
+                return false;
+            }
+
+            switch(this.imageField.type) {
+                case 'asset':
+                    if (data.mime.match(/^image\//)) {
+                        return ASSETS_URL+data.path;
+                    }
+                    break;
+                case 'image':
+                    return data.path.match(/^(http\:|https\:|\/\/)/) ? data.path : SITE_URL+'/'+data.path;
+                    break;
+            }
+
+            return false;
+
         }
 
         hasFieldAccess(field) {

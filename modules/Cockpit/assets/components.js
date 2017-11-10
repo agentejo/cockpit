@@ -1348,6 +1348,21 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
 
             requestAnimationFrame(function() {
 
+                if (_src.match(/^(http\:|https\:|\/\/)/)) {
+
+                    setTimeout(function() {
+                        App.$($this.refs.canvas).css({
+                            backgroundImage: 'url('+url+')',
+                            backgroundSize: 'contain',
+                            visibility: 'visible'
+                        });
+
+                        $this.refs.spinner.classList.add('uk-hidden');
+                    }, 50);
+
+                    return;
+                }
+
                 App.request('/cockpit/utils/thumb_url', {src:_src,w:opts.width,h:opts.height,m:mode}, 'text').then(function(url){
 
                     if (_src.match(/\.svg$/i)) {
