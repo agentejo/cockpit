@@ -1393,8 +1393,8 @@ riot.tag2('field-access-list', '<div class="uk-clearfix {!_entries.length && \'u
 
                 if (value && value.length > 2) {
 
-                    App.request('/accounts/find', {filter: value}).then(function(response) {
-                        $this._users = Array.isArray(response) ? response : [];
+                    App.request('/accounts/find', {options: {filter: value}}).then(function(response) {
+                        $this._users = response && Array.isArray(response.accounts) ? response.accounts : [];
                         $this.update();
                     });
                 }
@@ -1427,6 +1427,7 @@ riot.tag2('field-access-list', '<div class="uk-clearfix {!_entries.length && \'u
         this.add = function(e) {
             this._entries.push(e.item.group || e.item.user._id);
             this.$setValue(_.uniq(this._entries));
+            this.refs.txtfilter.value = '';
         }.bind(this)
 
         this.remove = function(e) {
@@ -1443,10 +1444,10 @@ riot.tag2('field-access-list', '<div class="uk-clearfix {!_entries.length && \'u
             if (!cache[entry]) {
 
                 cache[entry] = new Promise(function(resolve, reject){
-                    App.request('/accounts/find', {filter: {_id:entry}}).then(function(response) {
+                    App.request('/accounts/find', {options: {filter: {_id:entry}}}).then(function(response) {
 
-                        if (Array.isArray(response) && response[0]) {
-                            resolve(response[0].name);
+                        if (response && Array.isArray(response.accounts) && response.accounts[0]) {
+                            resolve(response.accounts[0].name);
                         } else {
                             reject(entry);
                         }

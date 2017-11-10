@@ -11,16 +11,8 @@ class Accounts extends \Cockpit\AuthController {
         }
 
         $current  = $this->user["_id"];
-        $accounts = $this->storage->find("cockpit/accounts", [
-            "filter" => $this->user["group"]=="admin" ? null:["_id"=>$current],
-            "sort"   => ["user" => 1]
-        ])->toArray();
 
-        foreach ($accounts as &$account) {
-            $account["md5email"] = md5(@$account["email"]);
-        }
-
-        return $this->render('cockpit:views/accounts/index.php', compact('accounts', 'current'));
+        return $this->render('cockpit:views/accounts/index.php', compact('current'));
     }
 
 
@@ -110,33 +102,38 @@ class Accounts extends \Cockpit\AuthController {
 
     public function find() {
 
-        $options = [
-            "sort"   => ["user" => 1]
-        ];
+        $options = array_merge([
+            'sort'   => ['user' => 1]
+        ], $this->param('options', []));
 
-        if ($filter = $this->param('filter')) {
+        if (isset($options['filter'])) {
 
-            $options['filter'] = $filter;
-
-            if (is_string($filter)) {
+            if (is_string($options['filter'])) {
 
                 $options['filter'] = [
                     '$or' => [
-                        ['name' => ['$regex' => $filter]],
-                        ['user' => ['$regex' => $filter]],
-                        ['email' => ['$regex' => $filter]],
+                        ['name' => ['$regex' => $options['filter']]],
+                        ['user' => ['$regex' => $options['filter']]],
+                        ['email' => ['$regex' => $options['filter']]],
                     ]
                 ];
             }
         }
 
         $accounts = $this->storage->find("cockpit/accounts", $options)->toArray();
+        $count    = (!isset($options['skip']) && !isset($options['limit'])) ? count($accounts) : $this->storage->count("cockpit/accounts", isset($options['filter']) ? $options['filter'] : []);
+        $pages    = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
+        $page     = 1;
+
+        if ($pages > 1 && isset($options['skip'])) {
+            $page = ceil($options['skip'] / $options['limit']) + 1;
+        }
 
         foreach ($accounts as &$account) {
             $account["md5email"] = md5(@$account["email"]);
         }
 
-        return $accounts;
+        return compact('accounts', 'count', 'pages', 'page');
     }
 
     protected function getLanguages() {

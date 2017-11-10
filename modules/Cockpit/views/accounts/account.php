@@ -225,6 +225,10 @@
                 return false;
             });
 
+            if (!this.account.api_key) {
+                this.generateApiToken();
+            }
+
             $this.update();
         });
 

@@ -8,11 +8,11 @@
 <div class="uk-margin-top" riot-view>
 
     @if($app->module('cockpit')->isSuperAdmin())
-    <div class="uk-form uk-clearfix">
+    <div class="uk-form uk-clearfix" show="{!loading}">
 
         <span class="uk-form-icon">
             <i class="uk-icon-filter"></i>
-            <input type="text" class="uk-form-large uk-form-blank" placeholder="@lang('Filter by name...')" onkeyup="{ updatefilter }">
+            <input type="text" class="uk-form-large uk-form-blank" ref="txtfilter" placeholder="@lang('Filter by name...')" onchange="{ updatefilter }">
         </span>
 
         <div class="uk-float-right">
@@ -25,15 +25,40 @@
     @endif
 
 
-    <table class="uk-table uk-table-border uk-table-striped uk-margin-top">
+    <div class="uk-text-xlarge uk-text-center uk-text-primary uk-margin-large-top" show="{ loading }">
+        <i class="uk-icon-spinner uk-icon-spin"></i>
+    </div>
+
+
+    <table class="uk-table uk-table-border uk-table-striped uk-margin-top" if="{ ready && !loading }">
         <thead>
             <tr>
                 <th width="30"></th>
-                <th class="uk-text-small" data-sort="name"><a class="uk-link-muted">@lang('Name') <span if="{sort.by == 'name'}" class="uk-icon-long-arrow-{ sort.order == -1 ? 'up':'down'}"></span></a></th>
-                <th class="uk-text-small" width="30%" data-sort="email"><a class="uk-link-muted">@lang('Email') <span if="{sort.by == 'email'}" class="uk-icon-long-arrow-{ sort.order == -1 ? 'up':'down'}"></span></a></th>
-                <th class="uk-text-small" width="150" data-sort="group"><a class="uk-link-muted">@lang('Group') <span if="{sort.by == 'group'}" class="uk-icon-long-arrow-{ sort.order == -1 ? 'up':'down'}"></span></a></th>
-                <th class="uk-text-small" width="80" data-sort="_created"><a class="uk-link-muted">@lang('Created') <span if="{sort.by == '_created'}" class="uk-icon-long-arrow-{ sort.order == -1 ? 'up':'down'}"></span></a></th>
-                <th class="uk-text-small" width="80" data-sort="_modified"><a class="uk-link-muted">@lang('Modified')  <span if="{sort.by == '_modified'}" class="uk-icon-long-arrow-{ sort.order == -1 ? 'up':'down'}"></span></a></th>
+                <th class="uk-text-small" data-sort="name">
+                    <a class="uk-link-muted">
+                        @lang('Name') <span if="{sortedBy == 'name'}" class="uk-icon-long-arrow-{ sortedOrder == -1 ? 'up':'down'}"></span>
+                    </a>
+                </th>
+                <th class="uk-text-small" width="30%" data-sort="email">
+                    <a class="uk-link-muted">
+                        @lang('Email') <span if="{sortedBy == 'email'}" class="uk-icon-long-arrow-{ sortedOrder == -1 ? 'up':'down'}"></span>
+                    </a>
+                </th>
+                <th class="uk-text-small" width="150" data-sort="group">
+                    <a class="uk-link-muted">
+                        @lang('Group') <span if="{sortedBy == 'group'}" class="uk-icon-long-arrow-{ sortedOrder == -1 ? 'up':'down'}"></span>
+                    </a>
+                </th>
+                <th class="uk-text-small" width="80" data-sort="_created">
+                    <a class="uk-link-muted">
+                        @lang('Created') <span if="{sortedBy == '_created'}" class="uk-icon-long-arrow-{ sortedOrder == -1 ? 'up':'down'}"></span>
+                    </a>
+                </th>
+                <th class="uk-text-small" width="80" data-sort="_modified">
+                    <a class="uk-link-muted">
+                        @lang('Modified')  <span if="{sortedBy == '_modified'}" class="uk-icon-long-arrow-{ sortedOrder == -1 ? 'up':'down'}"></span>
+                    </a>
+                </th>
                 <th width="20"></th>
             </tr>
         </thead>
@@ -71,35 +96,57 @@
         </tbody>
     </table>
 
+    <div class="uk margin uk-flex uk-flex-middle" if="{ !loading && pages > 1 }">
+
+        <ul class="uk-breadcrumb uk-margin-remove">
+            <li class="uk-active"><span>{ page }</span></li>
+            <li data-uk-dropdown="mode:'click'">
+
+                <a><i class="uk-icon-bars"></i> { pages }</a>
+
+                <div class="uk-dropdown">
+
+                    <strong class="uk-text-small">@lang('Pages')</strong>
+
+                    <div class="uk-margin-small-top { pages > 5 ? 'uk-scrollable-box':'' }">
+                        <ul class="uk-nav uk-nav-dropdown">
+                            <li class="uk-text-small" each="{k,v in new Array(pages)}"><a class="uk-dropdown-close" onclick="{ parent.loadpage.bind(parent, v+1) }">@lang('Page') {v + 1}</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </li>
+        </ul>
+
+        <div class="uk-button-group uk-margin-small-left">
+            <a class="uk-button uk-button-small" onclick="{ loadpage.bind(this, page-1) }" if="{page-1 > 0}">@lang('Previous')</a>
+            <a class="uk-button uk-button-small" onclick="{ loadpage.bind(this, page+1) }" if="{page+1 <= pages}">@lang('Next')</a>
+        </div>
+
+    </div>
+
     <script type="view/script">
 
-        var $this = this;
+        var $this = this, limit = 20;
 
-        this.accounts = {{ json_encode($accounts) }};
+        this.accounts = [];
         this.current  = {{ json_encode($current) }};
         this.filter   = '';
-        this.sort     = {by: '', order: 1};
+        this.sort     = {'_created': -1};
+        this.page     = 1;
+        this.count    = 0;
+        this.page     = 1;
+
+        this.loading  = false;
+        this.ready    = false;
 
         this.on('mount', function() {
-            
+
             App.$(this.root).on('click', '[data-sort]', function() {
-                
-                var col = this.getAttribute('data-sort');
-
-                if ($this.sort.by != col) {
-                    $this.sort = {by: col, order: 1};
-                } else {
-                    $this.sort.order = $this.sort.order == 1 ? -1 : 1;
-                }
-
-                $this.accounts = _.sortBy($this.accounts, $this.sort.by);
-
-                if ($this.sort.order == -1) {
-                    $this.accounts = $this.accounts.reverse();
-                }
-
-                $this.update();
+                $this.updatesort(this.getAttribute('data-sort'));
             });
+
+            this.load();
         });
 
         remove(evt) {
@@ -122,13 +169,81 @@
             });
         }
 
-        updatefilter(evt) {
-            this.filter = evt.target.value.toLowerCase();
+        updatefilter() {
+
+            var load = this.filter ? true:false;
+
+            this.filter = this.refs.txtfilter.value || null;
+
+            if (this.filter || load) {
+                this.accounts = [];
+                this.loading = true;
+                this.page = 1;
+                this.load();
+            }
         }
 
         infilter(account) {
             var name = account.name.toLowerCase();
             return (!this.filter || (name && name.indexOf(this.filter) !== -1));
+        }
+
+        updatesort(field) {
+
+            if (!field) {
+                return;
+            }
+
+            var col = field;
+
+            if (!this.sort[col]) {
+                this.sort      = {};
+                this.sort[col] = 1;
+            } else {
+                this.sort[col] = this.sort[col] == 1 ? -1 : 1;
+            }
+
+            this.sortedBy = field;
+            this.sortedOrder = this.sort[col];
+
+            this.accounts = [];
+
+            this.load();
+        }
+
+        load() {
+
+            var options = { sort:this.sort };
+
+            if (this.filter) {
+                options.filter = this.filter;
+            }
+
+            options.limit = limit;
+            options.skip  = (this.page - 1) * limit;
+
+            this.loading = true;
+
+            return App.request('/accounts/find', {options:options}).then(function(data){
+
+                this.accounts = data.accounts;
+                this.pages    = data.pages;
+                this.page     = data.page;
+                this.count    = data.count;
+
+                this.ready    = true;
+                this.loadmore = data.accounts.length && data.accounts.length == limit;
+
+                this.loading = false;
+
+                this.update();
+
+            }.bind(this))
+        }
+
+        loadpage(page) {
+            this.page = page > this.pages ? this.pages:page;
+            this.load();
         }
 
     </script>
