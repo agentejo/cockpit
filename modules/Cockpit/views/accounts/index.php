@@ -96,7 +96,7 @@
         </tbody>
     </table>
 
-    <div class="uk margin uk-flex uk-flex-middle" if="{ !loading && pages > 1 }">
+    <div class="uk-margin uk-flex uk-flex-middle" if="{ !loading && pages > 1 }">
 
         <ul class="uk-breadcrumb uk-margin-remove">
             <li class="uk-active"><span>{ page }</span></li>

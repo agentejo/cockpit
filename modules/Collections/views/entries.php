@@ -1,9 +1,16 @@
 
-@if($collection['color'])
 <style>
-    .app-header { border-top: 8px {{ $collection['color'] }} solid; }
-</style>
+
+.uk-scrollable-box {
+    border: none;
+    padding-top: 0;
+    padding-left: 0;
+}
+
+@if($collection['color'])
+.app-header { border-top: 8px {{ $collection['color'] }} solid; }
 @endif
+</style>
 
 
 <div>
@@ -77,6 +84,15 @@
 
         <div class="uk-clearfix uk-margin-top" show="{ !loading && (entries.length || filter) }">
 
+        <div class="uk-float-left uk-margin-right">
+
+            <div class="uk-button-group">
+                <button class="uk-button uk-button-large {listmode=='list' && 'uk-button-primary'}" onclick="{ toggleListMode }"><i class="uk-icon-list"></i></button>
+                <button class="uk-button uk-button-large {listmode=='grid' && 'uk-button-primary'}" onclick="{ toggleListMode }"><i class="uk-icon-th"></i></button>
+            </div>
+
+        </div>
+
             @if(!$collection['sortable'])
             <div class="uk-float-left uk-width-1-2">
                 <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted">
@@ -87,6 +103,8 @@
                 </div>
             </div>
             @endif
+
+
 
             <div class="uk-float-right">
 
@@ -158,6 +176,7 @@
 
         this.sort     = {'_created': -1};
         this.selected = [];
+        this.listmode = App.session.get('collections.entries.listmode', 'list');
 
         this.on('mount', function(){
 
@@ -172,7 +191,7 @@
                 $this.update();
             });
 
-            if (this.collection.sortable && this.refs.sortableroot) {
+            if (this.collection.sortable) {
                 this.initSortable();
             }
 
@@ -184,20 +203,14 @@
 
             this.sort = {'_order': 1};
 
-            UIkit.sortable(this.refs.sortableroot, {
-
-                animation: false
-
-            }).element.on("change.uk.sortable", function(e, sortable, ele){
+            App.$(this.root).on('change.uk.sortable', '[data-uk-sortable]', function(e, sortable, ele){
 
                 if (App.$(e.target).is(':input')) return;
 
                 var updates = [];
 
-                App.$($this.refs.sortableroot).children().each(function(idx) {
-
+                App.$(sortable.element).children().each(function(idx) {
                     updates.push({'_id':this.getAttribute('data-id'),'_order':idx});
-
                 });
 
                 if (updates.length) {
@@ -406,6 +419,11 @@
                     $this.update();
                 }
             });
+        }
+
+        toggleListMode() {
+            this.listmode = this.listmode=='list' ? 'grid':'list';
+            App.session.set('collections.entries.listmode', this.listmode);
         }
 
         hasFieldAccess(field) {
