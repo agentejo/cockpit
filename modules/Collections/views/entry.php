@@ -120,7 +120,7 @@
                     <label class="uk-text-small">@lang('Revisions')</label>
                     <div class="uk-margin-small-top">
                         <span class="uk-position-relative">
-                            <cp-revisions-info class="uk-badge uk-text-large" rid="{entry._id}" parent="true"></cp-revisions-info>
+                            <cp-revisions-info class="uk-badge uk-text-large" rid="{entry._id}"></cp-revisions-info>
                             <a class="uk-position-cover" href="@route('/collections/revisions/'.$collection['name'])/{entry._id}"></a>
                         </span>
                     </div>
@@ -243,6 +243,7 @@
                         }
                     });
 
+                    $this.tags['cp-revisions-info'].sync();
                     $this.update();
 
                 } else {
