@@ -23,10 +23,6 @@
             }
         });
 
-        this.on('update', function() {
-            
-        });
-
         sync() {
 
             var rid = opts.rid || 0;
@@ -39,9 +35,7 @@
                 $this.cnt = cnt;
                 $this.update();
 
-            }).catch(function(e){
-
-            });
+            }).catch(function(e){});
 
         }
 

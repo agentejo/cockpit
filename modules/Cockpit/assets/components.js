@@ -1242,10 +1242,6 @@ riot.tag2('cp-revisions-info', '<span> <span class="uk-icon-spinner uk-icon-spin
             }
         });
 
-        this.on('update', function() {
-
-        });
-
         this.sync = function() {
 
             var rid = opts.rid || 0;
@@ -1258,13 +1254,12 @@ riot.tag2('cp-revisions-info', '<span> <span class="uk-icon-spinner uk-icon-spin
                 $this.cnt = cnt;
                 $this.update();
 
-            }).catch(function(e){
-
-            });
+            }).catch(function(e){});
 
         }.bind(this)
 
 });
+
 riot.tag2('cp-search', '<div ref="autocomplete" class="uk-autocomplete uk-form uk-form-icon app-search"> <i class="uk-icon-search"></i> <input class="uk-width-1-1 uk-form-blank" type="text" placeholder="{App.i18n.get(\'Search for anything...\')}"> </div>', 'cp-search .uk-dropdown { min-width: 25vw; }', '', function(opts) {
 
         this.on('mount', function(){
