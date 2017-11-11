@@ -152,7 +152,6 @@
                     ele.$updateValue = function(value, field) {
 
                         if (ele._tag.$updateValue) {
-
                             ele._tag.$updateValue.apply(ele._tag, arguments);
                         }
                     };
@@ -166,21 +165,10 @@
         }
 
         // init values
-        tag.on('mount', function() {
-            update();
-        });
-
-        tag.on('updated', function() {
-            update();
-        });
-
-        tag.on('bind', function() {
-            update();
-        });
-
-        tag.$bindUpdate = function() {
-            update();
-        };
+        tag.on('mount'  , function() { update(); });
+        tag.on('updated', function() { update(); });
+        tag.on('bind'   , function() { update(); });
+        tag.$bindUpdate = function() { update(); };
 
     };
 

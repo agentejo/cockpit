@@ -181,7 +181,7 @@
 
         this.sort     = {'_created': -1};
         this.selected = [];
-        this.listmode = App.session.get('collections.entries.listmode', 'list');
+        this.listmode = App.session.get('collections.entries.'+this.collection.name+'.listmode', 'list');
 
         this.on('mount', function(){
 
@@ -428,7 +428,7 @@
 
         toggleListMode() {
             this.listmode = this.listmode=='list' ? 'grid':'list';
-            App.session.set('collections.entries.listmode', this.listmode);
+            App.session.set('collections.entries.'+this.collection.name+'.listmode', this.listmode);
         }
 
         isImageField(entry) {
