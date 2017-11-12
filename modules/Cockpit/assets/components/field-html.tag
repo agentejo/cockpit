@@ -1,6 +1,6 @@
 <field-html>
 
-    <textarea ref="input" class="uk-visibility-hidden"></textarea>
+    <textarea ref="input" class="uk-visibility-hidden" hidden></textarea>
 
     <script>
 
@@ -28,38 +28,40 @@
 
         this.on('mount', function(){
 
-            App.assets.require([
+            codemirror().then(function() {
 
-                '/assets/lib/marked.js',
-                '/assets/lib/codemirror/lib/codemirror.js',
-                '/assets/lib/uikit/js/components/htmleditor.js'
+                App.assets.require([
+                    '/assets/lib/marked.js',
+                    '/assets/lib/uikit/js/components/htmleditor.js'
+                ], function() {
 
-            ], function() {
+                    $this.refs.input.value = $this.value;
 
-                $this.refs.input.value = $this.value;
+                    editor = UIkit.htmleditor(this.refs.input, opts);
+                    editor.editor.on('change', function() {
+                        $this.$setValue(editor.editor.getValue());
+                    });
 
-                editor = UIkit.htmleditor(this.refs.input, opts);
-                editor.editor.on('change', function() {
-                    $this.$setValue(editor.editor.getValue());
-                });
+                    editor.off('action.image').on('action.image', function() {
 
-                editor.off('action.image').on('action.image', function() {
+                        App.media.select(function(selected) {
 
-                    App.media.select(function(selected) {
+                            if (editor.getCursorMode() == 'markdown') {
+                                editor['replaceSelection']('![title]('+SITE_URL+'/'+selected[0]+')');
+                            } else {
+                                editor['replaceSelection']('<img src="'+SITE_URL+'/'+selected[0]+'">');
+                            }
 
-                        if (editor.getCursorMode() == 'markdown') {
-                            editor['replaceSelection']('![title]('+SITE_URL+'/'+selected[0]+')');
-                        } else {
-                            editor['replaceSelection']('<img src="'+SITE_URL+'/'+selected[0]+'">');
-                        }
+                        }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
 
-                    }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
+                    });
 
-                });
+                    App.$(document).trigger('init-html-editor', [editor]);
 
-                App.$(document).trigger('init-html-editor', [editor]);
+                }.bind($this));
 
-            }.bind(this));
+            });
+
         });
 
     </script>
