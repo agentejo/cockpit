@@ -3,9 +3,7 @@
  */
 
 @import (less) "../../lib/codemirror/lib/codemirror.css";
-@import (less) "../../lib/codemirror/lib/show-hint.css";
-@import (less) "../../lib/codemirror/theme/dark.css";
-@import (less) "../../lib/codemirror/theme/light.css";
+@import (less) "../../lib/codemirror/addon/hint/show-hint.css";
 @import "less/uikit/uikit.less";
 
 @global-primary-background: #4FC1E9;
@@ -112,10 +110,6 @@
 
 // vendor styles
 
-.mce-container, .mce-toolbar .mce-btn {
-    background: @global-contrast-color !important;
-}
-
 .mce-panel {
     border: none !important;
 }
@@ -157,6 +151,35 @@ div.jsoneditor-menu>div.jsoneditor-modes>button {
 
 .CodeMirror .CodeMirror-activeline-background { background: #e8f2ff; }
 .CodeMirror .CodeMirror-matchingbracket { outline:1px solid grey; color:black !important; }
+
+.CodeMirror-hints {
+  z-index: 1010;
+  margin: 0;
+
+  box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+  border-radius: 3px;
+  border: 1px solid silver;
+
+  background: white;
+  font-size: 90%;
+  font-family: monospace;
+  max-height: 20em;
+  overflow-y: auto;
+}
+
+.CodeMirror-hint {
+  margin: 0;
+  padding: 0 4px;
+  border-radius: 2px;
+  white-space: pre;
+  color: black;
+  cursor: pointer;
+}
+
+li.CodeMirror-hint-active {
+  background: #08f;
+  color: white;
+}
 
 // spectrum color picker
 .sp-container, .sp-replacer  {
