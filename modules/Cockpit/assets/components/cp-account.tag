@@ -4,7 +4,7 @@
 
     <span class="uk-flex-inline uk-flex-middle" if="{account}">
         <cp-gravatar email="{account.email}" alt="{account.name || 'Unknown'}" size="{ opts.size || 25 }"></cp-gravatar>
-        <span class="uk-margin-small-left">{ account.name || 'Unknown' }</span>
+        <span class="uk-margin-small-left" if="{ opts.label !== false}" >{ account.name || 'Unknown' }</span>
     </span>
 
     <script>

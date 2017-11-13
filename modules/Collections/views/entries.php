@@ -7,6 +7,24 @@
     padding-left: 0;
 }
 
+.collection-grid-avatar-container {
+    border-top: 1px rgba(0,0,0,0.1) solid;
+}
+
+.collection-grid-avatar {
+    transform: translateY(-50%);
+    max-width: 40px;
+    max-height: 40px;
+    border: 1px #fff solid;
+    box-shadow: 0 0 40px rgba(0,0,0,0.3);
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+.collection-grid-avatar .uk-icon-spinner {
+    display: none;
+}
+
 @if($collection['color'])
 .app-header { border-top: 8px {{ $collection['color'] }} solid; }
 @endif
