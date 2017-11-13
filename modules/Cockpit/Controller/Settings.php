@@ -48,4 +48,11 @@ class Settings extends \Cockpit\AuthController {
 
         return $this->render('cockpit:views/settings/edit.php', compact('configexists'));
     }
+
+    public function update() {
+
+        $info = $this->app->helper('admin')->data['cockpit'];
+
+        return $this->render('cockpit:views/settings/update.php', compact('info'));
+    }
 }

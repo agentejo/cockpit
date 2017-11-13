@@ -22,7 +22,13 @@
                 </div>
                 <a class="uk-position-cover" href="@route('/collections/entry/'.$collection['name'])/{ entry._id }"></a>
             </div>
-            <div class="uk-flex uk-flex-middle uk-margin-top">
+            <div class="collection-grid-avatar-container">
+                <div class="collection-grid-avatar">
+                    <cp-account account="{entry._mby || entry._by}" label="{false}" size="40" if="{entry._mby || entry._by}"></cp-account>
+                    <cp-gravatar alt="?" size="40" if="{!(entry._mby || entry._by)}"></cp-gravatar>
+                </div>
+            </div>
+            <div class="uk-flex uk-flex-middle uk-margin-small-top">
 
                 <div class="uk-flex-item-1 uk-margin-small-right uk-text-small">
                     <span class="uk-text-success uk-margin-small-right">{ App.Utils.dateformat( new Date( 1000 * entry._created )) }</span>
@@ -65,7 +71,7 @@
 
 </div>
 
-<table class="uk-table uk-table-border uk-table-striped uk-margin-large-top" if="{ entries.length && !loading && listmode=='list' }">
+<table class="uk-table uk-table-tabbed uk-table-striped uk-margin-large-top" if="{ entries.length && !loading && listmode=='list' }">
     <thead>
         <tr>
             @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
