@@ -11,8 +11,9 @@ class Accounts extends \Cockpit\AuthController {
         }
 
         $current  = $this->user["_id"];
+        $groups   = $this->module('cockpit')->getGroups();
 
-        return $this->render('cockpit:views/accounts/index.php', compact('current'));
+        return $this->render('cockpit:views/accounts/index.php', compact('current', 'groups'));
     }
 
 

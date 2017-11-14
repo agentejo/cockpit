@@ -15,6 +15,14 @@
             <input type="text" class="uk-form-large uk-form-blank" ref="txtfilter" placeholder="@lang('Filter by name...')" onchange="{ updatefilter }">
         </span>
 
+        <div class="uk-form-select">
+            <span class="uk-button uk-button-outline uk-text-uppercase {(filterGroup != '_all' && 'uk-text-primary') || 'uk-text-muted'}"><i class="uk-icon-group"></i> {filterGroup == '_all' ? App.i18n.get('All') : filterGroup }</span>
+            <select onchange="{ updatefilter }" ref="groupfilter">
+                <option value="_all">@lang('All')</option>
+                <option value="{g}" each="{g in groups}">{g}</option>
+            </select>
+        </div>
+
         <div class="uk-float-right">
             <a class="uk-button uk-button-primary uk-button-large" href="@route('/accounts/create')">
                 <i class="uk-icon-plus-circle uk-icon-justify"></i> @lang('Account')
@@ -24,13 +32,16 @@
     </div>
     @endif
 
-
     <div class="uk-text-xlarge uk-text-center uk-text-primary uk-margin-large-top" show="{ loading }">
         <i class="uk-icon-spinner uk-icon-spin"></i>
     </div>
 
+    <div class="uk-text-large uk-text-center uk-margin-large-top uk-text-muted" show="{ !loading && !accounts.length }">
+        <img class="uk-svg-adjust" src="@url('assets:app/media/icons/accounts.svg')" width="100" height="100" alt="@lang('Accounts')" data-uk-svg />
+        <p>@lang('No users found')</p>
+    </div>
 
-    <table class="uk-table uk-table-border uk-table-striped uk-margin-top" if="{ ready && !loading }">
+    <table class="uk-table uk-table-tabbed uk-table-striped uk-margin-top" if="{ ready && !loading && accounts.length }">
         <thead>
             <tr>
                 <th width="30"></th>
@@ -130,14 +141,16 @@
         var $this = this, limit = 20;
 
         this.accounts = [];
+        this.groups   = {{ json_encode($groups) }};
         this.current  = {{ json_encode($current) }};
         this.filter   = '';
+        this.filterGroup = '_all'
         this.sort     = {'_created': -1};
         this.page     = 1;
         this.count    = 0;
         this.page     = 1;
 
-        this.loading  = false;
+        this.loading  = true;
         this.ready    = false;
 
         this.on('mount', function() {
@@ -171,11 +184,12 @@
 
         updatefilter() {
 
-            var load = this.filter ? true:false;
+            var load = this.filter ? true : false;
 
             this.filter = this.refs.txtfilter.value || null;
+            this.filterGroup = this.refs.groupfilter.value || null;
 
-            if (this.filter || load) {
+            if (this.filter || this.filterGroup || load) {
                 this.accounts = [];
                 this.loading = true;
                 this.page = 1;
@@ -215,8 +229,20 @@
 
             var options = { sort:this.sort };
 
+            if (this.filter || this.filterGroup) {
+                options.filter = {};
+            }
+
             if (this.filter) {
-                options.filter = this.filter;
+                options.filter.$or = [
+                    {name  : {$regex : this.filter}},
+                    {user  : {$regex : this.filter}},
+                    {email : {$regex : this.filter}}
+                ];
+            }
+
+            if (this.filterGroup && this.filterGroup != '_all') {
+                options.filter.group = this.filterGroup;
             }
 
             options.limit = limit;
