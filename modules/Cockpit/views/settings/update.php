@@ -12,12 +12,8 @@
         <img class="uk-svg-adjust uk-text-muted" src="@url('assets:app/media/icons/misc/sysupdate.svg')" width="100" height="100" alt="@lang('System Update')" data-uk-svg />
     </div>
 
-    <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-center uk-flex-middle" if="{ loading }">
-        <div class="uk-animation-fade uk-text-center">
-            <p class="uk-text-xlarge">
-                <i class="uk-text-primary uk-icon-spin uk-icon-spinner"></i>
-            </p>
-        </div>
+    <div class="uk-width-medium-1-3 uk-margin-large-top uk-container-center uk-text-center" if="{ loading }">
+        <i class="uk-text-xlarge uk-text-primary uk-icon-spin uk-icon-spinner"></i>
     </div>
 
     <div class="uk-container-center uk-width-medium-2-3" if="{ !loading && step=='start' }">
