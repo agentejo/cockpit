@@ -22,13 +22,13 @@
             <div>
                 <div class="uk-panel uk-panel-box uk-panel-space">
                     <strong>@lang('Installed Version')</strong>
-                    <div class="uk-text-primary uk-h1 uk-margin">{ system.version }</div>
+                    <div class="uk-h1 uk-margin">{ system.version }</div>
                 </div>
             </div>
             <div>
                 <div class="uk-panel uk-panel-box uk-panel-space">
                     <strong>@lang('Latest Version')</strong>
-                    <div class="uk-h1 uk-margin uk-text-bold">{ _system.version }</div>
+                    <div class="uk-h1 uk-margin uk-text-primary">{ _system.version }</div>
                 </div>
             </div>
         </div>
