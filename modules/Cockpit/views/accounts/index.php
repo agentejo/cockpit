@@ -46,27 +46,27 @@
             <tr>
                 <th width="30"></th>
                 <th class="uk-text-small" data-sort="name">
-                    <a class="uk-link-muted">
+                    <a class="uk-link-muted uk-noselect {sortedBy == 'name' && 'uk-text-primary'}">
                         @lang('Name') <span if="{sortedBy == 'name'}" class="uk-icon-long-arrow-{ sortedOrder == -1 ? 'up':'down'}"></span>
                     </a>
                 </th>
                 <th class="uk-text-small" width="30%" data-sort="email">
-                    <a class="uk-link-muted">
+                    <a class="uk-link-muted uk-noselect {sortedBy == 'email' && 'uk-text-primary'}">
                         @lang('Email') <span if="{sortedBy == 'email'}" class="uk-icon-long-arrow-{ sortedOrder == -1 ? 'up':'down'}"></span>
                     </a>
                 </th>
                 <th class="uk-text-small" width="150" data-sort="group">
-                    <a class="uk-link-muted">
+                    <a class="uk-link-muted uk-noselect {sortedBy == 'group' && 'uk-text-primary'}">
                         @lang('Group') <span if="{sortedBy == 'group'}" class="uk-icon-long-arrow-{ sortedOrder == -1 ? 'up':'down'}"></span>
                     </a>
                 </th>
                 <th class="uk-text-small" width="80" data-sort="_created">
-                    <a class="uk-link-muted">
+                    <a class="uk-link-muted uk-noselect {sortedBy == '_created' && 'uk-text-primary'}">
                         @lang('Created') <span if="{sortedBy == '_created'}" class="uk-icon-long-arrow-{ sortedOrder == -1 ? 'up':'down'}"></span>
                     </a>
                 </th>
                 <th class="uk-text-small" width="80" data-sort="_modified">
-                    <a class="uk-link-muted">
+                    <a class="uk-link-muted uk-noselect {sortedBy == '_modified' && 'uk-text-primary'}">
                         @lang('Modified')  <span if="{sortedBy == '_modified'}" class="uk-icon-long-arrow-{ sortedOrder == -1 ? 'up':'down'}"></span>
                     </a>
                 </th>
