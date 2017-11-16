@@ -73,7 +73,7 @@
                                     <li if="{ meta.allowed.region_edit }" class="uk-nav-divider"></li>
                                     <li if="{ meta.allowed.region_edit }"><a href="@route('/regions/region')/{ region }">@lang('Edit')</a></li>
                                     @hasaccess?('regions', 'delete')
-                                    <li><a class="uk-dropdown-close" onclick="{ this.parent.remove }">@lang('Delete')</a></li>
+                                    <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ this.parent.remove }">@lang('Delete')</a></li>
                                     @end
                                 </ul>
                             </div>

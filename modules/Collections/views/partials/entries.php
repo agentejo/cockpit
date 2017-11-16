@@ -45,7 +45,7 @@
                             <li><a href="@route('/collections/entry/'.$collection['name'])/{ entry._id }">@lang('Edit')</a></li>
 
                             @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
-                            <li><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
+                            <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
                             @endif
 
                             @if($app->module('collections')->hasaccess($collection['name'], 'entries_create'))
@@ -112,7 +112,7 @@
                             <li><a href="@route('/collections/entry/'.$collection['name'])/{ entry._id }">@lang('Edit')</a></li>
 
                             @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
-                            <li><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
+                            <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
                             @endif
 
                             @if($app->module('collections')->hasaccess($collection['name'], 'entries_create'))

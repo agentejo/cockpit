@@ -152,10 +152,10 @@
                                                 <div class="uk-dropdown">
                                                     <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                                                         <li class="uk-nav-header uk-text-truncate">{ folder.name }</li>
-                                                        <li><a onclick="{ parent.download }">Download</a></li>
-                                                        <li><a onclick="{ parent.rename }">Rename</a></li>
+                                                        <li><a class="uk-dropdown-close"onclick="{ parent.download }">Download</a></li>
+                                                        <li><a class="uk-dropdown-close" onclick="{ parent.rename }">Rename</a></li>
                                                         <li class="uk-nav-divider"></li>
-                                                        <li><a onclick="{ parent.remove }">Delete</a></li>
+                                                        <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
                                                     </ul>
                                                 </div>
                                             </span>
@@ -188,14 +188,14 @@
                                                 <span class="uk-margin-small-right" data-uk-dropdown="mode:'click'">
                                                     <a><i class="uk-icon-{ parent.getIconCls(file) } js-no-item-select"></i>
                                                     <div class="uk-dropdown">
-                                                        <ul class="uk-nav uk-nav-dropdown">
+                                                        <ul class="uk-nav">
                                                             <li class="uk-nav-header uk-text-truncate">{ file.name }</li>
-                                                            <li> <a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">Open</a></li>
+                                                            <li><a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">Open</a></li>
                                                             <li><a class="uk-dropdown-close" onclick="{ parent.rename }">Rename</a></li>
-                                                            <li><a onclick="{ parent.download }">Download</a></li>
+                                                            <li><a class="uk-dropdown-close" onclick="{ parent.download }">Download</a></li>
                                                             <li if="{ file.ext == 'zip' }"><a onclick="{ parent.unzip }">Unzip</a></li>
                                                             <li class="uk-nav-divider"></li>
-                                                            <li><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
+                                                            <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
                                                         </ul>
                                                     </div>
                                                 </span>
@@ -244,14 +244,14 @@
                                             <a class="uk-icon-bars"></a>
 
                                             <div class="uk-dropdown uk-dropdown-flip">
-                                                <ul class="uk-nav uk-nav-dropdown">
+                                                <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                                                     <li class="uk-nav-header">{ App.i18n.get('Actions') }</li>
-                                                    <li> <a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">Open</a></li>
+                                                    <li><a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">Open</a></li>
                                                     <li><a class="uk-dropdown-close" onclick="{ parent.rename }">Rename</a></li>
-                                                    <li><a onclick="{ parent.download }">Download</a></li>
+                                                    <li><a class="uk-dropdown-close" onclick="{ parent.download }">Download</a></li>
                                                     <li if="{ file.ext == 'zip' }"><a onclick="{ parent.unzip }">Unzip</a></li>
                                                     <li class="uk-nav-divider"></li>
-                                                    <li><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
+                                                    <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
                                                 </ul>
                                             </div>
                                         </span>

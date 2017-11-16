@@ -72,7 +72,7 @@
                                     <li if="{ meta.allowed.edit || meta.allowed.delete }" class="uk-nav-divider"></li>
                                     <li if="{ meta.allowed.edit }"><a href="@route('/collections/collection')/{ collection }">@lang('Edit')</a></li>
                                     @hasaccess?('collections', 'delete')
-                                    <li if="{ meta.allowed.delete }"><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
+                                    <li class="uk-nav-item-danger" if="{ meta.allowed.delete }"><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
                                     @end
                                     <li class="uk-nav-divider" if="{ meta.allowed.edit }"></li>
                                     <li class="uk-text-truncate" if="{ meta.allowed.edit }"><a href="@route('/collections/export')/{ meta.name }" download="{ meta.name }.collection.json">@lang('Export entries')</a></li>

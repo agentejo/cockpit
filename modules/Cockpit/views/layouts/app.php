@@ -169,7 +169,7 @@
                                     <li class="uk-nav-header uk-text-truncate">{{ $app["user"]["name"] ? $app["user"]["name"] : $app["user"]["user"] }}</li>
                                     <li><a href="@route('/accounts/account')">@lang('Account')</a></li>
                                     <li class="uk-nav-divider"></li>
-                                    <li><a href="@route('/auth/logout')">@lang('Logout')</a></li>
+                                    <li class="uk-nav-item-danger"><a href="@route('/auth/logout')">@lang('Logout')</a></li>
                                 </ul>
                             </div>
                         </div>
