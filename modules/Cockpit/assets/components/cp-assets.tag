@@ -88,15 +88,15 @@
                 </div>
             </div>
 
-            <table class="uk-table uk-panel-card" if="{ listmode=='list' }">
+            <table class="uk-table uk-table-tabbed" if="{ listmode=='list' }">
                 <thead>
                     <tr>
                         <td width="30"></td>
-                        <th>{ App.i18n.get('Title') }</th>
-                        <th width="20%">{ App.i18n.get('Type') }</th>
-                        <th width="10%">{ App.i18n.get('Size') }</th>
-                        <th width="10%">{ App.i18n.get('Updated') }</th>
-                        <th width="30"></th>
+                        <th class="uk-text-small uk-noselect">{ App.i18n.get('Title') }</th>
+                        <th class="uk-text-small uk-noselect" width="20%">{ App.i18n.get('Type') }</th>
+                        <th class="uk-text-small uk-noselect" width="10%">{ App.i18n.get('Size') }</th>
+                        <th class="uk-text-small uk-noselect" width="10%">{ App.i18n.get('Updated') }</th>
+                        <th class="uk-text-small uk-noselect" width="30"></th>
                     </tr>
                 </thead>
                 <tbody>
