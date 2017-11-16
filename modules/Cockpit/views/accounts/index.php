@@ -98,7 +98,7 @@
                             <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                                 <li class="uk-nav-header">@lang('Actions')</li>
                                 <li><a href="@route('/accounts/account')/{ account._id }">@lang('Edit')</a></li>
-                                <li><a onclick="{ this.parent.remove }" href="#">@lang('Delete')</a></li>
+                                <li class="uk-nav-item-danger"><a onclick="{ this.parent.remove }" href="#">@lang('Delete')</a></li>
                             </ul>
                         </div>
                     </span>

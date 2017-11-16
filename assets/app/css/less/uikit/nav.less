@@ -196,4 +196,14 @@
 
 .hook-nav-misc() {
 
+    .uk-nav-item-danger > a {
+
+        color: @global-danger-background !important;
+
+        &:hover,
+        &:active {
+            background: @global-danger-background !important;
+            color: @global-contrast-color !important;
+        }
+    }
 }
