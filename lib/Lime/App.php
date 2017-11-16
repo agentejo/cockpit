@@ -279,15 +279,15 @@ class App implements \ArrayAccess {
         }
 
         if (is_numeric($data) && $data) {
-            
+
             $this->response->status = $data;
 
             if (isset(self::$statusCodes[$data])) {
-                
+
                 if ($this->response->mime == 'json') {
-                    $this->response->body = json_encode(["error" => self::$statusCodes[$data]]); 
+                    $this->response->body = json_encode(["error" => self::$statusCodes[$data]]);
                 } else {
-                    $this->response->body = self::$statusCodes[$data]; 
+                    $this->response->body = self::$statusCodes[$data];
                 }
             }
         }
@@ -424,7 +424,7 @@ class App implements \ArrayAccess {
             break;
         }
 
-        
+
 
         return $this;
     }
@@ -1628,5 +1628,5 @@ function fetch_from_array(&$array, $index=null, $default = null) {
         }
     }
 
-    return $default;
+    return is_callable($default) ? call_user_func($default) : $default;
 }

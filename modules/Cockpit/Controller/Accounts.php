@@ -31,7 +31,7 @@ class Accounts extends \Cockpit\AuthController {
 
         unset($account["password"]);
 
-        $fields    = $this->app->retrieve('config/accounts/fields', null);
+        $fields    = $this->app->retrieve('config/account/fields', null);
         $languages = $this->getLanguages();
         $groups    = $this->module('cockpit')->getGroups();
 
