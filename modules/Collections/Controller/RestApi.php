@@ -198,5 +198,16 @@ class RestApi extends \LimeExtra\Controller {
         return $collections[$name];
     }
 
+    public function listCollections($extended = false) {
 
+        $user = $this->module('cockpit')->getUser();
+
+        if ($user) {
+            $collections = $this->module("collections")->getCollectionsInGroup($user['group'], $extended);
+        } else {
+            $collections = $this->module('collections')->collections($extended);
+        }
+
+        return $collections;
+    }
 }
