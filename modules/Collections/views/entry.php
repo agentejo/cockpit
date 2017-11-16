@@ -139,7 +139,7 @@
 
     </div>
 
-    <collection-entrypreview entry="{entry}" groups="{ groups }" fields="{ fields }" fieldsidx="{ fieldsidx }" excludeFields="{ excludeFields }" languages="{ languages }" url="{ collection.contentpreview.url }" if="{ preview }"></collection-entrypreview>
+    <collection-entrypreview entry="{entry}" groups="{ groups }" fields="{ fields }" fieldsidx="{ fieldsidx }" excludeFields="{ excludeFields }" languages="{ languages }" url="{ collection.contentpreview.url }" wsurl="{ collection.contentpreview.wsurl }" if="{ preview }"></collection-entrypreview>
 
     <script type="view/script">
 

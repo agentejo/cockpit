@@ -177,6 +177,10 @@
                             <i class="uk-icon-globe"></i>
                             <input class="uk-width-1-1 uk-form-large uk-text-primary" type="url" placeholder="@lang('http://...')"  bind="collection.contentpreview.url">
                         </div>
+                        <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted uk-margin-top" show="{collection.contentpreview && collection.contentpreview.enabled}">
+                            <i class="uk-icon-random"></i>
+                            <input class="uk-width-1-1 uk-form-large uk-text-primary" type="url" placeholder="@lang('ws://...')"  bind="collection.contentpreview.wsurl">
+                        </div>
                     </div>
 
                 </div>

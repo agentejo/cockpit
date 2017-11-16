@@ -206,6 +206,21 @@
 
             $this.$cache = JSON.stringify(this.entry);
 
+            this.ws = new Promise(function(resolve, reject) {
+
+                if (opts.wsurl && !window.WebSocket) {
+                    return reject('Missing support for Websockets');
+                }
+
+                var ws = opts.wsurl ? new WebSocket(opts.wsurl) : null;
+
+                if (ws) {
+                    ws.onopen = function() { resolve(ws); };
+                } else {
+                    resolve(ws);
+                }
+            });
+
             this.refs.iframe.addEventListener('load', function() {
 
                 $this.$iframe = $this.refs.iframe.contentWindow;
@@ -234,11 +249,20 @@
         }
 
         updateIframe() {
+
             if (!this.$iframe) return;
-            this.$iframe.postMessage({
+
+            var data = {
+                type: 'cockpit:contentpreview',
                 entry: this.entry,
                 lang: (this.lang || 'default')
-            }, '*');
+            };
+
+            this.$iframe.postMessage(data, '*');
+
+            this.ws.then(function(ws) {
+                return ws && ws.send(JSON.stringify(data));
+            }).catch(function(e){ console.log(e) });
         }
 
         toggleGroup() {
