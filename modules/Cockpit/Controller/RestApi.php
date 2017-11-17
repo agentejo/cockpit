@@ -162,4 +162,27 @@ class RestApi extends \LimeExtra\Controller {
         return $this->module('cockpit')->thumbnail($options);
     }
 
+    public function assets() {
+
+        $options = [
+            'sort' => ['created' => -1]
+        ];
+
+        if ($filter = $this->param("filter", null)) $options["filter"] = $filter;
+        if ($fields = $this->param('fields', null)) $options['fields'] = $fields;
+        if ($limit  = $this->param("limit", null))  $options["limit"] = $limit;
+        if ($sort   = $this->param("sort", null))   $options["sort"] = $sort;
+        if ($skip   = $this->param("skip", null))   $options["skip"] = $skip;
+
+        $assets = $this->storage->find("cockpit/assets", $options);
+        $total  = (!$skip && !$limit) ? count($assets) : $this->storage->count("cockpit/assets", $filter);
+
+        $this->app->trigger('cockpit.assets.list', [&$assets]);
+
+        return [
+            'assets' => $assets->toArray(),
+            'total' => $total
+        ];
+    }
+
 }
