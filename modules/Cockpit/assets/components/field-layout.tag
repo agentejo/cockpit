@@ -89,7 +89,7 @@
                             <div class="uk-margin uk-text-small uk-text-muted">{ field.info || ' ' }</div>
 
                             <div class="uk-margin">
-                                <cp-field type="{field.type || 'text'}" bind="settingsComponent.settings[{field.name}]" opts="{ field.options || {} }"></cp-field>
+                                <cp-field type="{field.type || 'text'}" bind="settingsComponent.settings.{field.name}" opts="{ field.options || {} }"></cp-field>
                             </div>
                     </div>
 
@@ -245,9 +245,17 @@
             });
 
             UIkit.modal(this.refs.modalSettings, {modal:false}).on('hide.uk.modal', function(e) {
-                if (e.target !== $this.refs.modalSettings) return;
-                $this.settingsComponent = false;
-                $this.update();
+
+                if (e.target !== $this.refs.modalSettings) {
+                    return;
+                }
+
+                $this.$setValue($this.items);
+
+                setTimeout(function(){
+                    $this.settingsComponent = null;
+                    $this.update();
+                }, 50);
             });
 
             this.update();
@@ -356,8 +364,6 @@
             this.settingsGroup = e.item && e.item.group || false;
         }
 
-
-
     </script>
 
 </field-layout>
@@ -433,6 +439,10 @@
         this.on('mount', function() {
 
             App.$(this.refs.columns).on('change.uk.sortable', function(e, sortable, el, mode) {
+
+                if (!el) return;
+
+                e.stopPropagation();
 
                 if ($this.refs.columns === sortable.element[0]) {
 
