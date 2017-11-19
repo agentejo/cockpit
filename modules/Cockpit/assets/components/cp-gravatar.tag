@@ -8,7 +8,7 @@
         this.size  = opts.size || 100;
 
         this.on('mount', function(){
-            this.trigger('update');
+            this.update();
         });
 
         this.on('update', function() {

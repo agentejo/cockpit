@@ -1,9 +1,34 @@
 
-@if($collection['color'])
 <style>
-    .app-header { border-top: 8px {{ $collection['color'] }} solid; }
-</style>
+
+.uk-scrollable-box {
+    border: none;
+    padding-top: 0;
+    padding-left: 0;
+}
+
+.collection-grid-avatar-container {
+    border-top: 1px rgba(0,0,0,0.1) solid;
+}
+
+.collection-grid-avatar {
+    transform: translateY(-50%);
+    max-width: 40px;
+    max-height: 40px;
+    border: 1px #fff solid;
+    box-shadow: 0 0 40px rgba(0,0,0,0.3);
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+.collection-grid-avatar .uk-icon-spinner {
+    display: none;
+}
+
+@if($collection['color'])
+.app-header { border-top: 8px {{ $collection['color'] }} solid; }
 @endif
+</style>
 
 
 <div>
@@ -31,17 +56,17 @@
 
 </div>
 
-<div class="uk-margin uk-text-center uk-text-muted">
-
-    <img class="uk-svg-adjust" src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="50" alt="icon" data-uk-svg>
-    @if($collection['description'])
-    <div class="uk-container-center uk-margin-top uk-width-medium-1-2">
-        {{ $collection['description'] }}
-    </div>
-    @endif
-</div>
-
 <div class="uk-margin-top" riot-view>
+
+    <div class="uk-margin uk-text-center uk-text-muted" show="{ (Array.isArray(entries) && entries.length) || filter}">
+
+        <img class="uk-svg-adjust" src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="50" alt="icon" data-uk-svg>
+        @if($collection['description'])
+        <div class="uk-container-center uk-margin-top uk-width-medium-1-2">
+            {{ $collection['description'] }}
+        </div>
+        @endif
+    </div>
 
 
     <div show="{ ready }">
@@ -51,7 +76,7 @@
             <div class="uk-animation-fade uk-text-center">
 
                 <p class="uk-text-xlarge">
-                    <i class="uk-icon-spin uk-icon-spinner"></i>
+                    <i class="uk-text-primary uk-icon-spin uk-icon-spinner"></i>
                 </p>
 
             </div>
@@ -60,17 +85,31 @@
 
         <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-center uk-flex-middle" if="{ !loading && !entries.length && !filter }">
 
-            <div class="uk-animation-scale">
-                
-                <div class="uk-margin"><img src="@base('assets:app/media/icons/items.svg')" width="80" data-uk-svg></div>
+            <div class="uk-animation-scale uk-text-muted">
+
+                <img class="uk-svg-adjust" src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="50" alt="icon" data-uk-svg>
+                @if($collection['description'])
+                <div class="uk-margin-top uk-text-small">
+                    {{ $collection['description'] }}
+                </div>
+                @endif
                 <hr>
-                <span class="uk-text-large uk-text-muted">@lang('No entries'). <a href="@route('/collections/entry/'.$collection['name'])">@lang('Create an entry').</a></span>
+                <span class="uk-text-large">@lang('No entries'). <a href="@route('/collections/entry/'.$collection['name'])">@lang('Create an entry').</a></span>
 
             </div>
 
         </div>
 
-        <div class="uk-clearfix uk-margin-top" if="{ entries.length || filter }">
+        <div class="uk-clearfix uk-margin-top" show="{ !loading && (entries.length || filter) }">
+
+        <div class="uk-float-left uk-margin-right">
+
+            <div class="uk-button-group">
+                <button class="uk-button uk-button-large {listmode=='list' && 'uk-button-primary'}" onclick="{ toggleListMode }"><i class="uk-icon-list"></i></button>
+                <button class="uk-button uk-button-large {listmode=='grid' && 'uk-button-primary'}" onclick="{ toggleListMode }"><i class="uk-icon-th"></i></button>
+            </div>
+
+        </div>
 
             @if(!$collection['sortable'])
             <div class="uk-float-left uk-width-1-2">
@@ -82,6 +121,8 @@
                 </div>
             </div>
             @endif
+
+
 
             <div class="uk-float-right">
 
@@ -138,9 +179,14 @@
         this.page       = 1;
         this.entries    = [];
         this.fieldsidx  = {};
+        this.imageField = null;
         this.fields     = this.collection.fields.filter(function(field){
 
             $this.fieldsidx[field.name] = field;
+
+            if (!$this.imageField && (field.type=='image' || field.type=='asset')) {
+                $this.imageField = field;
+            }
 
             return field.lst;
         });
@@ -153,6 +199,7 @@
 
         this.sort     = {'_created': -1};
         this.selected = [];
+        this.listmode = App.session.get('collections.entries.'+this.collection.name+'.listmode', 'list');
 
         this.on('mount', function(){
 
@@ -167,7 +214,7 @@
                 $this.update();
             });
 
-            if (this.collection.sortable && this.refs.sortableroot) {
+            if (this.collection.sortable) {
                 this.initSortable();
             }
 
@@ -179,20 +226,14 @@
 
             this.sort = {'_order': 1};
 
-            UIkit.sortable(this.refs.sortableroot, {
-
-                animation: false
-
-            }).element.on("change.uk.sortable", function(e, sortable, ele){
+            App.$(this.root).on('change.uk.sortable', '[data-uk-sortable]', function(e, sortable, ele){
 
                 if (App.$(e.target).is(':input')) return;
 
                 var updates = [];
 
-                App.$($this.refs.sortableroot).children().each(function(idx) {
-
+                App.$(sortable.element).children().each(function(idx) {
                     updates.push({'_id':this.getAttribute('data-id'),'_order':idx});
-
                 });
 
                 if (updates.length) {
@@ -403,17 +444,49 @@
             });
         }
 
+        toggleListMode() {
+            this.listmode = this.listmode=='list' ? 'grid':'list';
+            App.session.set('collections.entries.'+this.collection.name+'.listmode', this.listmode);
+        }
+
+        isImageField(entry) {
+
+            if (!this.imageField) {
+                return false;
+            }
+
+            var data = entry[this.imageField.name];
+
+            if (!data) {
+                return false;
+            }
+
+            switch(this.imageField.type) {
+                case 'asset':
+                    if (data.mime.match(/^image\//)) {
+                        return ASSETS_URL+data.path;
+                    }
+                    break;
+                case 'image':
+                    return data.path.match(/^(http\:|https\:|\/\/)/) ? data.path : SITE_URL+'/'+data.path;
+                    break;
+            }
+
+            return false;
+
+        }
+
         hasFieldAccess(field) {
-  
+
             var acl = this.fieldsidx[field] && this.fieldsidx[field].acl || [];
 
-            if (field == '_modified' || 
-                App.$data.user.group == 'admin' || 
+            if (field == '_modified' ||
+                App.$data.user.group == 'admin' ||
                 !acl ||
                 (Array.isArray(acl) && !acl.length) ||
                 acl.indexOf(App.$data.user.group) > -1 ||
                 acl.indexOf(App.$data.user._id) > -1
-            
+
             ) { return true; }
 
             return false;

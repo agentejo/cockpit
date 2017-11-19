@@ -10,8 +10,9 @@ class RestApi extends \LimeExtra\Controller {
         }
 
         if ($this->module('cockpit')->getUser()) {
-            if (!$this->module('regions')->hasaccess($name, 'form')) {
-                return $this->stop(401);
+
+            if (!$this->module('regions')->hasaccess($name, 'render') && !$this->module('regions')->hasaccess($name, 'form')) {
+                return $this->stop('{"error": "Unauthorized"}', 401);
             }
         }
 
@@ -27,19 +28,33 @@ class RestApi extends \LimeExtra\Controller {
             return false;
         }
 
-        $region = $this->module('regions')->region($name);
-
         if ($this->module('cockpit')->getUser()) {
-            if (!$this->module('regions')->hasaccess($name, 'form')) {
-                return $this->stop(401);
+
+            if (!$this->module('regions')->hasaccess($name, 'data') && !$this->module('regions')->hasaccess($name, 'form')) {
+                return $this->stop('{"error": "Unauthorized"}', 401);
             }
         }
+
+        $region = $this->module('regions')->region($name);
 
         if (!$region) {
             return false;
         }
 
         return isset($region['data']) ? $region['data'] : [];
+    }
+
+    public function listRegions() {
+
+        $user = $this->module('cockpit')->getUser();
+
+        if ($user) {
+            $regions = $this->module('regions')->getRegionsInGroup($user['group']);
+        } else {
+            $regions = $this->module('regions')->regions();
+        }
+
+        return $regions;
     }
 
 }

@@ -67,10 +67,10 @@
 
                 <div class="uk-form-row">
 
-                    <ul class="uk-tab uk-flex uk-flex-right uk-margin">
-                        <li class="{ view==='template' ? 'uk-active':'' }" data-view="template"><a onclick="{ toggleview }">@lang('Template')</a></li>
+                    <ul class="uk-tab uk-flex uk-margin">
                         <li class="{ view==='fields' ? 'uk-active':'' }" data-view="fields"><a onclick="{ toggleview }">@lang('Fields')</a></li>
-                        <li class="{ view==='acl' ? 'uk-active':'' }" data-view="acl"><a onclick="{ toggleview }">@lang('Access')</a></li>
+                        <li class="{ view==='template' ? 'uk-active':'' }" data-view="template"><a onclick="{ toggleview }">@lang('Template')</a></li>
+                        <li class="{ view==='acl' ? 'uk-active':'' }" data-view="acl"><a onclick="{ toggleview }">@lang('Permissions')</a></li>
                     </ul>
 
                     <div class="uk-margin-large-top" show="{ view==='fields' }">
@@ -80,18 +80,31 @@
                     </div>
 
                     <div class="uk-margin-large-top" show="{ view==='template' }">
-                        <field-code bind="region.template" syntax="php"></field-code>
+                        <field-code bind="region.template" syntax="php" height="400"></field-code>
                     </div>
 
-                    <div class="uk-margin-large-top" show="{ view==='acl' }">
+                    <div class="uk-margin-top" show="{ view==='acl' }">
 
-                        <div class="uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" if="{!aclgroups.length}">
-                            <div class="uk-text-center uk-text-muted">
-                                <img class="uk-svg-adjust" src="@url('assets:app/media/icons/accounts.svg')" alt="icon" data-uk-svg>
-                                <p class="uk-text-large">
-                                    @lang('No groups')
-                                </p>
+                        <div class="uk-panel-space">
+
+                            <div class="uk-grid">
+                                <div class="uk-width-1-3 uk-flex uk-flex-middle uk-flex-center">
+                                    <div class="uk-text-center">
+                                        <p class="uk-text-uppercase uk-text-small uk-text-bold">@lang('Public')</p>
+                                        <img class="uk-text-primary uk-svg-adjust" src="@url('assets:app/media/icons/globe.svg')" alt="icon" width="80" data-uk-svg>
+                                    </div>
+                                </div>
+                                <div class="uk-flex-item-1">
+                                    <div class="uk-margin uk-text-small">
+                                        <strong class="uk-text-uppercase">@lang('Region')</strong>
+                                        <div class="uk-margin-top"><field-boolean bind="region.acl.public.form" label="@lang('Form')"></field-boolean></div>
+                                        <div class="uk-margin-top"><field-boolean bind="region.acl.public.edit" label="@lang('Edit Region')"></field-boolean></div>
+                                        <div class="uk-margin-top"><field-boolean bind="region.acl.public.render" label="@lang('Render Region')"></field-boolean></div>
+                                        <div class="uk-margin-top"><field-boolean bind="region.acl.public.data" label="@lang('Get Region Data')"></field-boolean></div>
+                                    </div>
+                                </div>
                             </div>
+
                         </div>
 
                         <div class="uk-panel uk-panel-box uk-panel-space uk-panel-card uk-margin" each="{group in aclgroups}">
@@ -108,6 +121,8 @@
                                         <strong class="uk-text-uppercase">@lang('Region')</strong>
                                         <div class="uk-margin-top"><field-boolean bind="region.acl.{group}.form" label="@lang('Form')"></field-boolean></div>
                                         <div class="uk-margin-top"><field-boolean bind="region.acl.{group}.edit" label="@lang('Edit Region')"></field-boolean></div>
+                                        <div class="uk-margin-top"><field-boolean bind="region.acl.{group}.render" label="@lang('Render Region')"></field-boolean></div>
+                                        <div class="uk-margin-top"><field-boolean bind="region.acl.{group}.data" label="@lang('Get Region Data')"></field-boolean></div>
                                     </div>
                                 </div>
                             </div>
@@ -141,7 +156,7 @@
 
         this.mixin(RiotBindMixin);
 
-        this.view = 'template';
+        this.view = 'fields';
 
         this.region = {{ json_encode($region) }};
         this.aclgroups  = {{ json_encode($aclgroups) }};

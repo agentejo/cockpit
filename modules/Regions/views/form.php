@@ -142,6 +142,19 @@
                     $this.data[field.name] = field.options && field.options.default || null;
                 }
 
+                if (field.localize && $this.languages.length) {
+
+                    $this.languages.forEach(function(lang) {
+
+                        var key = field.name+'_'+lang.code;
+
+                        if ($this.data[key] === undefined) {
+                            $this.data[key] = field.options && field.options.default || null;
+                            $this.data[key] = field.options && field.options['default_'+lang.code] || $this.data[key];
+                        }
+                    });
+                }
+
                 if (field.type == 'password') {
                     $this.data[field.name] = '';
                 }
@@ -163,10 +176,13 @@
 
                 // bind clobal command + save
                 Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
-
-                    e.preventDefault();
-                    $this.submit();
+                    $this.submit(e);
                     return false;
+                });
+
+                // wysiwyg cmd + save hack
+                App.$(this.root).on('submit', function(e, component) {
+                    if (component) $this.submit(e);
                 });
             });
 
@@ -210,13 +226,13 @@
 
                 var acl = this.fieldsidx[field] && this.fieldsidx[field].acl || [];
 
-                if (field == '_modified' || 
-                    App.$data.user.group == 'admin' || 
+                if (field == '_modified' ||
+                    App.$data.user.group == 'admin' ||
                     !acl ||
                     (Array.isArray(acl) && !acl.length) ||
                     acl.indexOf(App.$data.user.group) > -1 ||
                     acl.indexOf(App.$data.user._id) > -1
-                
+
                 ) { return true; }
 
                 return false;

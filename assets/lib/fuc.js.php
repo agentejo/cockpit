@@ -18,7 +18,18 @@ if (isset($_REQUEST['url'])) {
     }
 
     $url     = $_REQUEST['url'];
-    $content = '';
+    $content = null;
+
+    if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        header('HTTP/1.0 400 Bad Request');
+        return;
+    }
+
+    // allow only http requests
+    if (!preg_match('#^http(|s)\://#', $url)) {
+        header('HTTP/1.0 403 Forbidden');
+        return;
+    }
 
     if (function_exists('curl_exec')){
         $conn = curl_init($url);
@@ -32,9 +43,11 @@ if (isset($_REQUEST['url'])) {
         $content = curl_exec($conn);
         curl_close($conn);
     }
+
     if (!$content && function_exists('file_get_contents')){
         $content = @file_get_contents($url);
     }
+
     if (!$content && function_exists('fopen') && function_exists('stream_get_contents')){
         $handle  = @fopen ($url, "r");
         $content = @stream_get_contents($handle);
@@ -50,7 +63,7 @@ if (isset($_REQUEST['url'])) {
 header('Content-type: application/javascript');
 
 ?>(function(doc){
-    
+
     var script = doc.querySelector('script[src*="fuc.js.php"]');
 
     if (!script) {
@@ -60,7 +73,7 @@ header('Content-type: application/javascript');
     var queryUrl = script.src.replace(/\?(.+)/, ''); // remove possible query string
 
     function _request(url) {
-        
+
         return (new Promise(function(resolve, reject) {
 
             var request = new XMLHttpRequest();
@@ -83,13 +96,13 @@ header('Content-type: application/javascript');
     }
 
     window.fetch_url_contents = function(url, type) {
-        
+
         type = type || 'text';
 
         var data, promise = new Promise(function(resolve, reject){
-            
+
             _request(url).then(function(text){
-                
+
                 switch(type.toLowerCase()) {
                     case 'html':
                         data = doc.createElement('div');
@@ -107,7 +120,7 @@ header('Content-type: application/javascript');
                 }
 
                 resolve(data);
-                
+
             }).catch(function(){
                 reject(arguments);
             });

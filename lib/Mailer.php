@@ -1,7 +1,7 @@
 <?php
 
-include(__DIR__.'/PHPMailer/PHPMailerAutoload.php');
-include(__DIR__.'/PHPMailer/class.phpmailer.php');
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class Mailer {
 
@@ -23,7 +23,7 @@ class Mailer {
 
         $message->setFrom(isset($options['from']) ? $options['from'] : 'mailer@'.(isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : 'localhost'));
 
-        if(isset($options['reply_to'])) {
+        if (isset($options['reply_to'])) {
             $message->addReplyTo($options['reply_to']);
         }
 
@@ -34,32 +34,31 @@ class Mailer {
 
         $mail = new PHPMailer();
 
-        $mail->PluginDir = __DIR__.'/PHPMailer/';
-        $mail->Mailer    = $this->transport;
+        if ($this->transport == 'smtp') {
 
-        if($this->transport == 'smtp') {
+            $mail->isSMTP();
 
-            if(isset($this->options['host']) && $this->options['host'])      {
+            if (isset($this->options['host']) && $this->options['host'])      {
                 $mail->Host = $this->options['host']; // Specify main and backup server
             }
 
-            if(isset($this->options['auth']) && $this->options['auth']) {
+            if (isset($this->options['auth']) && $this->options['auth']) {
                 $mail->SMTPAuth = $this->options['auth']; // Enable SMTP authentication
             }
 
-            if(isset($this->options['user']) && $this->options['user']) {
+            if (isset($this->options['user']) && $this->options['user']) {
                 $mail->Username = $this->options['user']; // SMTP username
             }
 
-            if(isset($this->options['password']) && $this->options['password']) {
+            if (isset($this->options['password']) && $this->options['password']) {
                 $mail->Password = $this->options['password']; // SMTP password
             }
 
-            if(isset($this->options['port']) && $this->options['port']) {
+            if (isset($this->options['port']) && $this->options['port']) {
                 $mail->Port = $this->options['port']; // smtp port
             }
 
-            if(isset($this->options['encryption']) && $this->options['encryption']) {
+            if (isset($this->options['encryption']) && $this->options['encryption']) {
                 $mail->SMTPSecure = $this->options['encryption']; // Enable encryption: 'ssl' , 'tls' accepted
             }
 
@@ -80,7 +79,7 @@ class Mailer {
             $mail->addAddress($to_single);
         }
 
-        if($mail->Body != $mail->AltBody) {
+        if ($mail->Body != $mail->AltBody) {
             $mail->IsHTML(true); // Set email format to HTML
         }
 

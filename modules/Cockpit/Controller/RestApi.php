@@ -86,7 +86,7 @@ class RestApi extends \LimeExtra\Controller {
         }
 
         $data["_modified"] = time();
-        
+
         if (!isset($data['_id'])) {
             $data["_created"] = $data["_modified"];
         }
@@ -136,7 +136,7 @@ class RestApi extends \LimeExtra\Controller {
     }
 
     public function image() {
-        
+
         $options = [
             'src' => $this->param('src', false),
             'mode' => $this->param('m', 'thumbnail'),
@@ -150,16 +150,39 @@ class RestApi extends \LimeExtra\Controller {
         ];
 
         foreach([
-            'blur', 'brighten', 
-            'colorize', 'contrast', 
-            'darken', 'desaturate', 
-            'edge detect', 'emboss', 
+            'blur', 'brighten',
+            'colorize', 'contrast',
+            'darken', 'desaturate',
+            'edge detect', 'emboss',
             'flip', 'invert', 'opacity', 'pixelate', 'sepia', 'sharpen', 'sketch'
         ] as $f) {
             if ($this->param($f)) $options[$f] = $this->param($f);
         }
 
         return $this->module('cockpit')->thumbnail($options);
+    }
+
+    public function assets() {
+
+        $options = [
+            'sort' => ['created' => -1]
+        ];
+
+        if ($filter = $this->param("filter", null)) $options["filter"] = $filter;
+        if ($fields = $this->param('fields', null)) $options['fields'] = $fields;
+        if ($limit  = $this->param("limit", null))  $options["limit"] = $limit;
+        if ($sort   = $this->param("sort", null))   $options["sort"] = $sort;
+        if ($skip   = $this->param("skip", null))   $options["skip"] = $skip;
+
+        $assets = $this->storage->find("cockpit/assets", $options);
+        $total  = (!$skip && !$limit) ? count($assets) : $this->storage->count("cockpit/assets", $filter);
+
+        $this->app->trigger('cockpit.assets.list', [&$assets]);
+
+        return [
+            'assets' => $assets->toArray(),
+            'total' => $total
+        ];
     }
 
 }

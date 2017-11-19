@@ -226,7 +226,16 @@
 
         selectFile(file) {
 
-            if (!file || ['application/json', 'text/csv'].indexOf(file.type) == -1) {
+            if (file) {
+                file._type = file.type;
+            }
+
+
+            if (file && !file.type && file.name.match(/\.(csv|json)$/i)) {
+                file._type = file.name.match(/\.csv$/i) ? 'text/csv':'application/json';
+            }
+
+            if (!file || ['application/json', 'text/csv'].indexOf(file._type) == -1) {
                 return App.ui.notify("Only JSON and CSV files are supported.");
             }
 
@@ -298,7 +307,7 @@
                             entry = {};
 
                             Object.keys($this.mapping).forEach(function(k, val, d){
-                                
+
                                 val = c[$this.mapping[k]];
                                 d   = $this.filterData[k];
 

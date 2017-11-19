@@ -62,8 +62,8 @@ class Aggregate implements Executable
      *
      *  * batchSize (integer): The number of documents to return per batch.
      *
-     *  * bypassDocumentValidation (boolean): If true, allows the write to opt
-     *    out of document level validation. This only applies when the $out
+     *  * bypassDocumentValidation (boolean): If true, allows the write to
+     *    circumvent document level validation. This only applies when the $out
      *    stage is specified.
      *
      *    For servers < 3.2, this option is ignored as document level validation

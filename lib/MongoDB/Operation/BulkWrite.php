@@ -86,8 +86,11 @@ class BulkWrite implements Executable
      *
      * Supported options for the bulk write operation:
      *
-     *  * bypassDocumentValidation (boolean): If true, allows the write to opt
-     *    out of document level validation.
+     *  * bypassDocumentValidation (boolean): If true, allows the write to
+     *    circumvent document level validation. The default is false.
+     *
+     *    For servers < 3.2, this option is ignored as document level validation
+     *    is not available.
      *
      *  * ordered (boolean): If true, when an insert fails, return without
      *    performing the remaining writes. If false, when a write fails,

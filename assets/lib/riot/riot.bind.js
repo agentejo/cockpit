@@ -7,17 +7,17 @@
 
     riot.util.bind = function(tag, namespace) {
 
-        var root = tag.root,
-            attr = (namespace ? namespace+'-':'')+'bind',
-            attrSelector = '['+attr+']';
+        var root = tag.root;
+
+        tag.root.$bindingRoot = true;
 
         function update() {
 
             var field;
 
-            Array.prototype.forEach.call(root.querySelectorAll(attrSelector), function(ele) {
+            Array.prototype.forEach.call(root.querySelectorAll('[bind]'), function(ele) {
 
-                field = ele.getAttribute(attr);
+                field = ele.getAttribute('bind');
 
                 if (!ele.$boundTo) {
                     init(ele);
@@ -38,35 +38,51 @@
 
         function init(ele) {
 
-            ele.$boundTo = tag;
+            var element = ele.parentNode, _tag = tag;
+
+			while (element && element.nodeType === 1) {
+
+                if (element._tag && element.$bindingRoot) {
+
+                    if (element._tag.root !== tag.root) {
+                        _tag = element._tag;
+                    }
+
+                    break;
+                }
+
+				element = element.parentNode;
+			}
+
+            ele.$boundTo = _tag;
 
             ele.$getValue = function(field) {
 
-                field = field || ele.getAttribute(attr);
+                field = field || ele.getAttribute('bind');
 
                 var value = null;
 
-                if (ele.$boundTo !== tag ) {
+                if (ele.$boundTo !== _tag ) {
                     return;
                 }
 
-                return _.get(tag, field);
+                return _.get(_tag, field);
             };
 
             ele.$setValue = (function() {
 
                 return function(value, silent, field) {
 
-                    field = field || ele.getAttribute(attr);
+                    field = field || ele.getAttribute('bind');
 
                     try {
-                        _.set(tag, field, value);
+                        _.set(_tag, field, value);
 
                         if (!silent) {
-                            tag.update();
+                            _tag.update();
                         }
 
-                        tag.trigger('bindingupdated', [field, value]);
+                        _tag.trigger('bindingupdated', [field, value]);
 
                         return true;
 
@@ -115,7 +131,7 @@
                     fn = new Function('input', 'val', 'try{'+body+'}catch(e){}');
 
                     return function(value) {
-                        
+
                         if (document.activeElement === ele && nodeType == 'input' && !isCheckbox) {
                             return;
                         }
@@ -131,12 +147,11 @@
 
                     ele._tag.$getValue = ele.$getValue;
                     ele._tag.$setValue = ele.$setValue;
-                    ele._tag.$boundTo  = tag;
+                    ele._tag.$boundTo  = _tag;
 
                     ele.$updateValue = function(value, field) {
 
                         if (ele._tag.$updateValue) {
-
                             ele._tag.$updateValue.apply(ele._tag, arguments);
                         }
                     };
@@ -150,21 +165,11 @@
         }
 
         // init values
-        tag.on('mount', function() {
-            update();
-        });
+        tag.on('mount'  , function() { update(); });
+        tag.on('updated', function() { update(); });
+        tag.on('bind'   , function() { update(); });
+        tag.$bindUpdate = function() { update(); };
 
-        tag.on('updated', function() {
-            update();
-        });
-
-        tag.on('bind', function() {
-            update();
-        });
-
-        tag.$bindUpdate = function() {
-            update();
-        };
     };
 
     var Mixin = {

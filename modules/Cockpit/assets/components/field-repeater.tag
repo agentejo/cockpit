@@ -60,7 +60,7 @@
                 animation: false
             });
 
-            this.trigger('update');
+            this.update();
         });
 
         this.on('update', function() {
@@ -136,7 +136,7 @@
         getOrderPreview(item, idx) {
 
             if (item.field && item.field.type && item.field.options && (opts.display || item.field.options.display)) {
-                
+
                 var value, display = opts.display || item.field.options.display;
 
                 if (item.field.options.display == '$value') {
@@ -144,7 +144,7 @@
                 } else {
                     value = _.get(item.value, display) || 'Item '+(idx+1);
                 }
-                
+
                 return App.Utils.renderValue(item.field.type, value);
             }
 

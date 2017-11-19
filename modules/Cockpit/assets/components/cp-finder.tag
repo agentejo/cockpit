@@ -21,50 +21,25 @@
     <div show="{ App.Utils.count(data) }">
 
         <div class="uk-clearfix" data-uk-margin>
+
             <div class="uk-float-left">
 
-                <span class="uk-button uk-button-primary uk-margin-small-right uk-form-file">
-                    <input class="js-upload-select" type="file" multiple="true" title="">
-                    <i class="uk-icon-upload"></i>
+                <span class="uk-button-group uk-margin-right">
+                    <button class="uk-button uk-button-large {listmode=='list' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-list"></i></button>
+                    <button class="uk-button uk-button-large {listmode=='grid' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-th"></i></button>
                 </span>
 
-                <span class="uk-button-group uk-margin-small-right">
-
-                    <span class="uk-position-relative uk-button" data-uk-dropdown="mode:'click'">
-
-                        <i class="uk-icon-magic"></i>
-
-                        <div class="uk-dropdown uk-text-left">
-                            <ul class="uk-nav uk-nav-dropdown">
-                                <li class="uk-nav-header">Create</li>
-                                <li><a onclick="{ createfolder }"><i class="uk-icon-folder-o uk-icon-justify"></i> Folder</a></li>
-                                <li><a onclick="{ createfile }"><i class="uk-icon-file-o uk-icon-justify"></i> File</a></li>
-                            </ul>
-                        </div>
-
-                    </span>
-
-                    <button class="uk-button" onclick="{ refresh }">
-                        <i class="uk-icon-refresh"></i>
-                    </button>
-                </span>
-
-                <span if="{ selected.count }" data-uk-dropdown="mode:'click'">
-                    <span class="uk-button"><strong>Batch:</strong> { selected.count } selected &nbsp;<i class="uk-icon-caret-down"></i></span>
-                    <div class="uk-dropdown uk-margin-top uk-text-left">
-                        <ul class="uk-nav uk-nav-dropdown">
-                            <li class="uk-nav-header">Batch action</li>
-                            <li><a onclick="{ removeSelected }">Delete</a></li>
-                        </ul>
-                    </div>
-                </span>
+                <div class="uk-form uk-form-icon uk-display-inline-block">
+                    <i class="uk-icon-filter"></i>
+                    <input ref="filter" type="text" class="uk-form-large" onkeyup="{ updatefilter }">
+                </div>
 
                 <span class="uk-margin-left" data-uk-dropdown="mode:'click'">
 
                     <a class="uk-text-muted" title="Sort files" data-uk-tooltip="pos:'right'"><i class="uk-icon-sort"></i> { App.Utils.ucfirst(sortBy) }</a>
 
                     <div class="uk-dropdown uk-margin-top uk-text-left">
-                        <ul class="uk-nav uk-nav-dropdown">
+                        <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                             <li class="uk-nav-header">Sort by</li>
                             <li><a class="uk-dropdown-close" onclick="{ doSortBy.bind(this, 'name') }">Name</a></li>
                             <li><a class="uk-dropdown-close" onclick="{ doSortBy.bind(this, 'filesize') }">Filesize</a></li>
@@ -73,21 +48,49 @@
                     </div>
 
                 </span>
+
             </div>
 
             <div class="uk-float-right">
 
-                <span class="uk-button-group uk-margin-right">
-                    <button class="uk-button {listmode=='list' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-list"></i></button>
-                    <button class="uk-button {listmode=='grid' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-th"></i></button>
+                <span class="uk-button uk-button-large uk-button-primary uk-margin-small-right uk-form-file">
+                    <input class="js-upload-select" type="file" multiple="true" title="">
+                    <i class="uk-icon-upload"></i>
                 </span>
 
-                <div class="uk-form uk-form-icon uk-display-inline-block">
-                    <i class="uk-icon-filter"></i>
-                    <input ref="filter" type="text" onkeyup="{ updatefilter }">
-                </div>
+                <span class="uk-button-group uk-margin-small-right">
+
+                    <span class="uk-position-relative uk-button uk-button-large" data-uk-dropdown="mode:'click', pos:'bottom-right'">
+
+                        <i class="uk-icon-magic"></i>
+
+                        <div class="uk-dropdown uk-text-left">
+                            <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
+                                <li class="uk-nav-header">Create</li>
+                                <li><a onclick="{ createfolder }"><i class="uk-icon-folder-o uk-icon-justify"></i> Folder</a></li>
+                                <li><a onclick="{ createfile }"><i class="uk-icon-file-o uk-icon-justify"></i> File</a></li>
+                            </ul>
+                        </div>
+
+                    </span>
+
+                    <button class="uk-button uk-button-large" onclick="{ refresh }">
+                        <i class="uk-icon-refresh"></i>
+                    </button>
+                </span>
+
+                <span if="{ selected.count }" data-uk-dropdown="mode:'click', pos:'bottom-right'">
+                    <span class="uk-button uk-button-large"><strong>Batch:</strong> { selected.count } selected &nbsp;<i class="uk-icon-caret-down"></i></span>
+                    <div class="uk-dropdown uk-margin-top uk-text-left">
+                        <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
+                            <li class="uk-nav-header">Batch action</li>
+                            <li><a onclick="{ removeSelected }">Delete</a></li>
+                        </ul>
+                    </div>
+                </span>
 
             </div>
+
         </div>
 
         <div class="uk-grid uk-grid-divider uk-margin-large-top" data-uk-grid-margin>
@@ -149,8 +152,10 @@
                                                 <div class="uk-dropdown">
                                                     <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                                                         <li class="uk-nav-header uk-text-truncate">{ folder.name }</li>
-                                                        <li><a onclick="{ parent.rename }">Rename</a></li>
-                                                        <li><a onclick="{ parent.remove }">Delete</a></li>
+                                                        <li><a class="uk-dropdown-close"onclick="{ parent.download }">Download</a></li>
+                                                        <li><a class="uk-dropdown-close" onclick="{ parent.rename }">Rename</a></li>
+                                                        <li class="uk-nav-divider"></li>
+                                                        <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
                                                     </ul>
                                                 </div>
                                             </span>
@@ -183,13 +188,14 @@
                                                 <span class="uk-margin-small-right" data-uk-dropdown="mode:'click'">
                                                     <a><i class="uk-icon-{ parent.getIconCls(file) } js-no-item-select"></i>
                                                     <div class="uk-dropdown">
-                                                        <ul class="uk-nav uk-nav-dropdown">
+                                                        <ul class="uk-nav">
                                                             <li class="uk-nav-header uk-text-truncate">{ file.name }</li>
-                                                            <li> <a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">Open</a></li>
+                                                            <li><a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">Open</a></li>
                                                             <li><a class="uk-dropdown-close" onclick="{ parent.rename }">Rename</a></li>
+                                                            <li><a class="uk-dropdown-close" onclick="{ parent.download }">Download</a></li>
                                                             <li if="{ file.ext == 'zip' }"><a onclick="{ parent.unzip }">Unzip</a></li>
                                                             <li class="uk-nav-divider"></li>
-                                                            <li><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
+                                                            <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
                                                         </ul>
                                                     </div>
                                                 </span>
@@ -238,13 +244,14 @@
                                             <a class="uk-icon-bars"></a>
 
                                             <div class="uk-dropdown uk-dropdown-flip">
-                                                <ul class="uk-nav uk-nav-dropdown">
+                                                <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                                                     <li class="uk-nav-header">{ App.i18n.get('Actions') }</li>
-                                                    <li> <a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">Open</a></li>
+                                                    <li><a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">Open</a></li>
                                                     <li><a class="uk-dropdown-close" onclick="{ parent.rename }">Rename</a></li>
+                                                    <li><a class="uk-dropdown-close" onclick="{ parent.download }">Download</a></li>
                                                     <li if="{ file.ext == 'zip' }"><a onclick="{ parent.unzip }">Unzip</a></li>
                                                     <li class="uk-nav-divider"></li>
-                                                    <li><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
+                                                    <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
                                                 </ul>
                                             </div>
                                         </span>
@@ -278,7 +285,7 @@
                 'audio'    : /\.(mp3|weba|ogg|wav|flac)$/i,
                 'archive'  : /\.(zip|rar|7zip|gz)$/i,
                 'document' : /\.(htm|html|pdf|md)$/i,
-                'text'     : /\.(txt|htm|html|php|css|less|js|json|md|markdown|yaml|xml|htaccess)$/i
+                'text'     : /\.(csv|txt|htm|html|php|css|less|js|json|md|markdown|yaml|xml|htaccess)$/i
             };
 
         opts.root = opts.root || '/';
@@ -450,7 +457,7 @@
 
                     this.selected.count = Object.keys(this.selected.paths).length;
 
-                    return;
+                    return App.$(this.root).trigger('selectionchange', [this.selected]);
                 }
 
                 if (!(e.metaKey || e.ctrlKey)) {
@@ -498,6 +505,15 @@
                 }
 
             });
+        }
+
+        download(e, item) {
+
+            e.stopPropagation();
+
+            item = e.item.file || e.item.folder;
+
+            window.open(App.route('/media/api?cmd=download&path='+item.path));
         }
 
         unzip(e, item) {

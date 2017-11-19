@@ -51,7 +51,6 @@
             });
 
             if (opts.path) {
-
                 this.open(opts.path);
             }
         });
@@ -66,7 +65,6 @@
                 editor.clearHistory();
 
                 requestapi({"cmd":"readfile", "path":path}, function(content){
-
                     editor.setOption("mode", getMode(path));
                     editor.focus();
                     $this.isReady = true;
@@ -100,7 +98,9 @@
         }
 
         function getMode(path) {
-            var mode = CodeMirror.findModeByFileName(path).mode || 'text';
+
+            var def = CodeMirror.findModeByFileName(path) || {},
+                mode = def.mode || 'text';
 
             if (mode == 'php') {
                 mode = 'application/x-httpd-php';

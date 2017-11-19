@@ -89,7 +89,7 @@
                                 var form = App.$($this.root).closest('form');
 
                                 if (form.length) {
-                                    form.trigger('submit');
+                                    form.trigger('submit', [ed]);
                                 }
                               };
 
@@ -133,7 +133,7 @@
 
                         App.media.select(function(selected) {
                             editor.insertContent('<img src="' + SITE_URL+'/'+selected + '" alt="">');
-                        }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
+                        }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
                     },
                     context: 'insert',
                     prependToContext: true

@@ -22,7 +22,6 @@ use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
-use MongoDB\Exception\RuntimeException;
 
 /**
  * WritableStream abstracts the process of writing a GridFS file.

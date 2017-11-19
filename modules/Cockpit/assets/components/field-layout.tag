@@ -12,27 +12,27 @@
 
     <div class="uk-sortable layout-components" ref="components" show="{mode=='edit' && items.length}" data-uk-sortable>
         <div class="uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
-            
+
             <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">
                 <img class="uk-margin-small-right" riot-src="{ parent.components[item.component].icon ? parent.components[item.component].icon : App.base('/assets/app/media/icons/component.svg')}" width="16">
                 <div class="uk-text-bold uk-text-truncate uk-flex-item-1">
                     { parent.components[item.component].label || App.Utils.ucfirst(item.component) }
                 </div>
-                <div class="uk-button-group uk-invisible">
-                    <a class="uk-button uk-button-small" onclick="{ parent.addComponent }" title="{ App.i18n.get('Add Colum') }"><i class="uk-icon-plus"></i></a>
-                    <a class="uk-button uk-button-small" onclick="{ parent.settings }"><i class="uk-icon-cogs"></i></a>
-                    <a class="uk-button uk-button-small uk-button-danger" onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a>
+                <div class="uk-text-small uk-invisible">
+                    <a onclick="{ parent.addComponent }" title="{ App.i18n.get('Add Component') }"><i class="uk-icon-plus"></i></a>
+                    <a class="uk-margin-small-left" onclick="{ parent.settings }"><i class="uk-icon-cogs"></i></a>
+                    <a class="uk-margin-small-left uk-text-danger" onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a>
                 </div>
             </div>
 
             <div class="uk-margin" if="{parent.components[item.component].children}">
-                <field-layout bind="items[{idx}].children" child="true"></field-layout>
+                <field-layout bind="items[{idx}].children" child="true" components="{ parent.components }"></field-layout>
             </div>
 
             <div class="uk-margin" if="{item.component == 'grid'}">
-                <field-layout-grid bind="items[{idx}].columns"></field-layout-grid>
+                <field-layout-grid bind="items[{idx}].columns" components="{ parent.components }"></field-layout-grid>
             </div>
-            
+
         </div>
     </div>
 
@@ -65,7 +65,7 @@
 
     <div class="uk-modal uk-sortable-nodrag" ref="modalSettings">
         <div class="uk-modal-dialog { components[settingsComponent.component].dialog=='large' && 'uk-modal-dialog-large' }" if="{settingsComponent}">
-            
+
             <a class="uk-modal-close uk-close"></a>
 
             <h3 class="uk-margin-large-bottom">
@@ -79,7 +79,7 @@
             </ul>
 
             <div class="uk-grid uk-grid-small uk-grid-match">
-                
+
                 <div class="uk-grid-margin uk-width-medium-{field.width}" each="{field,idx in settingsFields}" show="{!settingsGroup || (settingsGroup == field.group) }" no-reorder>
 
                     <div class="uk-panel">
@@ -99,14 +99,14 @@
             <div class="uk-text-right uk-margin-top">
                 <a class="uk-button uk-button-link uk-button-large uk-modal-close">{ App.i18n.get('Close') }</a>
             </div>
-            
+
         </div>
     </div>
 
     <script>
-        
+
         var $this = this;
-        
+
         riot.util.bind(this);
 
         this.mode = 'edit';
@@ -118,9 +118,80 @@
             {name: "style", type: "code", group: "General", options: {syntax: "css", height: "100px"}}
         ];
 
+        this.components = {
+            "section": {
+                "children":true
+            },
+
+            "grid": {
+
+            },
+
+            "text": {
+                "icon": App.base('/assets/app/media/icons/text.svg'),
+                "dialog": "large",
+                "fields": [
+                    {"name": "text", "type": "wysiwyg"}
+                ]
+            },
+
+            "html": {
+                "icon": App.base('/assets/app/media/icons/code.svg'),
+                "dialog": "large",
+                "fields": [
+                    {"name": "html", "type": "html"}
+                ]
+            },
+
+            "heading": {
+                "icon": App.base('/assets/app/media/icons/heading.svg'),
+                "fields": [
+                    {"name": "text", "type": "text"},
+                    {"name": "tag", "type": "select", "options":{"options":['h1','h2','h3','h4','h5','h6']}}
+                ]
+            },
+
+            "image": {
+                "icon": App.base('/assets/app/media/icons/photo.svg'),
+                "fields": [
+                    {"name": "image", "type": "image"}
+                ]
+            },
+
+            "gallery": {
+                "icon": App.base('/assets/app/media/icons/gallery.svg'),
+                "fields": [
+                    {"name": "gallery", "type": "gallery"}
+                ]
+            },
+
+            "divider": {
+                "icon": App.base('/assets/app/media/icons/divider.svg'),
+            },
+
+            "button": {
+                "icon": App.base('/assets/app/media/icons/button.svg'),
+                "fields": [
+                    {"name": "text", "type": "text"},
+                    {"name": "url", "type": "text"}
+                ]
+            }
+        };
+
+        if (window.CP_LAYOUT_COMPONENTS && App.Utils.isObject(window.CP_LAYOUT_COMPONENTS)) {
+            this.components = App.$.extend(true, this.components, window.CP_LAYOUT_COMPONENTS);
+        }
+
+        App.trigger('field.layout.components', {components:this.components});
+
         this.on('mount', function() {
 
+            if (opts.components && App.Utils.isObject(opts.components)) {
+                this.components = App.$.extend(true, this.components, opts.components);
+            }
+
             App.$(this.refs.components).on('change.uk.sortable', function(e, sortable, el, mode) {
+
                 if ($this.refs.components === sortable.element[0]) {
 
                     var items = [];
@@ -140,7 +211,7 @@
                 $this.update();
             });
 
-            this.trigger('update');
+            this.update();
         });
 
         this.$initBind = function() {
@@ -195,7 +266,7 @@
         }
 
         settings(e) {
-            
+
             var component = e.item.item;
 
             this.settingsComponent = e.item.item;
@@ -237,69 +308,8 @@
             this.settingsGroup = e.item && e.item.group || false;
         }
 
-        this.components = {
-            "section": {
-                "children":true
-            },
-            
-            "grid": {
 
-            },
 
-            "text": {
-                "icon": App.base('/assets/app/media/icons/text.svg'),
-                "dialog": "large",
-                "fields": [
-                    {"name": "text", "type": "wysiwyg"}
-                ]
-            },
-
-            "html": {
-                "icon": App.base('/assets/app/media/icons/code.svg'),
-                "dialog": "large",
-                "fields": [
-                    {"name": "html", "type": "html"}
-                ]
-            },
-
-            "heading": {
-                "icon": App.base('/assets/app/media/icons/heading.svg'),
-                "fields": [
-                    {"name": "text", "type": "text"},
-                    {"name": "tag", "type": "select", "options":{"options":['h1','h2','h3','h4','h5','h6']}}
-                ]
-            },
-
-            "image": {
-                "icon": App.base('/assets/app/media/icons/photo.svg'),
-                "fields": [
-                    {"name": "image", "type": "image"}
-                ]
-            },
-
-            "divider": {
-                "icon": App.base('/assets/app/media/icons/divider.svg'),
-            },
-
-            "button": {
-                "icon": App.base('/assets/app/media/icons/button.svg'),
-                "fields": [
-                    {"name": "text", "type": "text"},
-                    {"name": "url", "type": "text"}
-                ]
-            }
-        };
-
-        if (window.CP_LAYOUT_COMPONENTS && App.Utils.isObject(window.CP_LAYOUT_COMPONENTS)) {
-            this.components = App.$.extend(true, this.components, window.CP_LAYOUT_COMPONENTS);
-        }
-
-        if (opts.components && App.Utils.isObject(opts.components)) {
-            this.components = App.$.extend(true, this.components, opts.components);
-        }
-
-        App.trigger('field.layout.components', {components:this.components});
-        
     </script>
 
 </field-layout>
@@ -314,13 +324,13 @@
         <div class="uk-grid-margin" each="{column,idx in columns}">
             <div class="uk-panel uk-panel-framed">
                 <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">
-                    <div class="uk-flex-item-1 uk-margin-small-right"><strong class="uk-text-muted uk-text-small">{ (idx+1) }</strong></div>
+                    <div class="uk-flex-item-1 uk-margin-small-right"><strong class="uk-text-muted uk-text-small">Col { (idx+1) }</strong></div>
                     <a class="uk-invisible uk-margin-small-right" onclick="{ parent.addColumn }" title="{ App.i18n.get('Add Colum') }"><i class="uk-icon-plus"></i></a>
-                    <a class="uk-invisible uk-margin-small-right" onclick="{ parent.settings }" title="{ App.i18n.get('Settings') }"><i class="uk-icon-cog"></i></a>
+                    <a class="uk-invisible uk-margin-small-right" onclick="{ parent.settings }" title="{ App.i18n.get('Settings') }"><i class="uk-icon-cogs"></i></a>
                     <a class="uk-invisible" onclick="{ parent.remove }"><i class="uk-text-danger uk-icon-trash-o"></i></a>
                 </div>
                 <div class="uk-margin">
-                    <field-layout bind="columns[{idx}].children" child="true"></field-layout>
+                    <field-layout bind="columns[{idx}].children" child="true" components="{ opts.components }"></field-layout>
                 </div>
             </div>
         </div>
@@ -333,7 +343,7 @@
                 { App.i18n.get('Column') }
             </h3>
             <field-set class="uk-margin" bind="settingsComponent.settings" fields="{fields}"></field-set>
-        
+
             <div class="uk-text-right uk-margin-top">
                 <a class="uk-button uk-button-link uk-button-large uk-modal-close">{ App.i18n.get('Close') }</a>
             </div>
@@ -342,7 +352,7 @@
     </div>
 
     <script>
-    
+
         var $this = this;
 
         riot.util.bind(this);
@@ -375,7 +385,7 @@
         this.on('mount', function() {
 
             App.$(this.refs.columns).on('change.uk.sortable', function(e, sortable, el, mode) {
-                
+
                 if ($this.refs.columns === sortable.element[0]) {
 
                     var columns = [];
@@ -390,11 +400,11 @@
             });
 
 
-            this.trigger('update');
+            this.update();
         });
 
         addColumn() {
-            
+
             var column = {
                 settings: { id: '', 'class': '', style: '' },
                 children: []
@@ -405,7 +415,7 @@
         }
 
         settings(e) {
-            
+
             this.settingsComponent = e.item.column;
 
             setTimeout(function() {
@@ -416,7 +426,7 @@
         remove(e) {
             this.columns.splice(e.item.idx, 1);
         }
-    
+
     </script>
 
 </field-layout-grid>

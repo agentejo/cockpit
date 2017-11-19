@@ -34,9 +34,9 @@ class RestApi extends \LimeExtra\Controller {
 
         $collection = $this->module('collections')->collection($collection);
         $user = $this->module('cockpit')->getUser();
-        
+
         if ($user) {
-            
+
             if (!$this->module('collections')->hasaccess($collection['name'], 'entries_view')) {
                 return $this->stop('{"error": "Unauthorized"}', 401);
             }
@@ -47,13 +47,24 @@ class RestApi extends \LimeExtra\Controller {
         if ($filter   = $this->param('filter', null))   $options['filter'] = $filter;
         if ($limit    = $this->param('limit', null))    $options['limit'] = intval($limit);
         if ($sort     = $this->param('sort', null))     $options['sort'] = $sort;
+        if ($fields   = $this->param('fields', null))   $options['fields'] = $fields;
         if ($skip     = $this->param('skip', null))     $options['skip'] = intval($skip);
         if ($populate = $this->param('populate', null)) $options['populate'] = $populate;
-        if ($lang = $this->param('lang', null)) $options['lang'] = $lang;
-        if ($user) $options["user"] = $user;
+
+        // fields filter
+        $fieldsFilter = [];
+
+        if ($fieldsFilter = $this->param('fieldsFilter', null)) $options['fieldsFilter'] = $fieldsFilter;
+        if ($lang = $this->param('lang', false)) $fieldsFilter['lang'] = $lang;
+        if ($ignoreDefaultFallback = $this->param('ignoreDefaultFallback', false)) $fieldsFilter['ignoreDefaultFallback'] = $ignoreDefaultFallback;
+        if ($user) $fieldsFilter["user"] = $user;
+
+        if (count($fieldsFilter)) {
+            $options['fieldsFilter'] = $fieldsFilter;
+        }
 
         if (isset($options["sort"])) {
-            
+
             foreach ($sort as $key => &$value) {
                 $options["sort"][$key]= intval($value);
             }
@@ -107,6 +118,40 @@ class RestApi extends \LimeExtra\Controller {
         $data = $this->module('collections')->save($collection, $data);
 
         return $data;
+    }
+
+    public function remove($collection=null) {
+
+        $user   = $this->module('cockpit')->getUser();
+        $filter = $this->param('filter', null);
+        $count  = $this->param('count', false);
+
+        if (!$collection || !$filter) {
+            return $this->stop('{"error": "Please provide a collection name and filter"}', 417);
+        }
+
+        // handele single item cases
+        if (is_string($filter)) {
+            $filter = ['_id' => $filter];
+        } elseif (isset($filter['_id'])) {
+            $filter = ['_id' => $filter['_id']];
+        }
+
+        if (!$this->module('collections')->exists($collection)) {
+            return $this->stop('{"error": "Collection not found"}', 412);
+        }
+
+        if (!$this->module('collections')->hasaccess($collection, 'entries_delete')) {
+            return $this->stop('{"error": "Unauthorized"}', 401);
+        }
+
+        if ($count) {
+            $count = $this->module('collections')->count($collection, $filter);
+        }
+
+        $this->module('collections')->remove($collection, $filter);
+
+        return ['success' => true, 'count' => $count];
     }
 
     public function createCollection() {
@@ -166,5 +211,16 @@ class RestApi extends \LimeExtra\Controller {
         return $collections[$name];
     }
 
+    public function listCollections($extended = false) {
 
+        $user = $this->module('cockpit')->getUser();
+
+        if ($user) {
+            $collections = $this->module("collections")->getCollectionsInGroup($user['group'], $extended);
+        } else {
+            $collections = $this->module('collections')->collections($extended);
+        }
+
+        return $collections;
+    }
 }

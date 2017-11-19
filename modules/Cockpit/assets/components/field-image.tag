@@ -63,7 +63,7 @@
 
     <script>
 
-        this.on('mount', function() { this.trigger('update'); });
+        this.on('mount', function() { this.update(); });
         this.on('update', function() { if (opts.opts) App.$.extend(opts, opts.opts); });
 
         riot.util.bind(this);
@@ -101,7 +101,7 @@
                 $this.$setValue($this.image);
                 $this.update();
 
-            }, { typefilter:'image', pattern: '*.jpg|*.png|*.gif|*.svg' });
+            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
         }
 
         selectAsset() {

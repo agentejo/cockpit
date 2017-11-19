@@ -26,7 +26,11 @@
         },
 
         boolean: function(value) {
-            this.resolve(value == '1' || !!value);
+
+            if (value == 'true' || value == '1') value = true;
+            if (value == 'false' || value == '0') value = false;
+
+            this.resolve(!!value);
         },
 
         date: function(value) {
@@ -38,6 +42,15 @@
             }
 
             this.resolve(value);
+        },
+
+        tags: function(value) {
+
+            if (typeof(value) == 'string') {
+                value = value.split(',').map(function(tag) { return tag.trim()});
+            }
+
+            this.resolve(Array.isArray(value) ? value : []);
         },
 
         collectionlink: function(value, field, extra) {

@@ -7,7 +7,9 @@
 
     <script>
 
-        this.on('mount', function() { this.trigger('update'); });
+        this.on('mount', function() {
+            this.update();
+        });
 
         this.on('update', function() {
 
@@ -15,7 +17,7 @@
                 this.refs.input.setAttribute('required', 'required');
             }
 
-            this.options = opts.options || []
+            this.options = opts.options || [];
 
             if (typeof(this.options) === 'string') {
 

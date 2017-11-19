@@ -45,7 +45,15 @@ class Admin extends \Cockpit\AuthController {
             return $this->helper('admin')->denyRequest();
         }
 
-        $collection = [ 'name' => '', 'label' => '', 'color' => '', 'fields'=>[], 'acl' => new \ArrayObject, 'sortable' => false, 'in_menu' => false ];
+        $collection = [
+            'name' => '',
+            'label' => '',
+            'color' => '',
+            'fields'=>[],
+            'acl' => new \ArrayObject,
+            'sortable' => false,
+            'in_menu' => false
+        ];
 
         if ($name) {
 
@@ -75,7 +83,15 @@ class Admin extends \Cockpit\AuthController {
             if (!$superAdmin) $aclgroups[] = $group;
         }
 
-        return $this->render('collections:views/collection.php', compact('collection', 'templates', 'aclgroups'));
+        // rules
+        $rules = [
+            'create' => !$name ? "<?php\n\n" : $this->app->helper('fs')->read("#storage:collections/rules/{$name}.create.php"),
+            'read'   => !$name ? "<?php\n\n" : $this->app->helper('fs')->read("#storage:collections/rules/{$name}.read.php"),
+            'update' => !$name ? "<?php\n\n" : $this->app->helper('fs')->read("#storage:collections/rules/{$name}.update.php"),
+            'delete' => !$name ? "<?php\n\n" : $this->app->helper('fs')->read("#storage:collections/rules/{$name}.delete.php"),
+        ];
+
+        return $this->render('collections:views/collection.php', compact('collection', 'templates', 'aclgroups', 'rules'));
     }
 
     public function entries($collection) {
@@ -99,10 +115,20 @@ class Admin extends \Cockpit\AuthController {
             'description' => ''
         ], $collection);
 
+        $context = _check_collection_rule($collection, 'read', ['options' => ['filter'=>[]]]);
+
+        if ($context && isset($context->options['fields'])) {
+            foreach ($collection['fields'] as &$field) {
+                if (isset($context->options['fields'][$field['name']]) && !$context->options['fields'][$field['name']]) {
+                    $field['lst'] = false;
+                }
+            }
+        }
+
         $view = 'collections:views/entries.php';
 
-        if ($override = $this->app->path('config:collections/'.$collection['name'].'views/entries.php')) {
-            $view = $path;
+        if ($override = $this->app->path('#config:collections/'.$collection['name'].'/views/entries.php')) {
+            $view = $override;
         }
 
         return $this->render($view, compact('collection', 'count'));
@@ -118,8 +144,9 @@ class Admin extends \Cockpit\AuthController {
             return $this->helper('admin')->denyRequest();
         }
 
-        $collection = $this->module('collections')->collection($collection);
-        $entry      = new \ArrayObject([]);
+        $collection    = $this->module('collections')->collection($collection);
+        $entry         = new \ArrayObject([]);
+        $excludeFields = [];
 
         if (!$collection) {
             return false;
@@ -134,20 +161,29 @@ class Admin extends \Cockpit\AuthController {
 
         if ($id) {
 
-            $entry = $this->module('collections')->findOne($collection['name'], ['_id' => $id]);
+            //$entry = $this->module('collections')->findOne($collection['name'], ['_id' => $id]);
+            $entry = $this->app->storage->findOne("collections/{$collection['_id']}", ['_id' => $id]);
 
             if (!$entry) {
                 return false;
             }
         }
 
+        $context = _check_collection_rule($collection, 'read', ['options' => ['filter'=>[]]]);
+
+        if ($context && isset($context->options['fields'])) {
+            foreach ($context->options['fields'] as $field => $include) {
+                if(!$include) $excludeFields[] = $field;
+            }
+        }
+
         $view = 'collections:views/entry.php';
 
-        if ($override = $this->app->path('config:collections/'.$collection['name'].'views/entry.php')) {
+        if ($override = $this->app->path('#config:collections/'.$collection['name'].'views/entry.php')) {
             $view = $override;
         }
 
-        return $this->render($view, compact('collection', 'entry'));
+        return $this->render($view, compact('collection', 'entry', 'excludeFields'));
     }
 
     public function save_entry($collection) {
@@ -172,12 +208,13 @@ class Admin extends \Cockpit\AuthController {
             return $this->helper('admin')->denyRequest();
         }
 
-        $entry['_by'] = $this->module('cockpit')->getUser('_id');
+        $entry['_mby'] = $this->module('cockpit')->getUser('_id');
 
         if (isset($entry['_id'])) {
             $_entry = $this->module('collections')->findOne($collection['name'], ['_id' => $entry['_id']]);
             $revision = !(json_encode($_entry) == json_encode($entry));
         } else {
+            $entry['_by'] = $this->module('cockpit')->getUser('_id');
             $revision = true;
         }
 
@@ -270,7 +307,7 @@ class Admin extends \Cockpit\AuthController {
 
         $revisions = $this->app->helper('revisions')->getList($id);
 
-        
+
         return $this->render('collections:views/revisions.php', compact('collection', 'entry', 'revisions'));
     }
 

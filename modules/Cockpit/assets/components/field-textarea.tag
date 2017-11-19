@@ -24,7 +24,7 @@
                 this.refs.input.setAttribute('required', 'required');
             }
 
-            this.trigger('update');
+            this.update();
         });
 
     </script>

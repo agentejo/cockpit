@@ -72,8 +72,9 @@
             <div class="uk-width-medium-3-4">
 
                 <ul class="uk-tab uk-margin-large-bottom">
-                    <li class="{ tab=='fields' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }">{ App.i18n.get('Fields') }</a></li>
-                    <li class="{ tab=='acl' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }">{ App.i18n.get('Access') }</a></li>
+                    <li class="{ tab=='fields' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="fields">{ App.i18n.get('Fields') }</a></li>
+                    <li class="{ tab=='auth' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="auth">{ App.i18n.get('Permissions') }</a></li>
+                    <li class="{ tab=='other' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="other">{ App.i18n.get('Other') }</a></li>
                 </ul>
 
                 <div class="uk-form-row" show="{tab=='fields'}">
@@ -82,15 +83,30 @@
 
                 </div>
 
-                <div class="uk-form-row" show="{tab=='acl'}">
+                <div class="uk-form-row" show="{tab=='auth'}">
 
-                    <div class="uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" if="{!aclgroups.length}">
-                        <div class="uk-text-center uk-text-muted">
-                            <img class="uk-svg-adjust" src="@url('assets:app/media/icons/accounts.svg')" alt="icon" data-uk-svg>
-                            <p class="uk-text-large">
-                                @lang('No groups')
-                            </p>
+                    <div class="uk-panel-space">
+
+                        <div class="uk-grid">
+                            <div class="uk-width-1-3 uk-flex uk-flex-middle uk-flex-center">
+                                <div class="uk-text-center">
+                                    <p class="uk-text-uppercase uk-text-small uk-text-bold">@lang('Public')</p>
+                                    <img class="uk-text-primary uk-svg-adjust" src="@url('assets:app/media/icons/globe.svg')" alt="icon" width="80" data-uk-svg>
+                                </div>
+                            </div>
+                            <div class="uk-flex-item-1">
+                                <div class="uk-margin uk-text-small">
+                                    <strong class="uk-text-uppercase">@lang('Collection')</strong>
+                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.{group}.collection_edit" label="@lang('Edit Collection')"></field-boolean></div>
+                                    <strong class="uk-text-uppercase uk-display-block uk-margin-top">@lang('Entries')</strong>
+                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.public.entries_view" label="@lang('View Entries')"></field-boolean></div>
+                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.public.entries_edit" label="@lang('Edit Entries')"></field-boolean></div>
+                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.public.entries_create" label="@lang('Create Entries')"></field-boolean></div>
+                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.public.entries_delete" label="@lang('Delete Entries')"></field-boolean></div>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
 
                     <div class="uk-panel uk-panel-box uk-panel-space uk-panel-card uk-margin" each="{group in aclgroups}">
@@ -117,7 +133,58 @@
 
                     </div>
 
+                    <div class="uk-margin uk-panel-box uk-panel-card">
+                        <div class="uk-flex uk-flex-middle">
+                            <div class="uk-flex-item-1"><span class="uk-badge uk-badge-success uk-text-uppercase uk-margin-small-bottom badge-rule">Create</span></div>
+                            <div><field-boolean bind="collection.rules.create.enabled" label="@lang('Enabled')"></field-boolean></div>
+                        </div>
+                        <field-code bind="rules.create" syntax="php" if="{collection.rules.create.enabled}" height="350"></field-code>
+                    </div>
+
+                    <div class="uk-margin uk-panel-box uk-panel-card">
+                        <div class="uk-flex uk-flex-middle">
+                            <div class="uk-flex-item-1"><span class="uk-badge uk-text-uppercase uk-margin-small-bottom badge-rule">Read</span></div>
+                            <div><field-boolean bind="collection.rules.read.enabled" label="@lang('Enabled')"></field-boolean></div>
+                        </div>
+                        <field-code bind="rules.read" syntax="php" if="{collection.rules.read.enabled}" height="350"></field-code>
+                    </div>
+
+                    <div class="uk-margin uk-panel-box uk-panel-card">
+                        <div class="uk-flex uk-flex-middle">
+                            <div class="uk-flex-item-1"><span class="uk-badge uk-badge-warning uk-text-uppercase uk-margin-small-bottom badge-rule">Update</span></div>
+                            <div><field-boolean bind="collection.rules.update.enabled" label="@lang('Enabled')"></field-boolean></div>
+                        </div>
+                        <field-code bind="rules.update" syntax="php" if="{collection.rules.update.enabled}" height="350"></field-code>
+                    </div>
+
+                    <div class="uk-margin uk-panel-box uk-panel-card">
+                        <div class="uk-flex uk-flex-middle">
+                            <div class="uk-flex-item-1"><span class="uk-badge uk-badge-danger uk-text-uppercase uk-margin-small-bottom badge-rule">Delete</span></div>
+                            <div><field-boolean bind="collection.rules.delete.enabled" label="@lang('Enabled')"></field-boolean></div>
+                        </div>
+                        <field-code bind="rules.delete" syntax="php" if="{collection.rules.delete.enabled}" height="350"></field-code>
+                    </div>
+
                 </div>
+
+
+                <div class="uk-form-row" show="{tab=='other'}">
+
+                    <div class="uk-form-row">
+                        <strong class="uk-text-small uk-text-uppercase">@lang('Content Preview')</strong>
+                        <div class="uk-margin-top"><field-boolean bind="collection.contentpreview.enabled" label="@lang('Enabled')"></field-boolean></div>
+                        <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted uk-margin-top" show="{collection.contentpreview && collection.contentpreview.enabled}">
+                            <i class="uk-icon-globe"></i>
+                            <input class="uk-width-1-1 uk-form-large uk-text-primary" type="url" placeholder="@lang('http://...')"  bind="collection.contentpreview.url">
+                        </div>
+                        <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted uk-margin-top" show="{collection.contentpreview && collection.contentpreview.enabled}">
+                            <i class="uk-icon-random"></i>
+                            <input class="uk-width-1-1 uk-form-large uk-text-primary" type="url" placeholder="@lang('ws://...')"  bind="collection.contentpreview.wsurl">
+                        </div>
+                    </div>
+
+                </div>
+
 
                 <div class="uk-margin-large-top" show="{ collection.fields.length }">
 
@@ -138,6 +205,14 @@
 
     </form>
 
+    <style>
+
+        .badge-rule {
+            width: 50px;
+        }
+
+    </style>
+
     <script type="view/script">
 
         var $this = this, f;
@@ -147,6 +222,15 @@
         this.collection = {{ json_encode($collection) }};
         this.templates  = {{ json_encode($templates) }};
         this.aclgroups  = {{ json_encode($aclgroups) }};
+
+        this.collection.rules = this.collection.rules || {
+            create: {},
+            read: {},
+            update: {},
+            'delete': {},
+        };
+
+        this.rules = {{ json_encode($rules) }};
 
         this.tab = 'fields';
 
@@ -179,8 +263,8 @@
             });
         });
 
-        toggleTab() {
-            this.tab = this.tab == 'fields' ? 'acl' : 'fields';
+        toggleTab(e) {
+            this.tab = e.target.getAttribute('data-tab');
         }
 
         selectIcon(e) {
@@ -193,7 +277,7 @@
 
             var collection = this.collection;
 
-            App.callmodule('collections:saveCollection', [this.collection.name, collection]).then(function(data) {
+            App.callmodule('collections:saveCollection', [this.collection.name, collection, this.rules]).then(function(data) {
 
                 if (data.result) {
 

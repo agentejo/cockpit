@@ -245,7 +245,7 @@
                 App.request('/cockpit/utils/thumb_url', {src:ASSETS_URL+v.path,w:30,h:30}, 'text').then(function(url){
 
                     App.$('#'+id).attr('src', url);
-                
+
                 }).catch(function(e){
                     // todo
                 });
@@ -379,7 +379,7 @@
     })();
 
     App.Utils.generateToken = function(bits, base) {
-        
+
         if (!base) base = 16;
         if (bits === undefined) bits = 128;
         if (bits <= 0) return '0';
@@ -403,6 +403,5 @@
         }
         else return res;
     };
-
 
 })(App, riot);
