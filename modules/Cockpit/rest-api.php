@@ -1,19 +1,19 @@
 <?php
 
 
-$this->on("before", function() {
+$this->on('before', function() {
 
     $routes = new \ArrayObject([]);
 
     /*
         $routes['{:resource}'] = string (classname) | callable
     */
-    $this->trigger("cockpit.rest.init", [$routes])->bind("/api/*", function($params) use($routes) {
+    $this->trigger('cockpit.rest.init', [$routes])->bind('/api/*', function($params) use($routes) {
 
         $this->module('cockpit')->setUser(false, false);
 
         $route = $this['route'];
-        $path  = $params[":splat"][0];
+        $path  = $params[':splat'][0];
 
         if (!$path) {
             return false;
@@ -26,7 +26,7 @@ $this->on("before", function() {
 
         if (preg_match('/account-/', $token)) {
 
-            $account = $this->storage->findOne("cockpit/accounts", ["api_key" => $token]);
+            $account = $this->storage->findOne('cockpit/accounts', ['api_key' => $token]);
 
             if ($account) {
                 $allowed = true;
@@ -99,6 +99,7 @@ $this->on("before", function() {
         $user   = $this->module('cockpit')->getUser();
 
         if ($resource == 'public' && $resourcefile = $this->path("#config:api/{$path}.php")) {
+            
             $output = include($resourcefile);
 
         } elseif ($allowed && $resourcefile = $this->path("#config:api/{$path}.php")) {
@@ -112,7 +113,7 @@ $this->on("before", function() {
                 // invoke class
                 if (is_string($routes[$resource])) {
 
-                    $action = count($params) ? array_shift($params):'index';
+                    $action = count($params) ? array_shift($params) : 'index';
                     $output = $this->invoke($routes[$resource], $action, $params);
 
                 } elseif (is_callable($routes[$resource])) {
@@ -121,7 +122,7 @@ $this->on("before", function() {
 
             } catch(Exception $e) {
 
-                $output = ["error" => true];
+                $output = ['error' => true];
 
                 $this->response->status = 406;
                 $this->trigger('cockpit.api.erroronrequest', [$route, $e->getMessage()]);
