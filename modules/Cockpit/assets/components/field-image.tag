@@ -86,9 +86,13 @@
 
             value = value || Object.create(_default);
 
+            if (value && !value.path) {
+               return $this.$setValue(Object.create(_default));
+            }
+
             if (JSON.stringify(this.image) !== JSON.stringify(value)) {
                 this.image = value;
-                this.update();
+                return this.update();
             }
 
         }.bind(this);
