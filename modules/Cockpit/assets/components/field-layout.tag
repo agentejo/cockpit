@@ -4,6 +4,12 @@
         .layout-components > div {
             margin-bottom: 5px;
         }
+
+        .field-layout-column-label {
+            font-size: .8em;
+            font-weight: bold;
+        }
+
     </style>
 
     <div class="uk-text-center uk-text-muted {opts.child ? 'uk-text-small':'uk-placeholder'}" show="{ !items.length }">
@@ -16,11 +22,10 @@
             <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">
                 <img class="uk-margin-small-right" riot-src="{ parent.components[item.component].icon ? parent.components[item.component].icon : App.base('/assets/app/media/icons/component.svg')}" width="16">
                 <div class="uk-text-bold uk-text-truncate uk-flex-item-1">
-                    { parent.components[item.component].label || App.Utils.ucfirst(item.component) }
+                    <a class="uk-link-muted" onclick="{ parent.settings }">{ parent.components[item.component].label || App.Utils.ucfirst(item.component) }</a>
                 </div>
                 <div class="uk-text-small uk-invisible">
                     <a onclick="{ parent.addComponent }" title="{ App.i18n.get('Add Component') }"><i class="uk-icon-plus"></i></a>
-                    <a class="uk-margin-small-left" onclick="{ parent.settings }"><i class="uk-icon-cogs"></i></a>
                     <a class="uk-margin-small-left uk-text-danger" onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a>
                 </div>
             </div>
@@ -37,7 +42,7 @@
     </div>
 
     <div class="uk-margin uk-text-center">
-        <a class="uk-button uk-button-outline uk-text-primary { !opts.child ? 'uk-button-large':'uk-button-small'}" onclick="{ addComponent }" title="{ App.i18n.get('Add component') }" data-uk-tooltip="pos:'bottom'"><i class="uk-icon-plus-circle"></i></a>
+        <a class="uk-text-primary { !opts.child && 'uk-button uk-button-outline uk-button-large'}" onclick="{ addComponent }" title="{ App.i18n.get('Add component') }" data-uk-tooltip="pos:'bottom'"><i class="uk-icon-plus-circle"></i></a>
     </div>
 
     <div class="uk-modal uk-sortable-nodrag" ref="modalComponents">
@@ -374,13 +379,12 @@
         <a class="uk-button uk-button-link" onclick="{ addColumn }">{ App.i18n.get('Add Colum') }</a>
     </div>
 
-    <div class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-{columns.length}" show="{columns.length}" ref="columns" data-uk-sortable="animation:false">
+    <div class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-{columns.length > 4 ? 1 : columns.length}" show="{columns.length}" ref="columns" data-uk-sortable="animation:false">
         <div class="uk-grid-margin" each="{column,idx in columns}">
-            <div class="uk-panel uk-panel-framed">
+            <div class="uk-panel">
                 <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">
-                    <div class="uk-flex-item-1 uk-margin-small-right"><strong class="uk-text-muted uk-text-small">Col { (idx+1) }</strong></div>
+                    <div class="uk-flex-item-1 uk-margin-small-right"><a class="uk-text-muted uk-text-uppercase field-layout-column-label" onclick="{ parent.settings }" title="{ App.i18n.get('Settings') }">{ App.i18n.get('Column') } { (idx+1) }</a></div>
                     <a class="uk-invisible uk-margin-small-right" onclick="{ parent.addColumn }" title="{ App.i18n.get('Add Colum') }"><i class="uk-icon-plus"></i></a>
-                    <a class="uk-invisible uk-margin-small-right" onclick="{ parent.settings }" title="{ App.i18n.get('Settings') }"><i class="uk-icon-cogs"></i></a>
                     <a class="uk-invisible" onclick="{ parent.remove }"><i class="uk-text-danger uk-icon-trash-o"></i></a>
                 </div>
                 <div class="uk-margin">
