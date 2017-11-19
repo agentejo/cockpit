@@ -1,6 +1,7 @@
 @if(isset($collection['color']) && $collection['color'])
 <style>
     .app-header { border-top: 8px {{ $collection['color'] }} solid; }
+    .revisions-box { height: auto; max-height: 45vh; }
 </style>
 @endif
 
@@ -108,14 +109,16 @@
 
             <h3 class="uk-text-bold">@lang('Revisions')</h3>
 
-            <ul class="uk-nav uk-nav-side">
-                <li class="{rev == active && 'uk-active'}" each="{rev in revisions}">
-                    <a class="{rev !== active && 'uk-text-muted'}" onclick="{ parent.selectRevision }">
-                        { App.Utils.dateformat(rev._created*1000, 'MMMM Do YYYY') }<br>
-                        <span class="uk-text-small">{ App.Utils.dateformat(rev._created*1000, 'hh:mm:ss a') }</span>
-                    </a>
-                </li>
-            </ul>
+            <div class="uk-margin revisions-box { revisions.length > 10 && 'uk-scrollable-box'}">
+                <ul class="uk-nav uk-nav-side">
+                    <li class="{rev == active && 'uk-active'}" each="{rev in revisions}">
+                        <a class="{rev !== active && 'uk-text-muted'}" onclick="{ parent.selectRevision }">
+                            { App.Utils.dateformat(rev._created*1000, 'MMMM Do YYYY') }<br>
+                            <span class="uk-text-small">{ App.Utils.dateformat(rev._created*1000, 'hh:mm:ss a') }</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 

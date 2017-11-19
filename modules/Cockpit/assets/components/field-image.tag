@@ -3,7 +3,9 @@
     <figure class="uk-display-block uk-panel uk-panel-box uk-panel-card uk-overlay uk-overlay-hover">
 
         <div class="uk-flex uk-flex-middle uk-flex-center uk-text-muted">
-            <div class="uk-width-1-1" show="{ image.path }" riot-style="min-height:160px;background-size:contain;background-repeat:no-repeat;background-position:50% 50%;{ image.path ? 'background-image: url('+(image.path.match(/^(http\:|https\:|\/\/)/) ? image.path:encodeURI(SITE_URL+'/'+image.path))+')':''}"></div>
+            <div class="uk-width-1-1 uk-text-center" if="{ image.path }">
+                <cp-thumbnail src="{ (SITE_URL+'/'+image.path) }" height="160"></cp-thumbnail>
+            </div>
             <div class="uk-text-center uk-margin-top uk-margin-bottom" show="{ !image.path }">
                 <img class="uk-svg-adjust uk-text-muted" riot-src="{App.base('/assets/app/media/icons/photo.svg')}" width="60" data-uk-svg>
                 <div class="uk-margin-top">
