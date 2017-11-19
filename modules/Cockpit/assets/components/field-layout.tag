@@ -10,7 +10,7 @@
         <img class="uk-svg-adjust" riot-src="{ App.base('/assets/app/media/icons/layout.svg') }" width="100" data-uk-svg>
     </div>
 
-    <div class="uk-sortable layout-components" ref="components" show="{mode=='edit' && items.length}" data-uk-sortable>
+    <div class="uk-sortable layout-components" ref="components" show="{mode=='edit' && items.length}" data-uk-sortable="animation:false, group:'field-layout-items'">
         <div class="uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
 
             <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">
@@ -131,7 +131,7 @@
                 "icon": App.base('/assets/app/media/icons/text.svg'),
                 "dialog": "large",
                 "fields": [
-                    {"name": "text", "type": "wysiwyg"}
+                    {"name": "text", "type": "wysiwyg", "default": ""}
                 ]
             },
 
@@ -139,29 +139,29 @@
                 "icon": App.base('/assets/app/media/icons/code.svg'),
                 "dialog": "large",
                 "fields": [
-                    {"name": "html", "type": "html"}
+                    {"name": "html", "type": "html", "default": ""}
                 ]
             },
 
             "heading": {
                 "icon": App.base('/assets/app/media/icons/heading.svg'),
                 "fields": [
-                    {"name": "text", "type": "text"},
-                    {"name": "tag", "type": "select", "options":{"options":['h1','h2','h3','h4','h5','h6']}}
+                    {"name": "text", "type": "text", "default": ""},
+                    {"name": "tag", "type": "select", "options":{"options":['h1','h2','h3','h4','h5','h6']}, "default": "h1"}
                 ]
             },
 
             "image": {
                 "icon": App.base('/assets/app/media/icons/photo.svg'),
                 "fields": [
-                    {"name": "image", "type": "image"}
+                    {"name": "image", "type": "image", "default": {}}
                 ]
             },
 
             "gallery": {
                 "icon": App.base('/assets/app/media/icons/gallery.svg'),
                 "fields": [
-                    {"name": "gallery", "type": "gallery"}
+                    {"name": "gallery", "type": "gallery", "default": []}
                 ]
             },
 
@@ -172,8 +172,8 @@
             "button": {
                 "icon": App.base('/assets/app/media/icons/button.svg'),
                 "fields": [
-                    {"name": "text", "type": "text"},
-                    {"name": "url", "type": "text"}
+                    {"name": "text", "type": "text", "default": ""},
+                    {"name": "url", "type": "text", "default": ""}
                 ]
             }
         };
@@ -190,18 +190,57 @@
                 this.components = App.$.extend(true, this.components, opts.components);
             }
 
+            window.___moved_layout_item = null;
+
+            App.$(this.refs.components).on('start.uk.sortable', function(e, sortable, el, placeholder) {
+
+                if (!el) return;
+                e.stopPropagation();
+                window.___moved_layout_item = {idx: el._tag.idx, item: el._tag.item, src: $this};
+            });
+
             App.$(this.refs.components).on('change.uk.sortable', function(e, sortable, el, mode) {
+
+                if (!el) return;
+
+                e.stopPropagation();
+
+                var item = window.___moved_layout_item;
 
                 if ($this.refs.components === sortable.element[0]) {
 
-                    var items = [];
+                    switch(mode) {
 
-                    App.$($this.refs.components).children().each(function() {
-                        items.push(this._tag.item);
-                    });
+                        case 'moved':
+                            var items = [];
 
-                    $this.$setValue(items);
-                    $this.update();
+                            App.$($this.refs.components).children().each(function() {
+                                items.push(this._tag.item);
+                            });
+
+                            $this.$setValue(items);
+                            $this.update();
+
+                            break;
+
+                        case 'removed':
+
+                            $this.items.splice(item.idx, 1);
+                            $this.$setValue($this.items);
+
+                            break;
+
+                        case 'added':
+
+                            $this.items.splice(el.index(), 0, item.item);
+                            $this.$setValue($this.items);
+                            el.remove();
+                            setTimeout(function(){
+                                $this.update();
+                            }, 100);
+
+                            break;
+                    }
                 }
             });
 
@@ -242,6 +281,15 @@
                 component: e.item.name,
                 settings: { id: '', 'class': '', style: '' }
             };
+
+            var settings = this.components[e.item.name];
+
+            if (Array.isArray(settings.fields)) {
+
+                settings.fields.forEach(function(field) {
+                    item.settings[field.name] = field.default || null;
+                })
+            }
 
             if (this.components[e.item.name].children) {
                 item.children = [];
@@ -320,7 +368,7 @@
         <a class="uk-button uk-button-link" onclick="{ addColumn }">{ App.i18n.get('Add Colum') }</a>
     </div>
 
-    <div class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-{columns.length}" show="{columns.length}" ref="columns" data-uk-sortable>
+    <div class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-{columns.length}" show="{columns.length}" ref="columns" data-uk-sortable="animation:false">
         <div class="uk-grid-margin" each="{column,idx in columns}">
             <div class="uk-panel uk-panel-framed">
                 <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">

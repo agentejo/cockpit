@@ -243,7 +243,10 @@
                         }
                     });
 
-                    $this.tags['cp-revisions-info'].sync();
+                    if ($this.tags['cp-revisions-info']) {
+                        $this.tags['cp-revisions-info'].sync();
+                    }
+
                     $this.update();
 
                 } else {
