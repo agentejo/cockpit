@@ -10,6 +10,10 @@
             font-weight: bold;
         }
 
+        .uk-sortable-item .uk-sortable {
+            pointer-events: none;
+        }
+
     </style>
 
     <div class="uk-text-center uk-text-muted {opts.child ? 'uk-text-small':'uk-placeholder'}" show="{ !items.length }">
@@ -203,7 +207,6 @@
 
                 if (!el) return;
                 e.stopPropagation();
-                App.$(el).css('pointer-events', 'none');
                 window.___moved_layout_item = {idx: el._tag.idx, item: el._tag.item, src: $this};
             });
 
@@ -214,8 +217,6 @@
                 e.stopPropagation();
 
                 var item = window.___moved_layout_item;
-
-                App.$(el).css('pointer-events', '');
 
                 if ($this.refs.components === sortable.element[0]) {
 
