@@ -44,7 +44,7 @@ class RestApi extends \LimeExtra\Controller {
         return isset($region['data']) ? $region['data'] : [];
     }
 
-    public function listRegions() {
+    public function listRegions($extended = false) {
 
         $user = $this->module('cockpit')->getUser();
 
@@ -54,7 +54,7 @@ class RestApi extends \LimeExtra\Controller {
             $regions = $this->module('regions')->regions();
         }
 
-        return $regions;
+        return $extended ? $regions : array_keys($regions);
     }
 
 }
