@@ -1900,7 +1900,7 @@ riot.tag2('field-layout', '<div class="uk-text-center uk-text-muted {opts.child 
             "heading": {
                 "icon": App.base('/assets/app/media/icons/heading.svg'),
                 "fields": [
-                    {"name": "text", "type": "text", "default": ""},
+                    {"name": "text", "type": "text", "default": "Header"},
                     {"name": "tag", "type": "select", "options":{"options":['h1','h2','h3','h4','h5','h6']}, "default": "h1"}
                 ]
             },
@@ -1908,7 +1908,9 @@ riot.tag2('field-layout', '<div class="uk-text-center uk-text-muted {opts.child 
             "image": {
                 "icon": App.base('/assets/app/media/icons/photo.svg'),
                 "fields": [
-                    {"name": "image", "type": "image", "default": {}}
+                    {"name": "image", "type": "image", "default": {}},
+                    {"name": "width", "type": "text", "default": ""},
+                    {"name": "height", "type": "text", "default": ""}
                 ]
             },
 
@@ -1981,7 +1983,6 @@ riot.tag2('field-layout', '<div class="uk-text-center uk-text-muted {opts.child 
 
                             $this.items.splice(item.idx, 1);
                             $this.$setValue($this.items);
-
                             break;
 
                         case 'added':
@@ -1989,10 +1990,10 @@ riot.tag2('field-layout', '<div class="uk-text-center uk-text-muted {opts.child 
                             $this.items.splice(el.index(), 0, item.item);
                             $this.$setValue($this.items);
                             el.remove();
-                            setTimeout(function(){
-                                $this.update();
-                            }, 100);
 
+                            if (opts.child) {
+                                $this.propagateUpdate();
+                            }
                             break;
                     }
                 }
@@ -2009,6 +2010,10 @@ riot.tag2('field-layout', '<div class="uk-text-center uk-text-muted {opts.child 
                 setTimeout(function(){
                     $this.settingsComponent = null;
                     $this.update();
+
+                    if (opts.child) {
+                        $this.propagateUpdate();
+                    }
                 }, 50);
             });
 
@@ -2031,6 +2036,18 @@ riot.tag2('field-layout', '<div class="uk-text-center uk-text-muted {opts.child 
             }
 
         }.bind(this);
+
+        this.propagateUpdate = function() {
+
+            var n = this;
+
+            while (n.parent) {
+                if (n.parent.root.getAttribute('data-is') == 'field-layout') {
+                    n.parent.$setValue(n.parent.items);
+                }
+                n = n.parent;
+            }
+        }
 
         this.addComponent = function(e) {
             this.refs.modalComponents.afterComponent = e.item && e.item.item ? e.item.idx : false;
@@ -2057,6 +2074,10 @@ riot.tag2('field-layout', '<div class="uk-text-center uk-text-muted {opts.child 
                 item.children = [];
             }
 
+            if (e.item.name == 'grid') {
+                item.columns = [];
+            }
+
             if (App.Utils.isNumber(this.refs.modalComponents.afterComponent)) {
                 this.items.splice(this.refs.modalComponents.afterComponent + 1, 0, item);
                 this.refs.modalComponents.afterComponent = false;
@@ -2064,10 +2085,16 @@ riot.tag2('field-layout', '<div class="uk-text-center uk-text-muted {opts.child 
                 this.items.push(item);
             }
 
-            this.$setValue(this.items, true);
+            this.$setValue(this.items);
 
             setTimeout(function() {
+
                 UIkit.modal(this.refs.modalComponents).hide();
+
+                if (opts.child) {
+                    $this.propagateUpdate();
+                }
+
             }.bind(this));
         }.bind(this)
 
@@ -2139,7 +2166,7 @@ riot.tag2('field-layout-grid', '<div class="uk-text-center uk-placeholder" if="{
                 value = [];
             }
 
-            if (JSON.stringify(this.columns) != JSON.stringify(value)) {
+            if (JSON.stringify(this.columns) !== JSON.stringify(value)) {
                 this.columns = value;
                 this.update();
             }
@@ -2169,6 +2196,20 @@ riot.tag2('field-layout-grid', '<div class="uk-text-center uk-placeholder" if="{
                     $this.$setValue(columns);
                     $this.update();
                 }
+            });
+
+            UIkit.modal(this.refs.modalSettings, {modal:false}).on('hide.uk.modal', function(e) {
+
+                if (e.target !== $this.refs.modalSettings) {
+                    return;
+                }
+
+                $this.$setValue($this.columns);
+
+                setTimeout(function() {
+                    $this.settingsComponent = null;
+                    $this.update();
+                }, 50);
             });
 
             this.update();
