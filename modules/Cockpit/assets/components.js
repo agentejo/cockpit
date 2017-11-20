@@ -1952,6 +1952,7 @@ riot.tag2('field-layout', '<div class="uk-text-center uk-text-muted {opts.child 
 
                 if (!el) return;
                 e.stopPropagation();
+                App.$(el).css('pointer-events', 'none');
                 window.___moved_layout_item = {idx: el._tag.idx, item: el._tag.item, src: $this};
             });
 
@@ -1962,6 +1963,8 @@ riot.tag2('field-layout', '<div class="uk-text-center uk-text-muted {opts.child 
                 e.stopPropagation();
 
                 var item = window.___moved_layout_item;
+
+                App.$(el).css('pointer-events', '');
 
                 if ($this.refs.components === sortable.element[0]) {
 
