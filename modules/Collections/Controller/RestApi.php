@@ -208,6 +208,6 @@ class RestApi extends \LimeExtra\Controller {
             $collections = $this->module('collections')->collections($extended);
         }
 
-        return $collections;
+        return $extended ? $collections : array_keys($collections);
     }
 }
