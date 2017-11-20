@@ -203,6 +203,7 @@
 
                 if (!el) return;
                 e.stopPropagation();
+                App.$(el).css('pointer-events', 'none');
                 window.___moved_layout_item = {idx: el._tag.idx, item: el._tag.item, src: $this};
             });
 
@@ -213,6 +214,8 @@
                 e.stopPropagation();
 
                 var item = window.___moved_layout_item;
+
+                App.$(el).css('pointer-events', '');
 
                 if ($this.refs.components === sortable.element[0]) {
 
