@@ -467,6 +467,18 @@
             this.root.$value = this.columns;
         };
 
+        this.propagateUpdate = function() {
+
+            var n = this;
+
+            while (n.parent) {
+                if (n.parent.root.getAttribute('data-is') == 'field-layout') {
+                    n.parent.$setValue(n.parent.items);
+                }
+                n = n.parent;
+            }
+        }
+
         this.on('mount', function() {
 
             App.$(this.refs.columns).on('change.uk.sortable', function(e, sortable, el, mode) {
@@ -485,6 +497,8 @@
 
                     $this.$setValue(columns);
                     $this.update();
+
+                    $this.propagateUpdate();
                 }
             });
 
@@ -515,6 +529,8 @@
 
             this.columns.push(column);
             this.$setValue(this.columns);
+
+            this.propagateUpdate();
         }
 
         settings(e) {

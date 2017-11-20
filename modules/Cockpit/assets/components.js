@@ -2177,6 +2177,18 @@ riot.tag2('field-layout-grid', '<div class="uk-text-center uk-placeholder" if="{
             this.root.$value = this.columns;
         };
 
+        this.propagateUpdate = function() {
+
+            var n = this;
+
+            while (n.parent) {
+                if (n.parent.root.getAttribute('data-is') == 'field-layout') {
+                    n.parent.$setValue(n.parent.items);
+                }
+                n = n.parent;
+            }
+        }
+
         this.on('mount', function() {
 
             App.$(this.refs.columns).on('change.uk.sortable', function(e, sortable, el, mode) {
@@ -2195,6 +2207,8 @@ riot.tag2('field-layout-grid', '<div class="uk-text-center uk-placeholder" if="{
 
                     $this.$setValue(columns);
                     $this.update();
+
+                    $this.propagateUpdate();
                 }
             });
 
@@ -2224,6 +2238,8 @@ riot.tag2('field-layout-grid', '<div class="uk-text-center uk-placeholder" if="{
 
             this.columns.push(column);
             this.$setValue(this.columns);
+
+            this.propagateUpdate();
         }.bind(this)
 
         this.settings = function(e) {
