@@ -15,7 +15,7 @@
                         <div class="uk-invisible">
                             <ul class="uk-grid uk-grid-small uk-flex-center uk-text-small">
                                 <li data-uk-dropdown="pos:'bottom-center'">
-                                    <a onclick="{ parent.selectAsset }" title="{ App.i18n.get('Select image') }" data-uk-tooltip><i class="uk-icon-image"></i></a>
+                                    <a class="uk-text-muted" onclick="{ parent.selectAsset }" title="{ App.i18n.get('Select image') }" data-uk-tooltip><i class="uk-icon-image"></i></a>
                                     <div class="uk-dropdown">
                                         <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                                             <li class="uk-nav-header">{ App.i18n.get('Source') }</li>
@@ -24,9 +24,9 @@
                                         </ul>
                                     </div>
                                 </li>
-                                <li><a onclick="{ parent.showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
-                                <li><a href="{ (SITE_URL+'/'+img.path) }" data-uk-lightbox="type:'image'" title="{ App.i18n.get('Full size') }" data-uk-tooltip><i class="uk-icon-eye"></i></a></li>
-                                <li><a onclick="{ parent.remove }" title="{ App.i18n.get('Remove image') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
+                                <li><a class="uk-text-muted" onclick="{ parent.showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
+                                <li><a class="uk-text-muted" href="{ (SITE_URL+'/'+img.path) }" data-uk-lightbox="type:'image'" title="{ App.i18n.get('Full size') }" data-uk-tooltip><i class="uk-icon-eye"></i></a></li>
+                                <li><a class="uk-text-danger" onclick="{ parent.remove }" title="{ App.i18n.get('Remove image') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
                             </ul>
                         </div>
 
