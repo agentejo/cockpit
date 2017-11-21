@@ -51,7 +51,7 @@
                 return;
             }
 
-            $this.refs.spinner.classList.remove('uk-hidden');
+            $this.refs.spinner.style.display = '';
 
             requestAnimationFrame(function() {
 
@@ -64,7 +64,7 @@
                             visibility: 'visible'
                         });
 
-                        $this.refs.spinner.classList.add('uk-hidden');
+                        $this.refs.spinner.style.display = 'none';
                     }, 50);
 
                     return;
@@ -84,7 +84,7 @@
                             visibility: 'visible'
                         });
 
-                        $this.refs.spinner.classList.add('uk-hidden');
+                        $this.refs.spinner.style.display = 'none';
                     }, 50);
 
                 }).catch(function(e){});
