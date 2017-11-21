@@ -134,12 +134,12 @@
                 </tbody>
             </table>
 
-            <div class="uk-margin-top" if="{count > limit}">
-                <span class="uk-button-group uk-margin-small-right">
-                    <a class="uk-button uk-button-large" onclick="{ loadPage }" data-page="{ (page - 1) }" if="{ page > 1 }">{ App.i18n.get('Previous') }</a>
-                    <a class="uk-button uk-button-large" onclick="{ loadPage }" data-page="{ (page + 1) }" if="{ (page*limit) < count }">{ App.i18n.get('Next') }</a>
+            <div class="uk-margin-top uk-flex uk-flex-middle" if="{count > limit}">
+                <span class="uk-button-group uk-margin-small-right uk-noselect">
+                    <a class="uk-button uk-button-outline { page > 1 ? 'uk-text-primary' : 'uk-text-muted uk-disabled' }" onclick="{ loadPage }" data-page="{ (page - 1) }">{ App.i18n.get('Previous') }</a>
+                    <a class="uk-button uk-button-outline { (page*limit) < count  ? 'uk-text-primary' : 'uk-text-muted uk-disabled'}" onclick="{ loadPage }" data-page="{ (page + 1) }">{ App.i18n.get('Next') }</a>
                 </span>
-                <span class="uk-text-small uk-text-muted">{page}/{Math.ceil(count/limit)}</span>
+                <span class="uk-text-small uk-text-muted uk-margin-small-left">{page}/{Math.ceil(count/limit)}</span>
             </div>
 
         </div>
@@ -245,7 +245,7 @@
         // pagination
         this.count    = 0;
         this.page     = 1;
-        this.limit    = opts.limit || 30;
+        this.limit    = opts.limit || 15;
 
         this.on('mount', function() {
 
