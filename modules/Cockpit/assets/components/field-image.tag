@@ -18,7 +18,7 @@
 
         <ul class="uk-grid uk-grid-small uk-flex-center uk-margin" show="{ image.path }">
             <li data-uk-dropdown="pos:'bottom-center'">
-                <a onclick="{ selectAsset }" title="{ App.i18n.get('Select image') }" data-uk-tooltip><i class="uk-icon-image"></i></a>
+                <a class="uk-text-muted" onclick="{ selectAsset }" title="{ App.i18n.get('Select image') }" data-uk-tooltip><i class="uk-icon-image"></i></a>
                 <div class="uk-dropdown">
                     <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                         <li class="uk-nav-header">{ App.i18n.get('Source') }</li>
@@ -28,7 +28,7 @@
                     </ul>
                 </div>
             </li>
-            <li><a onclick="{ showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
+            <li><a class="uk-text-muted" onclick="{ showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
             <li><a class="uk-text-danger" onclick="{ remove }" title="{ App.i18n.get('Reset') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
         </ul>
 
@@ -137,7 +137,7 @@
             this._meta = this.image.meta;
 
             setTimeout(function() {
-                UIkit.modal($this.refs.modalmeta, {modal:false}).show().on('close.uk.modal', function(){
+                UIkit.modal($this.refs.modalmeta, {modal:false}).show().one('close.uk.modal', function(){
                     $this._meta = null;
                 });
             }, 50)
