@@ -4,25 +4,32 @@
 
         <div ref="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-flex-center uk-grid-gutter uk-grid-width-medium-1-4" show="{ images && images.length }">
             <div data-idx="{ idx }" each="{ img,idx in images }">
-                <div class="uk-panel uk-panel-box uk-panel-thumbnail uk-panel-card">
-                    <figure class="uk-display-block uk-overlay uk-overlay-hover">
+                <div class="uk-panel uk-panel-box uk-panel-thumbnail uk-panel-card uk-visible-hover">
+
                         <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;">
                             <div class="uk-width-1-1 uk-text-center">
                                 <cp-thumbnail src="{ (SITE_URL+'/'+img.path) }" width="400" height="250"></cp-thumbnail>
                             </div>
                         </div>
-                        <figcaption class="uk-overlay-panel uk-overlay-background uk-overlay-top uk-flex uk-flex-center">
 
-                            <div>
-                                <ul class="uk-grid uk-grid-small">
-                                    <li><a onclick="{ parent.showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
-                                    <li><a href="{ (SITE_URL+'/'+img.path) }" data-uk-lightbox="type:'image'" title="{ App.i18n.get('Full size') }" data-uk-tooltip><i class="uk-icon-eye"></i></a></li>
-                                    <li><a onclick="{ parent.remove }" title="{ App.i18n.get('Remove image') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
-                                </ul>
-                            </div>
+                        <div class="uk-invisible">
+                            <ul class="uk-grid uk-grid-small uk-flex-center uk-text-small">
+                                <li data-uk-dropdown="pos:'bottom-center'">
+                                    <a onclick="{ parent.selectAsset }" title="{ App.i18n.get('Select image') }" data-uk-tooltip><i class="uk-icon-image"></i></a>
+                                    <div class="uk-dropdown">
+                                        <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
+                                            <li class="uk-nav-header">{ App.i18n.get('Source') }</li>
+                                            <li><a onclick="{ parent.selectAsset }">{ App.i18n.get('Select Asset') }</a></li>
+                                            <li><a onclick="{ parent.selectImage }">{ App.i18n.get('Select Image') }</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><a onclick="{ parent.showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
+                                <li><a href="{ (SITE_URL+'/'+img.path) }" data-uk-lightbox="type:'image'" title="{ App.i18n.get('Full size') }" data-uk-tooltip><i class="uk-icon-eye"></i></a></li>
+                                <li><a onclick="{ parent.remove }" title="{ App.i18n.get('Remove image') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
+                            </ul>
+                        </div>
 
-                        </figcaption>
-                    </figure>
                 </div>
 
             </div>
@@ -202,6 +209,34 @@
                     });
 
                     $this.$setValue($this.images.concat(images));
+                }
+            });
+        }
+
+        selectImage(e) {
+
+            var image = e.item.img;
+
+            App.media.select(function(selected) {
+
+                image.path = selected[0];
+                $this.$setValue($this.images);
+                $this.update();
+
+            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
+        }
+
+        selectAsset(e) {
+
+            var image = e.item.img;
+
+            App.assets.select(function(assets){
+
+                if (Array.isArray(assets) && assets[0]) {
+
+                    image.path = ASSETS_URL.replace(SITE_URL, '')+assets[0].path;
+                    $this.$setValue($this.images);
+                    $this.update();
                 }
             });
         }
