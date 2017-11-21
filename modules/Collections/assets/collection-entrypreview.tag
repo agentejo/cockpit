@@ -64,6 +64,8 @@
         .iframe-container iframe {
             background: #fff;
             box-shadow: 0 1px 2px 0 rgba(0,0,0,0.22);
+            margin-top: auto;
+            margin-bottom: auto;
             transition: all 400ms;
         }
 

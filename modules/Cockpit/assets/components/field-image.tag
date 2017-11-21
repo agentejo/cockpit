@@ -1,6 +1,6 @@
 <field-image>
 
-    <figure class="uk-display-block uk-panel uk-panel-box uk-panel-card uk-overlay uk-overlay-hover">
+    <div class="uk-display-block uk-panel uk-panel-box uk-panel-card">
 
         <div class="uk-flex uk-flex-middle uk-flex-center uk-text-muted">
             <div class="uk-width-1-1 uk-text-center" if="{ image.path }">
@@ -16,19 +16,23 @@
             </div>
         </div>
 
-        <figcaption class="uk-overlay-panel uk-overlay-background" show="{ image.path }">
+        <ul class="uk-grid uk-grid-small uk-flex-center uk-margin" show="{ image.path }">
+            <li data-uk-dropdown="pos:'bottom-center'">
+                <a title="{ App.i18n.get('Select image') }" data-uk-tooltip><i class="uk-icon-image"></i></a>
+                <div class="uk-dropdown">
+                    <ul class="uk-nav uk-nav-dropdown">
+                        <li class="uk-nav-header">{ App.i18n.get('Source') }</li>
+                        <li><a onclick="{ selectAsset }">{ App.i18n.get('Select Asset') }</a></li>
+                        <li><a onclick="{ selectImage }">{ App.i18n.get('Select Image') }</a></li>
+                        <li><a onclick="{ editUrl }">{ App.i18n.get('Enter Image Url') }</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li><a onclick="{ showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
+            <li><a class="uk-text-danger" onclick="{ remove }" title="{ App.i18n.get('Reset') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
+        </ul>
 
-            <ul class="uk-subnav">
-                <li><a onclick="{ selectImage }" title="{ App.i18n.get('Select image') }" data-uk-tooltip><i class="uk-icon-image"></i></a></li>
-                <li><a onclick="{ editUrl }" title="{ App.i18n.get('Edit Image Url') }" data-uk-tooltip><i class="uk-icon-link"></i></a></li>
-                <li><a onclick="{ showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
-                <li><a onclick="{ remove }" title="{ App.i18n.get('Reset') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
-            </ul>
-
-            <p class="uk-text-small uk-text-truncate">{ image.title }</p>
-
-        </figcaption>
-    </figure>
+    </div>
 
     <div class="uk-modal uk-sortable-nodrag" ref="modalmeta">
         <div class="uk-modal-dialog">
@@ -124,7 +128,8 @@
         }
 
         remove() {
-            this.$setValue({path:'', title:'', meta:{title:''}});
+            this.image = Object.create(_default);
+            this.$setValue(this.image);
         }
 
         showMeta() {
