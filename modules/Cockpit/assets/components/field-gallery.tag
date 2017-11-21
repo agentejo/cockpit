@@ -11,16 +11,14 @@
                                 <cp-thumbnail src="{ (SITE_URL+'/'+img.path) }" width="400" height="250"></cp-thumbnail>
                             </div>
                         </div>
-                        <figcaption class="uk-overlay-panel uk-overlay-background uk-flex uk-flex-middle uk-flex-center">
+                        <figcaption class="uk-overlay-panel uk-overlay-background uk-overlay-top uk-flex uk-flex-center">
 
                             <div>
-                                <ul class="uk-subnav">
+                                <ul class="uk-grid uk-grid-small">
                                     <li><a onclick="{ parent.showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
                                     <li><a href="{ (SITE_URL+'/'+img.path) }" data-uk-lightbox="type:'image'" title="{ App.i18n.get('Full size') }" data-uk-tooltip><i class="uk-icon-eye"></i></a></li>
                                     <li><a onclick="{ parent.remove }" title="{ App.i18n.get('Remove image') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
                                 </ul>
-
-                                <p class="uk-text-small uk-text-truncate">{ img.title }</p>
                             </div>
 
                         </figcaption>
