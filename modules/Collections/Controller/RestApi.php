@@ -66,6 +66,14 @@ class RestApi extends \LimeExtra\Controller {
 
         foreach ($collection['fields'] as $field) {
 
+            if (
+                $user && isset($field['acl']) &&
+                is_array($field['acl']) && count($field['acl']) &&
+                !(in_array($user['_id'] , $field['acl']) || in_array($user['group'] , $field['acl']))
+            ) {
+                continue;
+            }
+
             $fields[$field['name']] = [
                 'name' => $field['name'],
                 'type' => $field['type'],
