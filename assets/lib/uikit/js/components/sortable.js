@@ -284,7 +284,12 @@
 
                         // Fix event.target for a touch event
                         if (supportsTouch && document.elementFromPoint) {
-                            target = document.elementFromPoint(touch.pageX - document.body.scrollLeft, touch.pageY - document.body.scrollTop);
+                            
+                            var _target = document.elementFromPoint(touch.pageX - document.body.scrollLeft, touch.pageY - document.body.scrollTop);
+
+                            if (_target) {
+                                target = _target;
+                            }
                         }
 
                         overElement = UI.$(target);
