@@ -159,7 +159,7 @@
         this.group        = 'Main';
 
         if (this.languages.length) {
-            this.lang = App.session.get('collections.entry.lang', '');
+            this.lang = App.session.get('collections.entry.'+this.collection._id+'.lang', '');
         }
 
         // fill with default values
@@ -289,7 +289,7 @@
         }
 
         persistLanguage(e) {
-            App.session.set('collections.entry.lang', e.target.value);
+            App.session.set('collections.entry.'+this.collection._id+'.lang', e.target.value);
         }
 
     </script>
