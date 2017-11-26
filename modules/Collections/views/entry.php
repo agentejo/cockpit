@@ -47,7 +47,7 @@
 
             <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
 
-                <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center" show="{ App.Utils.count(groups) > 1 }">
+                <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center uk-noselect" show="{ App.Utils.count(groups) > 1 }">
                     <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
                     <li class="{ group==parent.group && 'uk-active'}" each="{items,group in groups}" show="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
                 </ul>
@@ -98,9 +98,9 @@
                     <div class="uk-width-1-1 uk-form-select">
 
                         <label class="uk-text-small">@lang('Language')</label>
-                        <div class="uk-margin-small-top">{ lang ? _.find(languages,{code:lang}).label:'Default' }</div>
+                        <div class="uk-margin-small-top"><span class="uk-badge uk-badge-outline {lang ? 'uk-text-primary' : 'uk-text-muted'}">{ lang ? _.find(languages,{code:lang}).label:'Default' }</span></div>
 
-                        <select bind="lang">
+                        <select bind="lang" onchange="{persistLanguage}">
                             <option value="">@lang('Default')</option>
                             <option each="{language,idx in languages}" value="{language.code}">{language.label}</option>
                         </select>
@@ -157,6 +157,10 @@
         this.languages    = App.$data.languages;
         this.groups       = {Main:[]};
         this.group        = 'Main';
+
+        if (this.languages.length) {
+            this.lang = App.session.get('collections.entry.lang', '');
+        }
 
         // fill with default values
         this.fields.forEach(function(field) {
@@ -282,6 +286,10 @@
             }
 
             return false;
+        }
+
+        persistLanguage(e) {
+            App.session.set('collections.entry.lang', e.target.value);
         }
 
     </script>
