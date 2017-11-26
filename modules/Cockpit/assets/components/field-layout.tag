@@ -10,7 +10,7 @@
             font-weight: bold;
         }
 
-        .uk-sortable-item .uk-sortable {
+        .uk-sortable-placeholder .uk-sortable {
             pointer-events: none;
         }
 
