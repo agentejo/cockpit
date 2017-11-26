@@ -463,12 +463,15 @@
 
             switch(this.imageField.type) {
                 case 'asset':
-                    if (data.mime.match(/^image\//)) {
+                    if (data.mime && data.mime.match(/^image\//)) {
                         return ASSETS_URL+data.path;
                     }
                     break;
                 case 'image':
-                    return data.path.match(/^(http\:|https\:|\/\/)/) ? data.path : SITE_URL+'/'+data.path;
+
+                    if (data.path) {
+                        return data.path.match(/^(http\:|https\:|\/\/)/) ? data.path : SITE_URL+'/'+data.path;
+                    }
                     break;
             }
 
