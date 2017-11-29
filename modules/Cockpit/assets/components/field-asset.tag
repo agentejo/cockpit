@@ -1,5 +1,11 @@
 <field-asset>
 
+    <div ref="uploadprogress" class="uk-margin uk-hidden">
+        <div class="uk-progress">
+            <div ref="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div>
+        </div>
+    </div>
+
     <div class="uk-placeholder uk-text-center uk-text-muted" if="{!asset}">
 
         <img class="uk-svg-adjust" riot-src="{ App.base('/assets/app/media/icons/assets.svg') }" width="100" data-uk-svg>
@@ -8,7 +14,7 @@
 
     </div>
 
-    <div class="uk-panel uk-panel-box uk-panel-card uk-display-inline-block" if="{asset}">
+    <div class="uk-panel uk-panel-box uk-panel-card" if="{asset}">
 
         <div class="uk-overlay uk-display-block uk-position-relative">
             <canvas class="uk-responsive-width" width="200" height="150"></canvas>
@@ -18,7 +24,7 @@
                     <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-h1 uk-text-muted uk-icon-{ getIconCls(asset.path) }"></i></span>
 
                     <a riot-href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
-                        <cp-thumbnail riot-src="{asset && ASSETS_URL+asset.path}" width="100" height="75"></cp-thumbnail>
+                        <cp-thumbnail riot-src="{asset && ASSETS_URL+asset.path}" height="160"></cp-thumbnail>
                     </a>
                 </div>
             </div>
@@ -59,6 +65,49 @@
             }
 
         }.bind(this);
+
+        this.on('mount', function() {
+
+            // handle uploads
+            App.assets.require(['/assets/lib/uikit/js/components/upload.js'], function() {
+
+                UIkit.uploadDrop($this.root, {
+
+                    action: App.route('/assetsmanager/upload'),
+                    type: 'json',
+                    filelimit: 1,
+                    before: function(options) {
+
+                    },
+                    loadstart: function() {
+                        $this.refs.uploadprogress.classList.remove('uk-hidden');
+                    },
+                    progress: function(percent) {
+
+                        percent = Math.ceil(percent) + '%';
+
+                        $this.refs.progressbar.innerHTML   = '<span>'+percent+'</span>';
+                        $this.refs.progressbar.style.width = percent;
+                    },
+                    allcomplete: function(response) {
+
+                        $this.refs.uploadprogress.classList.add('uk-hidden');
+
+                        if (response && response.failed && response.failed.length) {
+                            App.ui.notify("File(s) failed to uploaded.", "danger");
+                        }
+
+                        if (response && Array.isArray(response.assets) && response.assets.length) {
+                            $this.$setValue(response.assets[0]);
+                        }
+
+                        if (!response) {
+                            App.ui.notify("Something went wrong.", "danger");
+                        }
+                    }
+                });
+            });
+        })
 
         selectAsset() {
 
