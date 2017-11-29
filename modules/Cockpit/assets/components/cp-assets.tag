@@ -65,7 +65,7 @@
         <div class="uk-margin-large-top {modal && 'uk-overflow-container'}" if="{ !loading && assets.length }">
 
             <div class="uk-grid uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
-                <div class="uk-grid-margin" each="{ asset,idx in assets }" each="{ asset,idx in assets }" onclick="{ select }">
+                <div class="uk-grid-margin" each="{ asset,idx in assets }" onclick="{ select }">
                     <div class="uk-panel uk-panel-box uk-panel-card { selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}">
                         <div class="uk-overlay uk-display-block uk-position-relative">
                             <canvas class="uk-responsive-width" width="200" height="150"></canvas>
@@ -256,49 +256,49 @@
 
                 var uploadSettings = {
 
-                        action: App.route('/assetsmanager/upload'),
-                        type: 'json',
-                        before: function(options) {
+                    action: App.route('/assetsmanager/upload'),
+                    type: 'json',
+                    before: function(options) {
 
-                        },
-                        loadstart: function() {
-                            $this.refs.uploadprogress.classList.remove('uk-hidden');
-                        },
-                        progress: function(percent) {
+                    },
+                    loadstart: function() {
+                        $this.refs.uploadprogress.classList.remove('uk-hidden');
+                    },
+                    progress: function(percent) {
 
-                            percent = Math.ceil(percent) + '%';
+                        percent = Math.ceil(percent) + '%';
 
-                            $this.refs.progressbar.innerHTML   = '<span>'+percent+'</span>';
-                            $this.refs.progressbar.style.width = percent;
-                        },
-                        allcomplete: function(response) {
+                        $this.refs.progressbar.innerHTML   = '<span>'+percent+'</span>';
+                        $this.refs.progressbar.style.width = percent;
+                    },
+                    allcomplete: function(response) {
 
-                            $this.refs.uploadprogress.classList.add('uk-hidden');
+                        $this.refs.uploadprogress.classList.add('uk-hidden');
 
-                            if (response && response.failed && response.failed.length) {
-                                App.ui.notify("File(s) failed to uploaded.", "danger");
-                            }
-
-                            if (response && Array.isArray(response.assets) && response.assets.length) {
-
-                                if (!Array.isArray($this.assets)) {
-                                    $this.assets = [];
-                                }
-
-                                App.ui.notify("File(s) uploaded.", "success");
-
-                                response.assets.forEach(function(asset){
-                                    $this.assets.unshift(asset);
-                                });
-
-                                $this.listAssets(1);
-                            }
-
-                            if (!response) {
-                                App.ui.notify("Something went wrong.", "danger");
-                            }
-
+                        if (response && response.failed && response.failed.length) {
+                            App.ui.notify("File(s) failed to uploaded.", "danger");
                         }
+
+                        if (response && Array.isArray(response.assets) && response.assets.length) {
+
+                            if (!Array.isArray($this.assets)) {
+                                $this.assets = [];
+                            }
+
+                            App.ui.notify("File(s) uploaded.", "success");
+
+                            response.assets.forEach(function(asset){
+                                $this.assets.unshift(asset);
+                            });
+
+                            $this.listAssets(1);
+                        }
+
+                        if (!response) {
+                            App.ui.notify("Something went wrong.", "danger");
+                        }
+
+                    }
                 },
 
                 uploadselect = UIkit.uploadSelect(App.$('.js-upload-select', $this.root)[0], uploadSettings),

@@ -93,8 +93,7 @@ class Assets extends \Cockpit\AuthController {
                         }
                     }
 
-                    $assets[] = $asset;
-
+                    $assets[]    = $asset;
                     $uploaded[]  = $files['name'][$i];
                     $_uploaded[] = $targetpath.'/'.$clean;
 
