@@ -27,16 +27,16 @@
 
         <div class="uk-width-medium-1-1 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle uk-flex-center" if="{ !App.Utils.count(regions) }">
 
-            <div class="uk-width-medium-1-3 uk-animation-scale">
+            <div class="uk-animation-scale">
 
                 <p>
-                    <img src="@url('regions:icon.svg')" width="80" height="80" alt="Regions" data-uk-svg />
+                    <img class="uk-svg-adjust uk-text-muted" src="@url('regions:icon.svg')" width="80" height="80" alt="Regions" data-uk-svg />
                 </p>
                 <hr>
-                <span class="uk-text-large uk-text-muted">@lang('No regions').
+                <span class="uk-text-large"><strong>@lang('No regions').</strong>
 
                 @hasaccess?('regions', 'create')
-                <a href="@route('/regions/region')">Create a region.</a></span>
+                <a href="@route('/regions/region')">Create one</a></span>
                 @end
 
             </div>

@@ -27,13 +27,13 @@
 
         <div class="uk-width-medium-1-1 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle uk-flex-center" if="{ !App.Utils.count(forms) }">
 
-            <div class="uk-width-medium-1-4 uk-animation-scale">
+            <div class="uk-animation-scale">
 
                 <p>
-                    <img src="@url('forms:icon.svg')" width="80" height="80" alt="Forms" data-uk-svg />
+                    <img class="uk-svg-adjust uk-text-muted" src="@url('forms:icon.svg')" width="80" height="80" alt="Forms" data-uk-svg />
                 </p>
                 <hr>
-                <span class="uk-text-large uk-text-muted">@lang('No forms'). <a href="@route('/forms/form')">Create a form.</a></span>
+                <span class="uk-text-large"><strong>@lang('No forms').</strong> <a href="@route('/forms/form')">Create one</a></span>
 
             </div>
 
