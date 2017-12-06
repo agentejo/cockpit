@@ -68,7 +68,7 @@
                             </div>
 
                             <div class="uk-margin">
-                                <cp-field type="{field.type || 'text'}" bind="entry.{ field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" opts="{ field.options || {} }"></cp-field>
+                                <cp-field type="{field.type || 'text'}" bind="entry.{ field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" opts="{ field.options || {} }" required="{ field.required }"></cp-field>
                             </div>
 
                         </div>
