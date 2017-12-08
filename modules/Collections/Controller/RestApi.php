@@ -104,7 +104,7 @@ class RestApi extends \LimeExtra\Controller {
             return $this->stop('{"error": "Collection not found"}', 412);
         }
 
-        if (!$this->module('collections')->hasaccess($collection, isset($data['_id']) ? 'entries_edit':'entries_create')) {
+        if ($user && !$this->module('collections')->hasaccess($collection, isset($data['_id']) ? 'entries_edit':'entries_create')) {
             return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
@@ -136,7 +136,7 @@ class RestApi extends \LimeExtra\Controller {
             return $this->stop('{"error": "Collection not found"}', 412);
         }
 
-        if (!$this->module('collections')->hasaccess($collection, 'entries_delete')) {
+        if ($user && !$this->module('collections')->hasaccess($collection, 'entries_delete')) {
             return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
@@ -159,7 +159,7 @@ class RestApi extends \LimeExtra\Controller {
             return false;
         }
 
-        if (!$this->module('cockpit')->isSuperAdmin()) {
+        if ($user && !$this->module('cockpit')->isSuperAdmin()) {
             return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
@@ -180,7 +180,7 @@ class RestApi extends \LimeExtra\Controller {
 
         $collection = $this->module('collections')->collection($name);
 
-        if (!$this->module('cockpit')->isSuperAdmin()) {
+        if ($user && !$this->module('cockpit')->isSuperAdmin()) {
             return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
