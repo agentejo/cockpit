@@ -85,7 +85,11 @@ class Assets extends \Cockpit\AuthController {
 
                         if ($asset['width'] && $asset['height']) {
 
-                            $asset['colors'] = \ColorThief\ColorThief::getPalette($target, 5, ceil(($asset['width'] * $asset['height']) / 10000));
+                            try {
+                                $asset['colors'] = \ColorThief\ColorThief::getPalette($target, 5, ceil(($asset['width'] * $asset['height']) / 10000));
+                            } catch (\Exception $e) {
+                                $asset['colors'] = [];
+                            }
 
                             foreach($asset['colors'] as &$color) {
                                 $color = sprintf("%02x%02x%02x", $color[0], $color[1], $color[2]);
