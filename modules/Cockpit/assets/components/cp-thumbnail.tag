@@ -59,7 +59,7 @@
 
                     setTimeout(function() {
                         App.$($this.refs.canvas).css({
-                            backgroundImage: 'url('+url+')',
+                            backgroundImage: 'url('+_src+')',
                             backgroundSize: 'contain',
                             visibility: 'visible'
                         });
