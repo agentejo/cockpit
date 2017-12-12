@@ -66,13 +66,13 @@
 
             <div class="uk-grid uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
                 <div class="uk-grid-margin" each="{ asset,idx in assets }" onclick="{ select }">
-                    <div class="uk-panel uk-panel-box uk-panel-card { selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}">
+                    <div class="uk-panel uk-panel-box { selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}">
                         <div class="uk-overlay uk-display-block uk-position-relative">
                             <canvas class="uk-responsive-width" width="200" height="150"></canvas>
                             <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle">
                                 <div class="uk-width-1-1 uk-text-center">
                                     <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-h1 uk-text-muted uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
-                                    <cp-thumbnail src="{ASSETS_URL+asset.path}" width="100" height="75" if="{ asset.mime.match(/^image\//) }" title="{ asset.width && [asset.width, asset.height].join('x') }"></cp-thumbnail>
+                                    <cp-thumbnail src="{ASSETS_URL+asset.path}" height="150" if="{ asset.mime.match(/^image\//) }" title="{ asset.width && [asset.width, asset.height].join('x') }"></cp-thumbnail>
                                 </div>
                             </div>
                         </div>

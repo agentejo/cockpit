@@ -146,9 +146,15 @@
                             <li class="uk-grid-margin" each="{folder, idx in data.folders}" onclick="{ select }" if="{ infilter(folder) }">
                                 <div class="uk-panel uk-panel-box finder-folder { folder.selected ? 'uk-selected':'' }">
                                     <div class="uk-flex">
+                                        <div class="uk-margin-small-right">
+                                            <i class="uk-icon-folder-o uk-text-muted js-no-item-select"></i>
+                                        </div>
+                                        <div class="uk-flex-item-1 uk-margin-small-right uk-text-truncate">
+                                            <a class="uk-link-muted uk-noselect" onclick="{ parent.changedir }"><strong>{ folder.name }</strong></a>
+                                        </div>
                                         <div>
-                                            <span class="uk-margin-small-right" data-uk-dropdown="mode:'click'">
-                                                <i class="uk-icon-folder-o uk-text-muted js-no-item-select"></i>
+                                            <span data-uk-dropdown="mode:'click', pos:'bottom-right'">
+                                                <a><i class="uk-icon-ellipsis-v js-no-item-select"></i></a>
                                                 <div class="uk-dropdown">
                                                     <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                                                         <li class="uk-nav-header uk-text-truncate">{ folder.name }</li>
@@ -159,9 +165,6 @@
                                                     </ul>
                                                 </div>
                                             </span>
-                                        </div>
-                                        <div class="uk-flex-item-1 uk-text-truncate">
-                                            <a class="uk-link-muted" onclick="{ parent.changedir }"><strong>{ folder.name }</strong></a>
                                         </div>
                                     </div>
                                 </div>
@@ -181,39 +184,36 @@
                                 <div class="uk-panel uk-panel-box finder-file { file.selected ? 'uk-selected':'' }">
 
                                     <div class="uk-panel-teaser uk-cover-background uk-position-relative">
-
-                                        <div class="uk-position-cover uk-position-z-index">
-
-                                            <div class="uk-panel uk-panel-box uk-panel-box-trans">
-                                                <span class="uk-margin-small-right" data-uk-dropdown="mode:'click'">
-                                                    <a><i class="uk-icon-{ parent.getIconCls(file) } js-no-item-select"></i>
-                                                    <div class="uk-dropdown">
-                                                        <ul class="uk-nav">
-                                                            <li class="uk-nav-header uk-text-truncate">{ file.name }</li>
-                                                            <li><a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">Open</a></li>
-                                                            <li><a class="uk-dropdown-close" onclick="{ parent.rename }">Rename</a></li>
-                                                            <li><a class="uk-dropdown-close" onclick="{ parent.download }">Download</a></li>
-                                                            <li if="{ file.ext == 'zip' }"><a onclick="{ parent.unzip }">Unzip</a></li>
-                                                            <li class="uk-nav-divider"></li>
-                                                            <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
-                                                        </ul>
-                                                    </div>
-                                                </span>
-                                            </div>
-
+                                        <div if="{ parent.getIconCls(file) != 'image' }">
+                                            <canvas class="uk-responsive-width uk-display-block" width="400" height="300"></canvas>
+                                            <div class="uk-position-center"><i class="uk-text-large uk-text-muted uk-icon-{ parent.getIconCls(file) }"></i></div>
                                         </div>
-                                        <canvas class="uk-responsive-width uk-display-block" width="400" height="300" if="{ parent.getIconCls(file) != 'image' }"></canvas>
                                         <cp-thumbnail src="{file.url}" width="400" height="300" if="{ parent.getIconCls(file) == 'image' }"></cp-thumbnail>
                                     </div>
 
-                                    <div class="uk-flex-item-1 uk-text-truncate">
 
-                                        <a class="uk-link-muted js-no-item-select" onclick="{ parent.open }">{ file.name }</a>
-
-                                        <div class="uk-margin-small-top uk-text-small uk-text-muted">
-                                            { file.size }
-                                        </div>
+                                    <div class="uk-flex">
+                                        <a class="uk-link-muted uk-flex-item-1 js-no-item-select uk-text-truncate uk-margin-small-right" onclick="{ parent.open }">{ file.name }</a>
+                                        <span class="uk-margin-small-right" data-uk-dropdown="mode:'click', pos:'bottom-right'">
+                                            <a><i class="uk-icon-ellipsis-v js-no-item-select"></i></a>
+                                            <div class="uk-dropdown">
+                                                <ul class="uk-nav uk-nav-dropdown">
+                                                    <li class="uk-nav-header uk-text-truncate">{ file.name }</li>
+                                                    <li><a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">Open</a></li>
+                                                    <li><a class="uk-dropdown-close" onclick="{ parent.rename }">Rename</a></li>
+                                                    <li><a class="uk-dropdown-close" onclick="{ parent.download }">Download</a></li>
+                                                    <li if="{ file.ext == 'zip' }"><a onclick="{ parent.unzip }">Unzip</a></li>
+                                                    <li class="uk-nav-divider"></li>
+                                                    <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </span>
                                     </div>
+
+                                    <div class="uk-margin-small-top uk-text-small uk-text-muted">
+                                        { file.size }
+                                    </div>
+
 
                                 </div>
                             </li>
@@ -232,7 +232,7 @@
                             <tbody>
                                 <tr class="{ file.selected ? 'uk-selected':'' }" each="{file, idx in data.files}" onclick="{ select }" if="{ infilter(file) }">
                                     <td class="uk-text-center">
-                                        <span if="{ parent.getIconCls(file) != 'image' }"><i class="uk-icon-{ parent.getIconCls(file) }"></i></span>
+                                        <span if="{ parent.getIconCls(file) != 'image' }"><i class="uk-text-muted uk-icon-{ parent.getIconCls(file) }"></i></span>
                                         <cp-thumbnail src="{file.url}" width="400" height="300" if="{ parent.getIconCls(file) == 'image' }"></cp-thumbnail>
                                     </td>
                                     <td><a class="js-no-item-select" onclick="{ parent.open }">{ file.name }</a></td>
@@ -241,7 +241,7 @@
                                     <td>
                                         <span class="uk-float-right" data-uk-dropdown="mode:'click'">
 
-                                            <a class="uk-icon-bars"></a>
+                                            <a class="uk-icon-ellipsis-v"></a>
 
                                             <div class="uk-dropdown uk-dropdown-flip">
                                                 <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
