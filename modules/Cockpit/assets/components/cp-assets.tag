@@ -160,7 +160,7 @@
 
                 <div class="uk-button-group uk-margin-small-left">
                     <a class="uk-button uk-button-small" onclick="{ loadPage }" data-page="{ (page - 1) }" if="{page-1 > 0}"> { App.i18n.get('Previous') }</a>
-                    <a class="uk-button uk-button-small" onclick="{ loadPage }" data-page="{ (page + 1) }" if="{page+1 <= count}"> { App.i18n.get('Next') }</a>
+                    <a class="uk-button uk-button-small" onclick="{ loadPage }" data-page="{ (page + 1) }" if="{page+1 <= pages}"> { App.i18n.get('Next') }</a>
                 </div>
 
             </div>
