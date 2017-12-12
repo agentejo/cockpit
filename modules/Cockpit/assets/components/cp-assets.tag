@@ -66,23 +66,25 @@
 
             <div class="uk-grid uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
                 <div class="uk-grid-margin" each="{ asset,idx in assets }" onclick="{ select }">
-                    <div class="uk-panel uk-panel-box uk-panel-card { selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}">
+                    <div class="uk-panel uk-panel-box { selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}">
                         <div class="uk-overlay uk-display-block uk-position-relative">
                             <canvas class="uk-responsive-width" width="200" height="150"></canvas>
                             <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle">
                                 <div class="uk-width-1-1 uk-text-center">
                                     <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-h1 uk-text-muted uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
-
-                                    <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
-                                        <cp-thumbnail src="{ASSETS_URL+asset.path}" width="100" height="75"></cp-thumbnail>
-                                    </a>
+                                    <cp-thumbnail src="{ASSETS_URL+asset.path}" height="150" if="{ asset.mime.match(/^image\//) }" title="{ asset.width && [asset.width, asset.height].join('x') }"></cp-thumbnail>
                                 </div>
                             </div>
                         </div>
-                        <div class="uk-margin-small-top uk-text-truncate"><a onclick="{ parent.edit }">{ asset.title }</a></div>
-                        <div class="uk-text-small uk-text-muted">
+                        <div class="uk-text-small uk-margin-small-top uk-text-truncate">
+                            <a onclick="{ parent.edit }"><i class="uk-icon-pencil uk-small-margin-right"></i> { asset.title }</a>
+                        </div>
+                        <div class="uk-text-small uk-text-muted uk-margin-small-top uk-flex">
                             <strong>{ asset.mime }</strong>
-                            { App.Utils.formatSize(asset.size) }
+                            <span class="uk-flex-item-1 uk-margin-small-left uk-margin-small-right">{ App.Utils.formatSize(asset.size) }</span>
+                            <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
+                                <i class="uk-icon-search"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -134,12 +136,33 @@
                 </tbody>
             </table>
 
-            <div class="uk-margin-top uk-flex uk-flex-middle" if="{count > limit}">
-                <span class="uk-button-group uk-margin-small-right uk-noselect">
-                    <a class="uk-button uk-button-outline { page > 1 ? 'uk-text-primary' : 'uk-text-muted uk-disabled' }" onclick="{ loadPage }" data-page="{ (page - 1) }">{ App.i18n.get('Previous') }</a>
-                    <a class="uk-button uk-button-outline { (page*limit) < count  ? 'uk-text-primary' : 'uk-text-muted uk-disabled'}" onclick="{ loadPage }" data-page="{ (page + 1) }">{ App.i18n.get('Next') }</a>
-                </span>
-                <span class="uk-text-small uk-text-muted uk-margin-small-left">{page}/{Math.ceil(count/limit)}</span>
+            <div class="uk-margin uk-flex uk-flex-middle uk-noselect" if="{ pages > 1 }">
+
+                <ul class="uk-breadcrumb uk-margin-remove">
+                    <li class="uk-active"><span>{ page }</span></li>
+                    <li data-uk-dropdown="mode:'click'">
+
+                        <a><i class="uk-icon-bars"></i> { pages }</a>
+
+                        <div class="uk-dropdown">
+
+                            <strong class="uk-text-small"> { App.i18n.get('Pages') }</strong>
+
+                            <div class="uk-margin-small-top { pages > 5 ? 'uk-scrollable-box':'' }">
+                                <ul class="uk-nav uk-nav-dropdown">
+                                    <li class="uk-text-small" each="{k,v in new Array(pages)}"><a class="uk-dropdown-close" onclick="{ parent.loadPage }" data-page="{ (v + 1) }"> { App.i18n.get('Page') } {v + 1}</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </li>
+                </ul>
+
+                <div class="uk-button-group uk-margin-small-left">
+                    <a class="uk-button uk-button-small" onclick="{ loadPage }" data-page="{ (page - 1) }" if="{page-1 > 0}"> { App.i18n.get('Previous') }</a>
+                    <a class="uk-button uk-button-small" onclick="{ loadPage }" data-page="{ (page + 1) }" if="{page+1 <= pages}"> { App.i18n.get('Next') }</a>
+                </div>
+
             </div>
 
         </div>
@@ -245,6 +268,7 @@
         // pagination
         this.count    = 0;
         this.page     = 1;
+        this.pages    = 1;
         this.limit    = opts.limit || 15;
 
         this.on('mount', function() {
@@ -330,6 +354,7 @@
 
                 $this.assets   = Array.isArray(response.assets) ? response.assets:[];
                 $this.count    = response.count || 0;
+                $this.pages    = Math.ceil($this.count/$this.limit);
                 $this.loading  = false;
                 $this.selected = [];
                 $this.update();

@@ -44,6 +44,8 @@ try {
 
 } catch(Exception $e) { }
 
+$created = time();
+
 $account = [
     "user"     => "admin",
     "name"     => "Admin",
@@ -51,7 +53,9 @@ $account = [
     "active"   => true,
     "group"    => "admin",
     "password" => $app->hash("admin"),
-    "i18n"     => "en"
+    "i18n"     => "en",
+    "_created" => $created,
+    "_modified"=> $created,
 ];
 
 $app->storage->insert("cockpit/accounts", $account);

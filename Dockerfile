@@ -5,7 +5,7 @@ RUN apt-get update \
 		wget zip unzip \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
-        libpng12-dev \
+        libpng-dev \
         sqlite3 libsqlite3-dev \
         libssl-dev \
     && pecl install mongodb \

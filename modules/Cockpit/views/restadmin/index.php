@@ -13,12 +13,15 @@
 
             <h3>@lang('Full access API-key')</h3>
 
-            <div class="uk-grid">
+            <div class="uk-grid uk-grid-small">
                 <div class="uk-flex-item-1">
                     <input class="uk-width-1-1 uk-form-large uk-text-primary" type="text" placeholder="@lang('No key generated')" bind="keys.master" name="fullaccesskey" readonly>
                 </div>
+                <div if="{keys.master}">
+                    <button class="uk-button uk-button-link uk-button-large" type="button" onclick="{ copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-copy"></i></button>
+                </div>
                 <div>
-                    <button class="uk-button uk-button-primary uk-button-large" type="button" onclick="{ generate }" title="@lang('Generate Key')" data-uk-tooltip="pos:'right'"><i class="uk-icon-magic"></i></button>
+                    <button class="uk-button uk-button-primary uk-button-large" type="button" onclick="{ generate }" title="@lang('Generate Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-magic"></i></button>
                 </div>
             </div>
 
@@ -36,7 +39,8 @@
 
                             <div class="uk-flex">
                                 <input class="uk-width-1-1 uk-form-large uk-margin-right uk-text-primary" type="text" placeholder="@lang('No key generated')" bind="keys.special[{idx}].token" readonly>
-                                <button class="uk-button uk-button-link uk-button-large" type="button" onclick="{ parent.generate }" title="@lang('Generate Key')" data-uk-tooltip="pos:'right'"><i class="uk-icon-magic"></i></button>
+                                <button class="uk-button uk-button-link" type="button" onclick="{ parent.copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-copy"></i></button>
+                                <button class="uk-button uk-button-link" type="button" onclick="{ parent.generate }" title="@lang('Generate Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-magic"></i></button>
                             </div>
                         </div>
 
@@ -119,6 +123,15 @@
             } else {
                 this.keys.master = App.Utils.generateToken(120);
             }
+        }
+
+        copyApiKey(e) {
+
+            var token = e.item ? e.item.setting.token : this.keys.master;
+
+            App.Utils.copyText(token, function() {
+                App.ui.notify("Copied!", "success");
+            });
         }
 
         save() {
