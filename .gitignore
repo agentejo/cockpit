@@ -6,7 +6,6 @@
 .settings
 .idea
 /storage/*
-/config/*
 /addons/*/*
 /tests/*
 /node_modules
