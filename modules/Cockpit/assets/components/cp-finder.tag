@@ -36,14 +36,15 @@
 
                 <span class="uk-margin-left" data-uk-dropdown="mode:'click'">
 
-                    <a class="uk-text-muted" title="Sort files" data-uk-tooltip="pos:'right'"><i class="uk-icon-sort"></i> { App.Utils.ucfirst(sortBy) }</a>
+                    <a class="uk-text-{sortBy == 'name' ? 'muted':'primary'}" title="Sort files" data-uk-tooltip="pos:'right'"><i class="uk-icon-sort"></i> { App.Utils.ucfirst(sortBy) }</a>
 
                     <div class="uk-dropdown uk-margin-top uk-text-left">
                         <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
-                            <li class="uk-nav-header">Sort by</li>
-                            <li><a class="uk-dropdown-close" onclick="{ doSortBy.bind(this, 'name') }">Name</a></li>
-                            <li><a class="uk-dropdown-close" onclick="{ doSortBy.bind(this, 'filesize') }">Filesize</a></li>
-                            <li><a class="uk-dropdown-close" onclick="{ doSortBy.bind(this, 'modified') }">Modified</a></li>
+                            <li class="uk-nav-header">{ App.i18n.get('Sort by') }</li>
+                            <li><a class="uk-dropdown-close" onclick="{ doSortBy.bind(this, 'name') }">{ App.i18n.get('Name') }</a></li>
+                            <li><a class="uk-dropdown-close" onclick="{ doSortBy.bind(this, 'filesize') }">{ App.i18n.get('Filesize') }</a></li>
+                            <li><a class="uk-dropdown-close" onclick="{ doSortBy.bind(this, 'mime') }">{ App.i18n.get('Type') }</a></li>
+                            <li><a class="uk-dropdown-close" onclick="{ doSortBy.bind(this, 'modified') }">{ App.i18n.get('Modified') }</a></li>
                         </ul>
                     </div>
 
@@ -53,25 +54,25 @@
 
             <div class="uk-float-right">
 
-                <span class="uk-button uk-button-large uk-button-primary uk-margin-small-right uk-form-file">
-                    <input class="js-upload-select" type="file" multiple="true" title="">
-                    <i class="uk-icon-upload"></i>
+                <span class="uk-margin-right uk-position-relative" data-uk-dropdown="mode:'click', pos:'bottom-right'">
+
+                    <button class="uk-button uk-button-outline uk-text-primary uk-button-large"><i class="uk-icon-magic"></i></button>
+
+                    <div class="uk-dropdown uk-margin-top uk-text-left">
+                        <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
+                            <li class="uk-nav-header">Create</li>
+                            <li><a onclick="{ createfolder }"><i class="uk-icon-folder-o uk-icon-justify"></i> Folder</a></li>
+                            <li><a onclick="{ createfile }"><i class="uk-icon-file-o uk-icon-justify"></i> File</a></li>
+                        </ul>
+                    </div>
+
                 </span>
 
-                <span class="uk-button-group uk-margin-small-right">
+                <span class="uk-button-group">
 
-                    <span class="uk-position-relative uk-button uk-button-large" data-uk-dropdown="mode:'click', pos:'bottom-right'">
-
-                        <i class="uk-icon-magic"></i>
-
-                        <div class="uk-dropdown uk-text-left">
-                            <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
-                                <li class="uk-nav-header">Create</li>
-                                <li><a onclick="{ createfolder }"><i class="uk-icon-folder-o uk-icon-justify"></i> Folder</a></li>
-                                <li><a onclick="{ createfile }"><i class="uk-icon-file-o uk-icon-justify"></i> File</a></li>
-                            </ul>
-                        </div>
-
+                    <span class="uk-button uk-button-large uk-button-primary uk-form-file">
+                        <input class="js-upload-select" type="file" multiple="true" title="">
+                        <i class="uk-icon-upload"></i>
                     </span>
 
                     <button class="uk-button uk-button-large" onclick="{ refresh }">
@@ -79,12 +80,12 @@
                     </button>
                 </span>
 
-                <span if="{ selected.count }" data-uk-dropdown="mode:'click', pos:'bottom-right'">
-                    <span class="uk-button uk-button-large"><strong>Batch:</strong> { selected.count } selected &nbsp;<i class="uk-icon-caret-down"></i></span>
+                <span class="uk-margin-left" if="{ selected.count }" data-uk-dropdown="mode:'click', pos:'bottom-right'">
+                    <span class="uk-button uk-button-large"><strong>Batch:</strong> { selected.count } &nbsp;<i class="uk-icon-caret-down"></i></span>
                     <div class="uk-dropdown uk-margin-top uk-text-left">
                         <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                             <li class="uk-nav-header">Batch action</li>
-                            <li><a onclick="{ removeSelected }">Delete</a></li>
+                            <li class="uk-nav-item-danger"><a onclick="{ removeSelected }">Delete</a></li>
                         </ul>
                     </div>
                 </span>
