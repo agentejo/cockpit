@@ -105,7 +105,7 @@
 
     <div class="collection-entrypreview">
         <div class="iframe-container uk-flex uk-flex-center uk-flex-middle"><iframe riot-src="{ settings.url }" mode="{ mode }" ref="iframe"></iframe></div>
-        <div class="preview-panel uk-animation-slide-left">
+        <div ref="previewpanel" class="preview-panel uk-animation-slide-left">
 
             <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
 
@@ -210,6 +210,10 @@
         }, opts.settings || {});
 
         this.on('mount', function() {
+
+            setTimeout(function() {
+                $this.refs.previewpanel.classList.remove('uk-animation-slide-left');
+            }, 1000);
 
             $this.$cache = JSON.stringify(this.entry);
 
