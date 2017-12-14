@@ -56,8 +56,13 @@
                 { App.i18n.get('Components') }
             </h3>
 
+            <ul class="uk-tab uk-margin-bottom uk-flex uk-flex-center uk-noselect" show="{ App.Utils.count(componentGroups) > 1 }">
+                <li class="{ !componentGroup && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleComponentGroup }">{ App.i18n.get('All') }</a></li>
+                <li class="{ group==parent.componentGroup && 'uk-active'}" each="{items,group in componentGroups}" show="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleComponentGroup }">{ App.i18n.get(group) }</a></li>
+            </ul>
+
             <div class="uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-4">
-                 <div class="uk-grid-margin" each="{component,name in components}">
+                 <div class="uk-grid-margin" each="{component,name in components}" show="{ !componentGroup || (componentGroup == component.group) }">
                     <div class="uk-panel uk-panel-framed uk-text-center">
                         <img riot-src="{ component.icon || App.base('/assets/app/media/icons/component.svg')}" width="30">
                         <p class="uk-text-small">{ component.label || App.Utils.ucfirst(name) }</p>
@@ -121,6 +126,7 @@
         this.mode = 'edit';
         this.items = [];
         this.settingsComponent = null;
+        this.componentGroups = {'Core':[]};
         this.generalSettingsFields  = [
             {name: "id", type: "text", group: "General" },
             {name: "class", type: "text", group: "General" },
@@ -129,14 +135,16 @@
 
         this.components = {
             "section": {
+                "group": "Core",
                 "children":true
             },
 
             "grid": {
-
+                "group": "Core"
             },
 
             "text": {
+                "group": "Core",
                 "icon": App.base('/assets/app/media/icons/text.svg'),
                 "dialog": "large",
                 "fields": [
@@ -145,6 +153,7 @@
             },
 
             "html": {
+                "group": "Core",
                 "icon": App.base('/assets/app/media/icons/code.svg'),
                 "dialog": "large",
                 "fields": [
@@ -153,6 +162,7 @@
             },
 
             "heading": {
+                "group": "Core",
                 "icon": App.base('/assets/app/media/icons/heading.svg'),
                 "fields": [
                     {"name": "text", "type": "text", "default": "Header"},
@@ -161,6 +171,7 @@
             },
 
             "image": {
+                "group": "Core",
                 "icon": App.base('/assets/app/media/icons/photo.svg'),
                 "fields": [
                     {"name": "image", "type": "image", "default": {}},
@@ -170,6 +181,7 @@
             },
 
             "gallery": {
+                "group": "Core",
                 "icon": App.base('/assets/app/media/icons/gallery.svg'),
                 "fields": [
                     {"name": "gallery", "type": "gallery", "default": []}
@@ -177,10 +189,12 @@
             },
 
             "divider": {
+                "group": "Core",
                 "icon": App.base('/assets/app/media/icons/divider.svg'),
             },
 
             "button": {
+                "group": "Core",
                 "icon": App.base('/assets/app/media/icons/button.svg'),
                 "fields": [
                     {"name": "text", "type": "text", "default": ""},
@@ -200,6 +214,19 @@
             if (opts.components && App.Utils.isObject(opts.components)) {
                 this.components = App.$.extend(true, this.components, opts.components);
             }
+
+            Object.keys(this.components).forEach(function(k) {
+
+                $this.components[k].group = $this.components[k].group || 'Misc';
+
+                var g = $this.components[k].group;
+
+                if (!$this.componentGroups[g]) {
+                    $this.componentGroups[g] = [];
+                }
+
+                $this.componentGroups[g].push(k);
+            });
 
             window.___moved_layout_item = null;
 
@@ -305,6 +332,7 @@
         }
 
         addComponent(e) {
+            this.componentGroup = null;
             this.refs.modalComponents.afterComponent = e.item && e.item.item ? e.item.idx : false;
             UIkit.modal(this.refs.modalComponents, {modal:false}).show();
         }
@@ -398,6 +426,11 @@
         toggleGroup(e) {
             e.preventDefault();
             this.settingsGroup = e.item && e.item.group || false;
+        }
+
+        toggleComponentGroup(e) {
+            e.preventDefault();
+            this.componentGroup = e.item && e.item.group || false;
         }
 
     </script>
