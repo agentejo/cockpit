@@ -39,12 +39,12 @@ class RestApi extends \LimeExtra\Controller {
         // fields filter
         $fieldsFilter = [];
 
-        if ($fieldsFilter = $this->param('fieldsFilter', null)) $options['fieldsFilter'] = $fieldsFilter;
+        if ($fieldsFilter = $this->param('fieldsFilter', [])) $options['fieldsFilter'] = $fieldsFilter;
         if ($lang = $this->param('lang', false)) $fieldsFilter['lang'] = $lang;
         if ($ignoreDefaultFallback = $this->param('ignoreDefaultFallback', false)) $fieldsFilter['ignoreDefaultFallback'] = $ignoreDefaultFallback;
         if ($user) $fieldsFilter["user"] = $user;
 
-        if (count($fieldsFilter)) {
+        if (is_array($fieldsFilter) && count($fieldsFilter)) {
             $options['fieldsFilter'] = $fieldsFilter;
         }
 
