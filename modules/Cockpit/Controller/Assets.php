@@ -52,8 +52,8 @@ class Assets extends \Cockpit\AuthController {
             for ($i = 0; $i < count($files['name']); $i++) {
 
                 // clean filename
-                $clean    = uniqid().preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $files['name'][$i]));
-                $target   = $targetpath.'/'.$clean;
+                $clean  = uniqid().preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $files['name'][$i]));
+                $target = $targetpath.'/'.$clean;
 
                 if (!$files['error'][$i] && move_uploaded_file($files['tmp_name'][$i], $target)) {
 
