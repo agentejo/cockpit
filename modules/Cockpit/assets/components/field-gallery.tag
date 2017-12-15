@@ -10,7 +10,7 @@
 
         <div ref="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-flex-center uk-grid-gutter uk-grid-width-medium-1-4" show="{ images && images.length }">
             <div data-idx="{ idx }" each="{ img,idx in images }">
-                <div class="uk-panel uk-panel-box uk-panel-thumbnail uk-panel-card uk-visible-hover">
+                <div class="uk-panel uk-panel-box uk-panel-thumbnail uk-panel-framed uk-visible-hover">
 
                         <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;">
                             <div class="uk-width-1-1 uk-text-center">
