@@ -156,7 +156,7 @@
 
         this.languages    = App.$data.languages;
         this.groups       = {Main:[]};
-        this.group        = 'Main';
+        this.group        = '';
 
         if (this.languages.length) {
             this.lang = App.session.get('collections.entry.'+this.collection._id+'.lang', '');
@@ -205,10 +205,6 @@
 
             $this.groups[field.group || 'Main'].push(field);
         });
-
-        if (!this.groups[this.group].length) {
-            this.group = Object.keys(this.groups)[1];
-        }
 
         this.on('mount', function(){
 

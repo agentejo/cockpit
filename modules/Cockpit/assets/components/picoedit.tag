@@ -20,7 +20,7 @@
             </div>
         </div>
 
-        <codemirror ref="codemirror"></codemirror>
+        <codemirror ref="codemirror" height="{opts.height || 400}"></codemirror>
     </div>
 
     <script>
@@ -39,6 +39,7 @@
             this.ready = new Promise(function(resolve){
 
                 $this.tags.codemirror.on('ready', function(){
+
                     editor = $this.refs.codemirror.editor;
 
                     editor.addKeyMap({
