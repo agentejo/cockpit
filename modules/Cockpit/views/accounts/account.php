@@ -241,7 +241,7 @@
         }
 
         submit(e) {
-
+            
             if(e) e.preventDefault();
 
             App.request("/accounts/save", {"account": this.account}).then(function(data){

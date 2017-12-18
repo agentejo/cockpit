@@ -11,7 +11,9 @@ class Auth extends \LimeExtra\Controller {
 
             $user = $this->module('cockpit')->authenticate($data);
 
-            if ($user && !$this->module("cockpit")->hasaccess('cockpit', 'backend', @$user['group'])) {
+            $group_access_allowed = $this->module("cockpit")->hasaccess('cockpit', 'backend', @$user['group']);
+
+            if ($user && !$group_access_allowed) {
                 $user = null;
             }
 
@@ -21,7 +23,7 @@ class Auth extends \LimeExtra\Controller {
             }
 
             if ($this->req_is('ajax')) {
-                return $user ? json_encode(["success" => true, "user" => $user, "avatar"=> md5($user["email"])]) : '{"success": false}';
+                return $user ? json_encode(["success" => true, "user" => $user, "avatar"=> md5($user["email"])]) : '{"success": false, "group_has_access" : '.($group_access_allowed?'true':'false').'}';
             } else {
                 $this->reroute('/');
             }

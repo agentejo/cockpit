@@ -342,13 +342,7 @@ $this->module("cockpit")->extend([
 
     "getGroups" => function() use($app) {
 
-        $groups__all_fields = $this->app->storage->find("cockpit/groups"); // why the heck does ['fields' => ['...']] result in nothing more then the ID per row returned?!
-        $groups = [];
-        foreach($groups__all_fields as $i => $row) {
-           $groups[] = $row['group'];
-        }
-
-        $groups = array_merge(['admin'], $groups);
+        $groups = array_merge(['admin'], array_keys($app->retrieve("config/groups", [])));
 
         return array_unique($groups);
     },
@@ -412,43 +406,8 @@ groups:
 
 */
 
-//
-$groups_data = $app->storage->find("cockpit/groups");
-//$groups_data=[];
-foreach ($groups_data as $i => $row) {
-    $isSuperAdmin = false; // TODO ...
-    $isAdmin = isset($row['admin']) ? $row['admin'] : false;
-    //$vars         = isset($settings['$vars']) ? $settings['$vars'] : [];
-    $vars = []; // TODO
-
-    $group_name = $row['group'];
-
-    $app('acl')->addGroup($group_name, $isSuperAdmin, $vars);
-
-    //$app('acl')->allow($group_name, '$admin', true);
-    $app('acl')->allow($group_name, 'cockpit', 'backend');
-
-    /*
-    if (!$isSuperAdmin && is_array($settings)) {
-
-        foreach ($settings as $resource => $actions) {
-
-            if ($resource == '$vars' || $resource == '$admin') continue;
-
-            foreach ((array)$actions as $action => $allow) {
-                if ($allow) {
-                    $app('acl')->allow($group, $resource, $action);
-                }
-            }
-        }
-    }
-     */
-
-}
-//
-
 $aclsettings = $app->retrieve('config/groups', []);
-$aclsettings = [];
+
 foreach ($aclsettings as $group => $settings) {
 
     $isSuperAdmin = $settings === true || (isset($settings['$admin']) && $settings['$admin']);
@@ -465,7 +424,6 @@ foreach ($aclsettings as $group => $settings) {
             foreach ((array)$actions as $action => $allow) {
                 if ($allow) {
                     $app('acl')->allow($group, $resource, $action);
-                    //echo "%app('acl')->allow($group, $resource, $action);\n";
                 }
             }
         }

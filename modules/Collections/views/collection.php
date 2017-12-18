@@ -109,24 +109,24 @@
 
                     </div>
 
-                    <div class="uk-panel uk-panel-box uk-panel-space uk-panel-card uk-margin" each="{group in aclgroups}">
+                    <div class="uk-panel uk-panel-box uk-panel-space uk-panel-card uk-margin { aclgroups.length > 3 ? 'slimable' : '' }" each="{group in aclgroups}">
 
                         <div class="uk-grid">
                             <div class="uk-width-1-3 uk-flex uk-flex-middle uk-flex-center">
                                 <div class="uk-text-center">
-                                    <p class="uk-text-uppercase uk-text-small">{ group }</p>
-                                    <img class="uk-text-muted uk-svg-adjust" src="@url('assets:app/media/icons/accounts.svg')" alt="icon" width="80" data-uk-svg>
+                                    <p class="uk-text-uppercase uk-text-small slimable-fs-big">{ group }</p>
+                                    <img class="uk-text-muted uk-svg-adjust slimable-hidden" src="@url('assets:app/media/icons/accounts.svg')" alt="icon" width="80" data-uk-svg>
                                 </div>
                             </div>
                             <div class="uk-flex-item-1">
                                 <div class="uk-margin uk-text-small">
-                                    <strong class="uk-text-uppercase">@lang('Collection')</strong>
-                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.{group}.collection_edit" label="@lang('Edit Collection')"></field-boolean></div>
-                                    <strong class="uk-text-uppercase uk-display-block uk-margin-top">@lang('Entries')</strong>
-                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.{group}.entries_view" label="@lang('View Entries')"></field-boolean></div>
-                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.{group}.entries_edit" label="@lang('Edit Entries')"></field-boolean></div>
-                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.{group}.entries_create" label="@lang('Create Entries')"></field-boolean></div>
-                                    <div class="uk-margin-top"><field-boolean bind="collection.acl.{group}.entries_delete" label="@lang('Delete Entries')"></field-boolean></div>
+                                    <strong class="uk-text-uppercase slimable-sep">@lang('Collection')</strong>
+                                    <div class="uk-margin-top slimable-elem"><field-boolean bind="collection.acl.{group}.collection_edit" label="@lang('Edit Collection')"></field-boolean></div>
+                                    <strong class="uk-text-uppercase uk-display-block uk-margin-top slimable-sep">@lang('Entries')</strong>
+                                    <div class="uk-margin-top slimable-elem"><field-boolean bind="collection.acl.{group}.entries_view" label="@lang('View Entries')"></field-boolean></div>
+                                    <div class="uk-margin-top slimable-elem"><field-boolean bind="collection.acl.{group}.entries_edit" label="@lang('Edit Entries')"></field-boolean></div>
+                                    <div class="uk-margin-top slimable-elem"><field-boolean bind="collection.acl.{group}.entries_create" label="@lang('Create Entries')"></field-boolean></div>
+                                    <div class="uk-margin-top slimable-elem"><field-boolean bind="collection.acl.{group}.entries_delete" label="@lang('Delete Entries')"></field-boolean></div>
                                 </div>
                             </div>
                         </div>

@@ -23,7 +23,7 @@
         this.value = opts.default || false;
 
         this.$updateValue = function(value) {
-            
+
             if (this.value != value) {
                 this.value = value;
                 this.update();
