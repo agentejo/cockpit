@@ -102,6 +102,11 @@
                             @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
                             <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
                             @endif
+
+                            @if($app->module('collections')->hasaccess($collection['name'], 'entries_create'))
+                            <li class="uk-nav-divider"></li>
+                            <li><a class="uk-dropdown-close" onclick="{ parent.duplicateEntry }">@lang('Duplicate')</a></li>
+                            @endif
                         </ul>
                     </div>
                 </span>
