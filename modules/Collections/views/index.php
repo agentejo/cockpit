@@ -27,15 +27,15 @@
 
         <div class="uk-width-medium-1-1 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle uk-flex-center" if="{ !App.Utils.count(collections) }">
 
-            <div class="uk-width-medium-1-3 uk-animation-scale">
+            <div class="uk-animation-scale">
 
                 <p>
-                    <img src="@url('collections:icon.svg')" width="80" height="80" alt="Collections" data-uk-svg />
+                    <img class="uk-svg-adjust uk-text-muted" src="@url('collections:icon.svg')" width="80" height="80" alt="Collections" data-uk-svg />
                 </p>
                 <hr>
-                <span class="uk-text-large uk-text-muted">@lang('No Collections').
+                <span class="uk-text-large"><strong>@lang('No Collections').</strong>
                 @hasaccess?('collections', 'create')
-                <a href="@route('/collections/collection')">@lang('Create a collection').</a></span>
+                <a href="@route('/collections/collection')">@lang('Create one')</a></span>
                 @end
             </div>
 

@@ -54,12 +54,12 @@ class RestApi extends \LimeExtra\Controller {
         // fields filter
         $fieldsFilter = [];
 
-        if ($fieldsFilter = $this->param('fieldsFilter', null)) $options['fieldsFilter'] = $fieldsFilter;
+        if ($fieldsFilter = $this->param('fieldsFilter', [])) $options['fieldsFilter'] = $fieldsFilter;
         if ($lang = $this->param('lang', false)) $fieldsFilter['lang'] = $lang;
         if ($ignoreDefaultFallback = $this->param('ignoreDefaultFallback', false)) $fieldsFilter['ignoreDefaultFallback'] = $ignoreDefaultFallback;
         if ($user) $fieldsFilter["user"] = $user;
 
-        if (count($fieldsFilter)) {
+        if (is_array($fieldsFilter) && count($fieldsFilter)) {
             $options['fieldsFilter'] = $fieldsFilter;
         }
 
@@ -80,6 +80,14 @@ class RestApi extends \LimeExtra\Controller {
         $fields = [];
 
         foreach ($collection['fields'] as $field) {
+
+            if (
+                $user && isset($field['acl']) &&
+                is_array($field['acl']) && count($field['acl']) &&
+                !(in_array($user['_id'] , $field['acl']) || in_array($user['group'] , $field['acl']))
+            ) {
+                continue;
+            }
 
             $fields[$field['name']] = [
                 'name' => $field['name'],
@@ -109,7 +117,7 @@ class RestApi extends \LimeExtra\Controller {
             return $this->stop('{"error": "Collection not found"}', 412);
         }
 
-        if (!$this->module('collections')->hasaccess($collection, isset($data['_id']) ? 'entries_edit':'entries_create')) {
+        if ($user && !$this->module('collections')->hasaccess($collection, isset($data['_id']) ? 'entries_edit':'entries_create')) {
             return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
@@ -141,7 +149,7 @@ class RestApi extends \LimeExtra\Controller {
             return $this->stop('{"error": "Collection not found"}', 412);
         }
 
-        if (!$this->module('collections')->hasaccess($collection, 'entries_delete')) {
+        if ($user && !$this->module('collections')->hasaccess($collection, 'entries_delete')) {
             return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
@@ -164,7 +172,7 @@ class RestApi extends \LimeExtra\Controller {
             return false;
         }
 
-        if (!$this->module('cockpit')->isSuperAdmin()) {
+        if ($user && !$this->module('cockpit')->isSuperAdmin()) {
             return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
@@ -185,7 +193,7 @@ class RestApi extends \LimeExtra\Controller {
 
         $collection = $this->module('collections')->collection($name);
 
-        if (!$this->module('cockpit')->isSuperAdmin()) {
+        if ($user && !$this->module('cockpit')->isSuperAdmin()) {
             return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
@@ -221,6 +229,6 @@ class RestApi extends \LimeExtra\Controller {
             $collections = $this->module('collections')->collections($extended);
         }
 
-        return $collections;
+        return $extended ? $collections : array_keys($collections);
     }
 }

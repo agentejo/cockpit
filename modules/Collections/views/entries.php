@@ -85,16 +85,16 @@
 
         <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-center uk-flex-middle" if="{ !loading && !entries.length && !filter }">
 
-            <div class="uk-animation-scale uk-text-muted">
+            <div class="uk-animation-scale">
 
                 <img class="uk-svg-adjust" src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="50" alt="icon" data-uk-svg>
                 @if($collection['description'])
-                <div class="uk-margin-top uk-text-small">
+                <div class="uk-margin-top uk-text-small uk-text-muted">
                     {{ $collection['description'] }}
                 </div>
                 @endif
                 <hr>
-                <span class="uk-text-large">@lang('No entries'). <a href="@route('/collections/entry/'.$collection['name'])">@lang('Create an entry').</a></span>
+                <span class="uk-text-large"><strong>@lang('No entries').</strong> <a href="@route('/collections/entry/'.$collection['name'])">@lang('Create an entry').</a></span>
 
             </div>
 
@@ -463,12 +463,15 @@
 
             switch(this.imageField.type) {
                 case 'asset':
-                    if (data.mime.match(/^image\//)) {
+                    if (data.mime && data.mime.match(/^image\//)) {
                         return ASSETS_URL+data.path;
                     }
                     break;
                 case 'image':
-                    return data.path.match(/^(http\:|https\:|\/\/)/) ? data.path : SITE_URL+'/'+data.path;
+
+                    if (data.path) {
+                        return data.path.match(/^(http\:|https\:|\/\/)/) ? data.path : SITE_URL+'/'+data.path;
+                    }
                     break;
             }
 

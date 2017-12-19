@@ -1,30 +1,41 @@
 <field-gallery>
 
+    <div ref="uploadprogress" class="uk-margin uk-hidden">
+        <div class="uk-progress">
+            <div ref="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div>
+        </div>
+    </div>
+
     <div ref="panel">
 
         <div ref="imagescontainer" class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-flex-center uk-grid-gutter uk-grid-width-medium-1-4" show="{ images && images.length }">
             <div data-idx="{ idx }" each="{ img,idx in images }">
-                <div class="uk-panel uk-panel-box uk-panel-thumbnail uk-panel-card">
-                    <figure class="uk-display-block uk-overlay uk-overlay-hover">
+                <div class="uk-panel uk-panel-box uk-panel-thumbnail uk-panel-framed uk-visible-hover">
+
                         <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;">
                             <div class="uk-width-1-1 uk-text-center">
                                 <cp-thumbnail src="{ (SITE_URL+'/'+img.path) }" width="400" height="250"></cp-thumbnail>
                             </div>
                         </div>
-                        <figcaption class="uk-overlay-panel uk-overlay-background uk-flex uk-flex-middle uk-flex-center">
 
-                            <div>
-                                <ul class="uk-subnav">
-                                    <li><a onclick="{ parent.showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
-                                    <li><a href="{ (SITE_URL+'/'+img.path) }" data-uk-lightbox="type:'image'" title="{ App.i18n.get('Full size') }" data-uk-tooltip><i class="uk-icon-eye"></i></a></li>
-                                    <li><a onclick="{ parent.remove }" title="{ App.i18n.get('Remove image') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
-                                </ul>
+                        <div class="uk-invisible">
+                            <ul class="uk-grid uk-grid-small uk-flex-center uk-text-small">
+                                <li data-uk-dropdown="pos:'bottom-center'">
+                                    <a class="uk-text-muted" onclick="{ parent.selectAsset }" title="{ App.i18n.get('Select image') }" data-uk-tooltip><i class="uk-icon-image"></i></a>
+                                    <div class="uk-dropdown">
+                                        <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
+                                            <li class="uk-nav-header">{ App.i18n.get('Source') }</li>
+                                            <li><a onclick="{ parent.selectAsset }">{ App.i18n.get('Select Asset') }</a></li>
+                                            <li><a onclick="{ parent.selectImage }">{ App.i18n.get('Select Image') }</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><a class="uk-text-muted" onclick="{ parent.showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
+                                <li><a class="uk-text-muted" href="{ (SITE_URL+'/'+img.path) }" data-uk-lightbox="type:'image'" title="{ App.i18n.get('Full size') }" data-uk-tooltip><i class="uk-icon-eye"></i></a></li>
+                                <li><a class="uk-text-danger" onclick="{ parent.remove }" title="{ App.i18n.get('Remove image') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
+                            </ul>
+                        </div>
 
-                                <p class="uk-text-small uk-text-truncate">{ img.title }</p>
-                            </div>
-
-                        </figcaption>
-                    </figure>
                 </div>
 
             </div>
@@ -36,14 +47,14 @@
                 <p>{ App.i18n.get('Gallery is empty') }</p>
             </div>
             <div class="uk-display-inline-block uk-position-relative" data-uk-dropdown="pos:'bottom-center'">
-                <a class="uk-button uk-text-primary uk-button-outline uk-button-large" onclick="{ selectimages }">
+                <a class="uk-button uk-text-primary uk-button-outline uk-button-large" onclick="{ selectAssetsImages }">
                     <i class="uk-icon-plus-circle" title="{ App.i18n.get('Add images') }" data-uk-tooltip></i>
                 </a>
                 <div class="uk-dropdown">
                     <ul class="uk-nav uk-nav-dropdown uk-text-left uk-dropdown-close">
                         <li class="uk-nav-header">{ App.i18n.get('Select') }</li>
-                        <li><a onclick="{ selectimages }">File</a></li>
                         <li><a onclick="{ selectAssetsImages }">Asset</a></li>
+                        <li><a onclick="{ selectimages }">File</a></li>
                     </ul>
                 </div>
             </div>
@@ -135,6 +146,67 @@
 
             });
 
+            // handle uploads
+
+            var _uploads = [];
+
+            App.assets.require(['/assets/lib/uikit/js/components/upload.js'], function() {
+
+                UIkit.uploadDrop($this.root, {
+
+                    action: App.route('/assetsmanager/upload'),
+                    type: 'json',
+                    allow : '*.(jpg|jpeg|gif|png)',
+                    beforeAll: function() {
+                        _uploads = [];
+                    },
+                    loadstart: function() {
+                        $this.refs.uploadprogress.classList.remove('uk-hidden');
+                    },
+                    progress: function(percent) {
+
+                        percent = Math.ceil(percent) + '%';
+
+                        $this.refs.progressbar.innerHTML   = '<span>'+percent+'</span>';
+                        $this.refs.progressbar.style.width = percent;
+                    },
+
+                    complete: function(response) {
+
+                        if (response && response.failed && response.failed.length) {
+                            App.ui.notify("File(s) failed to uploaded.", "danger");
+                        }
+
+                        if (response && Array.isArray(response.assets) && response.assets.length) {
+
+                            response.assets.forEach(function(asset){
+
+                                if (asset.mime.match(/^image\//)) {
+                                    _uploads.push({
+                                        meta:{title:'', asset: asset._id},
+                                        path: ASSETS_URL.replace(SITE_URL, '')+asset.path
+                                    });
+                                }
+                            });
+                        }
+
+                        if (!response) {
+                            App.ui.notify("Something went wrong.", "danger");
+                        }
+                    },
+
+                    allcomplete: function(response) {
+
+                        $this.refs.uploadprogress.classList.add('uk-hidden');
+
+                        if (Array.isArray(_uploads) && _uploads.length) {
+
+                            $this.$setValue($this.images.concat(_uploads));
+                        }
+                    }
+                });
+            });
+
         });
 
         this.$updateValue = function(value, field) {
@@ -204,6 +276,34 @@
                     });
 
                     $this.$setValue($this.images.concat(images));
+                }
+            });
+        }
+
+        selectImage(e) {
+
+            var image = e.item.img;
+
+            App.media.select(function(selected) {
+
+                image.path = selected[0];
+                $this.$setValue($this.images);
+                $this.update();
+
+            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
+        }
+
+        selectAsset(e) {
+
+            var image = e.item.img;
+
+            App.assets.select(function(assets){
+
+                if (Array.isArray(assets) && assets[0]) {
+
+                    image.path = ASSETS_URL.replace(SITE_URL, '')+assets[0].path;
+                    $this.$setValue($this.images);
+                    $this.update();
                 }
             });
         }

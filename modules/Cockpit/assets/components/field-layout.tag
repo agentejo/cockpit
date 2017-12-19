@@ -4,23 +4,32 @@
         .layout-components > div {
             margin-bottom: 5px;
         }
+
+        .field-layout-column-label {
+            font-size: .8em;
+            font-weight: bold;
+        }
+
+        .uk-sortable-placeholder .uk-sortable {
+            pointer-events: none;
+        }
+
     </style>
 
     <div class="uk-text-center uk-text-muted {opts.child ? 'uk-text-small':'uk-placeholder'}" show="{ !items.length }">
         <img class="uk-svg-adjust" riot-src="{ App.base('/assets/app/media/icons/layout.svg') }" width="100" data-uk-svg>
     </div>
 
-    <div class="uk-sortable layout-components" ref="components" show="{mode=='edit' && items.length}" data-uk-sortable>
+    <div class="uk-sortable layout-components" ref="components" show="{mode=='edit' && items.length}" data-uk-sortable="animation:false, group:'field-layout-items'">
         <div class="uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
 
             <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">
                 <img class="uk-margin-small-right" riot-src="{ parent.components[item.component].icon ? parent.components[item.component].icon : App.base('/assets/app/media/icons/component.svg')}" width="16">
                 <div class="uk-text-bold uk-text-truncate uk-flex-item-1">
-                    { parent.components[item.component].label || App.Utils.ucfirst(item.component) }
+                    <a class="uk-link-muted" onclick="{ parent.settings }">{ parent.components[item.component].label || App.Utils.ucfirst(item.component) }</a>
                 </div>
                 <div class="uk-text-small uk-invisible">
                     <a onclick="{ parent.addComponent }" title="{ App.i18n.get('Add Component') }"><i class="uk-icon-plus"></i></a>
-                    <a class="uk-margin-small-left" onclick="{ parent.settings }"><i class="uk-icon-cogs"></i></a>
                     <a class="uk-margin-small-left uk-text-danger" onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a>
                 </div>
             </div>
@@ -37,7 +46,7 @@
     </div>
 
     <div class="uk-margin uk-text-center">
-        <a class="uk-button uk-button-outline uk-text-primary { !opts.child ? 'uk-button-large':'uk-button-small'}" onclick="{ addComponent }" title="{ App.i18n.get('Add component') }" data-uk-tooltip="pos:'bottom'"><i class="uk-icon-plus-circle"></i></a>
+        <a class="uk-text-primary { !opts.child && 'uk-button uk-button-outline uk-button-large'}" onclick="{ addComponent }" title="{ App.i18n.get('Add component') }" data-uk-tooltip="pos:'bottom'"><i class="uk-icon-plus-circle"></i></a>
     </div>
 
     <div class="uk-modal uk-sortable-nodrag" ref="modalComponents">
@@ -47,8 +56,13 @@
                 { App.i18n.get('Components') }
             </h3>
 
+            <ul class="uk-tab uk-margin-bottom uk-flex uk-flex-center uk-noselect" show="{ App.Utils.count(componentGroups) > 1 }">
+                <li class="{ !componentGroup && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleComponentGroup }">{ App.i18n.get('All') }</a></li>
+                <li class="{ group==parent.componentGroup && 'uk-active'}" each="{items,group in componentGroups}" show="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleComponentGroup }">{ App.i18n.get(group) }</a></li>
+            </ul>
+
             <div class="uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-4">
-                 <div class="uk-grid-margin" each="{component,name in components}">
+                 <div class="uk-grid-margin" each="{component,name in components}" show="{ !componentGroup || (componentGroup == component.group) }">
                     <div class="uk-panel uk-panel-framed uk-text-center">
                         <img riot-src="{ component.icon || App.base('/assets/app/media/icons/component.svg')}" width="30">
                         <p class="uk-text-small">{ component.label || App.Utils.ucfirst(name) }</p>
@@ -89,7 +103,7 @@
                             <div class="uk-margin uk-text-small uk-text-muted">{ field.info || ' ' }</div>
 
                             <div class="uk-margin">
-                                <cp-field type="{field.type || 'text'}" bind="settingsComponent.settings[{field.name}]" opts="{ field.options || {} }"></cp-field>
+                                <cp-field type="{field.type || 'text'}" bind="settingsComponent.settings.{field.name}" opts="{ field.options || {} }"></cp-field>
                             </div>
                     </div>
 
@@ -112,6 +126,7 @@
         this.mode = 'edit';
         this.items = [];
         this.settingsComponent = null;
+        this.componentGroups = {'Core':[]};
         this.generalSettingsFields  = [
             {name: "id", type: "text", group: "General" },
             {name: "class", type: "text", group: "General" },
@@ -120,60 +135,70 @@
 
         this.components = {
             "section": {
+                "group": "Core",
                 "children":true
             },
 
             "grid": {
-
+                "group": "Core"
             },
 
             "text": {
+                "group": "Core",
                 "icon": App.base('/assets/app/media/icons/text.svg'),
                 "dialog": "large",
                 "fields": [
-                    {"name": "text", "type": "wysiwyg"}
+                    {"name": "text", "type": "wysiwyg", "default": ""}
                 ]
             },
 
             "html": {
+                "group": "Core",
                 "icon": App.base('/assets/app/media/icons/code.svg'),
                 "dialog": "large",
                 "fields": [
-                    {"name": "html", "type": "html"}
+                    {"name": "html", "type": "html", "default": ""}
                 ]
             },
 
             "heading": {
+                "group": "Core",
                 "icon": App.base('/assets/app/media/icons/heading.svg'),
                 "fields": [
-                    {"name": "text", "type": "text"},
-                    {"name": "tag", "type": "select", "options":{"options":['h1','h2','h3','h4','h5','h6']}}
+                    {"name": "text", "type": "text", "default": "Header"},
+                    {"name": "tag", "type": "select", "options":{"options":['h1','h2','h3','h4','h5','h6']}, "default": "h1"}
                 ]
             },
 
             "image": {
+                "group": "Core",
                 "icon": App.base('/assets/app/media/icons/photo.svg'),
                 "fields": [
-                    {"name": "image", "type": "image"}
+                    {"name": "image", "type": "image", "default": {}},
+                    {"name": "width", "type": "text", "default": ""},
+                    {"name": "height", "type": "text", "default": ""}
                 ]
             },
 
             "gallery": {
+                "group": "Core",
                 "icon": App.base('/assets/app/media/icons/gallery.svg'),
                 "fields": [
-                    {"name": "gallery", "type": "gallery"}
+                    {"name": "gallery", "type": "gallery", "default": []}
                 ]
             },
 
             "divider": {
+                "group": "Core",
                 "icon": App.base('/assets/app/media/icons/divider.svg'),
             },
 
             "button": {
+                "group": "Core",
                 "icon": App.base('/assets/app/media/icons/button.svg'),
                 "fields": [
-                    {"name": "text", "type": "text"},
-                    {"name": "url", "type": "text"}
+                    {"name": "text", "type": "text", "default": ""},
+                    {"name": "url", "type": "text", "default": ""}
                 ]
             }
         };
@@ -190,25 +215,88 @@
                 this.components = App.$.extend(true, this.components, opts.components);
             }
 
+            Object.keys(this.components).forEach(function(k) {
+
+                $this.components[k].group = $this.components[k].group || 'Misc';
+
+                var g = $this.components[k].group;
+
+                if (!$this.componentGroups[g]) {
+                    $this.componentGroups[g] = [];
+                }
+
+                $this.componentGroups[g].push(k);
+            });
+
+            window.___moved_layout_item = null;
+
+            App.$(this.refs.components).on('start.uk.sortable', function(e, sortable, el, placeholder) {
+
+                if (!el) return;
+                e.stopPropagation();
+                window.___moved_layout_item = {idx: el._tag.idx, item: el._tag.item, src: $this};
+            });
+
             App.$(this.refs.components).on('change.uk.sortable', function(e, sortable, el, mode) {
+
+                if (!el) return;
+
+                e.stopPropagation();
+
+                var item = window.___moved_layout_item;
 
                 if ($this.refs.components === sortable.element[0]) {
 
-                    var items = [];
+                    switch(mode) {
 
-                    App.$($this.refs.components).children().each(function() {
-                        items.push(this._tag.item);
-                    });
+                        case 'moved':
+                            var items = [];
 
-                    $this.$setValue(items);
-                    $this.update();
+                            App.$($this.refs.components).children().each(function() {
+                                items.push(this._tag.item);
+                            });
+
+                            $this.$setValue(items);
+                            $this.update();
+
+                            break;
+
+                        case 'removed':
+
+                            $this.items.splice(item.idx, 1);
+                            $this.$setValue($this.items);
+                            break;
+
+                        case 'added':
+
+                            $this.items.splice(el.index(), 0, item.item);
+                            $this.$setValue($this.items);
+                            el.remove();
+
+                            if (opts.child) {
+                                $this.propagateUpdate();
+                            }
+                            break;
+                    }
                 }
             });
 
             UIkit.modal(this.refs.modalSettings, {modal:false}).on('hide.uk.modal', function(e) {
-                if (e.target !== $this.refs.modalSettings) return;
-                $this.settingsComponent = false;
-                $this.update();
+
+                if (e.target !== $this.refs.modalSettings) {
+                    return;
+                }
+
+                $this.$setValue($this.items);
+
+                setTimeout(function(){
+                    $this.settingsComponent = null;
+                    $this.update();
+
+                    if (opts.child) {
+                        $this.propagateUpdate();
+                    }
+                }, 50);
             });
 
             this.update();
@@ -231,7 +319,20 @@
 
         }.bind(this);
 
+        this.propagateUpdate = function() {
+
+            var n = this;
+
+            while (n.parent) {
+                if (n.parent.root.getAttribute('data-is') == 'field-layout') {
+                    n.parent.$setValue(n.parent.items);
+                }
+                n = n.parent;
+            }
+        }
+
         addComponent(e) {
+            this.componentGroup = null;
             this.refs.modalComponents.afterComponent = e.item && e.item.item ? e.item.idx : false;
             UIkit.modal(this.refs.modalComponents, {modal:false}).show();
         }
@@ -243,8 +344,21 @@
                 settings: { id: '', 'class': '', style: '' }
             };
 
+            var settings = this.components[e.item.name];
+
+            if (Array.isArray(settings.fields)) {
+
+                settings.fields.forEach(function(field) {
+                    item.settings[field.name] = field.default || null;
+                })
+            }
+
             if (this.components[e.item.name].children) {
                 item.children = [];
+            }
+
+            if (e.item.name == 'grid') {
+                item.columns = [];
             }
 
             if (App.Utils.isNumber(this.refs.modalComponents.afterComponent)) {
@@ -254,10 +368,16 @@
                 this.items.push(item);
             }
 
-            this.$setValue(this.items, true);
+            this.$setValue(this.items);
 
             setTimeout(function() {
+
                 UIkit.modal(this.refs.modalComponents).hide();
+
+                if (opts.child) {
+                    $this.propagateUpdate();
+                }
+
             }.bind(this));
         }
 
@@ -308,7 +428,10 @@
             this.settingsGroup = e.item && e.item.group || false;
         }
 
-
+        toggleComponentGroup(e) {
+            e.preventDefault();
+            this.componentGroup = e.item && e.item.group || false;
+        }
 
     </script>
 
@@ -320,13 +443,12 @@
         <a class="uk-button uk-button-link" onclick="{ addColumn }">{ App.i18n.get('Add Colum') }</a>
     </div>
 
-    <div class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-{columns.length}" show="{columns.length}" ref="columns" data-uk-sortable>
+    <div class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-{columns.length > 4 ? 1 : columns.length}" show="{columns.length}" ref="columns" data-uk-sortable="animation:false">
         <div class="uk-grid-margin" each="{column,idx in columns}">
-            <div class="uk-panel uk-panel-framed">
+            <div class="uk-panel">
                 <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">
-                    <div class="uk-flex-item-1 uk-margin-small-right"><strong class="uk-text-muted uk-text-small">Col { (idx+1) }</strong></div>
+                    <div class="uk-flex-item-1 uk-margin-small-right"><a class="uk-text-muted uk-text-uppercase field-layout-column-label" onclick="{ parent.settings }" title="{ App.i18n.get('Settings') }">{ App.i18n.get('Column') } { (idx+1) }</a></div>
                     <a class="uk-invisible uk-margin-small-right" onclick="{ parent.addColumn }" title="{ App.i18n.get('Add Colum') }"><i class="uk-icon-plus"></i></a>
-                    <a class="uk-invisible uk-margin-small-right" onclick="{ parent.settings }" title="{ App.i18n.get('Settings') }"><i class="uk-icon-cogs"></i></a>
                     <a class="uk-invisible" onclick="{ parent.remove }"><i class="uk-text-danger uk-icon-trash-o"></i></a>
                 </div>
                 <div class="uk-margin">
@@ -371,7 +493,7 @@
                 value = [];
             }
 
-            if (JSON.stringify(this.columns) != JSON.stringify(value)) {
+            if (JSON.stringify(this.columns) !== JSON.stringify(value)) {
                 this.columns = value;
                 this.update();
             }
@@ -382,9 +504,25 @@
             this.root.$value = this.columns;
         };
 
+        this.propagateUpdate = function() {
+
+            var n = this;
+
+            while (n.parent) {
+                if (n.parent.root.getAttribute('data-is') == 'field-layout') {
+                    n.parent.$setValue(n.parent.items);
+                }
+                n = n.parent;
+            }
+        }
+
         this.on('mount', function() {
 
             App.$(this.refs.columns).on('change.uk.sortable', function(e, sortable, el, mode) {
+
+                if (!el) return;
+
+                e.stopPropagation();
 
                 if ($this.refs.columns === sortable.element[0]) {
 
@@ -396,7 +534,23 @@
 
                     $this.$setValue(columns);
                     $this.update();
+
+                    $this.propagateUpdate();
                 }
+            });
+
+            UIkit.modal(this.refs.modalSettings, {modal:false}).on('hide.uk.modal', function(e) {
+
+                if (e.target !== $this.refs.modalSettings) {
+                    return;
+                }
+
+                $this.$setValue($this.columns);
+
+                setTimeout(function() {
+                    $this.settingsComponent = null;
+                    $this.update();
+                }, 50);
             });
 
 
@@ -412,6 +566,8 @@
 
             this.columns.push(column);
             this.$setValue(this.columns);
+
+            this.propagateUpdate();
         }
 
         settings(e) {

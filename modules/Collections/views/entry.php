@@ -47,7 +47,7 @@
 
             <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
 
-                <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center" show="{ App.Utils.count(groups) > 1 }">
+                <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center uk-noselect" show="{ App.Utils.count(groups) > 1 }">
                     <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
                     <li class="{ group==parent.group && 'uk-active'}" each="{items,group in groups}" show="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
                 </ul>
@@ -77,7 +77,7 @@
 
                 </div>
 
-                <div class="uk-margin-top">
+                <div class="uk-margin-large-top">
                     <button class="uk-button uk-button-large uk-button-primary uk-margin-right">@lang('Save')</button>
                     <a href="@route('/collections/entries/'.$collection['name'])">
                         <span show="{ !entry._id }">@lang('Cancel')</span>
@@ -98,9 +98,9 @@
                     <div class="uk-width-1-1 uk-form-select">
 
                         <label class="uk-text-small">@lang('Language')</label>
-                        <div class="uk-margin-small-top">{ lang ? _.find(languages,{code:lang}).label:'Default' }</div>
+                        <div class="uk-margin-small-top"><span class="uk-badge uk-badge-outline {lang ? 'uk-text-primary' : 'uk-text-muted'}">{ lang ? _.find(languages,{code:lang}).label:'Default' }</span></div>
 
-                        <select bind="lang">
+                        <select bind="lang" onchange="{persistLanguage}">
                             <option value="">@lang('Default')</option>
                             <option each="{language,idx in languages}" value="{language.code}">{language.label}</option>
                         </select>
@@ -139,7 +139,7 @@
 
     </div>
 
-    <collection-entrypreview entry="{entry}" groups="{ groups }" fields="{ fields }" fieldsidx="{ fieldsidx }" excludeFields="{ excludeFields }" languages="{ languages }" url="{ collection.contentpreview.url }" wsurl="{ collection.contentpreview.wsurl }" if="{ preview }"></collection-entrypreview>
+    <collection-entrypreview entry="{entry}" groups="{ groups }" fields="{ fields }" fieldsidx="{ fieldsidx }" excludeFields="{ excludeFields }" languages="{ languages }" settings="{ collection.contentpreview }" if="{ preview }"></collection-entrypreview>
 
     <script type="view/script">
 
@@ -156,7 +156,11 @@
 
         this.languages    = App.$data.languages;
         this.groups       = {Main:[]};
-        this.group        = 'Main';
+        this.group        = '';
+
+        if (this.languages.length) {
+            this.lang = App.session.get('collections.entry.'+this.collection._id+'.lang', '');
+        }
 
         // fill with default values
         this.fields.forEach(function(field) {
@@ -202,10 +206,6 @@
             $this.groups[field.group || 'Main'].push(field);
         });
 
-        if (!this.groups[this.group].length) {
-            this.group = Object.keys(this.groups)[1];
-        }
-
         this.on('mount', function(){
 
             // bind clobal command + save
@@ -243,7 +243,10 @@
                         }
                     });
 
-                    $this.tags['cp-revisions-info'].sync();
+                    if ($this.tags['cp-revisions-info']) {
+                        $this.tags['cp-revisions-info'].sync();
+                    }
+
                     $this.update();
 
                 } else {
@@ -279,6 +282,10 @@
             }
 
             return false;
+        }
+
+        persistLanguage(e) {
+            App.session.set('collections.entry.'+this.collection._id+'.lang', e.target.value);
         }
 
     </script>

@@ -64,6 +64,8 @@
         .iframe-container iframe {
             background: #fff;
             box-shadow: 0 1px 2px 0 rgba(0,0,0,0.22);
+            margin-top: auto;
+            margin-bottom: auto;
             transition: all 400ms;
         }
 
@@ -102,8 +104,8 @@
     </style>
 
     <div class="collection-entrypreview">
-        <div class="iframe-container uk-flex uk-flex-center uk-flex-middle"><iframe riot-src="{ url }" mode="{ mode }" ref="iframe"></iframe></div>
-        <div class="preview-panel uk-animation-slide-left">
+        <div class="iframe-container uk-flex uk-flex-center uk-flex-middle"><iframe riot-src="{ settings.url }" mode="{ mode }" ref="iframe"></iframe></div>
+        <div ref="previewpanel" class="preview-panel uk-animation-slide-left">
 
             <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
 
@@ -195,24 +197,37 @@
         this.groups = opts.groups;
         this.languages = opts.languages || [];
         this.entry = opts.entry;
-        this.url = opts.url;
 
         this.mode = 'desktop';
         this.group = '';
         this.lang = '';
         this.$idle = false;
 
+        this.settings = App.$.extend({
+            url: '',
+            wsurl: '',
+            wsprotocols: null
+        }, opts.settings || {});
+
         this.on('mount', function() {
+
+            setTimeout(function() {
+                $this.refs.previewpanel.classList.remove('uk-animation-slide-left');
+            }, 1000);
 
             $this.$cache = JSON.stringify(this.entry);
 
             this.ws = new Promise(function(resolve, reject) {
 
-                if (opts.wsurl && !window.WebSocket) {
+                if ($this.settings.wsurl && !window.WebSocket) {
                     return reject('Missing support for Websockets');
                 }
 
-                var ws = opts.wsurl ? new WebSocket(opts.wsurl) : null;
+                var protocols = ($this.settings.wsprotocols || '').split(',').map(function(p) {
+                    return p.trim();
+                });
+
+                var ws = $this.settings.wsurl ? new WebSocket($this.settings.wsurl, $this.settings.wsprotocols ? protocols : undefined) : null;
 
                 if (ws) {
                     ws.onopen = function() { resolve(ws); };

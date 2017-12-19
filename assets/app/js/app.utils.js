@@ -62,6 +62,16 @@
         return str;
     };
 
+    App.Utils.copyText = function (text, cb) {
+        var inp = document.createElement('textarea');
+        document.body.appendChild(inp)
+        inp.value = text
+        inp.select();
+        try{ document.execCommand('copy',false); }catch(e){}
+        inp.remove();
+        if (cb) cb();
+    };
+
     App.Utils.count = function(value) {
 
         if (!value) {

@@ -45,7 +45,13 @@
                 }
 
                 if (opts.height) {
-                    editor.setSize(opts.width || '100%', opts.height);
+
+                    if (opts.height == "auto") {
+                        editor.setOption("height", "auto");
+                        editor.setOption("viewportMargin", Infinity);
+                    } else {
+                        editor.setSize(opts.width || '100%', opts.height);
+                    }
                 }
 
                 this.trigger('ready');
