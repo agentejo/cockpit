@@ -37,7 +37,32 @@ class Groups extends \Cockpit\AuthController {
     public function create() {
 
         $collections = $this->module('collections')->collections();
-        $group   = ["group"=>"", "admin" => false, "backend" => true, "finder" => true];
+
+        /*
+        group.cockpit.backend
+        group.cockpit.accounts
+        group.cockpit.groups
+        group.cockpit.finder
+        group.cockpit.settings
+        group.cockpit.rest
+        group.cockpit.webhooks
+        group.cockpit.info
+         */
+
+        // defaults for the creation of a new group
+        $group = [
+            'group' => "", // group name
+            'cockpit' => [
+                'finder' => true,
+                'rest' => true,
+                /*'backend' => false,
+                'accounts' => false,
+                'groups'  => false,
+                'settings' => false,
+                'webhooks' => false,
+                'info' => false*/
+            ]
+        ]; //, "admin" => false, "backend" => true, "finder" => true];
 
         //$languages = $this->getLanguages();
         //$groups    = $this->module('cockpit')->getGroups();
@@ -102,7 +127,7 @@ class Groups extends \Cockpit\AuthController {
       if (isset($options['filter'])) {
 
          if (is_string($options['filter'])) {
-             // TODO .... rest of c&p ... think this just may be removed
+             // TODO JB: .... remains of c&p ... think this just may be removed
             $options['filter'] = [
                 '$or' => [
                     ['name' => ['$regex' => $options['filter']]],

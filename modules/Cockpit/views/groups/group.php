@@ -27,9 +27,24 @@
                             </div>
                         </div>
 
-                        @if(!isset($group['_id']))
-                        <div class="uk-grid-margin">
+                        <div class="_uk-grid-margin uk-margin-small-top">
                             <div class="uk-form-row">
+                                <strong class="uk-text-uppercase">vars</strong>
+                                <div class="uk-margin-small-top uk-grid">
+                                    <input class="uk-width-1-3 uk-form-large" type="text" placeholder="key">
+                                    <div class="uk-width-1-3 uk-text-center">&laquo;&raquo;</div>
+                                    <input class="uk-width-1-3 uk-form-large" type="text" placeholder="value">
+                                </div>
+                                <button type="button" class="uk-button uk-button-large uk-button-success uk-float-right">+</button>
+                                <textarea class="hidden"></textarea>
+                            </div>
+                            <hr/>
+                        </div>
+
+                        @if(!isset($group['_id']))
+                        <div class="_uk-grid-margin uk-margin-small-top">
+                            <div class="uk-form-row">
+                                <strong class="uk-text-uppercase">bulkactions</strong>
                                 <div class="uk-margin-small-top">
                                     <field-boolean label="@lang('Also create a User with the Groups name')" onclick="{ toggle_alsoCreateUser }" ></field-boolean>
                                 </div>
@@ -88,18 +103,72 @@
         <h3>@lang('Group Access')</h3>
 
         <div class="uk-form-row">
+            <strong class="uk-text-uppercase">Generic</strong>
             <div class="uk-margin-small-top">
-                <field-boolean bind="group.admin" label="@lang('Admin')"></field-boolean>
+                <field-boolean bind="group.admin" label="@lang('Admin') (NYI)"></field-boolean>
             </div>
         </div>
         <div class="uk-form-row">
+            <strong class="uk-text-uppercase">cockpit</strong>
             <div class="uk-margin-small-top">
-                <field-boolean bind="group.backend" label="@lang('Backend')"></field-boolean>
+                <field-boolean bind="group.cockpit.backend" label="@lang('Backend')"></field-boolean>
+            </div>
+            <div class="uk-margin-small-top">
+                <field-boolean bind="group.cockpit.accounts" label="@lang('Accounts')"></field-boolean>
+            </div>
+            <div class="uk-margin-small-top">
+                <field-boolean bind="group.cockpit.groups" label="@lang('Groups')"></field-boolean>
+            </div>
+            <div class="uk-margin-small-top">
+                <field-boolean bind="group.cockpit.finder" label="@lang('Finder')"></field-boolean>
+            </div>
+            <div class="uk-margin-small-top">
+                <field-boolean bind="group.cockpit.settings" label="@lang('Settings')"></field-boolean>
+            </div>
+            <div class="uk-margin-small-top">
+                <field-boolean bind="group.cockpit.rest" label="@lang('RestAPI')"></field-boolean>
+            </div>
+            <div class="uk-margin-small-top">
+                <field-boolean bind="group.cockpit.webhooks" label="@lang('Webhooks')"></field-boolean>
+            </div>
+            <div class="uk-margin-small-top">
+                <field-boolean bind="group.cockpit.info" label="@lang('SysInfo')"></field-boolean>
             </div>
         </div>
         <div class="uk-form-row">
+            <strong class="uk-text-uppercase">collections</strong>
             <div class="uk-margin-small-top">
-                <field-boolean bind="group.finder" label="@lang('Finder')"></field-boolean>
+                <field-boolean bind="group.collections.create" label="@lang('Create')"></field-boolean>
+            </div>
+            <div class="uk-margin-small-top">
+                <field-boolean bind="group.collections.delete" label="@lang('Delete')"></field-boolean>
+            </div>
+            <div class="uk-margin-small-top">
+                <field-boolean bind="group.collections.manage" label="@lang('Manage')"></field-boolean>
+            </div>
+        </div>
+        <div class="uk-form-row">
+            <strong class="uk-text-uppercase">regions</strong>
+            <div class="uk-margin-small-top">
+                <field-boolean bind="group.regions.create" label="@lang('Create')"></field-boolean>
+            </div>
+            <div class="uk-margin-small-top">
+                <field-boolean bind="group.regions.delete" label="@lang('Delete')"></field-boolean>
+            </div>
+            <div class="uk-margin-small-top">
+                <field-boolean bind="group.regions.manage" label="@lang('Manage')"></field-boolean>
+            </div>
+        </div>
+        <div class="uk-form-row">
+            <strong class="uk-text-uppercase">forms</strong>
+            <div class="uk-margin-small-top">
+                <field-boolean bind="group.forms.create" label="@lang('Create')"></field-boolean>
+            </div>
+            <div class="uk-margin-small-top">
+                <field-boolean bind="group.forms.delete" label="@lang('Delete')"></field-boolean>
+            </div>
+            <div class="uk-margin-small-top">
+                <field-boolean bind="group.forms.manage" label="@lang('Manage')"></field-boolean>
             </div>
         </div>
 
@@ -159,7 +228,7 @@
 
        submit(e) {
            if(e) e.preventDefault();
-           // TODO prevent creation of groups thats already exist!
+           // TODO JB: prevent creation of groups thats already exist!
            App.request("/groups/save", {"group": this.group}).then(function(data){
                $this.group = data;
                App.ui.notify("Group saved", "success");
@@ -185,17 +254,16 @@
                // this.selectedCollection // < the collection that shall be used as template for the new collection
                var group = this.group.group;
                App.callmodule('collections:collection', [this.selectedCollection]).then(function(data) {
-                  console.info(data);
                   var acl = {};
                   acl[group] = {"collection_edit":true,"entries_view":true,"entries_edit":true,"entries_create":true,"entries_delete":true};
+                  var slug_group_name = App.Utils.sluggify(group, {"delimiter" : ''});
                   var data = {
-                    'name' : group, // TODO this may not contain whitespaces!!
+                    'name' : slug_group_name,
                     'label' : group,
                     'fields' : data.result.fields,
                     'acl' : acl
                   };
-                  App.callmodule('collections:createCollection', [group, data]).then(function(data) {
-                     //console.info(data);
+                  App.callmodule('collections:createCollection', [slug_group_name, data]).then(function(data) {
                      App.ui.notify("Collection for the fresh new user created", "success");
                   });
                });

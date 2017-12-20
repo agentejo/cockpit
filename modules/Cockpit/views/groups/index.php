@@ -87,13 +87,14 @@
                     </a>
                 </td>
                 <td>
+                   <!-- TODO JB: this is not working properly -->
                     { group.admin ? "@lang('Yes')" : "@lang('No')" }
                 </td>
                 <td>
-                    { group.backend ? "@lang('Yes')" : "@lang('No')" }
+                    { group.cockpit.backend ? "@lang('Yes')" : "@lang('No')" }
                 </td>
                 <td>
-                    { group.finder ? "@lang('Yes')" : "@lang('No')" }
+                    { group.cockpit.finder ? "@lang('Yes')" : "@lang('No')" }
                 </td>
 
                 <td><span class="uk-badge uk-badge-outline uk-text-muted">{ App.Utils.dateformat( new Date( 1000 * group._created )) }</span></td>
