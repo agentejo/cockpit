@@ -34,13 +34,17 @@ $this->module("regions")->extend([
             '_modified' => $time
         ], $data);
 
+        $this->app->trigger("regions.save.before", [$region]);
+        $this->app->trigger("regions.save.before.{$name}", [$region]);
+
         $export = var_export($region, true);
 
         if (!$this->app->helper('fs')->write("#storage:regions/{$name}.region.php", "<?php\n return {$export};")) {
             return false;
         }
 
-        $this->app->trigger('regions.create', [$region]);
+        $this->app->trigger("regions.save.after", [$region]);
+        $this->app->trigger("regions.save.after.{$name}", [$region]);
 
         return $region;
     },
@@ -57,14 +61,19 @@ $this->module("regions")->extend([
 
         $region  = include($metapath);
         $region  = array_merge($region, $data);
+
+
+        $this->app->trigger("regions.save.before", [$region]);
+        $this->app->trigger("regions.save.before.{$name}", [$region]);
+
         $export  = var_export($region, true);
 
         if (!$this->app->helper('fs')->write($metapath, "<?php\n return {$export};")) {
             return false;
         }
 
-        $this->app->trigger('regions.update', [$region]);
-        $this->app->trigger("regions.update.{$name}", [$region]);
+        $this->app->trigger('regions.save', [$region]);
+        $this->app->trigger("regions.save.after.{$name}", [$region]);
 
         return $region;
     },
@@ -87,7 +96,8 @@ $this->module("regions")->extend([
             $this->app->helper("fs")->delete("#storage:regions/{$name}.region.php");
             $this->app->storage->dropregion("regions/{$region}");
 
-            $this->app->trigger('regions.remove', [$name]);
+            $this->app->trigger('regions.remove', [$region]);
+            $this->app->trigger("regions.remove.{$name}", [$region]);
 
             return true;
         }
