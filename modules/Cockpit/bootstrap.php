@@ -40,7 +40,7 @@ $this->module("cockpit")->extend([
             foreach ($files as $file) {
 
                 if (!$file->isFile()) continue;
-                if (preg_match('/(.gitkeep|index\.html)$/', $file)) continue;
+                if (preg_match('/(\.gitkeep|\.gitignore|index\.html)$/', $file)) continue;
 
                 @unlink($file->getRealPath());
             }
