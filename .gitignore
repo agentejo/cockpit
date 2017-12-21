@@ -5,9 +5,9 @@
 .project
 .settings
 .idea
-/storage/*
+/storage/*.*
+/storage/*/*
 /config/*
-/addons/*/*
 /tests/*
 /node_modules
 addons/
