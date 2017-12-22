@@ -400,57 +400,25 @@ $app('acl')->addResource('cockpit', [
 
 $app('acl')->addGroup('admin', true);
 
-/*
-groups:
-  groupname:
-    $admin: false
-    $vars:
-      finder.path: "admin/storage/uploads"
-    cockpit:
-      backend: true
-      accounts: true
-      finder: true
-      rest: true
-      webhooks: true
-      info: true
-    collections:
-      create: true
-      delete: true
-      manage: true
-
-*/
-
-//
 $groups_data = $app->storage->find("cockpit/groups");
-function foo($bar) {
-  echo '<pre>';
-  print_r($bar);
-  die();
-}
-//foo($groups_data);
-
-//$groups_data=[];
 foreach ($groups_data as $i => $row) {
-    $isSuperAdmin = false; // TODO JB: enable a group to become admin by setting this var to $row['admin'] - first check if this was ever desired this way
-    $isAdmin = isset($row['admin']) ? $row['admin'] : false; // this var is set-able via the group config - I think this was once supposed to make a group's user a real super admin...
-    //$vars         = isset($settings['$vars']) ? $settings['$vars'] : [];
-    $vars = []; // TODO JB: implement vars config via interface
+    $isSuperAdmin = isset($row['admin']) ? $row['admin'] : false;
+    $vars = isset($row['vars'])?$row['vars']:[];
 
     $group_name = $row['group'];
 
+    // add the group its self
     $app('acl')->addGroup($group_name, $isSuperAdmin, $vars);
 
+    // add the assigned acls for the group
     $acls_filtered = [
         'cockpit' => @$row['cockpit'],
         'collections' => @$row['collections'],
         'regions' => @$row['regions'],
-        'forms' => @$row['forms'],
+        'forms' => @$row['forms']
     ];
-
     if (!$isSuperAdmin && is_array($acls_filtered)) {
-
         foreach (array_filter($acls_filtered) as $resource => $actions) {
-
             foreach ($actions as $action => $allow) {
                 if ($allow) {
                     $app('acl')->allow($group_name, $resource, $action);
@@ -460,34 +428,6 @@ foreach ($groups_data as $i => $row) {
     }
 
 }
-//
-
-/*
-$aclsettings = $app->retrieve('config/groups', []);
-$aclsettings = [];
-foreach ($aclsettings as $group => $settings) {
-
-    $isSuperAdmin = $settings === true || (isset($settings['$admin']) && $settings['$admin']);
-    $vars         = isset($settings['$vars']) ? $settings['$vars'] : [];
-
-    $app('acl')->addGroup($group, $isSuperAdmin, $vars);
-
-    if (!$isSuperAdmin && is_array($settings)) {
-
-        foreach ($settings as $resource => $actions) {
-
-            if ($resource == '$vars' || $resource == '$admin') continue;
-
-            foreach ((array)$actions as $action => $allow) {
-                if ($allow) {
-                    $app('acl')->allow($group, $resource, $action);
-                }
-            }
-        }
-    }
-}
-*/
-
 
 // REST
 if (COCKPIT_API_REQUEST) {

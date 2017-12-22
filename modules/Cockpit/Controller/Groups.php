@@ -7,7 +7,7 @@ class Groups extends \Cockpit\AuthController {
     public function index() {
 
         if (!$this->module('cockpit')->hasaccess('cockpit', 'groups')) {
-            //return $this->helper('admin')->denyRequest();
+            return $this->helper('admin')->denyRequest();
         }
 
         $current  = $this->user["_id"];
@@ -29,7 +29,6 @@ class Groups extends \Cockpit\AuthController {
         }
 
         $fields    = $this->app->retrieve('config/groups/fields', null);
-        //$groups    = $this->module('cockpit')->getGroups();
 
         return $this->render('cockpit:views/groups/group.php', compact('group', 'gid', 'fields'));
     }
@@ -38,36 +37,17 @@ class Groups extends \Cockpit\AuthController {
 
         $collections = $this->module('collections')->collections();
 
-        /*
-        group.cockpit.backend
-        group.cockpit.accounts
-        group.cockpit.groups
-        group.cockpit.finder
-        group.cockpit.settings
-        group.cockpit.rest
-        group.cockpit.webhooks
-        group.cockpit.info
-         */
-
         // defaults for the creation of a new group
         $group = [
-            'group' => "", // group name
+            'group' => '', // group name
+            //'vars' => ['' => ''],
+            'admin' => false,
             'cockpit' => [
                 'finder' => true,
                 'rest' => true,
-                /*'backend' => false,
-                'accounts' => false,
-                'groups'  => false,
-                'settings' => false,
-                'webhooks' => false,
-                'info' => false*/
+                'backend' => true
             ]
-        ]; //, "admin" => false, "backend" => true, "finder" => true];
-
-        //$languages = $this->getLanguages();
-        //$groups    = $this->module('cockpit')->getGroups();
-
-        //return $this->render('cockpit:views/groups/groups.php', compact('account', 'uid', 'languages', 'groups'));
+        ];
 
         return $this->render('cockpit:views/groups/group.php', compact('group', 'collections'));
     }
@@ -84,12 +64,6 @@ class Groups extends \Cockpit\AuthController {
 
             $this->app->storage->save("cockpit/groups", $data);
 
-            /*
-            if ($data["_id"] == $this->user["_id"]) {
-                $this->module("cockpit")->setUser($data);
-            }
-            */
-
             return json_encode($data);
         }
 
@@ -101,7 +75,7 @@ class Groups extends \Cockpit\AuthController {
 
         if ($data = $this->param("group", false)) {
 
-            // user can't delete himself
+            // can't delete own group
             if ($data["_id"] != $this->user["_id"]) {
 
                 $this->app->storage->remove("cockpit/groups", ["_id" => $data["_id"]]);
@@ -115,29 +89,7 @@ class Groups extends \Cockpit\AuthController {
 
     public function find() {
 
-      /*
-      $options = array_merge([
-          'sort' => ['user' => 1]
-      ], $this->param('options', []));
-      */
-
       $options =  $this->param('options', []);
-
-      /*
-      if (isset($options['filter'])) {
-
-         if (is_string($options['filter'])) {
-             // TODO JB: .... remains of c&p ... think this just may be removed
-            $options['filter'] = [
-                '$or' => [
-                    ['name' => ['$regex' => $options['filter']]],
-                    ['user' => ['$regex' => $options['filter']]],
-                    ['email' => ['$regex' => $options['filter']]],
-                ]
-            ];
-         }
-      }
-      */
 
       $groups = $this->storage->find("cockpit/groups", $options)->toArray(); // get groups from db
       $count = (!isset($options['skip']) && !isset($options['limit'])) ? count($groups) : $this->storage->count("cockpit/groups", isset($options['filter']) ? $options['filter'] : []);

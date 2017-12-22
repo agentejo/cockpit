@@ -28,17 +28,39 @@
                         </div>
 
                         <div class="_uk-grid-margin uk-margin-small-top">
-                            <div class="uk-form-row">
-                                <strong class="uk-text-uppercase">vars</strong>
-                                <div class="uk-margin-small-top uk-grid">
-                                    <input class="uk-width-1-3 uk-form-large" type="text" placeholder="key">
-                                    <div class="uk-width-1-3 uk-text-center">&laquo;&raquo;</div>
-                                    <input class="uk-width-1-3 uk-form-large" type="text" placeholder="value">
+                            <strong class="uk-text-uppercase">vars</strong>
+                            <div class="uk-panel uk-panel-box uk-panel-card var-row uk-hidden">
+                                <div class="uk-grid uk-grid-small">
+                                    <div class="uk-flex-item-1 uk-flex">
+                                        <input class="uk-width-1-4 uk-form-small" type="text" placeholder="key" >
+                                        <i class="uk-width-1-4 uk-text-center uk-icon-arrows-h"></i>
+                                        <input class="uk-width-1-4 uk-form-small" type="text" placeholder="value" >
+                                        <div class="uk-width-1-4 uk-text-right">
+                                            <i class="uk-icon-trash" style="cursor: pointer" onclick="$(this).parents('.var-row').remove()"></i>
+                                        </div>
+                                    </div>
                                 </div>
-                                <button type="button" class="uk-button uk-button-large uk-button-success uk-float-right">+</button>
-                                <textarea class="hidden"></textarea>
                             </div>
-                            <hr/>
+                            <div class="uk-width-1-1 uk-margin-small-top" ref="vars">
+                                @if(isset($group['vars']))
+                                    @foreach( $group['vars'] as $key => $val)
+                                    <div class="uk-panel uk-panel-box uk-panel-card var-row">
+                                        <div class="uk-grid uk-grid-small">
+                                            <div class="uk-flex-item-1 uk-flex">
+                                                <input class="uk-width-1-4 uk-form-small" type="text" placeholder="key" value="{{$key}}">
+                                                <i class="uk-width-1-4 uk-text-center uk-icon-arrows-h"></i>
+                                                <input class="uk-width-1-4 uk-form-small" type="text" placeholder="value" value="{{$val}}">
+                                                <div class="uk-width-1-4 uk-text-right">
+                                                    <i class="uk-icon-trash" style="cursor: pointer" onclick="$(this).parents('.var-row').remove()"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                            <button type="button" onclick="{ dupe_var_row }" class="uk-button uk-button-small uk-button-success uk-float-right uk-margin-small-top uk-margin-small-bottom">+</button>
+                            <hr style="clear:both" class="uk-margin-small-top" />
                         </div>
 
                         @if(!isset($group['_id']))
@@ -53,10 +75,10 @@
                         <div class="bulk-actions" ref="bulkactions">
                             <div class="uk-grid-margin">
                                 <div class="uk-form-row">
-                                    <div class="" style="float:left;">
+                                    <div class="uk-float-left">
                                         <field-boolean label="@lang('Also create a Collection for the fresh User')" onclick="{ toggle_alsoCreateCollection }" disabled ></field-boolean>
                                     </div>
-                                    <div class="" style="float: right">
+                                    <div class="uk-float-right">
                                         <select onchange="{ updateSelectedCollection }" ref="collections" disabled>
                                             <option value="-1">@lang('Choose a Collection as Template')</option>
                                             <option value="{c.name}" each="{c in collections}">{c.label} ({c.name})</option>
@@ -105,7 +127,7 @@
         <div class="uk-form-row">
             <strong class="uk-text-uppercase">Generic</strong>
             <div class="uk-margin-small-top">
-                <field-boolean bind="group.admin" label="@lang('Admin') (NYI)"></field-boolean>
+                <field-boolean bind="group.admin" label="@lang('Admin')"></field-boolean>
             </div>
         </div>
         <div class="uk-form-row">
@@ -183,8 +205,6 @@
        this.group   = {{ json_encode(@$group) }};
        this.collections = {{ json_encode(@$collections) }};
 
-       //var firstCollectionEntry = Object.keys(this.collections)[0];
-       //this.selectedCollection = firstCollectionEntry;
        this.selectedCollection = null;
 
        this.on('mount', function(){
@@ -219,15 +239,28 @@
            this.selectedCollection = $(App.$(this.refs.collections)).val();
        }
 
-       /*toggle_bulkAction (e) {
-           //this.alsoCreateUser = !(this.alsoCreateUser);
-           console.info(e);
-           console.info(e.target);
-           //console.info(this);
-       }*/
+       dupe_var_row (e) {
+           //$(App.$(this.refs.vars)).find('.var-row').eq(0).clone().appendTo($(App.$(this.refs.vars))).find('input, i.uk-icon-trash').val('').removeClass('uk-hidden');
+           //$(App.$(this.refs.vars)).find('.var-row').eq(0).clone().appendTo($(App.$(this.refs.vars))).find('input, i.uk-icon-trash').val('');
+           $('.var-row.uk-hidden').clone().removeClass('uk-hidden').appendTo($(App.$(this.refs.vars)));
+       }
 
        submit(e) {
+
            if(e) e.preventDefault();
+
+           // gather vars
+           var var_row = $(App.$(this.refs.vars)).find('.var-row');
+           var vars = {};
+           $(var_row).each(function(k,v){
+               var pair = var_row[k].find('input');
+               var key = $(pair[0]).val();
+               var val = $(pair[1]).val();
+               if(key)
+                  vars[key] = val;
+           });
+           this.group.vars = vars;
+
            // TODO JB: prevent creation of groups thats already exist!
            App.request("/groups/save", {"group": this.group}).then(function(data){
                $this.group = data;
