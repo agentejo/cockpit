@@ -87,7 +87,9 @@
                     </a>
                 </td>
                 <td>
-                   <!-- TODO JB: this is not working properly -->
+                   <!--
+                   TODO JB: this is not working properly
+                   -->
                     { group.admin ? "@lang('Yes')" : "@lang('No')" }
                 </td>
                 <td>

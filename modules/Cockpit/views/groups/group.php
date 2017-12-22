@@ -47,7 +47,7 @@
                                     <div class="uk-panel uk-panel-box uk-panel-card var-row">
                                         <div class="uk-grid uk-grid-small">
                                             <div class="uk-flex-item-1 uk-flex">
-                                                <input class="uk-width-1-4 uk-form-small" type="text" placeholder="key" value="{{$key}}">
+                                                <input class="uk-width-1-4 uk-form-small" type="text" placeholder="key" value="{{$key}}"><!-- TODO JB: perhaps create autocomplete for valid keys (jquery ui style) -->
                                                 <i class="uk-width-1-4 uk-text-center uk-icon-arrows-h"></i>
                                                 <input class="uk-width-1-4 uk-form-small" type="text" placeholder="value" value="{{$val}}">
                                                 <div class="uk-width-1-4 uk-text-right">
