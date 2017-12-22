@@ -22,13 +22,27 @@
     @hasaccess?('cockpit', 'accounts')
     <div>
         <div class="uk-panel uk-panel-space uk-panel-box uk-panel-card">
-
-            <img src="@url('assets:app/media/icons/accounts.svg')" width="50" height="50" alt="@lang('Accounts')" />
+            <!-- TODO new icon for user, now that groups uses the old account icon -->
+            <img src="@url('assets:app/media/icons/login.svg')" width="50" height="50" alt="@lang('Accounts')" />
 
             <div class="uk-text-truncate uk-margin">
                 @lang('Accounts')
             </div>
             <a class="uk-position-cover" href="@route('/accounts/index')"></a>
+        </div>
+    </div>
+    @endif
+
+    @hasaccess?('cockpit', 'groups')
+    <div>
+        <div class="uk-panel uk-panel-space uk-panel-box uk-panel-card">
+
+            <img src="@url('assets:app/media/icons/accounts.svg')" width="50" height="50" alt="@lang('Groups')" />
+
+            <div class="uk-text-truncate uk-margin">
+                @lang('Groups')
+            </div>
+            <a class="uk-position-cover" href="@route('/groups/index')"></a>
         </div>
     </div>
     @endif

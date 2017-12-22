@@ -419,7 +419,6 @@ $this->module("collections")->extend([
         } else {
             $criteria = $context->options['filter'];
         }
-
         return $this->app->storage->count("collections/{$collection}", $criteria);
     },
 

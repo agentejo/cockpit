@@ -59,6 +59,34 @@
     }
 }
 
+.slimable {
+    padding: 8px 15px !important;
+    .slimable-elem {
+        float: left;
+        margin-right: 20px;
+        margin-bottom: 10px;
+        &.uk-margin-top {
+            margin-top: 0 !important;
+        }
+    }
+    .slimable-sep {
+        clear: both;
+        display: block;
+    }
+    .slimable-hidden {
+        display: none;
+    }
+    .slimable-fs-big {
+        font-size: 20px;
+        font-weight: bold;
+    }
+}
+
+field-boolean[disabled] {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
 .uk-svg-adjust path,
 .uk-svg-adjust rect,
 .uk-svg-adjust circle:not([fill="none"]),
