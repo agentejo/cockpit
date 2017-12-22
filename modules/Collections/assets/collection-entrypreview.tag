@@ -268,9 +268,9 @@
             if (!this.$iframe) return;
 
             var data = {
-                type: 'cockpit:contentpreview',
-                entry: this.entry,
-                lang: (this.lang || 'default')
+                'event': 'cockpit:collections.preview',
+                'entry': this.entry,
+                'lang': this.lang || 'default'
             };
 
             this.$iframe.postMessage(data, '*');
