@@ -71,7 +71,7 @@
                 </div>
             </div>
 
-            <div class="uk-text-right uk-margin-top">
+            <div class="uk-modal-footer uk-text-right">
                 <a class="uk-button uk-button-link uk-button-large uk-modal-close">{ App.i18n.get('Close') }</a>
             </div>
         </div>
@@ -110,7 +110,7 @@
                 </div>
             </div>
 
-            <div class="uk-text-right uk-margin-top">
+            <div class="uk-modal-footer uk-text-right">
                 <a class="uk-button uk-button-link uk-button-large uk-modal-close">{ App.i18n.get('Close') }</a>
             </div>
 
@@ -466,7 +466,7 @@
             </h3>
             <field-set class="uk-margin" bind="settingsComponent.settings" fields="{fields}"></field-set>
 
-            <div class="uk-text-right uk-margin-top">
+            <div class="uk-modal-footer uk-text-right">
                 <a class="uk-button uk-button-link uk-button-large uk-modal-close">{ App.i18n.get('Close') }</a>
             </div>
 
