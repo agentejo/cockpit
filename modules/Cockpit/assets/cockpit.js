@@ -53,7 +53,7 @@
                         '<cp-finder path="'+(options.path || '')+'" typefilter="'+(options.typefilter || '')+'" modal="true"></cp-finder>',
                         '<div class="uk-modal-footer uk-text-right">',
                             '<button class="uk-button uk-button-primary uk-margin-right uk-button-large uk-hidden js-select-button">Select: <span></span> item(s)</button>',
-                            '<button class="uk-button uk-button-large uk-modal-close">Close</button>',
+                            '<a class="uk-button uk-button-large uk-button-link uk-modal-close">Close</a>',
                         '</div>',
                     '</div>'
                 ].join(''), {modal:false});
@@ -107,7 +107,7 @@
                         '<cp-assets path="'+(options.path || '')+'" typefilter="'+(options.typefilter || '')+'" modal="true"></cp-assets>',
                         '<div class="uk-modal-footer uk-text-right">',
                             '<button class="uk-button uk-button-primary uk-margin-right uk-button-large uk-hidden js-select-button">Select: <span></span> item(s)</button>',
-                            '<button class="uk-button uk-button-large uk-modal-close">Close</button>',
+                            '<a class="uk-button uk-button-large uk-button-link uk-modal-close">Close</a>',
                         '</div>',
                     '</div>'
                 ].join(''), {modal:false});
