@@ -106,7 +106,7 @@
 
                 var isCheckbox = (ele.nodeName == 'INPUT' && ele.getAttribute('type') == 'checkbox');
 
-                ele.addEventListener(ele.getAttribute('bind-event') || defaultEvt, function() {
+                ele.addEventListener(ele.getAttribute('bind-event') || defaultEvt, _.debounce(function() {
 
                     try {
 
@@ -118,7 +118,7 @@
 
                     } catch(e) {}
 
-                }, false);
+                }, 200), false);
 
                 ele.$updateValue = (function(fn, body) {
 
