@@ -1,9 +1,9 @@
 <field-textarea>
 
-    <textarea ref="input" class="uk-width-1-1 {opts.cls}" bind="{opts.bind}" riot-rows="{opts.rows || 10}" riot-placeholder="{ opts.placeholder }" bind-event="change"></textarea>
+    <textarea ref="input" class="uk-width-1-1 {opts.cls}" bind="{opts.bind}" riot-rows="{opts.rows || 10}" riot-placeholder="{ opts.placeholder }"></textarea>
 
     <script>
-        
+
         this.on('mount', function() {
 
             if (opts.allowtabs) {

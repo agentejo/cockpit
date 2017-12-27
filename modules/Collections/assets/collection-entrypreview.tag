@@ -196,6 +196,7 @@
         this.excludeFields = opts.excludeFields || [];
         this.groups = opts.groups;
         this.languages = opts.languages || [];
+        this.collection = opts.collection;
         this.entry = opts.entry;
 
         this.mode = 'desktop';
@@ -269,6 +270,7 @@
 
             var data = {
                 'event': 'cockpit:collections.preview',
+                'collection': this.collection.name,
                 'entry': this.entry,
                 'lang': this.lang || 'default'
             };
