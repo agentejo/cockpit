@@ -234,7 +234,7 @@
 
                     App.ui.notify("Saving successful", "success");
 
-                    $this.entry = entry;
+                    _.extend($this.entry, entry);
 
                     $this.fields.forEach(function(field){
 
