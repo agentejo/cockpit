@@ -148,7 +148,6 @@
         this.sort     = {'_created': -1};
         this.page     = 1;
         this.count    = 0;
-        this.page     = 1;
 
         this.loading  = true;
         this.ready    = false;
