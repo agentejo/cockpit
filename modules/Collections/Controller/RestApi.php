@@ -155,7 +155,7 @@ class RestApi extends \LimeExtra\Controller {
         $name = $this->param('name', null);
         $data = $this->param('data', null);
 
-        if (!$name || !$data || !$user) {
+        if (!$name || !$data) {
             return false;
         }
 
@@ -168,19 +168,18 @@ class RestApi extends \LimeExtra\Controller {
         return $collection;
     }
 
-    public function updateCollection() {
+    public function updateCollection($name = null) {
 
         $user = $this->module('cockpit')->getUser();
-        $name = $this->param('name', null);
         $data = $this->param('data', null);
 
-        if (!$name || !$data || !$user) {
+        if (!$name || !$data) {
             return false;
         }
 
         $collection = $this->module('collections')->collection($name);
 
-        if ($user && !$this->module('cockpit')->isSuperAdmin()) {
+        if ($user && !$this->module('collections')->hasaccess($collection, 'collection_edit')) {
             return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
