@@ -67,9 +67,14 @@
 
                             <div class="uk-form-row">
                                 <label class="uk-text-small">@lang('API Key')</label>
-                                <div class="uk-form-icon uk-form-icon-flip uk-display-block">
-                                    <a class="uk-icon-refresh uk-text-primary" onclick="{ generateApiToken }" style="pointer-events:auto;"></a>
-                                    <input class="uk-form-large uk-width-1-1" type="text" bind="account.api_key" placeholder="@lang('No token generated yet')" bind="account.apikey" disabled>
+
+                                <div class="uk-flex uk-flex-middle">
+                                    <div class="uk-form-icon uk-display-block uk-flex-item-1">
+                                        <i class="uk-icon-key"></i>
+                                        <input class="uk-form-large uk-width-1-1" type="text" bind="account.api_key" placeholder="@lang('No token generated yet')" bind="account.apikey" disabled>
+                                    </div>
+                                    <a class="uk-icon-refresh uk-margin-left" onclick="{ generateApiToken }" style="pointer-events:auto;"></a>
+                                    <a class="uk-margin-left" type="button" onclick="{ copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-copy"></i></a>
                                 </div>
                             </div>
 
@@ -234,6 +239,15 @@
 
         generateApiToken() {
             this.account.api_key = 'account-'+App.Utils.generateToken(120);
+        }
+
+        copyApiKey() {
+
+            var token = this.account.api_key;
+
+            App.Utils.copyText(token, function() {
+                App.ui.notify("Copied!", "success");
+            });
         }
 
         toggleactive() {
