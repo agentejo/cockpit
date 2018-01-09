@@ -192,11 +192,11 @@ class RestApi extends \LimeExtra\Controller {
 
         $user = $this->module('cockpit')->getUser();
 
-        if (!$user) {
-            return $this->stop('{"error": "Unauthorized"}', 401);
+        if ($user) {
+            $collections = $this->module("collections")->getCollectionsInGroup($user['group'], true);
+        } else {
+            $collections = $this->module("collections")->collections(true);
         }
-
-        $collections = $this->module("collections")->getCollectionsInGroup($user['group'], true);
 
         if (!isset($collections[$name])) {
            return $this->stop('{"error": "Collection not found"}', 412);
