@@ -9,7 +9,7 @@
                 <div class="uk-grid uk-grid-small">
 
                     <div class="uk-flex-item-1 uk-flex">
-                        <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="fields[{idx}].name" placeholder="name" required>
+                        <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="fields[{idx}].name" placeholder="name" pattern="[a-zA-Z0-9_]+" required>
                     </div>
 
                     <div class="uk-width-1-4">
