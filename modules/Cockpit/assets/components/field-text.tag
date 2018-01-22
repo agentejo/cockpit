@@ -17,6 +17,10 @@
                 this.refs.input.setAttribute('required', 'required');
             }
 
+            if (opts.maxlength) {
+                this.refs.input.setAttribute('maxlength', opts.maxlength);
+            }
+
             if (opts.slug) {
                 this.slug = this.$getValue(opts.bind+'_slug') || '';
             }
