@@ -17,6 +17,12 @@
                 this.refs.input.setAttribute('required', 'required');
             }
 
+            if (opts.attributes) {
+                Object.keys(opts.attributes).forEach( key => {
+                    this.refs.input.setAttribute(key, opts.attributes[key]);
+                });
+            }
+
             if (opts.slug) {
                 this.slug = this.$getValue(opts.bind+'_slug') || '';
             }
