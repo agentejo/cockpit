@@ -17,16 +17,10 @@
                 this.refs.input.setAttribute('required', 'required');
             }
 
-            if (opts.maxlength) {
-                this.refs.input.setAttribute('maxlength', opts.maxlength);
-            }
-
-            if (opts.minlength) {
-                this.refs.input.setAttribute('minlength', opts.minlength);
-            }
-
-            if (opts.pattern) {
-                this.refs.input.setAttribute('pattern', opts.pattern);
+            if (opts.attributes) {
+                Object.keys(opts.attributes).forEach( key => {
+                    this.refs.input.setAttribute(key, opts.attributes[key]);
+                });
             }
 
             if (opts.slug) {
