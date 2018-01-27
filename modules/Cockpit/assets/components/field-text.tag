@@ -21,6 +21,14 @@
                 this.refs.input.setAttribute('maxlength', opts.maxlength);
             }
 
+            if (opts.minlength) {
+                this.refs.input.setAttribute('minlength', opts.minlength);
+            }
+
+            if (opts.pattern) {
+                this.refs.input.setAttribute('pattern', opts.pattern);
+            }
+
             if (opts.slug) {
                 this.slug = this.$getValue(opts.bind+'_slug') || '';
             }
