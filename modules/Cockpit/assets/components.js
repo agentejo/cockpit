@@ -3077,7 +3077,7 @@ riot.tag2('field-text', '<input ref="input" class="uk-width-1-1" bind="{opts.bin
                 this.slug = this.$getValue(opts.bind+'_slug') || '';
             }
 
-            (['maxlength', 'minlength', 'step', 'placeholder', 'size']).forEach( function(key) {
+            (['maxlength', 'minlength', 'step', 'placeholder', 'pattern', 'size']).forEach( function(key) {
                 if (opts[key]) $this.refs.input.setAttribute(key, opts[key]);
             });
 
