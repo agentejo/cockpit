@@ -33,7 +33,9 @@
                 threshold: 0.01
             });
 
-            observer.observe($this.refs.canvas);
+            setTimeout(function() {
+                observer.observe($this.refs.canvas);
+            }, 50);
         });
 
         this.on('update', function() {

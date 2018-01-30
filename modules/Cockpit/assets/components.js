@@ -1166,7 +1166,9 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
                 threshold: 0.01
             });
 
-            observer.observe($this.refs.canvas);
+            setTimeout(function() {
+                observer.observe($this.refs.canvas);
+            }, 50);
         });
 
         this.on('update', function() {
@@ -3059,6 +3061,8 @@ riot.tag2('field-tags', '<div class="uk-grid uk-grid-small uk-flex-middle" data-
 
 riot.tag2('field-text', '<input ref="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" placeholder="{opts.placeholder}"> <div class="uk-text-muted uk-text-small uk-margin-small-top" if="{opts.slug}" title="Slug"> {slug} </div>', '', '', function(opts) {
 
+        var $this = this;
+
         this.on('mount', function() {
 
             if (opts.cls) {
@@ -3072,6 +3076,10 @@ riot.tag2('field-text', '<input ref="input" class="uk-width-1-1" bind="{opts.bin
             if (opts.slug) {
                 this.slug = this.$getValue(opts.bind+'_slug') || '';
             }
+
+            (['maxlength', 'minlength', 'step', 'placeholder', 'size']).forEach( function(key) {
+                if (opts[key]) $this.refs.input.setAttribute(key, opts[key]);
+            });
 
             this.update();
         });
@@ -3089,6 +3097,8 @@ riot.tag2('field-text', '<input ref="input" class="uk-width-1-1" bind="{opts.bin
 });
 
 riot.tag2('field-textarea', '<textarea ref="input" class="uk-width-1-1 {opts.cls}" bind="{opts.bind}" riot-rows="{opts.rows || 10}" riot-placeholder="{opts.placeholder}"></textarea>', '', '', function(opts) {
+
+        var $this = this;
 
         this.on('mount', function() {
 
@@ -3109,6 +3119,10 @@ riot.tag2('field-textarea', '<textarea ref="input" class="uk-width-1-1 {opts.cls
             if (opts.required) {
                 this.refs.input.setAttribute('required', 'required');
             }
+
+            (['maxlength', 'minlength', 'placeholder', 'cols', 'rows']).forEach( function(key) {
+                if (opts[key]) $this.refs.input.setAttribute(key, opts[key]);
+            });
 
             this.update();
         });
