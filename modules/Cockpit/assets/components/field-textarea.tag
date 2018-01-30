@@ -4,6 +4,8 @@
 
     <script>
 
+        var $this = this;
+
         this.on('mount', function() {
 
             if (opts.allowtabs) {
@@ -23,6 +25,10 @@
             if (opts.required) {
                 this.refs.input.setAttribute('required', 'required');
             }
+
+            (['maxlength', 'minlength', 'placeholder', 'cols', 'rows']).forEach( function(key) {
+                if (opts[key]) $this.refs.input.setAttribute(key, opts[key]);
+            });
 
             this.update();
         });
