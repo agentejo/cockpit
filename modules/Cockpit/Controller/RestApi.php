@@ -140,6 +140,7 @@ class RestApi extends \LimeExtra\Controller {
         $options = [
             'src' => $this->param('src', false),
             'mode' => $this->param('m', 'thumbnail'),
+            'fp' => $this->param('fp', null),
             'width' => intval($this->param('w', null)),
             'height' => intval($this->param('h', null)),
             'quality' => intval($this->param('q', 100)),
