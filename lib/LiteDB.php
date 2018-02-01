@@ -18,7 +18,7 @@ class LiteDB extends PDO {
 
         $data = [];
 
-        if($stmt = $this->query($sql)){
+        if ($stmt = $this->query($sql)){
 
             $res = $stmt->fetch(self::FETCH_ASSOC);
 
@@ -34,7 +34,7 @@ class LiteDB extends PDO {
 
         $data = [];
 
-        if($stmt = $this->query($sql)){
+        if ($stmt = $this->query($sql)){
 
             $data = $stmt->fetchAll(self::FETCH_ASSOC);
         }
@@ -107,16 +107,16 @@ class LiteDBQuery {
                 break;
             case 2:
 
-                if(is_array($args[1])) {
+                if (is_array($args[1])) {
                     $this->conditions[] = array($args[0], $args[1]);
 
                     break;
                 }
             default:
 
-                $params = array($args[0]);
+                $params = is_array($args[0]) ? $args[0] : array($args[0]);
 
-                for($i=1;$i<count($args);$i++) {
+                for ($i=1;$i<count($args);$i++) {
                     $params[] = $this->connection->quote($args[$i]);
                 }
 
@@ -156,9 +156,9 @@ class LiteDBQuery {
         return $this;
     }
 
-    public function all() {
+    public function all($condition = null) {
 
-        if(func_num_args()) {
+        if (func_num_args() && $condition) {
             call_user_func_array(array($this, 'where'), func_get_args());
         }
 
@@ -169,25 +169,59 @@ class LiteDBQuery {
 
         $this->limit = 1;
 
-        if(func_num_args()) {
+        if (func_num_args()) {
             call_user_func_array(array($this, 'where'), func_get_args());
         }
 
         return $this->connection->fetch($this->buildSelect());
     }
 
-    public function count() {
+    public function count($condition = null) {
 
         $table = $this->table;
         $obj   = $this->connection->{$table}->select('COUNT(*) AS C');
 
-        if(func_num_args()) {
+        if (func_num_args() && $condition) {
             call_user_func_array(array($obj, 'where'), func_get_args());
         }
 
         $count = $obj->one();
 
-        return isset($count['C']) ? $count['C']:0;
+        return isset($count['C']) ? intval($count['C']):0;
+    }
+
+    public function sum($field) {
+
+        $args  = func_get_args();
+        $table = $this->table;
+        $obj   = $this->connection->{$table}->select('SUM('.$field.') AS S');
+
+        array_shift($args);
+
+        if (count($args)) {
+            call_user_func_array(array($obj, 'where'), $args);
+        }
+
+        $count = $obj->one();
+
+        return isset($count['S']) ? floatval($count['S']):0;
+    }
+
+    public function avg($field) {
+
+        $args  = func_get_args();
+        $table = $this->table;
+        $obj   = $this->connection->{$table}->select('AVG('.$field.') AS A');
+
+        array_shift($args);
+
+        if (count($args)) {
+            call_user_func_array(array($obj, 'where'), $args);
+        }
+
+        $avg = $obj->one();
+
+        return isset($avg['A']) ? floatval($avg['A']):0;
     }
 
     public function insert($data){
@@ -197,9 +231,9 @@ class LiteDBQuery {
         $fields = [];
         $values = [];
 
-        foreach($data as $col=>$value){
+        foreach ($data as $col=>$value){
 
-            if(!is_null($value) && (is_array($value) || is_object($value))){
+            if (!is_null($value) && (is_array($value) || is_object($value))){
               $value = json_encode($value, JSON_NUMERIC_CHECK);
             }
 
@@ -216,9 +250,9 @@ class LiteDBQuery {
 
         $res = $this->connection->exec($sql);
 
-        if($res){
+        if ($res){
             return $this->connection->lastInsertId();
-        }else{
+        } else {
             trigger_error('SQL Error: '.implode(', ',$this->connection->errorInfo()).":\n".$sql);
             return false;
         }
@@ -227,16 +261,15 @@ class LiteDBQuery {
     public function update($data, $conditions=[]){
 
         $table = $this->table;
-
         $conditions = $this->buildConditions($conditions);
 
-        if(strlen(trim($conditions))>0) $conditions = "WHERE ".$conditions;
+        if (strlen(trim($conditions))>0) $conditions = "WHERE ".$conditions;
 
         $fields = [];
 
-        foreach($data as $col=>$value){
+        foreach ($data as $col=>$value){
 
-            if(!is_null($value) && (is_array($value) || is_object($value))){
+            if (!is_null($value) && (is_array($value) || is_object($value))){
                 $value = json_encode($value, JSON_NUMERIC_CHECK);
             }
 
@@ -263,9 +296,8 @@ class LiteDBQuery {
     public function delete(){
 
         $table = $this->table;
-
-        $args       = func_get_args();
         $conditions = [];
+        $args = func_get_args();
 
         switch(func_num_args()) {
 
@@ -277,7 +309,7 @@ class LiteDBQuery {
                 break;
             case 2:
 
-                if(is_array($args[1])) {
+                if (is_array($args[1])) {
                     $conditions[] = array($args[0], $args[1]);
                     break;
                 }
@@ -294,7 +326,7 @@ class LiteDBQuery {
 
         $conditions = $this->buildConditions($conditions);
 
-        if(strlen(trim($conditions))>0) $conditions = "WHERE ".$conditions;
+        if (strlen(trim($conditions))>0) $conditions = "WHERE ".$conditions;
 
         $sql = "DELETE FROM {$table} {$conditions}";
 
@@ -331,10 +363,10 @@ class LiteDBQuery {
         $limit      = $this->limit;
         $offset     = $this->offset;
 
-        if(is_array($fields)) $fields = implode(', ', $fields);
-        if(is_array($table))  $table  = implode(', ', $table);
-        if(is_array($group))  $group  = implode(', ', $group);
-        if(is_array($order))  $order  = implode(', ', $order);
+        if (is_array($fields)) $fields = implode(', ', $fields);
+        if (is_array($table))  $table  = implode(', ', $table);
+        if (is_array($group))  $group  = implode(', ', $group);
+        if (is_array($order))  $order  = implode(', ', $order);
 
         $conditions = $this->buildConditions($conditions);
         $having     = $this->buildConditions($having);
@@ -351,17 +383,17 @@ class LiteDBQuery {
             $rt .= ' ' . $limit;
 
             if ($offset) {
-                $rt .= ', ' . $offset;
+                $rt .= ' OFFSET ' . $offset;
             }
 
             $limit = $rt;
         }
 
-        if(strlen(trim($conditions))>0) $conditions = "WHERE ".$conditions;
-        if(strlen(trim($group))>0) $group = "GROUP BY ".$group;
-        if(strlen(trim($having))>0) $having = "HAVING ".$conditions;
-        if(strlen(trim($fields))==0) $fields = "*";
-        if(strlen(trim($order))>0) $order = "ORDER BY ".$order;
+        if (strlen(trim($conditions))>0) $conditions = "WHERE ".$conditions;
+        if (strlen(trim($group))>0) $group = "GROUP BY ".$group;
+        if (strlen(trim($having))>0) $having = "HAVING ".$conditions;
+        if (strlen(trim($fields))==0) $fields = "*";
+        if (strlen(trim($order))>0) $order = "ORDER BY ".$order;
 
         $sql = trim("SELECT {$fields} FROM {$table} {$joins} {$conditions} {$group} {$having} {$order} {$limit}");
 
@@ -371,29 +403,29 @@ class LiteDBQuery {
 
     protected function buildConditions($conditions){
 
-        if(is_string($conditions)) $conditions = array($conditions);
+        if (is_string($conditions)) $conditions = array($conditions);
 
         $_conditions = [];
 
-        if(count($conditions)){
+        if (count($conditions)){
 
-          foreach($conditions as $c){
+          foreach ($conditions as $c){
 
             $sql = '';
 
-            if(is_array($c)){
+            if (is_array($c)){
 
                 $sql = $c[0];
 
-                foreach($c[1] as $key=>$value){
-                    $sql = str_replace(':'.$key,$this->connection->quote($value), $sql);
+                foreach ($c[1] as $key=>$value){
+                    $sql = str_replace(':'.$key, $this->connection->quote($value), $sql);
                 }
 
-            }else{
+            } else {
               $sql= $c;
             }
 
-            if(count($_conditions) > 0  && strtoupper(substr($sql,0,4))!='AND ' && strtoupper(substr($sql,0,3))!='OR '){
+            if (count($_conditions) > 0  && strtoupper(substr($sql,0,4))!='AND ' && strtoupper(substr($sql,0,3))!='OR '){
               $sql = 'AND '.$sql;
             }
 
