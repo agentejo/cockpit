@@ -2,7 +2,7 @@
 
     <div class="uk-position-relative">
         <i ref="spinner" class="uk-icon-spinner uk-icon-spin uk-position-center"></i>
-        <canvas ref="canvas" width="{ opts.width || ''}" height="{ opts.height || ''}" style="background-size:contain;background-position:50% 50%;background-repeat:no-repeat;visibility:hidden;"></canvas>
+        <canvas ref="canvas" width="{ this.width || ''}" height="{ this.height || ''}" style="background-size:contain;background-position:50% 50%;background-repeat:no-repeat;visibility:hidden;"></canvas>
     </div>
 
     <script>
@@ -10,6 +10,8 @@
         var $this = this, src;
 
         this.inView = false;
+        this.width  = opts.width;
+        this.height = opts.height;
 
         this.on('mount', function() {
 
@@ -49,6 +51,7 @@
             var _src = opts.src || opts.riotSrc || opts['riot-src'];
             var mode = opts.mode || 'bestFit';
 
+
             if (!_src || src === _src) {
                 return;
             }
@@ -60,13 +63,7 @@
                 if (_src.match(/^(http\:|https\:|\/\/)/)) {
 
                     setTimeout(function() {
-                        App.$($this.refs.canvas).css({
-                            backgroundImage: 'url('+_src+')',
-                            backgroundSize: 'contain',
-                            visibility: 'visible'
-                        });
-
-                        $this.refs.spinner.style.display = 'none';
+                        $this.updateCanvasDim(_src)
                     }, 50);
 
                     return;
@@ -81,17 +78,39 @@
                     src = _src;
 
                     setTimeout(function() {
-                        App.$($this.refs.canvas).css({
-                            backgroundImage: 'url('+url+')',
-                            visibility: 'visible'
-                        });
-
-                        $this.refs.spinner.style.display = 'none';
+                        $this.updateCanvasDim(url)
                     }, 50);
 
                 }).catch(function(e){});
             });
         };
+
+        this.updateCanvasDim = function(url) {
+
+            if (!App.$($this.root).closest('body').length) return;
+
+            var img = new Image();
+
+            img.src = url
+
+            setTimeout(function() {
+
+
+                $this.width = img.width;
+                $this.height = img.height;
+
+                App.$($this.refs.canvas).css({
+                    backgroundImage: 'url('+url+')',
+                    visibility: 'visible'
+                });
+
+                $this.refs.spinner.style.display = 'none';
+                $this.update();
+
+            }, 50);
+
+            $this.refs.canvas
+        }
 
     </script>
 

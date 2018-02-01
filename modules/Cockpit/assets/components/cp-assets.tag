@@ -1,6 +1,22 @@
 <cp-assets>
 
-    <div class="uk-form" ref="list" show="{ mode=='list' }">
+    <style>
+        .cp-assets-fp {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: red;
+            box-shadow: 0 0 10px rgba(0,0,0,.1);
+            border: 2px #fff solid;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            visibility: hidden;
+        }
+    </style>
+
+    <div class="uk-form" ref="list" if="{ mode=='list' }">
 
         <div class="uk-grid uk-grid-width-1-2">
             <div>
@@ -169,7 +185,7 @@
 
     </div>
 
-    <div class="uk-form" show="{asset && mode=='edit'}">
+    <div class="uk-form" if="{asset && mode=='edit'}">
         <form onsubmit="{ updateAsset }">
             <div class="uk-grid">
                 <div class="uk-width-2-3">
@@ -177,19 +193,22 @@
                     <div class="uk-panel uk-panel-box uk-panel-card uk-panel-space">
                         <div class="uk-form-row">
                             <label class="uk-text-small uk-text-bold">{ App.i18n.get('Title') }</label>
-                            <input class="uk-width-1-1" type="text" ref="assettitle" required>
+                            <input class="uk-width-1-1" type="text" bind="asset.title" required>
                         </div>
 
                         <div class="uk-form-row">
                             <label class="uk-text-small uk-text-bold">{ App.i18n.get('Description') }</label>
-                            <textarea class="uk-width-1-1" ref="assetdescription"></textarea>
+                            <textarea class="uk-width-1-1" bind="asset.description"></textarea>
                         </div>
 
                         <div class="uk-margin-large-top uk-text-center" if="{asset}">
                             <span class="uk-h1" if="{asset.mime.match(/^image\//) == null }"><i class="uk-icon-{ getIconCls(asset.path) }"></i></span>
-                            <cp-thumbnail src="{ASSETS_URL+asset.path}" width="400" height="250" if="{asset.mime.match(/^image\//) }"></cp-thumbnail>
+                            <div class="uk-display-inline-block uk-position-relative asset-fp-image" if="{asset.mime.match(/^image\//) }">
+                                <cp-thumbnail src="{ASSETS_URL+asset.path}" width="800"></cp-thumbnail>
+                                <div class="cp-assets-fp" title="Focal Point" data-uk-tooltip></div>
+                            </div>
                             <div class="uk-margin-top uk-text-truncate uk-text-small uk-text-muted">
-                                <a href="{ASSETS_URL+asset.path}" target="_blank">{ASSETS_URL+asset.path}</a>
+                                <a class="uk-button uk-button-outline uk-text-primary" href="{ASSETS_URL+asset.path}" target="_blank"><i class="uk-icon-link"></i></a>
                             </div>
                         </div>
                     </div>
@@ -331,6 +350,15 @@
                 UIkit.init(this.root);
             });
 
+            App.$(this.root).on('click', '.asset-fp-image canvas', function(e) {
+
+                var x = e.offsetX, y = e.offsetY,
+                    px = (x / this.offsetWidth),
+                    py = (y / this.offsetHeight);
+
+                $this.asset.fp = {x: px, y: py};
+                $this.placeFocalPoint($this.asset.fp);
+            });
         });
 
         toggleListMode() {
@@ -425,10 +453,15 @@
         }
 
         edit(e) {
+
             this.asset = e.item.asset;
             this.mode  = 'edit';
-            this.refs.assettitle.value = this.asset.title;
-            this.refs.assetdescription.value = this.asset.description;
+
+            if (this.asset.mime.match(/^image\//)) {
+                setTimeout(function() {
+                    $this.placeFocalPoint($this.asset.fp);
+                }, 500)
+            }
         }
 
         cancelEdit() {
@@ -440,15 +473,10 @@
 
             e.preventDefault();
 
-            this.asset.title = this.refs.assettitle.value;
-            this.asset.description = this.refs.assetdescription.value;
-
             App.request('/assetsmanager/updateAsset', {asset:$this.asset}).then(function(asset) {
 
                 App.$.extend($this.asset, asset);
-
                 App.ui.notify("Asset updated", "success");
-
                 $this.update();
             });
 
@@ -505,6 +533,21 @@
 
         getRefValue(name) {
             return this.refs[name] && this.refs[name].value;
+        }
+
+        placeFocalPoint(point) {
+
+            point = point || {x:0.5, y:0.5};
+
+            var canvas = App.$(this.root).find('.asset-fp-image canvas')[0];
+            var x = (point.x * 100)+'%';
+            var y = (point.y * 100)+'%';
+
+            App.$(this.root).find('.cp-assets-fp').css({
+                left: x,
+                top: y,
+                visibility: 'visible'
+            });
         }
 
 
