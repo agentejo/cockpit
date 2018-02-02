@@ -172,20 +172,22 @@ class App implements \ArrayAccess {
         $self = $this;
 
         $this->registry = array_merge([
-            'debug'        => true,
-            'app.name'     => 'LimeApp',
-            'session.name' => 'limeappsession',
-            'autoload'     => new \ArrayObject([]),
-            'sec-key'      => 'xxxxx-SiteSecKeyPleaseChangeMe-xxxxx',
-            'route'        => isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/",
-            'charset'      => 'UTF-8',
-            'helpers'      => [],
-            'base_url'     => implode("/", array_slice(explode("/", $_SERVER['SCRIPT_NAME']), 0, -1)),
-            'base_route'   => implode("/", array_slice(explode("/", $_SERVER['SCRIPT_NAME']), 0, -1)),
-            'base_host'    => isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : php_uname('n'),
-            'base_port'    => isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : 80,
-            'docs_root'    => null,
-            'site_url'     => null
+            'debug'         => true,
+            'app.name'      => 'LimeApp',
+            'session.name'  => 'limeappsession',
+            'autoload'      => new \ArrayObject([]),
+            'sec-key'       => 'xxxxx-SiteSecKeyPleaseChangeMe-xxxxx',
+            'route'         => isset($_SERVER["PATH_INFO"]) ? $_SERVER["PATH_INFO"] : "/",
+            'charset'       => 'UTF-8',
+            'helpers'       => [],
+            'base_url'      => implode("/", array_slice(explode("/", $_SERVER['SCRIPT_NAME']), 0, -1)),
+            'base_route'    => implode("/", array_slice(explode("/", $_SERVER['SCRIPT_NAME']), 0, -1)),
+            'base_host'     => isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : php_uname('n'),
+            'base_port'     => isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : 80,
+            'docs_root'     => null,
+            'assets_url'    => null,
+            'prefix_assets' => false,
+            'site_url'      => null
         ], $settings);
 
         // app modules container
