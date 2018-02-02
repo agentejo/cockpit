@@ -20,6 +20,7 @@
 
     <script>
         // App constants
+        var PREFIX_URL = '{{ rtrim($app['site_url']) }}'
         var SITE_URL   = '{{ rtrim($app->pathToUrl('site:'), '/') }}';
         var ASSETS_URL = '{{ rtrim($app->pathToUrl('#uploads:'), '/') }}';
     </script>

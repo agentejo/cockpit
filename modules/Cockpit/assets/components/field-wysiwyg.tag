@@ -132,7 +132,7 @@
                     onclick: function(){
 
                         App.media.select(function(selected) {
-                            editor.insertContent('<img src="' + SITE_URL+'/'+selected + '" alt="">');
+                            editor.insertContent('<img src="' + PREFIX_URL + '/' + SITE_URL+'/'+selected + '" alt="">');
                         }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
                     },
                     context: 'insert',
