@@ -3322,7 +3322,7 @@ riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" 
                     onclick: function(){
 
                         App.media.select(function(selected) {
-                            editor.insertContent('<img src="' + PREFIX_URL + '/' + SITE_URL+'/'+selected + '" alt="">');
+                            editor.insertContent('<img src="' + PREFIX_URL + SITE_URL+'/'+selected + '" alt="">');
                         }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
                     },
                     context: 'insert',
@@ -3341,9 +3341,9 @@ riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" 
                                 var asset = assets[0], content;
 
                                 if (asset.mime.match(/^image\//)) {
-                                    content = '<img src="' + ASSETS_URL+asset.path + '" alt="">';
+                                    content = '<img src="' + PREFIX_URL + ASSETS_URL+asset.path + '" alt="">';
                                 } else {
-                                    content = '<a href="' + ASSETS_URL+asset.path + '">'+asset.title+'<a>';
+                                    content = '<a href="' + PREFIX_URL + ASSETS_URL+asset.path + '">'+asset.title+'<a>';
                                 }
 
                                 editor.insertContent(content);
