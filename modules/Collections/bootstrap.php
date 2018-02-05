@@ -423,7 +423,7 @@ $this->module("collections")->extend([
         return $this->app->storage->count("collections/{$collection}", $criteria);
     },
 
-    '_resolveLinedkItem' => function($link, $_id, $fieldsFilter = []) {
+    '_resolveLinkedItem' => function($link, $_id, $fieldsFilter = []) {
 
         static $cache;
 
@@ -600,7 +600,9 @@ function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $field
         }
 
         if (isset($v['_id'], $v['link'])) {
-            $items[$k] = cockpit('collections')->_resolveLinedkItem($v['link'], $v['_id'], $fieldsFilter);
+            $link = $v['link'];
+            $items[$k] = cockpit('collections')->_resolveLinkedItem($v['link'], $v['_id'], $fieldsFilter);
+            $items[$k]['_link'] = $link;
             $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, $level, $fieldsFilter);
         }
     }
