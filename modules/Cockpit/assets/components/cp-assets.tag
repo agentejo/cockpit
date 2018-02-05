@@ -427,6 +427,13 @@
                     App.ui.notify("Asset removed", "success");
 
                     $this.assets.splice(idx, 1);
+
+                    if (!$this.assets.length) {
+                        $this.page = $this.page > 1 ? $this.page -1 : 1;
+                    }
+
+                    $this.listAssets($this.page);
+
                     $this.selected = [];
                     $this.update();
                 });
@@ -443,6 +450,12 @@
                     $this.selected.forEach(function(asset){
                         $this.assets.splice($this.assets.indexOf(asset), 1);
                     });
+
+                    if (!$this.assets.length) {
+                        $this.page = $this.page > 1 ? $this.page -1 : 1;
+                    }
+
+                    $this.listAssets($this.page);
 
                     App.ui.notify("Assets removed", "success");
                     $this.selected = [];

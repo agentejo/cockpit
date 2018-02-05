@@ -54,8 +54,8 @@ $this->module("forms")->extend([
 
         $data['_modified'] = time();
 
-        $form  = include($metapath);
-        $form  = array_merge($form, $data);
+        $form   = include($metapath);
+        $form   = array_merge($form, $data);
         $export = var_export($form, true);
 
         if (!$this->app->helper('fs')->write($metapath, "<?php\n return {$export};")) {
@@ -180,19 +180,19 @@ $this->module("forms")->extend([
         if (!$forms) return false;
 
         $name       = $form;
-        $form       = $forms["_id"];
+        $form       = $forms['_id'];
         $data       = isset($data[0]) ? $data : [$data];
         $return     = [];
         $modified   = time();
 
-        foreach($data as $entry) {
+        foreach ($data as $entry) {
 
-            $isUpdate = isset($entry["_id"]);
+            $isUpdate = isset($entry['_id']);
 
             $entry['_modified'] = $modified;
 
             if (!$isUpdate) {
-                $entry["_created"] = $entry["_modified"];
+                $entry['_created'] = $entry['_modified'];
             }
 
             $this->app->trigger('forms.save.before', [$name, &$entry]);
@@ -215,7 +215,7 @@ $this->module("forms")->extend([
 
         if (!$forms) return false;
 
-        $form = $forms["_id"];
+        $form = $forms['_id'];
 
         return $this->app->storage->remove("forms/{$form}", $criteria);
     },
@@ -226,7 +226,7 @@ $this->module("forms")->extend([
 
         if (!$forms) return false;
 
-        $form = $forms["_id"];
+        $form = $forms['_id'];
 
         return $this->app->storage->count("forms/{$form}", $criteria);
     },
@@ -234,53 +234,33 @@ $this->module("forms")->extend([
     'open' => function($name, $options = []) {
 
         $options = array_merge(array(
-            "id"    => uniqid("form"),
+            "id"    => uniqid('form'),
             "class" => "",
             "csrf"  => $this->app->hash($name)
         ), $options);
 
         $this->app->renderView("forms:views/api/form.php", compact('name', 'options'));
     },
-]);
 
-// ACL
-$app("acl")->addResource("forms", ['manage']);
+    'submit' => function($form, $data, $options = []) {
 
-$this->bind("/api/forms/submit/:form", function($params) {
+        $frm = $this->form($form);
 
-    $formname = $params["form"];
-
-    // Security check
-    if ($formhash = $this->param("__csrf", false)) {
-
-        if (!password_verify($formname, $formhash)) {
+        if (!$frm) {
             return false;
         }
-
-    } else {
-        return false;
-    }
-
-    $frm = $this->module('forms')->form($formname);
-
-    if (!$frm) {
-        return false;
-    }
-
-    if ($formdata = $this->param("form", false)) {
 
         // custom form validation
-
-        if ($this->path("#config:forms/{$formname}.php") && false===include($this->path("#config:forms/{$formname}.php"))) {
+        if ($this->path("#config:forms/{$form}.php") && false===include($this->path("#config:forms/{$form}.php"))) {
             return false;
         }
 
-        if (isset($frm["email_forward"]) && $frm["email_forward"]) {
+        if (isset($frm['email_forward']) && $frm['email_forward']) {
 
             $emails          = array_map('trim', explode(',', $frm['email_forward']));
             $filtered_emails = [];
 
-            foreach($emails as $to){
+            foreach ($emails as $to){
 
                 // Validate each email address individually, push if valid
                 if (filter_var($to, FILTER_VALIDATE_EMAIL)){
@@ -293,16 +273,16 @@ $this->bind("/api/forms/submit/:form", function($params) {
                 $frm['email_forward'] = implode(',', $filtered_emails);
 
                 // There is an email template available
-                if ($template = $this->path("#config:forms/emails/{$formname}.php")) {
+                if ($template = $this->app->path("#config:forms/emails/{$form}.php")) {
 
-                    $body = $this->renderer->file($template, $formdata, false);
+                    $body = $this->app->renderer->file($template, $data, false);
 
                 // Prepare template manually
                 } else {
 
                     $body = [];
 
-                    foreach ($formdata as $key => $value) {
+                    foreach ($data as $key => $value) {
                         $body[] = "<b>{$key}:</b>\n<br>";
                         $body[] = (is_string($value) ? $value:json_encode($value))."\n<br>";
                     }
@@ -310,30 +290,55 @@ $this->bind("/api/forms/submit/:form", function($params) {
                     $body = implode("\n<br>", $body);
                 }
 
-                $options = $this->param('form_options', []);
-                $this->mailer->mail($frm['email_forward'], $this->param("__mailsubject", "New form data for: ".$formname), $body, $options);
+                $this->app->mailer->mail($frm['email_forward'], $this->param("__mailsubject", "New form data for: ".$formname), $body, $options);
             }
         }
 
         if (isset($frm['save_entry']) && $frm['save_entry']) {
-
-            $entry = ['data' => $formdata];
-            $this->module('forms')->save($formname, $entry);
+            $entry = ['data' => $data];
+            $this->save($form, $entry);
         }
 
-        return json_encode($formdata);
-
-    } else {
-        return "false";
+        return $data;
     }
-});
+]);
+
+// ACL
+$app('acl')->addResource('forms', ['manage']);
 
 
 // REST
 if (COCKPIT_API_REQUEST) {
 
+    $this->bind('/api/forms/submit/:form', function($params) {
+
+        $form = $params["form"];
+
+        // Security check
+        if ($formhash = $this->param('__csrf', false)) {
+
+            if (!password_verify($form, $formhash)) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        $frm = $this->module('forms')->form($form);
+
+        if (!$frm) {
+            return false;
+        }
+
+        if ($data = $this->param('form', false)) {
+            return json_encode($this->module('forms')->submit($form, $data, $this->param('form_options', [])));
+        }
+
+        return false;
+    });
+
     $app->on('cockpit.rest.init', function($routes) {
-        $routes['forms'] = 'Forms\\Controller\\RestApi';
+        //$routes['forms'] = 'Forms\\Controller\\RestApi';
     });
 }
 

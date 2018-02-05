@@ -332,6 +332,8 @@
 
             return App.request('/collections/find', {collection:this.collection.name, options:options}).then(function(data){
 
+                window.scrollTo(0, 0);
+
                 this.entries = data.entries;
                 this.pages   = data.pages;
                 this.page    = data.page;
@@ -341,9 +343,7 @@
                 this.loadmore = data.entries.length && data.entries.length == limit;
 
                 this.checkselected();
-
                 this.loading = false;
-
                 this.update();
 
             }.bind(this))

@@ -10,7 +10,7 @@
 
         <div class="uk-panel uk-panel-box uk-panel-card">
 
-            <div class="uk-position-relative">
+            <div class="uk-position-relative uk-nbfc">
                 <canvas width="400" height="250"></canvas>
                 <div class="uk-position-cover uk-flex uk-flex-center uk-flex-middle">
 

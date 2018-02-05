@@ -51,7 +51,6 @@
             var _src = opts.src || opts.riotSrc || opts['riot-src'];
             var mode = opts.mode || 'bestFit';
 
-
             if (!_src || src === _src) {
                 return;
             }
@@ -94,7 +93,6 @@
             img.src = url
 
             setTimeout(function() {
-
 
                 $this.width = img.width;
                 $this.height = img.height;
