@@ -313,33 +313,27 @@ if (COCKPIT_API_REQUEST) {
     $this->bind('/api/forms/submit/:form', function($params) {
 
         $form = $params["form"];
+        $formhash = $this->param('__csrf', false);
 
         // Security check
-        if ($formhash = $this->param('__csrf', false)) {
-
-            if (!password_verify($form, $formhash)) {
-                return false;
-            }
-        } else {
-            return false;
-        }
-
-        $frm = $this->module('forms')->form($form);
-
-        if (!$frm) {
+        if (!password_verify($form, $formhash)) {
             return false;
         }
 
         if ($data = $this->param('form', false)) {
-            return json_encode($this->module('forms')->submit($form, $data, $this->param('form_options', [])));
+            return $this->module('forms')->submit($form, $data, $this->param('form_options', []));
         }
 
         return false;
-    });
 
-    $app->on('cockpit.rest.init', function($routes) {
-        //$routes['forms'] = 'Forms\\Controller\\RestApi';
-    });
+    }, $this->param('__csrf', false));
+
+    if (!$this->param('__csrf', false)) {
+
+        $app->on('cockpit.rest.init', function($routes) {
+            $routes['forms'] = 'Forms\\Controller\\RestApi';
+        });
+    }
 }
 
 // ADMIN

@@ -1,4 +1,5 @@
 <?php
+
 namespace Forms\Controller;
 
 class RestApi extends \LimeExtra\Controller {
@@ -12,7 +13,7 @@ class RestApi extends \LimeExtra\Controller {
         }
 
         if ($data = $this->param('form', false)) {
-            return json_encode($this->module('forms')->submit($formn, $data));
+            return $this->module('forms')->submit($form, $data);
         }
 
         return false;
