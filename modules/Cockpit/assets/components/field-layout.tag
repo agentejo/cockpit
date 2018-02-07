@@ -1,6 +1,11 @@
 <field-layout>
 
     <style>
+
+        :root {
+            position: relative;
+        }
+
         .layout-components > div {
             margin-bottom: 5px;
         }
@@ -14,13 +19,21 @@
             pointer-events: none;
         }
 
+        .layout-components.empty {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
     </style>
 
     <div class="uk-text-center uk-text-muted {opts.child ? 'uk-text-small':'uk-placeholder'}" show="{ !items.length }">
         <img class="uk-svg-adjust" riot-src="{ App.base('/assets/app/media/icons/layout.svg') }" width="100" data-uk-svg>
     </div>
 
-    <div class="uk-sortable layout-components" ref="components" show="{mode=='edit' && items.length}" data-uk-sortable="animation:false, group:'field-layout-items'">
+    <div class="uk-sortable layout-components {!items.length && 'empty'}" ref="components" data-uk-sortable="animation:false, group:'field-layout-items'">
         <div class="uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
 
             <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">
