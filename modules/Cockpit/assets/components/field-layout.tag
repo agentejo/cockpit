@@ -21,11 +21,12 @@
         }
 
         .layout-components.empty:after {
-            content: "No Components";
+            font-family: FontAwesome;
+            content: "\f1b3";
             position: absolute;
             top: 50%;
             left: 50%;
-            font-size: 10px;
+            font-size: 14px;
             transform: translate3d(-50%, -50%, 0);
             color: rgba(0,0,0,.3);
         }
