@@ -269,7 +269,11 @@
 
                         if (asset.mime.match(/^image\//)) {
                             images.push({
-                                meta:{title:'', asset: asset._id},
+                                meta:{
+                                    title:'',
+                                    asset: asset._id,
+                                    colors: asset.colors,
+                                },
                                 path: ASSETS_URL.replace(SITE_URL, '')+asset.path
                             });
                         }
