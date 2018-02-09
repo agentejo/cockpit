@@ -10,7 +10,7 @@
 
         <div class="uk-flex uk-flex-middle uk-flex-center uk-text-muted">
             <div class="uk-width-1-1 uk-text-center" if="{ image.path }">
-                <cp-thumbnail src="{ image.path.match(/^(http\:|https\:|\/\/)/) ? image.path : (SITE_URL+'/'+image.path) }" height="160"></cp-thumbnail>
+                <cp-thumbnail src="{ image.path.match(/^(http\:|https\:|\/\/)/) ? image.path : (SITE_URL+'/'+image.path.replace(/^\//, '')) }" height="160"></cp-thumbnail>
             </div>
             <div class="uk-text-center uk-margin-top uk-margin-bottom" show="{ !image.path }">
                 <img class="uk-svg-adjust uk-text-muted" riot-src="{App.base('/assets/app/media/icons/photo.svg')}" width="60" data-uk-svg>

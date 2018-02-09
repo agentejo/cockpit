@@ -61,6 +61,8 @@
 
                 if (_src.match(/^(http\:|https\:|\/\/)/)) {
 
+                    src = _src;
+
                     setTimeout(function() {
                         $this.updateCanvasDim(_src)
                     }, 50);
