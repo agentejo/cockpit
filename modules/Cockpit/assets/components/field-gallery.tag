@@ -14,7 +14,7 @@
 
                         <div class="uk-flex uk-flex-middle uk-flex-center" style="min-height:120px;">
                             <div class="uk-width-1-1 uk-text-center">
-                                <cp-thumbnail src="{ (SITE_URL+'/'+img.path) }" width="400" height="250"></cp-thumbnail>
+                                <cp-thumbnail src="{ (SITE_URL+'/'+img.path.replace(/^\//, '')) }" width="400" height="250"></cp-thumbnail>
                             </div>
                         </div>
 
