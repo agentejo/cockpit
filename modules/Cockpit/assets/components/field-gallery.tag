@@ -31,7 +31,7 @@
                                     </div>
                                 </li>
                                 <li><a class="uk-text-muted" onclick="{ parent.showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
-                                <li><a class="uk-text-muted" href="{ (SITE_URL+'/'+img.path) }" data-uk-lightbox="type:'image'" title="{ App.i18n.get('Full size') }" data-uk-tooltip><i class="uk-icon-eye"></i></a></li>
+                                <li><a class="uk-text-muted" href="{ (SITE_URL+'/'+img.path.replace(/^\//, '')) }" data-uk-lightbox="type:'image'" title="{ App.i18n.get('Full size') }" data-uk-tooltip><i class="uk-icon-eye"></i></a></li>
                                 <li><a class="uk-text-danger" onclick="{ parent.remove }" title="{ App.i18n.get('Remove image') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
                             </ul>
                         </div>
