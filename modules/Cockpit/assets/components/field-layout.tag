@@ -41,7 +41,7 @@
             <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">
                 <img class="uk-margin-small-right" riot-src="{ parent.components[item.component].icon ? parent.components[item.component].icon : App.base('/assets/app/media/icons/component.svg')}" width="16">
                 <div class="uk-text-bold uk-text-truncate uk-flex-item-1">
-                    <a class="uk-link-muted" onclick="{ parent.settings }">{ parent.components[item.component].label || App.Utils.ucfirst(item.component) }</a>
+                    <a class="uk-link-muted" onclick="{ parent.settings }">{ item.name || parent.components[item.component].label || App.Utils.ucfirst(item.component) }</a>
                 </div>
                 <div class="uk-text-small uk-invisible">
                     <a onclick="{ parent.addComponent }" title="{ App.i18n.get('Add Component') }"><i class="uk-icon-plus"></i></a>
@@ -97,10 +97,17 @@
 
             <a class="uk-modal-close uk-close"></a>
 
-            <h3 class="uk-margin-large-bottom">
-                <img class="uk-margin-small-right" riot-src="{ components[settingsComponent.component].icon ? components[settingsComponent.component].icon : App.base('/assets/app/media/icons/settings.svg')}" width="30">
-                { components[settingsComponent.component].label || App.Utils.ucfirst(settingsComponent.component) }
-            </h3>
+            <div class="uk-margin-large-bottom">
+                <div class="uk-grid uk-grid-small">
+                    <div>
+                        <img riot-src="{ components[settingsComponent.component].icon ? components[settingsComponent.component].icon : App.base('/assets/app/media/icons/settings.svg')}" width="30">
+                    </div>
+                    <div>
+                        <h3 class="uk-margin-remove">{ components[settingsComponent.component].label || App.Utils.ucfirst(settingsComponent.component) }</h3>
+                        <input type="text" class="uk-form-blank uk-width-1-1 uk-text-primary" bind="settingsComponent.name" placeholder="Name" >
+                    </div>
+                </div>
+            </div>
 
             <ul class="uk-tab uk-margin-bottom uk-flex uk-flex-center">
                 <li class="{ !settingsGroup && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
