@@ -125,9 +125,11 @@
 
             this.on('mount', function() {
 
+                var url = '{{ $update['package.json'] }}';
+
                 this.loading = true;
 
-                fetch_url_contents('https://raw.githubusercontent.com/agentejo/cockpit/master/package.json', 'json').then(function(data) {
+                fetch_url_contents(url, 'json').then(function(data) {
                     $this._system = data;
                     $this.loading = false;
                     $this.update();
