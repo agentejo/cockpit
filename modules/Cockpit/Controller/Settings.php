@@ -6,7 +6,6 @@ class Settings extends \Cockpit\AuthController {
 
 
     public function index() {
-
         return $this->render('cockpit:views/settings/index.php');
     }
 
@@ -51,8 +50,14 @@ class Settings extends \Cockpit\AuthController {
 
     public function update() {
 
-        $info = $this->app->helper('admin')->data['cockpit'];
+        if (!$this->module('cockpit')->isSuperAdmin()) {
+            return false;
+        }
 
-        return $this->render('cockpit:views/settings/update.php', compact('info'));
+        return $this->app->helper('updater')->update(
+            'https://github.com/agentejo/cockpit/archive/master.zip',
+            COCKPIT_DIR,
+            ['zipRoot'=>'cockpit-master']
+        );
     }
 }

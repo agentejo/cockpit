@@ -61,19 +61,6 @@
     </div>
     @endif
 
-    @if($app['user']['group']=='admin')
-    <div>
-        <div class="uk-panel uk-panel-space uk-panel-box uk-panel-card">
-            <img src="@url('assets:app/media/icons/misc/sysupdate.svg')" width="50" height="50" alt="@lang('System Update')" />
-
-            <div class="uk-text-truncate uk-margin">
-                @lang('Update System')
-            </div>
-            <a class="uk-position-cover" href="@route('/settings/update')"></a>
-        </div>
-    </div>
-    @endif
-
     @hasaccess?('cockpit', 'info')
     <div>
         <div class="uk-panel uk-panel-space uk-panel-box uk-panel-card">
