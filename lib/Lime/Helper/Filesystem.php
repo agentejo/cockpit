@@ -6,6 +6,13 @@ namespace Lime\Helper;
 class Filesystem extends \Lime\Helper {
 
     /**
+     * @return mixed
+     */
+    public function path($path) {
+        return $this->app->path($path);
+    }
+
+    /**
      * @return array
      */
     public function ls() {

@@ -3,6 +3,7 @@
 // Helpers
 
 $this->helpers['revisions']  = 'Cockpit\\Helper\\Revisions';
+$this->helpers['updater']  = 'Cockpit\\Helper\\Updater';
 
 // API
 
