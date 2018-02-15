@@ -72,7 +72,7 @@ $this->module("regions")->extend([
             return false;
         }
 
-        $this->app->trigger('regions.save', [$region]);
+        $this->app->trigger('regions.save.after', [$region]);
         $this->app->trigger("regions.save.after.{$name}", [$region]);
 
         return $region;
