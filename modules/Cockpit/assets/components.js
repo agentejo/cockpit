@@ -3152,7 +3152,7 @@ riot.tag2('field-text', '<input ref="input" class="uk-width-1-1" bind="{opts.bin
 
 });
 
-riot.tag2('field-textarea', '<textarea ref="input" class="uk-width-1-1 {opts.cls}" bind="{opts.bind}" riot-rows="{opts.rows || 10}" riot-placeholder="{opts.placeholder}"></textarea>', '', '', function(opts) {
+riot.tag2('field-textarea', '<textarea ref="input" class="uk-width-1-1 {opts.cls}" bind="{opts.bind}" bind-event="input" riot-rows="{opts.rows || 10}" riot-placeholder="{opts.placeholder}"></textarea>', '', '', function(opts) {
 
         var $this = this;
 
