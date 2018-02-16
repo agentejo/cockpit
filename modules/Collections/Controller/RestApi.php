@@ -38,7 +38,7 @@ class RestApi extends \LimeExtra\Controller {
 
         // cast string values if get request
         if ($filter && isset($_GET['filter'])) {
-            $options['filter'] = $this->_fixStringBooleanNummeric($filter);
+            $options['filter'] = $this->_fixStringBooleanNumericValues($filter);
         }
 
         // fields filter
@@ -223,7 +223,7 @@ class RestApi extends \LimeExtra\Controller {
         return $extended ? $collections : array_keys($collections);
     }
 
-    protected function _fixStringBooleanNummeric(&$array) {
+    protected function _fixStringBooleanNumericValues(&$array) {
 
         if (!is_array($array)) {
             return $array;
@@ -232,7 +232,7 @@ class RestApi extends \LimeExtra\Controller {
         foreach ($array as $k => $v) {
 
             if (is_array($array[$k])) {
-                $array[$k] = $this->_fixStringBooleanNummeric($array[$k]);
+                $array[$k] = $this->_fixStringBooleanNumericValues($array[$k]);
             }
 
             if (is_string($v)) {
