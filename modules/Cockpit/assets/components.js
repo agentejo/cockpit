@@ -411,22 +411,16 @@ riot.tag2('cp-field', '<div ref="field" data-is="{\'field-\'+opts.type}" bind="{
 
 });
 
-riot.tag2('cp-diff', '<div><pre ref="canvas" style="background:none;margin:0;"></pre></div>', 'cp-diff del { text-decoration: none; background: rgba(199, 8, 55, .12); } cp-diff ins { text-decoration: none; background: rgba(10, 233, 6, .12); }', '', function(opts) {
+riot.tag2('cp-diff', '<div class="uk-overflow-container"> <pre><code ref="canvas"></code></pre> </div>', 'cp-diff pre,[data-is="cp-diff"] pre{ background:none; margin:0; width overflow: auto; word-wrap: normal; white-space: pre; }', '', function(opts) {
 
         var $this = this;
 
         this.on('mount', function() {
+            this.update();
+        });
 
-            App.assets.require([
-                '/assets/lib/diff.js'
-            ], function() {
-
-                $this.diff(opts.oldtxt, opts.newtxt)
-
-                $this.on('update', function() {
-                    $this.diff(opts.oldtxt, opts.newtxt)
-                });
-            });
+        this.on('update', function() {
+            this.diff(opts.oldtxt, opts.newtxt)
         });
 
         this.diff = function(oldtxt, newtxt) {
@@ -434,35 +428,11 @@ riot.tag2('cp-diff', '<div><pre ref="canvas" style="background:none;margin:0;"><
             if (typeof(oldtxt) !== 'string') oldtxt = JSON.stringify(oldtxt, null, 2);
             if (typeof(newtxt) !== 'string') newtxt = JSON.stringify(newtxt, null, 2);
 
-            var diff = JsDiff.diffChars(oldtxt || '', newtxt || '');
-            var fragment = document.createDocumentFragment();
-
-            for (var i=0; i < diff.length; i++) {
-
-                if (diff[i].added && diff[i + 1] && diff[i + 1].removed) {
-                    var swap = diff[i];
-                    diff[i] = diff[i + 1];
-                    diff[i + 1] = swap;
-                }
-
-                var node;
-                if (diff[i].removed) {
-                    node = document.createElement('del');
-                    node.appendChild(document.createTextNode(diff[i].value));
-                } else if (diff[i].added) {
-                    node = document.createElement('ins');
-                    node.appendChild(document.createTextNode(diff[i].value));
-                } else {
-                    node = document.createTextNode(diff[i].value);
-                }
-                fragment.appendChild(node);
-            }
-
-            this.refs.canvas.textContent = '';
-            this.refs.canvas.appendChild(fragment);
+            this.refs.canvas.textContent = oldtxt;
         }.bind(this)
 
 });
+
 riot.tag2('cp-fieldsmanager', '<div ref="fieldscontainer" class="uk-sortable uk-grid uk-grid-small uk-grid-gutter uk-form"> <div class="uk-width-{field.width}" data-idx="{idx}" each="{field,idx in fields}"> <div class="uk-panel uk-panel-box uk-panel-card"> <div class="uk-grid uk-grid-small"> <div class="uk-flex-item-1 uk-flex"> <input class="uk-flex-item-1 uk-form-small uk-form-blank" type="text" bind="fields[{idx}].name" placeholder="name" pattern="[a-zA-Z0-9_]+" required> </div> <div class="uk-width-1-4"> <div class="uk-form-select" data-uk-form-select> <div class="uk-form-icon"> <i class="uk-icon-arrows-h"></i> <input class="uk-width-1-1 uk-form-small uk-form-blank" riot-value="{field.width}"> </div> <select bind="fields[{idx}].width"> <option value="1-1">1-1</option> <option value="1-2">1-2</option> <option value="1-3">1-3</option> <option value="2-3">2-3</option> <option value="1-4">1-4</option> <option value="3-4">3-4</option> </select> </div> </div> <div class="uk-text-right"> <ul class="uk-subnav"> <li if="{parent.opts.listoption}"> <a class="uk-text-{field.lst ? \'success\':\'muted\'}" onclick="{parent.togglelist}" title="{App.i18n.get(\'Show field on list view\')}"> <i class="uk-icon-list"></i> </a> </li> <li> <a onclick="{parent.fieldSettings}"><i class="uk-icon-cog uk-text-primary"></i></a> </li> <li> <a class="uk-text-danger" onclick="{parent.removefield}"> <i class="uk-icon-trash"></i> </a> </li> </ul> </div> </div> </div> </div> </div> <div class="uk-modal uk-sortable-nodrag" ref="modalField"> <div class="uk-modal-dialog" if="{field}"> <div class="uk-form-row uk-text-large uk-text-bold"> {field.name || \'Field\'} </div> <div class="uk-tab uk-flex uk-flex-center uk-margin" data-uk-tab> <li class="uk-active"><a>{App.i18n.get(\'General\')}</a></li> <li><a>{App.i18n.get(\'Access\')}</a></li> </div> <div class="uk-margin-top ref-tab"> <div> <div class="uk-form-row"> <label class="uk-text-muted uk-text-small">{App.i18n.get(\'Field Type\')}:</label> <div class="uk-form-select uk-width-1-1 uk-margin-small-top"> <a class="uk-text-capitalize">{field.type}</a> <select class="uk-width-1-1 uk-text-capitalize" bind="field.type"> <option each="{type,typeidx in fieldtypes}" riot-value="{type.value}">{type.name}</option> </select> </div> </div> <div class="uk-form-row"> <label class="uk-text-muted uk-text-small">{App.i18n.get(\'Field Label\')}:</label> <input class="uk-width-1-1 uk-margin-small-top" type="text" bind="field.label" placeholder="{App.i18n.get(\'Label\')}"> </div> <div class="uk-form-row"> <label class="uk-text-muted uk-text-small">{App.i18n.get(\'Field Info\')}:</label> <input class="uk-width-1-1 uk-margin-small-top" type="text" bind="field.info" placeholder="{App.i18n.get(\'Info\')}"> </div> <div class="uk-form-row"> <label class="uk-text-muted uk-text-small">{App.i18n.get(\'Field Group\')}:</label> <input class="uk-width-1-1 uk-margin-small-top" type="text" bind="field.group" placeholder="{App.i18n.get(\'Group name\')}"> </div> <div class="uk-form-row"> <label class="uk-text-small uk-text-bold uk-margin-small-bottom">{App.i18n.get(\'Options\')} <span class="uk-text-muted">JSON</span></label> <field-object cls="uk-width-1-1" bind="field.options" rows="6" allowtabs="2"></field-object> </div> <div class="uk-form-row"> <field-boolean bind="field.required" label="{App.i18n.get(\'Required\')}"></field-boolean> </div> <div class="uk-form-row"> <field-boolean bind="field.localize" label="{App.i18n.get(\'Localize\')}"></field-boolean> </div> </div> <div class="uk-hidden"> <field-access-list class="uk-margin-large uk-margin-large-top uk-display-block" bind="field.acl"></field-access-list> </div> </div> <div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-large uk-button-link uk-modal-close">{App.i18n.get(\'Close\')}</button></div> </div> </div> <div class="uk-margin-top" show="{fields.length}"> <a class="uk-button uk-button-link" onclick="{addfield}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add field\')}</a> </div> <div class="uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{!fields.length && !reorder}"> <div class="uk-animation-fade"> <p class="uk-text-xlarge"> <img riot-src="{App.base(\'/assets/app/media/icons/form-editor.svg\')}" width="100" height="100"> </p> <hr> {App.i18n.get(\'No fields added yet\')}. <span data-uk-dropdown="pos:\'bottom-center\'"> <a onclick="{addfield}">{App.i18n.get(\'Add field\')}.</a> <div class="uk-dropdown uk-dropdown-scrollable uk-text-left" if="{opts.templates && opts.templates.length}"> <ul class="uk-nav uk-nav-dropdown"> <li class="uk-nav-header">{App.i18n.get(\'Choose from template\')}</li> <li each="{template in opts.templates}"> <a onclick="{parent.fromTemplate.bind(parent, template)}"><i class="uk-icon-sliders uk-margin-small-right"></i> {template.label || template.name}</a> </li> </ul> </div> <span> </div> </div>', '', '', function(opts) {
 
         riot.util.bind(this);
