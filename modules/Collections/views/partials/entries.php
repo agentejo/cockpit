@@ -71,62 +71,63 @@
 
 </div>
 
-<table class="uk-table uk-table-tabbed uk-table-striped uk-margin-large-top" if="{ entries.length && !loading && listmode=='list' }">
-    <thead>
-        <tr>
-            @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
-            <th width="20"><input type="checkbox" data-check="all"></th>
-            @endif
-            <th width="{field.name == '_modified' || field.name == '_created' ? '80':''}" class="uk-text-small" each="{field,idx in fields}" if="{ hasFieldAccess(field.name) }">
-                <a class="uk-link-muted uk-noselect { parent.sortedBy == field.name ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
+<div class="uk-overflow-container uk-margin-large-top" if="{ entries.length && !loading && listmode=='list' }">
+    <table class="uk-table uk-table-tabbed uk-table-striped">
+        <thead>
+            <tr>
+                @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
+                <th width="20"><input type="checkbox" data-check="all"></th>
+                @endif
+                <th width="{field.name == '_modified' || field.name == '_created' ? '80':''}" class="uk-text-small" each="{field,idx in fields}" if="{ hasFieldAccess(field.name) }">
+                    <a class="uk-link-muted uk-noselect { parent.sortedBy == field.name ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
 
-                    { field.label || field.name }
+                        { field.label || field.name }
 
-                    <span if="{parent.sortedBy == field.name}" class="uk-icon-long-arrow-{ parent.sortedOrder == 1 ? 'up':'down'}"></span>
-                </a>
-            </th>
-            <th width="20"></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr each="{entry,idx in entries}">
-            @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
-            <td><input type="checkbox" data-check data-id="{ entry._id }"></td>
-            @endif
-            <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' && field.name != '_created' && hasFieldAccess(field.name) }">
-                <a class="uk-link-muted" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
-                    <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }" if="{parent.entry[field.name] !== undefined}"></raw>
-                    <span class="uk-icon-eye-slash uk-text-muted" if="{parent.entry[field.name] === undefined}"></span>
-                </a>
-            </td>
-            <td><span class="uk-badge uk-badge-outline uk-text-muted">{ App.Utils.dateformat( new Date( 1000 * entry._created )) }</span></td>
-            <td><span class="uk-badge uk-badge-outline uk-text-primary">{ App.Utils.dateformat( new Date( 1000 * entry._modified )) }</span></td>
-            <td>
-                <span data-uk-dropdown="mode:'click'">
+                        <span if="{parent.sortedBy == field.name}" class="uk-icon-long-arrow-{ parent.sortedOrder == 1 ? 'up':'down'}"></span>
+                    </a>
+                </th>
+                <th width="20"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr each="{entry,idx in entries}">
+                @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
+                <td><input type="checkbox" data-check data-id="{ entry._id }"></td>
+                @endif
+                <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' && field.name != '_created' && hasFieldAccess(field.name) }">
+                    <a class="uk-link-muted" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
+                        <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }" if="{parent.entry[field.name] !== undefined}"></raw>
+                        <span class="uk-icon-eye-slash uk-text-muted" if="{parent.entry[field.name] === undefined}"></span>
+                    </a>
+                </td>
+                <td><span class="uk-badge uk-badge-outline uk-text-muted">{ App.Utils.dateformat( new Date( 1000 * entry._created )) }</span></td>
+                <td><span class="uk-badge uk-badge-outline uk-text-primary">{ App.Utils.dateformat( new Date( 1000 * entry._modified )) }</span></td>
+                <td>
+                    <span data-uk-dropdown="mode:'click'">
 
-                    <a class="uk-icon-bars"></a>
+                        <a class="uk-icon-bars"></a>
 
-                    <div class="uk-dropdown uk-dropdown-flip">
-                        <ul class="uk-nav uk-nav-dropdown">
-                            <li class="uk-nav-header">@lang('Actions')</li>
-                            <li><a href="@route('/collections/entry/'.$collection['name'])/{ entry._id }">@lang('Edit')</a></li>
+                        <div class="uk-dropdown uk-dropdown-flip">
+                            <ul class="uk-nav uk-nav-dropdown">
+                                <li class="uk-nav-header">@lang('Actions')</li>
+                                <li><a href="@route('/collections/entry/'.$collection['name'])/{ entry._id }">@lang('Edit')</a></li>
 
-                            @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
-                            <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
-                            @endif
+                                @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
+                                <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
+                                @endif
 
-                            @if($app->module('collections')->hasaccess($collection['name'], 'entries_create'))
-                            <li class="uk-nav-divider"></li>
-                            <li><a class="uk-dropdown-close" onclick="{ parent.duplicateEntry }">@lang('Duplicate')</a></li>
-                            @endif
-                        </ul>
-                    </div>
-                </span>
-            </td>
-        </tr>
-    </tbody>
-</table>
-
+                                @if($app->module('collections')->hasaccess($collection['name'], 'entries_create'))
+                                <li class="uk-nav-divider"></li>
+                                <li><a class="uk-dropdown-close" onclick="{ parent.duplicateEntry }">@lang('Duplicate')</a></li>
+                                @endif
+                            </ul>
+                        </div>
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 <div class="uk-margin uk-flex uk-flex-middle" if="{ !loading && pages > 1 }">
 

@@ -41,7 +41,7 @@
     </div>
 
     <div class="uk-grid" if="{revisions.length}">
-        <div class="uk-flex-item-1">
+        <div class="uk-width-3-4">
 
             <div class="uk-text-muted uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-center uk-flex-middle" if="{!active}">
                 <div>
@@ -96,7 +96,9 @@
                                     <div show="{JSON.stringify(value) !== JSON.stringify(current[key])}"><a onclick="{restoreValue}" title="@lang('Restore value')" data-uk-tooltip><i class="uk-icon-refresh"></i></a></div>
                                 </div>
 
-                                <cp-diff oldtxt="{ value }" newtxt="{ parent.current[key] || '' }"></cp-diff>
+                                <div>
+                                    <cp-diff class="uk-display-block" oldtxt="{ value }" newtxt="{ parent.current[key] || '' }"></cp-diff>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -105,7 +107,7 @@
             </div>
 
         </div>
-        <div class="uk-width-1-5">
+        <div class="uk-width-1-4">
 
             <h3 class="uk-text-bold">@lang('Revisions')</h3>
 
