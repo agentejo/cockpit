@@ -16,6 +16,16 @@
             border: 1px rgba(0,0,0,0.1) solid;
         }
 
+        .picoedit-toolbar {
+            -webkit-position: sticky;
+            position: sticky;
+            top: 0;
+            padding-top: 10px !important;
+            padding-bottom: 10px !important;
+            background: #fff;
+            z-index: 10;
+        }
+
     </style>
 
     <div show="{ App.Utils.count(data) }">
@@ -270,7 +280,7 @@
 
         <div ref="editor" class="uk-offcanvas">
             <div class="uk-offcanvas-bar uk-width-3-4">
-                <picoedit></picoedit>
+                <picoedit height="auto"></picoedit>
             </div>
         </div>
 
