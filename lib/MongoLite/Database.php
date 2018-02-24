@@ -254,6 +254,16 @@ class UtilArrayQuery {
                     $fn[] = '('.implode(' || ', $_fn).')';
 
                     break;
+
+                case '$where':
+
+                    if (is_callable($value)) {
+
+                        // need implementation
+                    }
+
+                    break;
+
                 default:
 
                     $d = '$document';

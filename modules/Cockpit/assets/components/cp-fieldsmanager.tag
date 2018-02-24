@@ -110,7 +110,7 @@
                         <field-boolean bind="field.required" label="{ App.i18n.get('Required') }"></field-boolean>
                     </div>
 
-                    <div class="uk-form-row">
+                    <div class="uk-form-row" if="{opts.localize !== false}">
                         <field-boolean bind="field.localize" label="{ App.i18n.get('Localize') }"></field-boolean>
                     </div>
 
@@ -126,7 +126,7 @@
     </div>
 
     <div class="uk-margin-top" show="{fields.length}">
-        <a class="uk-button uk-button-link" onclick="{ addfield }"><i class="uk-icon-plus-circle"></i> { App.i18n.get('Add field') }</a>
+        <a class="uk-button uk-button-outline uk-text-primary" onclick="{ addfield }"><i class="uk-icon-plus-circle"></i> { App.i18n.get('Add field') }</a>
     </div>
 
     <div class="uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle" if="{ !fields.length && !reorder }">
