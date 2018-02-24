@@ -75,6 +75,8 @@
     </div>
     @endif
 
+    @trigger('cockpit.view.settings.item')
+
 </div>
 
 @trigger('cockpit.view.settings')
