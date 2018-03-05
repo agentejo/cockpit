@@ -290,7 +290,9 @@ $this->module("forms")->extend([
                     $body = implode("\n<br>", $body);
                 }
 
-                $this->app->mailer->mail($frm['email_forward'], $this->param("__mailsubject", "New form data for: ".$formname), $body, $options);
+                $formname = isset($frm['label']) && trim($frm['label']) ? $frm['label'] : $form;
+
+                $this->app->mailer->mail($frm['email_forward'], $this->param("__mailsubject", "New form data for: {$formname}"), $body, $options);
             }
         }
 
