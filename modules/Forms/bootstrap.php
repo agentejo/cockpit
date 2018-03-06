@@ -251,7 +251,7 @@ $this->module("forms")->extend([
         }
 
         // custom form validation
-        if ($this->path("#config:forms/{$form}.php") && false===include($this->path("#config:forms/{$form}.php"))) {
+        if ($this->app->path("#config:forms/{$form}.php") && false===include($this->app->path("#config:forms/{$form}.php"))) {
             return false;
         }
 
