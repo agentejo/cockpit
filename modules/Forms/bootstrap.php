@@ -251,7 +251,7 @@ $this->module("forms")->extend([
         }
 
         // custom form validation
-        if ($this->path("#config:forms/{$form}.php") && false===include($this->path("#config:forms/{$form}.php"))) {
+        if ($this->app->path("#config:forms/{$form}.php") && false===include($this->app->path("#config:forms/{$form}.php"))) {
             return false;
         }
 
@@ -290,7 +290,9 @@ $this->module("forms")->extend([
                     $body = implode("\n<br>", $body);
                 }
 
-                $this->app->mailer->mail($frm['email_forward'], $this->param("__mailsubject", "New form data for: ".$formname), $body, $options);
+                $formname = isset($frm['label']) && trim($frm['label']) ? $frm['label'] : $form;
+
+                $this->app->mailer->mail($frm['email_forward'], $this->param("__mailsubject", "New form data for: {$formname}"), $body, $options);
             }
         }
 
