@@ -484,4 +484,6 @@ if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
 
 
 // WEBHOOKS
-include_once(__DIR__.'/webhooks.php');
+if (!defined('COCKPIT_INSTALL')) {
+    include_once(__DIR__.'/webhooks.php');
+}
