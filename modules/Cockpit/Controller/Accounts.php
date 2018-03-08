@@ -43,10 +43,11 @@ class Accounts extends \Cockpit\AuthController {
         $uid       = null;
         $account   = ["user"=>"", "email"=>"", "active"=>true, "group"=>"admin", "i18n"=>$this->app->helper("i18n")->locale];
 
+        $fields    = $this->app->retrieve('config/account/fields', null);
         $languages = $this->getLanguages();
         $groups    = $this->module('cockpit')->getGroups();
 
-        return $this->render('cockpit:views/accounts/account.php', compact('account', 'uid', 'languages', 'groups'));
+        return $this->render('cockpit:views/accounts/account.php', compact('account', 'uid', 'languages', 'groups', 'fields'));
     }
 
     public function save() {
