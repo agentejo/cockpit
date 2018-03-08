@@ -2965,7 +2965,7 @@ riot.tag2('field-select', '<select ref="input" class="uk-width-1-1 {opts.cls}" b
 
             this.options = (typeof(opts.options) === 'string' ? opts.options.split(',') : opts.options || [])
                 .map(function(option) {
-                    return option.trim();
+                    return option.toString().trim();
                 });
 
             this.refs.input.value = this.root.$value;
