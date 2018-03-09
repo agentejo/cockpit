@@ -330,6 +330,10 @@ $this->module("collections")->extend([
                             break;
                     }
 
+                    if (!$isUpdate && $field['required'] && !$value) {
+                        // Todo
+                    }
+
                     if ($isUpdate && $field['type'] == 'password' && !$value && isset($entry[$field['name']])) {
                         unset($entry[$field['name']]);
                     } else {
