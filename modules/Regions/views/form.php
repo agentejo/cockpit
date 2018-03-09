@@ -199,6 +199,23 @@
 
                 if(e) e.preventDefault();
 
+                var required = [];
+
+                this.fields.forEach(function(field){
+
+                    if (field.required && !$this.data[field.name] && $this.data[field.name]!==0) {
+                        required.push(field.label || field.name);
+                    }
+                });
+
+                if (required.length) {
+                    App.ui.notify([
+                        App.i18n.get('Fill in these required fields before saving:'),
+                        '<div class="uk-margin-small-top">'+required.join(',')+'</div>'
+                    ].join(''), 'danger');
+                    return;
+                }
+
                 App.request('/regions/update_region/'+this.region.name, {data:this.data}).then(function(region) {
 
                     if (region) {

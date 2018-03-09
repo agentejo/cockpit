@@ -226,9 +226,28 @@
 
         submit(e) {
 
-            if(e) e.preventDefault();
+            if (e) {
+                e.preventDefault();
+            }
 
-            App.request('/collections/save_entry/'+this.collection.name,{entry:this.entry}).then(function(entry) {
+            var required = [];
+
+            this.fields.forEach(function(field){
+
+                if (field.required && !$this.entry[field.name] && $this.entry[field.name]!==0) {
+                    required.push(field.label || field.name);
+                }
+            });
+
+            if (required.length) {
+                App.ui.notify([
+                    App.i18n.get('Fill in these required fields before saving:'),
+                    '<div class="uk-margin-small-top">'+required.join(',')+'</div>'
+                ].join(''), 'danger');
+                return;
+            }
+
+            App.request('/collections/save_entry/'+this.collection.name, {entry:this.entry}).then(function(entry) {
 
                 if (entry) {
 
