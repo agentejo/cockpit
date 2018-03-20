@@ -21,6 +21,7 @@ use MongoDB\Driver\Command;
 use MongoDB\Driver\ReadConcern;
 use MongoDB\Driver\ReadPreference;
 use MongoDB\Driver\Server;
+use MongoDB\Driver\Session;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnexpectedValueException;
@@ -53,8 +54,9 @@ class Count implements Executable
      *    This is not supported for server versions < 3.4 and will result in an
      *    exception at execution time if used.
      *
-     *  * hint (string|document): The index to use. If a document, it will be
-     *    interpretted as an index specification and a name will be generated.
+     *  * hint (string|document): The index to use. Specify either the index
+     *    name as a string or the index key pattern as a document. If specified,
+     *    then the query system will only consider plans using the hinted index.
      *
      *  * limit (integer): The maximum number of documents to count.
      *
@@ -67,6 +69,10 @@ class Count implements Executable
      *    exception at execution time if used.
      *
      *  * readPreference (MongoDB\Driver\ReadPreference): Read preference.
+     *
+     *  * session (MongoDB\Driver\Session): Client session.
+     *
+     *    Sessions are not supported for server versions < 3.6.
      *
      *  * skip (integer): The number of documents to skip before returning the
      *    documents.
@@ -87,14 +93,8 @@ class Count implements Executable
             throw InvalidArgumentException::invalidType('"collation" option', $options['collation'], 'array or object');
         }
 
-        if (isset($options['hint'])) {
-            if (is_array($options['hint']) || is_object($options['hint'])) {
-                $options['hint'] = \MongoDB\generate_index_name($options['hint']);
-            }
-
-            if ( ! is_string($options['hint'])) {
-                throw InvalidArgumentException::invalidType('"hint" option', $options['hint'], 'string or array or object');
-            }
+        if (isset($options['hint']) && ! is_string($options['hint']) && ! is_array($options['hint']) && ! is_object($options['hint'])) {
+            throw InvalidArgumentException::invalidType('"hint" option', $options['hint'], 'string or array or object');
         }
 
         if (isset($options['limit']) && ! is_integer($options['limit'])) {
@@ -113,8 +113,16 @@ class Count implements Executable
             throw InvalidArgumentException::invalidType('"readPreference" option', $options['readPreference'], 'MongoDB\Driver\ReadPreference');
         }
 
+        if (isset($options['session']) && ! $options['session'] instanceof Session) {
+            throw InvalidArgumentException::invalidType('"session" option', $options['session'], 'MongoDB\Driver\Session');
+        }
+
         if (isset($options['skip']) && ! is_integer($options['skip'])) {
             throw InvalidArgumentException::invalidType('"skip" option', $options['skip'], 'integer');
+        }
+
+        if (isset($options['readConcern']) && $options['readConcern']->isDefault()) {
+            unset($options['readConcern']);
         }
 
         $this->databaseName = (string) $databaseName;
@@ -143,9 +151,7 @@ class Count implements Executable
             throw UnsupportedException::readConcernNotSupported();
         }
 
-        $readPreference = isset($this->options['readPreference']) ? $this->options['readPreference'] : null;
-
-        $cursor = $server->executeCommand($this->databaseName, $this->createCommand(), $readPreference);
+        $cursor = $server->executeReadCommand($this->databaseName, $this->createCommand(), $this->createOptions());
         $result = current($cursor->toArray());
 
         // Older server versions may return a float
@@ -173,16 +179,41 @@ class Count implements Executable
             $cmd['collation'] = (object) $this->options['collation'];
         }
 
-        foreach (['hint', 'limit', 'maxTimeMS', 'skip'] as $option) {
+        if (isset($this->options['hint'])) {
+            $cmd['hint'] = is_array($this->options['hint']) ? (object) $this->options['hint'] : $this->options['hint'];
+        }
+
+        foreach (['limit', 'maxTimeMS', 'skip'] as $option) {
             if (isset($this->options[$option])) {
                 $cmd[$option] = $this->options[$option];
             }
         }
 
+        return new Command($cmd);
+    }
+
+    /**
+     * Create options for executing the command.
+     *
+     * @see http://php.net/manual/en/mongodb-driver-server.executereadcommand.php
+     * @return array
+     */
+    private function createOptions()
+    {
+        $options = [];
+
         if (isset($this->options['readConcern'])) {
-            $cmd['readConcern'] = \MongoDB\read_concern_as_document($this->options['readConcern']);
+            $options['readConcern'] = $this->options['readConcern'];
         }
 
-        return new Command($cmd);
+        if (isset($this->options['readPreference'])) {
+            $options['readPreference'] = $this->options['readPreference'];
+        }
+
+        if (isset($this->options['session'])) {
+            $options['session'] = $this->options['session'];
+        }
+
+        return $options;
     }
 }

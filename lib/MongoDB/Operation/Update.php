@@ -20,6 +20,7 @@ namespace MongoDB\Operation;
 use MongoDB\UpdateResult;
 use MongoDB\Driver\BulkWrite as Bulk;
 use MongoDB\Driver\Server;
+use MongoDB\Driver\Session;
 use MongoDB\Driver\WriteConcern;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
@@ -36,6 +37,7 @@ use MongoDB\Exception\UnsupportedException;
  */
 class Update implements Executable
 {
+    private static $wireVersionForArrayFilters = 6;
     private static $wireVersionForCollation = 5;
     private static $wireVersionForDocumentLevelValidation = 4;
 
@@ -49,6 +51,12 @@ class Update implements Executable
      * Constructs a update command.
      *
      * Supported options:
+     *
+     *  * arrayFilters (document array): A set of filters specifying to which
+     *    array elements an update should apply.
+     *
+     *    This is not supported for server versions < 3.6 and will result in an
+     *    exception at execution time if used.
      *
      *  * bypassDocumentValidation (boolean): If true, allows the write to
      *    circumvent document level validation.
@@ -64,6 +72,10 @@ class Update implements Executable
      *  * multi (boolean): When true, updates all documents matching the query.
      *    This option cannot be true if the $update argument is a replacement
      *    document (i.e. contains no update operators). The default is false.
+     *
+     *  * session (MongoDB\Driver\Session): Client session.
+     *
+     *    Sessions are not supported for server versions < 3.6.
      *
      *  * upsert (boolean): When true, a new document is created if no document
      *    matches the query. The default is false.
@@ -93,6 +105,10 @@ class Update implements Executable
             'upsert' => false,
         ];
 
+        if (isset($options['arrayFilters']) && ! is_array($options['arrayFilters'])) {
+            throw InvalidArgumentException::invalidType('"arrayFilters" option', $options['arrayFilters'], 'array');
+        }
+
         if (isset($options['bypassDocumentValidation']) && ! is_bool($options['bypassDocumentValidation'])) {
             throw InvalidArgumentException::invalidType('"bypassDocumentValidation" option', $options['bypassDocumentValidation'], 'boolean');
         }
@@ -109,12 +125,20 @@ class Update implements Executable
             throw new InvalidArgumentException('"multi" option cannot be true if $update is a replacement document');
         }
 
+        if (isset($options['session']) && ! $options['session'] instanceof Session) {
+            throw InvalidArgumentException::invalidType('"session" option', $options['session'], 'MongoDB\Driver\Session');
+        }
+
         if ( ! is_bool($options['upsert'])) {
             throw InvalidArgumentException::invalidType('"upsert" option', $options['upsert'], 'boolean');
         }
 
         if (isset($options['writeConcern']) && ! $options['writeConcern'] instanceof WriteConcern) {
             throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], 'MongoDB\Driver\WriteConcern');
+        }
+
+        if (isset($options['writeConcern']) && $options['writeConcern']->isDefault()) {
+            unset($options['writeConcern']);
         }
 
         $this->databaseName = (string) $databaseName;
@@ -130,11 +154,15 @@ class Update implements Executable
      * @see Executable::execute()
      * @param Server $server
      * @return UpdateResult
-     * @throws UnsupportedException if collation is used and unsupported
+     * @throws UnsupportedException if array filters or collation is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
     public function execute(Server $server)
     {
+        if (isset($this->options['arrayFilters']) && ! \MongoDB\server_supports_feature($server, self::$wireVersionForArrayFilters)) {
+            throw UnsupportedException::arrayFiltersNotSupported();
+        }
+
         if (isset($this->options['collation']) && ! \MongoDB\server_supports_feature($server, self::$wireVersionForCollation)) {
             throw UnsupportedException::collationNotSupported();
         }
@@ -143,6 +171,10 @@ class Update implements Executable
             'multi' => $this->options['multi'],
             'upsert' => $this->options['upsert'],
         ];
+
+        if (isset($this->options['arrayFilters'])) {
+            $updateOptions['arrayFilters'] = $this->options['arrayFilters'];
+        }
 
         if (isset($this->options['collation'])) {
             $updateOptions['collation'] = (object) $this->options['collation'];
@@ -157,9 +189,29 @@ class Update implements Executable
         $bulk = new Bulk($bulkOptions);
         $bulk->update($this->filter, $this->update, $updateOptions);
 
-        $writeConcern = isset($this->options['writeConcern']) ? $this->options['writeConcern'] : null;
-        $writeResult = $server->executeBulkWrite($this->databaseName . '.' . $this->collectionName, $bulk, $writeConcern);
+        $writeResult = $server->executeBulkWrite($this->databaseName . '.' . $this->collectionName, $bulk, $this->createOptions());
 
         return new UpdateResult($writeResult);
+    }
+
+    /**
+     * Create options for executing the bulk write.
+     *
+     * @see http://php.net/manual/en/mongodb-driver-server.executebulkwrite.php
+     * @return array
+     */
+    private function createOptions()
+    {
+        $options = [];
+
+        if (isset($this->options['session'])) {
+            $options['session'] = $this->options['session'];
+        }
+
+        if (isset($this->options['writeConcern'])) {
+            $options['writeConcern'] = $this->options['writeConcern'];
+        }
+
+        return $options;
     }
 }

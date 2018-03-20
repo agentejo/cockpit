@@ -184,7 +184,7 @@
 
         showMeta() {
 
-            this._meta = this.image.meta;
+            this._meta = this.image.meta || {};
 
             setTimeout(function() {
                 UIkit.modal($this.refs.modalmeta, {modal:false}).show().one('close.uk.modal', function(){

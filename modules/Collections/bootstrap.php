@@ -330,7 +330,7 @@ $this->module("collections")->extend([
                             break;
                     }
 
-                    if (!$isUpdate && $field['required'] && !$value) {
+                    if (!$isUpdate && isset($field['required']) && $field['required'] && !$value) {
                         // Todo
                     }
 

@@ -19,6 +19,7 @@ namespace MongoDB\GridFS;
 
 use MongoDB\BSON\UTCDateTime;
 use Exception;
+use stdClass;
 
 /**
  * Stream wrapper for reading and writing a GridFS file.
@@ -117,7 +118,7 @@ class StreamWrapper
      *
      * Note: this method may return a string smaller than the requested length
      * if data is not available to be read.
-     * 
+     *
      * @see http://php.net/manual/en/streamwrapper.stream-read.php
      * @param integer $length Number of bytes to read
      * @return string

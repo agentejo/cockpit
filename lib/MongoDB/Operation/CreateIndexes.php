@@ -17,9 +17,10 @@
 
 namespace MongoDB\Operation;
 
+use MongoDB\Driver\BulkWrite as Bulk;
 use MongoDB\Driver\Command;
 use MongoDB\Driver\Server;
-use MongoDB\Driver\BulkWrite as Bulk;
+use MongoDB\Driver\Session;
 use MongoDB\Driver\WriteConcern;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
@@ -37,7 +38,6 @@ use MongoDB\Model\IndexInput;
 class CreateIndexes implements Executable
 {
     private static $wireVersionForCollation = 5;
-    private static $wireVersionForCommand = 2;
     private static $wireVersionForWriteConcern = 5;
 
     private $databaseName;
@@ -50,6 +50,13 @@ class CreateIndexes implements Executable
      * Constructs a createIndexes command.
      *
      * Supported options:
+     *
+     *  * maxTimeMS (integer): The maximum amount of time to allow the query to
+     *    run.
+     *
+     *  * session (MongoDB\Driver\Session): Client session.
+     *
+     *    Sessions are not supported for server versions < 3.6.
      *
      *  * writeConcern (MongoDB\Driver\WriteConcern): Write concern.
      *
@@ -92,8 +99,20 @@ class CreateIndexes implements Executable
             $expectedIndex += 1;
         }
 
+        if (isset($options['maxTimeMS']) && !is_integer($options['maxTimeMS'])) {
+            throw InvalidArgumentException::invalidType('"maxTimeMS" option', $options['maxTimeMS'], 'integer');
+        }
+
+        if (isset($options['session']) && ! $options['session'] instanceof Session) {
+            throw InvalidArgumentException::invalidType('"session" option', $options['session'], 'MongoDB\Driver\Session');
+        }
+
         if (isset($options['writeConcern']) && ! $options['writeConcern'] instanceof WriteConcern) {
             throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], 'MongoDB\Driver\WriteConcern');
+        }
+
+        if (isset($options['writeConcern']) && $options['writeConcern']->isDefault()) {
+            unset($options['writeConcern']);
         }
 
         $this->databaseName = (string) $databaseName;
@@ -103,9 +122,6 @@ class CreateIndexes implements Executable
 
     /**
      * Execute the operation.
-     *
-     * For servers < 2.6, this will actually perform an insert operation on the
-     * database's "system.indexes" collection.
      *
      * @see Executable::execute()
      * @param Server $server
@@ -123,13 +139,30 @@ class CreateIndexes implements Executable
             throw UnsupportedException::writeConcernNotSupported();
         }
 
-        if (\MongoDB\server_supports_feature($server, self::$wireVersionForCommand)) {
-            $this->executeCommand($server);
-        } else {
-            $this->executeLegacy($server);
-        }
+        $this->executeCommand($server);
 
         return array_map(function(IndexInput $index) { return (string) $index; }, $this->indexes);
+    }
+
+    /**
+     * Create options for executing the command.
+     *
+     * @see http://php.net/manual/en/mongodb-driver-server.executewritecommand.php
+     * @return array
+     */
+    private function createOptions()
+    {
+        $options = [];
+
+        if (isset($this->options['session'])) {
+            $options['session'] = $this->options['session'];
+        }
+
+        if (isset($this->options['writeConcern'])) {
+            $options['writeConcern'] = $this->options['writeConcern'];
+        }
+
+        return $options;
     }
 
     /**
@@ -146,28 +179,10 @@ class CreateIndexes implements Executable
             'indexes' => $this->indexes,
         ];
 
-        if (isset($this->options['writeConcern'])) {
-            $cmd['writeConcern'] = \MongoDB\write_concern_as_document($this->options['writeConcern']);
+        if (isset($this->options['maxTimeMS'])) {
+            $cmd['maxTimeMS'] = $this->options['maxTimeMS'];
         }
 
-        $server->executeCommand($this->databaseName, new Command($cmd));
-    }
-
-    /**
-     * Create one or more indexes for the collection by inserting into the
-     * "system.indexes" collection (MongoDB <2.6).
-     *
-     * @param Server $server
-     * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
-     */
-    private function executeLegacy(Server $server)
-    {
-        $bulk = new Bulk(['ordered' => true]);
-
-        foreach ($this->indexes as $index) {
-            $bulk->insert($index);
-        }
-
-        $server->executeBulkWrite($this->databaseName . '.system.indexes', $bulk, new WriteConcern(1));
+        $server->executeWriteCommand($this->databaseName, new Command($cmd), $this->createOptions());
     }
 }

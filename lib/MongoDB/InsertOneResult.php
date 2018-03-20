@@ -65,7 +65,7 @@ class InsertOneResult
      *
      * If the document had an ID prior to inserting (i.e. the driver did not
      * need to generate an ID), this will contain its "_id". Any
-     * driver-generated ID will be a MongoDB\BSON\ObjectID instance.
+     * driver-generated ID will be a MongoDB\BSON\ObjectId instance.
      *
      * @return mixed
      */

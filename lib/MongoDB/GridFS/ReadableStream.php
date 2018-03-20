@@ -132,7 +132,7 @@ class ReadableStream
      *
      * Note: this method may return a string smaller than the requested length
      * if data is not available to be read.
-     * 
+     *
      * @param integer $length Number of bytes to read
      * @return string
      * @throws InvalidArgumentException if $length is negative
@@ -175,7 +175,7 @@ class ReadableStream
     public function seek($offset)
     {
         if ($offset < 0 || $offset > $this->file->length) {
-            throw new InvalidArgumentException(sprintf('$offset must be >= 0 and <= %d; given: %d', $length, $offset));
+            throw new InvalidArgumentException(sprintf('$offset must be >= 0 and <= %d; given: %d', $this->file->length, $offset));
         }
 
         /* Compute the offsets for the chunk and buffer (i.e. chunk data) from

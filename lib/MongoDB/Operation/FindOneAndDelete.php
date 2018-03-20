@@ -49,6 +49,10 @@ class FindOneAndDelete implements Executable
      *  * projection (document): Limits the fields to return for the matching
      *    document.
      *
+     *  * session (MongoDB\Driver\Session): Client session.
+     *
+     *    Sessions are not supported for server versions < 3.6.
+     *
      *  * sort (document): Determines which document the operation modifies if
      *    the query selects multiple documents.
      *

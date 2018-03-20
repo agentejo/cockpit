@@ -22,6 +22,7 @@ use MongoDB\Driver\Query;
 use MongoDB\Driver\ReadConcern;
 use MongoDB\Driver\ReadPreference;
 use MongoDB\Driver\Server;
+use MongoDB\Driver\Session;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnsupportedException;
@@ -70,11 +71,25 @@ class Find implements Executable
      *    NON_TAILABLE, TAILABLE, or TAILABLE_AWAIT. The default is
      *    NON_TAILABLE.
      *
+     *  * hint (string|document): The index to use. Specify either the index
+     *    name as a string or the index key pattern as a document. If specified,
+     *    then the query system will only consider plans using the hinted index.
+     *
      *  * limit (integer): The maximum number of documents to return.
+     *
+     *  * max (document): The exclusive upper bound for a specific index.
+     *
+     *  * maxAwaitTimeMS (integer): The maxium amount of time for the server to wait
+     *    on new documents to satisfy a query, if cursorType is TAILABLE_AWAIT.
+     *
+     *  * maxScan (integer): Maximum number of documents or index keys to scan
+     *    when executing the query.
      *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
      *    run. If "$maxTimeMS" also exists in the modifiers document, this
      *    option will take precedence.
+     *
+     *  * min (document): The inclusive upper bound for a specific index.
      *
      *  * modifiers (document): Meta operators that modify the output or
      *    behavior of a query. Use of these operators is deprecated in favor of
@@ -97,7 +112,21 @@ class Find implements Executable
      *
      *  * readPreference (MongoDB\Driver\ReadPreference): Read preference.
      *
+     *  * returnKey (boolean): If true, returns only the index keys in the
+     *    resulting documents.
+     *
+     *  * session (MongoDB\Driver\Session): Client session.
+     *
+     *    Sessions are not supported for server versions < 3.6.
+     *
+     *  * showRecordId (boolean): Determines whether to return the record
+     *    identifier for each document. If true, adds a field $recordId to the
+     *    returned documents.
+     *
      *  * skip (integer): The number of documents to skip before returning.
+     *
+     *  * snapshot (boolean): Prevents the cursor from returning a document more
+     *    than once because of an intervening write operation.
      *
      *  * sort (document): The order in which to return matching documents. If
      *    "$orderby" also exists in the modifiers document, this option will
@@ -146,12 +175,32 @@ class Find implements Executable
             }
         }
 
+        if (isset($options['hint']) && ! is_string($options['hint']) && ! is_array($options['hint']) && ! is_object($options['hint'])) {
+            throw InvalidArgumentException::invalidType('"hint" option', $options['hint'], 'string or array or object');
+        }
+
         if (isset($options['limit']) && ! is_integer($options['limit'])) {
             throw InvalidArgumentException::invalidType('"limit" option', $options['limit'], 'integer');
         }
 
+        if (isset($options['max']) && ! is_array($options['max']) && ! is_object($options['max'])) {
+            throw InvalidArgumentException::invalidType('"max" option', $options['max'], 'array or object');
+        }
+
+        if (isset($options['maxAwaitTimeMS']) && ! is_integer($options['maxAwaitTimeMS'])) {
+            throw InvalidArgumentException::invalidType('"maxAwaitTimeMS" option', $options['maxAwaitTimeMS'], 'integer');
+        }
+
+        if (isset($options['maxScan']) && ! is_integer($options['maxScan'])) {
+            throw InvalidArgumentException::invalidType('"maxScan" option', $options['maxScan'], 'integer');
+        }
+
         if (isset($options['maxTimeMS']) && ! is_integer($options['maxTimeMS'])) {
             throw InvalidArgumentException::invalidType('"maxTimeMS" option', $options['maxTimeMS'], 'integer');
+        }
+
+        if (isset($options['min']) && ! is_array($options['min']) && ! is_object($options['min'])) {
+            throw InvalidArgumentException::invalidType('"min" option', $options['min'], 'array or object');
         }
 
         if (isset($options['modifiers']) && ! is_array($options['modifiers']) && ! is_object($options['modifiers'])) {
@@ -178,8 +227,24 @@ class Find implements Executable
             throw InvalidArgumentException::invalidType('"readPreference" option', $options['readPreference'], 'MongoDB\Driver\ReadPreference');
         }
 
+        if (isset($options['returnKey']) && ! is_bool($options['returnKey'])) {
+            throw InvalidArgumentException::invalidType('"returnKey" option', $options['returnKey'], 'boolean');
+        }
+
+        if (isset($options['session']) && ! $options['session'] instanceof Session) {
+            throw InvalidArgumentException::invalidType('"session" option', $options['session'], 'MongoDB\Driver\Session');
+        }
+
+        if (isset($options['showRecordId']) && ! is_bool($options['showRecordId'])) {
+            throw InvalidArgumentException::invalidType('"showRecordId" option', $options['showRecordId'], 'boolean');
+        }
+
         if (isset($options['skip']) && ! is_integer($options['skip'])) {
             throw InvalidArgumentException::invalidType('"skip" option', $options['skip'], 'integer');
+        }
+
+        if (isset($options['snapshot']) && ! is_bool($options['snapshot'])) {
+            throw InvalidArgumentException::invalidType('"snapshot" option', $options['snapshot'], 'boolean');
         }
 
         if (isset($options['sort']) && ! is_array($options['sort']) && ! is_object($options['sort'])) {
@@ -188,6 +253,10 @@ class Find implements Executable
 
         if (isset($options['typeMap']) && ! is_array($options['typeMap'])) {
             throw InvalidArgumentException::invalidType('"typeMap" option', $options['typeMap'], 'array');
+        }
+
+        if (isset($options['readConcern']) && $options['readConcern']->isDefault()) {
+            unset($options['readConcern']);
         }
 
         $this->databaseName = (string) $databaseName;
@@ -215,15 +284,34 @@ class Find implements Executable
             throw UnsupportedException::readConcernNotSupported();
         }
 
-        $readPreference = isset($this->options['readPreference']) ? $this->options['readPreference'] : null;
-
-        $cursor = $server->executeQuery($this->databaseName . '.' . $this->collectionName, $this->createQuery(), $readPreference);
+        $cursor = $server->executeQuery($this->databaseName . '.' . $this->collectionName, $this->createQuery(), $this->createOptions());
 
         if (isset($this->options['typeMap'])) {
             $cursor->setTypeMap($this->options['typeMap']);
         }
 
         return $cursor;
+    }
+
+    /**
+     * Create options for executing the command.
+     *
+     * @see http://php.net/manual/en/mongodb-driver-server.executequery.php
+     * @return array
+     */
+    private function createOptions()
+    {
+        $options = [];
+
+        if (isset($this->options['readPreference'])) {
+            $options['readPreference'] = $this->options['readPreference'];
+        }
+
+        if (isset($this->options['session'])) {
+            $options['session'] = $this->options['session'];
+        }
+
+        return $options;
     }
 
     /**
@@ -245,14 +333,16 @@ class Find implements Executable
             }
         }
 
-        foreach (['allowPartialResults', 'batchSize', 'comment', 'limit', 'maxTimeMS', 'noCursorTimeout', 'oplogReplay', 'projection', 'readConcern', 'skip', 'sort'] as $option) {
+        foreach (['allowPartialResults', 'batchSize', 'comment', 'hint', 'limit', 'maxAwaitTimeMS', 'maxScan', 'maxTimeMS', 'noCursorTimeout', 'oplogReplay', 'projection', 'readConcern', 'returnKey', 'showRecordId', 'skip', 'snapshot', 'sort'] as $option) {
             if (isset($this->options[$option])) {
                 $options[$option] = $this->options[$option];
             }
         }
 
-        if (isset($this->options['collation'])) {
-            $options['collation'] = (object) $this->options['collation'];
+        foreach (['collation', 'max', 'min'] as $option) {
+            if (isset($this->options[$option])) {
+                $options[$option] = (object) $this->options[$option];
+            }
         }
 
         $modifiers = empty($this->options['modifiers']) ? [] : (array) $this->options['modifiers'];
