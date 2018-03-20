@@ -203,8 +203,11 @@
 
                 this.fields.forEach(function(field){
 
-                    if (field.required && !$this.data[field.name] && $this.data[field.name]!==0) {
-                        required.push(field.label || field.name);
+                    if (field.required && !$this.data[field.name]) {
+
+                        if (!($this.data[field.name]===false || $this.data[field.name]===0)) {
+                            required.push(field.label || field.name);
+                        }
                     }
                 });
 

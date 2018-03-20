@@ -21,6 +21,7 @@ use MongoDB\Driver\Command;
 use MongoDB\Driver\ReadConcern;
 use MongoDB\Driver\ReadPreference;
 use MongoDB\Driver\Server;
+use MongoDB\Driver\Session;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnexpectedValueException;
@@ -64,6 +65,10 @@ class Distinct implements Executable
      *
      *  * readPreference (MongoDB\Driver\ReadPreference): Read preference.
      *
+     *  * session (MongoDB\Driver\Session): Client session.
+     *
+     *    Sessions are not supported for server versions < 3.6.
+     *
      * @param string       $databaseName   Database name
      * @param string       $collectionName Collection name
      * @param string       $fieldName      Field for which to return distinct values
@@ -93,6 +98,14 @@ class Distinct implements Executable
             throw InvalidArgumentException::invalidType('"readPreference" option', $options['readPreference'], 'MongoDB\Driver\ReadPreference');
         }
 
+        if (isset($options['session']) && ! $options['session'] instanceof Session) {
+            throw InvalidArgumentException::invalidType('"session" option', $options['session'], 'MongoDB\Driver\Session');
+        }
+
+        if (isset($options['readConcern']) && $options['readConcern']->isDefault()) {
+            unset($options['readConcern']);
+        }
+
         $this->databaseName = (string) $databaseName;
         $this->collectionName = (string) $collectionName;
         $this->fieldName = (string) $fieldName;
@@ -120,9 +133,7 @@ class Distinct implements Executable
             throw UnsupportedException::readConcernNotSupported();
         }
 
-        $readPreference = isset($this->options['readPreference']) ? $this->options['readPreference'] : null;
-
-        $cursor = $server->executeCommand($this->databaseName, $this->createCommand(), $readPreference);
+        $cursor = $server->executeReadCommand($this->databaseName, $this->createCommand(), $this->createOptions());
         $result = current($cursor->toArray());
 
         if ( ! isset($result->values) || ! is_array($result->values)) {
@@ -156,10 +167,31 @@ class Distinct implements Executable
             $cmd['maxTimeMS'] = $this->options['maxTimeMS'];
         }
 
+        return new Command($cmd);
+    }
+
+    /**
+     * Create options for executing the command.
+     *
+     * @see http://php.net/manual/en/mongodb-driver-server.executereadcommand.php
+     * @return array
+     */
+    private function createOptions()
+    {
+        $options = [];
+
         if (isset($this->options['readConcern'])) {
-            $cmd['readConcern'] = \MongoDB\read_concern_as_document($this->options['readConcern']);
+            $options['readConcern'] = $this->options['readConcern'];
         }
 
-        return new Command($cmd);
+        if (isset($this->options['readPreference'])) {
+            $options['readPreference'] = $this->options['readPreference'];
+        }
+
+        if (isset($this->options['session'])) {
+            $options['session'] = $this->options['session'];
+        }
+
+        return $options;
     }
 }

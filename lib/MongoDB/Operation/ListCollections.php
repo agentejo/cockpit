@@ -20,8 +20,10 @@ namespace MongoDB\Operation;
 use MongoDB\Driver\Command;
 use MongoDB\Driver\Query;
 use MongoDB\Driver\Server;
+use MongoDB\Driver\Session;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
+use MongoDB\Model\CachingIterator;
 use MongoDB\Model\CollectionInfoCommandIterator;
 use MongoDB\Model\CollectionInfoIterator;
 use MongoDB\Model\CollectionInfoLegacyIterator;
@@ -47,8 +49,16 @@ class ListCollections implements Executable
      *
      *  * filter (document): Query by which to filter collections.
      *
+     *    For server versions < 3.0, the filter can only be used to match the
+     *    "name" field with a string value. More complex filters will result in
+     *    an exception at execution time if used.
+     *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
      *    run.
+     *
+     *  * session (MongoDB\Driver\Session): Client session.
+     *
+     *    Sessions are not supported for server versions < 3.6.
      *
      * @param string $databaseName Database name
      * @param array  $options      Command options
@@ -62,6 +72,10 @@ class ListCollections implements Executable
 
         if (isset($options['maxTimeMS']) && ! is_integer($options['maxTimeMS'])) {
             throw InvalidArgumentException::invalidType('"maxTimeMS" option', $options['maxTimeMS'], 'integer');
+        }
+
+        if (isset($options['session']) && ! $options['session'] instanceof Session) {
+            throw InvalidArgumentException::invalidType('"session" option', $options['session'], 'MongoDB\Driver\Session');
         }
 
         $this->databaseName = (string) $databaseName;
@@ -85,6 +99,26 @@ class ListCollections implements Executable
     }
 
     /**
+     * Create options for executing the command.
+     *
+     * Note: read preference is intentionally omitted, as the spec requires that
+     * the command be executed on the primary.
+     *
+     * @see http://php.net/manual/en/mongodb-driver-server.executecommand.php
+     * @return array
+     */
+    private function createOptions()
+    {
+        $options = [];
+
+        if (isset($this->options['session'])) {
+            $options['session'] = $this->options['session'];
+        }
+
+        return $options;
+    }
+
+    /**
      * Returns information for all collections in this database using the
      * listCollections command.
      *
@@ -104,10 +138,10 @@ class ListCollections implements Executable
             $cmd['maxTimeMS'] = $this->options['maxTimeMS'];
         }
 
-        $cursor = $server->executeCommand($this->databaseName, new Command($cmd));
+        $cursor = $server->executeCommand($this->databaseName, new Command($cmd), $this->createOptions());
         $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
 
-        return new CollectionInfoCommandIterator($cursor);
+        return new CollectionInfoCommandIterator(new CachingIterator($cursor));
     }
 
     /**
@@ -138,6 +172,6 @@ class ListCollections implements Executable
         $cursor = $server->executeQuery($this->databaseName . '.system.namespaces', new Query($filter, $options));
         $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
 
-        return new CollectionInfoLegacyIterator($cursor);
+        return new CollectionInfoLegacyIterator(new CachingIterator($cursor));
     }
 }

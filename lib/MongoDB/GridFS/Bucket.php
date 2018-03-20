@@ -17,6 +17,7 @@
 
 namespace MongoDB\GridFS;
 
+use MongoDB\Collection;
 use MongoDB\Driver\Cursor;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\ReadConcern;
@@ -279,6 +280,26 @@ class Bucket
     }
 
     /**
+     * Return the chunks collection.
+     *
+     * @return Collection
+     */
+    public function getChunksCollection()
+    {
+        return $this->collectionWrapper->getChunksCollection();
+    }
+
+    /**
+     * Return the chunk size in bytes.
+     *
+     * @return integer
+     */
+    public function getChunkSizeBytes()
+    {
+        return $this->chunkSizeBytes;
+    }
+
+    /**
      * Return the database name.
      *
      * @return string
@@ -328,6 +349,58 @@ class Bucket
         }
 
         return $file->_id;
+    }
+
+    /**
+     * Return the files collection.
+     *
+     * @return Collection
+     */
+    public function getFilesCollection()
+    {
+        return $this->collectionWrapper->getFilesCollection();
+    }
+
+    /**
+     * Return the read concern for this GridFS bucket.
+     *
+     * @see http://php.net/manual/en/mongodb-driver-readconcern.isdefault.php
+     * @return ReadConcern
+     */
+    public function getReadConcern()
+    {
+        return $this->readConcern;
+    }
+
+    /**
+     * Return the read preference for this GridFS bucket.
+     *
+     * @return ReadPreference
+     */
+    public function getReadPreference()
+    {
+        return $this->readPreference;
+    }
+
+    /**
+     * Return the type map for this GridFS bucket.
+     *
+     * @return array
+     */
+    public function getTypeMap()
+    {
+        return $this->typeMap;
+    }
+
+    /**
+     * Return the write concern for this GridFS bucket.
+     *
+     * @see http://php.net/manual/en/mongodb-driver-writeconcern.isdefault.php
+     * @return WriteConcern
+     */
+    public function getWriteConcern()
+    {
+        return $this->writeConcern;
     }
 
     /**

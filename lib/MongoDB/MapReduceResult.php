@@ -19,6 +19,7 @@ namespace MongoDB;
 
 use IteratorAggregate;
 use stdClass;
+use Traversable;
 
 /**
  * Result class for mapReduce command results.

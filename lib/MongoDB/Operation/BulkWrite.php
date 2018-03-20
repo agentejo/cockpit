@@ -20,6 +20,7 @@ namespace MongoDB\Operation;
 use MongoDB\BulkWriteResult;
 use MongoDB\Driver\BulkWrite as Bulk;
 use MongoDB\Driver\Server;
+use MongoDB\Driver\Session;
 use MongoDB\Driver\WriteConcern;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
@@ -40,6 +41,7 @@ class BulkWrite implements Executable
     const UPDATE_MANY = 'updateMany';
     const UPDATE_ONE  = 'updateOne';
 
+    private static $wireVersionForArrayFilters = 6;
     private static $wireVersionForCollation = 5;
     private static $wireVersionForDocumentLevelValidation = 4;
 
@@ -47,6 +49,7 @@ class BulkWrite implements Executable
     private $collectionName;
     private $operations;
     private $options;
+    private $isArrayFiltersUsed = false;
     private $isCollationUsed = false;
 
     /**
@@ -84,6 +87,14 @@ class BulkWrite implements Executable
      *  * upsert (boolean): When true, a new document is created if no document
      *    matches the query. The default is false.
      *
+     * Supported options for updateMany and updateOne operations:
+     *
+     *  * arrayFilters (document array): A set of filters specifying to which
+     *    array elements an update should apply.
+     *
+     *    This is not supported for server versions < 3.6 and will result in an
+     *    exception at execution time if used.
+    *
      * Supported options for the bulk write operation:
      *
      *  * bypassDocumentValidation (boolean): If true, allows the write to
@@ -95,6 +106,10 @@ class BulkWrite implements Executable
      *  * ordered (boolean): If true, when an insert fails, return without
      *    performing the remaining writes. If false, when a write fails,
      *    continue with the remaining writes, if any. The default is true.
+     *
+     *  * session (MongoDB\Driver\Session): Client session.
+     *
+     *    Sessions are not supported for server versions < 3.6.
      *
      *  * writeConcern (MongoDB\Driver\WriteConcern): Write concern.
      *
@@ -229,6 +244,14 @@ class BulkWrite implements Executable
                     $args[2]['multi'] = ($type === self::UPDATE_MANY);
                     $args[2] += ['upsert' => false];
 
+                    if (isset($args[2]['arrayFilters'])) {
+                        $this->isArrayFiltersUsed = true;
+
+                        if ( ! is_array($args[2]['arrayFilters'])) {
+                            throw InvalidArgumentException::invalidType(sprintf('$operations[%d]["%s"][2]["arrayFilters"]', $i, $type), $args[2]['arrayFilters'], 'array');
+                        }
+                    }
+
                     if (isset($args[2]['collation'])) {
                         $this->isCollationUsed = true;
 
@@ -262,8 +285,16 @@ class BulkWrite implements Executable
             throw InvalidArgumentException::invalidType('"ordered" option', $options['ordered'], 'boolean');
         }
 
+        if (isset($options['session']) && ! $options['session'] instanceof Session) {
+            throw InvalidArgumentException::invalidType('"session" option', $options['session'], 'MongoDB\Driver\Session');
+        }
+
         if (isset($options['writeConcern']) && ! $options['writeConcern'] instanceof WriteConcern) {
             throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], 'MongoDB\Driver\WriteConcern');
+        }
+
+        if (isset($options['writeConcern']) && $options['writeConcern']->isDefault()) {
+            unset($options['writeConcern']);
         }
 
         $this->databaseName = (string) $databaseName;
@@ -278,11 +309,15 @@ class BulkWrite implements Executable
      * @see Executable::execute()
      * @param Server $server
      * @return BulkWriteResult
-     * @throws UnsupportedException if collation is used and unsupported
+     * @throws UnsupportedException if array filters or collation is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
     public function execute(Server $server)
     {
+        if ($this->isArrayFiltersUsed && ! \MongoDB\server_supports_feature($server, self::$wireVersionForArrayFilters)) {
+            throw UnsupportedException::arrayFiltersNotSupported();
+        }
+
         if ($this->isCollationUsed && ! \MongoDB\server_supports_feature($server, self::$wireVersionForCollation)) {
             throw UnsupportedException::collationNotSupported();
         }
@@ -307,14 +342,7 @@ class BulkWrite implements Executable
                     break;
 
                 case self::INSERT_ONE:
-                    $insertedId = $bulk->insert($args[0]);
-
-                    if ($insertedId !== null) {
-                        $insertedIds[$i] = $insertedId;
-                    } else {
-                        $insertedIds[$i] = \MongoDB\extract_id_from_inserted_document($args[0]);
-                    }
-
+                    $insertedIds[$i] = $bulk->insert($args[0]);
                     break;
 
                 case self::REPLACE_ONE:
@@ -324,9 +352,29 @@ class BulkWrite implements Executable
             }
         }
 
-        $writeConcern = isset($this->options['writeConcern']) ? $this->options['writeConcern'] : null;
-        $writeResult = $server->executeBulkWrite($this->databaseName . '.' . $this->collectionName, $bulk, $writeConcern);
+        $writeResult = $server->executeBulkWrite($this->databaseName . '.' . $this->collectionName, $bulk, $this->createOptions());
 
         return new BulkWriteResult($writeResult, $insertedIds);
+    }
+
+    /**
+     * Create options for executing the bulk write.
+     *
+     * @see http://php.net/manual/en/mongodb-driver-server.executebulkwrite.php
+     * @return array
+     */
+    private function createOptions()
+    {
+        $options = [];
+
+        if (isset($this->options['session'])) {
+            $options['session'] = $this->options['session'];
+        }
+
+        if (isset($this->options['writeConcern'])) {
+            $options['writeConcern'] = $this->options['writeConcern'];
+        }
+
+        return $options;
     }
 }

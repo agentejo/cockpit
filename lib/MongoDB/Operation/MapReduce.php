@@ -17,11 +17,12 @@
 
 namespace MongoDB\Operation;
 
-use MongoDB\BSON\Javascript;
+use MongoDB\BSON\JavascriptInterface;
 use MongoDB\Driver\Command;
 use MongoDB\Driver\ReadConcern;
 use MongoDB\Driver\ReadPreference;
 use MongoDB\Driver\Server;
+use MongoDB\Driver\Session;
 use MongoDB\Driver\WriteConcern;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
@@ -84,12 +85,11 @@ class MapReduce implements Executable
      *    This is not supported for server versions < 3.4 and will result in an
      *    exception at execution time if used.
      *
-     *  * finalize (MongoDB\BSON\Javascript): Follows the reduce method and
-     *    modifies the output.
+     *  * finalize (MongoDB\BSON\JavascriptInterface): Follows the reduce method
+     *    and modifies the output.
      *
      *  * jsMode (boolean): Specifies whether to convert intermediate data into
-     *    BSON format between the execution of the map and reduce functions. The
-     *    default is false.
+     *    BSON format between the execution of the map and reduce functions.
      *
      *  * limit (integer): Specifies a maximum number of documents for the input
      *    into the map function.
@@ -108,8 +108,14 @@ class MapReduce implements Executable
      *
      *  * readPreference (MongoDB\Driver\ReadPreference): Read preference.
      *
+     *    This option is ignored if results are output to a collection.
+     *
      *  * scope (document): Specifies global variables that are accessible in
      *    the map, reduce and finalize functions.
+     *
+     *  * session (MongoDB\Driver\Session): Client session.
+     *
+     *    Sessions are not supported for server versions < 3.6.
      *
      *  * sort (document): Sorts the input documents. This option is useful for
      *    optimization. For example, specify the sort key to be the same as the
@@ -120,7 +126,7 @@ class MapReduce implements Executable
      *    applied to the returned Cursor (it is not sent to the server).
      *
      *  * verbose (boolean): Specifies whether to include the timing information
-     *    in the result information. The default is true.
+     *    in the result information.
      *
      *  * writeConcern (MongoDB\Driver\WriteConcern): Write concern. This only
      *    applies when results are output to a collection.
@@ -130,22 +136,17 @@ class MapReduce implements Executable
      *
      * @param string              $databaseName   Database name
      * @param string              $collectionName Collection name
-     * @param Javascript          $map            Map function
-     * @param Javascript          $reduce         Reduce function
+     * @param JavascriptInterface $map            Map function
+     * @param JavascriptInterface $reduce         Reduce function
      * @param string|array|object $out            Output specification
      * @param array               $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct($databaseName, $collectionName, Javascript $map, Javascript $reduce, $out, array $options = [])
+    public function __construct($databaseName, $collectionName, JavascriptInterface $map, JavascriptInterface $reduce, $out, array $options = [])
     {
         if ( ! is_string($out) && ! is_array($out) && ! is_object($out)) {
             throw InvalidArgumentException::invalidType('$out', $out, 'string or array or object');
         }
-
-        $options += [
-            'jsMode' => false,
-            'verbose' => true,
-        ];
 
         if (isset($options['bypassDocumentValidation']) && ! is_bool($options['bypassDocumentValidation'])) {
             throw InvalidArgumentException::invalidType('"bypassDocumentValidation" option', $options['bypassDocumentValidation'], 'boolean');
@@ -155,7 +156,7 @@ class MapReduce implements Executable
             throw InvalidArgumentException::invalidType('"collation" option', $options['collation'], 'array or object');
         }
 
-        if (isset($options['finalize']) && ! $options['finalize'] instanceof Javascript) {
+        if (isset($options['finalize']) && ! $options['finalize'] instanceof JavascriptInterface) {
             throw InvalidArgumentException::invalidType('"finalize" option', $options['finalize'], 'MongoDB\Driver\Javascript');
         }
 
@@ -187,6 +188,10 @@ class MapReduce implements Executable
             throw InvalidArgumentException::invalidType('"scope" option', $options['scope'], 'array or object');
         }
 
+        if (isset($options['session']) && ! $options['session'] instanceof Session) {
+            throw InvalidArgumentException::invalidType('"session" option', $options['session'], 'MongoDB\Driver\Session');
+        }
+
         if (isset($options['sort']) && ! is_array($options['sort']) && ! is_object($options['sort'])) {
             throw InvalidArgumentException::invalidType('"sort" option', $options['sort'], 'array or object');
         }
@@ -201,6 +206,14 @@ class MapReduce implements Executable
 
         if (isset($options['writeConcern']) && ! $options['writeConcern'] instanceof WriteConcern) {
             throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], 'MongoDB\Driver\WriteConcern');
+        }
+
+        if (isset($options['readConcern']) && $options['readConcern']->isDefault()) {
+            unset($options['readConcern']);
+        }
+
+        if (isset($options['writeConcern']) && $options['writeConcern']->isDefault()) {
+            unset($options['writeConcern']);
         }
 
         $this->databaseName = (string) $databaseName;
@@ -235,8 +248,15 @@ class MapReduce implements Executable
             throw UnsupportedException::writeConcernNotSupported();
         }
 
-        $readPreference = isset($this->options['readPreference']) ? $this->options['readPreference'] : null;
-        $cursor = $server->executeCommand($this->databaseName, $this->createCommand($server), $readPreference);
+        $hasOutputCollection = ! \MongoDB\is_mapreduce_output_inline($this->out);
+
+        $command = $this->createCommand($server);
+        $options = $this->createOptions($hasOutputCollection);
+
+        $cursor = $hasOutputCollection
+            ? $server->executeReadWriteCommand($this->databaseName, $command, $options)
+            : $server->executeReadCommand($this->databaseName, $command, $options);
+
         $result = current($cursor->toArray());
 
         $getIterator = $this->createGetIteratorCallable($result, $server);
@@ -259,7 +279,7 @@ class MapReduce implements Executable
             'out' => $this->out,
         ];
 
-        foreach (['finalize', 'jsMode', 'limit', 'maxTimeMS', 'readConcern', 'verbose', 'writeConcern'] as $option) {
+        foreach (['finalize', 'jsMode', 'limit', 'maxTimeMS', 'verbose'] as $option) {
             if (isset($this->options[$option])) {
                 $cmd[$option] = $this->options[$option];
             }
@@ -314,5 +334,36 @@ class MapReduce implements Executable
         }
 
         throw new UnexpectedValueException('mapReduce command did not return inline results or an output collection');
+    }
+
+    /**
+     * Create options for executing the command.
+     *
+     * @see http://php.net/manual/en/mongodb-driver-server.executereadcommand.php
+     * @see http://php.net/manual/en/mongodb-driver-server.executereadwritecommand.php
+     * @param boolean $hasOutputCollection
+     * @return array
+     */
+    private function createOptions($hasOutputCollection)
+    {
+        $options = [];
+
+        if (isset($this->options['readConcern'])) {
+            $options['readConcern'] = $this->options['readConcern'];
+        }
+
+        if ( ! $hasOutputCollection && isset($this->options['readPreference'])) {
+            $options['readPreference'] = $this->options['readPreference'];
+        }
+
+        if (isset($this->options['session'])) {
+            $options['session'] = $this->options['session'];
+        }
+
+        if ($hasOutputCollection && isset($this->options['writeConcern'])) {
+            $options['writeConcern'] = $this->options['writeConcern'];
+        }
+
+        return $options;
     }
 }

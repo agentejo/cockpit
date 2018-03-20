@@ -22,6 +22,7 @@ use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
+use stdClass;
 
 /**
  * WritableStream abstracts the process of writing a GridFS file.
@@ -48,7 +49,7 @@ class WritableStream
      *
      *  * _id (mixed): File document identifier. Defaults to a new ObjectId.
      *
-     *  * aliases (array of strings): DEPRECATED An array of aliases. 
+     *  * aliases (array of strings): DEPRECATED An array of aliases.
      *    Applications wishing to store aliases should add an aliases field to
      *    the metadata document instead.
      *
@@ -101,7 +102,6 @@ class WritableStream
             '_id' => $options['_id'],
             'chunkSize' => $this->chunkSize,
             'filename' => (string) $filename,
-            'uploadDate' => new UTCDateTime,
         ] + array_intersect_key($options, ['aliases' => 1, 'contentType' => 1, 'metadata' => 1]);
     }
 
@@ -223,6 +223,7 @@ class WritableStream
 
         $this->file['length'] = $this->length;
         $this->file['md5'] = $md5;
+        $this->file['uploadDate'] = new UTCDateTime;
 
         try {
             $this->collectionWrapper->insertFile($this->file);

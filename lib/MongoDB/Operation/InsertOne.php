@@ -20,6 +20,7 @@ namespace MongoDB\Operation;
 use MongoDB\InsertOneResult;
 use MongoDB\Driver\BulkWrite as Bulk;
 use MongoDB\Driver\Server;
+use MongoDB\Driver\Session;
 use MongoDB\Driver\WriteConcern;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
@@ -51,6 +52,10 @@ class InsertOne implements Executable
      *    For servers < 3.2, this option is ignored as document level validation
      *    is not available.
      *
+     *  * session (MongoDB\Driver\Session): Client session.
+     *
+     *    Sessions are not supported for server versions < 3.6.
+     *
      *  * writeConcern (MongoDB\Driver\WriteConcern): Write concern.
      *
      * @param string       $databaseName   Database name
@@ -69,8 +74,16 @@ class InsertOne implements Executable
             throw InvalidArgumentException::invalidType('"bypassDocumentValidation" option', $options['bypassDocumentValidation'], 'boolean');
         }
 
+        if (isset($options['session']) && ! $options['session'] instanceof Session) {
+            throw InvalidArgumentException::invalidType('"session" option', $options['session'], 'MongoDB\Driver\Session');
+        }
+
         if (isset($options['writeConcern']) && ! $options['writeConcern'] instanceof WriteConcern) {
             throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], 'MongoDB\Driver\WriteConcern');
+        }
+
+        if (isset($options['writeConcern']) && $options['writeConcern']->isDefault()) {
+            unset($options['writeConcern']);
         }
 
         $this->databaseName = (string) $databaseName;
@@ -98,13 +111,29 @@ class InsertOne implements Executable
         $bulk = new Bulk($options);
         $insertedId = $bulk->insert($this->document);
 
-        if ($insertedId === null) {
-            $insertedId = \MongoDB\extract_id_from_inserted_document($this->document);
-        }
-
-        $writeConcern = isset($this->options['writeConcern']) ? $this->options['writeConcern'] : null;
-        $writeResult = $server->executeBulkWrite($this->databaseName . '.' . $this->collectionName, $bulk, $writeConcern);
+        $writeResult = $server->executeBulkWrite($this->databaseName . '.' . $this->collectionName, $bulk, $this->createOptions());
 
         return new InsertOneResult($writeResult, $insertedId);
+    }
+
+    /**
+     * Create options for executing the bulk write.
+     *
+     * @see http://php.net/manual/en/mongodb-driver-server.executebulkwrite.php
+     * @return array
+     */
+    private function createOptions()
+    {
+        $options = [];
+
+        if (isset($this->options['session'])) {
+            $options['session'] = $this->options['session'];
+        }
+
+        if (isset($this->options['writeConcern'])) {
+            $options['writeConcern'] = $this->options['writeConcern'];
+        }
+
+        return $options;
     }
 }

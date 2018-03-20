@@ -234,8 +234,11 @@
 
             this.fields.forEach(function(field){
 
-                if (field.required && !$this.entry[field.name] && $this.entry[field.name]!==0) {
-                    required.push(field.label || field.name);
+                if (field.required && !$this.entry[field.name]) {
+
+                    if (!($this.entry[field.name]===false || $this.entry[field.name]===0)) {
+                        required.push(field.label || field.name);
+                    }
                 }
             });
 
