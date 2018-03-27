@@ -235,11 +235,18 @@
         this.aclgroups  = {{ json_encode($aclgroups) }};
 
         this.collection.rules = this.collection.rules || {
-            create: {},
-            read: {},
-            update: {},
-            'delete': {},
+            "create" : {enabled:false},
+            "read"   : {enabled:false},
+            "update" : {enabled:false},
+            "delete" : {enabled:false}
         };
+
+        // hack to not break old installations - @todo remove in future
+        'create,read,update,delete'.split(',').forEach(function(m){
+            if (Array.isArray($this.collection.rules[m])) {
+                $this.collection.rules[m] = {enabled:false};
+            }
+        })
 
         this.rules = {{ json_encode($rules) }};
 
@@ -284,22 +291,16 @@
 
         submit(e) {
 
-            if(e) e.preventDefault();
+            if (e) e.preventDefault();
 
-            var collection = this.collection;
+            App.request('/collections/save_collection', {collection: this.collection, rules: this.rules}).then(function(collection) {
 
-            App.callmodule('collections:saveCollection', [this.collection.name, collection, this.rules]).then(function(data) {
+                App.ui.notify("Saving successful", "success");
+                $this.collection = collection;
+                $this.update();
 
-                if (data.result) {
-
-                    App.ui.notify("Saving successful", "success");
-                    $this.collection = data.result;
-                    $this.update();
-
-                } else {
-
-                    App.ui.notify("Saving failed.", "danger");
-                }
+            }).catch(function() {
+                App.ui.notify("Saving failed.", "danger");
             });
         }
 
