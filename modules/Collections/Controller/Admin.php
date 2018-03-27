@@ -94,6 +94,18 @@ class Admin extends \Cockpit\AuthController {
         return $this->render('collections:views/collection.php', compact('collection', 'templates', 'aclgroups', 'rules'));
     }
 
+    public function save_collection() {
+
+        $collection = $this->param('collection');
+        $rules      = $this->param('rules', null);
+
+        if (!$collection) {
+            return false;
+        }
+
+        return $this->module('collections')->saveCollection($collection['name'], $collection, $rules);
+    }
+
     public function entries($collection) {
 
         if (!$this->module('collections')->hasaccess($collection, 'entries_view')) {
