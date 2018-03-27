@@ -1071,7 +1071,9 @@ class App implements \ArrayAccess {
 
         $controller = new $class($this);
 
-        return method_exists($controller, $action) ? call_user_func_array([$controller,$action], $params):false;
+        return method_exists($controller, $action) && is_callable([$controller, $action])
+                ? call_user_func_array([$controller,$action], $params)
+                : false;
     }
 
     /**
@@ -1366,6 +1368,13 @@ class Response {
 
         if (!headers_sent($filename, $linenum)) {
 
+            $body = $this->body;
+
+            if (is_array($this->body) || is_object($this->body)) {
+                $body = json_encode($this->body);
+                $this->mime = 'json';
+            }
+
             if ($this->nocache){
                 header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
                 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
@@ -1383,7 +1392,7 @@ class Response {
                 header($h);
             }
 
-            echo is_array($this->body) ? json_encode($this->body) : $this->body;
+            echo $body;
         }
     }
 }
