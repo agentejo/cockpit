@@ -335,9 +335,19 @@ class UtilArrayQuery {
                 }
                 break;
             case '$in' :
-                if (! is_array($b))
-                    throw new \InvalidArgumentException('Invalid argument for $in option must be array');
-                $r = in_array($a, $b);
+                if (is_array($a)) {
+                    $r = is_array($b) ? count(array_intersect($a, $b)) : false;
+                } else {
+                    $r = is_array($b) ? in_array($a, $b) : false;
+                }
+                break;
+
+            case '$nin' :
+                if (is_array($a)) {
+                    $r = is_array($b) ? (count(array_intersect($a, $b)) === 0) : false;
+                } else {
+                    $r = is_array($b) ? (in_array($a, $b) === false) : false;
+                }
                 break;
 
             case '$has' :
