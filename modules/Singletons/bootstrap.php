@@ -120,16 +120,36 @@ $this->module("singletons")->extend([
         return false;
     },
 
-    'getData' => function($name) {
+    'getData' => function($name, $options = []) {
 
         if ($singleton = $this->singleton($name)) {
 
-            $value = $this->app->storage->getKey('singletons', $name);
+            $options = array_merge([
+                'user' => false,
+                'populate' => false,
+                'lang' => false,
+                'ignoreDefaultFallback' => false
+            ], $options);
 
-            $this->app->trigger('singleton.getData.after', [$singleton, &$value]);
-            $this->app->trigger("singleton.getData.after.{$name}", [$singleton, &$value]);
+            $data = $this->app->storage->getKey('singletons', $name);
+            $data = $this->_filterFields($data, $singleton, $options);
 
-            return $value;
+            if ($options['populate'] && function_exists('cockpit_populate_collection')) {
+
+                $fieldsFilter = [];
+
+                if ($options['user']) $fieldsFilter['user'] = $options['user'];
+                if ($options['lang']) $fieldsFilter['lang'] = $options['lang'];
+
+                $_items = [$data];
+                $_items = cockpit_populate_collection($_items, intval($options['populate']), 0, $fieldsFilter);
+                $data = $_items[0];
+            }
+
+            $this->app->trigger('singleton.getData.after', [$singleton, &$data]);
+            $this->app->trigger("singleton.getData.after.{$name}", [$singleton, &$data]);
+
+            return $data;
         }
 
         return null;
@@ -176,11 +196,142 @@ $this->module("singletons")->extend([
         return $singleton[$name];
     },
 
-    'getSingletonFieldValue' => function($singleton, $fieldname, $default = null) {
+    'getFieldValue' => function($singleton, $fieldname, $default = null, $options = []) {
 
-        $data = $this->getData($singleton);
+        $data = $this->getData($singleton, $options);
 
         return ($data && isset($data[$fieldname])) ? $data[$fieldname] : $default;
+    },
+
+    '_filterFields' => function($items, $singleton, $filter) {
+
+        static $cache;
+        static $languages;
+
+        if (null === $items) {
+            return $items;
+        }
+
+        $single = false;
+
+        if (!isset($items[0]) && count($items)) {
+            $items = [$items];
+            $single = true;
+        }
+
+        $filter = array_merge([
+            'user' => false,
+            'lang' => false,
+            'ignoreDefaultFallback' => false
+        ], $filter);
+
+        extract($filter);
+
+        if (null === $cache) {
+            $cache = [];
+        }
+
+        if (null === $languages) {
+
+            $languages = [];
+
+            foreach($this->app->retrieve('config/languages', []) as $key => $val) {
+                if (is_numeric($key)) $key = $val;
+                $languages[] = $key;
+            }
+        }
+
+        if (is_string($singleton)) {
+            $singleton = $this->collection($singleton);
+        }
+
+        if (!isset($cache[$singleton['name']])) {
+
+            $fields = [
+                "acl" => [],
+                "localize" => []
+            ];
+
+            foreach ($singleton["fields"] as $field) {
+
+                if (isset($field['acl']) && is_array($field['acl']) && count($field['acl'])) {
+                    $fields['acl'][$field['name']] = $field['acl'];
+                }
+
+                if (isset($field['localize']) && $field['localize']) {
+                    $fields['localize'][$field['name']] = true;
+                }
+            }
+
+            $cache[$singleton['name']] = $fields;
+        }
+
+        if ($user && count($cache[$singleton['name']]['acl'])) {
+
+            $aclfields = $cache[$singleton['name']]['acl'];
+            $items     = array_map(function($entry) use($user, $aclfields, $languages) {
+
+                foreach ($aclfields as $name => $acl) {
+
+                    if (!( in_array($user['group'], $acl) || in_array($user['_id'], $acl) )) {
+
+                        unset($entry[$name]);
+
+                        if (count($languages)) {
+
+                            foreach($languages as $l) {
+                                if (isset($entry["{$name}_{$l}"])) {
+                                    unset($entry["{$name}_{$l}"]);
+                                    unset($entry["{$name}_{$l}_slug"]);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return $entry;
+
+            }, $items);
+        }
+
+        if ($lang && count($languages) && count($cache[$singleton['name']]['localize'])) {
+
+            $localfields = $cache[$singleton['name']]['localize'];
+            $items = array_map(function($entry) use($localfields, $lang, $languages, $ignoreDefaultFallback) {
+
+                foreach ($localfields as $name => $local) {
+
+                    foreach($languages as $l) {
+
+                        if (isset($entry["{$name}_{$l}"])) {
+
+                            if ($l == $lang) {
+
+                                $entry[$name] = $entry["{$name}_{$l}"];
+
+                                if (isset($entry["{$name}_{$l}_slug"])) {
+                                    $entry["{$name}_slug"] = $entry["{$name}_{$l}_slug"];
+                                }
+                            }
+
+                            unset($entry["{$name}_{$l}"]);
+                            unset($entry["{$name}_{$l}_slug"]);
+
+                        } elseif ($l == $lang && $ignoreDefaultFallback) {
+
+                            if ($ignoreDefaultFallback === true || (is_array($ignoreDefaultFallback) && in_array($name, $ignoreDefaultFallback))) {
+                                $entry[$name] = null;
+                            }
+                        }
+                    }
+                }
+
+                return $entry;
+
+            }, $items);
+        }
+
+        return $single ? $items[0] : $items;
     }
 
 ]);
@@ -188,7 +339,7 @@ $this->module("singletons")->extend([
 // ACL
 $app("acl")->addResource("singletons", ['create', 'delete']);
 
-$this->module("singletons")->extend([
+$this->module('singletons')->extend([
 
     'getSingletonsInGroup' => function($group = null) {
 
@@ -237,28 +388,21 @@ $this->module("singletons")->extend([
     }
 ]);
 
-
-// extend app lexy parser
-$app->renderer->extend(function($content){
-    $content = preg_replace('/(\s*)@singleton\((.+?)\)/', '$1<?php echo cockpit("singleton")->render($2); ?>', $content);
-    return $content;
-});
-
 // REST
 if (COCKPIT_API_REQUEST) {
 
     $app->on('cockpit.rest.init', function($routes) {
-        $routes['singleton'] = 'Singleton\\Controller\\RestApi';
+        $routes['singletons'] = 'Singletons\\Controller\\RestApi';
     });
 
     // allow access to public collections
     $app->on('cockpit.api.authenticate', function($data) {
 
-        if ($data['user'] || $data['resource'] != 'singleton') return;
+        if ($data['user'] || $data['resource'] != 'singletons') return;
 
         if (isset($data['query']['params'][1])) {
 
-            $singleton = $this->module('singleton')->singleton($data['query']['params'][1]);
+            $singleton = $this->module('singletons')->singleton($data['query']['params'][1]);
 
             if ($singleton && isset($singleton['acl']['public'])) {
                 $data['authenticated'] = true;

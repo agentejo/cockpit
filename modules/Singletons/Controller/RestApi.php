@@ -3,7 +3,7 @@ namespace Singletons\Controller;
 
 class RestApi extends \LimeExtra\Controller {
 
-    public function get($name = null) {
+    public function get($name = null, $field = null) {
 
         if (!$name) {
             return false;
@@ -16,25 +16,20 @@ class RestApi extends \LimeExtra\Controller {
             }
         }
 
-        $data= $this->module('singletons')->getData($name);
+        $options = [];
+
+        if ($lang = $this->param('lang', false)) $options['lang'] = $lang;
+        if ($populate = $this->param('populate', false)) $options['populate'] = $populate;
+        if ($ignoreDefaultFallback = $this->param('ignoreDefaultFallback', false)) $options['ignoreDefaultFallback'] = $ignoreDefaultFallback;
+        if ($user) $options["user"] = $user;
+
+        $data = $this->module('singletons')->getData($name, $options);
 
         if (!$data) {
             return false;
         }
 
-        // workaround for now, may change later!
-        if ($this->param('populate') && function_exists('cockpit_populate_collection')) {
-
-            $fieldsFilter = [];
-
-            if ($user) $fieldsFilter["user"] = $user;
-
-            $_items = [$data];
-            $_items = cockpit_populate_collection($_items, intval($this->param('populate')), 0, $fieldsFilter);
-            $data = $_items[0];
-        }
-
-        return $data;
+        return $field ? (isset($data[$field]) ? $data[$field] : null) : $data;
     }
 
     public function listSingletons($extended = false) {
