@@ -94,7 +94,6 @@
                                         <strong class="uk-text-uppercase">@lang('Singleton')</strong>
                                         <div class="uk-margin-top"><field-boolean bind="singleton.acl.public.form" label="@lang('Form')"></field-boolean></div>
                                         <div class="uk-margin-top"><field-boolean bind="singleton.acl.public.edit" label="@lang('Edit Singleton')"></field-boolean></div>
-                                        <div class="uk-margin-top"><field-boolean bind="singleton.acl.public.render" label="@lang('Render Singleton')"></field-boolean></div>
                                         <div class="uk-margin-top"><field-boolean bind="singleton.acl.public.data" label="@lang('Get Singleton Data')"></field-boolean></div>
                                     </div>
                                 </div>
