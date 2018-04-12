@@ -37,9 +37,8 @@ class RestApi extends \LimeExtra\Controller {
         if ($populate = $this->param('populate', null)) $options['populate'] = $populate;
 
         // cast string values if get request
-        if ($filter && isset($_GET['filter'])) {
-            $options['filter'] = $this->_fixStringBooleanNumericValues($filter);
-        }
+        if ($filter && isset($_GET['filter'])) $options['filter'] = $this->_fixStringBooleanNumericValues($filter);
+        if ($fields && isset($_GET['fields'])) $options['fields'] = $this->_fixStringBooleanNumericValues($fields);
 
         // fields filter
         $fieldsFilter = [];
