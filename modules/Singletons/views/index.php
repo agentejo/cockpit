@@ -63,7 +63,7 @@
 
                         <div data-uk-dropdown="delay:300">
 
-                            <a class="uk-icon-cog" style="color: { (meta.color) }" href="@route('/singleton/singleton')/{ singleton }" if="{ meta.allowed.singleton_edit }"></a>
+                            <a class="uk-icon-cog" style="color: { (meta.color) }" href="@route('/singletons/singleton')/{ singleton }" if="{ meta.allowed.singleton_edit }"></a>
                             <a class="uk-icon-cog" style="color: { (meta.color) }" if="{ !meta.allowed.singleton_edit }"></a>
 
                             <div class="uk-dropdown">

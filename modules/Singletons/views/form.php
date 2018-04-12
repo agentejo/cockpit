@@ -95,7 +95,7 @@
                         <div class="uk-width-1-1 uk-form-select">
 
                             <label class="uk-text-small">@lang('Language')</label>
-                            <div class="uk-margin-small-top">{ lang ? _.find(languages,{code:lang}).label:'Default' }</div>
+                            <div class="uk-margin-small-top"><span class="uk-badge uk-badge-outline {lang ? 'uk-text-primary' : 'uk-text-muted'}">{ lang ? _.find(languages,{code:lang}).label:'Default' }</span></div>
 
                             <select bind="lang">
                                 <option value="">@lang('Default')</option>
