@@ -36,7 +36,7 @@
             </div>
 
             <div class="uk-panel-box-footer">
-                <a href="@route('/singleton')">@lang('See all')</a>
+                <a href="@route('/singletons')">@lang('See all')</a>
             </div>
 
         @else
