@@ -58,9 +58,21 @@
 
                         <div class="uk-panel">
 
-                            <label class="uk-text-bold">
-                                { field.label || field.name }
-                                <span if="{ field.localize }" class="uk-icon-globe" title="@lang('Localized field')" data-uk-tooltip="pos:'right'"></span>
+                            <label class="uk-flex uk-flex-middle">
+                                <div class="uk-flex-item-1">
+                                    <span class="uk-text-bold">{ field.label || field.name }</span>
+                                    <span if="{ field.localize }" class="uk-icon-globe" title="@lang('Localized field')" data-uk-tooltip="pos:'right'"></span>
+                                </div>
+                                <div class="uk-margin-small-left" if="{ field.localize }" data-uk-dropdown="mode:'click', pos:'bottom-right'">
+                                    <a><i class="uk-icon-cog"></i></a>
+                                    <div class="uk-dropdown uk-dropdown-close">
+                                        <ul class="uk-nav uk-nav-dropdown">
+                                            <li class="uk-nav-header">@lang('Copy content from:')</li>
+                                            <li show="{parent.lang}"><a onclick="{parent.copyLocalizedValue}" lang="" field="{field.name}">@lang('Default')</a></li>
+                                            <li show="{parent.lang != language.code}" each="{language,idx in languages}" value="{language.code}"><a onclick="{parent.parent.copyLocalizedValue}" lang="{language.code}" field="{field.name}">{language.label}</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </label>
 
                             <div class="uk-margin uk-text-small uk-text-muted">
@@ -308,6 +320,14 @@
 
         persistLanguage(e) {
             App.session.set('collections.entry.'+this.collection._id+'.lang', e.target.value);
+        }
+
+        copyLocalizedValue(e) {
+
+            var field = e.target.getAttribute('field'),
+                lang = e.target.getAttribute('lang');
+
+            this.entry[field+(this.lang ? '_':'')+this.lang] = this.entry[field+(lang ? '_':'')+lang];
         }
 
     </script>
