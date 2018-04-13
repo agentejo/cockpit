@@ -58,13 +58,12 @@
 
                         <div class="uk-panel">
 
-                            <label class="uk-flex uk-flex-middle">
-                                <div class="uk-flex-item-1">
-                                    <span class="uk-text-bold">{ field.label || field.name }</span>
-                                    <span if="{ field.localize }" class="uk-icon-globe" title="@lang('Localized field')" data-uk-tooltip="pos:'right'"></span>
-                                </div>
-                                <div class="uk-margin-small-left" if="{ field.localize }" data-uk-dropdown="mode:'click', pos:'bottom-right'">
-                                    <a><i class="uk-icon-cog"></i></a>
+                            <label>
+
+                                <span class="uk-text-bold">{ field.label || field.name }</span>
+
+                                <span if="{ field.localize }" data-uk-dropdown="mode:'click'">
+                                    <a class="uk-icon-globe" title="@lang('Localized field')" data-uk-tooltip="pos:'right'"></a>
                                     <div class="uk-dropdown uk-dropdown-close">
                                         <ul class="uk-nav uk-nav-dropdown">
                                             <li class="uk-nav-header">@lang('Copy content from:')</li>
@@ -72,7 +71,8 @@
                                             <li show="{parent.lang != language.code}" each="{language,idx in languages}" value="{language.code}"><a onclick="{parent.parent.copyLocalizedValue}" lang="{language.code}" field="{field.name}">{language.label}</a></li>
                                         </ul>
                                     </div>
-                                </div>
+                                </span>
+
                             </label>
 
                             <div class="uk-margin uk-text-small uk-text-muted">
