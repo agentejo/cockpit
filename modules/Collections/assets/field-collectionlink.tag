@@ -194,15 +194,16 @@
         }
 
         modal.show();
-        this.load();
+
+        if (!this.entries.length) this.load();
     }
 
     linkItem(e) {
 
         var _entry = e.item.entry;
         var entry = {
-            _id: _entry._id, 
-            link: this.collection.name, 
+            _id: _entry._id,
+            link: this.collection.name,
             display: _entry[opts.display] || _entry[this.collection.fields[0].name] || 'n/a'
         };
 
