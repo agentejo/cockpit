@@ -28,7 +28,7 @@ $app->on('admin.init', function() {
      */
     $this->on('cockpit.search', function($search, $list) {
 
-        foreach ($this->module('singletons')->getSingletonInGroup() as $singleton => $meta) {
+        foreach ($this->module('singletons')->getSingletonsInGroup() as $singleton => $meta) {
 
             if (stripos($singleton, $search)!==false || stripos($meta['label'], $search)!==false) {
 
