@@ -37,11 +37,11 @@ class Utils extends \Lime\Helper {
         $regex     = '#\s+(src|href|poster)="(?!/|' . $protocols . '|\#|\')([^"]*)"#m';
 
         preg_match_all($regex, $content, $matches);
-        
+
         if (isset($matches[0])) {
 
             foreach ($matches[0] as $i => $match) {
-                
+
                 if (trim($matches[2][$i])) {
                     $content = str_replace($match, " {$matches[1][$i]}=\"{$base}{$matches[2][$i]}\"", $content);
                 }
@@ -216,11 +216,11 @@ class Utils extends \Lime\Helper {
 
 		return $ret;
 	}
-	
+
 	/**
 	* Get content from url source.
 	*
-	* @param   string  $url 
+	* @param   string  $url
 	* @return  string
 	*/
 	public function url_get_contents ($url) {
@@ -246,4 +246,43 @@ class Utils extends \Lime\Helper {
         }
         return $content;
 	}
+
+	public function buildTree(array $elements, $options = [], $parentId = null) {
+
+        $options = array_merge([
+            'parent_id_column_name' => '_pid',
+            'children_key_name' => 'children',
+            'id_column_name' => '_id',
+			'sort_column_name' => null
+        ], $options);
+
+        $branch = array();
+
+        foreach ($elements as $element) {
+
+			$pid = isset($element[$options['parent_id_column_name']]) ? $element[$options['parent_id_column_name']] : null;
+
+            if ($pid == $parentId) {
+
+				$element[$options['children_key_name']] = [];
+                $children = $this->buildTree($elements, $options, $element[$options['id_column_name']]);
+
+                if ($children) {
+
+					if ($options['sort_column_name']) {
+
+						usort($children, function ($a, $b) use($options) {
+	                        return @$a[$options['sort_column_name']] <=> @$b[$options['sort_column_name']];
+	                    });
+					}
+
+                    $element[$options['children_key_name']] = $children;
+                }
+
+                $branch[] = $element;
+            }
+        }
+
+        return $branch;
+    }
 }

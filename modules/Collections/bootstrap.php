@@ -189,7 +189,7 @@ $this->module("collections")->extend([
 
         // sort by custom order if collection is sortable
         if (isset($_collection['sortable']) && $_collection['sortable'] && !isset($options['sort'])) {
-            $options['sort'] = ['_order' => 1];
+            //$options['sort'] = ['_o' => 1];
         }
 
         $this->app->trigger('collections.find.before', [$name, &$options, false]);
