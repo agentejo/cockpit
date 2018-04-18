@@ -273,6 +273,28 @@ class Admin extends \Cockpit\AuthController {
         return json_encode($entries, JSON_PRETTY_PRINT);
     }
 
+
+    public function tree() {
+
+        $collection = $this->app->param('collection');
+
+        if (!$collection) return false;
+
+        $items = $this->app->module('collections')->find($collection);
+
+        if (count($items)) {
+
+            $items = $this->helper('utils')->buildTree($items, [
+                'parent_id_column_name' => '_pid',
+                'children_key_name' => 'children',
+                'id_column_name' => '_id',
+    			'sort_column_name' => '_o'
+            ]);
+        }
+
+        return $items;
+    }
+
     public function find() {
 
         $collection = $this->app->param('collection');

@@ -94,7 +94,22 @@
 
         this.on('mount', function(){
 
-            this.load();
+            this.loadTree();
+
+            App.$(this.root).on('change.uk.nestable', function(e, sortable, $item) {
+
+                var entry = {
+                    _id: $item.attr('entry-id'),
+                    _pid: $item.parent().closest('[entry-id]').attr('entry-id') || null,
+                    _o: $item.index()
+                };
+
+                App.request('/collections/save_entry/'+$this.collection.name, {entry:entry}).then(function(entry) {
+                    console.log('sorted')
+                });
+
+            });
+
         });
 
         this.load = function() {
@@ -121,10 +136,26 @@
             }.bind(this))
         }
 
+        this.loadTree = function() {
+
+            this.loading = true;
+            this.entries = [];
+
+            App.request('/collections/tree', {collection:this.collection.name}).then(function(tree){
+
+                this.entries = tree;
+
+                this.ready   = true;
+                this.loading = false;
+                this.update();
+
+            }.bind(this))
+        }
+
         this.updatefilter = function() {
 
             this.filter = this.refs.txtfilter.value || null;
-            this.load();
+            this[this.filter ? 'load':'loadTree']();
         }
 
     </script>

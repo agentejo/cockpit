@@ -66,7 +66,7 @@
 
     <li class="entry-item uk-nestable-item" each="{entry in entries}" entry-id="{entry._id}">
         <entries-tree-item collection="{parent.collection}" entry="{entry}" collection="{ collection }" imagefield="{imagefield}" fields="{fields}"></entries-tree-item>
-        <ul class="uk-nestable-list" data-is="entries-tree-list" entries="{entry.children}" collection="{collection}" fields="{fields}" imagefield="{imagefield}" if="{entry.children}"></ul>
+        <ul class="uk-nestable-list" data-is="entries-tree-list" entries="{entry.children}" collection="{collection}" fields="{fields}" imagefield="{imagefield}" if="{entry.children && entry.children.length}"></ul>
     </li>
 
     <script>
@@ -111,7 +111,7 @@
         <div class="uk-flex-item-1 uk-flex uk-flex-middle">
 
             <div class="uk-text-truncate uk-margin-small-right" each="{field,idy in fields}" if="{ field.name != '_modified' && field.name != '_created' }">
-                <a class="uk-link-muted" href="{App.route('/collections/entry/'+parent.collection.name+'/'+parent.entry._id) }">
+                <a class="uk-link-muted" href="{ App.route('/collections/entry/'+parent.collection.name+'/'+parent.entry._id) }">
                     <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }" if="{parent.entry[field.name] !== undefined}"></raw>
                     <span class="uk-icon-eye-slash uk-text-muted" if="{parent.entry[field.name] === undefined}"></span>
                 </a>
@@ -145,7 +145,7 @@
 
                 <ul class="uk-nav uk-nav-dropdown">
                     <li class="uk-nav-header">{ App.i18n.get('Actions') }</li>
-                    <li><a href="{ App.route('/pages/page/'+entry._id) }">{ App.i18n.get('Edit') }</a></li>
+                    <li><a href="{ App.route('/collections/entry/'+collection.name+'/'+entry._id) }">{ App.i18n.get('Edit') }</a></li>
                     <li class="uk-nav-divider"></li>
                     <li class="uk-nav-item-danger"><a onclick="{ parent.remove }">{ App.i18n.get('Delete') }</a></li>
                 </ul>
