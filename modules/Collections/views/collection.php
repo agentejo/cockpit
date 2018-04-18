@@ -59,7 +59,7 @@
                    </div>
 
                     <div class="uk-margin">
-                        <field-boolean bind="collection.sortable" title="@lang('Sortable entries')" label="@lang('Sortable entries')"></field-boolean>
+                        <field-boolean bind="collection.sortable" title="@lang('Sortable entries')" label="@lang('Custom sortable entries')"></field-boolean>
                     </div>
 
                     <div class="uk-margin">
