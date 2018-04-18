@@ -8,8 +8,8 @@
         { App.i18n.get('Failed loading collection') } {opts.link}
     </div>
 
-    <div class="uk-alert" if="{opts.link && !collection && !error}">
-        <i class="uk-icon-spinner uk-icon-spin"></i> { App.i18n.get('Loading field') }
+    <div class="uk-margin" if="{opts.link && !collection && !error}">
+        <cp-preloader class="uk-container-center"></cp-preloader>
     </div>
 
     <div if="{opts.link && collection}">
@@ -74,7 +74,7 @@
 
             <div class="uk-overflow-container">
 
-                <div class="uk-alert" if="{ !entries.length && filter && !loading }">
+                <div class="uk-text-xlarge uk-text-center uk-text-muted uk-margin-large-bottom" if="{ !entries.length && filter && !loading }">
                     { App.i18n.get('No entries found') }.
                 </div>
 
@@ -105,8 +105,8 @@
                     </tbody>
                 </table>
 
-                <div class="uk-alert" if="{ loading }">
-                    <i class="uk-icon-spinner uk-icon-spin"></i> {App.i18n.get('Loading...')}.
+                <div class="uk-margin-large-bottom" if="{ loading }">
+                    <cp-preloader class="uk-container-center"></cp-preloader>
                 </div>
 
                 <div class="uk margin" if="{ loadmore && !loading }">

@@ -32,8 +32,8 @@
     </div>
     @endif
 
-    <div class="uk-text-xlarge uk-text-center uk-text-primary uk-margin-large-top" show="{ loading }">
-        <i class="uk-icon-spinner uk-icon-spin"></i>
+    <div class="uk-margin-large-top" show="{ loading }">
+        <cp-preloader class="uk-container-center"></cp-preloader>
     </div>
 
     <div class="uk-text-large uk-text-center uk-margin-large-top uk-text-muted" show="{ !loading && !accounts.length }">
