@@ -285,4 +285,37 @@ class Utils extends \Lime\Helper {
 
         return $branch;
     }
+
+	public function buildTreeList($items, $options = [], $parent = null, $result = null, $depth = 0, $path = '-') {
+
+		$options = array_merge([
+            'parent_id_column_name' => '_pid',
+            'id_column_name' => '_id'
+        ], $options);
+
+        if (!$result) {
+            $result = new ArrayObject([]);
+        }
+
+        foreach ($items as $key => &$item) {
+
+            if ($item[$options['parent_id_column_name']] == $parent) {
+                $item['_depth'] = $depth;
+                $item['_path'] = $path.$item[$options['id_column_name']];
+                $result[] = $item;
+                $idx = count($result) - 1;
+                unset($items[$key]);
+                $this->buildTreeList($items, $item[$options['id_column_name']], $result, $depth + 1, "{$path}{$item[$options['id_column_name']]}-");
+            }
+        }
+
+        if ($depth == 0) {
+
+            foreach ($result as $i => $item) {
+                $result[$i]['_isParent'] = isset($result[$i+1]) && $result[($i+1)][$options['parent_id_column_name']]===$item[$options['id_column_name']];
+            }
+        }
+
+        return $depth == 0 ? $result->getArrayCopy() : $result;
+    }
 }

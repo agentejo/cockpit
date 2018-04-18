@@ -48,9 +48,7 @@
 
             <div class="uk-animation-fade uk-text-center">
 
-                <p class="uk-text-xlarge">
-                    <i class="uk-text-primary uk-icon-spin uk-icon-spinner"></i>
-                </p>
+                <cp-preloader class="uk-container-center"></cp-preloader>
 
             </div>
 
