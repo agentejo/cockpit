@@ -12,7 +12,7 @@
 
         <span class="uk-form-icon">
             <i class="uk-icon-filter"></i>
-            <input type="text" class="uk-form-large uk-form-blank" ref="txtfilter" placeholder="@lang('Filter by name...')" onchange="{ updatefilter }">
+            <input type="text" class="uk-form-large uk-form-blank" ref="txtfilter" placeholder="@lang('Filter accounts...')" onchange="{ updatefilter }">
         </span>
 
         <div class="uk-form-select">
@@ -74,7 +74,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr each="{account, $index in accounts}" if="{ infilter(account) }">
+            <tr each="{account, $index in accounts}">
                 <td class="uk-text-center">
                     <a class="uk-link-muted" href="@route('/accounts/account')/{ account._id }" title="@lang('Edit account')">
                         <cp-gravatar email="{ account.email }" size="25" alt="{ account.name || account.user }"></cp-gravatar>
@@ -196,11 +196,6 @@
             }
         }
 
-        infilter(account) {
-            var name = account.name.toLowerCase();
-            return (!this.filter || (name && name.indexOf(this.filter) !== -1));
-        }
-
         updatesort(field) {
 
             if (!field) {
@@ -233,11 +228,7 @@
             }
 
             if (this.filter) {
-                options.filter.$or = [
-                    {name  : {$regex : this.filter}},
-                    {user  : {$regex : this.filter}},
-                    {email : {$regex : this.filter}}
-                ];
+                options.filter = this.filter;
             }
 
             if (this.filterGroup && this.filterGroup != '_all') {
