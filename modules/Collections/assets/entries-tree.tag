@@ -16,7 +16,6 @@
         collection="{collection}"
         entries="{entries}"
         fields="{fields}"
-        display="{display}"
         imagefield="{imageField}"
     ></ul>
 
@@ -26,29 +25,10 @@
 
         this.entries = opts.entries || [];
         this.collection = opts.collection || {};
+        this.fields = opts.fields;
+
         this.ready = false;
-
         this.imageField = null;
-        this.fieldsidx = {};
-        this.display = null;
-        this.fields = this.collection.fields.filter(function(field){
-
-            if (!CollectionHasFieldAccess(field)) {
-                return false;
-            }
-
-            $this.fieldsidx[field.name] = field;
-
-            if (!$this.imageField && (field.type=='image' || field.type=='asset')) {
-                $this.imageField = field;
-            }
-
-            if (!this.display) {
-                this.display = field;
-            }
-
-            return field.lst;
-        });
 
         this.on('mount', function() {
 
@@ -75,6 +55,10 @@
         this.collection = opts.collection || {};
         this.imagefield = opts.imagefield;
         this.fields = opts.fields;
+
+        this.on('mount', function() {
+            this.root.__entries = this.entries;
+        });
 
     </script>
 

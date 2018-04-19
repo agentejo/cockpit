@@ -1,3 +1,10 @@
+<style>
+
+    .uk-nestable-list.filtered {
+        padding-left: 0;
+    }
+
+</style>
 
 <script type="riot/tag" src="@base('collections:assets/entries-tree.tag')"></script>
 
@@ -68,7 +75,7 @@
         </div>
 
         <div class="uk-margin-top" if="{ (Array.isArray(entries) && entries.length) && !filter }">
-            <entries-tree entries="{entries}" collection="{collection}"></entries-tree>
+            <entries-tree entries="{entries}" collection="{collection}" fields="{fields}"></entries-tree>
         </div>
 
         <div class="uk-text-xlarge uk-text-muted uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" if="{ !entries.length && filter && !loading }">
@@ -76,7 +83,7 @@
         </div>
 
         <div if="{(Array.isArray(entries) && entries.length) && filter}">
-
+            <ul class="uk-nestable-list filtered" data-is="entries-tree-list" entries="{entries}" collection="{collection}" fields="{fields}"></ul>
         </div>
 
     </div>
@@ -90,11 +97,22 @@
         this.collection = {{ json_encode($collection) }};
         this.entries    = [];
 
+        this.fields = this.collection.fields.filter(function(field){
+
+            if (!CollectionHasFieldAccess(field)) {
+                return false;
+            }
+
+            return field.lst;
+        });
+
         this.on('mount', function(){
 
             this.loadTree();
 
             App.$(this.root).on('change.uk.nestable', function(e, sortable, $item) {
+
+                if (!sortable) return;
 
                 var entries = [], _pid = $item.parent().closest('[entry-id]').attr('entry-id') || null, item;
 
