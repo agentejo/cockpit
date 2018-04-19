@@ -224,8 +224,10 @@ class Utils extends \Lime\Helper {
 	* @return  string
 	*/
 	public function url_get_contents ($url) {
+
         $content = '';
-        if (function_exists('curl_exec')){
+
+		if (function_exists('curl_exec')){
             $conn = curl_init($url);
             curl_setopt($conn, CURLOPT_SSL_VERIFYPEER, true);
             curl_setopt($conn, CURLOPT_FRESH_CONNECT,  true);
@@ -256,7 +258,7 @@ class Utils extends \Lime\Helper {
 			'sort_column_name' => null
         ], $options);
 
-        $branch = array();
+        $branch = [];
 
         foreach ($elements as $element) {
 
@@ -268,20 +270,27 @@ class Utils extends \Lime\Helper {
                 $children = $this->buildTree($elements, $options, $element[$options['id_column_name']]);
 
                 if ($children) {
-
-					if ($options['sort_column_name']) {
-
-						usort($children, function ($a, $b) use($options) {
-	                        return @$a[$options['sort_column_name']] <=> @$b[$options['sort_column_name']];
-	                    });
-					}
-
                     $element[$options['children_key_name']] = $children;
                 }
 
                 $branch[] = $element;
             }
         }
+
+		if ($options['sort_column_name']) {
+
+			usort($branch, function ($a, $b) use($options) {
+
+				$_a = isset($a[$options['sort_column_name']]) ? $a[$options['sort_column_name']] : null;
+				$_b = isset($b[$options['sort_column_name']]) ? $b[$options['sort_column_name']] : null;
+
+				if ($_a == $_b) {
+					return 0;
+				}
+
+				return ($_a < $_b) ? -1 : 1;
+			});
+		}
 
         return $branch;
     }

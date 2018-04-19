@@ -96,16 +96,22 @@
 
             App.$(this.root).on('change.uk.nestable', function(e, sortable, $item) {
 
-                var entry = {
-                    _id: $item.attr('entry-id'),
-                    _pid: $item.parent().closest('[entry-id]').attr('entry-id') || null,
-                    _o: $item.index()
-                };
+                var entries = [], _pid = $item.parent().closest('[entry-id]').attr('entry-id') || null, item;
 
-                App.request('/collections/save_entry/'+$this.collection.name, {entry:entry}).then(function(entry) {
-                    console.log('sorted')
+                $item.parent().children().each(function() {
+
+                    item = App.$(this);
+
+                    entries.push({
+                        _id  : item.attr('entry-id'),
+                        _pid : _pid,
+                        _o   : item.index()
+                    })
                 });
 
+                App.request('/collections/update_order/'+$this.collection.name, {entries:entries}).then(function(data) {
+                    console.log('sorted')
+                });
             });
 
         });

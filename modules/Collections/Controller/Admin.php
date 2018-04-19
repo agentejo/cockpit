@@ -258,6 +258,26 @@ class Admin extends \Cockpit\AuthController {
         return true;
     }
 
+    public function update_order($collection) {
+
+        $collection = $this->module('collections')->collection($collection);
+        $entries = $this->param('entries');
+
+        if (!$collection) return false;
+        if (!$entries) return false;
+
+        $_collectionId = $collection['_id'];
+
+        if (is_array($entries) && count($entries)) {
+
+            foreach($entries as $entry) {
+                $this->app->storage->save("collections/{$_collectionId}", $entry);
+            }
+        }
+
+        return $entries;
+    }
+
     public function export($collection) {
 
         if (!$this->app->module("cockpit")->hasaccess("collections", 'manage')) {
