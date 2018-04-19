@@ -82,8 +82,11 @@
             <div>@lang('No entries found')</div>
         </div>
 
-        <div if="{(Array.isArray(entries) && entries.length) && filter}">
-            <ul class="uk-nestable-list filtered" data-is="entries-tree-list" entries="{entries}" collection="{collection}" fields="{fields}"></ul>
+        <div class="uk-margin-top" if="{(Array.isArray(entries) && entries.length) && filter}">
+
+            <span class="uk-badge uk-badge-outline uk-text-warning uk-text-uppercase">@lang('Filtered Items')</span>
+
+            <ul class="uk-nestable-list filtered uk-margin-top" data-is="entries-tree-list" entries="{entries}" collection="{collection}" fields="{fields}"></ul>
         </div>
 
     </div>
