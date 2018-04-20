@@ -78,15 +78,15 @@
             </div>
         </div>
 
-        <div class="uk-margin-top" if="{ (Array.isArray(entries) && entries.length) && !filter && !loading}">
-            <entries-tree entries="{entries}" collection="{collection}" fields="{fields}"></entries-tree>
-        </div>
-
         <div class="uk-text-xlarge uk-text-muted uk-viewport-height-1-3 uk-flex uk-flex-center uk-flex-middle" if="{ !entries.length && filter && !loading }">
             <div>@lang('No entries found')</div>
         </div>
 
-        <div class="uk-margin-top" if="{(Array.isArray(entries) && entries.length) && filter && !loading}">
+        <div class="uk-margin-top" if="{ (Array.isArray(entries) && entries.length) && !filter}">
+            <entries-tree entries="{entries}" collection="{collection}" fields="{fields}"></entries-tree>
+        </div>
+
+        <div class="uk-margin-top" if="{(Array.isArray(entries) && entries.length) && filter}">
 
             <span class="uk-badge uk-badge-outline uk-text-warning uk-text-uppercase">@lang('Filtered Items')</span>
 
@@ -118,7 +118,16 @@
 
             this.loadTree();
 
-            App.$(this.root).on('change.uk.nestable', function(e, sortable, $item) {
+            // handle dragging
+
+            var listSrc;
+
+            $root.on('start.uk.nestable', function(e, nestable) {
+                e.stopPropagation();
+                listSrc  = $this._getListObject(nestable.placeEl[0]);
+            });
+
+            $root.on('change.uk.nestable', function(e, sortable, $item, action) {
 
                 if (!sortable) return;
 
@@ -135,8 +144,20 @@
                     })
                 });
 
+                // update data structure
+
+                var listTarget = $this._getListObject($item[0]), sameList = (listSrc == listTarget);
+
+                listSrc.splice(listSrc.indexOf($item[0].__entry), 1);
+                listTarget.splice($item.index(), 0, $item[0].__entry);
+
                 App.request('/collections/update_order/'+$this.collection.name, {entries:entries}).then(function(data) {
-                    console.log('sorted')
+
+                    if (listSrc != listTarget) {
+                        $item.remove();
+                    }
+
+                    $this.update();
                 });
             });
 
@@ -148,7 +169,14 @@
 
         });
 
-        this._remove = function(entries) {
+        this._getListObject = function(element) {
+
+            var list = element.parentNode.closest('[entry-id]');
+
+            return list ? list.__entry.children : this.entries;
+        }
+
+        this._remove = function(entries, selected) {
 
             if (!entries.length) {
                 return;
@@ -178,8 +206,21 @@
                     App.ui.notify(promises.length > 1 ? (promises.length + " entries removed") : "Entry removed", "success");
                     $this.loading = false;
 
-                    // @todo just a quick solution
-                    $this[$this.filter ? 'load':'loadTree']();
+                    var ele, list;
+
+                    toDelete.forEach(function(id) {
+
+                        var ele = document.querySelector('[entry-id="'+id+'"]');
+
+                        if (ele) {
+
+                            list  = $this._getListObject(ele);
+                            list.splice(list.indexOf(ele.__entry), 1);
+                        }
+                    });
+
+                    if (selected) $this.selected = [];
+                    $this.update();
                 });
 
                 this.loading = true;
@@ -193,7 +234,7 @@
         }
 
         this.removeselected = function() {
-            this._remove(this.selected);
+            this._remove(this.selected, true);
         }
 
         this.load = function() {

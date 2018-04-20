@@ -151,6 +151,10 @@
         this.extrafields = this._fields.length > 2 ? this._fields.slice(2) : [];
         this.imagefield = opts.imagefield;
 
+        this.on('mount', function() {
+            this.root.parentNode.__entry = this.entry;
+        });
+
     </script>
 
 </entries-tree-item>
