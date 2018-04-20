@@ -130,3 +130,25 @@
     </style>
 
 </cp-preloader>
+
+<cp-preloader-fullscreen>
+
+    <style>
+
+        cp-preloader-fullscreen {
+            position: fixed;
+            display: flex;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.5);
+            z-index: 100;
+        }
+    </style>
+
+    <cp-preloader></cp-preloader>
+
+</cp-preloader-fullscreen>
