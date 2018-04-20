@@ -21,7 +21,7 @@
 
     <script>
 
-        var $this = this;
+        var $this = this, $root = App.$(this.root);
 
         this.entries = opts.entries || [];
         this.collection = opts.collection || {};
@@ -33,10 +33,52 @@
         this.on('mount', function() {
 
             App.assets.require(['/assets/lib/uikit/js/components/nestable.js']).then(function() {
+
+                var listSrc;
+
+                $root.on('start.uk.nestable', function(e, nestable) {
+                    e.stopPropagation();
+                    listSrc  = $this._getListObject(nestable.placeEl[0]);
+                });
+
+                $root.on('change.uk.nestable', function(e, sortable, $item, action) {
+
+                    if (!sortable) return;
+
+                    var entries = [], _pid = $item.parent().closest('[entry-id]').attr('entry-id') || null, item;
+
+                    $item.parent().children().each(function() {
+
+                        item = App.$(this);
+
+                        entries.push({
+                            _id  : item.attr('entry-id'),
+                            _pid : _pid,
+                            _o   : item.index()
+                        })
+                    });
+
+                    // update data structure
+
+                    var listTarget = $this._getListObject($item[0]);
+
+                    listSrc.splice(listSrc.indexOf($item[0].__entry), 1);
+                    listTarget.splice($item.index(), 0, $item[0].__entry);
+
+                    $root.trigger('sort-update', [entries]);
+                });
+
                 $this.ready = true;
                 $this.update();
             });
         })
+
+        this._getListObject = function(element) {
+
+            var list = element.parentNode.closest('[entry-id]');
+
+            return list ? list.__entry.children : this.entries;
+        }
 
     </script>
 
@@ -134,7 +176,7 @@
                     <li class="uk-nav-header">{ App.i18n.get('Actions') }</li>
                     <li><a href="{ App.route('/collections/entry/'+collection.name+'/'+entry._id) }">{ App.i18n.get('Edit') }</a></li>
                     <li class="uk-nav-divider"></li>
-                    <li class="uk-nav-item-danger"><a onclick="{ parent.remove }">{ App.i18n.get('Delete') }</a></li>
+                    <li class="uk-nav-item-danger"><a onclick="{ remove }">{ App.i18n.get('Delete') }</a></li>
                 </ul>
 
             </div>
@@ -154,6 +196,10 @@
         this.on('mount', function() {
             this.root.parentNode.__entry = this.entry;
         });
+
+        this.remove = function(e) {
+            App.$(this.root).trigger('remove-entry', [this.entry]);
+        }
 
     </script>
 
