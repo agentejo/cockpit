@@ -4,6 +4,10 @@
         padding-left: 0;
     }
 
+    .uk-nestable-list.filtered .uk-nestable-toggle {
+        display: none;
+    }
+
 </style>
 
 <script type="riot/tag" src="@base('collections:assets/entries-tree.tag')"></script>
@@ -63,7 +67,7 @@
             <div class="uk-float-right">
 
                 @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
-                <a class="uk-button uk-button-large uk-button-danger uk-animation-fade uk-margin-small-right" onclick="{ removeselected }" if="{ selected && selected.length }">
+                <a class="uk-button uk-button-large uk-button-danger uk-animation-fade uk-margin-small-right" onclick="{ removeselected }" if="{ selected.length }">
                     @lang('Delete') <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
                 </a>
                 @endif
@@ -74,7 +78,7 @@
             </div>
         </div>
 
-        <div class="uk-margin-top" if="{ (Array.isArray(entries) && entries.length) && !filter }">
+        <div class="uk-margin-top" if="{ (Array.isArray(entries) && entries.length) && !filter && !loading}">
             <entries-tree entries="{entries}" collection="{collection}" fields="{fields}"></entries-tree>
         </div>
 
@@ -82,7 +86,7 @@
             <div>@lang('No entries found')</div>
         </div>
 
-        <div class="uk-margin-top" if="{(Array.isArray(entries) && entries.length) && filter}">
+        <div class="uk-margin-top" if="{(Array.isArray(entries) && entries.length) && filter && !loading}">
 
             <span class="uk-badge uk-badge-outline uk-text-warning uk-text-uppercase">@lang('Filtered Items')</span>
 
@@ -99,6 +103,7 @@
         this.filter     = null;
         this.collection = {{ json_encode($collection) }};
         this.entries    = [];
+        this.selected   = [];
 
         this.fields = this.collection.fields.filter(function(field){
 
@@ -135,7 +140,61 @@
                 });
             });
 
+            $root.on('click', '[data-check]', function() {
+
+                $this.checkselected();
+                $this.update();
+            });
+
         });
+
+        this._remove = function(entries) {
+
+            if (!entries.length) {
+                return;
+            }
+
+            App.ui.confirm("Are you sure?", function() {
+
+                var promises = [], toDelete = [];
+
+                entries.forEach(function(id) {
+
+                    toDelete.push(id);
+
+                    App.$('[entry-id="'+id+'"]').find('[entry-id]').each(function() {
+                        toDelete.push(this.getAttribute('entry-id'));
+                    });
+                });
+
+                toDelete = _.uniq(toDelete);
+
+                toDelete.forEach(function(id) {
+                    promises.push(App.request('/collections/delete_entries/'+$this.collection.name, {filter: {'_id':id}}));
+                });
+
+                Promise.all(promises).then(function(){
+
+                    App.ui.notify(promises.length > 1 ? (promises.length + " entries removed") : "Entry removed", "success");
+                    $this.loading = false;
+
+                    // @todo just a quick solution
+                    $this[$this.filter ? 'load':'loadTree']();
+                });
+
+                this.loading = true;
+                this.update();
+
+            }.bind(this));
+        }
+
+        this.remove = function(entry) {
+            this._remove([entry._id]);
+        }
+
+        this.removeselected = function() {
+            this._remove(this.selected);
+        }
 
         this.load = function() {
 
@@ -147,6 +206,7 @@
 
             this.loading = true;
             this.entries = [];
+            this.selected = [];
 
             App.request('/collections/find', {collection:this.collection.name, options:options}).then(function(data){
 
@@ -165,6 +225,7 @@
 
             this.loading = true;
             this.entries = [];
+            this.selected = [];
 
             App.request('/collections/tree', {collection:this.collection.name}).then(function(tree){
 
@@ -181,6 +242,25 @@
 
             this.filter = this.refs.txtfilter.value || null;
             this[this.filter ? 'load':'loadTree']();
+        }
+
+        this.checkselected = function(update) {
+
+            var checkboxes = $root.find('[data-check]'),
+                selected   = checkboxes.filter(':checked');
+
+            this.selected = [];
+
+            if (selected.length) {
+
+                selected.each(function(){
+                    $this.selected.push(this.getAttribute('data-check'));
+                });
+            }
+
+            if (update) {
+                this.update();
+            }
         }
 
     </script>
