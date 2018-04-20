@@ -26,16 +26,6 @@
 
     <div show="{ ready }">
 
-        <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-center uk-flex-middle" if="{ loading }">
-
-            <div class="uk-animation-fade uk-text-center">
-
-                <cp-preloader class="uk-container-center"></cp-preloader>
-
-            </div>
-
-        </div>
-
         <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-center uk-flex-middle" if="{ !loading && !entries.length && !filter}">
 
             <div class="uk-animation-scale">
@@ -92,6 +82,8 @@
 
             <ul class="uk-nestable-list filtered uk-margin-top" data-is="entries-tree-list" entries="{entries}" collection="{collection}" fields="{fields}"></ul>
         </div>
+
+        <cp-preloader-fullscreen if="{ loading }"></cp-preloader-fullscreen>
 
     </div>
 
