@@ -110,51 +110,19 @@
 
             this.loadTree();
 
-            // handle dragging
-
-            var listSrc;
-
-            $root.on('start.uk.nestable', function(e, nestable) {
-                e.stopPropagation();
-                listSrc  = $this._getListObject(nestable.placeEl[0]);
-            });
-
-            $root.on('change.uk.nestable', function(e, sortable, $item, action) {
-
-                if (!sortable) return;
-
-                var entries = [], _pid = $item.parent().closest('[entry-id]').attr('entry-id') || null, item;
-
-                $item.parent().children().each(function() {
-
-                    item = App.$(this);
-
-                    entries.push({
-                        _id  : item.attr('entry-id'),
-                        _pid : _pid,
-                        _o   : item.index()
-                    })
-                });
-
-                // update data structure
-
-                var listTarget = $this._getListObject($item[0]), sameList = (listSrc == listTarget);
-
-                listSrc.splice(listSrc.indexOf($item[0].__entry), 1);
-                listTarget.splice($item.index(), 0, $item[0].__entry);
+            // update on sort
+            $root.on('sort-update', function(e, entries) {
 
                 App.request('/collections/update_order/'+$this.collection.name, {entries:entries}).then(function(data) {
-
-                    if (listSrc != listTarget) {
-                        $item.remove();
-                    }
-
-                    $this.update();
+                    // anything?
                 });
+            });
+
+            $root.on('remove-entry', function(e, entry) {
+                $this.remove(entry);
             });
 
             $root.on('click', '[data-check]', function() {
-
                 $this.checkselected();
                 $this.update();
             });
