@@ -68,6 +68,14 @@
                     $root.trigger('sort-update', [entries]);
                 });
 
+                $root.on('click', '[data-nestable-action="toggle"]', function() {
+
+                    var li =  this.closest('li'),
+                        collapsed = li.classList.contains('uk-collapsed');
+
+                    localStorage[collapsed ? 'setItem':'removeItem']($this.collection._id+'_'+li.getAttribute('entry-id'), true);
+                });
+
                 $this.ready = true;
                 $this.update();
             });
@@ -86,7 +94,7 @@
 
 <entries-tree-list>
 
-    <li class="entry-item uk-nestable-item" each="{entry in entries}" entry-id="{entry._id}">
+    <li class="entry-item uk-nestable-item { isCollapsed(entry) && 'uk-collapsed'}" each="{entry in entries}" entry-id="{entry._id}">
         <entries-tree-item collection="{parent.collection}" entry="{entry}" collection="{ collection }" imagefield="{imagefield}" fields="{fields}"></entries-tree-item>
         <ul class="uk-nestable-list" data-is="entries-tree-list" entries="{entry.children}" collection="{collection}" fields="{fields}" imagefield="{imagefield}" if="{entry.children && entry.children.length}"></ul>
     </li>
@@ -101,6 +109,10 @@
         this.on('mount', function() {
             this.root.__entries = this.entries;
         });
+
+        this.isCollapsed = function(entry) {
+            return localStorage[this.collection._id+'_'+entry._id] && entry.children.length || false;
+        }
 
     </script>
 
