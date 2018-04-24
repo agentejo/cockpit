@@ -30,7 +30,7 @@ class SimpleImage {
     ERR_WEBP_NOT_ENABLED = 10,
     ERR_WRITE = 11;
 
-  private $image, $mimeType, $exif;
+  protected $image, $mimeType, $exif;
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Magic methods
@@ -465,6 +465,10 @@ class SimpleImage {
   //
   public function autoOrient() {
     $exif = $this->getExif();
+
+    if(!$exif || !isset($exif['Orientation'])){
+      return $this;
+    }
 
     switch($exif['Orientation']) {
     case 1: // Do nothing!

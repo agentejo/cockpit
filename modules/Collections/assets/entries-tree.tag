@@ -111,7 +111,7 @@
         });
 
         this.isCollapsed = function(entry) {
-            return localStorage[this.collection._id+'_'+entry._id] && entry.children.length || false;
+            return (localStorage[this.collection._id+'_'+entry._id] && entry.children.length) || false;
         }
 
     </script>

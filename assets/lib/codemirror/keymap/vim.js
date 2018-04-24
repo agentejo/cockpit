@@ -93,6 +93,8 @@
     { keys: 'gE', type: 'motion', motion: 'moveByWords', motionArgs: { forward: false, wordEnd: true, bigWord: true, inclusive: true }},
     { keys: '{', type: 'motion', motion: 'moveByParagraph', motionArgs: { forward: false, toJumplist: true }},
     { keys: '}', type: 'motion', motion: 'moveByParagraph', motionArgs: { forward: true, toJumplist: true }},
+    { keys: '(', type: 'motion', motion: 'moveBySentence', motionArgs: { forward: false }},
+    { keys: ')', type: 'motion', motion: 'moveBySentence', motionArgs: { forward: true }},
     { keys: '<C-f>', type: 'motion', motion: 'moveByPage', motionArgs: { forward: true }},
     { keys: '<C-b>', type: 'motion', motion: 'moveByPage', motionArgs: { forward: false }},
     { keys: '<C-d>', type: 'motion', motion: 'moveByScroll', motionArgs: { forward: true, explicitRepeat: true }},
@@ -422,6 +424,9 @@
     }
     function isWhiteSpaceString(k) {
       return (/^\s*$/).test(k);
+    }
+    function isEndOfSentenceSymbol(k) {
+      return '.?!'.indexOf(k) != -1;
     }
     function inArray(val, arr) {
       for (var i = 0; i < arr.length; i++) {
@@ -841,7 +846,7 @@
         }
 
         function handleKeyNonInsertMode() {
-          if (handleMacroRecording() || handleEsc()) { return true; };
+          if (handleMacroRecording() || handleEsc()) { return true; }
 
           var keys = vim.inputState.keyBuffer = vim.inputState.keyBuffer + key;
           if (/^[1-9]\d*$/.test(keys)) { return true; }
@@ -866,7 +871,7 @@
         if (vim.insertMode) { command = handleKeyInsertMode(); }
         else { command = handleKeyNonInsertMode(); }
         if (command === false) {
-          return undefined;
+          return !vim.insertMode && key.length === 1 ? function() { return true; } : undefined;
         } else if (command === true) {
           // TODO: Look into using CodeMirror's multi-key handling.
           // Return no-op since we are caching the key. Counts as handled, but
@@ -1426,7 +1431,7 @@
         } else {
           if (vim.visualMode) {
             showPrompt(cm, { onClose: onPromptClose, prefix: ':', value: '\'<,\'>',
-                onKeyDown: onPromptKeyDown});
+                onKeyDown: onPromptKeyDown, selectValueOnOpen: false});
           } else {
             showPrompt(cm, { onClose: onPromptClose, prefix: ':',
                 onKeyDown: onPromptKeyDown});
@@ -1810,6 +1815,10 @@
       moveByParagraph: function(cm, head, motionArgs) {
         var dir = motionArgs.forward ? 1 : -1;
         return findParagraph(cm, head, motionArgs.repeat, dir);
+      },
+      moveBySentence: function(cm, head, motionArgs) {
+        var dir = motionArgs.forward ? 1 : -1;
+        return findSentence(cm, head, motionArgs.repeat, dir);
       },
       moveByScroll: function(cm, head, motionArgs, vim) {
         var scrollbox = cm.getScrollInfo();
@@ -2637,25 +2646,32 @@
       incrementNumberToken: function(cm, actionArgs) {
         var cur = cm.getCursor();
         var lineStr = cm.getLine(cur.line);
-        var re = /-?\d+/g;
+        var re = /(-?)(?:(0x)([\da-f]+)|(0b|0|)(\d+))/gi;
         var match;
         var start;
         var end;
         var numberStr;
-        var token;
         while ((match = re.exec(lineStr)) !== null) {
-          token = match[0];
           start = match.index;
-          end = start + token.length;
+          end = start + match[0].length;
           if (cur.ch < end)break;
         }
         if (!actionArgs.backtrack && (end <= cur.ch))return;
-        if (token) {
+        if (match) {
+          var baseStr = match[2] || match[4]
+          var digits = match[3] || match[5]
           var increment = actionArgs.increase ? 1 : -1;
-          var number = parseInt(token) + (increment * actionArgs.repeat);
+          var base = {'0b': 2, '0': 8, '': 10, '0x': 16}[baseStr.toLowerCase()];
+          var number = parseInt(match[1] + digits, base) + (increment * actionArgs.repeat);
+          numberStr = number.toString(base);
+          var zeroPadding = baseStr ? new Array(digits.length - numberStr.length + 1 + match[1].length).join('0') : ''
+          if (numberStr.charAt(0) === '-') {
+            numberStr = '-' + baseStr + zeroPadding + numberStr.substr(1);
+          } else {
+            numberStr = baseStr + zeroPadding + numberStr;
+          }
           var from = Pos(cur.line, start);
           var to = Pos(cur.line, end);
-          numberStr = number.toString();
           cm.replaceRange(numberStr, from, to);
         } else {
           return;
@@ -3527,6 +3543,179 @@
       return { start: start, end: end };
     }
 
+    function findSentence(cm, cur, repeat, dir) {
+
+      /*
+        Takes an index object
+        {
+          line: the line string,
+          ln: line number,
+          pos: index in line,
+          dir: direction of traversal (-1 or 1)
+        }
+        and modifies the line, ln, and pos members to represent the
+        next valid position or sets them to null if there are
+        no more valid positions.
+       */
+      function nextChar(cm, idx) {
+        if (idx.pos + idx.dir < 0 || idx.pos + idx.dir >= idx.line.length) {
+          idx.ln += idx.dir;
+          if (!isLine(cm, idx.ln)) {
+            idx.line = null;
+            idx.ln = null;
+            idx.pos = null;
+            return;
+          }
+          idx.line = cm.getLine(idx.ln);
+          idx.pos = (idx.dir > 0) ? 0 : idx.line.length - 1;
+        }
+        else {
+          idx.pos += idx.dir;
+        }
+      }
+
+      /*
+        Performs one iteration of traversal in forward direction
+        Returns an index object of the new location
+       */
+      function forward(cm, ln, pos, dir) {
+        var line = cm.getLine(ln);
+        var stop = (line === "");
+
+        var curr = {
+          line: line,
+          ln: ln,
+          pos: pos,
+          dir: dir,
+        }
+
+        var last_valid = {
+          ln: curr.ln,
+          pos: curr.pos,
+        }
+
+        var skip_empty_lines = (curr.line === "");
+
+        // Move one step to skip character we start on
+        nextChar(cm, curr);
+
+        while (curr.line !== null) {
+          last_valid.ln = curr.ln;
+          last_valid.pos = curr.pos;
+
+          if (curr.line === "" && !skip_empty_lines) {
+            return { ln: curr.ln, pos: curr.pos, };
+          }
+          else if (stop && curr.line !== "" && !isWhiteSpaceString(curr.line[curr.pos])) {
+            return { ln: curr.ln, pos: curr.pos, };
+          }
+          else if (isEndOfSentenceSymbol(curr.line[curr.pos])
+            && !stop
+            && (curr.pos === curr.line.length - 1
+              || isWhiteSpaceString(curr.line[curr.pos + 1]))) {
+            stop = true;
+          }
+
+          nextChar(cm, curr);
+        }
+
+        /*
+          Set the position to the last non whitespace character on the last
+          valid line in the case that we reach the end of the document.
+        */
+        var line = cm.getLine(last_valid.ln);
+        last_valid.pos = 0;
+        for(var i = line.length - 1; i >= 0; --i) {
+          if (!isWhiteSpaceString(line[i])) {
+            last_valid.pos = i;
+            break;
+          }
+        }
+
+        return last_valid;
+
+      }
+
+      /*
+        Performs one iteration of traversal in reverse direction
+        Returns an index object of the new location
+       */
+      function reverse(cm, ln, pos, dir) {
+        var line = cm.getLine(ln);
+
+        var curr = {
+          line: line,
+          ln: ln,
+          pos: pos,
+          dir: dir,
+        }
+
+        var last_valid = {
+          ln: curr.ln,
+          pos: null,
+        };
+
+        var skip_empty_lines = (curr.line === "");
+
+        // Move one step to skip character we start on
+        nextChar(cm, curr);
+
+        while (curr.line !== null) {
+
+          if (curr.line === "" && !skip_empty_lines) {
+            if (last_valid.pos !== null) {
+              return last_valid;
+            }
+            else {
+              return { ln: curr.ln, pos: curr.pos };
+            }
+          }
+          else if (isEndOfSentenceSymbol(curr.line[curr.pos])
+              && last_valid.pos !== null
+              && !(curr.ln === last_valid.ln && curr.pos + 1 === last_valid.pos)) {
+            return last_valid;
+          }
+          else if (curr.line !== "" && !isWhiteSpaceString(curr.line[curr.pos])) {
+            skip_empty_lines = false;
+            last_valid = { ln: curr.ln, pos: curr.pos }
+          }
+
+          nextChar(cm, curr);
+        }
+
+        /*
+          Set the position to the first non whitespace character on the last
+          valid line in the case that we reach the beginning of the document.
+        */
+        var line = cm.getLine(last_valid.ln);
+        last_valid.pos = 0;
+        for(var i = 0; i < line.length; ++i) {
+          if (!isWhiteSpaceString(line[i])) {
+            last_valid.pos = i;
+            break;
+          }
+        }
+        return last_valid;
+      }
+
+      var curr_index = {
+        ln: cur.line,
+        pos: cur.ch,
+      };
+
+      while (repeat > 0) {
+        if (dir < 0) {
+          curr_index = reverse(cm, curr_index.ln, curr_index.pos, dir);
+        }
+        else {
+          curr_index = forward(cm, curr_index.ln, curr_index.pos, dir);
+        }
+        repeat--;
+      }
+
+      return Pos(curr_index.ln, curr_index.pos);
+    }
+
     // TODO: perhaps this finagling of start and end positions belonds
     // in codemirror/replaceRange?
     function selectCompanionObject(cm, head, symb, inclusive) {
@@ -3545,8 +3734,8 @@
       // cursor is on a matching open bracket.
       var offset = curChar === openSym ? 1 : 0;
 
-      start = cm.scanForBracket(Pos(cur.line, cur.ch + offset), -1, null, {'bracketRegex': bracketRegexp});
-      end = cm.scanForBracket(Pos(cur.line, cur.ch + offset), 1, null, {'bracketRegex': bracketRegexp});
+      start = cm.scanForBracket(Pos(cur.line, cur.ch + offset), -1, undefined, {'bracketRegex': bracketRegexp});
+      end = cm.scanForBracket(Pos(cur.line, cur.ch + offset), 1, undefined, {'bracketRegex': bracketRegexp});
 
       if (!start || !end) {
         return { start: cur, end: cur };
@@ -3676,7 +3865,15 @@
       }
     }
     function splitBySlash(argString) {
-      var slashes = findUnescapedSlashes(argString) || [];
+      return splitBySeparator(argString, '/');
+    }
+
+    function findUnescapedSlashes(argString) {
+      return findUnescapedSeparators(argString, '/');
+    }
+
+    function splitBySeparator(argString, separator) {
+      var slashes = findUnescapedSeparators(argString, separator) || [];
       if (!slashes.length) return [];
       var tokens = [];
       // in case of strings like foo/bar
@@ -3688,12 +3885,15 @@
       return tokens;
     }
 
-    function findUnescapedSlashes(str) {
+    function findUnescapedSeparators(str, separator) {
+      if (!separator)
+        separator = '/';
+
       var escapeNextChar = false;
       var slashes = [];
       for (var i = 0; i < str.length; i++) {
         var c = str.charAt(i);
-        if (!escapeNextChar && c == '/') {
+        if (!escapeNextChar && c == separator) {
           slashes.push(i);
         }
         escapeNextChar = !escapeNextChar && (c == '\\');
@@ -4559,7 +4759,7 @@
               'any other getSearchCursor implementation.');
         }
         var argString = params.argString;
-        var tokens = argString ? splitBySlash(argString) : [];
+        var tokens = argString ? splitBySeparator(argString, argString[0]) : [];
         var regexPart, replacePart = '', trailing, flagsPart, count;
         var confirm = false; // Whether to confirm each replace.
         var global = false; // True to replace all instances on a line, false to replace only 1.
@@ -4603,7 +4803,7 @@
               global = true;
               flagsPart.replace('g', '');
             }
-            regexPart = regexPart + '/' + flagsPart;
+            regexPart = regexPart.replace(/\//g, "\\/") + '/' + flagsPart;
           }
         }
         if (regexPart) {
@@ -4819,7 +5019,7 @@
       }
       if (!confirm) {
         replaceAll();
-        if (callback) { callback(); };
+        if (callback) { callback(); }
         return;
       }
       showPrompt(cm, {
@@ -4955,7 +5155,7 @@
             exitInsertMode(cm);
           }
         }
-      };
+      }
       macroModeState.isPlaying = false;
     }
 
@@ -5159,7 +5359,7 @@
         exitInsertMode(cm);
       }
       macroModeState.isPlaying = false;
-    };
+    }
 
     function repeatInsertModeChanges(cm, changes, repeat) {
       function keyHandler(binding) {

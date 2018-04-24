@@ -222,18 +222,20 @@
       prevItem = separator[i];
     }
 
-    var query = doc.getRange(validRange.start, validRange.end, false);
+    if (validRange.start) {
+      var query = doc.getRange(validRange.start, validRange.end, false);
 
-    for (var i = 0; i < query.length; i++) {
-      var lineText = query[i];
-      eachWord(lineText, function(word) {
-        var wordUpperCase = word.toUpperCase();
-        if (wordUpperCase === aliasUpperCase && getTable(previousWord))
-          table = previousWord;
-        if (wordUpperCase !== CONS.ALIAS_KEYWORD)
-          previousWord = word;
-      });
-      if (table) break;
+      for (var i = 0; i < query.length; i++) {
+        var lineText = query[i];
+        eachWord(lineText, function(word) {
+          var wordUpperCase = word.toUpperCase();
+          if (wordUpperCase === aliasUpperCase && getTable(previousWord))
+            table = previousWord;
+          if (wordUpperCase !== CONS.ALIAS_KEYWORD)
+            previousWord = word;
+        });
+        if (table) break;
+      }
     }
     return table;
   }
@@ -273,10 +275,23 @@
     if (search.charAt(0) == "." || search.charAt(0) == identifierQuote) {
       start = nameCompletion(cur, token, result, editor);
     } else {
-      addMatches(result, search, tables, function(w) {return w;});
-      addMatches(result, search, defaultTable, function(w) {return w;});
+      addMatches(result, search, defaultTable, function(w) {return {text:w, className: "CodeMirror-hint-table CodeMirror-hint-default-table"};});
+      addMatches(
+          result,
+          search,
+          tables,
+          function(w) {
+              if (typeof w === 'object') {
+                  w.className =  "CodeMirror-hint-table";
+              } else {
+                  w = {text: w, className: "CodeMirror-hint-table"};
+              }
+
+              return w;
+          }
+      );
       if (!disableKeywords)
-        addMatches(result, search, keywords, function(w) {return w.toUpperCase();});
+        addMatches(result, search, keywords, function(w) {return {text: w.toUpperCase(), className: "CodeMirror-hint-keyword"};});
     }
 
     return {list: result, from: Pos(cur.line, start), to: Pos(cur.line, end)};
