@@ -17,11 +17,24 @@ class Parsedown
 {
     # ~
 
-    const version = '1.6.0';
+    const version = '1.8.0-beta-1';
 
     # ~
 
     function text($text)
+    {
+        $Elements = $this->textElements($text);
+
+        # convert to markup
+        $markup = $this->elements($Elements);
+
+        # trim line breaks
+        $markup = trim($markup, "\n");
+
+        return $markup;
+    }
+
+    protected function textElements($text)
     {
         # make sure no definitions are set
         $this->DefinitionData = array();
@@ -36,12 +49,7 @@ class Parsedown
         $lines = explode("\n", $text);
 
         # iterate through lines to identify blocks
-        $markup = $this->lines($lines);
-
-        # trim line breaks
-        $markup = trim($markup, "\n");
-
-        return $markup;
+        return $this->linesElements($lines);
     }
 
     #
@@ -74,6 +82,41 @@ class Parsedown
     }
 
     protected $urlsLinked = true;
+
+    function setSafeMode($safeMode)
+    {
+        $this->safeMode = (bool) $safeMode;
+
+        return $this;
+    }
+
+    protected $safeMode;
+
+    function setStrictMode($strictMode)
+    {
+        $this->strictMode = (bool) $strictMode;
+
+        return $this;
+    }
+
+    protected $strictMode;
+
+    protected $safeLinksWhitelist = array(
+        'http://',
+        'https://',
+        'ftp://',
+        'ftps://',
+        'mailto:',
+        'data:image/png;base64,',
+        'data:image/gif;base64,',
+        'data:image/jpeg;base64,',
+        'irc:',
+        'ircs:',
+        'git:',
+        'ssh:',
+        'news:',
+        'steam:',
+    );
 
     #
     # Lines
@@ -117,6 +160,12 @@ class Parsedown
 
     protected function lines(array $lines)
     {
+        return $this->elements($this->linesElements($lines));
+    }
+
+    protected function linesElements(array $lines)
+    {
+        $Elements = array();
         $CurrentBlock = null;
 
         foreach ($lines as $line)
@@ -125,7 +174,9 @@ class Parsedown
             {
                 if (isset($CurrentBlock))
                 {
-                    $CurrentBlock['interrupted'] = true;
+                    $CurrentBlock['interrupted'] = (isset($CurrentBlock['interrupted'])
+                        ? $CurrentBlock['interrupted'] + 1 : 1
+                    );
                 }
 
                 continue;
@@ -211,7 +262,10 @@ class Parsedown
 
                     if ( ! isset($Block['identified']))
                     {
-                        $Blocks []= $CurrentBlock;
+                        if (isset($CurrentBlock))
+                        {
+                            $Elements[] = $this->extractElement($CurrentBlock);
+                        }
 
                         $Block['identified'] = true;
                     }
@@ -229,13 +283,21 @@ class Parsedown
 
             # ~
 
-            if (isset($CurrentBlock) and ! isset($CurrentBlock['type']) and ! isset($CurrentBlock['interrupted']))
+            if (isset($CurrentBlock) and $CurrentBlock['type'] === 'Paragraph')
             {
-                $CurrentBlock['element']['text'] .= "\n".$text;
+                $Block = $this->paragraphContinue($Line, $CurrentBlock);
+            }
+
+            if (isset($Block))
+            {
+                $CurrentBlock = $Block;
             }
             else
             {
-                $Blocks []= $CurrentBlock;
+                if (isset($CurrentBlock))
+                {
+                    $Elements[] = $this->extractElement($CurrentBlock);
+                }
 
                 $CurrentBlock = $this->paragraph($Line);
 
@@ -252,30 +314,24 @@ class Parsedown
 
         # ~
 
-        $Blocks []= $CurrentBlock;
-
-        unset($Blocks[0]);
-
-        # ~
-
-        $markup = '';
-
-        foreach ($Blocks as $Block)
+        if (isset($CurrentBlock))
         {
-            if (isset($Block['hidden']))
-            {
-                continue;
-            }
-
-            $markup .= "\n";
-            $markup .= isset($Block['markup']) ? $Block['markup'] : $this->element($Block['element']);
+            $Elements[] = $this->extractElement($CurrentBlock);
         }
 
-        $markup .= "\n";
-
         # ~
 
-        return $markup;
+        return $Elements;
+    }
+
+    protected function extractElement(array $Component)
+    {
+        if ( ! isset($Component['element']) and isset($Component['markup']))
+        {
+            $Component['element'] = array('rawHtml' => $Component['markup']);
+        }
+
+        return $Component['element'];
     }
 
     protected function isBlockContinuable($Type)
@@ -293,7 +349,7 @@ class Parsedown
 
     protected function blockCode($Line, $Block = null)
     {
-        if (isset($Block) and ! isset($Block['type']) and ! isset($Block['interrupted']))
+        if (isset($Block) and $Block['type'] === 'Paragraph' and ! isset($Block['interrupted']))
         {
             return;
         }
@@ -305,8 +361,7 @@ class Parsedown
             $Block = array(
                 'element' => array(
                     'name' => 'pre',
-                    'handler' => 'element',
-                    'text' => array(
+                    'element' => array(
                         'name' => 'code',
                         'text' => $text,
                     ),
@@ -323,16 +378,16 @@ class Parsedown
         {
             if (isset($Block['interrupted']))
             {
-                $Block['element']['text']['text'] .= "\n";
+                $Block['element']['element']['text'] .= str_repeat("\n", $Block['interrupted']);
 
                 unset($Block['interrupted']);
             }
 
-            $Block['element']['text']['text'] .= "\n";
+            $Block['element']['element']['text'] .= "\n";
 
             $text = substr($Line['body'], 4);
 
-            $Block['element']['text']['text'] .= $text;
+            $Block['element']['element']['text'] .= $text;
 
             return $Block;
         }
@@ -340,11 +395,9 @@ class Parsedown
 
     protected function blockCodeComplete($Block)
     {
-        $text = $Block['element']['text']['text'];
+        $text = $Block['element']['element']['text'];
 
-        $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
-
-        $Block['element']['text']['text'] = $text;
+        $Block['element']['element']['text'] = $text;
 
         return $Block;
     }
@@ -354,18 +407,21 @@ class Parsedown
 
     protected function blockComment($Line)
     {
-        if ($this->markupEscaped)
+        if ($this->markupEscaped or $this->safeMode)
         {
             return;
         }
 
-        if (isset($Line['text'][3]) and $Line['text'][3] === '-' and $Line['text'][2] === '-' and $Line['text'][1] === '!')
+        if (strpos($Line['text'], '<!--') === 0)
         {
             $Block = array(
-                'markup' => $Line['body'],
+                'element' => array(
+                    'rawHtml' => $Line['body'],
+                    'autobreak' => true,
+                ),
             );
 
-            if (preg_match('/-->$/', $Line['text']))
+            if (strpos($Line['text'], '-->') !== false)
             {
                 $Block['closed'] = true;
             }
@@ -381,9 +437,9 @@ class Parsedown
             return;
         }
 
-        $Block['markup'] .= "\n" . $Line['body'];
+        $Block['element']['rawHtml'] .= "\n" . $Line['body'];
 
-        if (preg_match('/-->$/', $Line['text']))
+        if (strpos($Line['text'], '-->') !== false)
         {
             $Block['closed'] = true;
         }
@@ -396,16 +452,16 @@ class Parsedown
 
     protected function blockFencedCode($Line)
     {
-        if (preg_match('/^['.$Line['text'][0].']{3,}[ ]*([\w-]+)?[ ]*$/', $Line['text'], $matches))
+        if (preg_match('/^(['.$Line['text'][0].']{3,})[ ]*([^`]+)?[ ]*$/', $Line['text'], $matches))
         {
             $Element = array(
                 'name' => 'code',
                 'text' => '',
             );
 
-            if (isset($matches[1]))
+            if (isset($matches[2]))
             {
-                $class = 'language-'.$matches[1];
+                $class = 'language-'.$matches[2];
 
                 $Element['attributes'] = array(
                     'class' => $class,
@@ -414,10 +470,10 @@ class Parsedown
 
             $Block = array(
                 'char' => $Line['text'][0],
+                'openerLength' => mb_strlen($matches[1]),
                 'element' => array(
                     'name' => 'pre',
-                    'handler' => 'element',
-                    'text' => $Element,
+                    'element' => $Element,
                 ),
             );
 
@@ -434,32 +490,32 @@ class Parsedown
 
         if (isset($Block['interrupted']))
         {
-            $Block['element']['text']['text'] .= "\n";
+            $Block['element']['element']['text'] .= str_repeat("\n", $Block['interrupted']);
 
             unset($Block['interrupted']);
         }
 
-        if (preg_match('/^'.$Block['char'].'{3,}[ ]*$/', $Line['text']))
-        {
-            $Block['element']['text']['text'] = substr($Block['element']['text']['text'], 1);
+        if (
+            preg_match('/^(['.preg_quote($Block['char']).']{3,})[ ]*$/', $Line['text'], $matches)
+            and mb_strlen($matches[1]) >= $Block['openerLength']
+        ) {
+            $Block['element']['element']['text'] = substr($Block['element']['element']['text'], 1);
 
             $Block['complete'] = true;
 
             return $Block;
         }
 
-        $Block['element']['text']['text'] .= "\n".$Line['body'];
+        $Block['element']['element']['text'] .= "\n".$Line['body'];
 
         return $Block;
     }
 
     protected function blockFencedCodeComplete($Block)
     {
-        $text = $Block['element']['text']['text'];
+        $text = $Block['element']['element']['text'];
 
-        $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
-
-        $Block['element']['text']['text'] = $text;
+        $Block['element']['element']['text'] = $text;
 
         return $Block;
     }
@@ -469,71 +525,105 @@ class Parsedown
 
     protected function blockHeader($Line)
     {
-        if (isset($Line['text'][1]))
+        $level = 1;
+
+        while (isset($Line['text'][$level]) and $Line['text'][$level] === '#')
         {
-            $level = 1;
-
-            while (isset($Line['text'][$level]) and $Line['text'][$level] === '#')
-            {
-                $level ++;
-            }
-
-            if ($level > 6)
-            {
-                return;
-            }
-
-            $text = trim($Line['text'], '# ');
-
-            $Block = array(
-                'element' => array(
-                    'name' => 'h' . min(6, $level),
-                    'text' => $text,
-                    'handler' => 'line',
-                ),
-            );
-
-            return $Block;
+            $level ++;
         }
+
+        if ($level > 6)
+        {
+            return;
+        }
+
+        $text = trim($Line['text'], '#');
+
+        if ($this->strictMode and isset($text[0]) and $text[0] !== ' ')
+        {
+            return;
+        }
+
+        $text = trim($text, ' ');
+
+        $Block = array(
+            'element' => array(
+                'name' => 'h' . min(6, $level),
+                'handler' => array(
+                    'function' => 'lineElements',
+                    'argument' => $text,
+                    'destination' => 'elements',
+                )
+            ),
+        );
+
+        return $Block;
     }
 
     #
     # List
 
-    protected function blockList($Line)
+    protected function blockList($Line, array $CurrentBlock = null)
     {
-        list($name, $pattern) = $Line['text'][0] <= '-' ? array('ul', '[*+-]') : array('ol', '[0-9]+[.]');
+        list($name, $pattern) = $Line['text'][0] <= '-' ? array('ul', '[*+-]') : array('ol', '[0-9]{1,9}[.\)]');
 
-        if (preg_match('/^('.$pattern.'[ ]+)(.*)/', $Line['text'], $matches))
+        if (preg_match('/^('.$pattern.'([ ]+|$))(.*)/', $Line['text'], $matches))
         {
+            $contentIndent = strlen($matches[2]);
+
+            if ($contentIndent >= 5)
+            {
+                $contentIndent -= 1;
+                $matches[1] = substr($matches[1], 0, -$contentIndent);
+                $matches[3] = str_repeat(' ', $contentIndent) . $matches[3];
+            }
+            elseif ($contentIndent === 0)
+            {
+                $matches[1] .= ' ';
+            }
+
             $Block = array(
                 'indent' => $Line['indent'],
                 'pattern' => $pattern,
+                'data' => array(
+                    'type' => $name,
+                    'marker' => $matches[1],
+                    'markerType' => ($name === 'ul' ? strstr($matches[1], ' ', true) : substr(strstr($matches[1], ' ', true), -1)),
+                ),
                 'element' => array(
                     'name' => $name,
-                    'handler' => 'elements',
+                    'elements' => array(),
                 ),
             );
 
-            if($name === 'ol') 
+            if ($name === 'ol')
             {
-                $listStart = stristr($matches[0], '.', true);
-                
-                if($listStart !== '1')
+                $listStart = ltrim(strstr($matches[1], $Block['data']['markerType'], true), '0') ?: '0';
+
+                if ($listStart !== '1')
                 {
+                    if (
+                        isset($CurrentBlock)
+                        and $CurrentBlock['type'] === 'Paragraph'
+                        and ! isset($CurrentBlock['interrupted'])
+                    ) {
+                        return;
+                    }
+
                     $Block['element']['attributes'] = array('start' => $listStart);
                 }
             }
 
             $Block['li'] = array(
                 'name' => 'li',
-                'handler' => 'li',
-                'text' => array(
-                    $matches[2],
-                ),
+                'handler' => array(
+                    'function' => 'li',
+                    'argument' => !empty($matches[3]) ? array($matches[3]) : array(),
+                    'destination' => 'elements'
+                )
             );
 
-            $Block['element']['text'] []= & $Block['li'];
+            $Block['element']['elements'] []= & $Block['li'];
 
             return $Block;
         }
@@ -541,11 +631,29 @@ class Parsedown
 
     protected function blockListContinue($Line, array $Block)
     {
-        if ($Block['indent'] === $Line['indent'] and preg_match('/^'.$Block['pattern'].'(?:[ ]+(.*)|$)/', $Line['text'], $matches))
+        if (isset($Block['interrupted']) and empty($Block['li']['handler']['argument']))
         {
+            return null;
+        }
+
+        $requiredIndent = ($Block['indent'] + strlen($Block['data']['marker']));
+
+        if ($Line['indent'] < $requiredIndent
+            and (
+                (
+                    $Block['data']['type'] === 'ol'
+                    and preg_match('/^[0-9]+'.preg_quote($Block['data']['markerType']).'(?:[ ]+(.*)|$)/', $Line['text'], $matches)
+                ) or (
+                    $Block['data']['type'] === 'ul'
+                    and preg_match('/^'.preg_quote($Block['data']['markerType']).'(?:[ ]+(.*)|$)/', $Line['text'], $matches)
+                )
+            )
+        ) {
             if (isset($Block['interrupted']))
             {
-                $Block['li']['text'] []= '';
+                $Block['li']['handler']['argument'] []= '';
+
+                $Block['loose'] = true;
 
                 unset($Block['interrupted']);
             }
@@ -554,17 +662,24 @@ class Parsedown
 
             $text = isset($matches[1]) ? $matches[1] : '';
 
+            $Block['indent'] = $Line['indent'];
+
             $Block['li'] = array(
                 'name' => 'li',
-                'handler' => 'li',
-                'text' => array(
-                    $text,
-                ),
+                'handler' => array(
+                    'function' => 'li',
+                    'argument' => array($text),
+                    'destination' => 'elements'
+                )
             );
 
-            $Block['element']['text'] []= & $Block['li'];
+            $Block['element']['elements'] []= & $Block['li'];
 
             return $Block;
+        }
+        elseif ($Line['indent'] < $requiredIndent and $this->blockList($Line))
+        {
+            return null;
         }
 
         if ($Line['text'][0] === '[' and $this->blockReference($Line))
@@ -572,27 +687,48 @@ class Parsedown
             return $Block;
         }
 
+        if ($Line['indent'] >= $requiredIndent)
+        {
+            if (isset($Block['interrupted']))
+            {
+                $Block['li']['handler']['argument'] []= '';
+
+                $Block['loose'] = true;
+
+                unset($Block['interrupted']);
+            }
+
+            $text = substr($Line['body'], $requiredIndent);
+
+            $Block['li']['handler']['argument'] []= $text;
+
+            return $Block;
+        }
+
         if ( ! isset($Block['interrupted']))
         {
-            $text = preg_replace('/^[ ]{0,4}/', '', $Line['body']);
+            $text = preg_replace('/^[ ]{0,'.$requiredIndent.'}/', '', $Line['body']);
 
-            $Block['li']['text'] []= $text;
+            $Block['li']['handler']['argument'] []= $text;
 
             return $Block;
         }
+    }
 
-        if ($Line['indent'] > 0)
+    protected function blockListComplete(array $Block)
+    {
+        if (isset($Block['loose']))
         {
-            $Block['li']['text'] []= '';
-
-            $text = preg_replace('/^[ ]{0,4}/', '', $Line['body']);
-
-            $Block['li']['text'] []= $text;
-
-            unset($Block['interrupted']);
-
-            return $Block;
+            foreach ($Block['element']['elements'] as &$li)
+            {
+                if (end($li['handler']['argument']) !== '')
+                {
+                    $li['handler']['argument'] []= '';
+                }
+            }
         }
+
+        return $Block;
     }
 
     #
@@ -605,8 +741,11 @@ class Parsedown
             $Block = array(
                 'element' => array(
                     'name' => 'blockquote',
-                    'handler' => 'lines',
-                    'text' => (array) $matches[1],
+                    'handler' => array(
+                        'function' => 'linesElements',
+                        'argument' => (array) $matches[1],
+                        'destination' => 'elements',
+                    )
                 ),
             );
 
@@ -616,23 +755,21 @@ class Parsedown
 
     protected function blockQuoteContinue($Line, array $Block)
     {
+        if (isset($Block['interrupted']))
+        {
+            return;
+        }
+
         if ($Line['text'][0] === '>' and preg_match('/^>[ ]?(.*)/', $Line['text'], $matches))
         {
-            if (isset($Block['interrupted']))
-            {
-                $Block['element']['text'] []= '';
-
-                unset($Block['interrupted']);
-            }
-
-            $Block['element']['text'] []= $matches[1];
+            $Block['element']['handler']['argument'] []= $matches[1];
 
             return $Block;
         }
 
         if ( ! isset($Block['interrupted']))
         {
-            $Block['element']['text'] []= $Line['text'];
+            $Block['element']['handler']['argument'] []= $Line['text'];
 
             return $Block;
         }
@@ -647,7 +784,7 @@ class Parsedown
         {
             $Block = array(
                 'element' => array(
-                    'name' => 'hr'
+                    'name' => 'hr',
                 ),
             );
 
@@ -660,13 +797,15 @@ class Parsedown
 
     protected function blockSetextHeader($Line, array $Block = null)
     {
-        if ( ! isset($Block) or isset($Block['type']) or isset($Block['interrupted']))
+        if ( ! isset($Block) or $Block['type'] !== 'Paragraph' or isset($Block['interrupted']))
         {
             return;
         }
 
-        if (chop($Line['text'], $Line['text'][0]) === '')
-        {
+        if (
+            chop(chop($Line['text'], ' '), $Line['text'][0]) === ''
+            and $Line['indent'] < 4
+        ) {
             $Block['element']['name'] = $Line['text'][0] === '=' ? 'h1' : 'h2';
 
             return $Block;
@@ -678,12 +817,12 @@ class Parsedown
 
     protected function blockMarkup($Line)
     {
-        if ($this->markupEscaped)
+        if ($this->markupEscaped or $this->safeMode)
         {
             return;
         }
 
-        if (preg_match('/^<(\w*)(?:[ ]*'.$this->regexHtmlAttribute.')*[ ]*(\/)?>/', $Line['text'], $matches))
+        if (preg_match('/^<[\/]?+(\w*)(?:[ ]*'.$this->regexHtmlAttribute.')*[ ]*(\/)?>/', $Line['text'], $matches))
         {
             $element = strtolower($matches[1]);
 
@@ -694,35 +833,11 @@ class Parsedown
 
             $Block = array(
                 'name' => $matches[1],
-                'depth' => 0,
-                'markup' => $Line['text'],
+                'element' => array(
+                    'rawHtml' => $Line['text'],
+                    'autobreak' => true,
+                ),
             );
-
-            $length = strlen($matches[0]);
-
-            $remainder = substr($Line['text'], $length);
-
-            if (trim($remainder) === '')
-            {
-                if (isset($matches[2]) or in_array($matches[1], $this->voidElements))
-                {
-                    $Block['closed'] = true;
-
-                    $Block['void'] = true;
-                }
-            }
-            else
-            {
-                if (isset($matches[2]) or in_array($matches[1], $this->voidElements))
-                {
-                    return;
-                }
-
-                if (preg_match('/<\/'.$matches[1].'>[ ]*$/i', $remainder))
-                {
-                    $Block['closed'] = true;
-                }
-            }
 
             return $Block;
         }
@@ -730,36 +845,12 @@ class Parsedown
 
     protected function blockMarkupContinue($Line, array $Block)
     {
-        if (isset($Block['closed']))
+        if (isset($Block['closed']) or isset($Block['interrupted']))
         {
             return;
         }
 
-        if (preg_match('/^<'.$Block['name'].'(?:[ ]*'.$this->regexHtmlAttribute.')*[ ]*>/i', $Line['text'])) # open
-        {
-            $Block['depth'] ++;
-        }
-
-        if (preg_match('/(.*?)<\/'.$Block['name'].'>[ ]*$/i', $Line['text'], $matches)) # close
-        {
-            if ($Block['depth'] > 0)
-            {
-                $Block['depth'] --;
-            }
-            else
-            {
-                $Block['closed'] = true;
-            }
-        }
-
-        if (isset($Block['interrupted']))
-        {
-            $Block['markup'] .= "\n";
-
-            unset($Block['interrupted']);
-        }
-
-        $Block['markup'] .= "\n".$Line['body'];
+        $Block['element']['rawHtml'] .= "\n".$Line['body'];
 
         return $Block;
     }
@@ -775,18 +866,13 @@ class Parsedown
 
             $Data = array(
                 'url' => $matches[2],
-                'title' => null,
+                'title' => isset($matches[3]) ? $matches[3] : null,
             );
-
-            if (isset($matches[3]))
-            {
-                $Data['title'] = $matches[3];
-            }
 
             $this->DefinitionData['Reference'][$id] = $Data;
 
             $Block = array(
-                'hidden' => true,
+                'element' => array(),
             );
 
             return $Block;
@@ -798,109 +884,125 @@ class Parsedown
 
     protected function blockTable($Line, array $Block = null)
     {
-        if ( ! isset($Block) or isset($Block['type']) or isset($Block['interrupted']))
+        if ( ! isset($Block) or $Block['type'] !== 'Paragraph' or isset($Block['interrupted']))
         {
             return;
         }
 
-        if (strpos($Block['element']['text'], '|') !== false and chop($Line['text'], ' -:|') === '')
-        {
-            $alignments = array();
-
-            $divider = $Line['text'];
-
-            $divider = trim($divider);
-            $divider = trim($divider, '|');
-
-            $dividerCells = explode('|', $divider);
-
-            foreach ($dividerCells as $dividerCell)
-            {
-                $dividerCell = trim($dividerCell);
-
-                if ($dividerCell === '')
-                {
-                    continue;
-                }
-
-                $alignment = null;
-
-                if ($dividerCell[0] === ':')
-                {
-                    $alignment = 'left';
-                }
-
-                if (substr($dividerCell, - 1) === ':')
-                {
-                    $alignment = $alignment === 'left' ? 'center' : 'right';
-                }
-
-                $alignments []= $alignment;
-            }
-
-            # ~
-
-            $HeaderElements = array();
-
-            $header = $Block['element']['text'];
-
-            $header = trim($header);
-            $header = trim($header, '|');
-
-            $headerCells = explode('|', $header);
-
-            foreach ($headerCells as $index => $headerCell)
-            {
-                $headerCell = trim($headerCell);
-
-                $HeaderElement = array(
-                    'name' => 'th',
-                    'text' => $headerCell,
-                    'handler' => 'line',
-                );
-
-                if (isset($alignments[$index]))
-                {
-                    $alignment = $alignments[$index];
-
-                    $HeaderElement['attributes'] = array(
-                        'style' => 'text-align: '.$alignment.';',
-                    );
-                }
-
-                $HeaderElements []= $HeaderElement;
-            }
-
-            # ~
-
-            $Block = array(
-                'alignments' => $alignments,
-                'identified' => true,
-                'element' => array(
-                    'name' => 'table',
-                    'handler' => 'elements',
-                ),
-            );
-
-            $Block['element']['text'] []= array(
-                'name' => 'thead',
-                'handler' => 'elements',
-            );
-
-            $Block['element']['text'] []= array(
-                'name' => 'tbody',
-                'handler' => 'elements',
-                'text' => array(),
-            );
-
-            $Block['element']['text'][0]['text'] []= array(
-                'name' => 'tr',
-                'handler' => 'elements',
-                'text' => $HeaderElements,
-            );
-
-            return $Block;
+        if (
+            strpos($Block['element']['handler']['argument'], '|') === false
+            and strpos($Line['text'], '|') === false
+            and strpos($Line['text'], ':') === false
+            or strpos($Block['element']['handler']['argument'], "\n") !== false
+        ) {
+            return;
         }
+
+        if (chop($Line['text'], ' -:|') !== '')
+        {
+            return;
+        }
+
+        $alignments = array();
+
+        $divider = $Line['text'];
+
+        $divider = trim($divider);
+        $divider = trim($divider, '|');
+
+        $dividerCells = explode('|', $divider);
+
+        foreach ($dividerCells as $dividerCell)
+        {
+            $dividerCell = trim($dividerCell);
+
+            if ($dividerCell === '')
+            {
+                return;
+            }
+
+            $alignment = null;
+
+            if ($dividerCell[0] === ':')
+            {
+                $alignment = 'left';
+            }
+
+            if (substr($dividerCell, - 1) === ':')
+            {
+                $alignment = $alignment === 'left' ? 'center' : 'right';
+            }
+
+            $alignments []= $alignment;
+        }
+
+        # ~
+
+        $HeaderElements = array();
+
+        $header = $Block['element']['handler']['argument'];
+
+        $header = trim($header);
+        $header = trim($header, '|');
+
+        $headerCells = explode('|', $header);
+
+        if (count($headerCells) !== count($alignments))
+        {
+            return;
+        }
+
+        foreach ($headerCells as $index => $headerCell)
+        {
+            $headerCell = trim($headerCell);
+
+            $HeaderElement = array(
+                'name' => 'th',
+                'handler' => array(
+                    'function' => 'lineElements',
+                    'argument' => $headerCell,
+                    'destination' => 'elements',
+                )
+            );
+
+            if (isset($alignments[$index]))
+            {
+                $alignment = $alignments[$index];
+
+                $HeaderElement['attributes'] = array(
+                    'style' => 'text-align: '.$alignment.';',
+                );
+            }
+
+            $HeaderElements []= $HeaderElement;
+        }
+
+        # ~
+
+        $Block = array(
+            'alignments' => $alignments,
+            'identified' => true,
+            'element' => array(
+                'name' => 'table',
+                'elements' => array(),
+            ),
+        );
+
+        $Block['element']['elements'] []= array(
+            'name' => 'thead',
+        );
+
+        $Block['element']['elements'] []= array(
+            'name' => 'tbody',
+            'elements' => array(),
+        );
+
+        $Block['element']['elements'][0]['elements'] []= array(
+            'name' => 'tr',
+            'elements' => $HeaderElements,
+        );
+
+        return $Block;
     }
 
     protected function blockTableContinue($Line, array $Block)
@@ -910,7 +1012,7 @@ class Parsedown
             return;
         }
 
-        if ($Line['text'][0] === '|' or strpos($Line['text'], '|'))
+        if (count($Block['alignments']) === 1 or $Line['text'][0] === '|' or strpos($Line['text'], '|'))
         {
             $Elements = array();
 
@@ -921,14 +1023,19 @@ class Parsedown
 
             preg_match_all('/(?:(\\\\[|])|[^|`]|`[^`]+`|`)+/', $row, $matches);
 
-            foreach ($matches[0] as $index => $cell)
+            $cells = array_slice($matches[0], 0, count($Block['alignments']));
+
+            foreach ($cells as $index => $cell)
             {
                 $cell = trim($cell);
 
                 $Element = array(
                     'name' => 'td',
-                    'handler' => 'line',
-                    'text' => $cell,
+                    'handler' => array(
+                        'function' => 'lineElements',
+                        'argument' => $cell,
+                        'destination' => 'elements',
+                    )
                 );
 
                 if (isset($Block['alignments'][$index]))
@@ -943,11 +1050,10 @@ class Parsedown
 
             $Element = array(
                 'name' => 'tr',
-                'handler' => 'elements',
-                'text' => $Elements,
+                'elements' => $Elements,
             );
 
-            $Block['element']['text'][1]['text'] []= $Element;
+            $Block['element']['elements'][1]['elements'] []= $Element;
 
             return $Block;
         }
@@ -959,13 +1065,27 @@ class Parsedown
 
     protected function paragraph($Line)
     {
-        $Block = array(
+        return array(
+            'type' => 'Paragraph',
             'element' => array(
                 'name' => 'p',
-                'text' => $Line['text'],
-                'handler' => 'line',
+                'handler' => array(
+                    'function' => 'lineElements',
+                    'argument' => $Line['text'],
+                    'destination' => 'elements',
+                ),
             ),
         );
+    }
+
+    protected function paragraphContinue($Line, array $Block)
+    {
+        if (isset($Block['interrupted']))
+        {
+            return;
+        }
+
+        $Block['element']['handler']['argument'] .= "\n".$Line['text'];
 
         return $Block;
     }
@@ -975,13 +1095,11 @@ class Parsedown
     #
 
     protected $InlineTypes = array(
-        '"' => array('SpecialCharacter'),
         '!' => array('Image'),
         '&' => array('SpecialCharacter'),
         '*' => array('Emphasis'),
         ':' => array('Url'),
-        '<' => array('UrlTag', 'EmailTag', 'Markup', 'SpecialCharacter'),
-        '>' => array('SpecialCharacter'),
+        '<' => array('UrlTag', 'EmailTag', 'Markup'),
         '[' => array('Link'),
         '_' => array('Emphasis'),
         '`' => array('Code'),
@@ -991,15 +1109,20 @@ class Parsedown
 
     # ~
 
-    protected $inlineMarkerList = '!"*_&[:<>`~\\';
+    protected $inlineMarkerList = '!*_&[:<`~\\';
 
     #
     # ~
     #
 
-    public function line($text)
+    public function line($text, $nonNestables=array())
     {
-        $markup = '';
+        return $this->elements($this->lineElements($text, $nonNestables));
+    }
+
+    protected function lineElements($text, $nonNestables = array())
+    {
+        $Elements = array();
 
         # $excerpt is based on the first occurrence of a marker
 
@@ -1013,6 +1136,13 @@ class Parsedown
 
             foreach ($this->InlineTypes[$marker] as $inlineType)
             {
+                # check to see if the current inline type is nestable in the current context
+
+                if ( ! empty($nonNestables) and in_array($inlineType, $nonNestables))
+                {
+                    continue;
+                }
+
                 $Inline = $this->{'inline'.$inlineType}($Excerpt);
 
                 if ( ! isset($Inline))
@@ -1034,14 +1164,22 @@ class Parsedown
                     $Inline['position'] = $markerPosition;
                 }
 
+                # cause the new element to 'inherit' our non nestables
+
+                foreach ($nonNestables as $non_nestable)
+                {
+                    $Inline['element']['nonNestables'][] = $non_nestable;
+                }
+
                 # the text that comes before the inline
                 $unmarkedText = substr($text, 0, $Inline['position']);
 
                 # compile the unmarked text
-                $markup .= $this->unmarkedText($unmarkedText);
+                $InlineText = $this->inlineText($unmarkedText);
+                $Elements[] = $InlineText['element'];
 
                 # compile the inline
-                $markup .= isset($Inline['markup']) ? $Inline['markup'] : $this->element($Inline['element']);
+                $Elements[] = $this->extractElement($Inline);
 
                 # remove the examined text
                 $text = substr($text, $Inline['position'] + $Inline['extent']);
@@ -1053,19 +1191,65 @@ class Parsedown
 
             $unmarkedText = substr($text, 0, $markerPosition + 1);
 
-            $markup .= $this->unmarkedText($unmarkedText);
+            $InlineText = $this->inlineText($unmarkedText);
+            $Elements[] = $InlineText['element'];
 
             $text = substr($text, $markerPosition + 1);
         }
 
-        $markup .= $this->unmarkedText($text);
+        $InlineText = $this->inlineText($text);
+        $Elements[] = $InlineText['element'];
 
-        return $markup;
+        $Elements = array_map(
+            function ($Element) {
+                $Element['autobreak'] = isset($Element['autobreak'])
+                    ? $Element['autobreak'] : false;
+                return $Element;
+            },
+            $Elements
+        );
+
+        return $Elements;
     }
 
     #
     # ~
     #
+
+    protected function inlineText($text)
+    {
+        $Inline = array(
+            'extent' => strlen($text),
+            'element' => array(
+                'elements' => array(),
+            ),
+        );
+
+        if ($this->breaksEnabled)
+        {
+            $Inline['element']['elements'] = self::pregReplaceElements(
+                '/[ ]*\n/',
+                array(
+                    array('name' => 'br'),
+                    array('text' => "\n"),
+                ),
+                $text
+            );
+        }
+        else
+        {
+            $Inline['element']['elements'] = self::pregReplaceElements(
+                '/(?:[ ][ ]+|[ ]*\\\\)\n/',
+                array(
+                    array('name' => 'br'),
+                    array('text' => "\n"),
+                ),
+                $text
+            );
+        }
+
+        return $Inline;
+    }
 
     protected function inlineCode($Excerpt)
     {
@@ -1074,7 +1258,6 @@ class Parsedown
         if (preg_match('/^('.$marker.'+)[ ]*(.+?)[ ]*(?<!'.$marker.')\1(?!'.$marker.')/s', $Excerpt['text'], $matches))
         {
             $text = $matches[2];
-            $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
             $text = preg_replace("/[ ]*\n/", ' ', $text);
 
             return array(
@@ -1089,8 +1272,14 @@ class Parsedown
 
     protected function inlineEmailTag($Excerpt)
     {
-        if (strpos($Excerpt['text'], '>') !== false and preg_match('/^<((mailto:)?\S+?@\S+?)>/i', $Excerpt['text'], $matches))
-        {
+        $hostnameLabel = '[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?';
+
+        $commonMarkEmail = '[a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~-]++@'
+            . $hostnameLabel . '(?:\.' . $hostnameLabel . ')*';
+
+        if (strpos($Excerpt['text'], '>') !== false
+            and preg_match("/^<((mailto:)?$commonMarkEmail)>/i", $Excerpt['text'], $matches)
+        ){
             $url = $matches[1];
 
             if ( ! isset($matches[2]))
@@ -1137,8 +1326,11 @@ class Parsedown
             'extent' => strlen($matches[0]),
             'element' => array(
                 'name' => $emphasis,
-                'handler' => 'line',
-                'text' => $matches[1],
+                'handler' => array(
+                    'function' => 'lineElements',
+                    'argument' => $matches[1],
+                    'destination' => 'elements',
+                )
             ),
         );
     }
@@ -1148,7 +1340,7 @@ class Parsedown
         if (isset($Excerpt['text'][1]) and in_array($Excerpt['text'][1], $this->specialCharacters))
         {
             return array(
-                'markup' => $Excerpt['text'][1],
+                'element' => array('rawHtml' => $Excerpt['text'][1]),
                 'extent' => 2,
             );
         }
@@ -1176,8 +1368,9 @@ class Parsedown
                 'name' => 'img',
                 'attributes' => array(
                     'src' => $Link['element']['attributes']['href'],
-                    'alt' => $Link['element']['text'],
+                    'alt' => $Link['element']['handler']['argument'],
                 ),
+                'autobreak' => true,
             ),
         );
 
@@ -1192,8 +1385,12 @@ class Parsedown
     {
         $Element = array(
             'name' => 'a',
-            'handler' => 'line',
-            'text' => null,
+            'handler' => array(
+                'function' => 'lineElements',
+                'argument' => null,
+                'destination' => 'elements',
+            ),
+            'nonNestables' => array('Url', 'Link'),
             'attributes' => array(
                 'href' => null,
                 'title' => null,
@@ -1206,7 +1403,7 @@ class Parsedown
 
         if (preg_match('/\[((?:[^][]++|(?R))*+)\]/', $remainder, $matches))
         {
-            $Element['text'] = $matches[1];
+            $Element['handler']['argument'] = $matches[1];
 
             $extent += strlen($matches[0]);
 
@@ -1232,14 +1429,14 @@ class Parsedown
         {
             if (preg_match('/^\s*\[(.*?)\]/', $remainder, $matches))
             {
-                $definition = strlen($matches[1]) ? $matches[1] : $Element['text'];
+                $definition = strlen($matches[1]) ? $matches[1] : $Element['handler']['argument'];
                 $definition = strtolower($definition);
 
                 $extent += strlen($matches[0]);
             }
             else
             {
-                $definition = strtolower($Element['text']);
+                $definition = strtolower($Element['handler']['argument']);
             }
 
             if ( ! isset($this->DefinitionData['Reference'][$definition]))
@@ -1253,8 +1450,6 @@ class Parsedown
             $Element['attributes']['title'] = $Definition['title'];
         }
 
-        $Element['attributes']['href'] = str_replace(array('&', '<'), array('&amp;', '&lt;'), $Element['attributes']['href']);
-
         return array(
             'extent' => $extent,
             'element' => $Element,
@@ -1263,15 +1458,15 @@ class Parsedown
 
     protected function inlineMarkup($Excerpt)
     {
-        if ($this->markupEscaped or strpos($Excerpt['text'], '>') === false)
+        if ($this->markupEscaped or $this->safeMode or strpos($Excerpt['text'], '>') === false)
         {
             return;
         }
 
-        if ($Excerpt['text'][1] === '/' and preg_match('/^<\/\w*[ ]*>/s', $Excerpt['text'], $matches))
+        if ($Excerpt['text'][1] === '/' and preg_match('/^<\/\w[\w-]*[ ]*>/s', $Excerpt['text'], $matches))
         {
             return array(
-                'markup' => $matches[0],
+                'element' => array('rawHtml' => $matches[0]),
                 'extent' => strlen($matches[0]),
             );
         }
@@ -1279,15 +1474,15 @@ class Parsedown
         if ($Excerpt['text'][1] === '!' and preg_match('/^<!---?[^>-](?:-?[^-])*-->/s', $Excerpt['text'], $matches))
         {
             return array(
-                'markup' => $matches[0],
+                'element' => array('rawHtml' => $matches[0]),
                 'extent' => strlen($matches[0]),
             );
         }
 
-        if ($Excerpt['text'][1] !== ' ' and preg_match('/^<\w*(?:[ ]*'.$this->regexHtmlAttribute.')*[ ]*\/?>/s', $Excerpt['text'], $matches))
+        if ($Excerpt['text'][1] !== ' ' and preg_match('/^<\w[\w-]*(?:[ ]*'.$this->regexHtmlAttribute.')*[ ]*\/?>/s', $Excerpt['text'], $matches))
         {
             return array(
-                'markup' => $matches[0],
+                'element' => array('rawHtml' => $matches[0]),
                 'extent' => strlen($matches[0]),
             );
         }
@@ -1295,23 +1490,15 @@ class Parsedown
 
     protected function inlineSpecialCharacter($Excerpt)
     {
-        if ($Excerpt['text'][0] === '&' and ! preg_match('/^&#?\w+;/', $Excerpt['text']))
+        if (preg_match('/^&(#?+[0-9a-zA-Z]++);/', $Excerpt['text'], $matches))
         {
             return array(
-                'markup' => '&amp;',
-                'extent' => 1,
+                'element' => array('rawHtml' => '&'.$matches[1].';'),
+                'extent' => strlen($matches[0]),
             );
         }
 
-        $SpecialCharacter = array('>' => 'gt', '<' => 'lt', '"' => 'quot');
-
-        if (isset($SpecialCharacter[$Excerpt['text'][0]]))
-        {
-            return array(
-                'markup' => '&'.$SpecialCharacter[$Excerpt['text'][0]].';',
-                'extent' => 1,
-            );
-        }
+        return;
     }
 
     protected function inlineStrikethrough($Excerpt)
@@ -1327,8 +1514,11 @@ class Parsedown
                 'extent' => strlen($matches[0]),
                 'element' => array(
                     'name' => 'del',
-                    'text' => $matches[1],
-                    'handler' => 'line',
+                    'handler' => array(
+                        'function' => 'lineElements',
+                        'argument' => $matches[1],
+                        'destination' => 'elements',
+                    )
                 ),
             );
         }
@@ -1343,14 +1533,16 @@ class Parsedown
 
         if (preg_match('/\bhttps?:[\/]{2}[^\s<]+\b\/*/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE))
         {
+            $url = $matches[0][0];
+
             $Inline = array(
                 'extent' => strlen($matches[0][0]),
                 'position' => $matches[0][1],
                 'element' => array(
                     'name' => 'a',
-                    'text' => $matches[0][0],
+                    'text' => $url,
                     'attributes' => array(
-                        'href' => $matches[0][0],
+                        'href' => $url,
                     ),
                 ),
             );
@@ -1363,7 +1555,7 @@ class Parsedown
     {
         if (strpos($Excerpt['text'], '>') !== false and preg_match('/^<(\w+:\/{2}[^ >]+)>/i', $Excerpt['text'], $matches))
         {
-            $url = str_replace(array('&', '<'), array('&amp;', '&lt;'), $matches[1]);
+            $url = $matches[1];
 
             return array(
                 'extent' => strlen($matches[0]),
@@ -1382,56 +1574,189 @@ class Parsedown
 
     protected function unmarkedText($text)
     {
-        if ($this->breaksEnabled)
-        {
-            $text = preg_replace('/[ ]*\n/', "<br />\n", $text);
-        }
-        else
-        {
-            $text = preg_replace('/(?:[ ][ ]+|[ ]*\\\\)\n/', "<br />\n", $text);
-            $text = str_replace(" \n", "\n", $text);
-        }
-
-        return $text;
+        $Inline = $this->inlineText($text);
+        return $this->element($Inline['element']);
     }
 
     #
     # Handlers
     #
 
-    protected function element(array $Element)
+    protected function handle(array $Element)
     {
-        $markup = '<'.$Element['name'];
-
-        if (isset($Element['attributes']))
+        if (isset($Element['handler']))
         {
-            foreach ($Element['attributes'] as $name => $value)
+            if (!isset($Element['nonNestables']))
             {
-                if ($value === null)
-                {
-                    continue;
-                }
-
-                $markup .= ' '.$name.'="'.$value.'"';
+                $Element['nonNestables'] = array();
             }
-        }
 
-        if (isset($Element['text']))
-        {
-            $markup .= '>';
-
-            if (isset($Element['handler']))
+            if (is_string($Element['handler']))
             {
-                $markup .= $this->{$Element['handler']}($Element['text']);
+                $function = $Element['handler'];
+                $argument = $Element['text'];
+                unset($Element['text']);
+                $destination = 'rawHtml';
             }
             else
             {
-                $markup .= $Element['text'];
+                $function = $Element['handler']['function'];
+                $argument = $Element['handler']['argument'];
+                $destination = $Element['handler']['destination'];
             }
 
-            $markup .= '</'.$Element['name'].'>';
+            $Element[$destination] = $this->{$function}($argument, $Element['nonNestables']);
+
+            if ($destination === 'handler')
+            {
+                $Element = $this->handle($Element);
+            }
         }
-        else
+
+        unset($Element['handler']);
+
+        return $Element;
+    }
+
+    protected function handleElementRecursive(array $Element)
+    {
+        return $this->elementApplyRecursive(array($this, 'handle'), $Element);
+    }
+
+    protected function handleElementsRecursive(array $Elements)
+    {
+        return $this->elementsApplyRecursive(array($this, 'handle'), $Elements);
+    }
+
+    protected function elementApplyRecursive($closure, array $Element)
+    {
+        $Element = call_user_func($closure, $Element);
+
+        if (isset($Element['elements']))
+        {
+            $Element['elements'] = $this->elementsApplyRecursive($closure, $Element['elements']);
+        }
+        elseif (isset($Element['element']))
+        {
+            $Element['element'] = $this->elementApplyRecursive($closure, $Element['element']);
+        }
+
+        return $Element;
+    }
+
+    protected function elementApplyRecursiveDepthFirst($closure, array $Element)
+    {
+        if (isset($Element['elements']))
+        {
+            $Element['elements'] = $this->elementsApplyRecursiveDepthFirst($closure, $Element['elements']);
+        }
+        elseif (isset($Element['element']))
+        {
+            $Element['element'] = $this->elementsApplyRecursiveDepthFirst($closure, $Element['element']);
+        }
+
+        $Element = call_user_func($closure, $Element);
+
+        return $Element;
+    }
+
+    protected function elementsApplyRecursive($closure, array $Elements)
+    {
+        foreach ($Elements as &$Element)
+        {
+            $Element = $this->elementApplyRecursive($closure, $Element);
+        }
+
+        return $Elements;
+    }
+
+    protected function elementsApplyRecursiveDepthFirst($closure, array $Elements)
+    {
+        foreach ($Elements as &$Element)
+        {
+            $Element = $this->elementApplyRecursiveDepthFirst($closure, $Element);
+        }
+
+        return $Elements;
+    }
+
+    protected function element(array $Element)
+    {
+        if ($this->safeMode)
+        {
+            $Element = $this->sanitiseElement($Element);
+        }
+
+        # identity map if element has no handler
+        $Element = $this->handle($Element);
+
+        $hasName = isset($Element['name']);
+
+        $markup = '';
+
+        if ($hasName)
+        {
+            $markup .= '<'.$Element['name'];
+
+            if (isset($Element['attributes']))
+            {
+                foreach ($Element['attributes'] as $name => $value)
+                {
+                    if ($value === null)
+                    {
+                        continue;
+                    }
+
+                    $markup .= ' '.$name.'="'.self::escape($value).'"';
+                }
+            }
+        }
+
+        $permitRawHtml = false;
+
+        if (isset($Element['text']))
+        {
+            $text = $Element['text'];
+        }
+        // very strongly consider an alternative if you're writing an
+        // extension
+        elseif (isset($Element['rawHtml']))
+        {
+            $text = $Element['rawHtml'];
+
+            $allowRawHtmlInSafeMode = isset($Element['allowRawHtmlInSafeMode']) && $Element['allowRawHtmlInSafeMode'];
+            $permitRawHtml = !$this->safeMode || $allowRawHtmlInSafeMode;
+        }
+
+        $hasContent = isset($text) || isset($Element['element']) || isset($Element['elements']);
+
+        if ($hasContent)
+        {
+            $markup .= $hasName ? '>' : '';
+
+            if (isset($Element['elements']))
+            {
+                $markup .= $this->elements($Element['elements']);
+            }
+            elseif (isset($Element['element']))
+            {
+                $markup .= $this->element($Element['element']);
+            }
+            else
+            {
+                if (!$permitRawHtml)
+                {
+                    $markup .= self::escape($text, true);
+                }
+                else
+                {
+                    $markup .= $text;
+                }
+            }
+
+            $markup .= $hasName ? '</'.$Element['name'].'>' : '';
+        }
+        elseif ($hasName)
         {
             $markup .= ' />';
         }
@@ -1443,12 +1768,26 @@ class Parsedown
     {
         $markup = '';
 
+        $autoBreak = true;
+
         foreach ($Elements as $Element)
         {
-            $markup .= "\n" . $this->element($Element);
+            if (empty($Element))
+            {
+                continue;
+            }
+
+            $autoBreakNext = (isset($Element['autobreak']) && $Element['autobreak']
+                || ! isset($Element['autobreak']) && isset($Element['name'])
+            );
+            // (autobreak === false) covers both sides of an element
+            $autoBreak = !$autoBreak ? $autoBreak : $autoBreakNext;
+
+            $markup .= ($autoBreak ? "\n" : '') . $this->element($Element);
+            $autoBreak = $autoBreakNext;
         }
 
-        $markup .= "\n";
+        $markup .= $autoBreak ? "\n" : '';
 
         return $markup;
     }
@@ -1457,21 +1796,49 @@ class Parsedown
 
     protected function li($lines)
     {
-        $markup = $this->lines($lines);
+        $Elements = $this->linesElements($lines);
 
-        $trimmedMarkup = trim($markup);
-
-        if ( ! in_array('', $lines) and substr($trimmedMarkup, 0, 3) === '<p>')
-        {
-            $markup = $trimmedMarkup;
-            $markup = substr($markup, 3);
-
-            $position = strpos($markup, "</p>");
-
-            $markup = substr_replace($markup, '', $position, 4);
+        if ( ! in_array('', $lines)
+            and isset($Elements[0]) and isset($Elements[0]['name'])
+            and $Elements[0]['name'] === 'p'
+        ) {
+            unset($Elements[0]['name']);
         }
 
-        return $markup;
+        return $Elements;
+    }
+
+    #
+    # AST Convenience
+    #
+
+    /**
+     * Replace occurrences $regexp with $Elements in $text. Return an array of
+     * elements representing the replacement.
+     */
+    protected static function pregReplaceElements($regexp, $Elements, $text)
+    {
+        $newElements = array();
+
+        while (preg_match($regexp, $text, $matches, PREG_OFFSET_CAPTURE))
+        {
+            $offset = $matches[0][1];
+            $before = substr($text, 0, $offset);
+            $after = substr($text, $offset + strlen($matches[0][0]));
+
+            $newElements[] = array('text' => $before);
+
+            foreach ($Elements as $Element)
+            {
+                $newElements[] = $Element;
+            }
+
+            $text = $after;
+        }
+
+        $newElements[] = array('text' => $text);
+
+        return $newElements;
     }
 
     #
@@ -1485,9 +1852,82 @@ class Parsedown
         return $markup;
     }
 
+    protected function sanitiseElement(array $Element)
+    {
+        static $goodAttribute = '/^[a-zA-Z0-9][a-zA-Z0-9-_]*+$/';
+        static $safeUrlNameToAtt  = array(
+            'a'   => 'href',
+            'img' => 'src',
+        );
+
+        if ( ! isset($Element['name']))
+        {
+            unset($Element['attributes']);
+            return $Element;
+        }
+
+        if (isset($safeUrlNameToAtt[$Element['name']]))
+        {
+            $Element = $this->filterUnsafeUrlInAttribute($Element, $safeUrlNameToAtt[$Element['name']]);
+        }
+
+        if ( ! empty($Element['attributes']))
+        {
+            foreach ($Element['attributes'] as $att => $val)
+            {
+                # filter out badly parsed attribute
+                if ( ! preg_match($goodAttribute, $att))
+                {
+                    unset($Element['attributes'][$att]);
+                }
+                # dump onevent attribute
+                elseif (self::striAtStart($att, 'on'))
+                {
+                    unset($Element['attributes'][$att]);
+                }
+            }
+        }
+
+        return $Element;
+    }
+
+    protected function filterUnsafeUrlInAttribute(array $Element, $attribute)
+    {
+        foreach ($this->safeLinksWhitelist as $scheme)
+        {
+            if (self::striAtStart($Element['attributes'][$attribute], $scheme))
+            {
+                return $Element;
+            }
+        }
+
+        $Element['attributes'][$attribute] = str_replace(':', '%3A', $Element['attributes'][$attribute]);
+
+        return $Element;
+    }
+
     #
     # Static Methods
     #
+
+    protected static function escape($text, $allowQuotes = false)
+    {
+        return htmlspecialchars($text, $allowQuotes ? ENT_NOQUOTES : ENT_QUOTES, 'UTF-8');
+    }
+
+    protected static function striAtStart($string, $needle)
+    {
+        $len = strlen($needle);
+
+        if ($len > strlen($string))
+        {
+            return false;
+        }
+        else
+        {
+            return strtolower(substr($string, 0, $len)) === strtolower($needle);
+        }
+    }
 
     static function instance($name = 'default')
     {
