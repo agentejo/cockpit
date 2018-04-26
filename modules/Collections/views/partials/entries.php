@@ -187,7 +187,7 @@
                         @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
                         <th width="20"><input type="checkbox" data-check="all"></th>
                         @endif
-                        <th width="{field.name == '_modified' || field.name == '_created' ? '80':''}" class="uk-text-small" each="{field,idx in fields}" if="{ hasFieldAccess(field.name) }">
+                        <th width="{field.name == '_modified' || field.name == '_created' ? '100':''}" class="uk-text-small" each="{field,idx in fields}" if="{ hasFieldAccess(field.name) }">
                             <a class="uk-link-muted uk-noselect { parent.sortedBy == field.name ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
 
                                 { field.label || field.name }
