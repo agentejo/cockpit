@@ -226,7 +226,7 @@ class Admin extends \Cockpit\AuthController {
             $_entry = $this->module('collections')->findOne($collection['name'], ['_id' => $entry['_id']]);
             $revision = !(json_encode($_entry) == json_encode($entry));
         } else {
-            $entry['_by'] = $this->module('cockpit')->getUser('_id');
+            $entry['_by'] = $entry['_mby'];
             $revision = true;
         }
 

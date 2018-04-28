@@ -115,7 +115,6 @@
                                         <strong class="uk-text-uppercase">@lang('Singleton')</strong>
                                         <div class="uk-margin-top"><field-boolean bind="singleton.acl.{group}.form" label="@lang('Form')"></field-boolean></div>
                                         <div class="uk-margin-top"><field-boolean bind="singleton.acl.{group}.edit" label="@lang('Edit Singleton')"></field-boolean></div>
-                                        <div class="uk-margin-top"><field-boolean bind="singleton.acl.{group}.render" label="@lang('Render Singleton')"></field-boolean></div>
                                         <div class="uk-margin-top"><field-boolean bind="singleton.acl.{group}.data" label="@lang('Get Singleton Data')"></field-boolean></div>
                                     </div>
                                 </div>
