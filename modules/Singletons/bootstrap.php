@@ -102,7 +102,7 @@ $this->module("singletons")->extend([
         return false;
     },
 
-    'saveData' => function($name, $data) {
+    'saveData' => function($name, $data, $options = []) {
 
         if ($singleton = $this->singleton($name)) {
 
@@ -113,6 +113,10 @@ $this->module("singletons")->extend([
 
             $this->app->trigger('singleton.saveData.after', [$singleton, $data]);
             $this->app->trigger("singleton.saveData.after.{$name}", [$singleton, $data]);
+
+            if (isset($options['revision']) && $options['revision']) {
+                $this->app->helper('revisions')->add($singleton['_id'], $data, "singletons/{$singleton['name']}", true);
+            }
 
             return true;
         }
@@ -337,7 +341,7 @@ $this->module("singletons")->extend([
 ]);
 
 // ACL
-$app("acl")->addResource("singletons", ['create', 'delete']);
+$app("acl")->addResource('singletons', ['create', 'form', 'edit', 'data', 'delete']);
 
 $this->module('singletons')->extend([
 

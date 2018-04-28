@@ -118,6 +118,16 @@
                     </div>
 
                     <div class="uk-margin">
+                        <label class="uk-text-small">@lang('Revisions')</label>
+                        <div class="uk-margin-small-top">
+                            <span class="uk-position-relative">
+                                <cp-revisions-info class="uk-badge uk-text-large" rid="{singleton._id}"></cp-revisions-info>
+                                <a class="uk-position-cover" href="@route('/singletons/revisions/'.$singleton['name'])/{singleton._id}"></a>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="uk-margin">
                         <label class="uk-text-small">@lang('Last Modified')</label>
                         <div class="uk-margin-small-top uk-text-muted"><i class="uk-icon-calendar uk-margin-small-right"></i> {  App.Utils.dateformat( new Date( 1000 * singleton._modified )) }</div>
                     </div>
@@ -245,6 +255,10 @@
                                 $this.data[field.name] = '';
                             }
                         });
+
+                        if ($this.tags['cp-revisions-info']) {
+                            $this.tags['cp-revisions-info'].sync();
+                        }
 
                         $this.update();
 
