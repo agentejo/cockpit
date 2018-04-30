@@ -160,7 +160,7 @@
 
         if (!opts.link) return;
 
-        modal = UIkit.modal(App.$('.uk-modal', this.root));
+        modal = UIkit.modal(App.$('.uk-modal', this.root), {modal:false});
 
         App.request('/collections/_collections').then(function(data){
             collections = data;
