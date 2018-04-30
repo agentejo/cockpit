@@ -1,4 +1,4 @@
-/*! UIkit 2.27.4 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.27.5 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(core) {
 
     var uikit;
@@ -45,7 +45,7 @@
 
     var UI = {}, _UI = window.UIkit || undefined;
 
-    UI.version = '2.27.4';
+    UI.version = '2.27.5';
 
     UI.noConflict = function() {
         // restore UIkit version
@@ -2684,7 +2684,10 @@
 
             if (!this.element.length) return;
 
-            var $this = this;
+            var $this = this, finalize = function() {
+                $this.dialog.css('transform', 'none');
+                UI.Utils.focus($this.dialog, 'a[href]');
+            };
 
             if (this.isActive()) return;
 
@@ -2707,11 +2710,11 @@
                 this.hasTransitioned = false;
                 this.element.one(UI.support.transition.end, function(){
                     $this.hasTransitioned = true;
-                    UI.Utils.focus($this.dialog, 'a[href]');
+                    finalize();
                 }).addClass('uk-open');
             } else {
                 this.element.addClass('uk-open');
-                UI.Utils.focus(this.dialog, 'a[href]');
+                finalize();
             }
 
             $html.addClass('uk-modal-page').height(); // force browser engine redraw
@@ -2801,6 +2804,7 @@
             else activeCount = 0;
 
             this.element.hide().removeClass('uk-open');
+            this.dialog.css('transform', '');
 
             // Update ARIA
             this.element.attr('aria-hidden', 'true');
