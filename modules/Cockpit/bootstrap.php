@@ -478,10 +478,13 @@ if (COCKPIT_ADMIN) {
 
 // ADMIN
 if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
-
     include_once(__DIR__.'/admin.php');
 }
 
+// CLI
+if (COCKPIT_CLI) {
+    $this->path('#cli', __DIR__.'/cli');
+}
 
 // WEBHOOKS
 if (!defined('COCKPIT_INSTALL')) {
