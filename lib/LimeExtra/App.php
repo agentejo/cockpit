@@ -83,7 +83,7 @@ class App extends \Lime\App {
         $renderer     = $this->renderer;
         $olayout      = $this->layout;
 
-        $slots         = array_merge($this->viewvars, $slots);
+        $slots        = array_merge($this->viewvars, $slots);
         $layout       = $olayout;
 
         $this->layout = false;

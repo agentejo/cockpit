@@ -12,25 +12,25 @@ class CLI {
         static $opts;
 
         if (is_null($opts)) {
-            
+
             global $argv;
 
             $args = $argv;
-            array_shift($args); 
-            $opts = array();
+            array_shift($args);
+            $opts = [];
 
             for ($i=0;$i<count($args);$i++){
-                
+
                 $a = $args[$i];
                 $b = isset($args[$i+1]) ? $args[$i+1] : null;
 
-                if (substr($a, 0, 2) == '--') { 
+                if (substr($a, 0, 2) == '--') {
 
                     $k = substr($a, 2);
 
-                    if ($b && substr($b, 0, 1) !== '-') { 
+                    if ($b && substr($b, 0, 1) !== '-') {
                         $opts[$k] = $b;
-                    } else { 
+                    } else {
                         $opts[$k] = true;
                     }
 
@@ -38,9 +38,9 @@ class CLI {
 
                     $k = substr($a, 1);
 
-                    if ($b && substr($b, 0, 1) !== '-') { 
+                    if ($b && substr($b, 0, 1) !== '-') {
                         $opts[$k] = $b;
-                    } else { 
+                    } else {
                         $opts[$k] = true;
                     }
                 }
@@ -50,13 +50,13 @@ class CLI {
         if (!$name) {
             return $opts;
         }
-        
+
         return isset($opts[$name]) ? $opts[$name] : $default;
     }
 
 
     public static function write($out, $fgcolor = null, $bgcolor = null) {
-        
+
         if ($fgcolor === true) $fgcolor = 'green';
         if ($fgcolor === false) $fgcolor = 'red';
 
