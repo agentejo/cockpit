@@ -26,11 +26,11 @@ class Filesystem extends \Lime\Helper {
             case 0:
                 $dir = getcwd();
             case 1:
-                $dir = $this->app->path($args[0]);
+                $dir = (strpos($args[0], ':')) ? $this->app->path($args[0]) : $args[0];
                 break;
             case 2:
                 $pattern = $args[0];
-                $dir = $this->app->path($args[1]);
+                $dir = (strpos($args[1], ':')) ? $this->app->path($args[1]) : $args[1];
                 break;
             default:
                 return $lst;
@@ -65,7 +65,7 @@ class Filesystem extends \Lime\Helper {
             return false;
         }
 
-        $args[0] = $this->app->path($args[0]);
+        $args[0] = strpos($args[0], ':') ? $this->app->path($args[0]) : $args[0];
 
         return $args[0] ? call_user_func_array('file_get_contents', $args) : '';
     }
