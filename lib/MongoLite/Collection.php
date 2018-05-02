@@ -73,7 +73,7 @@ class Collection {
     protected function _insert(&$document) {
 
         $table           = $this->name;
-        $document["_id"] = uniqid().'doc'.rand();
+        $document["_id"] = isset($document["_id"]) ? $document["_id"] : uniqid().'doc'.rand();
         $data            = array("document" => json_encode($document, JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE));
 
         $fields = array();

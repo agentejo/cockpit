@@ -2,8 +2,14 @@
 
 if (!COCKPIT_CLI) return;
 
+$target = $app->param('target', null);
+
+if (!$target) {
+    return CLI::writeln("--target parameter is missing", false);
+}
+
 $options = new ArrayObject([
-    'target' => $app->param('target', null)
+    'target' => $target
 ]);
 
 $fs = $app->helper('fs');
