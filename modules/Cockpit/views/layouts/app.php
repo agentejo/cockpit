@@ -147,7 +147,7 @@
                                     @endif
 
                                     @if($item['active'])
-                                    <span class="uk-text-small uk-margin-small-left uk-text-bolder">{{ $item['label'] }}</span>
+                                    <span class="uk-text-small uk-margin-small-left uk-text-bolder">@lang($item['label'])</span>
                                     @endif
                                 </a>
                             </li>

@@ -36,7 +36,7 @@
                 <span class="uk-text-large"><strong>@lang('No regions').</strong>
 
                 @hasaccess?('regions', 'create')
-                <a href="@route('/regions/region')">Create one</a></span>
+                <a href="@route('/regions/region')">@lang('Create one')</a></span>
                 @end
 
             </div>
