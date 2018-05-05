@@ -33,7 +33,7 @@
                     <img class="uk-svg-adjust uk-text-muted" src="@url('forms:icon.svg')" width="80" height="80" alt="Forms" data-uk-svg />
                 </p>
                 <hr>
-                <span class="uk-text-large"><strong>@lang('No forms').</strong> <a href="@route('/forms/form')">Create one</a></span>
+                <span class="uk-text-large"><strong>@lang('No forms').</strong> <a href="@route('/forms/form')">@lang('Create one')</a></span>
 
             </div>
 

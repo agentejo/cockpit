@@ -36,7 +36,7 @@
                 <span class="uk-text-large"><strong>@lang('No singletons').</strong>
 
                 @hasaccess?('singletons', 'create')
-                <a href="@route('/singletons/singleton')">Create one</a></span>
+                <a href="@route('/singletons/singleton')">@lang('Create one')</a></span>
                 @end
 
             </div>
