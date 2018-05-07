@@ -724,7 +724,24 @@ class App implements \ArrayAccess {
     public function param($index=null, $default = null, $source = null) {
 
         $src = $source ? $source : $_REQUEST;
-        return fetch_from_array($src, $index, $default);
+        $cast = null;
+
+        if (strpos($index, ':') !== false) {
+            list($index, $cast) = explode(':', $index, 2);
+        }
+
+        $value = fetch_from_array($src, $index, $default);
+
+        if ($cast) {
+
+            if (in_array($cast, ['bool', 'boolean']) && is_string($value) && in_array($cast, ['true', 'false'])) {
+                $value = $value == 'true' ? true : false;
+            }
+
+            settype($value, $cast);
+        }
+
+        return $value;
     }
 
     /**
