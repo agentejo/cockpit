@@ -12,7 +12,7 @@
 if (isset($_REQUEST['url'])) {
 
     // allow only query from same host
-    if ($_SERVER['HTTP_HOST'] != parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST)) {
+    if (!isset($_SERVER['HTTP_HOST']) || $_SERVER['HTTP_HOST'] != parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST)) {
         header('HTTP/1.0 401 Unauthorized');
         return;
     }
