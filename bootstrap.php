@@ -5,7 +5,9 @@
  */
 define('COCKPIT_START_TIME', microtime(true));
 
-if (!defined('COCKPIT_CLI')) define('COCKPIT_CLI', PHP_SAPI == 'cli');
+if (!defined('COCKPIT_CLI')) {
+    define('COCKPIT_CLI', PHP_SAPI === 'cli');
+}
 
 /*
  * Autoload from lib folder (PSR-0)
