@@ -186,4 +186,8 @@ class RestApi extends \LimeExtra\Controller {
         ];
     }
 
+    public function addAsset() {
+        
+    }
+
 }
