@@ -68,7 +68,7 @@ class Admin extends \Lime\Helper {
              */
             'extract' => [
                 'user'      => $this->user,
-                'locale'    => $this->app('i18n')->locale,
+                'locale'    => $this->app->helper('i18n')->locale,
                 'site_url'  => $this->app->pathToUrl('site:'),
                 'languages' => $languages,
                 'groups'    => $this->app->helper('acl')->getGroups()

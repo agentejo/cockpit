@@ -98,6 +98,14 @@ function cockpit($module = null) {
                 '#config'   => COCKPIT_CONFIG_DIR,
                 'assets'    => COCKPIT_DIR.'/assets',
                 'site'      => COCKPIT_SITE_DIR
+            ],
+
+            'filestorage' => [
+                'assets' => [
+                    'adapter' => 'League\Flysystem\Adapter\Local',
+                    'args' => [COCKPIT_PUBLIC_STORAGE_FOLDER.'/uploads'],
+                    'mount' => true
+                ]
             ]
 
         ], is_array($customconfig) ? $customconfig : []);
@@ -115,6 +123,12 @@ function cockpit($module = null) {
         $app->service('storage', function() use($config) {
             $client = new MongoHybrid\Client($config['database']['server'], $config['database']['options']);
             return $client;
+        });
+
+        // file storage
+        $app->service('filestorage', function($name) use($config) {
+            $filestorage = new FileStorage($config['filestorage']);
+            return $filestorage;
         });
 
         // key-value storage
