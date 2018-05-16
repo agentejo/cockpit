@@ -37,6 +37,23 @@ class FileStorage {
         return $this->storages[$name] ?: null;
     }
 
+    public function getURL($file) {
+        $url = null;
+
+        list($prefix, $path) = explode('://', $file, 2);
+
+        if (isset($this->config[$prefix]['url'])) {
+
+            if (!$path) {
+                $url = $this->config[$prefix]['url'];
+            } elseif ($this->has($file)) {
+                $url = rtrim($this->config[$prefix]['url'], '/').'/'.$path;
+            }
+        }
+
+        return $url;
+    }
+
     public function __call($name, $args) {
 
         return call_user_func_array([$this->manager, $name], $args);

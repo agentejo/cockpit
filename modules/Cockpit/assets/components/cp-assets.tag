@@ -88,7 +88,7 @@
                             <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle">
                                 <div class="uk-width-1-1 uk-text-center">
                                     <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-h1 uk-text-muted uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
-                                    <cp-thumbnail src="{ASSETS_URL+asset.path}" height="150" if="{ asset.mime.match(/^image\//) }" title="{ asset.width && [asset.width, asset.height].join('x') }"></cp-thumbnail>
+                                    <cp-thumbnail src="{asset._id}" height="150" if="{ asset.mime.match(/^image\//) }" title="{ asset.width && [asset.width, asset.height].join('x') }"></cp-thumbnail>
                                 </div>
                             </div>
                         </div>

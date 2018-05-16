@@ -21,7 +21,7 @@
     <script>
         // App constants
         var SITE_URL   = '{{ rtrim($app->pathToUrl('site:'), '/') }}';
-        var ASSETS_URL = '{{ rtrim($app->pathToUrl('#uploads:'), '/') }}';
+        var ASSETS_URL = '{{ rtrim($app->filestorage->getUrl('assets://'), '/') }}';
     </script>
     <script src="@base('assets:lib/fuc.js.php')"></script>
     {{ $app->assets($app('admin')->data->get('assets'), $app['debug'] ? time() : $app['cockpit/version']) }}

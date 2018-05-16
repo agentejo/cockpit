@@ -107,8 +107,19 @@ $this->module("cockpit")->extend([
         if (!preg_match('/\.(png|jpg|jpeg|gif)$/i', $src)) {
 
             if ($asset = $this->app->storage->findOne("cockpit/assets", ['_id' => $src])) {
+
                 $asset['path'] = trim($asset['path'], '/');
                 $src = $this->app->path("#uploads:{$asset['path']}");
+
+                if (!$src && $this->app->filestorage->has('assets://'.$asset['path'])) {
+
+                    $stream = $this->app->filestorage->readStream('assets://'.$asset['path']);
+
+                    if ($stream) {
+                       $this->app->filestorage->writeStream('uploads://'.$asset['path'], $stream);
+                       $src = $this->app->path("#uploads:{$asset['path']}");
+                    }
+                }
 
                 if ($src) {
                     $src = str_replace(COCKPIT_SITE_DIR, '', $src);
@@ -117,7 +128,6 @@ $this->module("cockpit")->extend([
                 if (isset($asset['fp']) && !$fp) {
                     $fp = $asset['fp']['x'].' '.$asset['fp']['y'];
                 }
-
             }
         }
 

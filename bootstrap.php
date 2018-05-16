@@ -100,13 +100,7 @@ function cockpit($module = null) {
                 'site'      => COCKPIT_SITE_DIR
             ],
 
-            'filestorage' => [
-                'assets' => [
-                    'adapter' => 'League\Flysystem\Adapter\Local',
-                    'args' => [COCKPIT_PUBLIC_STORAGE_FOLDER.'/uploads'],
-                    'mount' => true
-                ]
-            ]
+            'filestorage' => []
 
         ], is_array($customconfig) ? $customconfig : []);
 
@@ -126,8 +120,48 @@ function cockpit($module = null) {
         });
 
         // file storage
-        $app->service('filestorage', function($name) use($config) {
-            $filestorage = new FileStorage($config['filestorage']);
+        $app->service('filestorage', function($name) use($config, $app) {
+
+            $storages = array_replace_recursive([
+
+                'root' => [
+                    'adapter' => 'League\Flysystem\Adapter\Local',
+                    'args' => [$app->path('#root:')],
+                    'mount' => true,
+                    'url' => $app->pathToUrl('#root:')
+                ],
+
+                'tmp' => [
+                    'adapter' => 'League\Flysystem\Adapter\Local',
+                    'args' => [$app->path('#tmp:')],
+                    'mount' => true,
+                    'url' => $app->pathToUrl('#tmp:')
+                ],
+
+                'thumbs' => [
+                    'adapter' => 'League\Flysystem\Adapter\Local',
+                    'args' => [$app->path('#thumbs:')],
+                    'mount' => true,
+                    'url' => $app->pathToUrl('#thumbs:')
+                ],
+
+                'uploads' => [
+                    'adapter' => 'League\Flysystem\Adapter\Local',
+                    'args' => [$app->path('#uploads:')],
+                    'mount' => true,
+                    'url' => $app->pathToUrl('#uploads:')
+                ],
+
+                'assets' => [
+                    'adapter' => 'League\Flysystem\Adapter\Local',
+                    'args' => [$app->path('#uploads:')],
+                    'mount' => true,
+                    'url' => $app->pathToUrl('#uploads:')
+                ]
+
+            ], $config['filestorage']);
+
+            $filestorage = new FileStorage($storages);
             return $filestorage;
         });
 
