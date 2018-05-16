@@ -14,22 +14,22 @@ $this->module("cockpit")->extend([
 
     'addAssets' => function($files) use($app) {
 
-        $files = isset($files[0]) ? $files : [$files];
-
+        $files      = isset($files[0]) ? $files : [$files];
         $finfo      = finfo_open(FILEINFO_MIME_TYPE);
-        $path       = $this->app->path('#uploads:');
-        $targetpath = $path.'/'.date('Y/m/d');
         $assets     = [];
-
-        $created = time();
+        $created    = time();
 
         foreach ($files as &$file) {
 
             // clean filename
             $name = basename($file);
 
+            // clean filename
+            $clean = uniqid().preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $name));
+            $path  = '/'.date('Y/m/d').'/'.$clean;
+
             $asset = [
-                'path' => str_replace($path, '', $file),
+                'path' => $path,
                 'title' => $name,
                 'mime' => finfo_file($finfo, $file),
                 'description' => '',
@@ -67,8 +67,12 @@ $this->module("cockpit")->extend([
                 }
             }
 
-            $assets[] = $asset;
+            // move file
+            $stream = fopen($file, 'r+');
+            $this->app->filestorage->writeStream("assets://{$path}", $stream);
+            fclose($stream);
 
+            $assets[] = $asset;
         }
 
         if (count($assets)) {
@@ -81,45 +85,36 @@ $this->module("cockpit")->extend([
 
     'uploadAssets' => function($param = 'files') {
 
-        $files      = isset($_FILES[$param]) ? $_FILES[$param] : [];
-        $path       = $this->app->path('#uploads:');
-        $targetpath = $path.'/'.date('Y/m/d');
-        $uploaded   = [];
-        $failed     = [];
+        $files     = isset($_FILES[$param]) ? $_FILES[$param] : [];
+        $uploaded  = [];
+        $failed    = [];
+        $_files    = [];
+        $assets    = [];
 
-        $_uploaded  = [];
-        $_failed    = [];
-        $_files     = [];
-        $assets     = [];
-
-        if (!file_exists($targetpath) && !mkdir($targetpath, 0777, true)) {
-            return false;
-        }
-
-        if (isset($files['name']) && $path && file_exists($targetpath)) {
+        if (isset($files['name']) && is_array($files['name'])) {
 
             for ($i = 0; $i < count($files['name']); $i++) {
 
-                // clean filename
-                $clean  = uniqid().preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $files['name'][$i]));
-                $target = $targetpath.'/'.$clean;
+                $_file  = $this->app->path('#tmp:').'/'.$files['name'][$i];
 
-                if (!$files['error'][$i] && move_uploaded_file($files['tmp_name'][$i], $target)) {
+                if (!$files['error'][$i] && move_uploaded_file($files['tmp_name'][$i], $_file)) {
 
-                    $_files[]    = $target;
-                    $uploaded[]  = $files['name'][$i];
-                    $_uploaded[] = $targetpath.'/'.$clean;
+                    $_files[]   = $_file;
+                    $uploaded[] = $files['name'][$i];
 
                 } else {
-                    $failed[]    = $files['name'][$i];
-                    $_failed[]   = $targetpath.'/'.$clean;
+                    $failed[] = $files['name'][$i];
                 }
             }
-
         }
 
         if (count($_files)) {
+
             $assets = $this->addAssets($_files);
+
+            foreach ($_files as $file) {
+                unlink($file);
+            }
         }
 
         return ['uploaded' => $uploaded, 'failed' => $failed, 'assets' => $assets];
@@ -140,10 +135,7 @@ $this->module("cockpit")->extend([
             if (!$asset) continue;
 
             $this->app->storage->remove('cockpit/assets', ['_id' => $asset['_id']]);
-
-            if ($file = $this->app->path('#uploads:'.$asset['path'])) {
-                unlink($file);
-            }
+            $this->app->filestorage->delete('assets://'.trim($asset['path'], '/'));
         }
 
         $this->app->trigger('cockpit.assets.remove', [$assets]);
