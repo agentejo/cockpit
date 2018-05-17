@@ -128,35 +128,35 @@ function cockpit($module = null) {
                     'adapter' => 'League\Flysystem\Adapter\Local',
                     'args' => [$app->path('#root:')],
                     'mount' => true,
-                    'url' => $app->pathToUrl('#root:')
+                    'url' => $app->pathToUrl('#root:', true)
                 ],
 
                 'tmp' => [
                     'adapter' => 'League\Flysystem\Adapter\Local',
                     'args' => [$app->path('#tmp:')],
                     'mount' => true,
-                    'url' => $app->pathToUrl('#tmp:')
+                    'url' => $app->pathToUrl('#tmp:', true)
                 ],
 
                 'thumbs' => [
                     'adapter' => 'League\Flysystem\Adapter\Local',
                     'args' => [$app->path('#thumbs:')],
                     'mount' => true,
-                    'url' => $app->pathToUrl('#thumbs:')
+                    'url' => $app->pathToUrl('#thumbs:', true)
                 ],
 
                 'uploads' => [
                     'adapter' => 'League\Flysystem\Adapter\Local',
                     'args' => [$app->path('#uploads:')],
                     'mount' => true,
-                    'url' => $app->pathToUrl('#uploads:')
+                    'url' => $app->pathToUrl('#uploads:', true)
                 ],
 
                 'assets' => [
                     'adapter' => 'League\Flysystem\Adapter\Local',
                     'args' => [$app->path('#uploads:')],
                     'mount' => true,
-                    'url' => $app->pathToUrl('#uploads:')
+                    'url' => $app->pathToUrl('#uploads:', true)
                 ]
 
             ], $config['filestorage']);

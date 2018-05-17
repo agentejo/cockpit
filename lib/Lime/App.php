@@ -502,7 +502,7 @@ class App implements \ArrayAccess {
      * @param $path
      * @return bool|string
      */
-    public function pathToUrl($path) {
+    public function pathToUrl($path, $full = false) {
 
         $url = false;
 
@@ -513,13 +513,11 @@ class App implements \ArrayAccess {
 
             $url = '/'.ltrim(str_replace($root, '', $file), '/');
             $url = implode('/', array_map('rawurlencode', explode('/', $url)));
-        }
 
-        /*
-        if ($this->registry['base_port'] != "80") {
-            $url = $this->registry['site_url'].$url;
+            if ($full) {
+                $url = rtrim($this['site_url'], '/').$url;
+            }
         }
-        */
 
         return $url;
     }

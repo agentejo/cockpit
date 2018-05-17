@@ -78,7 +78,7 @@ $this->module("cockpit")->extend([
     "thumbnail" => function($options) {
 
         $options = array_merge(array(
-            'cachefolder' => '#thumbs:',
+            'cachefolder' => 'thumbs://',
             'src' => '',
             'mode' => 'thumbnail',
             'fp' => null,
@@ -88,8 +88,7 @@ $this->module("cockpit")->extend([
             'quality' => 100,
             'rebuild' => false,
             'base64' => false,
-            'output' => false,
-            'domain' => false
+            'output' => false
         ), $options);
 
         extract($options);
@@ -144,7 +143,6 @@ $this->module("cockpit")->extend([
 
         $path  = $this->app->path($src);
         $ext   = pathinfo($path, PATHINFO_EXTENSION);
-        $url   = "data:image/gif;base64,R0lGODlhAQABAJEAAAAAAP///////wAAACH5BAEHAAIALAAAAAABAAEAAAICVAEAOw=="; // transparent 1px gif
 
         if (!file_exists($path) || is_dir($path)) {
             return false;
@@ -163,7 +161,7 @@ $this->module("cockpit")->extend([
         }
 
         if (is_null($width) && is_null($height)) {
-            return $this->app->pathToUrl($path);
+            return $this->app->pathToUrl($path, true);
         }
 
         if (!$fp) {
@@ -178,9 +176,9 @@ $this->module("cockpit")->extend([
 
         $filetime = filemtime($path);
         $hash = md5($path.json_encode($options))."_{$width}x{$height}_{$quality}_{$filetime}_{$mode}_".md5($fp).".{$ext}";
-        $savepath = rtrim($this->app->path($cachefolder), '/')."/{$hash}";
+        $thumbpath = $cachefolder."/{$hash}";
 
-        if ($rebuild || !file_exists($savepath)) {
+        if ($rebuild || !$this->app->filestorage->has($thumbpath)) {
 
             try {
 
@@ -194,46 +192,34 @@ $this->module("cockpit")->extend([
                     'flip', 'invert', 'opacity', 'pixelate', 'sepia', 'sharpen', 'sketch'
                 ];
 
-                foreach($_filters as $f) {
+                foreach ($_filters as $f) {
 
                     if (isset($options[$f])) {
                         $img->{$f}($options[$f]);
                     }
                 }
 
-                $img->toFile($savepath, null, $quality);
+                $this->app->filestorage->write($thumbpath, $img->toString(null, $quality));
+
+                unset($img);
+
             } catch(Exception $e) {
-                return $url;
+                return "data:image/gif;base64,R0lGODlhAQABAJEAAAAAAP///////wAAACH5BAEHAAIALAAAAAABAAEAAAICVAEAOw=="; // transparent 1px gif
             }
         }
 
         if ($base64) {
-            return "data:image/{$ext};base64,".base64_encode(file_get_contents($savepath));
+            return "data:image/{$ext};base64,".base64_encode($this->app->filestorage->read($thumbpath));
         }
 
         if ($output) {
             header("Content-Type: image/{$ext}");
-            header('Content-Length: '.filesize($savepath));
-            readfile($savepath);
+            header('Content-Length: '.$this->app->filestorage->getSize($thumbpath));
+            echo $this->app->filestorage->read($thumbpath);
             $this->app->stop();
         }
 
-        $url = $this->app->pathToUrl($savepath);
-
-        if ($domain) {
-
-            $_url = ($this->app->req_is('ssl') ? 'https':'http').'://';
-
-            if (!in_array($this->app['base_port'], ['80', '443'])) {
-                $_url .= $this->app['base_host'].":".$this->app['base_port'];
-            } else {
-                $_url .= $this->app['base_host'];
-            }
-
-            $url = rtrim($_url, '/').$url;
-        }
-
-        return $url;
+        return $this->app->filestorage->getURL($thumbpath);
     }
 ]);
 
