@@ -146,8 +146,7 @@ class RestApi extends \LimeExtra\Controller {
             'quality' => intval($this->param('q', 100)),
             'rebuild' => intval($this->param('r', false)),
             'base64' => intval($this->param('b64', false)),
-            'output' => intval($this->param('o', false)),
-            'domain' => intval($this->param('d', false)),
+            'output' => intval($this->param('o', false))
         ];
 
         foreach ([
