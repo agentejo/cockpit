@@ -5,7 +5,9 @@
  */
 define('COCKPIT_START_TIME', microtime(true));
 
-if (!defined('COCKPIT_CLI')) define('COCKPIT_CLI', PHP_SAPI == 'cli');
+if (!defined('COCKPIT_CLI')) {
+    define('COCKPIT_CLI', PHP_SAPI == 'cli');
+}
 
 /*
  * Autoload from lib folder (PSR-0)
@@ -15,6 +17,9 @@ spl_autoload_register(function($class){
     $class_path = __DIR__.'/lib/'.str_replace('\\', '/', $class).'.php';
     if(file_exists($class_path)) include_once($class_path);
 });
+
+// load .env file if exists
+DotEnv::load();
 
 // check for custom defines
 if (file_exists(__DIR__.'/defines.php')) {
