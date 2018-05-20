@@ -5,6 +5,7 @@
 .project
 .settings
 .idea
+.env
 /storage/*.*
 /storage/*/*
 /config/*
