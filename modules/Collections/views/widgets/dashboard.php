@@ -28,7 +28,7 @@
 
                                     <img class="uk-margin-small-right uk-svg-adjust" src="@url(isset($col['icon']) && $col['icon'] ? 'assets:app/media/icons/'.$col['icon']:'collections:icon.svg')" width="18px" alt="icon" data-uk-svg>
 
-                                    {{ @$col['label'] ? $col['label'] : $col['name'] }}
+                                    {{ htmlspecialchars(@$col['label'] ? $col['label'] : $col['name']) }}
                                 </a>
                             </div>
                             <div>

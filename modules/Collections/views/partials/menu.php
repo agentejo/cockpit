@@ -5,7 +5,7 @@
     @foreach($collections as $collection)
     <li>
         <a href="@route('/collections/entries/'.$collection['name'])">
-        <i class="uk-icon-justify uk-icon-list"></i> {{ $collection['label'] ? $collection['label'] : $collection['name'] }}
+        <i class="uk-icon-justify uk-icon-list"></i> {{ htmlspecialchars($collection['label'] ? $collection['label'] : $collection['name']) }}
         </a>
     </li>
     @endforeach

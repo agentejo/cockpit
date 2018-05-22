@@ -36,7 +36,7 @@
         <img class="uk-svg-adjust" src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="50" alt="icon" data-uk-svg>
         @if($collection['description'])
         <div class="uk-container-center uk-margin-top uk-width-medium-1-2">
-            {{ $collection['description'] }}
+            {{ htmlspecialchars($collection['description']) }}
         </div>
         @endif
     </div>
@@ -61,7 +61,7 @@
                 <img class="uk-svg-adjust" src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="50" alt="icon" data-uk-svg>
                 @if($collection['description'])
                 <div class="uk-margin-top uk-text-small uk-text-muted">
-                    {{ $collection['description'] }}
+                    {{ htmlspecialchars($collection['description']) }}
                 </div>
                 @endif
                 <hr>

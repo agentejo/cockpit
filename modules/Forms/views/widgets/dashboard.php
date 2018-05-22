@@ -27,7 +27,7 @@
 
                             <img class="uk-margin-small-right uk-svg-adjust" src="@url(isset($form['icon']) && $form['icon'] ? 'assets:app/media/icons/'.$form['icon']:'forms:icon.svg')" width="18px" alt="icon" data-uk-svg>
 
-                            {{ @$form['label'] ? $form['label'] : $form['name'] }}
+                            {{ htmlspecialchars(@$form['label'] ? $form['label'] : $form['name']) }}
                         </a>
                     </li>
                     @endforeach
@@ -47,7 +47,7 @@
                     <img src="@url('forms:icon.svg')" width="30" height="30" alt="Forms" data-uk-svg />
                 </p>
 
-                @lang('No forms'). 
+                @lang('No forms').
 
                 @hasaccess?('forms', 'create')
                 <a href="@route('/forms/form')">@lang('Create a form')</a>.

@@ -51,7 +51,7 @@ function CollectionHasFieldAccess(field) {
         <li><a href="@route('/collections')">@lang('Collections')</a></li>
         <li class="uk-active" data-uk-dropdown="mode:'hover', delay:300">
 
-            <a><i class="uk-icon-bars"></i> {{ @$collection['label'] ? $collection['label']:$collection['name'] }}</a>
+            <a><i class="uk-icon-bars"></i> {{ htmlspecialchars(@$collection['label'] ? $collection['label']:$collection['name']) }}</a>
 
             @if($app->module('collections')->hasaccess($collection['name'], 'collection_edit'))
             <div class="uk-dropdown">
