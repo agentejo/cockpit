@@ -10,7 +10,7 @@
         <li><a href="@route('/forms')">@lang('Forms')</a></li>
         <li class="uk-active" data-uk-dropdown>
 
-            <a><i class="uk-icon-bars"></i> {{ @$form['label'] ? $form['label']:$form['name'] }}</a>
+            <a><i class="uk-icon-bars"></i> {{ htmlspecialchars(@$form['label'] ? $form['label']:$form['name']) }}</a>
 
             <div class="uk-dropdown">
                 <ul class="uk-nav uk-nav-dropdown">
@@ -33,7 +33,7 @@
         <img class="uk-svg-adjust" src="@url($form['icon'] ? 'assets:app/media/icons/'.$form['icon']:'forms:icon.svg')" width="50" alt="icon" data-uk-svg>
         @if($form['description'])
         <div class="uk-container-center uk-margin-top uk-width-medium-1-2">
-            {{ $form['description'] }}
+            {{ htmlspecialchars($form['description']) }}
         </div>
         @endif
     </div>
@@ -47,7 +47,7 @@
                 <img class="uk-svg-adjust" src="@url($form['icon'] ? 'assets:app/media/icons/'.$form['icon']:'forms:icon.svg')" width="50" alt="icon" data-uk-svg>
                 @if($form['description'])
                 <div class="uk-margin-top uk-text-small">
-                    {{ $form['description'] }}
+                    {{ htmlspecialchars($form['description']) }}
                 </div>
                 @endif
                 <hr>

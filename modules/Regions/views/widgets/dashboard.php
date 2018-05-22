@@ -27,7 +27,7 @@
 
                             <img class="uk-margin-small-right uk-svg-adjust" src="@url(isset($region['icon']) && $region['icon'] ? 'assets:app/media/icons/'.$region['icon']:'regions:icon.svg')" width="18px" alt="icon" data-uk-svg>
 
-                            {{ @$region['label'] ? $region['label'] : $region['name'] }}
+                            {{ htmlspecialchars(@$region['label'] ? $region['label'] : $region['name']) }}
                         </a>
                     </li>
                     @endforeach
