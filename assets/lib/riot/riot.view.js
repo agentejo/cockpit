@@ -28,7 +28,11 @@
         });
     };
 
-    d.writeln('<style>[riot-view]{display:none}</style>');
+    // hide [riot-view]
+    (function(style) {
+        style.innerText = '[riot-view]{display:none}';
+        d.head.appendChild(style);
+    })(d.createElement('style'));
 
     riot.util.initViews = (function(views, view, vid, tag, ele, i) {
 

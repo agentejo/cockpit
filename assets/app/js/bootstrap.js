@@ -56,7 +56,7 @@
             options.title ? '<div class="uk-modal-header"><h2>'+options.title+'</h2></div>':'',
             text ? '<div class="uk-modal-content uk-form">'+(options.title ? text : '<h2>'+text+'</h2>')+'</div>':'',
             '<div class="uk-margin-small-top uk-modal-content uk-form"><p><input type="text" class="uk-width-1-1"></p></div>',
-            '<div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-link uk-button-large uk-modal-close">'+options.labels.Cancel+'</button> <button class="uk-button uk-button-link js-modal-ok">'+options.labels.Ok+'</button></div>'
+            '<div class="uk-modal-footer uk-text-right"><button class="uk-button uk-button-link uk-button-large uk-modal-close">'+options.labels.Cancel+'</button> <button class="uk-button uk-button-link uk-button-large js-modal-ok">'+options.labels.Ok+'</button></div>'
         ]).join(""), options),
 
         input = modal.element.find("input[type='text']").val(value || '').on('keyup', function(e){
@@ -96,7 +96,7 @@
     // Material Ripple effect
     $('html').on('click', 'a, button, input, .ripple', function(e) {
 
-        var trigger = $(this), w = trigger.outerWidth(), h = trigger.outerHeight(), 
+        var trigger = $(this), w = trigger.outerWidth(), h = trigger.outerHeight(),
             d = Math.min(w, h), isInput = trigger.is('input'), surfaceCSS, surface;
 
         surfaceCSS = {
