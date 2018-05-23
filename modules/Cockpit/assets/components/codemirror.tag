@@ -21,6 +21,7 @@
                     indentWithTabs: false,
                     smartIndent: false,
                     tabSize: 2,
+                    readOnly: opts.readonly || false,
                     autoCloseBrackets: true,
                     extraKeys: {
                         Tab: function(cm) {

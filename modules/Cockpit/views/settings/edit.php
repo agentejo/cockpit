@@ -10,13 +10,14 @@
 
     @if ($configexists)
 
-        @if (is_writable($configexists))
-        <picoedit path="{{ str_replace(COCKPIT_SITE_DIR.'/', '', $configexists) }}" height="auto"></picoedit>
-        @else
+        @if (!is_writable($configexists))
         <div class="uk-alert uk-alert-danger">
             @lang('Custom config file is not writable').
         </div>
         @endif
+
+        <picoedit path="{{ str_replace(COCKPIT_SITE_DIR.'/', '', $configexists) }}" height="auto" readonly="{ {{ !is_writable($configexists) ? 'true':'false'}} }"></picoedit>
+
 
     @else
     <div class="uk-alert">
