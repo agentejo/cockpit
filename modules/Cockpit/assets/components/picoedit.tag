@@ -20,7 +20,7 @@
             </div>
         </div>
 
-        <codemirror ref="codemirror" height="{opts.height || 400}"></codemirror>
+        <codemirror ref="codemirror" height="{opts.height || 400}" readonly="{opts.readonly || false}"></codemirror>
     </div>
 
     <script>
