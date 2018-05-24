@@ -42,7 +42,7 @@
     </div>
 
 
-    <div show="{ ready }">
+    <div>
 
         <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-center uk-flex-middle" if="{ loading }">
 
@@ -276,9 +276,9 @@
 
         var $this = this, $root = App.$(this.root), limit = 20;
 
-        this.ready      = false;
         this.collection = {{ json_encode($collection) }};
         this.loadmore   = false;
+        this.loading    = true;
         this.count      = 0;
         this.page       = 1;
         this.entries    = [];
@@ -314,13 +314,38 @@
                 }
 
                 $this.checkselected();
-
                 $this.update();
             });
 
-            this.load();
+            window.addEventListener('popstate', function(e) {
+                $this.initState();
+            });
 
+            $this.initState();
         });
+
+        initState() {
+
+            var searchParams = new URLSearchParams(location.search);
+
+            if (searchParams.has('q')) {
+
+                try {
+
+                    var q = JSON.parse(searchParams.get('q'));
+
+                    if (q.sort) this.sort = q.sort;
+                    if (q.page) this.page = q.page;
+                    if (q.filter) {
+                        this.filter = q.filter;
+                        this.refs.txtfilter.value = q.filter;
+                    }
+                } catch(e){}
+            }
+
+            this.load();
+            this.update();
+        }
 
         remove(e, entry, idx) {
 
@@ -406,6 +431,15 @@
 
             this.loading = true;
 
+            window.history.pushState(
+                null, null,
+                App.route(['/collections/entries/', this.collection.name, '?q=', JSON.stringify({
+                    page: this.page || null,
+                    filter: this.filter || null,
+                    sort: this.sort || null
+                })].join(''))
+            );
+
             return App.request('/collections/find', {collection:this.collection.name, options:options}).then(function(data){
 
                 window.scrollTo(0, 0);
@@ -415,7 +449,6 @@
                 this.page    = data.page;
                 this.count   = data.count;
 
-                this.ready    = true;
                 this.loadmore = data.entries.length && data.entries.length == limit;
 
                 this.checkselected();
