@@ -43,6 +43,7 @@ $assets = [
     'assets:polyfills/document-register-element.js',
     'assets:polyfills/web-animations.min.js',
     'assets:polyfills/pointer-events.js',
+    'assets:polyfills/URLSearchParams.js',
 
     // libs
     'assets:lib/moment.js',
