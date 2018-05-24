@@ -101,32 +101,43 @@ $this->module("cockpit")->extend([
             return ['error' => 'Missing src parameter'];
         }
 
-        $src = str_replace('../', '', rawurldecode($src));
+        $src   = str_replace('../', '', rawurldecode($src));
+        $asset = null;
 
-        if (!preg_match('/\.(png|jpg|jpeg|gif)$/i', $src)) {
+        // is asset?
+        if (strpos($src, $this->app->filestorage->getUrl('assets://')) === 0) {
 
-            if ($asset = $this->app->storage->findOne("cockpit/assets", ['_id' => $src])) {
+            $path = trim(str_replace(rtrim($this->app->filestorage->getUrl('assets://'), '/'), '', $src), '/');
 
-                $asset['path'] = trim($asset['path'], '/');
-                $src = $this->app->path("#uploads:{$asset['path']}");
+            if ($this->app->filestorage->has('assets://'.$path)) {
+                $asset = $this->app->storage->findOne('cockpit/assets', ['path' => "/{$path}"]);
+            }
 
-                if (!$src && $this->app->filestorage->has('assets://'.$asset['path'])) {
+        } elseif (!preg_match('/\.(png|jpg|jpeg|gif)$/i', $src)) {
+            $asset = $this->app->storage->findOne('cockpit/assets', ['_id' => $src]);
+        }
 
-                    $stream = $this->app->filestorage->readStream('assets://'.$asset['path']);
+        if ($asset) {
 
-                    if ($stream) {
-                       $this->app->filestorage->writeStream('uploads://'.$asset['path'], $stream);
-                       $src = $this->app->path("#uploads:{$asset['path']}");
-                    }
+            $asset['path'] = trim($asset['path'], '/');
+            $src = $this->app->path("#uploads:{$asset['path']}");
+
+            if (!$src && $this->app->filestorage->has('assets://'.$asset['path'])) {
+
+                $stream = $this->app->filestorage->readStream('assets://'.$asset['path']);
+
+                if ($stream) {
+                   $this->app->filestorage->writeStream('uploads://'.$asset['path'], $stream);
+                   $src = $this->app->path("#uploads:{$asset['path']}");
                 }
+            }
 
-                if ($src) {
-                    $src = str_replace(COCKPIT_SITE_DIR, '', $src);
-                }
+            if ($src) {
+                $src = str_replace(COCKPIT_SITE_DIR, '', $src);
+            }
 
-                if (isset($asset['fp']) && !$fp) {
-                    $fp = $asset['fp']['x'].' '.$asset['fp']['y'];
-                }
+            if (isset($asset['fp']) && !$fp) {
+                $fp = $asset['fp']['x'].' '.$asset['fp']['y'];
             }
         }
 
