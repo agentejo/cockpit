@@ -125,6 +125,26 @@
                 $this.update();
             });
 
+            $root.on('duplicate-entry', function(e, entry, parent) {
+
+                var _entry = App.$.extend({}, entry);
+
+                delete _entry._id;
+                delete _entry.children;
+
+                _entry._o = parent ? parent.children.length : $this.entries.length;
+
+                App.request('/collections/save_entry/'+$this.collection.name, {'entry': _entry}).then(function(dupentry) {
+
+                    if (dupentry) {
+                        dupentry.children = [];
+                        (parent ? parent.children : $this.entries).push(dupentry);
+                        App.ui.notify("Entry duplicated", "success");
+                        $this.update();
+                    }
+                });
+            });
+
             this.initState();
         });
 

@@ -95,8 +95,8 @@
 <entries-tree-list>
 
     <li class="entry-item uk-nestable-item { isCollapsed(entry) && 'uk-collapsed'}" each="{entry in entries}" entry-id="{entry._id}">
-        <entries-tree-item collection="{parent.collection}" entry="{entry}" collection="{ collection }" imagefield="{imagefield}" fields="{fields}"></entries-tree-item>
-        <ul class="uk-nestable-list" data-is="entries-tree-list" entries="{entry.children}" collection="{collection}" fields="{fields}" imagefield="{imagefield}" if="{entry.children && entry.children.length}"></ul>
+        <entries-tree-item collection="{parent.collection}" entry="{entry}" collection="{ collection }" imagefield="{imagefield}" parent="{_parent}" fields="{fields}"></entries-tree-item>
+        <ul class="uk-nestable-list" data-is="entries-tree-list" entries="{entry.children}" collection="{collection}" fields="{fields}" imagefield="{imagefield}" parent="{entry}" if="{entry.children && entry.children.length}"></ul>
     </li>
 
     <script>
@@ -105,6 +105,8 @@
         this.collection = opts.collection || {};
         this.imagefield = opts.imagefield;
         this.fields = opts.fields;
+
+        this._parent = opts.parent || null;
 
         this.on('mount', function() {
             this.root.__entries = this.entries;
@@ -187,6 +189,7 @@
                 <ul class="uk-nav uk-nav-dropdown">
                     <li class="uk-nav-header">{ App.i18n.get('Actions') }</li>
                     <li><a href="{ App.route('/collections/entry/'+collection.name+'/'+entry._id) }">{ App.i18n.get('Edit') }</a></li>
+                    <li><a class="uk-dropdown-close" onclick="{ duplicate}">{ App.i18n.get('Duplicate') }</a></li>
                     <li class="uk-nav-divider"></li>
                     <li class="uk-nav-item-danger"><a onclick="{ remove }">{ App.i18n.get('Delete') }</a></li>
                 </ul>
@@ -211,6 +214,10 @@
 
         this.remove = function(e) {
             App.$(this.root).trigger('remove-entry', [this.entry]);
+        }
+
+        this.duplicate = function(e) {
+            App.$(this.root).trigger('duplicate-entry', [this.entry, opts.parent]);
         }
 
     </script>
