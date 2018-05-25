@@ -34,11 +34,11 @@
                     <div class="uk-margin">
 
                         <div class="uk-panel uk-panel-box" if="{ !cleaning && cacheSize }">
-                            { cacheSize } <a title="@lang('Clean up')" data-uk-tooltip="pos:'right'" onclick="{cleanUpCache}"><i class="uk-icon-trash-o"></i></a>
+                            { cacheSize } <a title="@lang('Clear cache')" data-uk-tooltip="pos:'right'" onclick="{cleanUpCache}"><i class="uk-icon-trash-o"></i></a>
                         </div>
 
                         <div class="uk-alert" if="{ cleaning }">
-                            <i class="uk-icon-spinner uk-icon-spin"></i> @lang('Cleaning up...')
+                            <i class="uk-icon-spinner uk-icon-spin"></i> @lang('Clearing cache...')
                         </div>
 
                         <div class="uk-alert uk-alert-success" if="{ !cacheSize }">

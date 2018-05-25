@@ -199,12 +199,12 @@
 
                 <div class="uk-margin-large-top" show="{ collection.fields.length }">
 
-                    <div class="uk-button-group uk-margin-right">
+                    <div class="uk-button-group">
                         <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
                         <a class="uk-button uk-button-large" href="@route('/collections/entries')/{ collection.name }" if="{ collection._id }"><i class="uk-icon-list"></i> @lang('Show entries')</a>
                     </div>
 
-                    <a href="@route('/collections')">
+                    <a class="uk-button uk-button-large uk-button-link" href="@route('/collections')">
                         <span show="{ !collection._id }">@lang('Cancel')</span>
                         <span show="{ collection._id }">@lang('Close')</span>
                     </a>

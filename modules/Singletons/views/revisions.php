@@ -32,7 +32,7 @@
             <img class="uk-svg-adjust" src="@url('assets:app/media/icons/revisions.svg')" width="150" alt="icon" data-uk-svg>
             <div class="uk-h2 uk-margin">@lang('No revisions available')</div>
             <div class="uk-margin-large">
-                <a class="uk-button uk-button-large uk-button-primary" href="@route("/singletons/form/{$singleton['name']}")">@lang('Back to singleton')</a>
+                <a class="uk-button uk-button-large uk-button-link" href="@route("/singletons/form/{$singleton['name']}")">@lang('Back to singleton')</a>
             </div>
         </div>
     </div>
@@ -61,7 +61,7 @@
                                 @lang('Restore to this version')
                             </button>
 
-                            <a class="uk-margin-left uk-button uk-button-large uk-button-primary" href="@route("/singletons/form/{$singleton['name']}")">@lang('Back to singleton')</a>
+                            <a class="uk-margin-left uk-button uk-button-large uk-button-link" href="@route("/singletons/form/{$singleton['name']}")">@lang('Back to singleton')</a>
                         </div>
                     </div>
                 </div>

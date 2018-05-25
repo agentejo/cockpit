@@ -45,9 +45,11 @@
 
             </div>
 
-            <div class="uk-panel-box-footer">
-                <a href="@route('/collections')">@lang('See all')</a>
+            @if(count($collections) > 5)
+            <div class="uk-panel-box-footer uk-text-center">
+                <a class="uk-button uk-button-small uk-button-link" href="@route('/collections')">@lang('Show all')</a>
             </div>
+            @endif
 
         @else
 

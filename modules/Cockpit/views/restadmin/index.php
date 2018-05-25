@@ -6,14 +6,17 @@
 </div>
 
 
-<div class="uk-margin-large-top uk-form" riot-view>
+<div class="uk-margin-top uk-form" riot-view>
 
     <div class="uk-grid">
         <div class="uk-width-2-3">
 
-            <h3>@lang('Full access API-key')</h3>
+            <div class="uk-text-large uk-text-bold">
+                <span class="uk-text-uppercase">@lang('Master API-Key')</span>
+                <span class="uk-badge uk-badge-danger" show="{ keys.master }">@lang('Share with caution')</span>
+            </div>
 
-            <div class="uk-grid uk-grid-small">
+            <div class="uk-grid uk-grid-small uk-margin-top">
                 <div class="uk-flex-item-1">
                     <input class="uk-width-1-1 uk-form-large uk-text-primary" type="text" placeholder="@lang('No key generated')" bind="keys.master" name="fullaccesskey" readonly>
                 </div>
@@ -26,17 +29,17 @@
                 </div>
             </div>
 
-            <span class="uk-badge uk-badge-danger uk-margin-small-top">@lang('Share with caution')</span>
+            <div class="uk-margin-large-top">
+                <span class="uk-badge uk-badge-outline uk-text-muted">@lang('Custom keys')</span>
+            </div>
 
-            <h3 class="uk-margin-large-top">@lang('Custom keys')</h3>
-
-            <div show="{keys.special.length}">
+            <div class="uk-margin" show="{keys.special.length}">
 
                 <div class="uk-margin uk-flex" each="{setting,idx in keys.special}">
                     <div class="uk-panel uk-panel-box uk-panel-card uk-flex-item-1 uk-margin-right">
 
                         <div class="uk-form-row">
-                            <label class="uk-text-small">@lang('API Key')</label>
+                            <label class="uk-text-small uk-text-uppercase">@lang('API-Key')</label>
 
                             <div class="uk-flex">
                                 <input class="uk-width-1-1 uk-form-large uk-margin-right uk-text-primary" type="text" placeholder="@lang('No key generated')" bind="keys.special[{idx}].token" readonly>
@@ -58,8 +61,8 @@
                     </div>
 
                     <div>
-                        <button class="uk-button uk-button-small uk-button-danger uk-display-block" onclick="{ parent.removeKey }" title="@lang('Remove Key')" data-uk-tooltip="pos:'right'"><i class="uk-icon-trash"></i></button>
-                        <button class="uk-button uk-button-small uk-button-success uk-display-block uk-margin-small-top" onclick="{ addKey }" title="@lang('Add Key')" data-uk-tooltip="pos:'right'"><i class="uk-icon-plus"></i></button>
+                        <button class="uk-button uk-button-large uk-button-danger uk-display-block" onclick="{ parent.removeKey }" title="@lang('Remove Key')" data-uk-tooltip="pos:'right'"><i class="uk-icon-trash"></i></button>
+                        <button class="uk-button uk-button-large uk-button-link uk-text-muted uk-display-block uk-margin-small-top" onclick="{ addKey }" title="@lang('Add Key')" data-uk-tooltip="pos:'right'"><i class="uk-icon-plus"></i></button>
                     </div>
                 </div>
 
@@ -70,8 +73,9 @@
                 <button class="uk-button uk-button-link" onclick="{ addKey }"><i class="uk-icon-plus"></i> @lang('API Key')</button>
             </div>
 
-            <div class="uk-margin" show="{ keys.master || keys.special.length }">
-                <button class="uk-button uk-button-primary uk-button-large uk-margin-top" type="button" name="button" onclick="{ save }">@lang('Save')</button>
+            <div class="uk-margin-large-top" show="{ keys.master || keys.special.length }">
+                <button class="uk-button uk-button-primary uk-button-large" type="button" name="button" onclick="{ save }">@lang('Save')</button>
+                <a class="uk-button uk-button-large uk-button-link" href="@route('/settings')">@lang('Close')</a>
             </div>
 
         </div>
