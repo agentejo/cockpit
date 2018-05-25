@@ -84,9 +84,9 @@
 
         <div class="uk-margin-large-top">
 
-            <button class="uk-button uk-button-large uk-button-primary uk-margin-right">@lang('Save')</button>
+            <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
 
-            <a href="@route('/forms')">
+            <a class="uk-button uk-button-large uk-button-link" href="@route('/forms')">
                 <span show="{ !form._id }">@lang('Cancel')</span>
                 <span show="{ form._id }">@lang('Close')</span>
             </a>

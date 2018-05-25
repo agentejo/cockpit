@@ -107,8 +107,8 @@
                 </div>
 
                 <div class="uk-form-row">
-                    <button class="uk-button uk-button-large uk-button-primary uk-margin-small-right">@lang('Save')</button>
-                    <a href="@route('/webhooks')">@lang('Cancel')</a>
+                    <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
+                    <a class="uk-button uk-button-large uk-button-link" href="@route('/webhooks')">@lang('Cancel')</a>
                 </div>
 
             </div>

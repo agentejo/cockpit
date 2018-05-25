@@ -90,8 +90,8 @@
                 </div>
 
                 <div class="uk-margin-large-top">
-                    <button class="uk-button uk-button-large uk-button-primary uk-margin-right">@lang('Save')</button>
-                    <a href="@route('/collections/entries/'.$collection['name'])">
+                    <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
+                    <a class="uk-button uk-button-link" href="@route('/collections/entries/'.$collection['name'])">
                         <span show="{ !entry._id }">@lang('Cancel')</span>
                         <span show="{ entry._id }">@lang('Close')</span>
                     </a>

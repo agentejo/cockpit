@@ -254,8 +254,8 @@
             </div>
 
             <div class="uk-margin-large-top">
-                <button type="submit" class="uk-button uk-button-large uk-button-primary uk-margin-right">{ App.i18n.get('Save') }</button>
-                <a onclick="{ cancelEdit }">{ App.i18n.get('Cancel') }</a>
+                <button type="submit" class="uk-button uk-button-large uk-button-primary">{ App.i18n.get('Save') }</button>
+                <a class="uk-button uk-button-large uk-button-link" onclick="{ cancelEdit }">{ App.i18n.get('Cancel') }</a>
             </div>
 
         </form>

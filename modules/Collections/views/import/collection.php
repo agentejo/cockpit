@@ -96,16 +96,16 @@
                     </td>
                     <td>
                         <div class="uk-text-center">
-                            <input type="checkbox" onchange="{ setFilter(field.name) }" />
+                            <input class="uk-checkbox" type="checkbox" onchange="{ setFilter(field.name) }" />
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <div class="uk-margin">
+        <div class="uk-margin-large-top">
             <button class="uk-button uk-button-large uk-button-primary" onclick="{ doImport }">@lang('Import')</button>
-            <a class="uk-margin-left" onclick="{restart}">@lang('Cancel')</a>
+            <a class="uk-button uk-button-large uk-button-link" onclick="{restart}">@lang('Cancel')</a>
         </div>
 
     </div>

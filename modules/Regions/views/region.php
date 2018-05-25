@@ -133,12 +133,12 @@
 
                     <div class="uk-margin-large-top">
 
-                        <div class="uk-button-group uk-margin-right">
+                        <div class="uk-button-group">
                             <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
                             <a class="uk-button uk-button-large" href="@route('/regions/form')/{ region.name }" if="{ region._id }"><i class="uk-icon-eye"></i> @lang('Show form')</a>
                         </div>
 
-                        <a href="@route('/regions')">
+                        <a class="uk-button uk-button-large uk-button-link" href="@route('/regions')">
                             <span show="{ !region._id }">@lang('Cancel')</span>
                             <span show="{ region._id }">@lang('Close')</span>
                         </a>

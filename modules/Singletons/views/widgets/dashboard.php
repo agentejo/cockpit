@@ -35,9 +35,11 @@
 
             </div>
 
-            <div class="uk-panel-box-footer">
-                <a href="@route('/singletons')">@lang('See all')</a>
+            @if(count($singletons) > 5)
+            <div class="uk-panel-box-footer uk-text-center">
+                <a class="uk-button uk-button-small uk-button-link" href="@route('/singletons')">@lang('Show all')</a>
             </div>
+            @endif
 
         @else
 
