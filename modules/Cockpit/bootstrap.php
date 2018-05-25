@@ -6,9 +6,9 @@ $this->helpers['revisions']  = 'Cockpit\\Helper\\Revisions';
 $this->helpers['updater']  = 'Cockpit\\Helper\\Updater';
 
 // API
-$this->module("cockpit")->extend([
+$this->module('cockpit')->extend([
 
-    "markdown" => function($content, $extra = false) use($app) {
+    'markdown' => function($content, $extra = false) use($app) {
 
         static $parseDown;
         static $parsedownExtra;
@@ -19,7 +19,7 @@ $this->module("cockpit")->extend([
         return $extra ? $parsedownExtra->text($content) : $parseDown->text($content);
     },
 
-    "clearCache" => function() use($app) {
+    'clearCache' => function() use($app) {
 
         $dirs = ['#cache:','#tmp:','#thumbs:'];
 
@@ -35,28 +35,28 @@ $this->module("cockpit")->extend([
                 @unlink($file->getRealPath());
             }
 
-            $app->helper("fs")->removeEmptySubFolders('#cache:');
+            $app->helper('fs')->removeEmptySubFolders('#cache:');
         }
 
-        $app->trigger("cockpit.clearcache");
+        $app->trigger('cockpit.clearcache');
 
         $size = 0;
 
-        foreach($dirs as $dir) {
-            $size += $app->helper("fs")->getDirSize($dir);
+        foreach ($dirs as $dir) {
+            $size += $app->helper('fs')->getDirSize($dir);
         }
 
-        return ["size"=>$app->helper("utils")->formatSize($size)];
+        return ['size'=>$app->helper('utils')->formatSize($size)];
     },
 
-    "loadApiKeys" => function() {
+    'loadApiKeys' => function() {
 
         $keys      = [ 'master' => '', 'special' => [] ];
         $container = $this->app->path('#storage:').'/api.keys.php';
 
         if (file_exists($container)) {
             $data = include($container);
-            $data = unserialize($this->app->decode($data, $this->app["sec-key"]));
+            $data = unserialize($this->app->decode($data, $this->app['sec-key']));
 
             if ($data !== false) {
                 $keys = array_merge($keys, $data);
@@ -66,7 +66,7 @@ $this->module("cockpit")->extend([
         return $keys;
     },
 
-    "saveApiKeys" => function($data) {
+    'saveApiKeys' => function($data) {
 
         $data      = serialize(array_merge([ 'master' => '', 'special' => [] ], (array)$data));
         $export    = var_export($this->app->encode($data, $this->app["sec-key"]), true);
@@ -75,7 +75,7 @@ $this->module("cockpit")->extend([
         return $this->app->helper('fs')->write($container, "<?php\n return {$export};");
     },
 
-    "thumbnail" => function($options) {
+    'thumbnail' => function($options) {
 
         $options = array_merge(array(
             'cachefolder' => 'thumbs://',
@@ -239,20 +239,13 @@ $this->module("cockpit")->extend([
 include_once(__DIR__.'/module/auth.php');
 include_once(__DIR__.'/module/assets.php');
 
-// REST
-if (COCKPIT_API_REQUEST) {
 
-    // INIT REST API HANDLER
-    include_once(__DIR__.'/rest-api.php');
+// ADMIN
+if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
 
-    $this->on('cockpit.rest.init', function($routes) {
-        $routes['cockpit'] = 'Cockpit\\Controller\\RestApi';
-    });
-}
+    include_once(__DIR__.'/admin.php');
 
-if (COCKPIT_ADMIN) {
-
-    $this->bind("/api.js", function() {
+    $this->bind('/api.js', function() {
 
         $token                = $this->param('token', '');
         $this->response->mime = 'js';
@@ -271,12 +264,6 @@ if (COCKPIT_ADMIN) {
     });
 }
 
-
-// ADMIN
-if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
-    include_once(__DIR__.'/admin.php');
-}
-
 // CLI
 if (COCKPIT_CLI) {
     $this->path('#cli', __DIR__.'/cli');
@@ -285,4 +272,15 @@ if (COCKPIT_CLI) {
 // WEBHOOKS
 if (!defined('COCKPIT_INSTALL')) {
     include_once(__DIR__.'/webhooks.php');
+}
+
+// REST
+if (COCKPIT_API_REQUEST) {
+
+    // INIT REST API HANDLER
+    include_once(__DIR__.'/rest-api.php');
+
+    $this->on('cockpit.rest.init', function($routes) {
+        $routes['cockpit'] = 'Cockpit\\Controller\\RestApi';
+    });
 }
