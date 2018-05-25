@@ -72,7 +72,7 @@
         <table class="uk-table uk-table-border uk-table-striped uk-margin-top" if="{ entries.length }">
             <thead>
                 <tr>
-                    <th width="20"><input type="checkbox" data-check="all"></th>
+                    <th width="20"><input class="uk-checkbox" type="checkbox" data-check="all"></th>
                     <th class="uk-text-small">@lang('Entry')</th>
                     <th width="100" class="uk-text-small">@lang('Created')</th>
                     <th width="20"></th>
@@ -80,7 +80,7 @@
             </thead>
             <tbody>
                 <tr each="{entry, idx in entries}">
-                    <td width="20"><input type="checkbox" data-check data-id="{ entry._id }"></td>
+                    <td width="20"><input class="uk-checkbox" type="checkbox" data-check data-id="{ entry._id }"></td>
                     <td>
                         <div class="uk-text-small uk-margin-small-top" each="{ value, name in entry.data }">
                             <strong>{name}:</strong>

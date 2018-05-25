@@ -151,7 +151,7 @@
 
         <div class="uk-flex-item-1 uk-flex uk-flex-middle">
 
-            <input data-check="{entry._id}" type="checkbox" class="uk-margin-small-right">
+            <input data-check="{entry._id}" type="checkbox" class="uk-margin-small-right uk-checkbox">
 
             <div class="uk-text-truncate uk-margin-small-left" each="{field,idy in fields}" if="{ field.name != '_modified' && field.name != '_created' }">
                 <a class="uk-link-muted" href="{ App.route('/collections/entry/'+parent.collection.name+'/'+parent.entry._id) }">
