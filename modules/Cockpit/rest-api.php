@@ -99,7 +99,7 @@ $this->on('before', function() {
         $user   = $this->module('cockpit')->getUser();
 
         if ($resource == 'public' && $resourcefile = $this->path("#config:api/{$path}.php")) {
-            
+
             $output = include($resourcefile);
 
         } elseif ($allowed && $resourcefile = $this->path("#config:api/{$path}.php")) {

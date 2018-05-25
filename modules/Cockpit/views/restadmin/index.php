@@ -19,6 +19,7 @@
                 </div>
                 <div if="{keys.master}">
                     <button class="uk-button uk-button-link uk-button-large" type="button" onclick="{ copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-copy"></i></button>
+                    <button class="uk-button uk-button-link uk-button-large" type="button" onclick="{ removeMasterKey }" title="@lang('Delete')" data-uk-tooltip="pos:'top'"><i class="uk-icon-trash-o uk-text-danger"></i></button>
                 </div>
                 <div>
                     <button class="uk-button uk-button-primary uk-button-large" type="button" onclick="{ generate }" title="@lang('Generate Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-magic"></i></button>
@@ -69,8 +70,8 @@
                 <button class="uk-button uk-button-link" onclick="{ addKey }"><i class="uk-icon-plus"></i> @lang('API Key')</button>
             </div>
 
-            <div class="uk-margin">
-                <button class="uk-button uk-button-primary uk-button-large uk-margin-top" type="button" name="button" onclick="{ save }" show="{ keys.master }">@lang('Save')</button>
+            <div class="uk-margin" show="{ keys.master || keys.special.length }">
+                <button class="uk-button uk-button-primary uk-button-large uk-margin-top" type="button" name="button" onclick="{ save }">@lang('Save')</button>
             </div>
 
         </div>
@@ -114,6 +115,10 @@
                 $this.keys.special.splice(e.item.idx, 1);
                 $this.update();
             });
+        }
+
+        removeMasterKey() {
+            this.keys.master = '';
         }
 
         generate(e) {
