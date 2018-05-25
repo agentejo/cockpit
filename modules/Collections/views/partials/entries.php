@@ -100,7 +100,7 @@
                 @endif
 
                 @if($app->module('collections')->hasaccess($collection['name'], 'entries_create'))
-                <a class="uk-button uk-button-large uk-button-primary" href="@route('/collections/entry/'.$collection['name'])"><i class="uk-icon-plus-circle uk-icon-justify"></i> @lang('Entry')</a>
+                <a class="uk-button uk-button-large uk-button-primary" href="@route('/collections/entry/'.$collection['name'])">@lang('Add Entry')</a>
                 @endif
             </div>
         </div>
@@ -185,7 +185,7 @@
                 <thead>
                     <tr>
                         @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
-                        <th width="20"><input type="checkbox" data-check="all"></th>
+                        <th width="20"><input class="uk-checkbox" type="checkbox" data-check="all"></th>
                         @endif
                         <th width="{field.name == '_modified' || field.name == '_created' ? '100':''}" class="uk-text-small" each="{field,idx in fields}" if="{ hasFieldAccess(field.name) }">
                             <a class="uk-link-muted uk-noselect { parent.sortedBy == field.name ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
@@ -201,7 +201,7 @@
                 <tbody>
                     <tr each="{entry,idx in entries}">
                         @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
-                        <td><input type="checkbox" data-check data-id="{ entry._id }"></td>
+                        <td><input class="uk-checkbox" type="checkbox" data-check data-id="{ entry._id }"></td>
                         @endif
                         <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' && field.name != '_created' && hasFieldAccess(field.name) }">
                             <a class="uk-link-muted" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">

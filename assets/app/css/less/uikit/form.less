@@ -151,4 +151,45 @@
         background: green;
         transform: translateX(-100%);
     }
+
+    .uk-checkbox {
+      -moz-appearance: none;
+      -webkit-appearance: none;
+      appearance: none;
+      position: relative;
+      top: -0.2em;
+      margin: 0 1em 0 0;
+      width: 1em;
+      height: 1em;
+      cursor: pointer;
+    }
+
+    .uk-checkbox:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      z-index: 1;
+      width: 1em;
+      height: 1em;
+      border: 2px solid rgba(0,0,0,.3);
+      border-radius: 2px;
+      pointer-events: none;
+      -webkit-transition: all 0.3s ease-in-out;
+    }
+
+    .uk-checkbox:checked:before {
+      background: #606e81;
+      border-color: #606e81;
+    }
+
+    .uk-checkbox:checked:after {
+        position: absolute;
+        content: "\f00c";
+        font-family: FontAwesome;
+        line-height: 1;
+        transform: translate(30%, 30%);
+        font-size: 0.9em;
+        color: #fff;
+        z-index: 1;
+    }
 }

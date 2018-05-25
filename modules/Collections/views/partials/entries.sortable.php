@@ -63,7 +63,7 @@
                 @endif
 
                 @if($app->module('collections')->hasaccess($collection['name'], 'entries_create'))
-                <a class="uk-button uk-button-large uk-button-primary" href="@route('/collections/entry/'.$collection['name'])"><i class="uk-icon-plus-circle uk-icon-justify"></i> @lang('Entry')</a>
+                <a class="uk-button uk-button-large uk-button-primary" href="@route('/collections/entry/'.$collection['name'])">@lang('Add Entry')</a>
                 @endif
             </div>
         </div>

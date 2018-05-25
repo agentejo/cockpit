@@ -17,10 +17,10 @@
 @button-small-line-height:                      @global-height-small;
 @button-large-line-height:                      @global-height-large;
 
-@button-font-size:                              round(@global-font-size * 0.8);
-@button-mini-font-size:                         round((@global-font-size * 0.78)); // 11px / 12px
-@button-small-font-size:                        round((@global-font-size * 0.85)); // 12px / 14px
-@button-large-font-size:                        @global-font-size;
+@button-font-size:                              10px;
+@button-mini-font-size:                         10px; // 11px / 12px
+@button-small-font-size:                        10px; // 12px / 14px
+@button-large-font-size:                        11px;
 
 @button-color:                                  @global-color;
 @button-hover-color:                            @global-color;
@@ -55,7 +55,9 @@
 
 .hook-button() {
     border-radius: @global-border-radius;
-    font-weight: @global-font-weight;
+    font-weight: bold;
+    letter-spacing: .6px;
+    text-transform: uppercase;
 }
 
 .hook-button-hover() {}
