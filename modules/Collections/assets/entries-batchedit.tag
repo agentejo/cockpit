@@ -150,15 +150,37 @@
 
         this.applyBatchEdit = function(data) {
 
-            var promises = [];
+            var promises = [], _filter = function(list) {
 
-            this.entries.forEach(function(entry) {
+                var filtered = [];
+
+                list.forEach(function (entry) {
+
+                    if ($this.selected.indexOf(entry._id) > -1) {
+                        filtered.push(entry);
+                    }
+
+                    if (entry.children && entry.children.length) {
+                        filtered = filtered.concat(_filter(entry.children))
+                    }
+                });
+
+                return filtered;
+            };
+
+            _filter(this.entries).forEach(function(entry) {
 
                 if ($this.selected.indexOf(entry._id) > -1) {
 
                     _.extend(entry, data);
 
-                    var p = App.request('/collections/save_entry/'+$this.collection.name, {entry:entry});
+                    var tmpEntry = _.extend({}, entry);
+
+                    if (tmpEntry.children) {
+                        delete tmpEntry.children;
+                    }
+
+                    var p = App.request('/collections/save_entry/'+$this.collection.name, {entry:tmpEntry});
 
                     p.then(function(_entry) {
 
