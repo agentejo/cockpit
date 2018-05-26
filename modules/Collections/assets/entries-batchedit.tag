@@ -10,7 +10,7 @@
 
         <div class="uk-modal-dialog uk-modal-dialog-large uk-form">
 
-            <h3 class="uk-text-bold uk-flex uk-flex-middle">{ App.i18n.get('Batch edit') } <span class="uk-badge uk-margin-left">{entries.length} { App.i18n.get(entries.length == 1 ? 'Entry' : 'Entries') }</span></h3>
+            <h3 class="uk-text-bold uk-flex uk-flex-middle">{ App.i18n.get('Batch edit') } <span class="uk-badge uk-margin-left">{selected.length} { App.i18n.get(selected.length == 1 ? 'Entry' : 'Entries') }</span></h3>
 
             <div>
 
@@ -44,6 +44,8 @@
 
     </div>
 
+    <cp-preloader-fullscreen show="{ blocked }"></cp-preloader-fullscreen>
+
 
     <script>
 
@@ -52,13 +54,16 @@
         var $this = this;
 
         this.modal     = null;
+        this.collection= opts.collection || {};
         this.fields    = opts.fields || {};
         this.languages = App.$data.languages;
-        this.entries   = null;
+        this.entries   = [];
+        this.selected  = [];
 
         this.checked = {};
         this._entry  = {};
         this._fields = [];
+        this.blocked = false;
 
         var field = null;
 
@@ -89,6 +94,8 @@
                 if (e.target === $this.refs.modal) {
                     $this.checked = {};
                     $this._entry = {};
+                    $this.entries = [];
+                    $this.selected = [];
                 }
             })
         });
@@ -107,9 +114,10 @@
             }
         }
 
-        this.open = function(entries) {
+        this.open = function(entries, selected) {
 
             this.entries = entries;
+            this.selected = selected;
             this.modal.show();
         }
 
@@ -137,7 +145,46 @@
                 return;
             }
 
+            this.applyBatchEdit(this._entry);
+        }
 
+        this.applyBatchEdit = function(data) {
+
+            var promises = [];
+
+            this.entries.forEach(function(entry) {
+
+                if ($this.selected.indexOf(entry._id) > -1) {
+
+                    _.extend(entry, data);
+
+                    var p = App.request('/collections/save_entry/'+$this.collection.name, {entry:entry});
+
+                    p.then(function(_entry) {
+
+                        if (entry) {
+                            _.extend(entry, _entry);
+                        }
+                    })
+
+                    promises.push(p);
+                }
+            });
+
+            if (promises.length) {
+
+                this.blocked = true;
+
+                Promise.all(promises).then(function(){
+                    App.ui.notify("Entries updated", "success");
+
+                    $this.blocked = false;
+                    $this.update();
+                    $this.parent.update();
+                });
+            }
+
+            this.update();
         }
 
     </script>

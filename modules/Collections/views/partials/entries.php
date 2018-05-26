@@ -191,9 +191,7 @@
             <table class="uk-table uk-table-tabbed uk-table-striped">
                 <thead>
                     <tr>
-                        @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
                         <th width="20"><input class="uk-checkbox" type="checkbox" data-check="all"></th>
-                        @endif
                         <th width="{field.name == '_modified' || field.name == '_created' ? '100':''}" class="uk-text-small" each="{field,idx in fields}">
                             <a class="uk-link-muted uk-noselect { parent.sortedBy == field.name ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
 
@@ -207,9 +205,7 @@
                 </thead>
                 <tbody>
                     <tr each="{entry,idx in entries}">
-                        @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
                         <td><input class="uk-checkbox" type="checkbox" data-check data-id="{ entry._id }"></td>
-                        @endif
                         <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' && field.name != '_created' }">
                             <a class="uk-link-muted" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
                                 <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }" if="{parent.entry[field.name] !== undefined}"></raw>
@@ -278,7 +274,7 @@
 
     </div>
 
-    <entries-batchedit fields={fieldsidx}></entries-batchedit>
+    <entries-batchedit collection="{collection}" fields={fieldsidx}></entries-batchedit>
 
 
     <script type="view/script">
@@ -600,7 +596,7 @@
         }
 
         batchedit() {
-            this.tags['entries-batchedit'].open(this.selected)
+            this.tags['entries-batchedit'].open(this.entries, this.selected)
         }
 
     </script>

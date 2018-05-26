@@ -145,7 +145,7 @@
             align-items: center;
             justify-content: center;
             background: rgba(255, 255, 255, 0.5);
-            z-index: 100;
+            z-index: 1000000000000000;
         }
     </style>
 

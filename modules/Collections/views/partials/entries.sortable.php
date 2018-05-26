@@ -94,7 +94,7 @@
 
     </div>
 
-    <entries-batchedit fields={fieldsidx}></entries-batchedit>
+    <entries-batchedit collection="{collection}" fields={fieldsidx}></entries-batchedit>
 
     <script>
 
@@ -329,8 +329,8 @@
             }
         }
 
-        batchedit() {
-            this.tags['entries-batchedit'].open(this.selected)
+        this.batchedit = function() {
+            this.tags['entries-batchedit'].open([], this.selected)
         }
 
     </script>
