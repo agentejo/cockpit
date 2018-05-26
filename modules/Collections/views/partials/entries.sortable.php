@@ -56,11 +56,18 @@
 
             <div class="uk-float-right">
 
-                @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
-                <a class="uk-button uk-button-large uk-button-danger uk-animation-fade uk-margin-small-right" onclick="{ removeselected }" if="{ selected.length }">
-                    @lang('Delete') <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
-                </a>
-                @endif
+                <div class="uk-display-inline-block uk-margin-small-right" data-uk-dropdown="mode:'click'" if="{ selected.length }">
+                    <button class="uk-button uk-button-large uk-animation-fade">@lang('Batch Action') <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span></button>
+                    <div class="uk-dropdown">
+                        <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
+                            <li class="uk-nav-header">@lang('Actions')</li>
+                            <li><a onclick="{ batchedit }">@lang('Edit')</a></li>
+                            @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
+                            <li class="uk-nav-item-danger"><a onclick="{ removeselected }">@lang('Delete')</a></li>
+                            @endif
+                        </ul>
+                    </div>
+                </div>
 
                 @if($app->module('collections')->hasaccess($collection['name'], 'entries_create'))
                 <a class="uk-button uk-button-large uk-button-primary" href="@route('/collections/entry/'.$collection['name'])">@lang('Add Entry')</a>
@@ -87,6 +94,8 @@
 
     </div>
 
+    <entries-batchedit fields={fieldsidx}></entries-batchedit>
+
     <script>
 
         var $this = this, $root = App.$(this.root);
@@ -96,12 +105,15 @@
         this.collection = {{ json_encode($collection) }};
         this.entries    = [];
         this.selected   = [];
+        this.fieldsidx  = {};
 
         this.fields = this.collection.fields.filter(function(field){
 
             if (!CollectionHasFieldAccess(field)) {
                 return false;
             }
+
+            $this.fieldsidx[field.name] = field;
 
             return field.lst;
         });
@@ -315,6 +327,10 @@
             if (update) {
                 this.update();
             }
+        }
+
+        batchedit() {
+            this.tags['entries-batchedit'].open(this.selected)
         }
 
     </script>
