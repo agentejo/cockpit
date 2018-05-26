@@ -128,7 +128,7 @@
 
                         <div class="uk-button-group">
                             <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
-                            <a class="uk-button uk-button-large" href="@route('/singletons/form')/{ singleton.name }" if="{ singleton._id }"><i class="uk-icon-eye"></i> @lang('Show form')</a>
+                            <a class="uk-button uk-button-large" href="@route('/singletons/form')/{ singleton.name }" if="{ singleton._id }">@lang('Show form')</a>
                         </div>
 
                         <a class="uk-button uk-button-large uk-button-link" href="@route('/singletons')">

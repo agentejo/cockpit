@@ -93,11 +93,18 @@
 
             <div class="uk-float-right">
 
-                @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
-                <a class="uk-button uk-button-large uk-button-danger uk-animation-fade uk-margin-small-right" onclick="{ removeselected }" if="{ selected.length }">
-                    @lang('Delete') <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
-                </a>
-                @endif
+                <div class="uk-display-inline-block uk-margin-small-right" data-uk-dropdown="mode:'click'" if="{ selected.length }">
+                    <button class="uk-button uk-button-large uk-animation-fade">@lang('Batch Action') <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span></button>
+                    <div class="uk-dropdown">
+                        <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
+                            <li class="uk-nav-header">@lang('Actions')</li>
+                            <li><a onclick="{ batchedit }">@lang('Edit')</a></li>
+                            @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
+                            <li class="uk-nav-item-danger"><a onclick="{ removeselected }">@lang('Delete')</a></li>
+                            @endif
+                        </ul>
+                    </div>
+                </div>
 
                 @if($app->module('collections')->hasaccess($collection['name'], 'entries_create'))
                 <a class="uk-button uk-button-large uk-button-primary" href="@route('/collections/entry/'.$collection['name'])">@lang('Add Entry')</a>
@@ -167,7 +174,7 @@
                     </div>
 
                     <div class="uk-margin-top uk-scrollable-box">
-                        <div class="uk-margin-small-bottom" each="{field,idy in parent.fields}" if="{ field.name != '_modified' && field.name != '_created' && hasFieldAccess(field.name) }">
+                        <div class="uk-margin-small-bottom" each="{field,idy in parent.fields}" if="{ field.name != '_modified' && field.name != '_created' }">
                             <span class="uk-text-small uk-text-uppercase uk-text-muted">{ field.label || field.name }</span>
                             <a class="uk-link-muted uk-text-small uk-display-block uk-text-truncate" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
                                 <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }" if="{parent.entry[field.name] !== undefined}"></raw>
@@ -187,7 +194,7 @@
                         @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
                         <th width="20"><input class="uk-checkbox" type="checkbox" data-check="all"></th>
                         @endif
-                        <th width="{field.name == '_modified' || field.name == '_created' ? '100':''}" class="uk-text-small" each="{field,idx in fields}" if="{ hasFieldAccess(field.name) }">
+                        <th width="{field.name == '_modified' || field.name == '_created' ? '100':''}" class="uk-text-small" each="{field,idx in fields}">
                             <a class="uk-link-muted uk-noselect { parent.sortedBy == field.name ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
 
                                 { field.label || field.name }
@@ -203,7 +210,7 @@
                         @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
                         <td><input class="uk-checkbox" type="checkbox" data-check data-id="{ entry._id }"></td>
                         @endif
-                        <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' && field.name != '_created' && hasFieldAccess(field.name) }">
+                        <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' && field.name != '_created' }">
                             <a class="uk-link-muted" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
                                 <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }" if="{parent.entry[field.name] !== undefined}"></raw>
                                 <span class="uk-icon-eye-slash uk-text-muted" if="{parent.entry[field.name] === undefined}"></span>
@@ -271,6 +278,8 @@
 
     </div>
 
+    <entries-batchedit fields={fieldsidx}></entries-batchedit>
+
 
     <script type="view/script">
 
@@ -284,7 +293,10 @@
         this.entries    = [];
         this.fieldsidx  = {};
         this.imageField = null;
+
         this.fields     = this.collection.fields.filter(function(field){
+
+            if (!CollectionHasFieldAccess(field)) return false;
 
             $this.fieldsidx[field.name] = field;
 
@@ -587,20 +599,8 @@
 
         }
 
-        hasFieldAccess(field) {
-
-            var acl = this.fieldsidx[field] && this.fieldsidx[field].acl || [];
-
-            if (field == '_modified' ||
-                App.$data.user.group == 'admin' ||
-                !acl ||
-                (Array.isArray(acl) && !acl.length) ||
-                acl.indexOf(App.$data.user.group) > -1 ||
-                acl.indexOf(App.$data.user._id) > -1
-
-            ) { return true; }
-
-            return false;
+        batchedit() {
+            this.tags['entries-batchedit'].open(this.selected)
         }
 
     </script>

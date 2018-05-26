@@ -201,7 +201,7 @@
 
                     <div class="uk-button-group">
                         <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
-                        <a class="uk-button uk-button-large" href="@route('/collections/entries')/{ collection.name }" if="{ collection._id }"><i class="uk-icon-list"></i> @lang('Show entries')</a>
+                        <a class="uk-button uk-button-large" href="@route('/collections/entries')/{ collection.name }" if="{ collection._id }">@lang('Show entries')</a>
                     </div>
 
                     <a class="uk-button uk-button-large uk-button-link" href="@route('/collections')">

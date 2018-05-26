@@ -45,6 +45,8 @@ function CollectionHasFieldAccess(field) {
 </script>
 
 
+<script type="riot/tag" src="@base('collections:assets/entries-batchedit.tag')"></script>
+
 <div>
 
     <ul class="uk-breadcrumb">
