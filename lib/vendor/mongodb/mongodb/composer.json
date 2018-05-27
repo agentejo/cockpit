@@ -1,0 +1,33 @@
+{
+    "name": "mongodb/mongodb",
+    "description": "MongoDB driver library",
+    "keywords": ["database", "driver", "mongodb", "persistence"],
+    "homepage": "https://jira.mongodb.org/browse/PHPLIB",
+    "license": "Apache-2.0",
+    "authors": [
+        { "name": "Jeremy Mikola", "email": "jmikola@gmail.com" },
+        { "name": "Derick Rethans", "email": "github@derickrethans.nl" },
+        { "name": "Katherine Walker", "email": "katherine.walker@mongodb.com" }
+    ],
+    "require": {
+        "php": ">=5.5",
+        "ext-hash": "*",
+        "ext-json": "*",
+        "ext-mongodb": "^1.4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8.36 || ^6.4"
+    },
+    "autoload": {
+        "psr-4": { "MongoDB\\": "src/" },
+        "files": [ "src/functions.php" ]
+    },
+    "autoload-dev": {
+        "psr-4": { "MongoDB\\Tests\\": "tests/" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.3.x-dev"
+        }
+    }
+}

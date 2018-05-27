@@ -6,6 +6,10 @@
 .settings
 .idea
 .env
+composer.lock
+/lib/**/docs/*
+/lib/**/tests/*
+/lib/**/example/*
 /storage/*.*
 /storage/*/*
 /config/*
