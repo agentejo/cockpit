@@ -1,0 +1,22 @@
+{
+  "name": "claviska/simpleimage",
+  "description": "A PHP class that makes working with images as simple as possible.",
+  "license": "MIT",
+  "require": {
+    "php": ">=5.6.0",
+    "ext-gd": "*",
+    "league/color-extractor": "0.3.*"
+  },
+  "authors": [
+    {
+      "name": "Cory LaViska",
+      "homepage": "http://www.abeautifulsite.net/",
+      "role": "Developer"
+    }
+  ],
+  "autoload": {
+    "psr-0": {
+      "claviska": "src/"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+    "name": "ksubileau/color-thief-php",
+    "type": "library",
+    "homepage" : "http://www.kevinsubileau.fr/projets/color-thief-php",
+    "description": "Grabs the dominant color or a representative color palette from an image.",
+    "keywords": ["color", "thief", "php", "dominant", "palette"],
+    "license": "CC-BY-2.5",
+
+    "authors": [
+        {
+            "name": "Kevin Subileau",
+            "homepage": "http://www.kevinsubileau.fr"
+        }
+    ],
+
+    "require": {
+        "php": ">=5.3.0"
+    },
+
+    "require-dev": {
+        "phpunit/phpunit": "~4.8|~5.7",
+        "squizlabs/php_codesniffer": "~2.7"
+    },
+
+    "suggest": {
+        "ext-gd": "to use the GD image adapter.",
+        "ext-imagick": "to use the Imagick image adapter.",
+        "ext-gmagick": "to use the Gmagick image adapter."
+    },
+
+    "autoload": {
+        "psr-4": {
+            "ColorThief\\": "lib/ColorThief"
+        }
+    }
+}

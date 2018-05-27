@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true" bootstrap="tests/bootstrap.php">
+    <testsuites>
+        <testsuite name="ColorExtractor Test Suite">
+            <directory>tests/League/ColorExtractor</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src/League/ColorExtractor</directory>
+        </whitelist>
+    </filter>
+</phpunit>

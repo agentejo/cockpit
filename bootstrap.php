@@ -5,6 +5,9 @@
  */
 define('COCKPIT_START_TIME', microtime(true));
 
+// Autoload vendor libs
+include(__DIR__.'/lib/vendor/autoload.php');
+
 if (!defined('COCKPIT_CLI')) {
     define('COCKPIT_CLI', PHP_SAPI == 'cli');
 }
