@@ -20,7 +20,7 @@
 
     <script>
         // App constants
-        var SITE_URL   = '{{ rtrim($app->pathToUrl('site:'), '/') }}';
+        var SITE_URL   = '{{ rtrim($app->filestorage->getUrl('site://'), '/') }}';
         var ASSETS_URL = '{{ rtrim($app->filestorage->getUrl('assets://'), '/') }}';
     </script>
     <script src="@base('assets:lib/fuc.js.php')"></script>

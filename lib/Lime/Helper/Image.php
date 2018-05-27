@@ -76,7 +76,13 @@ class Img {
     }
 
     public function __call($method, $args) {
-        call_user_func_array([$this->image, $method], $args);
+
+        $ret = call_user_func_array([$this->image, $method], $args);
+
+        if ($ret !== $this->image) {
+            return $ret;
+        }
+
         return $this;
     }
 }

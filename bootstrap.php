@@ -136,6 +136,13 @@ function cockpit($module = null) {
                     'url' => $app->pathToUrl('#root:', true)
                 ],
 
+                'site' => [
+                    'adapter' => 'League\Flysystem\Adapter\Local',
+                    'args' => [$app->path('site:')],
+                    'mount' => true,
+                    'url' => $app->pathToUrl('site:', true)
+                ],
+
                 'tmp' => [
                     'adapter' => 'League\Flysystem\Adapter\Local',
                     'args' => [$app->path('#tmp:')],
