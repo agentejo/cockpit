@@ -1206,7 +1206,7 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
 
             requestAnimationFrame(function() {
 
-                if (_src.match(/^(http\:|https\:|\/\/)/)) {
+                if (_src.match(/^(http\:|https\:|\/\/)/) && !(_src.includes(ASSETS_URL) || _src.includes(SITE_URL))) {
 
                     src = _src;
 
