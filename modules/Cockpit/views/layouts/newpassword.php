@@ -61,7 +61,7 @@
                 </div>
 
                 <div class="uk-margin-top" show="{ !reset }">
-                    <button class="uk-button uk-button-outline uk-button-large uk-button-primary uk-width-1-1">@lang('Reset')</button>
+                    <button class="uk-button uk-button-outline uk-button-large uk-text-primary uk-width-1-1">@lang('Reset')</button>
                 </div>
             </div>
 
@@ -90,7 +90,7 @@
                     this.update();
 
                 }.bind(this)).catch(function(data) {
-                    
+
                     this.error = 'Reset failed';
 
                     App.$('#login-dialog').removeClass('uk-animation-shake');
