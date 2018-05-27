@@ -192,9 +192,6 @@ $this->module("collections")->extend([
             //$options['sort'] = ['_o' => 1];
         }
 
-        $this->app->trigger('collections.find.before', [$name, &$options, false]);
-        $this->app->trigger("collections.find.before.{$name}", [$name, &$options, false]);
-
         // check rule
         $context = new \stdClass();
         $context->options = $options;
@@ -204,6 +201,9 @@ $this->module("collections")->extend([
         } else {
             $options = $context->options;
         }
+
+        $this->app->trigger('collections.find.before', [$name, &$options, false]);
+        $this->app->trigger("collections.find.before.{$name}", [$name, &$options, false]);
 
         $entries = (array)$this->app->storage->find("collections/{$collection}", $options);
 
@@ -347,9 +347,6 @@ $this->module("collections")->extend([
                 $entry["_created"] = $entry["_modified"];
             }
 
-            $this->app->trigger('collections.save.before', [$name, &$entry, $isUpdate]);
-            $this->app->trigger("collections.save.before.{$name}", [$name, &$entry, $isUpdate]);
-
             // check rule
             $context = _check_collection_rule($_collection, 'read', [
                 'options' => $options,
@@ -362,6 +359,9 @@ $this->module("collections")->extend([
                 $entry   = $context->entry;
                 $options = $context->options;
             }
+
+            $this->app->trigger('collections.save.before', [$name, &$entry, $isUpdate]);
+            $this->app->trigger("collections.save.before.{$name}", [$name, &$entry, $isUpdate]);
 
             $ret = $this->app->storage->save("collections/{$collection}", $entry);
 
@@ -387,9 +387,6 @@ $this->module("collections")->extend([
         $name       = $collection;
         $collection = $_collection['_id'];
 
-        $this->app->trigger('collections.remove.before', [$name, &$criteria]);
-        $this->app->trigger("collections.remove.before.{$name}", [$name, &$criteria]);
-
         // check rule
         $context = _check_collection_rule($_collection, 'remove', ['options' => ['filter' => $criteria]]);
 
@@ -398,6 +395,9 @@ $this->module("collections")->extend([
         } else {
             $criteria = $context->options['filter'];
         }
+
+        $this->app->trigger('collections.remove.before', [$name, &$criteria]);
+        $this->app->trigger("collections.remove.before.{$name}", [$name, &$criteria]);
 
         $result = $this->app->storage->remove("collections/{$collection}", $criteria);
 
