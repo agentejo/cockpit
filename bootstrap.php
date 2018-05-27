@@ -176,7 +176,10 @@ function cockpit($module = null) {
 
             ], $config['filestorage']);
 
+            $app->trigger('cockpit.storages.init', [&$storages]);
+
             $filestorage = new FileStorage($storages);
+
             return $filestorage;
         });
 
@@ -187,16 +190,16 @@ function cockpit($module = null) {
         });
 
         // mailer service
-        $app->service("mailer", function() use($app, $config){
+        $app->service('mailer', function() use($app, $config){
             $options   = isset($config['mailer']) ? $config['mailer']:[];
-            $mailer    = new \Mailer(isset($options["transport"]) ? $options['transport'] : 'mail', $options);
+            $mailer    = new \Mailer(isset($options['transport']) ? $options['transport'] : 'mail', $options);
             return $mailer;
         });
 
         // set cache path
         $tmppath = $app->path('#tmp:');
 
-        $app("cache")->setCachePath($tmppath);
+        $app('cache')->setCachePath($tmppath);
         $app->renderer->setCachePath($tmppath);
 
         // i18n
