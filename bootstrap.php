@@ -176,7 +176,7 @@ function cockpit($module = null) {
 
             ], $config['filestorage']);
 
-            $app->trigger('cockpit.storages.init', [&$storages]);
+            $app->trigger('cockpit.filestorages.init', [&$storages]);
 
             $filestorage = new FileStorage($storages);
 
