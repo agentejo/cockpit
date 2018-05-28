@@ -13,7 +13,7 @@ class Settings extends \Cockpit\AuthController {
 
         $info                  = [];
 
-        $info["app"]           = $this->app->helper('admin')->data['cockpit'];
+        $info['app']           = $this->app->helper('admin')->data['cockpit'];
 
         $info['system']        = php_uname();
         $info['phpversion']    = phpversion();
@@ -26,8 +26,8 @@ class Settings extends \Cockpit\AuthController {
             $size += $this->app->helper("fs")->getDirSize($dir);
         }
 
-        $info["cacheSize"] = $size ? $this->app->helper("utils")->formatSize($size) : 0;
-        $info["mailer"]    = $this->app->retrieve("config/mailer", false);
+        $info['cacheSize'] = $size ? $this->app->helper('utils')->formatSize($size) : 0;
+        $info['mailer']    = $this->app->retrieve('config/mailer', false);
 
         $update = $this->getUptdateInfo();
 
