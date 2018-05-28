@@ -8,7 +8,7 @@
 
     <div ref="modal" class="uk-modal">
 
-        <div class="uk-modal-dialog uk-modal-dialog-large uk-form">
+        <div class="uk-modal-dialog uk-modal-dialog-large uk-form" if="{entries.length}">
 
             <h3 class="uk-text-bold uk-flex uk-flex-middle">{ App.i18n.get('Batch edit') } <span class="uk-badge uk-margin-left">{selected.length} { App.i18n.get(selected.length == 1 ? 'Entry' : 'Entries') }</span></h3>
 
@@ -96,13 +96,19 @@
                     $this._entry = {};
                     $this.entries = [];
                     $this.selected = [];
+                    $this.update();
                 }
+
             })
         });
 
         this.toggleCheck = function(e) {
 
             this.checked[e.item.field.name] = e.target.checked;
+
+            if (!this.checked[e.item.field.name]) {
+                delete this.checked[e.item.field.name]
+            }
 
             if (!e.target.checked && (e.item.field.name in this._entry)) {
 
