@@ -29,12 +29,13 @@ class RestApi extends \LimeExtra\Controller {
 
         $options = [];
 
-        if ($filter   = $this->param('filter', null))   $options['filter'] = $filter;
-        if ($limit    = $this->param('limit', null))    $options['limit'] = intval($limit);
-        if ($sort     = $this->param('sort', null))     $options['sort'] = $sort;
-        if ($fields   = $this->param('fields', null))   $options['fields'] = $fields;
-        if ($skip     = $this->param('skip', null))     $options['skip'] = intval($skip);
-        if ($populate = $this->param('populate', null)) $options['populate'] = $populate;
+        if ($filter    = $this->param('filter', null))    $options['filter'] = $filter;
+        if ($limit     = $this->param('limit', null))     $options['limit'] = intval($limit);
+        if ($sort      = $this->param('sort', null))      $options['sort'] = $sort;
+        if ($fields    = $this->param('fields', null))    $options['fields'] = $fields;
+        if ($skip      = $this->param('skip', null))      $options['skip'] = intval($skip);
+        if ($populate  = $this->param('populate', null))  $options['populate'] = $populate;
+        if ($languages = $this->param('languages', null)) $options['languages'] = $languages == 'true';
 
         // cast string values if get request
         if ($filter && isset($_GET['filter'])) $options['filter'] = $this->_fixStringBooleanNumericValues($filter);
@@ -86,13 +87,19 @@ class RestApi extends \LimeExtra\Controller {
             ];
         }
 
-        return [
-            'languages' => $this->languages,
+        $response = [
             'fields'   => $fields,
             'entries'  => $entries,
             'total'    => (!$skip && !$limit) ? count($entries) : $this->module('collections')->count($collection['name'], $filter ? $filter : [])
         ];
 
+        if ($options['languages']) {
+            $response['lanuages'] = $this->languages;
+        }
+
+        return $response;
+
+        // Was this not unreachable. Always?
         return $entries;
     }
 
