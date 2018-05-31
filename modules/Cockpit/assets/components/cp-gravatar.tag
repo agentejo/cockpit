@@ -4,7 +4,8 @@
 
     <script>
 
-        this.url = '';
+        var $this = this;
+
         this.size  = opts.size || 100;
 
         this.on('mount', function(){
@@ -13,31 +14,15 @@
 
         this.on('update', function() {
 
-            this.size  = opts.size || 100;
-            this.email = opts.email || '';
+            this.size = opts.size || 100;
 
-            var img = new Image(), url, release = function() {
-                setTimeout(function() {
-                    this.refs.image.getContext("2d").drawImage(img,0,0);
-                    sessionStorage[url] = this.refs.image.toDataURL();
-                }.bind(this), 10);
-            }.bind(this);
-
-            url = '//www.gravatar.com/avatar/'+md5(this.email)+'?d=404&s='+this.size;
-
-            img.crossOrigin = 'Anonymous';
+            var img = new Image();
 
             img.onload = function() {
-                release();
-            }.bind(this);
+                $this.refs.image.getContext('2d').drawImage(img,0,0);
+            };
 
-            img.onerror = function() {
-                img.src = App.Utils.letterAvatar(opts.alt || '', this.size);
-                release();
-            }.bind(this);
-
-            img.src = sessionStorage[url] || url;
-
+            img.src = App.Utils.letterAvatar(opts.alt || '', this.size);
         });
 
     </script>
