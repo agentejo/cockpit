@@ -103,11 +103,11 @@ $this->module("collections")->extend([
 
         if ($collection = $this->collection($name)) {
 
-            $this->app->helper("fs")->delete("#storage:collections/{$name}.collection.php");
+            $this->app->helper('fs')->delete("#storage:collections/{$name}.collection.php");
 
             // remove rules
             foreach (['create', 'read', 'update', 'delete'] as $method) {
-                $this->app->helper("fs")->delete("#storage:collections/rules/{$name}.{$method}.php");
+                $this->app->helper('fs')->delete("#storage:collections/rules/{$name}.{$method}.php");
             }
 
             $this->app->storage->dropCollection("collections/{$collection['_id']}");
@@ -125,7 +125,7 @@ $this->module("collections")->extend([
 
         $stores = [];
 
-        foreach($this->app->helper("fs")->ls('*.collection.php', '#storage:collections') as $path) {
+        foreach($this->app->helper('fs')->ls('*.collection.php', '#storage:collections') as $path) {
 
             $store = include($path->getPathName());
 
