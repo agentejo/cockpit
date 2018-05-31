@@ -268,6 +268,21 @@
                 <a class="uk-button uk-button-small" onclick="{ loadpage.bind(this, page+1) }" if="{page+1 <= pages}">@lang('Next')</a>
             </div>
 
+            <div class="uk-margin-small-right" data-uk-dropdown="mode:'click'">
+                <a class="uk-button uk-button-link uk-button-small uk-text-muted">{limit}</a>
+                <div class="uk-dropdown">
+                    <ul class="uk-nav uk-nav-dropdown">
+                        <li class="uk-nav-header">@lang('Show')</li>
+                        <li><a onclick="{updateLimit.bind(this, 20)}">20</a></li>
+                        <li><a onclick="{updateLimit.bind(this, 40)}">40</a></li>
+                        <li><a onclick="{updateLimit.bind(this, 80)}">80</a></li>
+                        <li><a onclick="{updateLimit.bind(this, 100)}">100</a></li>
+                        <li class="uk-nav-divider"></li>
+                        <li><a onclick="{updateLimit.bind(this, null)}">@lang('All')</a></li>
+                    </ul>
+                </div>
+            </div>
+
         </div>
 
         </div>
@@ -279,13 +294,14 @@
 
     <script type="view/script">
 
-        var $this = this, $root = App.$(this.root), limit = 20;
+        var $this = this, $root = App.$(this.root);
 
         this.collection = {{ json_encode($collection) }};
         this.loadmore   = false;
         this.loading    = true;
         this.count      = 0;
         this.page       = 1;
+        this.limit      = 20;
         this.entries    = [];
         this.fieldsidx  = {};
         this.imageField = null;
@@ -344,10 +360,12 @@
 
                     if (q.sort) this.sort = q.sort;
                     if (q.page) this.page = q.page;
+                    if (q.limit) this.limit = (parseInt(q.limit) || 20);
                     if (q.filter) {
                         this.filter = q.filter;
                         this.refs.txtfilter.value = q.filter;
                     }
+
                 } catch(e){}
             }
 
@@ -434,8 +452,11 @@
                 options.filter = this.filter;
             }
 
-            options.limit = limit;
-            options.skip  = (this.page - 1) * limit;
+            if (this.limit) {
+                options.limit = this.limit;
+            }
+
+            options.skip  = (this.page - 1) * this.limit;
 
             this.loading = true;
 
@@ -444,7 +465,8 @@
                 App.route(['/collections/entries/', this.collection.name, '?q=', JSON.stringify({
                     page: this.page || null,
                     filter: this.filter || null,
-                    sort: this.sort || null
+                    sort: this.sort || null,
+                    limit: this.limit
                 })].join(''))
             );
 
@@ -457,7 +479,7 @@
                 this.page    = data.page;
                 this.count   = data.count;
 
-                this.loadmore = data.entries.length && data.entries.length == limit;
+                this.loadmore = data.entries.length && data.entries.length == this.limit;
 
                 this.checkselected();
                 this.loading = false;
@@ -539,6 +561,12 @@
                 this.page = 1;
                 this.load();
             }
+        }
+
+        updateLimit(limit) {
+            this.limit = limit;
+            this.page = 1;
+            this.load();
         }
 
         duplicateEntry(e, collection, entry, idx) {
