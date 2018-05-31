@@ -187,7 +187,7 @@
 
         </div>
 
-        <div class="uk-margin-large-top" if="{ entries.length && !loading && listmode=='list' }">
+        <div class="uk-margin-large-top uk-overflow-container" if="{ entries.length && !loading && listmode=='list' }">
             <table class="uk-table uk-table-tabbed uk-table-striped">
                 <thead>
                     <tr>
