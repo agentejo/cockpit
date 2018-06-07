@@ -22,7 +22,7 @@ spl_autoload_register(function($class){
 });
 
 // load .env file if exists
-DotEnv::load();
+DotEnv::load(__DIR__);
 
 // check for custom defines
 if (file_exists(__DIR__.'/defines.php')) {

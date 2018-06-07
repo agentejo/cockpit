@@ -8,11 +8,11 @@
 
     <div ref="modal" class="uk-modal">
 
-        <div class="uk-modal-dialog uk-modal-dialog-large uk-form" if="{entries.length}">
+        <div class="uk-modal-dialog uk-modal-dialog-large uk-form">
 
             <h3 class="uk-text-bold uk-flex uk-flex-middle">{ App.i18n.get('Batch edit') } <span class="uk-badge uk-margin-left">{selected.length} { App.i18n.get(selected.length == 1 ? 'Entry' : 'Entries') }</span></h3>
 
-            <div>
+            <div class="uk-margin-top uk-overflow-container uk-panel-space" if="{entries.length}">
 
                 <div class="field-container uk-panel uk-margin {checked[field.name] && 'uk-panel-box uk-panel-card'}" each="{field in _fields}">
                     <div class="uk-grid">
@@ -35,7 +35,6 @@
 
             </div>
 
-
             <div class="uk-modal-footer uk-text-right">
                 <button class="uk-button uk-button-link uk-button-large" show="{Object.keys(_entry).length}" onclick="{ save }">{ App.i18n.get('Save') }</button>
                 <button class="uk-button uk-button-link uk-button-large uk-modal-close">{ App.i18n.get('Cancel') }</button>
@@ -45,7 +44,6 @@
     </div>
 
     <cp-preloader-fullscreen show="{ blocked }"></cp-preloader-fullscreen>
-
 
     <script>
 
@@ -152,6 +150,7 @@
             }
 
             this.applyBatchEdit(this._entry);
+            this.modal.hide();
         }
 
         this.applyBatchEdit = function(data) {

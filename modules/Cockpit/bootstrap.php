@@ -143,12 +143,12 @@ $this->module('cockpit')->extend([
 
         if ($src) {
 
-            $src = ltrim($src, '/');
+            $path = trim(str_replace(rtrim($this->app->filestorage->getUrl('site://'), '/'), '', $src), '/');
 
-            if (file_exists(COCKPIT_SITE_DIR.'/'.$src)) {
-                $src = COCKPIT_SITE_DIR.'/'.$src;
-            } elseif (file_exists(COCKPIT_DOCS_ROOT.'/'.$src)) {
-                $src = COCKPIT_DOCS_ROOT.'/'.$src;
+            if (file_exists(COCKPIT_SITE_DIR.'/'.$path)) {
+                $src = COCKPIT_SITE_DIR.'/'.$path;
+            } elseif (file_exists(COCKPIT_DOCS_ROOT.'/'.$path)) {
+                $src = COCKPIT_DOCS_ROOT.'/'.$path;
             }
         }
 
