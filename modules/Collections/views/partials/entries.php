@@ -193,11 +193,11 @@
                     <tr>
                         <th width="20"><input class="uk-checkbox" type="checkbox" data-check="all"></th>
                         <th width="{field.name == '_modified' || field.name == '_created' ? '100':''}" class="uk-text-small" each="{field,idx in fields}">
-                            <a class="uk-link-muted uk-noselect { parent.sortedBy == field.name ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
+                            <a class="uk-link-muted uk-noselect { parent.sort[field.name] ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
 
                                 { field.label || field.name }
 
-                                <span if="{parent.sortedBy == field.name}" class="uk-icon-long-arrow-{ parent.sortedOrder == 1 ? 'up':'down'}"></span>
+                                <span if="{parent.sort[field.name]}" class="uk-icon-long-arrow-{ parent.sort[field.name] == 1 ? 'up':'down'}"></span>
                             </a>
                         </th>
                         <th width="20"></th>
@@ -495,6 +495,8 @@
 
         updatesort(e, field) {
 
+            e.preventDefault();
+
             field = e.target.getAttribute('data-sort');
 
             if (!field) {
@@ -514,15 +516,24 @@
                     col = field;
             }
 
+            if (e.metaKey || e.ctrlKey) {
+                // multi select
+            } else {
+
+                var sort = {};
+
+                if (this.sort[col]) {
+                    sort[col] = this.sort[col];
+                }
+                
+                this.sort = sort;
+            }
+
             if (!this.sort[col]) {
-                this.sort      = {};
                 this.sort[col] = 1;
             } else {
                 this.sort[col] = this.sort[col] == 1 ? -1 : 1;
             }
-
-            this.sortedBy = field;
-            this.sortedOrder = this.sort[col];
 
             this.entries = [];
             this.load();
