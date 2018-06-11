@@ -37,8 +37,8 @@ class RestApi extends \LimeExtra\Controller {
         if ($populate = $this->param('populate', null)) $options['populate'] = $populate;
 
         // cast string values if get request
-        if ($filter && isset($_GET['filter'])) $options['filter'] = $this->_fixStringBooleanNumericValues($filter);
-        if ($fields && isset($_GET['fields'])) $options['fields'] = $this->_fixStringBooleanNumericValues($fields);
+        if ($filter && isset($_GET['filter'])) $options['filter'] = $this->_fixStringBooleanValues($filter);
+        if ($fields && isset($_GET['fields'])) $options['fields'] = $this->_fixStringBooleanValues($fields);
 
         // fields filter
         $fieldsFilter = [];
@@ -222,7 +222,7 @@ class RestApi extends \LimeExtra\Controller {
         return $extended ? $collections : array_keys($collections);
     }
 
-    protected function _fixStringBooleanNumericValues(&$array) {
+    protected function _fixStringBooleanValues(&$array) {
 
         if (!is_array($array)) {
             return $array;
@@ -231,15 +231,13 @@ class RestApi extends \LimeExtra\Controller {
         foreach ($array as $k => $v) {
 
             if (is_array($array[$k])) {
-                $array[$k] = $this->_fixStringBooleanNumericValues($array[$k]);
+                $array[$k] = $this->_fixStringBooleanValues($array[$k]);
             }
 
             if (is_string($v)) {
 
                 if ($v === 'true' || $v === 'false') {
                     $v = filter_var($v, FILTER_VALIDATE_BOOLEAN);
-                } elseif(is_numeric($v)) {
-                    $v = $v + 0;
                 }
             }
 
