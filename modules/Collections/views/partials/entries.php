@@ -193,11 +193,12 @@
                     <tr>
                         <th width="20"><input class="uk-checkbox" type="checkbox" data-check="all"></th>
                         <th width="{field.name == '_modified' || field.name == '_created' ? '100':''}" class="uk-text-small" each="{field,idx in fields}">
-                            <a class="uk-link-muted uk-noselect { parent.sort[field.name] ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
+
+                            <a class="uk-link-muted uk-noselect { (parent.sort[field.name] || parent.sort[field.name+'.display']) ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
 
                                 { field.label || field.name }
 
-                                <span if="{parent.sort[field.name]}" class="uk-icon-long-arrow-{ parent.sort[field.name] == 1 ? 'up':'down'}"></span>
+                                <span if="{(parent.sort[field.name] || parent.sort[field.name+'.display'])}" class="uk-icon-long-arrow-{ (parent.sort[field.name] == 1 || parent.sort[field.name+'.display']==1) ? 'up':'down'}"></span>
                             </a>
                         </th>
                         <th width="20"></th>
@@ -525,7 +526,7 @@
                 if (this.sort[col]) {
                     sort[col] = this.sort[col];
                 }
-                
+
                 this.sort = sort;
             }
 
