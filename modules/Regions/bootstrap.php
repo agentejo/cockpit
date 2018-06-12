@@ -160,7 +160,7 @@ $this->module("regions")->extend([
 
         $renderer = $this->app->renderer;
 
-        $_fields  = isset($region['fields']) ? $region['fields'] : [];
+        $_fields  = $region['fields'] ?? [];
 
         $fields = array_merge(isset($region['data']) && is_array($region['data']) ? $region['data']:[] , $params);
 

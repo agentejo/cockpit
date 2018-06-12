@@ -76,7 +76,7 @@ class Media extends \Cockpit\AuthController {
 
     protected function upload() {
 
-        $files      = isset($_FILES['files']) ? $_FILES['files'] : [];
+        $files      = $_FILES['files'] ?? [];
         $path       = $this->param('path', false);
         $targetpath = $this->root.'/'.trim($path, '/');
         $uploaded   = [];

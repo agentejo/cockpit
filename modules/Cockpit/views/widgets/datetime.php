@@ -4,7 +4,7 @@
 
         <?php
             $i18ndata = $app("i18n")->data($app("i18n")->locale);
-            $weekdays = isset($i18ndata["@meta"]["date"]["shortdays"]) ? $i18ndata["@meta"]["date"]["shortdays"] : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            $weekdays = $i18ndata["@meta"]["date"]["shortdays"] ?? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
             $uid      = uniqid('weekdays');
         ?>
 
