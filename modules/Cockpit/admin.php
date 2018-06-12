@@ -15,7 +15,7 @@ $app('i18n')->locale = 'en';
 
 if ($user = $app->module('cockpit')->getUser()) {
 
-    $locale = isset($user['i18n']) ? $user['i18n'] : $app->retrieve('i18n', 'en');
+    $locale = $user['i18n'] ?? $app->retrieve('i18n', 'en');
 
     if ($translationspath = $app->path("#config:cockpit/i18n/{$locale}.php")) {
         $app('i18n')->locale = $locale;

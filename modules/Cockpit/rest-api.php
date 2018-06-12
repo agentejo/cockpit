@@ -19,7 +19,7 @@ $this->on('before', function() {
             return false;
         }
 
-        $token = $this->param('token', isset($_SERVER['HTTP_COCKPIT_TOKEN']) ? $_SERVER['HTTP_COCKPIT_TOKEN'] : null);
+        $token = $this->param('token', $_SERVER['HTTP_COCKPIT_TOKEN'] ?? null);
 
         // api key check
         $allowed = false;

@@ -253,7 +253,7 @@ $this->module("collections")->extend([
 
         $entries = $this->find($name, $options);
 
-        return isset($entries[0]) ? $entries[0] : null;
+        return $entries[0] ?? null;
     },
 
     'save' => function($collection, $data, $options = []) {
@@ -286,7 +286,7 @@ $this->module("collections")->extend([
                     }
 
                     if (!isset($entry[$field['name']])) {
-                        $value = isset($field['default']) ? $field['default'] : '';
+                        $value = $field['default'] ?? '';
                     } else {
                         $value = $entry[$field['name']];
                     }

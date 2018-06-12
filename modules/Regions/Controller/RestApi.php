@@ -53,7 +53,7 @@ class RestApi extends \LimeExtra\Controller {
             $region['data'] = $_items[0];
         }
 
-        return isset($region['data']) ? $region['data'] : [];
+        return $region['data'] ?? [];
     }
 
     public function listRegions($extended = false) {

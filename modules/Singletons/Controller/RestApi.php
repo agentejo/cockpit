@@ -29,7 +29,7 @@ class RestApi extends \LimeExtra\Controller {
             return false;
         }
 
-        return $field ? (isset($data[$field]) ? $data[$field] : null) : $data;
+        return $field ? ($data[$field] ?? null) : $data;
     }
 
     public function listSingletons($extended = false) {

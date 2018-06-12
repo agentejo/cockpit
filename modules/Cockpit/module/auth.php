@@ -63,7 +63,7 @@ $this->module("cockpit")->extend([
 
         if (!$group) {
             $user = $this->getUser();
-            $group = isset($user["group"]) ? $user["group"] : null;
+            $group = $user["group"] ?? null;
         }
 
         if ($group) {
@@ -184,7 +184,7 @@ $aclsettings = $app->retrieve('config/groups', []);
 foreach ($aclsettings as $group => $settings) {
 
     $isSuperAdmin = $settings === true || (isset($settings['$admin']) && $settings['$admin']);
-    $vars         = isset($settings['$vars']) ? $settings['$vars'] : [];
+    $vars         = $settings['$vars'] ?? [];
 
     $app('acl')->addGroup($group, $isSuperAdmin, $vars);
 
