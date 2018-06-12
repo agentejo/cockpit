@@ -11,30 +11,31 @@ class FileStorage {
 
     public function __construct($config = []) {
 
-        $this->config = $config;
         $this->manager = new MountManager();
 
-        foreach ($config as $prefix => $c) {
-            if (isset($c['mount']) && $c['mount']) {
-                $this->use($prefix);
-            }
+        foreach ($config as $name => $_config) {
+            $this->addStorage($name, $_config);
         }
+    }
+
+    public function addStorage($name, $config) {
+
+        $this->config[$name] = $config;
+
+        if (isset($config['mount']) && $config['mount']) {
+            $this->initStorage($name);
+        }
+
+        return $this;
     }
 
     public function use($name) {
 
         if (!isset($this->storages[$name]) && isset($this->config[$name])) {
-
-            $config = $this->config[$name];
-            $adapter = new \ReflectionClass($config['adapter']);
-            $this->storages[$name] = new Filesystem($adapter->newInstanceArgs($config['args'] ?: []));
-
-            if (isset($config['mount']) && $config['mount']) {
-                $this->manager->mountFilesystem($name, $this->storages[$name]);
-            }
+            $this->initStorage($name);
         }
 
-        return $this->storages[$name] ?: null;
+        return $this->storages[$name] ?? null;
     }
 
     public function getURL($file) {
@@ -52,6 +53,19 @@ class FileStorage {
         }
 
         return $url;
+    }
+
+    protected function initStorage($name) {
+
+        $config = $this->config[$name];
+        $adapter = new \ReflectionClass($config['adapter']);
+        $this->storages[$name] = new Filesystem($adapter->newInstanceArgs($config['args'] ?: []));
+
+        if (isset($config['mount']) && $config['mount']) {
+            $this->manager->mountFilesystem($name, $this->storages[$name]);
+        }
+
+        return $this->storages[$name];
     }
 
     public function __call($name, $args) {
