@@ -48,6 +48,10 @@ $this->module("cockpit")->extend([
                 '_by' => $this->app->module('cockpit')->getUser('_id')
             ];
 
+            if (!$asset['mime']) {
+                $asset['mime'] = 'unknown';
+            }
+
             if ($asset['image'] && !preg_match('/\.svg$/i', $file)) {
 
                 $info = getimagesize($file);

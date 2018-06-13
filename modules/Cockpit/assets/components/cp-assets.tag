@@ -16,53 +16,7 @@
         }
     </style>
 
-    <div class="uk-form" ref="list" if="{ mode=='list' }">
-
-        <div class="uk-grid uk-grid-width-1-2">
-            <div>
-                <div class="uk-grid uk-grid-small uk-flex-middle">
-                    <div>
-                        <div class="uk-form-select">
-
-                            <span class="uk-button uk-button-large { getRefValue('filtertype') && 'uk-button-primary'} uk-text-capitalize"><i class="uk-icon-eye uk-margin-small-right"></i> { getRefValue('filtertype') || App.i18n.get('All') }</span>
-
-                            <select ref="filtertype" onchange="{ updateFilter }">
-                                <option value="">All</option>
-                                <option value="image">Image</option>
-                                <option value="video">Video</option>
-                                <option value="audio">Audio</option>
-                                <option value="document">Document</option>
-                                <option value="archive">Archive</option>
-                                <option value="code">Code</option>
-                            </select>
-
-                        </div>
-                    </div>
-                    <div class="uk-flex-item-1">
-                        <div class="uk-form-icon uk-display-block uk-width-1-1">
-                            <i class="uk-icon-search"></i>
-                            <input class="uk-width-1-1 uk-form-large" type="text" ref="filtertitle" onchange="{ updateFilter }">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="uk-text-right">
-
-                <button class="uk-button uk-button-large uk-button-danger" type="button" onclick="{ removeSelected }" show="{ selected.length }">
-                    { App.i18n.get('Delete') } <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
-                </button>
-
-                <span class="uk-button-group uk-button-large">
-                    <button class="uk-button uk-button-large {listmode=='list' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-list"></i></button>
-                    <button class="uk-button uk-button-large {listmode=='grid' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-th"></i></button>
-                </span>
-
-                <span class="uk-button uk-button-large uk-button-primary uk-margin-small-right uk-form-file">
-                    <input class="js-upload-select" type="file" multiple="true">
-                    <i class="uk-icon-upload"></i>
-                </span>
-            </div>
-        </div>
+    <div ref="list" show="{ mode=='list' }">
 
         <div ref="uploadprogress" class="uk-margin uk-hidden">
             <div class="uk-progress">
@@ -70,119 +24,168 @@
             </div>
         </div>
 
-        <div class="uk-margin-large-top uk-panel-space uk-text-center" show="{ !loading && !assets.length }">
-            <span class="uk-text-muted uk-h2">{ App.i18n.get('No Assets found') }</span>
-        </div>
+        <div class="uk-form" if="{ mode=='list' }">
 
-        <div class="uk-text-center uk-text-muted uk-h2 uk-margin-large-top" show="{ loading }">
-            <cp-preloader class="uk-container-center"></cp-preloader>
-        </div>
+            <div class="uk-grid uk-grid-width-1-2">
+                <div>
+                    <div class="uk-grid uk-grid-small uk-flex-middle">
+                        <div>
+                            <div class="uk-form-select">
 
-        <div class="uk-margin-large-top {modal && 'uk-overflow-container'}" if="{ !loading && assets.length }">
+                                <span class="uk-button uk-button-large { getRefValue('filtertype') && 'uk-button-primary'} uk-text-capitalize"><i class="uk-icon-eye uk-margin-small-right"></i> { getRefValue('filtertype') || App.i18n.get('All') }</span>
 
-            <div class="uk-grid uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
-                <div class="uk-grid-margin" each="{ asset,idx in assets }" onclick="{ select }">
-                    <div class="uk-panel uk-panel-box { selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}">
-                        <div class="uk-overlay uk-display-block uk-position-relative">
-                            <canvas class="uk-responsive-width" width="200" height="150"></canvas>
-                            <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle">
-                                <div class="uk-width-1-1 uk-text-center">
-                                    <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-h1 uk-text-muted uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
-                                    <cp-thumbnail src="{asset._id}" height="150" if="{ asset.mime.match(/^image\//) }" title="{ asset.width && [asset.width, asset.height].join('x') }"></cp-thumbnail>
-                                </div>
+                                <select ref="filtertype" onchange="{ updateFilter }">
+                                    <option value="">All</option>
+                                    <option value="image">Image</option>
+                                    <option value="video">Video</option>
+                                    <option value="audio">Audio</option>
+                                    <option value="document">Document</option>
+                                    <option value="archive">Archive</option>
+                                    <option value="code">Code</option>
+                                </select>
+
                             </div>
                         </div>
-                        <div class="uk-text-small uk-margin-small-top uk-text-truncate">
-                            <a onclick="{ parent.edit }"><i class="uk-icon-pencil uk-small-margin-right"></i> { asset.title }</a>
-                        </div>
-                        <div class="uk-text-small uk-text-muted uk-margin-small-top uk-flex">
-                            <strong>{ asset.mime }</strong>
-                            <span class="uk-flex-item-1 uk-margin-small-left uk-margin-small-right">{ App.Utils.formatSize(asset.size) }</span>
-                            <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
+                        <div class="uk-flex-item-1">
+                            <div class="uk-form-icon uk-display-block uk-width-1-1">
                                 <i class="uk-icon-search"></i>
-                            </a>
+                                <input class="uk-width-1-1 uk-form-large" type="text" ref="filtertitle" onchange="{ updateFilter }">
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="uk-text-right">
+
+                    <button class="uk-button uk-button-large uk-button-danger" type="button" onclick="{ removeSelected }" show="{ selected.length }">
+                        { App.i18n.get('Delete') } <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
+                    </button>
+
+                    <span class="uk-button-group uk-button-large">
+                        <button class="uk-button uk-button-large {listmode=='list' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-list"></i></button>
+                        <button class="uk-button uk-button-large {listmode=='grid' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-th"></i></button>
+                    </span>
+
+                    <span class="uk-button uk-button-large uk-button-primary uk-margin-small-right uk-form-file">
+                        <input class="js-upload-select" type="file" multiple="true">
+                        <i class="uk-icon-upload"></i>
+                    </span>
+                </div>
             </div>
 
-            <table class="uk-table uk-table-tabbed" if="{ listmode=='list' }">
-                <thead>
-                    <tr>
-                        <td width="30"></td>
-                        <th class="uk-text-small uk-noselect">{ App.i18n.get('Title') }</th>
-                        <th class="uk-text-small uk-noselect" width="20%">{ App.i18n.get('Type') }</th>
-                        <th class="uk-text-small uk-noselect" width="10%">{ App.i18n.get('Size') }</th>
-                        <th class="uk-text-small uk-noselect" width="10%">{ App.i18n.get('Updated') }</th>
-                        <th class="uk-text-small uk-noselect" width="30"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="{ selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}" each="{ asset,idx in assets }" onclick="{ select }">
-                        <td class="uk-text-center">
+            <div class="uk-margin-large-top uk-panel-space uk-text-center" show="{ !loading && !assets.length }">
+                <span class="uk-text-muted uk-h2">{ App.i18n.get('No Assets found') }</span>
+            </div>
 
-                            <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-text-muted uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
+            <div class="uk-text-center uk-text-muted uk-h2 uk-margin-large-top" show="{ loading }">
+                <cp-preloader class="uk-container-center"></cp-preloader>
+            </div>
 
-                            <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
-                                <cp-thumbnail src="{ASSETS_URL+asset.path}" width="20" height="20"></cp-thumbnail>
-                            </a>
-                        </td>
-                        <td>
-                            <a if="{!parent.modal}" onclick="{ parent.edit }">{ asset.title }</a>
-                            <span if="{parent.modal}">{ asset.title }</span>
-                        </td>
-                        <td class="uk-text-small">{ asset.mime }</td>
-                        <td class="uk-text-small">{ App.Utils.formatSize(asset.size) }</td>
-                        <td class="uk-text-small">{ App.Utils.dateformat( new Date( 1000 * asset.modified )) }</td>
-                        <td>
-                            <span class="uk-float-right" data-uk-dropdown="mode:'click'">
+            <div class="uk-margin-large-top {modal && 'uk-overflow-container'}" if="{ !loading && assets.length }">
 
-                                <a class="uk-icon-bars"></a>
-
-                                <div class="uk-dropdown uk-dropdown-flip">
-                                    <ul class="uk-nav uk-nav-dropdown">
-                                        <li class="uk-nav-header">{ App.i18n.get('Actions') }</li>
-                                        <li><a class="uk-dropdown-close" onclick="{ parent.edit }">{ App.i18n.get('Edit') }</a></li>
-                                        <li><a class="uk-dropdown-close" onclick="{ parent.remove }">{ App.i18n.get('Delete') }</a></li>
-                                    </ul>
+                <div class="uk-grid uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
+                    <div class="uk-grid-margin" each="{ asset,idx in assets }" onclick="{ select }">
+                        <div class="uk-panel uk-panel-box { selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}">
+                            <div class="uk-overlay uk-display-block uk-position-relative">
+                                <canvas class="uk-responsive-width" width="200" height="150"></canvas>
+                                <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle">
+                                    <div class="uk-width-1-1 uk-text-center">
+                                        <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-h1 uk-text-muted uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
+                                        <cp-thumbnail src="{asset._id}" height="150" if="{ asset.mime.match(/^image\//) }" title="{ asset.width && [asset.width, asset.height].join('x') }"></cp-thumbnail>
+                                    </div>
                                 </div>
-                            </span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="uk-margin uk-flex uk-flex-middle uk-noselect" if="{ pages > 1 }">
-
-                <ul class="uk-breadcrumb uk-margin-remove">
-                    <li class="uk-active"><span>{ page }</span></li>
-                    <li data-uk-dropdown="mode:'click'">
-
-                        <a><i class="uk-icon-bars"></i> { pages }</a>
-
-                        <div class="uk-dropdown">
-
-                            <strong class="uk-text-small"> { App.i18n.get('Pages') }</strong>
-
-                            <div class="uk-margin-small-top { pages > 5 ? 'uk-scrollable-box':'' }">
-                                <ul class="uk-nav uk-nav-dropdown">
-                                    <li class="uk-text-small" each="{k,v in new Array(pages)}"><a class="uk-dropdown-close" onclick="{ parent.loadPage }" data-page="{ (v + 1) }"> { App.i18n.get('Page') } {v + 1}</a></li>
-                                </ul>
+                            </div>
+                            <div class="uk-text-small uk-margin-small-top uk-text-truncate">
+                                <a onclick="{ parent.edit }"><i class="uk-icon-pencil uk-small-margin-right"></i> { asset.title }</a>
+                            </div>
+                            <div class="uk-text-small uk-text-muted uk-margin-small-top uk-flex">
+                                <strong>{ asset.mime }</strong>
+                                <span class="uk-flex-item-1 uk-margin-small-left uk-margin-small-right">{ App.Utils.formatSize(asset.size) }</span>
+                                <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
+                                    <i class="uk-icon-search"></i>
+                                </a>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                    </li>
-                </ul>
+                <table class="uk-table uk-table-tabbed" if="{ listmode=='list' }">
+                    <thead>
+                        <tr>
+                            <td width="30"></td>
+                            <th class="uk-text-small uk-noselect">{ App.i18n.get('Title') }</th>
+                            <th class="uk-text-small uk-noselect" width="20%">{ App.i18n.get('Type') }</th>
+                            <th class="uk-text-small uk-noselect" width="10%">{ App.i18n.get('Size') }</th>
+                            <th class="uk-text-small uk-noselect" width="10%">{ App.i18n.get('Updated') }</th>
+                            <th class="uk-text-small uk-noselect" width="30"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="{ selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}" each="{ asset,idx in assets }" onclick="{ select }">
+                            <td class="uk-text-center">
 
-                <div class="uk-button-group uk-margin-small-left">
-                    <a class="uk-button uk-button-small" onclick="{ loadPage }" data-page="{ (page - 1) }" if="{page-1 > 0}"> { App.i18n.get('Previous') }</a>
-                    <a class="uk-button uk-button-small" onclick="{ loadPage }" data-page="{ (page + 1) }" if="{page+1 <= pages}"> { App.i18n.get('Next') }</a>
+                                <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-text-muted uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
+
+                                <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
+                                    <cp-thumbnail src="{ASSETS_URL+asset.path}" width="20" height="20"></cp-thumbnail>
+                                </a>
+                            </td>
+                            <td>
+                                <a if="{!parent.modal}" onclick="{ parent.edit }">{ asset.title }</a>
+                                <span if="{parent.modal}">{ asset.title }</span>
+                            </td>
+                            <td class="uk-text-small">{ asset.mime }</td>
+                            <td class="uk-text-small">{ App.Utils.formatSize(asset.size) }</td>
+                            <td class="uk-text-small">{ App.Utils.dateformat( new Date( 1000 * asset.modified )) }</td>
+                            <td>
+                                <span class="uk-float-right" data-uk-dropdown="mode:'click'">
+
+                                    <a class="uk-icon-bars"></a>
+
+                                    <div class="uk-dropdown uk-dropdown-flip">
+                                        <ul class="uk-nav uk-nav-dropdown">
+                                            <li class="uk-nav-header">{ App.i18n.get('Actions') }</li>
+                                            <li><a class="uk-dropdown-close" onclick="{ parent.edit }">{ App.i18n.get('Edit') }</a></li>
+                                            <li><a class="uk-dropdown-close" onclick="{ parent.remove }">{ App.i18n.get('Delete') }</a></li>
+                                        </ul>
+                                    </div>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="uk-margin uk-flex uk-flex-middle uk-noselect" if="{ pages > 1 }">
+
+                    <ul class="uk-breadcrumb uk-margin-remove">
+                        <li class="uk-active"><span>{ page }</span></li>
+                        <li data-uk-dropdown="mode:'click'">
+
+                            <a><i class="uk-icon-bars"></i> { pages }</a>
+
+                            <div class="uk-dropdown">
+
+                                <strong class="uk-text-small"> { App.i18n.get('Pages') }</strong>
+
+                                <div class="uk-margin-small-top { pages > 5 ? 'uk-scrollable-box':'' }">
+                                    <ul class="uk-nav uk-nav-dropdown">
+                                        <li class="uk-text-small" each="{k,v in new Array(pages)}"><a class="uk-dropdown-close" onclick="{ parent.loadPage }" data-page="{ (v + 1) }"> { App.i18n.get('Page') } {v + 1}</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </li>
+                    </ul>
+
+                    <div class="uk-button-group uk-margin-small-left">
+                        <a class="uk-button uk-button-small" onclick="{ loadPage }" data-page="{ (page - 1) }" if="{page-1 > 0}"> { App.i18n.get('Previous') }</a>
+                        <a class="uk-button uk-button-small" onclick="{ loadPage }" data-page="{ (page + 1) }" if="{page+1 <= pages}"> { App.i18n.get('Next') }</a>
+                    </div>
+
                 </div>
 
             </div>
 
         </div>
-
     </div>
 
     <div class="uk-form" if="{asset && mode=='edit'}">
@@ -399,7 +402,10 @@
             }
 
             if (this.refs.filtertitle.value) {
-                this.filter.title = {'$regex':this.refs.filtertitle.value};
+
+                this.filter.$or = [];
+                this.filter.$or.push({title: {'$regex':this.refs.filtertitle.value}});
+                this.filter.$or.push({tags: {'$has':this.refs.filtertitle.value}});
             }
 
             if (this.refs.filtertype.value) {
