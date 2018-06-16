@@ -85,7 +85,7 @@
                     { App.i18n.get('No entries found') }.
                 </div>
 
-                <table class="uk-table uk-table-striped" if="{ entries.length }">
+                <table class="uk-table uk-table-tabbed uk-table-striped" if="{ entries.length }">
                     <thead>
                         <tr>
                             <th show="{opts.multiple}"></th>
