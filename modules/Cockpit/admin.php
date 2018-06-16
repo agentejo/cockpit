@@ -37,9 +37,7 @@ $app->bind('/cockpit.i18n.data', function() {
 $assets = [
 
     // polyfills
-    'assets:polyfills/es6-shim.js',
     'assets:polyfills/dom4.js',
-    'assets:polyfills/fetch.js',
     'assets:polyfills/document-register-element.js',
     'assets:polyfills/web-animations.min.js',
     'assets:polyfills/pointer-events.js',
