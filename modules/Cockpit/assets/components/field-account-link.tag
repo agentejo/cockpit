@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    <div class="uk-panel uk-panel-box uk-panel-card uk-flex uk-flex-middle" if="{!opts.multiple && _value}">
+    <div class="uk-panel uk-panel-box uk-panel-card uk-flex uk-flex-middle" if="{ready && _value && !opts.multiple}">
         <div class="uk-flex-item-1 uk-margin-right">
             <cp-account account="{_value}"></cp-account>
         </div>
@@ -19,19 +19,15 @@
     </div>
 
 
-    <div if="{opts.multiple && Array.isArray(_value) && _value.length}">
+    <div class="uk-sortable" if="{ready && opts.multiple && Array.isArray(_value) && _value.length}" data-uk-sortable>
 
-        <div class="uk-panel uk-panel-box uk-panel-card uk-flex uk-flex-middle uk-margin-small-bottom" each="{account in _value}">
+        <div class="uk-panel uk-panel-box uk-panel-card uk-flex uk-flex-middle uk-margin-small-bottom" each="{account in _value}" data-account="{account}">
             <div class="uk-flex-item-1 uk-margin-right">
                 <cp-account account="{account}"></cp-account>
             </div>
             <div>
                 <a onclick="{parent.removeAccount}"><i class="uk-icon-trash-o uk-text-danger"></i></a>
             </div>
-        </div>
-
-        <div class="uk-text-center">
-            <a class="uk-text-large" onclick="{selectAccount}" title="{ App.i18n.get('Add Account') }"><i class="uk-icon-plus-circle"></i></a>
         </div>
     </div>
 
@@ -84,7 +80,7 @@
                         <td>{account.name}</td>
                         <td>{account.email}</td>
                         <td><span class="{ account.group=='admin' && 'uk-badge' }">{ account.group }</span></td>
-                        <td><a onclick="{ parent.linkAccount }"><i class="uk-icon-link"></i></a></td>
+                        <td width="20"><a onclick="{ parent.linkAccount }"><i class="uk-icon-link"></i></a></td>
                     </tr>
                 </tbody>
             </table>
@@ -96,9 +92,11 @@
 
         var $this = this, cache = {};
 
-        this.selected = [];
+        this._value = null;
         this._accounts = [];
-        this.loading = false;
+        this.selected  = [];
+        this.loading   = false;
+        this.ready     = false;
 
         this.on('mount', function() {
 
@@ -113,6 +111,27 @@
                     $this.update();
                 }
             });
+
+            if (opts.multiple) {
+
+                App.$(this.root).on('stop.uk.sortable', function(){
+
+                    var accounts = [];
+
+                    App.$('.uk-sortable', $this.root).children().each(function(){
+                        accounts.push(this.getAttribute('data-account'));
+                    });
+
+                    $this._value = [];
+                    $this.update();
+
+                    $this._value = accounts;
+                    $this.$setValue($this._value);
+                });
+            }
+
+            this.ready = true;
+            this.update();
         });
 
         this.$updateValue = function(value) {
