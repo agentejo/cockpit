@@ -21,7 +21,9 @@ class Mailer {
 
         $message = $this->createMessage($to, $subject, $message);
 
-        $message->setFrom(isset($options['from']) ? $options['from'] : 'mailer@'.(isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : 'localhost'));
+        if (isset($options['from'])) {
+            $message->setFrom($options['from'], $options['from_name'] ?? '');
+        }
 
         if (isset($options['reply_to'])) {
             $message->addReplyTo($options['reply_to']);
