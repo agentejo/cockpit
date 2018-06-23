@@ -19,16 +19,23 @@
     </div>
 
 
-    <div class="uk-sortable" if="{ready && opts.multiple && Array.isArray(_value) && _value.length}" data-uk-sortable>
+    <div if="{ready && opts.multiple && Array.isArray(_value) && _value.length}">
+        <div class="uk-sortable" data-uk-sortable>
 
-        <div class="uk-panel uk-panel-box uk-panel-card uk-flex uk-flex-middle uk-margin-small-bottom" each="{account in _value}" data-account="{account}">
-            <div class="uk-flex-item-1 uk-margin-right">
-                <cp-account account="{account}"></cp-account>
-            </div>
-            <div>
-                <a onclick="{parent.removeAccount}"><i class="uk-icon-trash-o uk-text-danger"></i></a>
+            <div class="uk-panel uk-panel-box uk-panel-card uk-flex uk-flex-middle uk-margin-small-bottom" each="{account in _value}" data-account="{account}">
+                <div class="uk-flex-item-1 uk-margin-right">
+                    <cp-account account="{account}"></cp-account>
+                </div>
+                <div>
+                    <a onclick="{parent.removeAccount}"><i class="uk-icon-trash-o uk-text-danger"></i></a>
+                </div>
             </div>
         </div>
+
+        <p class="uk-text-center">
+            <a onclick="{selectAccount}" title="{ App.i18n.get('Add Account') }" data-uk-tooltip><i class="uk-icon-plus-circle"></i></a>
+        </p>
+
     </div>
 
     <div ref="modalSelectAccounts" class="uk-modal">
