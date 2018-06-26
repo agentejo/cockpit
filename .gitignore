@@ -7,6 +7,7 @@
 .idea
 .env
 composer.lock
+package-lock.json
 /lib/**/docs/*
 /lib/**/tests/*
 /lib/**/example/*
