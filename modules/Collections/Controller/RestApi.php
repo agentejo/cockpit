@@ -52,7 +52,7 @@ class RestApi extends \LimeExtra\Controller {
             $options['fieldsFilter'] = $fieldsFilter;
         }
 
-        if (isset($options["sort"])) {
+        if ($sort) {
 
             foreach ($sort as $key => &$value) {
                 $options["sort"][$key]= intval($value);
@@ -60,6 +60,19 @@ class RestApi extends \LimeExtra\Controller {
         }
 
         $entries = $this->module('collections')->find($collection['name'], $options);
+        $count = count($entries);
+        $isSortable = $collection['sortable'] ?? false;
+
+        // sort by custom order if collection is sortable
+        if (!$sort && $isSortable && $count) {
+
+            $entries = $this->helper('utils')->buildTree($entries, [
+                'parent_id_column_name' => '_pid',
+                'children_key_name'     => 'children',
+                'id_column_name'        => '_id',
+    			'sort_column_name'      => '_o'
+            ]);
+        }
 
         // return only entries array - due to legacy
         if ((boolean) $this->param('simple', false)) {
@@ -89,7 +102,7 @@ class RestApi extends \LimeExtra\Controller {
         return [
             'fields'   => $fields,
             'entries'  => $entries,
-            'total'    => (!$skip && !$limit) ? count($entries) : $this->module('collections')->count($collection['name'], $filter ? $filter : [])
+            'total'    => (!$skip && !$limit) ? $count : $this->module('collections')->count($collection['name'], $filter ? $filter : [])
         ];
 
         return $entries;
