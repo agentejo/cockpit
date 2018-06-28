@@ -125,7 +125,17 @@ class RestApi extends \LimeExtra\Controller {
             return $this->stop('{"error": "Unauthorized"}', 401);
         }
 
-        $data['_by'] = $this->module('cockpit')->getUser('_id');
+        $userId = $this->module('cockpit')->getUser('_id');
+
+        if (isset($data[0])) {
+
+            foreach ($data as &$entry) {
+                $entry['_by'] = $userId;
+            }
+
+        } else {
+            $data['_by'] = $userId;
+        }
 
         $data = $this->module('collections')->save($collection, $data);
 
