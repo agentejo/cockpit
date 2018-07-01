@@ -3,7 +3,7 @@
 $app->on('admin.init', function() {
 
 
-    if (!$this->module('cockpit')->getGroupRights('singleton') && !$this->module('singletons')->getSingletonInGroup()) {
+    if (!$this->module('cockpit')->getGroupRights('singletons') && !$this->module('singletons')->getSingletonInGroup()) {
 
         $this->bind('/singletons/*', function() {
             return $this('admin')->denyRequest();
