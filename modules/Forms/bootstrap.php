@@ -251,8 +251,19 @@ $this->module("forms")->extend([
         }
 
         // custom form validation
-        if ($this->app->path("#config:forms/{$form}.php") && false===include($this->app->path("#config:forms/{$form}.php"))) {
-            return false;
+        if ($this->app->path("#config:forms/{$form}.php")) {
+            
+            $custom_validation = include($this->app->path("#config:forms/{$form}.php"));
+            
+            // return "404 Path not found"
+            if (false===$custom_validation) {
+                return false;
+            }
+            // return error message and data
+            if (true!==$custom_validation && 1!==$custom_validation) {
+                return ["error" => $custom_validation, "data" => $data];
+            }
+            
         }
 
         if (isset($frm['email_forward']) && $frm['email_forward']) {
