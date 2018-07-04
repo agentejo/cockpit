@@ -110,7 +110,12 @@ $this->module('cockpit')->extend([
             $path = trim(str_replace(rtrim($this->app->filestorage->getUrl('assets://'), '/'), '', $src), '/');
 
             if ($this->app->filestorage->has('assets://'.$path)) {
+
                 $asset = $this->app->storage->findOne('cockpit/assets', ['path' => "/{$path}"]);
+
+                if (!$asset) {
+                    $asset = ['path' => "/{$path}"];
+                }
             }
 
         } elseif (!preg_match('/\.(png|jpg|jpeg|gif)$/i', $src)) {
