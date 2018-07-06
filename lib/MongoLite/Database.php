@@ -283,7 +283,15 @@ class UtilArrayQuery {
                     if (is_array($value)) {
                         $fn[] = "\\MongoLite\\UtilArrayQuery::check((isset({$d}) ? {$d} : null), ".var_export($value, true).")";
                     } else {
-                        $fn[] = "(isset({$d}) && {$d}==".(is_string($value) ? "'{$value}'": var_export($value, true)).")";
+
+                        $_value = var_export($value, true);
+
+                        $fn[] = "(isset({$d}) && (
+                                    is_array({$d}) && is_string({$_value})
+                                        ? in_array({$_value}, {$d})
+                                        : {$d}=={$_value}
+                                    )
+                                )";
                     }
             }
         }
@@ -359,7 +367,7 @@ class UtilArrayQuery {
 
             case '$all' :
                 if (!is_array($a)) $a = @json_decode($a, true) ?  : array();
-                if (! is_array($b))
+                if (!is_array($b))
                     throw new \InvalidArgumentException('Invalid argument for $all option must be array');
                 $r = count(array_intersect_key($a, $b)) == count($b);
                 break;
