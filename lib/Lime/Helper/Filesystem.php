@@ -47,7 +47,7 @@ class Filesystem extends \Lime\Helper {
             if ($file->isDot()) continue;
             if ($pattern && !fnmatch($pattern, $file->getBasename())) continue;
 
-            $lst[] = $file->isDir() ? clone $file : new \SplFileObject($file->getRealPath());
+            $lst[] = $file->isDir() ? clone $file : new FileObject($file->getRealPath());
 
         }
 
@@ -255,6 +255,49 @@ class Filesystem extends \Lime\Helper {
         }
 
         return false;
+    }
+}
+
+/**
+ * Use custom FileObject to prevent "too many files open" error
+ */
+
+class FileObject {
+
+    protected $path;
+    protected $fileObject;
+
+    public function __construct($path) {
+        $this->path = $path;
+    }
+
+    public function getFilename() {
+        return basename($this->path);
+    }
+
+    public function getPathName() {
+        return $this->path;
+    }
+
+    public function getRealPath() {
+        return realpath($this->path);
+    }
+
+    public function getBasename($suffix = null) {
+        return basename($this->path, $suffix);
+    }
+
+    public function getSize() {
+        return filesize($this->path);
+    }
+
+    public function __call($method, $args) {
+
+        if (!isset($this->fileObject)) {
+            $this->fileObject = new \SplFileObject($this->path);
+        }
+
+        return call_user_func_array([$this->fileObject, $method], $args);
     }
 }
 
