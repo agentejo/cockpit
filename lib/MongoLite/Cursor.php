@@ -5,7 +5,7 @@ namespace MongoLite;
 /**
  * Cursor object.
  */
-class Cursor implements \Iterator{
+class Cursor implements \Iterator {
 
     /**
      * @var boolean|integer
@@ -191,7 +191,7 @@ class Cursor implements \Iterator{
 
         if (!$this->projection) {
 
-            foreach($result as &$doc) {
+            foreach ($result as &$doc) {
                 $documents[] = json_decode($doc["document"], true);
             }
 
@@ -200,7 +200,7 @@ class Cursor implements \Iterator{
             $exclude = [];
             $include = [];
 
-            foreach($this->projection as $key => $value) {
+            foreach ($this->projection as $key => $value) {
 
                 if ($value) {
                     $include[$key] = 1;
@@ -209,7 +209,7 @@ class Cursor implements \Iterator{
                 }
             }
 
-            foreach($result as &$doc) {
+            foreach ($result as &$doc) {
 
                 $item = json_decode($doc["document"], true);
                 $id   = $item["_id"];
@@ -238,7 +238,7 @@ class Cursor implements \Iterator{
      */
     public function rewind() {
 
-        if($this->position!==false) {
+        if ($this->position!==false) {
             $this->position = 0;
         }
     }
@@ -258,7 +258,7 @@ class Cursor implements \Iterator{
 
     public function valid() {
 
-        if($this->position===false) {
+        if ($this->position===false) {
             $this->data     = $this->getData();
             $this->position = 0;
         }

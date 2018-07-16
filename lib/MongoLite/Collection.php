@@ -73,7 +73,7 @@ class Collection {
     protected function _insert(&$document) {
 
         $table           = $this->name;
-        $document["_id"] = isset($document["_id"]) ? $document["_id"] : uniqid().'doc'.rand();
+        $document['_id'] = isset($document['_id']) ? $document['_id'] : createMongoDbLikeId();
         $data            = array("document" => json_encode($document, JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE));
 
         $fields = array();
@@ -81,19 +81,18 @@ class Collection {
 
         foreach($data as $col=>$value){
             $fields[] = "`{$col}`";
-            $values[] = (is_null($value) ? 'NULL':$this->database->connection->quote($value));
+            $values[] = (is_null($value) ? 'NULL' : $this->database->connection->quote($value));
         }
 
         $fields = implode(',', $fields);
         $values = implode(',', $values);
 
         $sql = "INSERT INTO {$table} ({$fields}) VALUES ({$values})";
-
         $res = $this->database->connection->exec($sql);
 
-        if($res){
+        if ($res){
             return $this->database->connection->lastInsertId();
-        }else{
+        } else {
             trigger_error('SQL Error: '.implode(', ', $this->database->connection->errorInfo()).":\n".$sql);
             return false;
         }
@@ -123,7 +122,7 @@ class Collection {
         $stmt   = $this->database->connection->query($sql);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        foreach($result as &$doc) {
+        foreach ($result as &$doc) {
 
             $document = array_merge(json_decode($doc["document"], true), $data);
 
