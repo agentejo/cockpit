@@ -555,7 +555,7 @@ $this->module("collections")->extend([
 
                     foreach($languages as $l) {
 
-                        if (isset($entry["{$name}_{$l}"])) {
+                        if (isset($entry["{$name}_{$l}"]) && !empty($entry["{$name}_{$l}"]) ) {
 
                             if ($l == $lang) {
 
@@ -566,15 +566,15 @@ $this->module("collections")->extend([
                                 }
                             }
 
-                            unset($entry["{$name}_{$l}"]);
-                            unset($entry["{$name}_{$l}_slug"]);
-
                         } elseif ($l == $lang && $ignoreDefaultFallback) {
 
                             if ($ignoreDefaultFallback === true || (is_array($ignoreDefaultFallback) && in_array($name, $ignoreDefaultFallback))) {
                                 $entry[$name] = null;
                             }
                         }
+                        
+                        unset($entry["{$name}_{$l}"]);
+                        unset($entry["{$name}_{$l}_slug"]);
                     }
                 }
 
