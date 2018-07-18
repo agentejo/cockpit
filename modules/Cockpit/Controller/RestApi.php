@@ -141,6 +141,7 @@ class RestApi extends \LimeExtra\Controller {
             'src' => $this->param('src', false),
             'mode' => $this->param('m', 'thumbnail'),
             'fp' => $this->param('fp', null),
+            'filters' => (array) $this->param('f', []),
             'width' => intval($this->param('w', null)),
             'height' => intval($this->param('h', null)),
             'quality' => intval($this->param('q', 100)),
@@ -149,6 +150,7 @@ class RestApi extends \LimeExtra\Controller {
             'output' => intval($this->param('o', false))
         ];
 
+        // Set single filter when available
         foreach ([
             'blur', 'brighten',
             'colorize', 'contrast',
