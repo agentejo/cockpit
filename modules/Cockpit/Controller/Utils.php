@@ -8,7 +8,9 @@ class Utils extends \Cockpit\AuthController {
 
         $options = [
             'src' => $this->param('src', false),
+            'fp' => $this->param('fp', null),
             'mode' => $this->param('m', 'thumbnail'),
+            'filters' => (array) $this->param('f', []),
             'width' => intval($this->param('w', null)),
             'height' => intval($this->param('h', null)),
             'quality' => intval($this->param('q', 85)),
@@ -17,11 +19,12 @@ class Utils extends \Cockpit\AuthController {
             'output' => intval($this->param('o', false)),
         ];
 
+        // Set single filter when available
         foreach([
-            'blur', 'brighten', 
-            'colorize', 'contrast', 
-            'darken', 'desaturate', 
-            'edge detect', 'emboss', 
+            'blur', 'brighten',
+            'colorize', 'contrast',
+            'darken', 'desaturate',
+            'edge detect', 'emboss',
             'flip', 'invert', 'opacity', 'pixelate', 'sepia', 'sharpen', 'sketch'
         ] as $f) {
             if ($this->param($f)) $options[$f] = $this->param($f);
