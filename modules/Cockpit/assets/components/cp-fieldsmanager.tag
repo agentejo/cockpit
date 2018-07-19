@@ -180,6 +180,14 @@
                 this.fieldtypes.push({name:f, value:f});
             }
         }
+
+        // sort by field name
+
+        this.fieldtypes = this.fieldtypes.sort(function(fieldA, fieldB) {
+
+            return fieldA.name.localeCompare(fieldB.name);
+
+        });
         // --
 
         this.$updateValue = function(value, field) {
