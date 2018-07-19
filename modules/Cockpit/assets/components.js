@@ -465,6 +465,12 @@ riot.tag2('cp-fieldsmanager', '<div ref="fieldscontainer" class="uk-sortable uk-
             }
         }
 
+        this.fieldtypes = this.fieldtypes.sort(function(fieldA, fieldB) {
+
+            return fieldA.name.localeCompare(fieldB.name);
+
+        });
+
         this.$updateValue = function(value, field) {
 
             if (!Array.isArray(value)) {
