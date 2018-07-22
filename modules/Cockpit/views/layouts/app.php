@@ -30,6 +30,8 @@
 
     <script>
         App.$data = {{ json_encode($app('admin')->data->get('extract')) }};
+        UIkit.modal.labels.Ok = App.i18n.get(UIkit.modal.labels.Ok);
+        UIkit.modal.labels.Cancel = App.i18n.get(UIkit.modal.labels.Cancel);
     </script>
 
     @trigger('app.layout.header')
