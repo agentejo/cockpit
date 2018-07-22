@@ -75,6 +75,7 @@
                     <li class="{ tab=='fields' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="fields">{ App.i18n.get('Fields') }</a></li>
                     <li class="{ tab=='auth' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="auth">{ App.i18n.get('Permissions') }</a></li>
                     <li class="{ tab=='other' && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleTab }" data-tab="other">{ App.i18n.get('Other') }</a></li>
+                    @trigger('collections.render.tabs.navigation.after-last', compact('collection','templates','aclgroups'))
                 </ul>
 
                 <div class="uk-form-row" show="{tab=='fields'}">
@@ -196,6 +197,7 @@
 
                 </div>
 
+                @trigger('collections.render.tabs.content.after-last', compact('collection','templates','aclgroups'))
 
                 <div class="uk-margin-large-top" show="{ collection.fields.length }">
 
