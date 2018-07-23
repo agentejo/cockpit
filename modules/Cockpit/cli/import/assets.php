@@ -12,6 +12,10 @@ $fs = $app->helper('fs');
 $uploads = $app->path('#uploads:');
 $check = $app->param('check', false);
 
+if (!file_exists("{$src}/cockpit/assets.json")) {
+    return;
+}
+
 
 if ($data = $fs->read("{$src}/cockpit/assets.json")) {
 

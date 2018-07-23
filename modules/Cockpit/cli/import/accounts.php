@@ -9,6 +9,10 @@ if (!$src) {
     return;
 }
 
+if (!file_exists("{$src}/cockpit/accounts.json")) {
+    return;
+}
+
 $check = $app->param('check', false);
 
 if ($data = $app->helper('fs')->read("{$src}/cockpit/accounts.json")) {
