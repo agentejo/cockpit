@@ -135,10 +135,12 @@ $this->module('cockpit')->extend([
                     if (!$asset) {
                         $asset = ['path' => "/{$path}"];
                     }
+
+                } else {
+                    return $src;
                 }
 
             } catch (\Exception $e) {
-
                 return $src;
             }
 
