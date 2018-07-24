@@ -64,7 +64,7 @@ class RestApi extends \LimeExtra\Controller {
         $isSortable = $collection['sortable'] ?? false;
 
         // sort by custom order if collection is sortable
-        if (!$sort && $isSortable && $count) {
+        if (!$sort && !$filter && $isSortable && $count) {
 
             $entries = $this->helper('utils')->buildTree($entries, [
                 'parent_id_column_name' => '_pid',
