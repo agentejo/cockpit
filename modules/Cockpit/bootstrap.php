@@ -75,6 +75,23 @@ $this->module('cockpit')->extend([
         return $this->app->helper('fs')->write($container, "<?php\n return {$export};");
     },
 
+    /**
+     * Generate thumbnail
+     * @param array $options {
+     *   @var string [cachefolder=thumbs://] - Cache folder
+     *   @var string $source - Source file path
+     *   @var string [$mode=thumbnail] - One of thumbnail|bestFit|resize|fitToWidth|fitToHeight
+     *   @var string [$fp] - Position
+     *   @var array [$filters] - Associative array of filters and it's options: ['sepia', 'sharpen']
+     *   @var integer [$width] - Output width
+     *   @var integer [$height] - Output height
+     *   @var integer [$quality=100] - Output quality
+     *   @var boolean [$rebuild=false] - Force image rebuild
+     *   @var boolean [$base64=false] - Base64 output
+     *   @var boolean [$output=false] - Echo response and exit application
+     * }
+     * @return string URL to file or Base64 output
+     */
     'thumbnail' => function($options) {
 
         $options = array_merge(array(
@@ -82,7 +99,7 @@ $this->module('cockpit')->extend([
             'src' => '',
             'mode' => 'thumbnail',
             'fp' => null,
-            'filter' => '',
+            'filters' => [],
             'width' => false,
             'height' => false,
             'quality' => 100,
@@ -217,10 +234,24 @@ $this->module('cockpit')->extend([
                     'flip', 'invert', 'opacity', 'pixelate', 'sepia', 'sharpen', 'sketch'
                 ];
 
+                // Apply single filter
                 foreach ($_filters as $f) {
 
                     if (isset($options[$f])) {
                         $img->{$f}($options[$f]);
+                    }
+                }
+
+                // Apply multiple filters
+                foreach ($filters as $filterName => $filterOptions) {
+                    // Handle non-associative array
+                    if (is_int($filterName)) {
+                        $filterName = $filterOptions;
+                        $filterOptions = [];
+                    }
+
+                    if (in_array($filterName, $_filters)) {
+                        call_user_func_array([$img, $filterName], (array) $filterOptions);
                     }
                 }
 
