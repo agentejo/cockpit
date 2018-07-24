@@ -11,16 +11,26 @@ include(__DIR__.'/Helper/Admin.php');
 $app->helpers['admin']  = 'Cockpit\\Helper\\Admin';
 
 // init + load i18n
-$app('i18n')->locale = 'en';
-
 if ($user = $app->module('cockpit')->getUser()) {
 
+    // load user i18n
+    
     $locale = $user['i18n'] ?? $app->retrieve('i18n', 'en');
 
     if ($translationspath = $app->path("#config:cockpit/i18n/{$locale}.php")) {
         $app('i18n')->locale = $locale;
         $app('i18n')->load($translationspath, $locale);
     }
+}
+else {
+
+  // load app i18n
+  
+  $locale = $app('i18n')->locale;
+
+  if ($translationspath = $app->path("#config:cockpit/i18n/{$locale}.php")) {
+      $app('i18n')->load($translationspath, $locale);
+  }
 }
 
 $app->bind('/cockpit.i18n.data', function() {

@@ -46,7 +46,7 @@
 
                 <span class="uk-margin-left" data-uk-dropdown="mode:'click'">
 
-                    <a class="uk-text-{sortBy == 'name' ? 'muted':'primary'}" title="Sort files" data-uk-tooltip="pos:'right'"><i class="uk-icon-sort"></i> { App.Utils.ucfirst(sortBy) }</a>
+                    <a class="uk-text-{sortBy == 'name' ? 'muted':'primary'}" title="{ App.i18n.get('Sort files') }" data-uk-tooltip="pos:'right'"><i class="uk-icon-sort"></i> { App.Utils.ucfirst(sortBy) }</a>
 
                     <div class="uk-dropdown uk-margin-top uk-text-left">
                         <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
@@ -70,9 +70,9 @@
 
                     <div class="uk-dropdown uk-margin-top uk-text-left">
                         <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
-                            <li class="uk-nav-header">Create</li>
-                            <li><a onclick="{ createfolder }"><i class="uk-icon-folder-o uk-icon-justify"></i> Folder</a></li>
-                            <li><a onclick="{ createfile }"><i class="uk-icon-file-o uk-icon-justify"></i> File</a></li>
+                            <li class="uk-nav-header">{ App.i18n.get('Create') }</li>
+                            <li><a onclick="{ createfolder }"><i class="uk-icon-folder-o uk-icon-justify"></i> { App.i18n.get('Folder') }</a></li>
+                            <li><a onclick="{ createfile }"><i class="uk-icon-file-o uk-icon-justify"></i> { App.i18n.get('File') }</a></li>
                         </ul>
                     </div>
 
@@ -91,11 +91,11 @@
                 </span>
 
                 <span class="uk-margin-left" if="{ selected.count }" data-uk-dropdown="mode:'click', pos:'bottom-right'">
-                    <span class="uk-button uk-button-large"><strong>Batch:</strong> { selected.count } &nbsp;<i class="uk-icon-caret-down"></i></span>
+                    <span class="uk-button uk-button-large"><strong>{ App.i18n.get('Batch') }:</strong> { selected.count } &nbsp;<i class="uk-icon-caret-down"></i></span>
                     <div class="uk-dropdown uk-margin-top uk-text-left">
                         <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
-                            <li class="uk-nav-header">Batch action</li>
-                            <li class="uk-nav-item-danger"><a onclick="{ removeSelected }">Delete</a></li>
+                            <li class="uk-nav-header">{ App.i18n.get('Batch action') }</li>
+                            <li class="uk-nav-item-danger"><a onclick="{ removeSelected }">{ App.i18n.get('Delete') }</a></li>
                         </ul>
                     </div>
                 </span>
@@ -111,13 +111,13 @@
                 <div class="uk-panel">
 
                     <ul class="uk-nav uk-nav-side">
-                        <li class="uk-nav-header">Display</li>
-                        <li class="{ !typefilter ? 'uk-active':'' }"><a data-type="" onclick="{ settypefilter }"><i class="uk-icon-circle-o uk-icon-justify"></i> All</a></li>
-                        <li class="{ typefilter=='image' ? 'uk-active':'' }"><a data-type="image" onclick="{ settypefilter }"><i class="uk-icon-image uk-icon-justify"></i> Images</a></li>
-                        <li class="{ typefilter=='video' ? 'uk-active':'' }"><a data-type="video" onclick="{ settypefilter }"><i class="uk-icon-video-camera uk-icon-justify"></i> Video</a></li>
-                        <li class="{ typefilter=='audio' ? 'uk-active':'' }"><a data-type="audio" onclick="{ settypefilter }"><i class="uk-icon-volume-up uk-icon-justify"></i> Audio</a></li>
-                        <li class="{ typefilter=='document' ? 'uk-active':'' }"><a data-type="document" onclick="{ settypefilter }"><i class="uk-icon-paper-plane uk-icon-justify"></i> Documents</a></li>
-                        <li class="{ typefilter=='archive' ? 'uk-active':'' }"><a data-type="archive" onclick="{ settypefilter }"><i class="uk-icon-archive uk-icon-justify"></i> Archives</a></li>
+                        <li class="uk-nav-header">{ App.i18n.get('Display') }</li>
+                        <li class="{ !typefilter ? 'uk-active':'' }"><a data-type="" onclick="{ settypefilter }"><i class="uk-icon-circle-o uk-icon-justify"></i> { App.i18n.get('All') }</a></li>
+                        <li class="{ typefilter=='image' ? 'uk-active':'' }"><a data-type="image" onclick="{ settypefilter }"><i class="uk-icon-image uk-icon-justify"></i> { App.i18n.get('Images') }</a></li>
+                        <li class="{ typefilter=='video' ? 'uk-active':'' }"><a data-type="video" onclick="{ settypefilter }"><i class="uk-icon-video-camera uk-icon-justify"></i> { App.i18n.get('Video') }</a></li>
+                        <li class="{ typefilter=='audio' ? 'uk-active':'' }"><a data-type="audio" onclick="{ settypefilter }"><i class="uk-icon-volume-up uk-icon-justify"></i> { App.i18n.get('Audio') }</a></li>
+                        <li class="{ typefilter=='document' ? 'uk-active':'' }"><a data-type="document" onclick="{ settypefilter }"><i class="uk-icon-paper-plane uk-icon-justify"></i> { App.i18n.get('Documents') }</a></li>
+                        <li class="{ typefilter=='archive' ? 'uk-active':'' }"><a data-type="archive" onclick="{ settypefilter }"><i class="uk-icon-archive uk-icon-justify"></i> { App.i18n.get('Archives') }</a></li>
                     </ul>
                 </div>
 
@@ -127,7 +127,7 @@
 
                 <div class="uk-panel">
                     <ul class="uk-breadcrumb">
-                        <li onclick="{ changedir }"><a title="Change dir to root"><i class="uk-icon-home"></i></a></li>
+                        <li onclick="{ changedir }"><a title="{ App.i18n.get('Change dir to root') }"><i class="uk-icon-home"></i></a></li>
                         <li each="{folder, idx in breadcrumbs}"><a onclick="{ parent.changedir }" title="Change dir to { folder.name }">{ folder.name }</a></li>
                     </ul>
                 </div>
@@ -139,18 +139,18 @@
                 </div>
 
                 <div class="uk-alert uk-text-center uk-margin" if="{ data && (this.typefilter || this.refs.filter.value) && (data.folders.length || data.files.length) }">
-                     Filter is active
+                     { App.i18n.get('Filter is active') }
                 </div>
 
                 <div class="uk-alert uk-text-center uk-margin" if="{ data && (!data.folders.length && !data.files.length) }">
-                    This is an empty folder
+                    { App.i18n.get('This is an empty folder') }
                 </div>
 
                 <div class="{modal && 'uk-overflow-container'}">
 
                     <div class="uk-margin-top" if="{data && data.folders.length}">
 
-                        <strong class="uk-text-small uk-text-muted" if="{ !(this.refs.filter.value) }"><i class="uk-icon-folder-o uk-margin-small-right"></i> { data.folders.length } Folders</strong>
+                        <strong class="uk-text-small uk-text-muted" if="{ !(this.refs.filter.value) }"><i class="uk-icon-folder-o uk-margin-small-right"></i> { data.folders.length } { App.i18n.get('Folders') }</strong>
 
                         <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4">
 
@@ -169,10 +169,10 @@
                                                 <div class="uk-dropdown">
                                                     <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                                                         <li class="uk-nav-header uk-text-truncate">{ folder.name }</li>
-                                                        <li><a class="uk-dropdown-close"onclick="{ parent.download }">Download</a></li>
-                                                        <li><a class="uk-dropdown-close" onclick="{ parent.rename }">Rename</a></li>
+                                                        <li><a class="uk-dropdown-close"onclick="{ parent.download }">{ App.i18n.get('Download') }</a></li>
+                                                        <li><a class="uk-dropdown-close" onclick="{ parent.rename }">{ App.i18n.get('Rename') }</a></li>
                                                         <li class="uk-nav-divider"></li>
-                                                        <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
+                                                        <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">{ App.i18n.get('Delete') }</a></li>
                                                     </ul>
                                                 </div>
                                             </span>
@@ -187,7 +187,7 @@
 
                     <div class="uk-margin-top" if="{data && data.files.length}">
 
-                        <strong class="uk-text-small uk-text-muted" if="{ !(this.typefilter || this.refs.filter.value) }"><i class="uk-icon-file-o uk-margin-small-right"></i> { data.files.length } Files</strong>
+                        <strong class="uk-text-small uk-text-muted" if="{ !(this.typefilter || this.refs.filter.value) }"><i class="uk-icon-file-o uk-margin-small-right"></i> { data.files.length } { App.i18n.get('Files') }</strong>
 
                         <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4" if="{ listmode=='grid' }">
 
@@ -210,12 +210,12 @@
                                             <div class="uk-dropdown">
                                                 <ul class="uk-nav uk-nav-dropdown">
                                                     <li class="uk-nav-header uk-text-truncate">{ file.name }</li>
-                                                    <li><a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">Open</a></li>
-                                                    <li><a class="uk-dropdown-close" onclick="{ parent.rename }">Rename</a></li>
-                                                    <li><a class="uk-dropdown-close" onclick="{ parent.download }">Download</a></li>
-                                                    <li if="{ file.ext == 'zip' }"><a onclick="{ parent.unzip }">Unzip</a></li>
+                                                    <li><a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">{ App.i18n.get('Open') }</a></li>
+                                                    <li><a class="uk-dropdown-close" onclick="{ parent.rename }">{ App.i18n.get('Rename') }</a></li>
+                                                    <li><a class="uk-dropdown-close" onclick="{ parent.download }">{ App.i18n.get('Download') }</a></li>
+                                                    <li if="{ file.ext == 'zip' }"><a onclick="{ parent.unzip }">{ App.i18n.get('Unzip') }</a></li>
                                                     <li class="uk-nav-divider"></li>
-                                                    <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
+                                                    <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">{ App.i18n.get('Delete') }</a></li>
                                                 </ul>
                                             </div>
                                         </span>
@@ -257,12 +257,12 @@
                                             <div class="uk-dropdown uk-dropdown-flip">
                                                 <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                                                     <li class="uk-nav-header">{ App.i18n.get('Actions') }</li>
-                                                    <li><a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">Open</a></li>
-                                                    <li><a class="uk-dropdown-close" onclick="{ parent.rename }">Rename</a></li>
-                                                    <li><a class="uk-dropdown-close" onclick="{ parent.download }">Download</a></li>
-                                                    <li if="{ file.ext == 'zip' }"><a onclick="{ parent.unzip }">Unzip</a></li>
+                                                    <li><a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">{ App.i18n.get('Open') }</a></li>
+                                                    <li><a class="uk-dropdown-close" onclick="{ parent.rename }">{ App.i18n.get('Rename') }</a></li>
+                                                    <li><a class="uk-dropdown-close" onclick="{ parent.download }">{ App.i18n.get('Download') }</a></li>
+                                                    <li if="{ file.ext == 'zip' }"><a onclick="{ parent.unzip }">{ App.i18n.get('Unzip') }</a></li>
                                                     <li class="uk-nav-divider"></li>
-                                                    <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">Delete</a></li>
+                                                    <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">{ App.i18n.get('Delete') }</a></li>
                                                 </ul>
                                             </div>
                                         </span>
