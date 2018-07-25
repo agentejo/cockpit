@@ -39,7 +39,7 @@
         <div class="uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
 
             <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">
-                <img class="uk-margin-small-right" riot-src="{ '@url('assets:app/media/icons/')' + (parent.components[item.component].icon || 'component.svg') }" width="16">
+                <img class="uk-margin-small-right" riot-src="{ App.base('/assets/app/media/icons/' + (parent.components[item.component].icon || 'component.svg'))}" width="16">
                 <div class="uk-text-bold uk-text-truncate uk-flex-item-1">
                     <a class="uk-link-muted" onclick="{ parent.settings }">{ item.name || parent.components[item.component].label || App.Utils.ucfirst(item.component) }</a>
                 </div>
@@ -79,7 +79,7 @@
             <div class="uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-4">
                  <div class="uk-grid-margin" each="{component,name in components}" show="{ !componentGroup || (componentGroup == component.group) }">
                     <div class="uk-panel uk-panel-framed uk-text-center">
-                        <img riot-src="{ '@url('assets:app/media/icons/')' + (component.icon || 'component.svg') }" width="30">
+                        <img riot-src="{ App.base('/assets/app/media/icons/' + (component.icon || 'component.svg'))}" width="30">
                         <p class="uk-text-small">{ component.label || App.Utils.ucfirst(name) }</p>
                         <a class="uk-position-cover" onclick="{ add }"></a>
                     </div>
@@ -100,7 +100,7 @@
             <div class="uk-margin-large-bottom">
                 <div class="uk-grid uk-grid-small">
                     <div>
-                        <img riot-src="{ '@url('assets:app/media/icons/')' + (components[settingsComponent.component].icon || 'settings.svg') }" width="30">
+                        <img riot-src="{ App.base('/assets/app/media/icons/' + (components[settingsComponent.component].icon || 'settings.svg'))}" width="30">
                     </div>
                     <div class="uk-flex-item-1">
                         <h3 class="uk-margin-remove">{ components[settingsComponent.component].label || App.Utils.ucfirst(settingsComponent.component) }</h3>
