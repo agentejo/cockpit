@@ -19,7 +19,7 @@ class Mailer {
 
         $options = array_merge($this->options, is_array($options) ? $options: []);
 
-        $message = $this->createMessage($to, $subject, $message);
+        $message = $this->createMessage($to, $subject, $message, $options);
 
         if (isset($options['from'])) {
             $message->setFrom($options['from'], $options['from_name'] ?? '');
@@ -32,7 +32,7 @@ class Mailer {
         return $message->send();
     }
 
-    public function createMessage($to, $subject, $message) {
+    public function createMessage($to, $subject, $message, $options=[]) {
 
         $mail = new PHPMailer();
 
@@ -83,6 +83,12 @@ class Mailer {
 
         if ($mail->Body != $mail->AltBody) {
             $mail->IsHTML(true); // Set email format to HTML
+        }
+
+        if (isset($options['embedded'])) {
+            foreach ($options['embedded'] as $id => $file) {
+                $mail->AddEmbeddedImage($file, $id);
+            }
         }
 
         $msg = new Mailer_Message($mail);
