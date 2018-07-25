@@ -41,6 +41,20 @@ $app->on('admin.init', function() {
         }
     });
 
+    $this->on('cockpit.menu.aside', function() {
+
+        $sings        = $this->module('singletons')->getSingletonsInGroup();
+        $singletons = [];
+
+        foreach($sings as $singleton) {
+            if ($singleton['in_menu']) $singletons[] = $singleton;
+        }
+
+        if (count($singletons)) {
+            $this->renderView("singletons:views/partials/menu.php", compact('singletons'));
+        }
+    });
+
     // dashboard widgets
     $this->on("admin.dashboard.widgets", function($widgets) {
 
