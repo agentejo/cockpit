@@ -31,7 +31,16 @@ class AuthController extends \LimeExtra\Controller {
         $controller = strtolower(str_replace('\\', '.', get_class($this)));
 
         // Resolve access group and resource (ie. cockpit, settings)
-        list ($this->accessGroup, ,$this->accessResource) = explode('\\', strtolower(get_class($this)));
+        list ($accessGroup, ,$accessResource) = explode('\\', strtolower(get_class($this)));
+
+        // Set when not declared
+        if (!$this->accesssGroup) {
+            $this->accessGroup = $accessGroup;
+        }
+
+        if (!$this->accessResource) {
+            $this->accessResource = $accessResource;
+        }
 
         $app->trigger("app.{$controller}.init", [$this]);
 
