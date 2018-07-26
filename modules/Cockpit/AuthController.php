@@ -7,6 +7,13 @@ class AuthController extends \LimeExtra\Controller {
     protected $layout = 'cockpit:views/layouts/app.php';
     protected $user;
 
+
+    /** Controller access group */
+    protected $accessGroup;
+
+    /** Controller access resource */
+    protected $accessResource;
+
     public function __construct($app) {
 
         $user = $app->module('cockpit')->getUser();
@@ -23,8 +30,24 @@ class AuthController extends \LimeExtra\Controller {
 
         $controller = strtolower(str_replace('\\', '.', get_class($this)));
 
+        // Resolve access group and resource (ie. cockpit, settings)
+        list ($this->accessGroup, ,$this->accessResource) = explode('\\', strtolower(get_class($this)));
+
         $app->trigger("app.{$controller}.init", [$this]);
 
+    }
+
+    /**
+     * Check if current user has access to current resource
+     * @param array [$actions]
+     * @return boolean
+     */
+    protected function hasAccess($actions = []) {
+        return $this->module('cockpit')->isSuperAdmin() || $this->module('cockpit')->hasAccess(
+            $this->accessGroup,
+            $this->accessResource,
+            $actions
+        );
     }
 
 }
