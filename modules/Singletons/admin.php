@@ -43,11 +43,13 @@ $app->on('admin.init', function() {
 
     $this->on('cockpit.menu.aside', function() {
 
-        $sings        = $this->module('singletons')->getSingletonsInGroup();
         $singletons = [];
 
-        foreach($sings as $singleton) {
-            if ($singleton['in_menu']) $singletons[] = $singleton;
+        foreach ($this->module('singletons')->getSingletonsInGroup() as $singleton) {
+
+            if (isset($singleton['in_menu']) && $singleton['in_menu']) {
+                $singletons[] = $singleton;
+            }
         }
 
         if (count($singletons)) {

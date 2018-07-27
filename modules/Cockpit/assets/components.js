@@ -3194,7 +3194,6 @@ riot.tag2('field-set', '<div> <div class="uk-alert" if="{fields && !fields.lengt
         this.on('mount', function() {
             this.fields = opts.fields || [];
             this.update();
-            this.update();
         });
 
         this.on('update', function() {
