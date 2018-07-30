@@ -287,9 +287,10 @@
             copyLocalizedValue(e) {
 
                 var field = e.target.getAttribute('field'),
-                    lang = e.target.getAttribute('lang');
+                    lang = e.target.getAttribute('lang'),
+                    val  = JSON.stringify(this.data[field+(lang ? '_':'')+lang]);
 
-                this.data[field+(this.lang ? '_':'')+this.lang] = this.data[field+(lang ? '_':'')+lang];
+                this.data[field+(this.lang ? '_':'')+this.lang] = JSON.parse(val);
             }
 
         </script>
