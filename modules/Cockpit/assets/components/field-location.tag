@@ -80,6 +80,23 @@
                         map.panTo(marker.getLatLng());
                         pla.close();
                         pla.setVal('');
+                    }).on('suggestions', function (e) {
+                      var coords = e.query.match(/^(\-?\d+(?:\.\d+)?),\s*(\-?\d+(?:\.\d+)?)$/);
+
+                      if (!coords) {
+                        return;
+                      }
+
+                      var latlng = {
+                        lat: parseFloat(coords[1]),
+                        lng: parseFloat(coords[2])
+                      };
+
+                      $this.$setValue(latlng);
+                      marker.setLatLng(latlng).update();
+                      map.panTo(marker.getLatLng());
+                      pla.close();
+                      pla.setVal('');
                     });
 
                 }, 50);
