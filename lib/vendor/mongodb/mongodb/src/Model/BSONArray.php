@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016-2017 MongoDB, Inc.
+ * Copyright 2016-present MongoDB, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,16 @@ use JsonSerializable;
  */
 class BSONArray extends ArrayObject implements JsonSerializable, Serializable, Unserializable
 {
+    /**
+     * Clone this BSONArray.
+     */
+    public function __clone()
+    {
+        foreach ($this as $key => $value) {
+            $this[$key] = \MongoDB\recursive_copy($value);
+        }
+    }
+
     /**
      * Factory method for var_export().
      *

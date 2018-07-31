@@ -6,8 +6,10 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname(dirname($vendorDir));
 
 return array(
+    'Test\\Markdownify\\' => array($vendorDir . '/pixel418/markdownify/test'),
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
     'MongoDB\\' => array($vendorDir . '/mongodb/mongodb/src'),
+    'Markdownify\\' => array($vendorDir . '/pixel418/markdownify/src'),
     'League\\Flysystem\\' => array($vendorDir . '/league/flysystem/src'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'ColorThief\\' => array($vendorDir . '/ksubileau/color-thief-php/lib/ColorThief'),

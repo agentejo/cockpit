@@ -35,7 +35,7 @@ use MongoDB\Exception\UnsupportedException;
  * @internal
  * @see http://docs.mongodb.org/manual/reference/command/findAndModify/
  */
-class FindAndModify implements Executable
+class FindAndModify implements Executable, Explainable
 {
     private static $wireVersionForArrayFilters = 6;
     private static $wireVersionForCollation = 5;
@@ -210,21 +210,10 @@ class FindAndModify implements Executable
             throw UnsupportedException::writeConcernNotSupported();
         }
 
-        $cursor = $server->executeWriteCommand($this->databaseName, $this->createCommand($server), $this->createOptions());
+        $cursor = $server->executeWriteCommand($this->databaseName, new Command($this->createCommandDocument($server)), $this->createOptions());
         $result = current($cursor->toArray());
 
         if ( ! isset($result->value)) {
-            return null;
-        }
-
-        /* Prior to 3.0, findAndModify returns an empty document instead of null
-         * when an upsert is performed and the pre-modified document was
-         * requested.
-         */
-        if ($this->options['upsert'] && ! $this->options['new'] &&
-            isset($result->lastErrorObject->updatedExisting) &&
-            ! $result->lastErrorObject->updatedExisting) {
-
             return null;
         }
 
@@ -239,13 +228,17 @@ class FindAndModify implements Executable
         return $result->value;
     }
 
+    public function getCommandDocument(Server $server)
+    {
+        return $this->createCommandDocument($server);
+    }
+
     /**
-     * Create the findAndModify command.
+     * Create the findAndModify command document.
      *
-     * @param Server $server
-     * @return Command
+     * @return array
      */
-    private function createCommand(Server $server)
+    private function createCommandDocument(Server $server)
     {
         $cmd = ['findAndModify' => $this->collectionName];
 
@@ -274,7 +267,7 @@ class FindAndModify implements Executable
             $cmd['bypassDocumentValidation'] = $this->options['bypassDocumentValidation'];
         }
 
-        return new Command($cmd);
+        return $cmd;
     }
 
     /**

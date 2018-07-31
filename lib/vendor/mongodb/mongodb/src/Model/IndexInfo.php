@@ -61,6 +61,16 @@ class IndexInfo implements ArrayAccess
     }
 
     /**
+     * Return the index name to allow casting IndexInfo to string.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
+    /**
      * Return the index key.
      *
      * @return array
@@ -101,6 +111,26 @@ class IndexInfo implements ArrayAccess
     }
 
     /**
+     * Return whether or not this index is of type 2dsphere.
+     *
+     * @return boolean
+     */
+    public function is2dSphere()
+    {
+        return array_search('2dsphere', $this->getKey(), true) !== false;
+    }
+
+    /**
+     * Return whether or not this index is of type geoHaystack.
+     *
+     * @return boolean
+     */
+    public function isGeoHaystack()
+    {
+        return array_search('geoHaystack', $this->getKey(), true) !== false;
+    }
+
+    /**
      * Return whether this is a sparse index.
      *
      * @see http://docs.mongodb.org/manual/core/index-sparse/
@@ -109,6 +139,16 @@ class IndexInfo implements ArrayAccess
     public function isSparse()
     {
         return ! empty($this->info['sparse']);
+    }
+
+    /**
+     * Return whether or not this index is of type text.
+     *
+     * @return boolean
+     */
+    public function isText()
+    {
+        return array_search('text', $this->getKey(), true) !== false;
     }
 
     /**

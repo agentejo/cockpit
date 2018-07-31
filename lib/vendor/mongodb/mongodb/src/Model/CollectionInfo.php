@@ -17,6 +17,9 @@
 
 namespace MongoDB\Model;
 
+use MongoDB\Exception\BadMethodCallException;
+use ArrayAccess;
+
 /**
  * Collection information model class.
  *
@@ -28,7 +31,7 @@ namespace MongoDB\Model;
  * @see \MongoDB\Database::listCollections()
  * @see https://github.com/mongodb/specifications/blob/master/source/enumerate-collections.rst
  */
-class CollectionInfo
+class CollectionInfo implements ArrayAccess
 {
     private $info;
 
@@ -101,5 +104,51 @@ class CollectionInfo
     public function isCapped()
     {
         return ! empty($this->info['options']['capped']);
+    }
+
+    /**
+     * Check whether a field exists in the collection information.
+     *
+     * @see http://php.net/arrayaccess.offsetexists
+     * @param mixed $key
+     * @return boolean
+     */
+    public function offsetExists($key)
+    {
+        return array_key_exists($key, $this->info);
+    }
+
+    /**
+     * Return the field's value from the collection information.
+     *
+     * @see http://php.net/arrayaccess.offsetget
+     * @param mixed $key
+     * @return mixed
+     */
+    public function offsetGet($key)
+    {
+        return $this->info[$key];
+    }
+
+    /**
+     * Not supported.
+     *
+     * @see http://php.net/arrayaccess.offsetset
+     * @throws BadMethodCallException
+     */
+    public function offsetSet($key, $value)
+    {
+        throw BadMethodCallException::classIsImmutable(__CLASS__);
+    }
+
+    /**
+     * Not supported.
+     *
+     * @see http://php.net/arrayaccess.offsetunset
+     * @throws BadMethodCallException
+     */
+    public function offsetUnset($key)
+    {
+        throw BadMethodCallException::classIsImmutable(__CLASS__);
     }
 }

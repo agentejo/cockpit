@@ -381,33 +381,33 @@
     },
     {
         "name": "mongodb/mongodb",
-        "version": "1.3.2",
-        "version_normalized": "1.3.2.0",
+        "version": "1.4.2",
+        "version_normalized": "1.4.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/mongodb/mongo-php-library.git",
-            "reference": "b9f35916125976533f4b1e67a4a0ee7baf1d3bb9"
+            "reference": "bd148eab0493e38354e45e2cd7db59b90fdcad79"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/b9f35916125976533f4b1e67a4a0ee7baf1d3bb9",
-            "reference": "b9f35916125976533f4b1e67a4a0ee7baf1d3bb9",
+            "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/bd148eab0493e38354e45e2cd7db59b90fdcad79",
+            "reference": "bd148eab0493e38354e45e2cd7db59b90fdcad79",
             "shasum": ""
         },
         "require": {
             "ext-hash": "*",
             "ext-json": "*",
-            "ext-mongodb": "^1.4.0",
+            "ext-mongodb": "^1.5.0",
             "php": ">=5.5"
         },
         "require-dev": {
             "phpunit/phpunit": "^4.8.36 || ^6.4"
         },
-        "time": "2018-04-19T17:20:30+00:00",
+        "time": "2018-07-18T14:33:41+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.3.x-dev"
+                "dev-master": "1.4.x-dev"
             }
         },
         "installation-source": "dist",
@@ -513,5 +513,60 @@
             }
         ],
         "description": "PHPMailer is a full-featured email creation and transfer class for PHP"
+    },
+    {
+        "name": "pixel418/markdownify",
+        "version": "v2.3.0",
+        "version_normalized": "2.3.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Elephant418/Markdownify.git",
+            "reference": "ddacf31a4f3445ed7944e20f4b85163d2e8a9b19"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Elephant418/Markdownify/zipball/ddacf31a4f3445ed7944e20f4b85163d2e8a9b19",
+            "reference": "ddacf31a4f3445ed7944e20f4b85163d2e8a9b19",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^4.8"
+        },
+        "time": "2018-03-27T14:58:56+00:00",
+        "type": "lib",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Markdownify\\": "src",
+                "Test\\Markdownify\\": "test"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Milian Wolff",
+                "email": "mail@milianw.de",
+                "homepage": "http://milianw.de"
+            },
+            {
+                "name": "Thomas Zilliox",
+                "email": "hello@tzi.fr",
+                "homepage": "https://tzi.fr"
+            }
+        ],
+        "description": "The HTML to Markdown converter for PHP ",
+        "homepage": "https://github.com/elephant418/Markdownify",
+        "keywords": [
+            "converter",
+            "html",
+            "markdown",
+            "markdownify"
+        ]
     }
 ]

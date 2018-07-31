@@ -1,0 +1,10 @@
+# Editor config
+.idea
+
+# Dependencies
+vendor
+composer.lock
+
+# Local test files
+test.html
+test.php

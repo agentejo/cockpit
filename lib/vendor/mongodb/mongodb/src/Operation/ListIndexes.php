@@ -39,7 +39,6 @@ class ListIndexes implements Executable
 {
     private static $errorCodeDatabaseNotFound = 60;
     private static $errorCodeNamespaceNotFound = 26;
-    private static $wireVersionForCommand = 3;
 
     private $databaseName;
     private $collectionName;
@@ -87,9 +86,7 @@ class ListIndexes implements Executable
      */
     public function execute(Server $server)
     {
-        return \MongoDB\server_supports_feature($server, self::$wireVersionForCommand)
-            ? $this->executeCommand($server)
-            : $this->executeLegacy($server);
+        return $this->executeCommand($server);
     }
 
     /**
@@ -142,28 +139,6 @@ class ListIndexes implements Executable
             throw $e;
         }
 
-        $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
-
-        return new IndexInfoIteratorIterator(new CachingIterator($cursor));
-    }
-
-    /**
-     * Returns information for all indexes for this collection by querying the
-     * "system.indexes" collection (MongoDB <3.0).
-     *
-     * @param Server $server
-     * @return IndexInfoIteratorIterator
-     * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
-     */
-    private function executeLegacy(Server $server)
-    {
-        $filter = ['ns' => $this->databaseName . '.' . $this->collectionName];
-
-        $options = isset($this->options['maxTimeMS'])
-            ? ['modifiers' => ['$maxTimeMS' => $this->options['maxTimeMS']]]
-            : [];
-
-        $cursor = $server->executeQuery($this->databaseName . '.system.indexes', new Query($filter, $options));
         $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
 
         return new IndexInfoIteratorIterator(new CachingIterator($cursor));
