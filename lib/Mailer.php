@@ -72,6 +72,7 @@ class Mailer {
         }
 
         $markdown = new Converter();
+        $markdown->setKeepHTML(false);
 
         $mail->Subject = $subject;
         $mail->Body    = $message;
