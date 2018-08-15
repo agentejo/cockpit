@@ -56,14 +56,14 @@ $app->on('admin.init', function() {
 
 
     // dashboard widgets
-    $this->on("admin.dashboard.widgets", function($widgets) {
+    $this->on('admin.dashboard.widgets', function($widgets) {
 
-        $forms = $this->module("forms")->forms(true);
+        $forms = $this->module('forms')->forms(true);
 
         $widgets[] = [
-            "name"    => "forms",
-            "content" => $this->view("forms:views/widgets/dashboard.php", compact('forms')),
-            "area"    => 'aside-left'
+            'name'    => 'forms',
+            'content' => $this->view('forms:views/widgets/dashboard.php', compact('forms')),
+            'area'    => 'aside-left'
         ];
 
     }, 100);

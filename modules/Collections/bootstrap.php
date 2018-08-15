@@ -1,6 +1,6 @@
 <?php
 
-$this->module("collections")->extend([
+$this->module('collections')->extend([
 
     'createCollection' => function($name, $data = []) {
 
@@ -344,7 +344,7 @@ $this->module("collections")->extend([
             }
 
             if (!$isUpdate) {
-                $entry["_created"] = $entry["_modified"];
+                $entry['_created'] = $entry['_modified'];
             }
 
             // check rule
@@ -500,11 +500,11 @@ $this->module("collections")->extend([
         if (!isset($cache[$collection['name']])) {
 
             $fields = [
-                "acl" => [],
-                "localize" => []
+                'acl' => [],
+                'localize' => []
             ];
 
-            foreach ($collection["fields"] as $field) {
+            foreach ($collection['fields'] as $field) {
 
                 if (isset($field['acl']) && is_array($field['acl']) && count($field['acl'])) {
                     $fields['acl'][$field['name']] = $field['acl'];
@@ -648,7 +648,7 @@ function _check_collection_rule($collection, $rule, $_context = null) {
 }
 
 // ACL
-$app("acl")->addResource("collections", ['create', 'delete']);
+$app('acl')->addResource("collections", ['create', 'delete']);
 
 $this->module("collections")->extend([
 

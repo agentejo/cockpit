@@ -1,7 +1,7 @@
 <?php
 
 
-$this->module("forms")->extend([
+$this->module('forms')->extend([
 
     'createForm' => function($name, $data = []) {
 
@@ -78,9 +78,9 @@ $this->module("forms")->extend([
 
         if ($form = $this->form($name)) {
 
-            $form = $forms["_id"];
+            $form = $forms['_id'];
 
-            $this->app->helper("fs")->delete("#storage:forms/{$name}.form.php");
+            $this->app->helper('fs')->delete("#storage:forms/{$name}.form.php");
             $this->app->storage->dropform("forms/{$form}");
 
             return true;
@@ -93,7 +93,7 @@ $this->module("forms")->extend([
 
         $stores = [];
 
-        foreach($this->app->helper("fs")->ls('*.form.php', '#storage:forms') as $path) {
+        foreach($this->app->helper('fs')->ls('*.form.php', '#storage:forms') as $path) {
 
             $store = include($path->getPathName());
 
@@ -141,7 +141,7 @@ $this->module("forms")->extend([
 
         if (!$forms) return false;
 
-        $form = $forms["_id"];
+        $form = $forms['_id'];
 
         return $this->app->storage->getform("forms/{$form}");
     },
@@ -152,7 +152,7 @@ $this->module("forms")->extend([
 
         if (!$forms) return false;
 
-        $form = $forms["_id"];
+        $form = $forms['_id'];
 
         // sort by custom order if form is sortable
         if (isset($forms['sortable']) && $forms['sortable'] && !isset($options['sort'])) {
@@ -168,7 +168,7 @@ $this->module("forms")->extend([
 
         if (!$forms) return false;
 
-        $form = $forms["_id"];
+        $form = $forms['_id'];
 
         return $this->app->storage->findOne("forms/{$form}", $criteria, $projection);
     },
@@ -234,12 +234,12 @@ $this->module("forms")->extend([
     'open' => function($name, $options = []) {
 
         $options = array_merge(array(
-            "id"    => uniqid('form'),
-            "class" => "",
-            "csrf"  => $this->app->hash($name)
+            'id'    => uniqid('form'),
+            'class' => '',
+            'csrf'  => $this->app->hash($name)
         ), $options);
 
-        $this->app->renderView("forms:views/api/form.php", compact('name', 'options'));
+        $this->app->renderView('forms:views/api/form.php', compact('name', 'options'));
     },
 
     'submit' => function($form, $data, $options = []) {

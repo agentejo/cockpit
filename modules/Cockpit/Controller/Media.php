@@ -380,7 +380,7 @@ class Media extends \Cockpit\AuthController {
     public function savebookmarks() {
 
         if ($bookmarks = $this->param('bookmarks', false)) {
-            $this->memory->set("mediamanager.bookmarks.".$this->user["_id"], $bookmarks);
+            $this->memory->set('mediamanager.bookmarks.'.$this->user['_id'], $bookmarks);
         }
 
         return json_encode($bookmarks);
@@ -388,7 +388,7 @@ class Media extends \Cockpit\AuthController {
 
     public function loadbookmarks() {
 
-        return json_encode($this->app->memory->get("mediamanager.bookmarks.".$this->user["_id"], ["folders"=>[], "files"=>[]]));
+        return json_encode($this->app->memory->get('mediamanager.bookmarks.'.$this->user['_id'], ['folders'=>[], 'files'=>[]]));
     }
 
 }

@@ -35,17 +35,17 @@ class RestApi extends \LimeExtra\Controller {
 
         if ($user) {
 
-            if (!isset($data["_id"]) && !$this->module('cockpit')->isSuperAdmin()) {
+            if (!isset($data['_id']) && !$this->module('cockpit')->isSuperAdmin()) {
                 return $this->stop(401);
             }
 
-            if (!$this->module('cockpit')->isSuperAdmin() && $data["_id"] != $user["_id"] ) {
+            if (!$this->module('cockpit')->isSuperAdmin() && $data['_id'] != $user['_id'] ) {
                 return $this->stop(401);
             }
         }
 
         // new user needs a password
-        if (!isset($data["_id"])) {
+        if (!isset($data['_id'])) {
 
             // new user needs a password
             if (!isset($data["password"])) {
@@ -58,12 +58,12 @@ class RestApi extends \LimeExtra\Controller {
             }
 
             $data = array_merge($account = [
-                "user"     => "admin",
-                "name"     => "",
-                "email"    => "",
-                "active"   => true,
-                "group"    => "user",
-                "i18n"     => "en"
+                'user'   => 'admin',
+                'name'   => '',
+                'email'  => '',
+                'active' => true,
+                'group'  => 'user',
+                'i18n'   => 'en'
             ], $data);
 
             if (isset($data['api_key'])) {
@@ -71,30 +71,30 @@ class RestApi extends \LimeExtra\Controller {
             }
 
             // check for duplicate users
-            if ($user = $this->app->storage->findOne("cockpit/accounts", ["user" => $data["user"]])) {
+            if ($user = $this->app->storage->findOne('cockpit/accounts', ['user' => $data['user']])) {
                 return $this->stop('{"error": "User already exists"}', 412);
             }
         }
 
-        if (isset($data["password"])) {
+        if (isset($data['password'])) {
 
-            if (strlen($data["password"])){
-                $data["password"] = $this->app->hash($data["password"]);
+            if (strlen($data['password'])){
+                $data['password'] = $this->app->hash($data['password']);
             } else {
-                unset($data["password"]);
+                unset($data['password']);
             }
         }
 
-        $data["_modified"] = time();
+        $data['_modified'] = time();
 
         if (!isset($data['_id'])) {
-            $data["_created"] = $data["_modified"];
+            $data['_created'] = $data['_modified'];
         }
 
-        $this->app->storage->save("cockpit/accounts", $data);
+        $this->app->storage->save('cockpit/accounts', $data);
 
-        if (isset($data["password"])) {
-            unset($data["password"]);
+        if (isset($data['password'])) {
+            unset($data['password']);
         }
 
         return json_encode($data);
@@ -108,7 +108,7 @@ class RestApi extends \LimeExtra\Controller {
             // Todo: user specific checks
         }
 
-        $options = ["sort" => ["user" => 1]];
+        $options = ['sort' => ['user' => 1]];
 
         if ($filter = $this->param('filter')) {
 
@@ -118,8 +118,8 @@ class RestApi extends \LimeExtra\Controller {
 
                 $options['filter'] = [
                     '$or' => [
-                        ['name' => ['$regex' => $filter]],
-                        ['user' => ['$regex' => $filter]],
+                        ['name'  => ['$regex' => $filter]],
+                        ['user'  => ['$regex' => $filter]],
                         ['email' => ['$regex' => $filter]],
                     ]
                 ];
@@ -138,16 +138,16 @@ class RestApi extends \LimeExtra\Controller {
     public function image() {
 
         $options = [
-            'src' => $this->param('src', false),
-            'mode' => $this->param('m', 'thumbnail'),
-            'fp' => $this->param('fp', null),
+            'src'     => $this->param('src', false),
+            'mode'    => $this->param('m', 'thumbnail'),
+            'fp'      => $this->param('fp', null),
             'filters' => (array) $this->param('f', []),
-            'width' => intval($this->param('w', null)),
-            'height' => intval($this->param('h', null)),
+            'width'   => intval($this->param('w', null)),
+            'height'  => intval($this->param('h', null)),
             'quality' => intval($this->param('q', 100)),
             'rebuild' => intval($this->param('r', false)),
-            'base64' => intval($this->param('b64', false)),
-            'output' => intval($this->param('o', false))
+            'base64'  => intval($this->param('b64', false)),
+            'output'  => intval($this->param('o', false))
         ];
 
         // Set single filter when available

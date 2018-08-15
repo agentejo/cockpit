@@ -67,18 +67,18 @@ class Admin extends \Cockpit\AuthController {
         // get field templates
         $templates = [];
 
-        foreach ($this->app->helper("fs")->ls('*.php', 'collections:fields-templates') as $file) {
+        foreach ($this->app->helper('fs')->ls('*.php', 'collections:fields-templates') as $file) {
             $templates[] = include($file->getRealPath());
         }
 
-        foreach ($this->app->module("collections")->collections() as $col) {
+        foreach ($this->app->module('collections')->collections() as $col) {
             $templates[] = $col;
         }
 
         // acl groups
         $aclgroups = [];
 
-        foreach ($this->app->helper("acl")->getGroups() as $group => $superAdmin) {
+        foreach ($this->app->helper('acl')->getGroups() as $group => $superAdmin) {
 
             if (!$superAdmin) $aclgroups[] = $group;
         }
@@ -280,7 +280,7 @@ class Admin extends \Cockpit\AuthController {
 
     public function export($collection) {
 
-        if (!$this->app->module("cockpit")->hasaccess("collections", 'manage')) {
+        if (!$this->app->module("cockpit")->hasaccess('collections', 'manage')) {
             return false;
         }
 
