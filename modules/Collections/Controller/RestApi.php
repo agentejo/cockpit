@@ -55,7 +55,7 @@ class RestApi extends \LimeExtra\Controller {
         if ($sort) {
 
             foreach ($sort as $key => &$value) {
-                $options["sort"][$key]= intval($value);
+                $options['sort'][$key]= intval($value);
             }
         }
 
@@ -220,9 +220,9 @@ class RestApi extends \LimeExtra\Controller {
         $user = $this->module('cockpit')->getUser();
 
         if ($user) {
-            $collections = $this->module("collections")->getCollectionsInGroup($user['group'], true);
+            $collections = $this->module('collections')->getCollectionsInGroup($user['group'], true);
         } else {
-            $collections = $this->module("collections")->collections(true);
+            $collections = $this->module('collections')->collections(true);
         }
 
         if (!isset($collections[$name])) {
@@ -237,7 +237,7 @@ class RestApi extends \LimeExtra\Controller {
         $user = $this->module('cockpit')->getUser();
 
         if ($user) {
-            $collections = $this->module("collections")->getCollectionsInGroup($user['group'], $extended);
+            $collections = $this->module('collections')->getCollectionsInGroup($user['group'], $extended);
         } else {
             $collections = $this->module('collections')->collections($extended);
         }

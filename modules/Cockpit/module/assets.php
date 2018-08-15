@@ -1,6 +1,6 @@
 <?php
 
-$this->module("cockpit")->extend([
+$this->module('cockpit')->extend([
 
     'listAssets' => function($options = []) {
 
@@ -155,14 +155,14 @@ $this->module("cockpit")->extend([
 
         foreach ($assets as &$asset) {
 
-            $_asset = $this->app->storage->findOne("cockpit/assets", ['_id' => $asset['_id']]);
+            $_asset = $this->app->storage->findOne('cockpit/assets', ['_id' => $asset['_id']]);
 
             if (!$_asset) continue;
 
             $asset['modified'] = time();
             $asset['_by'] = $this->app->module('cockpit')->getUser('_id');
 
-            $this->app->storage->save("cockpit/assets", $asset);
+            $this->app->storage->save('cockpit/assets', $asset);
 
         }
 

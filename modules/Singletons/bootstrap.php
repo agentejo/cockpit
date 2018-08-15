@@ -1,6 +1,6 @@
 <?php
 
-$this->module("singletons")->extend([
+$this->module('singletons')->extend([
 
     'createSingleton' => function($name, $data = []) {
 
@@ -34,7 +34,7 @@ $this->module("singletons")->extend([
             '_modified' => $time
         ], $data);
 
-        $this->app->trigger("singleton.save.before", [$singleton]);
+        $this->app->trigger('singleton.save.before', [$singleton]);
         $this->app->trigger("singleton.save.before.{$name}", [$singleton]);
 
         $export = var_export($singleton, true);
@@ -43,7 +43,7 @@ $this->module("singletons")->extend([
             return false;
         }
 
-        $this->app->trigger("singleton.save.after", [$singleton]);
+        $this->app->trigger('singleton.save.after', [$singleton]);
         $this->app->trigger("singleton.save.after.{$name}", [$singleton]);
 
         return $singleton;
@@ -63,7 +63,7 @@ $this->module("singletons")->extend([
         $singleton  = array_merge($singleton, $data);
 
 
-        $this->app->trigger("singleton.save.before", [$singleton]);
+        $this->app->trigger('singleton.save.before', [$singleton]);
         $this->app->trigger("singleton.save.before.{$name}", [$singleton]);
 
         $export  = var_export($singleton, true);
@@ -91,7 +91,7 @@ $this->module("singletons")->extend([
 
         if ($singleton = $this->singleton($name)) {
 
-            $this->app->helper("fs")->delete("#storage:singleton/{$name}.singleton.php");
+            $this->app->helper('fs')->delete("#storage:singleton/{$name}.singleton.php");
 
             $this->app->trigger('singleton.remove', [$singleton]);
             $this->app->trigger("singleton.remove.{$name}", [$singleton]);
@@ -252,8 +252,8 @@ $this->module("singletons")->extend([
         if (!isset($cache[$singleton['name']])) {
 
             $fields = [
-                "acl" => [],
-                "localize" => []
+                'acl' => [],
+                'localize' => []
             ];
 
             foreach ($singleton["fields"] as $field) {

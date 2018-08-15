@@ -23,6 +23,10 @@ class Accounts extends \Cockpit\AuthController {
             $uid = $this->user['_id'];
         }
 
+        if (!$this->module('cockpit')->hasaccess('cockpit', 'accounts') && $uid != $this->user['_id']) {
+            return $this->helper('admin')->denyRequest();
+        }
+
         $account = $this->app->storage->findOne('cockpit/accounts', ['_id' => $uid]);
 
         if (!$account) {
@@ -40,6 +44,10 @@ class Accounts extends \Cockpit\AuthController {
 
     public function create() {
 
+        if (!$this->module('cockpit')->hasaccess('cockpit', 'accounts')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
         $uid       = null;
         $account   = ['user'=>'', 'email'=>'', 'active'=>true, 'group'=>'admin', 'i18n'=>$this->app->helper('i18n')->locale];
 
@@ -53,6 +61,14 @@ class Accounts extends \Cockpit\AuthController {
     public function save() {
 
         if ($data = $this->param('account', false)) {
+
+            // check rights
+            if (!$this->module('cockpit')->hasaccess('cockpit', 'accounts')) {
+
+                if (!isset($data['_id']) || $data['_id'] != $this->user['_id']) {
+                    return $this->helper('admin')->denyRequest();
+                }
+            }
 
             $data['_modified'] = time();
 
@@ -76,7 +92,7 @@ class Accounts extends \Cockpit\AuthController {
             }
 
             if ($data['_id'] == $this->user['_id']) {
-                $this->module("cockpit")->setUser($data);
+                $this->module('cockpit')->setUser($data);
             }
 
             return json_encode($data);

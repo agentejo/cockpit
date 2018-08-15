@@ -58,14 +58,14 @@ $app->on('admin.init', function() {
     });
 
     // dashboard widgets
-    $this->on("admin.dashboard.widgets", function($widgets) {
+    $this->on('admin.dashboard.widgets', function($widgets) {
 
-        $singletons = $this->module("singletons")->getSingletonsInGroup();
+        $singletons = $this->module('singletons')->getSingletonsInGroup();
 
         $widgets[] = [
-            "name"    => "singleton",
-            "content" => $this->view("singletons:views/widgets/dashboard.php", compact('singletons')),
-            "area"    => 'aside-right'
+            'name'    => 'singleton',
+            'content' => $this->view('singletons:views/widgets/dashboard.php', compact('singletons')),
+            'area'    => 'aside-right'
         ];
 
     }, 100);

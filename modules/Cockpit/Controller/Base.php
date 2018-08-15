@@ -52,11 +52,11 @@ class Base extends \Cockpit\AuthController {
 
     public function search() {
 
-        $query = $this->app->param("search", false);
+        $query = $this->app->param('search', false);
         $list  = new \ArrayObject([]);
 
         if ($query) {
-            $this->app->trigger("cockpit.search", [$query, $list]);
+            $this->app->trigger('cockpit.search', [$query, $list]);
         }
 
         return json_encode($list->getArrayCopy());

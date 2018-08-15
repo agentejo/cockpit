@@ -17,7 +17,7 @@ class Updater extends \Lime\Helper {
         ], $options);
 
         $fs = $this->app->helper('fs');
-        $tmppath = $this->app->path("#tmp:");
+        $tmppath = $this->app->path('#tmp:');
         $error = false;
         $zipname = null;
 

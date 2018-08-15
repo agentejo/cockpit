@@ -46,7 +46,7 @@ class Admin extends \Cockpit\AuthController {
         // acl groups
         $aclgroups = [];
 
-        foreach ($this->app->helper("acl")->getGroups() as $group => $superAdmin) {
+        foreach ($this->app->helper('acl')->getGroups() as $group => $superAdmin) {
 
             if (!$superAdmin) $aclgroups[] = $group;
         }
@@ -97,7 +97,7 @@ class Admin extends \Cockpit\AuthController {
 
         $this->module('singletons')->removeSingleton($singleton['name']);
 
-        return '{"success":true}';
+        return ['success' => true];
     }
 
     public function update_data($singleton) {

@@ -1,29 +1,29 @@
 <?php
 
 // Auth Api
-$this->module("cockpit")->extend([
+$this->module('cockpit')->extend([
 
-    "authenticate" => function($data) use($app) {
+    'authenticate' => function($data) use($app) {
 
         $data = array_merge([
-            "user"     => "",
-            "email"    => "",
-            "group"    => "",
-            "password" => ""
+            'user'     => '',
+            'email'    => '',
+            'group'    => '',
+            'password' => ''
         ], $data);
 
-        if (!$data["password"]) return false;
+        if (!$data['password']) return false;
 
-        $user = $app->storage->findOne("cockpit/accounts", [
-            "user"   => $data["user"],
-            "active" => true
+        $user = $app->storage->findOne('cockpit/accounts', [
+            'user'   => $data['user'],
+            'active' => true
         ]);
 
-        if (count($user) && password_verify($data["password"], $user["password"])) {
+        if (count($user) && password_verify($data['password'], $user['password'])) {
 
             $user = array_merge($data, (array)$user);
 
-            unset($user["password"]);
+            unset($user['password']);
 
             return $user;
         }
@@ -31,21 +31,21 @@ $this->module("cockpit")->extend([
         return false;
     },
 
-    "setUser" => function($user, $permanent = true) use($app) {
+    'setUser' => function($user, $permanent = true) use($app) {
 
         if ($permanent) {
-            $app("session")->write('cockpit.app.auth', $user);
+            $app('session')->write('cockpit.app.auth', $user);
         }
 
         $app['cockpit.auth.user'] = $user;
     },
 
-    "getUser" => function($prop = null, $default = null) use($app) {
+    'getUser' => function($prop = null, $default = null) use($app) {
 
         $user = $app->retrieve('cockpit.auth.user');
 
         if (is_null($user)) {
-            $user = $app("session")->read('cockpit.app.auth', null);
+            $user = $app('session')->read('cockpit.app.auth', null);
         }
 
         if (!is_null($prop)) {
@@ -55,72 +55,72 @@ $this->module("cockpit")->extend([
         return $user;
     },
 
-    "logout" => function() use($app) {
-        $app("session")->delete('cockpit.app.auth');
+    'logout' => function() use($app) {
+        $app('session')->delete('cockpit.app.auth');
     },
 
-    "hasaccess" => function($resource, $action, $group = null) use($app) {
+    'hasaccess' => function($resource, $action, $group = null) use($app) {
 
         if (!$group) {
             $user = $this->getUser();
-            $group = $user["group"] ?? null;
+            $group = $user['group'] ?? null;
         }
 
         if ($group) {
-            if ($app("acl")->hasaccess($group, $resource, $action)) return true;
+            if ($app('acl')->hasaccess($group, $resource, $action)) return true;
         }
 
         return false;
     },
 
-    "getGroup" => function() use($app) {
+    'getGroup' => function() use($app) {
 
         $user = $this->getUser();
 
-        if (isset($user["group"])) {
-            return $user["group"];
+        if (isset($user['group'])) {
+            return $user['group'];
         }
 
         return false;
     },
 
-    "getGroupRights" => function($resource, $group = null) use($app) {
+    'getGroupRights' => function($resource, $group = null) use($app) {
 
         if ($group) {
-            return $app("acl")->getGroupRights($group, $resource);
+            return $app('acl')->getGroupRights($group, $resource);
         }
 
         $user = $this->getUser();
 
-        if (isset($user["group"])) {
-            return $app("acl")->getGroupRights($user["group"], $resource);
+        if (isset($user['group'])) {
+            return $app('acl')->getGroupRights($user['group'], $resource);
         }
 
         return false;
     },
 
-    "isSuperAdmin" => function($group = null) use($app) {
+    'isSuperAdmin' => function($group = null) use($app) {
 
         if (!$group) {
 
             $user = $this->getUser();
 
-            if (isset($user["group"])) {
-                $group = $user["group"];
+            if (isset($user['group'])) {
+                $group = $user['group'];
             }
         }
 
-        return $group ? $app("acl")->isSuperAdmin($group) : false;
+        return $group ? $app('acl')->isSuperAdmin($group) : false;
     },
 
-    "getGroups" => function() use($app) {
+    'getGroups' => function() use($app) {
 
-        $groups = array_merge(['admin'], array_keys($app->retrieve("config/groups", [])));
+        $groups = array_merge(['admin'], array_keys($app->retrieve('config/groups', [])));
 
         return array_unique($groups);
     },
 
-    "getGroupVar" => function($setting, $default = null) use($app) {
+    'getGroupVar' => function($setting, $default = null) use($app) {
 
         if ($user = $this->getUser()) {
 
@@ -133,14 +133,14 @@ $this->module("cockpit")->extend([
         return $default;
     },
 
-    "userInGroup" => function($groups) use($app) {
+    'userInGroup' => function($groups) use($app) {
 
         $user = $this->getUser();
 
-        return (isset($user["group"]) && in_array($user["group"], (array)$groups));
+        return (isset($user['group']) && in_array($user['group'], (array)$groups));
     },
 
-    "updateUserOption" => function($key, $value) use($app) {
+    'updateUserOption' => function($key, $value) use($app) {
 
         if ($user = $this->getUser()) {
 

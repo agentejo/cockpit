@@ -83,7 +83,7 @@ $this->on('before', function() {
                 'authenticated' => false,
                 'resource' => $resource,
                 'query' => ['path' => $path, 'parts' => $parts, 'params' => $params],
-                'user'=>null,
+                'user' => null,
             ]);
 
             $this->trigger('cockpit.api.authenticate', [$data]);

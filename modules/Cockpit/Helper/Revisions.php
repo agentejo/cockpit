@@ -12,14 +12,14 @@ class Revisions extends \Lime\Helper {
 
 
     public function count($id) {
-        return $this->storage->count("cockpit/revisions", ["_oid" => $id]);
+        return $this->storage->count('cockpit/revisions', ['_oid' => $id]);
     }
 
     public function getList($id) {
 
-        return $this->storage->find("cockpit/revisions", [
-            "filter" => ["_oid" => $id],
-            "sort"   => ["_created" => -1]
+        return $this->storage->find('cockpit/revisions', [
+            'filter' => ['_oid' => $id],
+            'sort'   => ['_created' => -1]
         ])->toArray();
     }
 
@@ -42,20 +42,20 @@ class Revisions extends \Lime\Helper {
             '_created' => microtime(true)
         ];
 
-        $this->storage->insert("cockpit/revisions", $entry);
+        $this->storage->insert('cockpit/revisions', $entry);
 
         return $entry;
     }
 
     public function get($id) {
-        return $this->storage->findOne("cockpit/revisions", ["_oid" => $id]);
+        return $this->storage->findOne('cockpit/revisions', ['_oid' => $id]);
     }
 
     public function remove($rid) {
-        return $this->storage->remove("cockpit/revisions", ["_id" => $rid]);
+        return $this->storage->remove('cockpit/revisions', ['_id' => $rid]);
     }
 
     public function removeAll($id) {
-        return $this->storage->remove("cockpit/revisions", ["_oid" => $id]);
+        return $this->storage->remove('cockpit/revisions', ['_oid' => $id]);
     }
 }

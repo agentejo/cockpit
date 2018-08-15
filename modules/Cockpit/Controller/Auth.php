@@ -11,17 +11,17 @@ class Auth extends \LimeExtra\Controller {
 
             $user = $this->module('cockpit')->authenticate($data);
 
-            if ($user && !$this->module("cockpit")->hasaccess('cockpit', 'backend', @$user['group'])) {
+            if ($user && !$this->module('cockpit')->hasaccess('cockpit', 'backend', @$user['group'])) {
                 $user = null;
             }
 
             if ($user) {
-                $this->app->trigger("cockpit.account.login", [&$user]);
+                $this->app->trigger('cockpit.account.login', [&$user]);
                 $this->module('cockpit')->setUser($user);
             }
 
             if ($this->req_is('ajax')) {
-                return $user ? json_encode(["success" => true, "user" => $user, "avatar"=> md5($user["email"])]) : '{"success": false}';
+                return $user ? json_encode(['success' => true, 'user' => $user, 'avatar'=> md5($user['email'])]) : '{"success": false}';
             } else {
                 $this->reroute('/');
             }
@@ -38,7 +38,7 @@ class Auth extends \LimeExtra\Controller {
 
     public function logout() {
 
-        $this->app->trigger("cockpit.account.logout", [$this->app->module('cockpit')->getUser()]);
+        $this->app->trigger('cockpit.account.logout', [$this->app->module('cockpit')->getUser()]);
 
         $this->module('cockpit')->logout();
 
@@ -66,7 +66,7 @@ class Auth extends \LimeExtra\Controller {
                 $query['user'] = $user;
             }
 
-            $user = $this->app->storage->findOne("cockpit/accounts", $query);
+            $user = $this->app->storage->findOne('cockpit/accounts', $query);
 
             if (!$user) {
                 return $this->stop('{"error": "User not found"}', 404);
@@ -76,7 +76,7 @@ class Auth extends \LimeExtra\Controller {
             $target = $this->app->param('', $this->app->getSiteUrl(true).'/auth/newpassword');
             $data   = ['_id' => $user['_id'], '_reset_token' => $token];
 
-            $this->app->storage->save("cockpit/accounts", $data);
+            $this->app->storage->save('cockpit/accounts', $data);
             $message = $this->app->view('cockpit:emails/recover.php', compact('user','token','target'));
 
             file_put_contents(COCKPIT_DIR.'/message.txt', $message);
@@ -97,7 +97,7 @@ class Auth extends \LimeExtra\Controller {
 
         if ($token = $this->param('token')) {
 
-            $user = $this->app->storage->findOne("cockpit/accounts", ['_reset_token' => $token]);
+            $user = $this->app->storage->findOne('cockpit/accounts', ['_reset_token' => $token]);
 
             if (!$user) {
                 return false;
@@ -116,7 +116,7 @@ class Auth extends \LimeExtra\Controller {
 
         if ($token = $this->param('token')) {
 
-            $user = $this->app->storage->findOne("cockpit/accounts", ['_reset_token' => $token]);
+            $user = $this->app->storage->findOne('cockpit/accounts', ['_reset_token' => $token]);
             $password = trim($this->param('password'));
 
             if (!$user || !$password) {
@@ -125,7 +125,7 @@ class Auth extends \LimeExtra\Controller {
 
             $data = ['_id' => $user['_id'], 'password' =>$this->app->hash($password), '_reset_token' => null];
 
-            $this->app->storage->save("cockpit/accounts", $data);
+            $this->app->storage->save('cockpit/accounts', $data);
 
             return ['success' => true, 'message' => 'Password updated'];
         }
