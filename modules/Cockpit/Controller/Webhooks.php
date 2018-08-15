@@ -4,6 +4,15 @@ namespace Cockpit\Controller;
 
 class Webhooks extends \Cockpit\AuthController {
 
+    public function __construct($app) {
+
+        parent::__construct($app);
+
+        if (!$this->module('cockpit')->hasaccess('cockpit', 'webhooks')) {
+            return $this->helper('admin')->denyRequest();
+        }
+    }
+
     public function index() {
 
         $webhooks = $this->storage->find("cockpit/webhooks", [

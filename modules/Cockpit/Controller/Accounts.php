@@ -10,7 +10,7 @@ class Accounts extends \Cockpit\AuthController {
             return $this->helper('admin')->denyRequest();
         }
 
-        $current  = $this->user["_id"];
+        $current  = $this->user['_id'];
         $groups   = $this->module('cockpit')->getGroups();
 
         return $this->render('cockpit:views/accounts/index.php', compact('current', 'groups'));
@@ -20,10 +20,10 @@ class Accounts extends \Cockpit\AuthController {
     public function account($uid=null) {
 
         if (!$uid) {
-            $uid = $this->user["_id"];
+            $uid = $this->user['_id'];
         }
 
-        $account = $this->app->storage->findOne("cockpit/accounts", ["_id" => $uid]);
+        $account = $this->app->storage->findOne('cockpit/accounts', ['_id' => $uid]);
 
         if (!$account) {
             return false;
@@ -41,7 +41,7 @@ class Accounts extends \Cockpit\AuthController {
     public function create() {
 
         $uid       = null;
-        $account   = ["user"=>"", "email"=>"", "active"=>true, "group"=>"admin", "i18n"=>$this->app->helper("i18n")->locale];
+        $account   = ['user'=>'', 'email'=>'', 'active'=>true, 'group'=>'admin', 'i18n'=>$this->app->helper('i18n')->locale];
 
         $fields    = $this->app->retrieve('config/account/fields', null);
         $languages = $this->getLanguages();
@@ -52,30 +52,30 @@ class Accounts extends \Cockpit\AuthController {
 
     public function save() {
 
-        if ($data = $this->param("account", false)) {
+        if ($data = $this->param('account', false)) {
 
-            $data["_modified"] = time();
+            $data['_modified'] = time();
 
             if (!isset($data['_id'])) {
-                $data["_created"] = $data["_modified"];
+                $data['_created'] = $data['_modified'];
             }
 
-            if (isset($data["password"])) {
+            if (isset($data['password'])) {
 
-                if (strlen($data["password"])){
-                    $data["password"] = $this->app->hash($data["password"]);
+                if (strlen($data['password'])){
+                    $data['password'] = $this->app->hash($data['password']);
                 } else {
-                    unset($data["password"]);
+                    unset($data['password']);
                 }
             }
 
-            $this->app->storage->save("cockpit/accounts", $data);
+            $this->app->storage->save('cockpit/accounts', $data);
 
-            if (isset($data["password"])) {
-                unset($data["password"]);
+            if (isset($data['password'])) {
+                unset($data['password']);
             }
 
-            if ($data["_id"] == $this->user["_id"]) {
+            if ($data['_id'] == $this->user['_id']) {
                 $this->module("cockpit")->setUser($data);
             }
 
@@ -88,12 +88,12 @@ class Accounts extends \Cockpit\AuthController {
 
     public function remove() {
 
-        if ($data = $this->param("account", false)) {
+        if ($data = $this->param('account', false)) {
 
             // user can't delete himself
-            if ($data["_id"] != $this->user["_id"]) {
+            if ($data['_id'] != $this->user['_id']) {
 
-                $this->app->storage->remove("cockpit/accounts", ["_id" => $data["_id"]]);
+                $this->app->storage->remove('cockpit/accounts', ['_id' => $data['_id']]);
 
                 return '{"success":true}';
             }
@@ -122,8 +122,8 @@ class Accounts extends \Cockpit\AuthController {
             }
         }
 
-        $accounts = $this->storage->find("cockpit/accounts", $options)->toArray();
-        $count    = (!isset($options['skip']) && !isset($options['limit'])) ? count($accounts) : $this->storage->count("cockpit/accounts", isset($options['filter']) ? $options['filter'] : []);
+        $accounts = $this->storage->find('cockpit/accounts', $options)->toArray();
+        $count    = (!isset($options['skip']) && !isset($options['limit'])) ? count($accounts) : $this->storage->count('cockpit/accounts', isset($options['filter']) ? $options['filter'] : []);
         $pages    = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
         $page     = 1;
 
@@ -132,7 +132,12 @@ class Accounts extends \Cockpit\AuthController {
         }
 
         foreach ($accounts as &$account) {
-            $account["md5email"] = md5(@$account["email"]);
+
+            $account['md5email'] = md5(@$account['email']);
+
+            if (isset($account["password"])) {
+                unset($account["password"]);
+            }
         }
 
         return compact('accounts', 'count', 'pages', 'page');
