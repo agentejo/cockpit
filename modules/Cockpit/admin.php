@@ -82,7 +82,7 @@ $app['app.assets.base'] = $assets;
 
 $app->bind('/', function(){
 
-    if ($this['cockpit.start'] && $this->module('cockpit')->getUser()) {
+    if ($this['cockpit.start'] && $this->module('cockpit')->getUser() && $this->module('cockpit')->hasaccess('cockpit', 'cockpit.start')) {
         $this->reroute($this['cockpit.start']);
     }
 
