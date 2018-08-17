@@ -726,9 +726,11 @@
 
         function requestapi(data, fn, type) {
 
-            data = Object.assign({"cmd":""}, data);
+            data = Object.assign({cmd:''}, data);
 
-            App.request('/media/api', data).then(fn);
+            App.request('/media/api', data).then(fn).catch(function() {
+                App.ui.notify('Something went wrong.', 'danger');
+            });
         }
 
         doSortBy(sortby) {

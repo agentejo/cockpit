@@ -95,7 +95,7 @@ class Media extends \Cockpit\AuthController {
                 // clean filename
                 $clean = preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $files['name'][$i]));
 
-                if (!$files['error'][$i] && move_uploaded_file($files['tmp_name'][$i], $targetpath.'/'.$clean)) {
+                if (!$files['error'][$i] && $this->_isFileTypeAllowed($clean) && move_uploaded_file($files['tmp_name'][$i], $targetpath.'/'.$clean)) {
                     $uploaded[]  = $files['name'][$i];
                     $_uploaded[] = $targetpath.'/'.$clean;
                 } else {
@@ -135,8 +135,8 @@ class Media extends \Cockpit\AuthController {
         $name = $this->param('name', false);
         $ret  = false;
 
-        if ($name && $path) {
-            $ret = @file_put_contents($this->root.'/'.trim($path, '/').'/'.$name, "");
+        if ($name && $this->_isFileTypeAllowed($name) && $path) {
+            $ret = @file_put_contents($this->root.'/'.trim($path, '/').'/'.$name, '');
         }
 
         return json_encode(['success' => $ret]);
@@ -191,7 +191,7 @@ class Media extends \Cockpit\AuthController {
 
         $name = $this->param('name', false);
 
-        if ($path && $name) {
+        if ($path && $name && $this->_isFileTypeAllowed($name)) {
             $source = $this->root.'/'.trim($path, '/');
             $target = dirname($source).'/'.$name;
 
@@ -361,6 +361,20 @@ class Media extends \Cockpit\AuthController {
         return json_encode($list);
     }
 
+    public function savebookmarks() {
+
+        if ($bookmarks = $this->param('bookmarks', false)) {
+            $this->memory->set('mediamanager.bookmarks.'.$this->user['_id'], $bookmarks);
+        }
+
+        return json_encode($bookmarks);
+    }
+
+    public function loadbookmarks() {
+
+        return json_encode($this->app->memory->get('mediamanager.bookmarks.'.$this->user['_id'], ['folders'=>[], 'files'=>[]]));
+    }
+
     protected function _getPathParameter() {
 
         $path = $this->param('path', false);
@@ -377,18 +391,17 @@ class Media extends \Cockpit\AuthController {
         return $path;
     }
 
-    public function savebookmarks() {
+    protected function _isFileTypeAllowed($file) {
 
-        if ($bookmarks = $this->param('bookmarks', false)) {
-            $this->memory->set('mediamanager.bookmarks.'.$this->user['_id'], $bookmarks);
+        $allowed = trim($this->module('cockpit')->getGroupVar('finder.allowed_uploads', $this->app->retrieve('allowed_uploads', '*')));
+
+        if ($allowed == '*') {
+            return true;
         }
 
-        return json_encode($bookmarks);
-    }
+        $allowed = str_replace([' ', ','], ['', '|'], preg_quote(is_array($allowed) ? implode(',', $allowed) : $allowed));
 
-    public function loadbookmarks() {
-
-        return json_encode($this->app->memory->get('mediamanager.bookmarks.'.$this->user['_id'], ['folders'=>[], 'files'=>[]]));
+        return preg_match("/\.({$allowed})$/i", $file);
     }
 
 }
