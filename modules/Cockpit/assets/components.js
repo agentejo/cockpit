@@ -1024,9 +1024,11 @@ riot.tag2('cp-finder', '<div show="{App.Utils.count(data)}"> <div class="uk-clea
 
         function requestapi(data, fn, type) {
 
-            data = Object.assign({"cmd":""}, data);
+            data = Object.assign({cmd:''}, data);
 
-            App.request('/media/api', data).then(fn);
+            App.request('/media/api', data).then(fn).catch(function() {
+                App.ui.notify('Something went wrong.', 'danger');
+            });
         }
 
         this.doSortBy = function(sortby) {

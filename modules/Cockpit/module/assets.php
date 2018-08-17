@@ -16,10 +16,10 @@ $this->module('cockpit')->extend([
 
     'addAssets' => function($files) use($app) {
 
-        $files      = isset($files[0]) ? $files : [$files];
-        $finfo      = finfo_open(FILEINFO_MIME_TYPE);
-        $assets     = [];
-        $created    = time();
+        $files     = isset($files[0]) ? $files : [$files];
+        $finfo     = finfo_open(FILEINFO_MIME_TYPE);
+        $assets    = [];
+        $created   = time();
 
         foreach ($files as &$file) {
 
@@ -97,13 +97,17 @@ $this->module('cockpit')->extend([
         $_files    = [];
         $assets    = [];
 
+        $allowed   = $this->getGroupVar('assets.allowed_uploads', $this->app->retrieve('allowed_uploads', '*'));
+        $allowed   = $allowed == '*' ? true : str_replace([' ', ','], ['', '|'], preg_quote(is_array($allowed) ? implode(',', $allowed) : $allowed));
+
         if (isset($files['name']) && is_array($files['name'])) {
 
             for ($i = 0; $i < count($files['name']); $i++) {
 
                 $_file  = $this->app->path('#tmp:').'/'.$files['name'][$i];
+                $_isAllowed = $allowed === true ? true : preg_match("/\.({$allowed})$/i", $_file);
 
-                if (!$files['error'][$i] && move_uploaded_file($files['tmp_name'][$i], $_file)) {
+                if (!$files['error'][$i] && $_isAllowed && move_uploaded_file($files['tmp_name'][$i], $_file)) {
 
                     $_files[]   = $_file;
                     $uploaded[] = $files['name'][$i];
