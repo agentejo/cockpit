@@ -550,6 +550,14 @@ class App implements \ArrayAccess {
     */
     public function on($event, $callback, $priority = 0){
 
+        if (is_array($event)) {
+
+            foreach ($event as &$evt) {
+                $this->on($evt, $callback, $priority);
+            }
+            return $this;
+        }
+
         if (!isset($this->events[$event])) $this->events[$event] = [];
 
         // make $this available in closures
