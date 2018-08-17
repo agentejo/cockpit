@@ -89,6 +89,14 @@
     color: @global-primary-background;
 }
 
+.app-modulesbar > li > .uk-active:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    border-bottom: 3px @global-primary-background solid;
+    bottom: -20px;
+}
+
 .app-main {
     margin-top: @global-margin-large;
 }
