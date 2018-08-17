@@ -255,6 +255,8 @@ $this->module('forms')->extend([
             return false;
         }
 
+        $this->app->trigger('forms.submit.before', [$form, &$data, $frm]);
+
         if (isset($frm['email_forward']) && $frm['email_forward']) {
 
             $emails          = array_map('trim', explode(',', $frm['email_forward']));
@@ -300,6 +302,8 @@ $this->module('forms')->extend([
             $entry = ['data' => $data];
             $this->save($form, $entry);
         }
+
+        $this->app->trigger('forms.submit.after', [$form, &$data, $frm]);
 
         return $data;
     }
