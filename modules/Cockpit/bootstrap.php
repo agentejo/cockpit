@@ -144,7 +144,7 @@ $this->module('cockpit')->extend([
                 return $src;
             }
 
-        } elseif (!preg_match('/\.(png|jpg|jpeg|gif)$/i', $src)) {
+        } elseif (!preg_match('/\.(png|jpg|jpeg|gif|svg)$/i', $src)) {
             $asset = $this->app->storage->findOne('cockpit/assets', ['_id' => $src]);
         }
 
@@ -184,13 +184,30 @@ $this->module('cockpit')->extend([
         }
 
         $path  = $this->app->path($src);
-        $ext   = pathinfo($path, PATHINFO_EXTENSION);
+        $ext   = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
         if (!file_exists($path) || is_dir($path)) {
             return false;
         }
 
-        if (!in_array(strtolower($ext), array('png','jpg','jpeg','gif'))) {
+        // handle svg files
+        if ($ext == 'svg') {
+
+            if ($base64) {
+                return 'data:image/svg+xml;base64,'.base64_encode(file_get_contents($path));
+            }
+
+            if ($output) {
+                header('Content-Type: image/svg+xml');
+                header('Content-Length: '.filesize($path));
+                echo file_get_contents($path);
+                $this->app->stop();
+            }
+
+            return $this->app->pathToUrl($path, true);
+        }
+
+        if (!in_array($ext, array('png','jpg','jpeg','gif'))) {
             return $this->app->pathToUrl($path, true);
         }
 
