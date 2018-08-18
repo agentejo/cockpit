@@ -191,7 +191,7 @@ $this->module('cockpit')->extend([
         }
 
         if (!in_array(strtolower($ext), array('png','jpg','jpeg','gif'))) {
-            return $url;
+            return $this->app->pathToUrl($path, true);
         }
 
         if (!$width || !$height) {
