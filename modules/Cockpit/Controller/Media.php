@@ -90,6 +90,7 @@ class Media extends \Cockpit\AuthController {
         $_failed    = [];
 
         if (isset($files['name']) && $path && file_exists($targetpath)) {
+
             for ($i = 0; $i < count($files['name']); $i++) {
 
                 // clean filename
