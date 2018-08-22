@@ -110,15 +110,6 @@ function cockpit($module = null) {
 
             'filestorage' => [],
 
-            'cors' => [
-              'allowedHeaders' => 'X-Requested-With, Content-Type, Origin, Cache-Control, Pragma, Authorization, Accept, Accept-Encoding',
-              'allowedMethods' => 'PUT, POST, GET, OPTIONS, DELETE',
-              'allowedOrigins' => '*',
-              'maxAge' => '1000',
-              'allowCredentials' => 'true',
-              'exposedHeaders' => 'true',
-            ],
-
         ], is_array($customconfig) ? $customconfig : []);
 
         $app = new LimeExtra\App($config);
