@@ -108,7 +108,16 @@ function cockpit($module = null) {
                 'site'      => COCKPIT_SITE_DIR
             ],
 
-            'filestorage' => []
+            'filestorage' => [],
+
+            'cors' => [
+              'allowedHeaders' => 'X-Requested-With, Content-Type, Origin, Cache-Control, Pragma, Authorization, Accept, Accept-Encoding',
+              'allowedMethods' => 'PUT, POST, GET, OPTIONS, DELETE',
+              'allowedOrigins' => '*',
+              'maxAge' => '1000',
+              'allowCredentials' => 'true',
+              'exposedHeaders' => 'true',
+            ],
 
         ], is_array($customconfig) ? $customconfig : []);
 
