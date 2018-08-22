@@ -108,7 +108,7 @@ function cockpit($module = null) {
                 'site'      => COCKPIT_SITE_DIR
             ],
 
-            'filestorage' => []
+            'filestorage' => [],
 
         ], is_array($customconfig) ? $customconfig : []);
 
