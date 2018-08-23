@@ -189,8 +189,15 @@
     </div>
 
     <div class="uk-form" if="{asset && mode=='edit'}">
+
         <form onsubmit="{ updateAsset }">
-            <div class="uk-grid">
+
+            <ul class="uk-tab uk-flex-center uk-margin">
+                <li class="{!panel && 'uk-active'}"><a onclick="{selectPanel}">Main</a></li>
+                <li class="uk-text-capitalize {p.name == panel && 'uk-active'}" each="{p in panels}"><a onclick="{parent.selectPanel}">{p.name}</a></li>
+            </ul>
+
+            <div class="uk-grid" show="{!panel}">
                 <div class="uk-width-2-3">
 
                     <div class="uk-panel uk-panel-box uk-panel-card uk-panel-space">
@@ -256,6 +263,9 @@
                 </div>
             </div>
 
+            <div data-is="{'assetspanel-'+p.name}" asset="{asset}" each="{p in panels}" show="{panel == p.name}"></div>
+
+
             <div class="uk-margin-large-top">
                 <button type="submit" class="uk-button uk-button-large uk-button-primary">{ App.i18n.get('Save') }</button>
                 <a class="uk-button uk-button-large uk-button-link" onclick="{ cancelEdit }">{ App.i18n.get('Cancel') }</a>
@@ -292,6 +302,19 @@
         this.page     = 1;
         this.pages    = 1;
         this.limit    = opts.limit || 15;
+
+        this.panel    = null;
+        this.panels   = [];
+
+        for (var tag in riot.tags) {
+
+            if (tag.indexOf('assetspanel-')==0) {
+
+                f = tag.replace('assetspanel-', '');
+
+                this.panels.push({name:f, value:f});
+            }
+        }
 
         this.on('mount', function() {
 
@@ -486,6 +509,11 @@
         cancelEdit() {
             this.asset = null;
             this.mode  = 'list';
+            this.panel = null;
+        }
+
+        selectPanel(e) {
+            this.panel = e.item ? e.item.p.name : null;
         }
 
         updateAsset(e) {

@@ -147,8 +147,14 @@
             background: rgba(255, 255, 255, 0.5);
             z-index: 1000000000000000;
         }
+
+        cp-preloader { display: inline-block; }
     </style>
 
-    <cp-preloader></cp-preloader>
-
+    <div class="uk-text-center">
+        <cp-preloader></cp-preloader>
+        <div class="uk-margin-top uk-text-large uk-text-bold" if="{opts.message}">
+            { opts.message }
+        </div>
+    </div>
 </cp-preloader-fullscreen>
