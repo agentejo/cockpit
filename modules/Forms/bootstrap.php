@@ -233,11 +233,11 @@ $this->module('forms')->extend([
 
     'open' => function($name, $options = []) {
 
-        $options = array_merge(array(
+        $options = array_merge([
             'id'    => uniqid('form'),
             'class' => '',
             'csrf'  => $this->app->hash($name)
-        ), $options);
+        ], $options);
 
         $this->app->renderView('forms:views/api/form.php', compact('name', 'options'));
     },
