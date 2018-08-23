@@ -101,11 +101,7 @@ class Database {
 
             $fn = null;
 
-            if (!function_exists('create_function')) {
-                eval('$fn = function($document) { return '.UtilArrayQuery::buildCondition($criteria).'; };');
-            } else {
-                $fn = create_function('$document','return '.UtilArrayQuery::buildCondition($criteria).';');
-            }
+            eval('$fn = function($document) { return '.UtilArrayQuery::buildCondition($criteria).'; };');
 
             $this->document_criterias[$id] = $fn;
 

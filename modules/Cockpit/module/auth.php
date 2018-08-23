@@ -19,7 +19,7 @@ $this->module('cockpit')->extend([
             'active' => true
         ]);
 
-        if (count($user) && password_verify($data['password'], $user['password'])) {
+        if ($user && password_verify($data['password'], $user['password'])) {
 
             $user = array_merge($data, (array)$user);
 
