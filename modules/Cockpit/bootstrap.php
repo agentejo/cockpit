@@ -94,7 +94,7 @@ $this->module('cockpit')->extend([
      */
     'thumbnail' => function($options) {
 
-        $options = array_merge(array(
+        $options = array_merge([
             'cachefolder' => 'thumbs://',
             'src' => '',
             'mode' => 'thumbnail',
@@ -106,7 +106,7 @@ $this->module('cockpit')->extend([
             'rebuild' => false,
             'base64' => false,
             'output' => false
-        ), $options);
+        ], $options);
 
         extract($options);
 
@@ -207,7 +207,7 @@ $this->module('cockpit')->extend([
             return $this->app->pathToUrl($path, true);
         }
 
-        if (!in_array($ext, array('png','jpg','jpeg','gif'))) {
+        if (!in_array($ext, ['png','jpg','jpeg','gif'])) {
             return $this->app->pathToUrl($path, true);
         }
 
