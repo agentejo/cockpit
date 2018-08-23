@@ -49,11 +49,7 @@
                     <img src="@url('singletons:icon.svg')" width="30" height="30" alt="Singletons" data-uk-svg />
                 </p>
 
-                @lang('No singleton').
-
-                @hasaccess?('singletons', 'create')
-                <a href="@route('/singletons/singleton')">@lang('Create a singleton')</a>.
-                @end
+                @lang('No singletons')
 
             </div>
 

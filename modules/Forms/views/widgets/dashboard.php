@@ -49,11 +49,7 @@
                     <img src="@url('forms:icon.svg')" width="30" height="30" alt="Forms" data-uk-svg />
                 </p>
 
-                @lang('No forms').
-
-                @hasaccess?('forms', 'create')
-                <a href="@route('/forms/form')">@lang('Create a form')</a>.
-                @end
+                @lang('No forms')
 
             </div>
 

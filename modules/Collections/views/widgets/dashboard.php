@@ -59,11 +59,7 @@
                     <img src="@url('collections:icon.svg')" width="30" height="30" alt="Collections" data-uk-svg />
                 </p>
 
-                @lang('No collections').
-
-                @hasaccess?('collections', 'create')
-                <a href="@route('/collections/collection')">@lang('Create a collection')</a>.
-                @end
+                @lang('No collections')
             </div>
 
         @endif
