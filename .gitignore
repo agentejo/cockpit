@@ -22,3 +22,4 @@ addons/
 !/storage/*/index.html
 !/storage/*/.htaccess
 defines.php
+message.txt

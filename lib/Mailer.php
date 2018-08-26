@@ -2,6 +2,7 @@
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use Markdownify\Converter;
 
 class Mailer {
 
@@ -70,9 +71,12 @@ class Mailer {
             }
         }
 
+        $markdown = new Converter();
+        $markdown->setKeepHTML(false);
+
         $mail->Subject = $subject;
         $mail->Body    = $message;
-        $mail->AltBody = strip_tags($message);
+        $mail->AltBody = $markdown->parseString($message);
         $mail->CharSet = 'utf-8';
 
         $to_array = explode(",", $to);

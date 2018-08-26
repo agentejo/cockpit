@@ -29,7 +29,7 @@ use MongoDB\Exception\UnsupportedException;
  * @see \MongoDB\Collection::findOneAndDelete()
  * @see http://docs.mongodb.org/manual/reference/command/findAndModify/
  */
-class FindOneAndDelete implements Executable
+class FindOneAndDelete implements Executable, Explainable
 {
     private $findAndModify;
 
@@ -104,5 +104,10 @@ class FindOneAndDelete implements Executable
     public function execute(Server $server)
     {
         return $this->findAndModify->execute($server);
+    }
+
+    public function getCommandDocument(Server $server)
+    {
+        return $this->findAndModify->getCommandDocument($server);
     }
 }

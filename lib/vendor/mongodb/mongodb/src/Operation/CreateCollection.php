@@ -53,6 +53,10 @@ class CreateCollection implements Executable
      *    of an index on the _id field. For replica sets, this option cannot be
      *    false. The default is true.
      *
+     *    This option has been deprecated since MongoDB 3.2. As of MongoDB 4.0,
+     *    this option cannot be false when creating a replicated collection
+     *    (i.e. a collection outside of the local database in any mongod mode).
+     *
      *  * capped (boolean): Specify true to create a capped collection. If set,
      *    the size option must also be specified. The default is false.
      *
@@ -168,6 +172,10 @@ class CreateCollection implements Executable
 
         if (isset($options['writeConcern']) && $options['writeConcern']->isDefault()) {
             unset($options['writeConcern']);
+        }
+
+        if (isset($options['autoIndexId'])) {
+            trigger_error('The "autoIndexId" option is deprecated and will be removed in a future release', E_USER_DEPRECATED);
         }
 
         $this->databaseName = (string) $databaseName;

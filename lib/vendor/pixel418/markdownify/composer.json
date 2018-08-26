@@ -1,0 +1,33 @@
+{
+    "name": "pixel418/markdownify",
+    "type": "lib",
+    "description": "The HTML to Markdown converter for PHP ",
+    "keywords": ["markdown", "html", "converter", "markdownify"],
+    "license": "MIT",
+    "homepage": "https://github.com/elephant418/Markdownify",
+    "authors": [
+        {
+            "name": "Milian Wolff",
+            "email": "mail@milianw.de",
+            "homepage": "http://milianw.de"
+
+        },
+        {
+            "name": "Thomas Zilliox",
+            "email": "hello@tzi.fr",
+            "homepage": "https://tzi.fr"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Markdownify\\": "src",
+            "Test\\Markdownify\\": "test"
+        }
+    }
+}
