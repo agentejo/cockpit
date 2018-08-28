@@ -91,6 +91,30 @@ class Mailer {
             }
         }
 
+        if (isset($options['attachments'])) {
+
+            foreach ($options['attachments'] as $id => $file) {
+
+                if (is_string($id)) {
+                    $mail->addStringAttachment($file, $id);
+                } else {
+                    $mail->addAttachment($file);
+                }
+            }
+        }
+
+        if (isset($options['cc'])) {
+            foreach ($options['cc'] as $email) {
+                $mail->AddCC($email);
+            }
+        }
+
+        if (isset($options['bcc'])) {
+            foreach ($options['bcc'] as $email) {
+                $mail->addBCC($email);
+            }
+        }
+
         $msg = new Mailer_Message($mail);
 
         return $msg;
