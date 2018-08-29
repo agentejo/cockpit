@@ -1,5 +1,5 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -149,11 +149,13 @@
             return "string";
         }
 
-        if (stream.match(/^\/\*/)) {
-          state.soyState.push("comment");
-          return "comment";
-        } else if (stream.match(stream.sol() || (state.soyState.length && last(state.soyState) != "literal") ? /^\s*\/\/.*/ : /^\s+\/\/.*/)) {
-          return "comment";
+        if (!state.soyState.length || last(state.soyState) != "literal") {
+          if (stream.match(/^\/\*/)) {
+            state.soyState.push("comment");
+            return "comment";
+          } else if (stream.match(stream.sol() ? /^\s*\/\/.*/ : /^\s+\/\/.*/)) {
+            return "comment";
+          }
         }
 
         switch (last(state.soyState)) {
@@ -270,7 +272,7 @@
           return "keyword";
 
         // A tag-keyword must be followed by whitespace, comment or a closing tag.
-        } else if (match = stream.match(/^\{([\/@\\]?\w+\??)(?=[\s\}]|\/[/*])/)) {
+        } else if (match = stream.match(/^\{([/@\\]?\w+\??)(?=$|[\s}]|\/[/*])/)) {
           if (match[1] != "/switch")
             state.indent += (/^(\/|(else|elseif|ifempty|case|fallbackmsg|default)$)/.test(match[1]) && state.tag != "switch" ? 1 : 2) * config.indentUnit;
           state.tag = match[1];
