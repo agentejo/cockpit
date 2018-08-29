@@ -72,17 +72,18 @@ class Mailer {
 
         $mail->Subject = $subject;
         $mail->Body    = $message;
-        $mail->AltBody = strip_tags($message);
         $mail->CharSet = 'utf-8';
 
-        $to_array = explode(",", $to);
+        $mail->IsHTML($message !=  strip_tags($message)); // auto-set email format to HTML
+
+        $to_array = explode(',', $to);
 
         foreach ($to_array as $to_single) {
             $mail->addAddress($to_single);
         }
 
-        if ($mail->Body != $mail->AltBody) {
-            $mail->IsHTML(true); // Set email format to HTML
+        if (isset($options['altMessage']) && $options['altMessage']) {
+            $mail->AltBody = $options['altMessage'];
         }
 
         if (isset($options['embedded'])) {
