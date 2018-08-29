@@ -1,5 +1,5 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function() {
   var mode = CodeMirror.getMode({indentUnit: 2}, "soy");
@@ -111,4 +111,11 @@
   MT('single-quote-strings',
      '[keyword {][string "foo"] [string \'bar\'][keyword }]',
      '');
+
+  MT('literal-comments',
+     '[keyword {literal}]/* comment */ // comment[keyword {/literal}]');
+
+  MT('highlight-command-at-eol',
+     '[keyword {msg]',
+     '    [keyword }]');
 })();
