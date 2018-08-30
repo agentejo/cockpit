@@ -3,6 +3,7 @@
 $app->on('admin.init', function() {
 
     $this->helper('admin')->addAssets('collections:assets/field-collectionlink.tag');
+    $this->helper('admin')->addAssets('collections:assets/link-collectionitem.js');
 
     if (!$this->module('cockpit')->getGroupRights('collections') && !$this->module('collections')->getCollectionsInGroup()) {
 
