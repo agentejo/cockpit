@@ -82,7 +82,7 @@ $this->module('cockpit')->extend([
         }
 
         if (count($assets)) {
-            $this->app->trigger('cockpit.assets.save', [$assets]);
+            $this->app->trigger('cockpit.assets.save', [&$assets]);
             $this->app->storage->insert('cockpit/assets', $assets);
         }
 
