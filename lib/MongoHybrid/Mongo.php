@@ -149,6 +149,8 @@ class Mongo {
 
         if (!$filter) $filter = [];
 
+        $filter = $this->_fixMongoIds($filter);
+
         return $this->getCollection($collection)->count($filter);
     }
 
@@ -167,12 +169,21 @@ class Mongo {
             if ($k === '_id') {
 
                 if (is_string($v)) {
-
                     $v = new \MongoDB\BSON\ObjectID($v);
+                }
 
-                } elseif (is_array($v) && isset($v['$in'])) {
+                if (is_array($v) && isset($v['$in'])) {
 
                     foreach ($v['$in'] as &$id) {
+                        if (is_string($id)) {
+                            $id = new \MongoDB\BSON\ObjectID($id);
+                        }
+                    }
+                }
+
+                if (is_array($v) && isset($v['$nin'])) {
+
+                    foreach ($v['$nin'] as &$id) {
                         if (is_string($id)) {
                             $id = new \MongoDB\BSON\ObjectID($id);
                         }
