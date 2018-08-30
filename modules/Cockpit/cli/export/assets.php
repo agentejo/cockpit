@@ -23,9 +23,16 @@ if (count($assets)) {
         $path = trim($asset['path'], '/');
         $_target = "{$target}/cockpit/assets/{$path}";
 
-        if ($_path = $app->path("#uploads:{$path}")) {
+        if ($app->filestorage->has("assets://{$path}") && $resource = $app->filestorage->readStream("assets://{$path}")) {
+
             $fs->mkdir(dirname($_target));
-            $fs->copy($_path, $_target);
+
+            $stream = fopen($_target, 'w+b');
+
+            stream_copy_to_stream($resource, $stream);
+
+            fclose($stream);
+            fclose($resource);
         }
     }
 }
