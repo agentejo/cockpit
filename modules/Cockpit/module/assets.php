@@ -145,7 +145,10 @@ $this->module('cockpit')->extend([
             if (!$asset) continue;
 
             $this->app->storage->remove('cockpit/assets', ['_id' => $asset['_id']]);
-            $this->app->filestorage->delete('assets://'.trim($asset['path'], '/'));
+
+            if ($this->app->filestorage->has('assets://'.trim($asset['path'], '/'))) {
+                $this->app->filestorage->delete('assets://'.trim($asset['path'], '/'));
+            }
         }
 
         $this->app->trigger('cockpit.assets.remove', [$assets]);
