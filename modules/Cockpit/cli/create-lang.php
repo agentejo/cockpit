@@ -47,6 +47,11 @@ if (count($strings)) {
         ]
     ];
 
+    if ($app->path("#config:cockpit/i18n/{$lang}.php")) {
+        $langfile = include($app->path("#config:cockpit/i18n/{$lang}.php"));
+        $strings  = array_merge($strings, $langfile);
+    }
+
     ksort($strings);
 
     $app->helper('fs')->write("#config:cockpit/i18n/{$lang}.php", '<?php return '.var_export($strings, true).';');
