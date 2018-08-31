@@ -49,7 +49,7 @@ if (count($strings)) {
 
     ksort($strings);
 
-    $app->helper('fs')->write("#config:cockpit/i18n/{$lang}.php", '<?php return '.var_export($strings, true));
+    $app->helper('fs')->write("#config:cockpit/i18n/{$lang}.php", '<?php return '.var_export($strings, true).';');
 }
 
 CLI::writeln("Done! Language file created: config/cockpit/i18n/{$lang}.php", true);
