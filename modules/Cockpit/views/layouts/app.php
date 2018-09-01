@@ -202,5 +202,9 @@
     <script type="riot/tag" src="@base($component)"></script>
     @endforeach
 
+    @foreach($app('fs')->ls('*.tag', '#config:tags') as $component)
+    <script type="riot/tag" src="{{$app->pathToUrl('#config:tags/'.$component->getBasename())}}"></script>
+    @endforeach
+
 </body>
 </html>
