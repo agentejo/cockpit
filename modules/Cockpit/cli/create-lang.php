@@ -13,24 +13,28 @@ if (!$lang) {
 // settings
 $extensions = ['php', 'md', 'html', 'js', 'tag'];
 $strings    = [];
+$dirs       = [COCKPIT_DIR.'/modules'];
 
 
-$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(COCKPIT_DIR), RecursiveIteratorIterator::SELF_FIRST);
+foreach ($dirs as $dir) {
 
-foreach ($iterator as $file) {
+    $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(COCKPIT_DIR.'/modules'), RecursiveIteratorIterator::SELF_FIRST);
 
-    if (in_array($file->getExtension(), $extensions)) {
+    foreach ($iterator as $file) {
 
-        $contents = file_get_contents($file->getRealPath());
+        if (in_array($file->getExtension(), $extensions)) {
 
-        preg_match_all('/(?:\@lang|App\.i18n\.get|App\.ui\.notify)\((["\'])((?:[^\1]|\\.)*?)\1(,\s*(["\'])((?:[^\4]|\\.)*?)\4)?\)/', $contents, $matches);
+            $contents = file_get_contents($file->getRealPath());
 
-        if (!isset($matches[2])) continue;
+            preg_match_all('/(?:\@lang|App\.i18n\.get|App\.ui\.notify)\((["\'])((?:[^\1]|\\.)*?)\1(,\s*(["\'])((?:[^\4]|\\.)*?)\4)?\)/', $contents, $matches);
 
-        foreach ($matches[2] as &$string) {
-            $strings[$string] = $string;
+            if (!isset($matches[2])) continue;
+
+            foreach ($matches[2] as &$string) {
+                $strings[$string] = $string;
+            }
+
         }
-
     }
 }
 
