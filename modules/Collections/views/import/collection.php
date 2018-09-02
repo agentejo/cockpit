@@ -282,7 +282,11 @@
             });
 
             if (required.length) {
-                return App.ui.notify("Required fields are not mapped:<div class='uk-margin-small-top'>"+required+"</div>");
+
+                return App.ui.notify([
+                    App.i18n.get('Required fields are not mapped:'),
+                    '<div class="uk-margin-small-top">'+required+'</div>'
+                ].join(''));
             }
 
             var cnt    = 20,
