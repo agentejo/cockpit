@@ -114,7 +114,7 @@ function cockpit($module = null) {
 
         $app = new LimeExtra\App($config);
 
-        $app["config"] = $config;
+        $app['config'] = $config;
 
         // register paths
         foreach ($config['paths'] as $key => $path) {
@@ -203,7 +203,7 @@ function cockpit($module = null) {
         $app->renderer->setCachePath($tmppath);
 
         // i18n
-        $app("i18n")->locale = $config['i18n'] ?? 'en';
+        $app('i18n')->locale = $config['i18n'] ?? 'en';
 
         // load modules
         $app->loadModules(array_merge([
