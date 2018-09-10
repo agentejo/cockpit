@@ -4,7 +4,7 @@
 
     <script>
 
-        var $this = this, editor;
+        var $this = this, editor, evtSrc;
 
         this.value = '';
 
@@ -16,12 +16,12 @@
 
                 this.value = value;
 
-                if (editor && this._field != field) {
+                if (editor && !evtSrc) {
                     editor.editor.setValue(value || '', true);
                 }
             }
 
-            this._field = field;
+            evtSrc = false;
 
         }.bind(this);
 
@@ -40,6 +40,7 @@
                     editor = UIkit.htmleditor(this.refs.input, opts);
 
                     editor.editor.on('change', function() {
+                        evtSrc = true;
                         $this.$setValue(editor.editor.getValue());
                     });
 

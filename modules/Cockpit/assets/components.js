@@ -2128,7 +2128,7 @@ riot.tag2('field-gallery', '<div ref="uploadprogress" class="uk-margin uk-hidden
 
 riot.tag2('field-html', '<textarea ref="input" class="uk-visibility-hidden" hidden></textarea>', '', '', function(opts) {
 
-        var $this = this, editor;
+        var $this = this, editor, evtSrc;
 
         this.value = '';
 
@@ -2140,12 +2140,12 @@ riot.tag2('field-html', '<textarea ref="input" class="uk-visibility-hidden" hidd
 
                 this.value = value;
 
-                if (editor && this._field != field) {
+                if (editor && !evtSrc) {
                     editor.editor.setValue(value || '', true);
                 }
             }
 
-            this._field = field;
+            evtSrc = false;
 
         }.bind(this);
 
@@ -2163,6 +2163,7 @@ riot.tag2('field-html', '<textarea ref="input" class="uk-visibility-hidden" hidd
                     editor = UIkit.htmleditor(this.refs.input, opts);
 
                     editor.editor.on('change', function() {
+                        evtSrc = true;
                         $this.$setValue(editor.editor.getValue());
                     });
 
