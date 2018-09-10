@@ -199,11 +199,11 @@
 
     <!-- RIOT COMPONENTS -->
     @foreach($app('admin')->data['components'] as $component)
-    <script type="riot/tag" src="@base($component)"></script>
+    <script type="riot/tag" src="@base($component)?nc={{ $app['debug'] ? time() : $app['cockpit/version'] }}"></script>
     @endforeach
 
     @foreach($app('fs')->ls('*.tag', '#config:tags') as $component)
-    <script type="riot/tag" src="{{$app->pathToUrl('#config:tags/'.$component->getBasename())}}"></script>
+    <script type="riot/tag" src="{{$app->pathToUrl('#config:tags/'.$component->getBasename())}}?nc={{ $app['debug'] ? time() : $app['cockpit/version'] }}"></script>
     @endforeach
 
 </body>
