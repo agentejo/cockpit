@@ -39,7 +39,7 @@ Options -Indexes
 
 AddDefaultCharset utf-8
 
-AddType application/javascript          js jsonp
+AddType application/javascript          js jsonp tag
 AddType application/json                json
 
 # Audio
