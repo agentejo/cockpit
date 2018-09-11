@@ -57,6 +57,11 @@ class Webhooks extends \Cockpit\AuthController {
 
             $this->app->storage->save('cockpit/webhooks', $data);
 
+            // invalidate cache
+            if ($cache = $this->app->path('#tmp:webhooks.cache.php')) {
+                @unlink($cache);
+            }
+
             return json_encode($data);
         }
 
@@ -69,6 +74,11 @@ class Webhooks extends \Cockpit\AuthController {
         if ($data = $this->param('webhook', false)) {
 
             $this->app->storage->remove('cockpit/webhooks', ['_id'=>$data['_id']]);
+
+            // invalidate cache
+            if ($cache = $this->app->path('#tmp:webhooks.cache.php')) {
+                @unlink($cache);
+            }
 
             return true;
         }

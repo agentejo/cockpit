@@ -569,7 +569,7 @@ class App implements \ArrayAccess {
             $callback = $callback->bindTo($this, $this);
         }
 
-        $this->events[$event][] = ["fn" => $callback, "prio" => $priority];
+        $this->events[$event][] = ['fn' => $callback, 'prio' => $priority];
 
         return $this;
     }
@@ -592,16 +592,16 @@ class App implements \ArrayAccess {
 
         $queue = new \SplPriorityQueue();
 
-        foreach($this->events[$event] as $index => $action){
-            $queue->insert($index, $action["prio"]);
+        foreach ($this->events[$event] as $index => $action){
+            $queue->insert($index, $action['prio']);
         }
 
         $queue->top();
 
-        while($queue->valid()){
+        while ($queue->valid()){
             $index = $queue->current();
-            if (is_callable($this->events[$event][$index]["fn"])){
-                if (call_user_func_array($this->events[$event][$index]["fn"], $params) === false) {
+            if (is_callable($this->events[$event][$index]['fn'])){
+                if (call_user_func_array($this->events[$event][$index]['fn'], $params) === false) {
                     break; // stop Propagation
                 }
             }

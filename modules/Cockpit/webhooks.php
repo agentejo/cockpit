@@ -5,7 +5,13 @@ if (!function_exists('curl_init')) {
     return;
 }
 
-$webhooks = $app->storage->find("cockpit/webhooks");
+// optimize webhooks loading
+if ($cachepath = $this->path('#tmp:webhooks.cache.php')) {
+    $webhooks = include($cachepath);
+} else {
+    $webhooks = $app->storage->find('cockpit/webhooks');
+    $this->helper('fs')->write('#tmp:webhooks.cache.php', '<?php return '.var_export($webhooks->toArray(), true ).';');
+}
 
 foreach ($webhooks as &$webhook) {
 
