@@ -32,17 +32,34 @@ class RestApi extends \LimeExtra\Controller {
         return $field ? ($data[$field] ?? null) : $data;
     }
 
+    public function singleton($name) {
+
+        $user = $this->module('cockpit')->getUser();
+
+        if ($user) {
+            $singletons = $this->module('singletons')->getSingletonsInGroup($user['group']);
+        } else {
+            $singletons = $this->module('singletons')->singletons();
+        }
+
+        if (!isset($singletons[$name])) {
+           return $this->stop('{"error": "Singleton not found"}', 412);
+        }
+
+        return $singletons[$name];
+    }
+
     public function listSingletons($extended = false) {
 
         $user = $this->module('cockpit')->getUser();
 
         if ($user) {
-            $singleton = $this->module('singletons')->getSingletonsInGroup($user['group']);
+            $singletons = $this->module('singletons')->getSingletonsInGroup($user['group']);
         } else {
-            $singleton = $this->module('singletons')->singletons();
+            $singletons = $this->module('singletons')->singletons();
         }
 
-        return $extended ? $singleton : array_keys($singleton);
+        return $extended ? $singletons : array_keys($singletons);
     }
 
 }
