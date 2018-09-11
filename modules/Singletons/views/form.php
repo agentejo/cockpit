@@ -100,41 +100,47 @@
 
             <div class="uk-grid-margin uk-width-medium-1-4 uk-flex-order-first uk-flex-order-last-medium">
 
-                <div class="uk-panel">
+                <div class="uk-margin uk-form" if="{ languages.length }">
 
-                    <div class="uk-margin uk-form" if="{ languages.length }">
+                    <div class="uk-width-1-1 uk-form-select">
 
-                        <div class="uk-width-1-1 uk-form-select">
+                        <label class="uk-text-small">@lang('Language')</label>
+                        <div class="uk-margin-small-top"><span class="uk-badge uk-badge-outline {lang ? 'uk-text-primary' : 'uk-text-muted'}">{ lang ? _.find(languages,{code:lang}).label:'Default' }</span></div>
 
-                            <label class="uk-text-small">@lang('Language')</label>
-                            <div class="uk-margin-small-top"><span class="uk-badge uk-badge-outline {lang ? 'uk-text-primary' : 'uk-text-muted'}">{ lang ? _.find(languages,{code:lang}).label:'Default' }</span></div>
-
-                            <select bind="lang">
-                                <option value="">@lang('Default')</option>
-                                <option each="{language in languages}" value="{language.code}">{language.label}</option>
-                            </select>
-                        </div>
-
-                    </div>
-
-                    <div class="uk-margin">
-                        <label class="uk-text-small">@lang('Revisions')</label>
-                        <div class="uk-margin-small-top">
-                            <span class="uk-position-relative">
-                                <cp-revisions-info class="uk-badge uk-text-large" rid="{singleton._id}"></cp-revisions-info>
-                                <a class="uk-position-cover" href="@route('/singletons/revisions/'.$singleton['name'])/{singleton._id}"></a>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="uk-margin">
-                        <label class="uk-text-small">@lang('Last Modified')</label>
-                        <div class="uk-margin-small-top uk-text-muted"><i class="uk-icon-calendar uk-margin-small-right"></i> {  App.Utils.dateformat( new Date( 1000 * singleton._modified )) }</div>
+                        <select bind="lang">
+                            <option value="">@lang('Default')</option>
+                            <option each="{language in languages}" value="{language.code}">{language.label}</option>
+                        </select>
                     </div>
 
                 </div>
 
+                <div class="uk-margin">
+                    <label class="uk-text-small">@lang('Last Modified')</label>
+                    <div class="uk-margin-small-top uk-text-muted"><i class="uk-icon-calendar uk-margin-small-right"></i> {  App.Utils.dateformat( new Date( 1000 * singleton._modified )) }</div>
+                </div>
+
+                <div class="uk-margin">
+                    <label class="uk-text-small">@lang('Revisions')</label>
+                    <div class="uk-margin-small-top">
+                        <span class="uk-position-relative">
+                            <cp-revisions-info class="uk-badge uk-text-large" rid="{singleton._id}"></cp-revisions-info>
+                            <a class="uk-position-cover" href="@route('/singletons/revisions/'.$singleton['name'])/{singleton._id}"></a>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="uk-margin" if="{data._mby}">
+                    <label class="uk-text-small">@lang('Last update by')</label>
+                    <div class="uk-margin-small-top">
+                        <cp-account account="{data._mby}"></cp-account>
+                    </div>
+                </div>
+
+                @trigger('singletons.form.aside')
+
             </div>
+
 
         </div>
 
