@@ -1,11 +1,20 @@
 # Deny access to database + config files
 <Files ~ "\.(sqlite|sdb|s3db|db|yaml|yml)$">
-  Deny from all
+    <IfVersion >= 2.4>
+       Require all denied
+    </IfVersion>
+    <IfVersion < 2.4>
+       Deny from all
+    </IfVersion>
 </Files>
 
 <Files "cp">
-Order Allow,Deny
-Deny from all
+    <IfVersion >= 2.4>
+       Require all denied
+    </IfVersion>
+    <IfVersion < 2.4>
+       Deny from all
+    </IfVersion>
 </Files>
 
 # Don't show directory listings
