@@ -26,9 +26,8 @@ class Client {
             }
 
             $this->driver->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
-        }
 
-        if (strpos($server, 'redislite://')===0) {
+        } elseif (strpos($server, 'redislite://')===0) {
             $this->driver = new \RedisLite(str_replace('redislite://', '', $server), $options);
         }
     }
