@@ -72,7 +72,7 @@
                 </div>
 
                 <div class="uk-form-row">
-                    <input ref="user" class="uk-form-large uk-width-1-1" type="text" placeholder="@lang('Username')" required>
+                    <input ref="user" class="uk-form-large uk-width-1-1" type="text" placeholder="@lang('Username')" autofocus required>
                 </div>
 
                 <div class="uk-form-row">

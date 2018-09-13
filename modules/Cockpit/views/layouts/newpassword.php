@@ -61,7 +61,7 @@
                 </div>
 
                 <div class="uk-form-row" show="{ !reset }">
-                    <input ref="password" class="uk-form-large uk-width-1-1 uk-text-center" type="password" placeholder="@lang('New Password')" required>
+                    <input ref="password" class="uk-form-large uk-width-1-1 uk-text-center" type="password" placeholder="@lang('New Password')" autofocus required>
                 </div>
 
                 <div class="uk-margin-top" show="{ !reset }">
