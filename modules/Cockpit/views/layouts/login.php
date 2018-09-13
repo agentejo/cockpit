@@ -11,16 +11,25 @@
 
     <style>
 
-        html, body {
-            background: #0e0f19;
-        }
-
         .login-container {
-            width: 360px;
+            width: 420px;
             max-width: 90%;
         }
 
+        .login-dialog {
+            box-shadow: 0 30px 75px 0 rgba(10, 25, 41, 0.2);
+        }
+
+        .login-image {
+            background-image: url(@url('assets:app/media/logo.svg'));
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: 50% 50%;
+            height: 80px;
+        }
+
         .uk-panel-box-header {
+            background-color: #fafafa;
             border-bottom: none;
         }
 
@@ -49,18 +58,16 @@
 
             </div>
 
-            <div id="login-dialog" class="uk-panel-box uk-panel-space uk-panel-card uk-nbfc" show="{!$user}">
+            <div id="login-dialog" class="login-dialog uk-panel-box uk-panel-space uk-nbfc" show="{!$user}">
 
                 <div name="header" class="uk-panel-box-header uk-text-bold uk-text-center">
 
-                    <p>
-                        <img src="@url('assets:app/media/icons/login.svg')" width="80" alt="Login" data-uk-svg />
-                    </p>
+                    <div class="uk-margin login-image"></div>
 
                     <h2 class="uk-text-bold uk-text-truncate"><span>{{ $app['app.name'] }}</span></h2>
 
                     <div class="uk-animation-shake uk-margin-top" if="{ error }">
-                        <strong>{ error }</strong>
+                        <span class="uk-badge uk-badge-outline uk-text-danger">{ error }</span>
                     </div>
                 </div>
 
@@ -80,7 +87,7 @@
                 </div>
             </div>
 
-            <p class="uk-text-center" if="{!$user}"><a href="@route('/auth/forgotpassword')">@lang('Forgot Password?')</a></p>
+            <p class="uk-text-center" if="{!$user}"><a class="uk-button uk-button-link uk-link-muted" href="@route('/auth/forgotpassword')">@lang('Forgot Password?')</a></p>
 
 
         </form>
@@ -125,7 +132,7 @@
 
                 return false;
             }
-            
+
             // i18n for uikit-formPassword
             UIkit.components.formPassword.prototype.defaults.lblShow = '@lang("Show")';
             UIkit.components.formPassword.prototype.defaults.lblHide = '@lang("Hide")';
