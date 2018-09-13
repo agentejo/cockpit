@@ -60,7 +60,7 @@
                 </div>
 
                 <div class="uk-form-row" show="{ !reset }">
-                    <input ref="user" class="uk-form-large uk-width-1-1 uk-text-center" type="text" placeholder="@lang('Username or Email')" required>
+                    <input ref="user" class="uk-form-large uk-width-1-1 uk-text-center" type="text" placeholder="@lang('Username or Email')" autofocus required>
                 </div>
 
                 <div class="uk-margin-top" show="{ !reset }">
