@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Page not found</title>
+    <title>Internal Server Error</title>
     <link rel="icon" href="@base('/favicon.ico')" type="image/x-icon">
     {{ $app->assets($app['app.assets.base'], $app['cockpit/version']) }}
 </head>
