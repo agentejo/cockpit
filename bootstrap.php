@@ -205,6 +205,32 @@ function cockpit($module = null) {
         // i18n
         $app('i18n')->locale = $config['i18n'] ?? 'en';
 
+        // handle exceptions
+        if (COCKPIT_ADMIN) {
+
+            set_exception_handler(function($exception) use($app) {
+
+                $error = [
+                    'message' => $exception->getMessage(),
+                    'file' => $exception->getFile(),
+                    'line' => $exception->getLine(),
+                ];
+
+                if ($app['debug']) {
+                    $body = $app->req_is('ajax') ? json_encode(['error' => $error['message'], 'file' => $error['file'], 'line' => $error['line']]) : $app->render('cockpit:views/errors/500-debug.php', ['error' => $error]);
+                } else {
+                    $body = $app->req_is('ajax') ? '{"error": "500", "message": "system error"}' : $app->view('cockpit:views/errors/500.php');
+                }
+
+                header('HTTP/1.0 500 Internal Server Error');
+                echo $body;
+
+                if (function_exists('cockpit_error_handler')) {
+                    cockpit_error_handler($error);
+                }
+            });
+        }
+
         // load modules
         $app->loadModules(array_merge([
             COCKPIT_DIR.'/modules',  # core
