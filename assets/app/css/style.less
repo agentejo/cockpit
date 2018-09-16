@@ -36,6 +36,22 @@
     animation-duration: .35s;
 }
 
+.uk-svg-adjust path,
+.uk-svg-adjust rect,
+.uk-svg-adjust circle:not([fill="none"]),
+.uk-svg-adjust polygon,
+.uk-svg-adjust line {
+    fill: currentColor;
+}
+
+.uk-svg-adjust path[stroke],
+.uk-svg-adjust rect[stroke],
+.uk-svg-adjust circle[stroke],
+.uk-svg-adjust polygon[stroke],
+.uk-svg-adjust line[stroke] {
+    stroke: currentColor;
+}
+
 .app-header {
     position: relative;
     background-color: @global-background;
@@ -59,20 +75,14 @@
     }
 }
 
-.uk-svg-adjust path,
-.uk-svg-adjust rect,
-.uk-svg-adjust circle:not([fill="none"]),
-.uk-svg-adjust polygon,
-.uk-svg-adjust line {
-    fill: currentColor;
-}
-
-.uk-svg-adjust path[stroke],
-.uk-svg-adjust rect[stroke],
-.uk-svg-adjust circle[stroke],
-.uk-svg-adjust polygon[stroke],
-.uk-svg-adjust line[stroke] {
-    stroke: currentColor;
+.app-logo {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background-image: url(../media/logo.svg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-right: 10px;
 }
 
 .app-panel-dropdown {
