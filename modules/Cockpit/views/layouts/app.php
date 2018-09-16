@@ -50,10 +50,10 @@
 
                     <div>
 
-                        <div class="uk-display-inline-block" data-uk-dropdown="delay:400,mode:'click'">
+                        <div data-uk-dropdown="delay:400,mode:'click'">
 
-                            <a href="@route('/')" class="uk-link-muted uk-text-bold app-name-link">
-                                <i class="uk-icon-bars"></i>
+                            <a href="@route('/')" class="uk-link-muted uk-text-bold app-name-link uk-flex uk-flex-middle">
+                                <span class="app-logo"></span>
                                 <span class="app-name">{{ $app['app.name'] }}</span>
                             </a>
 
