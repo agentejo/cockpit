@@ -120,7 +120,7 @@
                         $this.refs.uploadprogress.classList.add('uk-hidden');
 
                         if (response && response.failed && response.failed.length) {
-                            App.ui.notify("File(s) failed to uploaded.", "danger");
+                            App.ui.notify("File(s) failed to upload.", "danger");
                         }
 
                         if (response && Array.isArray(response.assets) && response.assets.length) {

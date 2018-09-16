@@ -159,7 +159,7 @@ riot.tag2('cp-assets', '<div ref="list" show="{mode==\'list\'}"> <div ref="uploa
                         $this.refs.uploadprogress.classList.add('uk-hidden');
 
                         if (response && response.failed && response.failed.length) {
-                            App.ui.notify("File(s) failed to uploaded.", "danger");
+                            App.ui.notify("File(s) failed to upload.", "danger");
                         }
 
                         if (response && Array.isArray(response.assets) && response.assets.length) {
@@ -677,7 +677,7 @@ riot.tag2('cp-finder', '<div show="{App.Utils.count(data)}"> <div class="uk-clea
                             $this.refs.uploadprogress.classList.add('uk-hidden');
 
                             if (response && response.failed && response.failed.length) {
-                                App.ui.notify("File(s) failed to uploaded.", "danger");
+                                App.ui.notify("File(s) failed to upload.", "danger");
                             }
 
                             if (!response) {
@@ -1592,7 +1592,7 @@ riot.tag2('field-asset', '<div ref="uploadprogress" class="uk-margin uk-hidden">
                         $this.refs.uploadprogress.classList.add('uk-hidden');
 
                         if (response && response.failed && response.failed.length) {
-                            App.ui.notify("File(s) failed to uploaded.", "danger");
+                            App.ui.notify("File(s) failed to upload.", "danger");
                         }
 
                         if (response && Array.isArray(response.assets) && response.assets.length) {
@@ -1871,7 +1871,7 @@ riot.tag2('field-file', '<div class="uk-panel uk-panel-box uk-panel-card "> <div
                         $this.refs.uploadprogress.classList.add('uk-hidden');
 
                         if (response && response.failed && response.failed.length) {
-                            App.ui.notify("File(s) failed to uploaded.", "danger");
+                            App.ui.notify("File(s) failed to upload.", "danger");
                         }
 
                         if (response && Array.isArray(response.assets) && response.assets.length) {
@@ -1985,7 +1985,7 @@ riot.tag2('field-gallery', '<div ref="uploadprogress" class="uk-margin uk-hidden
                     complete: function(response) {
 
                         if (response && response.failed && response.failed.length) {
-                            App.ui.notify("File(s) failed to uploaded.", "danger");
+                            App.ui.notify("File(s) failed to upload.", "danger");
                         }
 
                         if (response && Array.isArray(response.assets) && response.assets.length) {
@@ -2265,7 +2265,7 @@ riot.tag2('field-image', '<div ref="uploadprogress" class="uk-margin uk-hidden">
                         $this.refs.uploadprogress.classList.add('uk-hidden');
 
                         if (response && response.failed && response.failed.length) {
-                            App.ui.notify("File(s) failed to uploaded.", "danger");
+                            App.ui.notify("File(s) failed to upload.", "danger");
                         }
 
                         if (response && Array.isArray(response.assets) && response.assets.length) {
