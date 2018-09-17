@@ -439,7 +439,7 @@ riot.tag2('cp-preloader', '<div> <div></div> <div></div> <div></div> <div></div>
 riot.tag2('cp-preloader-fullscreen', '<div class="uk-text-center"> <cp-preloader></cp-preloader> <div class="uk-margin-top uk-text-large uk-text-bold" if="{opts.message}"> {opts.message} </div> </div>', 'cp-preloader-fullscreen { position: fixed; display: flex; top: 0; bottom: 0; left: 0; right: 0; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.5); z-index: 1000000000000000; } cp-preloader-fullscreen cp-preloader,[data-is="cp-preloader-fullscreen"] cp-preloader{ display: inline-block; }', '', function(opts) {
 });
 
-riot.tag2('cp-diff', '<div class="uk-overflow-container"> <pre><code ref="canvas"></code></pre> </div>', 'cp-diff pre,[data-is="cp-diff"] pre{ background:none; margin:0; width overflow: auto; word-wrap: normal; white-space: pre; }', '', function(opts) {
+riot.tag2('cp-diff', '<div class="uk-overflow-container"> <div ref="canvas"></div> </div>', 'cp-diff pre,[data-is="cp-diff"] pre{ background:none; margin:0; width overflow: auto; word-wrap: normal; white-space: pre; }', '', function(opts) {
 
         var $this = this;
 
@@ -448,15 +448,36 @@ riot.tag2('cp-diff', '<div class="uk-overflow-container"> <pre><code ref="canvas
         });
 
         this.on('update', function() {
+            this.refs.canvas.innerHTML = '';
             this.diff(opts.oldtxt, opts.newtxt)
         });
 
         this.diff = function(oldtxt, newtxt) {
 
-            if (typeof(oldtxt) !== 'string') oldtxt = JSON.stringify(oldtxt, null, 2);
-            if (typeof(newtxt) !== 'string') newtxt = JSON.stringify(newtxt, null, 2);
+            if (['string', 'number', 'boolean'].indexOf(typeof(oldtxt)) !== -1) {
+                this.refs.canvas.innerHTML = '<pre><code>'+JSON.stringify(oldtxt)+'</code></pre>';
+            } else {
+                App.assets.require([
 
-            this.refs.canvas.textContent = oldtxt;
+                    '/assets/lib/jsoneditor/jsoneditor.min.css',
+                    '/assets/lib/jsoneditor/jsoneditor.min.js'
+
+                ], function() {
+
+                    editor = new JSONEditor(this.refs.canvas, {
+                        modes: ['tree'],
+                        mode: 'tree',
+                        navigationBar: false,
+                        onEditable: function() {
+                            return false;
+                        }
+                    });
+
+                    editor.set(oldtxt);
+
+                }.bind(this));
+            }
+
         }.bind(this)
 
 });

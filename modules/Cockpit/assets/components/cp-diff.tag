@@ -14,7 +14,7 @@
 
 
     <div class="uk-overflow-container">
-        <pre><code ref="canvas"></code></pre>
+        <div ref="canvas"></div>
     </div>
 
     <script>
@@ -26,15 +26,36 @@
         });
 
         this.on('update', function() {
+            this.refs.canvas.innerHTML = '';
             this.diff(opts.oldtxt, opts.newtxt)
         });
 
         diff(oldtxt, newtxt) {
 
-            if (typeof(oldtxt) !== 'string') oldtxt = JSON.stringify(oldtxt, null, 2);
-            if (typeof(newtxt) !== 'string') newtxt = JSON.stringify(newtxt, null, 2);
+            if (['string', 'number', 'boolean'].indexOf(typeof(oldtxt)) !== -1) {
+                this.refs.canvas.innerHTML = '<pre><code>'+JSON.stringify(oldtxt)+'</code></pre>';
+            } else {
+                App.assets.require([
 
-            this.refs.canvas.textContent = oldtxt;
+                    '/assets/lib/jsoneditor/jsoneditor.min.css',
+                    '/assets/lib/jsoneditor/jsoneditor.min.js'
+
+                ], function() {
+
+                    editor = new JSONEditor(this.refs.canvas, {
+                        modes: ['tree'],
+                        mode: 'tree',
+                        navigationBar: false,
+                        onEditable: function() {
+                            return false;
+                        }
+                    });
+
+                    editor.set(oldtxt);
+
+                }.bind(this));
+            }
+
         }
 
     </script>
