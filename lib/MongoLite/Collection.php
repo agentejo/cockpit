@@ -50,10 +50,11 @@ class Collection {
 
             foreach ($document as &$doc) {
 
-                if(!is_array($doc)) continue;
+                if (!is_array($doc)) continue;
 
                 $res = $this->_insert($doc);
-                if(!$res) {
+
+                if (!$res) {
                     $this->database->connection->rollBack();
                     return $res;
                 }
@@ -72,12 +73,23 @@ class Collection {
      */
     protected function _insert(&$document) {
 
+        $json = $document;
+
+        //JSON_NUMERIC_CHECK - without destroying values with leading zeros
+        array_walk_recursive($json, function (&$val, $key) {
+
+            if (is_string($val) && is_numeric($val) && $val[0] !== '0') {
+                $val += 0;
+            }
+        });
+
+        $json            = json_encode($json, JSON_UNESCAPED_UNICODE);
         $table           = $this->name;
         $document['_id'] = isset($document['_id']) ? $document['_id'] : createMongoDbLikeId();
-        $data            = array("document" => json_encode($document, JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE));
+        $data            = ['document' => $json];
 
-        $fields = array();
-        $values = array();
+        $fields = [];
+        $values = [];
 
         foreach($data as $col=>$value){
             $fields[] = "`{$col}`";
@@ -122,11 +134,18 @@ class Collection {
         $stmt   = $this->database->connection->query($sql);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
+        array_walk_recursive($data, function (&$val, $key) {
+
+            if (is_string($val) && is_numeric($val) && $val[0] !== '0') {
+                $val += 0;
+            }
+        });
+
         foreach ($result as &$doc) {
 
-            $document = array_merge(json_decode($doc["document"], true), $data);
+            $document = array_merge(json_decode($doc['document'], true), $data);
 
-            $sql = "UPDATE ".$this->name." SET document=".$this->database->connection->quote(json_encode($document,JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE))." WHERE id=".$doc["id"];
+            $sql = "UPDATE ".$this->name." SET document=".$this->database->connection->quote(json_encode($document, JSON_UNESCAPED_UNICODE))." WHERE id=".$doc['id'];
 
             $this->database->connection->exec($sql);
         }
