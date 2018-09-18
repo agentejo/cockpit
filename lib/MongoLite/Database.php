@@ -15,7 +15,7 @@ class Database {
     /**
      * @var array
      */
-    protected $collections = array();
+    protected $collections = [];
 
     /**
      * @var string
@@ -25,7 +25,7 @@ class Database {
     /**
      * @var array
      */
-    protected $document_criterias = array();
+    protected $document_criterias = [];
 
 
     /**
@@ -34,7 +34,7 @@ class Database {
      * @param string $path
      * @param array  $options
      */
-    public function __construct($path = ":memory:", $options = array()) {
+    public function __construct($path = ":memory:", $options = []) {
 
         $dns = "sqlite:{$path}";
 
@@ -166,7 +166,7 @@ class Database {
 
         $stmt   = $this->connection->query("SELECT name FROM sqlite_master WHERE type='table' AND name!='sqlite_sequence';");
         $tables = $stmt->fetchAll( \PDO::FETCH_ASSOC);
-        $names  = array();
+        $names  = [];
 
         foreach($tables as $table) {
             $names[] = $table["name"];
@@ -222,7 +222,7 @@ class UtilArrayQuery {
 
     public static function buildCondition($criteria, $concat = " && ") {
 
-        $fn = array();
+        $fn = [];
 
         foreach ($criteria as $key => $value) {
 
@@ -230,7 +230,7 @@ class UtilArrayQuery {
 
                 case '$and':
 
-                    $_fn = array();
+                    $_fn = [];
 
                     foreach($value as $v) {
                         $_fn[] = self::buildCondition($v, ' && ');
@@ -241,7 +241,7 @@ class UtilArrayQuery {
                     break;
                 case '$or':
 
-                    $_fn = array();
+                    $_fn = [];
 
                     foreach($value as $v) {
                         $_fn[] = self::buildCondition($v, ' && ');
@@ -357,12 +357,12 @@ class UtilArrayQuery {
             case '$has' :
                 if (is_array($b))
                     throw new \InvalidArgumentException('Invalid argument for $has array not supported');
-                if (!is_array($a)) $a = @json_decode($a, true) ?  : array();
+                if (!is_array($a)) $a = @json_decode($a, true) ?  : [];
                 $r = in_array($b, $a);
                 break;
 
             case '$all' :
-                if (!is_array($a)) $a = @json_decode($a, true) ?  : array();
+                if (!is_array($a)) $a = @json_decode($a, true) ?  : [];
                 if (!is_array($b))
                     throw new \InvalidArgumentException('Invalid argument for $all option must be array');
                 $r = count(array_intersect_key($a, $b)) == count($b);
@@ -375,7 +375,7 @@ class UtilArrayQuery {
                 break;
 
             case '$size' :
-                if (!is_array($a)) $a = @json_decode($a, true) ?  : array();
+                if (!is_array($a)) $a = @json_decode($a, true) ?  : [];
                 $r = (int) $b == count($a);
                 break;
 
@@ -432,7 +432,7 @@ function levenshtein_utf8($s1, $s2) {
     $utf8_to_extended_ascii = function($str) use($map) {
 
         // find all multibyte characters (cf. utf-8 encoding specs)
-        $matches = array();
+        $matches = [];
 
         if (!preg_match_all('/[\xC0-\xF7][\x80-\xBF]+/', $str, $matches)) return $str; // plain ascii string
 

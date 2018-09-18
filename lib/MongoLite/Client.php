@@ -10,7 +10,7 @@ class Client {
     /**
      * @var array
      */
-    protected $databases = array();
+    protected $databases = [];
 
     /**
      * @var string
@@ -28,7 +28,7 @@ class Client {
      * @param string $path
      * @param array  $options
      */
-    public function __construct($path, $options=array()) {
+    public function __construct($path, $options = []) {
         $this->path    = rtrim($path, '\\');
         $this->options = $options;
     }
@@ -40,7 +40,7 @@ class Client {
      */
     public function listDBs() {
 
-        $databases = array();
+        $databases = [];
 
         foreach (new \DirectoryIterator($this->path) as $fileInfo) {
             if (preg_match('/\.sqlite$/', $fileInfo->getFilename())) {
