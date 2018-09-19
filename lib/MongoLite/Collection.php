@@ -73,20 +73,17 @@ class Collection {
      */
     protected function _insert(&$document) {
 
-        $json = $document;
-
         //JSON_NUMERIC_CHECK - without destroying values with leading zeros
-        array_walk_recursive($json, function (&$val, $key) {
+        array_walk_recursive($document, function (&$val, $key) {
 
             if (is_string($val) && is_numeric($val) && $val[0] !== '0') {
                 $val += 0;
             }
         });
 
-        $json            = json_encode($json, JSON_UNESCAPED_UNICODE);
         $table           = $this->name;
         $document['_id'] = isset($document['_id']) ? $document['_id'] : createMongoDbLikeId();
-        $data            = ['document' => $json];
+        $data            = ['document' => json_encode($document, JSON_UNESCAPED_UNICODE)];
 
         $fields = [];
         $values = [];
