@@ -388,7 +388,7 @@ $this->module('collections')->extend([
         $collection = $_collection['_id'];
 
         // check rule
-        $context = _check_collection_rule($_collection, 'remove', ['options' => ['filter' => $criteria]]);
+        $context = _check_collection_rule($_collection, 'delete', ['options' => ['filter' => $criteria]]);
 
         if ($context === false) {
             return false;
