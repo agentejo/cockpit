@@ -18,7 +18,8 @@
 
                     <p><strong><span class="uk-badge app-badge">System</span></strong></p>
 
-                    <h4>@lang('General')</h4>
+                    <h4 class="uk-text-bold">@lang('General')</h4>
+                    <hr>
 
                     <table class="uk-table uk-table-striped">
                         <tbody>
@@ -29,7 +30,8 @@
                         </tbody>
                     </table>
 
-                    <h4>@lang('Cache')</h4>
+                    <h4 class="uk-text-bold">@lang('Cache')</h4>
+                    <hr>
 
                     <div class="uk-margin">
 
@@ -83,6 +85,24 @@
                 </div>
 
             </div>
+
+            @if($app['debug'] && count(getenv()))
+
+            <h4 class="uk-text-bold">@lang('Environment Variables')</h4>
+            <hr>
+
+            <table class="uk-table uk-table-striped">
+                <tbody>
+                    @foreach(getenv() as $key => $value)
+                    <tr>
+                        <td width="30%" class="uk-text-small uk-text-bold">{{ $key }}</td>
+                        <td class="uk-text-small">{{ $value }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+            @endif
 
             @trigger("cockpit.settings.infopage.main")
 
