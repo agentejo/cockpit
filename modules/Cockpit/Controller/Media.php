@@ -307,6 +307,8 @@ class Media extends \Cockpit\AuthController {
             $this->app->stop();
         }
 
+        header('X-Accel-Buffering: no');
+
         $prefix = basename($path);
         $files  = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folder), \RecursiveIteratorIterator::LEAVES_ONLY);
         $zip    = new \ZipStream\ZipStream("{$prefix}.zip");
