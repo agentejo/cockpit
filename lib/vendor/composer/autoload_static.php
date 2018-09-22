@@ -4,13 +4,17 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInita6a10e388548eaea85a09901bf61f8e6
+class ComposerStaticInitda883020db27afc3ff127e6391c3d4b2
 {
     public static $files = array (
         '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        'Z' => 
+        array (
+            'ZipStream\\' => 10,
+        ),
         'P' => 
         array (
             'PHPMailer\\PHPMailer\\' => 20,
@@ -34,6 +38,10 @@ class ComposerStaticInita6a10e388548eaea85a09901bf61f8e6
     );
 
     public static $prefixDirsPsr4 = array (
+        'ZipStream\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
+        ),
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
@@ -223,17 +231,23 @@ class ComposerStaticInita6a10e388548eaea85a09901bf61f8e6
         'Parsedown' => __DIR__ . '/..' . '/erusev/parsedown/Parsedown.php',
         'ParsedownExtra' => __DIR__ . '/..' . '/erusev/parsedown-extra/ParsedownExtra.php',
         'ParsedownExtraTest' => __DIR__ . '/..' . '/erusev/parsedown-extra/test/ParsedownExtraTest.php',
+        'ZipStream\\Exception' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/Exception.php',
+        'ZipStream\\Exception\\FileNotFoundException' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/Exception/FileNotFoundException.php',
+        'ZipStream\\Exception\\FileNotReadableException' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/Exception/FileNotReadableException.php',
+        'ZipStream\\Exception\\InvalidOptionException' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/Exception/InvalidOptionException.php',
+        'ZipStream\\Exception\\StreamNotReadableException' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/Exception/StreamNotReadableException.php',
+        'ZipStream\\ZipStream' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/ZipStream.php',
         'claviska\\SimpleImage' => __DIR__ . '/..' . '/claviska/simpleimage/src/claviska/SimpleImage.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInita6a10e388548eaea85a09901bf61f8e6::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInita6a10e388548eaea85a09901bf61f8e6::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInita6a10e388548eaea85a09901bf61f8e6::$fallbackDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInita6a10e388548eaea85a09901bf61f8e6::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInita6a10e388548eaea85a09901bf61f8e6::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitda883020db27afc3ff127e6391c3d4b2::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitda883020db27afc3ff127e6391c3d4b2::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInitda883020db27afc3ff127e6391c3d4b2::$fallbackDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitda883020db27afc3ff127e6391c3d4b2::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitda883020db27afc3ff127e6391c3d4b2::$classMap;
 
         }, null, ClassLoader::class);
     }
