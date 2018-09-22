@@ -147,5 +147,11 @@ return array(
     'Parsedown' => $vendorDir . '/erusev/parsedown/Parsedown.php',
     'ParsedownExtra' => $vendorDir . '/erusev/parsedown-extra/ParsedownExtra.php',
     'ParsedownExtraTest' => $vendorDir . '/erusev/parsedown-extra/test/ParsedownExtraTest.php',
+    'ZipStream\\Exception' => $vendorDir . '/maennchen/zipstream-php/src/Exception.php',
+    'ZipStream\\Exception\\FileNotFoundException' => $vendorDir . '/maennchen/zipstream-php/src/Exception/FileNotFoundException.php',
+    'ZipStream\\Exception\\FileNotReadableException' => $vendorDir . '/maennchen/zipstream-php/src/Exception/FileNotReadableException.php',
+    'ZipStream\\Exception\\InvalidOptionException' => $vendorDir . '/maennchen/zipstream-php/src/Exception/InvalidOptionException.php',
+    'ZipStream\\Exception\\StreamNotReadableException' => $vendorDir . '/maennchen/zipstream-php/src/Exception/StreamNotReadableException.php',
+    'ZipStream\\ZipStream' => $vendorDir . '/maennchen/zipstream-php/src/ZipStream.php',
     'claviska\\SimpleImage' => $vendorDir . '/claviska/simpleimage/src/claviska/SimpleImage.php',
 );

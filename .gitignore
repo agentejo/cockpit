@@ -8,8 +8,12 @@
 .env
 composer.lock
 package-lock.json
+/lib/**/doc/*
 /lib/**/docs/*
 /lib/**/tests/*
+/lib/**/test/*
+/lib/**/\.travis.yml
+/lib/**/phpunit*
 /lib/**/example/*
 /storage/*.*
 /storage/*/*
