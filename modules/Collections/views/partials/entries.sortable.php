@@ -173,7 +173,7 @@
                     if (q.filter) {
                         this.filter = q.filter;
                         this.refs.txtfilter.value = q.filter;
-                        this.load();
+                        this.load(true);
                     } else {
                         this.loadTree();
                     }
@@ -255,7 +255,7 @@
             this._remove(this.selected, true);
         }
 
-        this.load = function() {
+        this.load = function(initial) {
 
             var options = {};
 
@@ -267,12 +267,15 @@
             this.entries = [];
             this.selected = [];
 
-            window.history.pushState(
-                null, null,
-                App.route(['/collections/entries/', this.collection.name, '?q=', JSON.stringify({
-                    filter: this.filter || null
-                })].join(''))
-            );
+            if (!initial) {
+
+                window.history.pushState(
+                    null, null,
+                    App.route(['/collections/entries/', this.collection.name, '?q=', JSON.stringify({
+                        filter: this.filter || null
+                    })].join(''))
+                );
+            }
 
             App.request('/collections/find', {collection:this.collection.name, options:options}).then(function(data){
 
