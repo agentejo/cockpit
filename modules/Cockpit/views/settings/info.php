@@ -10,7 +10,7 @@
 
     <div class="uk-grid" data-uk-grid-margin>
 
-        <div class="uk-width-medium-2-3">
+        <div class="uk-width-medium-3-4">
 
             <div id="settings-info" class="uk-switcher">
 
@@ -48,6 +48,24 @@
                         </div>
                     </div>
 
+                    @if($app->module('cockpit')->isSuperAdmin() && count(getenv()))
+
+                    <h4 class="uk-text-bold">@lang('Environment Variables')</h4>
+                    <hr>
+
+                    <table class="uk-table uk-table-striped">
+                        <tbody>
+                            @foreach(getenv() as $key => $value)
+                            <tr>
+                                <td width="30%" class="uk-text-small uk-text-bold">{{ $key }}</td>
+                                <td class="uk-text-small">{{ $value }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
+                    @endif
+
                 </div>
 
                 <div>
@@ -73,6 +91,10 @@
                                 <td>{{ implode(", ", $info['extensions']) }}</td>
                             </tr>
                             <tr>
+                                <td width="30%">Max. execution time</td>
+                                <td>{{ ini_get("max_execution_time") }} sec.</td>
+                            </tr>
+                            <tr>
                                 <td width="30%">Memory limit</td>
                                 <td>{{ ini_get("memory_limit") }}</td>
                             </tr>
@@ -86,29 +108,12 @@
 
             </div>
 
-            @if($app['debug'] && count(getenv()))
-
-            <h4 class="uk-text-bold">@lang('Environment Variables')</h4>
-            <hr>
-
-            <table class="uk-table uk-table-striped">
-                <tbody>
-                    @foreach(getenv() as $key => $value)
-                    <tr>
-                        <td width="30%" class="uk-text-small uk-text-bold">{{ $key }}</td>
-                        <td class="uk-text-small">{{ $value }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
-            @endif
 
             @trigger("cockpit.settings.infopage.main")
 
         </div>
 
-        <div class="uk-width-medium-1-3">
+        <div class="uk-width-medium-1-4">
 
             <div class="uk-panel uk-panel-box uk-panel-card uk-margin uk-animation-fade" if="{ !loading && version_compare(system.version, _system.version, '<') }">
 
