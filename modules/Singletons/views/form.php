@@ -28,7 +28,7 @@
     <div class="uk-margin-top" riot-view>
 
         <div class="uk-alert" if="{ !fields.length }">
-            @lang('No fields defined'). <a href="@route('/singleton/singleton')/{ singleton.name }">@lang('Define singleton fields').</a>
+            @lang('No fields defined'). <a href="@route('/singletons/singleton')/{ singleton.name }">@lang('Define singleton fields').</a>
         </div>
 
         <h3 class="uk-flex uk-flex-middle uk-text-bold">
