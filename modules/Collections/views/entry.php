@@ -285,7 +285,7 @@
                     App.ui.notify("Saving failed.", "danger");
                 }
             }, function(res) {
-                App.ui.notify(res && res.message ? res.message : "Saving failed.", "danger");
+                App.ui.notify(res && (res.message || res.error) ? (res.message || res.error) : "Saving failed.", "danger");
             });
 
             return false;
