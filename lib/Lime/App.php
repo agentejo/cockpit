@@ -278,26 +278,23 @@ class App implements \ArrayAccess {
 
         $this->exit = true;
 
-        if (is_string($data) && $data) {
-           $this->response->body = $data;
+        if ($status) {
+           $this->response->status = $status;
         }
 
-        if (is_numeric($data) && $data) {
+        if ($data) {
+            $this->response->body = $data;
+        }
+
+        if (is_numeric($data) && isset(self::$statusCodes[$data])) {
 
             $this->response->status = $data;
 
-            if (isset(self::$statusCodes[$data])) {
-
-                if ($this->response->mime == 'json') {
-                    $this->response->body = json_encode(["error" => self::$statusCodes[$data]]);
-                } else {
-                    $this->response->body = self::$statusCodes[$data];
-                }
+            if ($this->response->mime == 'json') {
+                $this->response->body = json_encode(["error" => self::$statusCodes[$data]]);
+            } else {
+                $this->response->body = self::$statusCodes[$data];
             }
-        }
-
-        if ($status) {
-           $this->response->status = $status;
         }
 
         if ($data || $status) {

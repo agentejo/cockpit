@@ -220,7 +220,7 @@ class Database {
 
 class UtilArrayQuery {
 
-    public static function buildCondition($criteria, $concat = " && ") {
+    public static function buildCondition($criteria, $concat = ' && ') {
 
         $fn = [];
 
@@ -232,7 +232,7 @@ class UtilArrayQuery {
 
                     $_fn = [];
 
-                    foreach($value as $v) {
+                    foreach ($value as $v) {
                         $_fn[] = self::buildCondition($v, ' && ');
                     }
 
@@ -243,7 +243,7 @@ class UtilArrayQuery {
 
                     $_fn = [];
 
-                    foreach($value as $v) {
+                    foreach ($value as $v) {
                         $_fn[] = self::buildCondition($v, ' && ');
                     }
 
@@ -264,20 +264,20 @@ class UtilArrayQuery {
 
                     $d = '$document';
 
-                    if (strpos($key, ".") !== false) {
+                    if (strpos($key, '.') !== false) {
 
                         $keys = explode('.', $key);
 
                         foreach ($keys as $k) {
-                            $d .= '["'.$k.'"]';
+                            $d .= '[\''.$k.'\']';
                         }
 
                     } else {
-                        $d .= '["'.$key.'"]';
+                        $d .= '[\''.$key.'\']';
                     }
 
                     if (is_array($value)) {
-                        $fn[] = "\\MongoLite\\UtilArrayQuery::check((isset({$d}) ? {$d} : null), ".var_export($value, true).")";
+                        $fn[] = "\\MongoLite\\UtilArrayQuery::check((isset({$d}) ? {$d} : null), ".var_export($value, true).')';
                     } else {
 
                         $_value = var_export($value, true);

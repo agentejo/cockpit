@@ -247,13 +247,13 @@
                     return;
                 }
 
-                App.request('/singletons/update_data/'+this.singleton.name, {data:this.data}).then(function(resp) {
+                App.request('/singletons/update_data/'+this.singleton.name, {data:this.data}).then(function(res) {
 
-                    if (resp) {
+                    if (res) {
 
                         App.ui.notify("Saving successful", "success");
 
-                        $this.data = resp.data;
+                        $this.data = res.data;
 
                         $this.fields.forEach(function(field){
 
@@ -271,6 +271,9 @@
                     } else {
                         App.ui.notify("Saving failed.", "danger");
                     }
+
+                }, function(res) {
+                    App.ui.notify(res && (res.message || res.error) ? (res.message || res.error) : "Saving failed.", "danger");
                 });
             }
 
