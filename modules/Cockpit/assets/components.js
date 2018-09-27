@@ -3235,6 +3235,7 @@ riot.tag2('field-select', '<select ref="input" class="uk-width-1-1 {opts.cls}" b
         var $this = this;
 
         this.on('mount', function() {
+            this.refs.input.value = this.root.$value;
             this.update();
         });
 
@@ -3269,7 +3270,6 @@ riot.tag2('field-select', '<select ref="input" class="uk-width-1-1 {opts.cls}" b
                 })
             }
 
-            this.refs.input.value = this.root.$value;
         });
 
 });
