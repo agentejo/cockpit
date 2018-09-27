@@ -2894,7 +2894,7 @@ riot.tag2('field-location', '<div class="uk-alert" if="{!apiready}"> Loading map
 riot.tag2('field-markdown', '<field-html ref="input" markdown="true" bind="{opts.bind}" height="{opts.height}"></field-html>', '', '', function(opts) {
 });
 
-riot.tag2('field-multipleselect', '<div class="{options.length > 10 ? \'uk-scrollable-box\':\'\'}"> <div class="uk-margin-small-top" each="{option in options}"> <a data-value="{option}" class="{parent.selected.indexOf(option)!==-1 ? \'uk-text-primary\':\'uk-text-muted\'}" onclick="{parent.toggle}" title="{option}"> <i class="uk-icon-{parent.selected.indexOf(option)!==-1 ? \'circle\':\'circle-o\'} uk-margin-small-right"></i> {option} </a> </div> </div> <span class="uk-text-small uk-text-muted" if="{options.length > 10}">{selected.length} {App.i18n.get(\'selected\')}</span>', '', '', function(opts) {
+riot.tag2('field-multipleselect', '<div class="{options.length > 10 ? \'uk-scrollable-box\':\'\'}"> <div class="uk-margin-small-top" each="{option in options}"> <a data-value="{option.value}" class="{parent.selected.indexOf(option.value)!==-1 ? \'uk-text-primary\':\'uk-text-muted\'}" onclick="{parent.toggle}" title="{option.label}"> <i class="uk-icon-{parent.selected.indexOf(option.value)!==-1 ? \'circle\':\'circle-o\'} uk-margin-small-right"></i> {option.label} </a> </div> </div> <span class="uk-text-small uk-text-muted" if="{options.length > 10}">{selected.length} {App.i18n.get(\'selected\')}</span>', '', '', function(opts) {
 
         var $this = this;
 
@@ -2907,17 +2907,29 @@ riot.tag2('field-multipleselect', '<div class="{options.length > 10 ? \'uk-scrol
 
         this.on('update', function() {
 
-            this.options = opts.options || [];
+            this.options = [];
 
-            if (typeof(this.options) === 'string') {
+            if (typeof(opts.options) === 'string' || Array.isArray(opts.options)) {
 
-                var options = [];
+                this.options = (typeof(opts.options) === 'string' ? opts.options.split(',') : opts.options || []).map(function(option) {
 
-                this.options.split(',').forEach(function(option) {
-                    options.push(option.trim());
+                    option = {
+                      value : (option.hasOwnProperty('value') ? option.value.toString().trim() : option.toString().trim()),
+                      label : (option.hasOwnProperty('label') ? option.label.toString().trim() : option.toString().trim())
+                    };
+
+                    return option;
                 });
 
-                this.options = options;
+            } else if(typeof(opts.options) === 'object') {
+
+                Object.keys(opts.options).forEach(function(key) {
+
+                    $this.options.push({
+                        value: key,
+                        label: opts.options[key]
+                    })
+                })
             }
         });
 
@@ -2940,7 +2952,7 @@ riot.tag2('field-multipleselect', '<div class="{options.length > 10 ? \'uk-scrol
 
         this.toggle = function(e) {
 
-            var option = e.item.option,
+            var option = e.item.option.value,
                 index  = this.selected.indexOf(option);
 
             if (index == -1) {
@@ -3218,21 +3230,44 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
 
 });
 
-riot.tag2('field-select', '<select ref="input" class="uk-width-1-1 {opts.cls}" bind="{opts.bind}"> <option value=""></option> <option each="{option,idx in options}" riot-value="{option}" selected="{parent.root.$value === option}">{option}</option> </select>', '', '', function(opts) {
+riot.tag2('field-select', '<select ref="input" class="uk-width-1-1 {opts.cls}" bind="{opts.bind}"> <option value=""></option> <option each="{option,idx in options}" riot-value="{option.value}" selected="{parent.root.$value === option.value}">{option.label}</option> </select>', '', '', function(opts) {
+
+        var $this = this;
 
         this.on('mount', function() {
             this.update();
         });
 
         this.on('update', function() {
+
             if (opts.required) {
                 this.refs.input.setAttribute('required', 'required');
             }
 
-            this.options = (typeof(opts.options) === 'string' ? opts.options.split(',') : opts.options || [])
-                .map(function(option) {
-                    return option.toString().trim();
+            this.options = [];
+
+            if (typeof(opts.options) === 'string' || Array.isArray(opts.options)) {
+
+                this.options = (typeof(opts.options) === 'string' ? opts.options.split(',') : opts.options || []).map(function(option) {
+
+                    option = {
+                      value : (option.hasOwnProperty('value') ? option.value.toString().trim() : option.toString().trim()),
+                      label : (option.hasOwnProperty('label') ? option.label.toString().trim() : option.toString().trim())
+                    };
+
+                    return option;
                 });
+
+            } else if(typeof(opts.options) === 'object') {
+
+                Object.keys(opts.options).forEach(function(key) {
+
+                    $this.options.push({
+                        value: key,
+                        label: opts.options[key]
+                    })
+                })
+            }
 
             this.refs.input.value = this.root.$value;
         });

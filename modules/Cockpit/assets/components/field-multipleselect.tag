@@ -1,9 +1,9 @@
 <field-multipleselect>
     <div class="{ options.length > 10 ? 'uk-scrollable-box':'' }">
         <div class="uk-margin-small-top" each="{option in options}">
-            <a data-value="{ option }" class="{ parent.selected.indexOf(option)!==-1 ? 'uk-text-primary':'uk-text-muted' }" onclick="{ parent.toggle }" title="{ option }">
-                <i class="uk-icon-{ parent.selected.indexOf(option)!==-1 ? 'circle':'circle-o' } uk-margin-small-right"></i>
-                { option }
+            <a data-value="{ option.value }" class="{ parent.selected.indexOf(option.value)!==-1 ? 'uk-text-primary':'uk-text-muted' }" onclick="{ parent.toggle }" title="{ option.label }">
+                <i class="uk-icon-{ parent.selected.indexOf(option.value)!==-1 ? 'circle':'circle-o' } uk-margin-small-right"></i>
+                { option.label }
             </a>
         </div>
     </div>
@@ -22,17 +22,29 @@
 
         this.on('update', function() {
 
-            this.options = opts.options || [];
+            this.options = [];
 
-            if (typeof(this.options) === 'string') {
+            if (typeof(opts.options) === 'string' || Array.isArray(opts.options)) {
 
-                var options = [];
+                this.options = (typeof(opts.options) === 'string' ? opts.options.split(',') : opts.options || []).map(function(option) {
 
-                this.options.split(',').forEach(function(option) {
-                    options.push(option.trim());
+                    option = {
+                      value : (option.hasOwnProperty('value') ? option.value.toString().trim() : option.toString().trim()),
+                      label : (option.hasOwnProperty('label') ? option.label.toString().trim() : option.toString().trim())
+                    };
+
+                    return option;
                 });
 
-                this.options = options;
+            } else if(typeof(opts.options) === 'object') {
+
+                Object.keys(opts.options).forEach(function(key) {
+
+                    $this.options.push({
+                        value: key,
+                        label: opts.options[key]
+                    })
+                })
             }
         });
 
@@ -55,7 +67,7 @@
 
         toggle(e) {
 
-            var option = e.item.option,
+            var option = e.item.option.value,
                 index  = this.selected.indexOf(option);
 
             if (index == -1) {
