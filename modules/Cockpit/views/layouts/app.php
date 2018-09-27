@@ -14,7 +14,7 @@
     $_title = [];
 
     foreach (explode('/', $app['route']) as $part) {
-        if (trim($part)) $_title[] = $app->helpers['i18n']->get(ucfirst($part));
+        if (trim($part)) $_title[] = $app('i18n')->get(ucfirst($part));
     }
 
 ?><!doctype html>
