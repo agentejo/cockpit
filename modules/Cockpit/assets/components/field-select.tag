@@ -10,6 +10,7 @@
         var $this = this;
 
         this.on('mount', function() {
+            this.refs.input.value = this.root.$value;
             this.update();
         });
 
@@ -44,7 +45,6 @@
                 })
             }
 
-            this.refs.input.value = this.root.$value;
         });
 
     </script>
