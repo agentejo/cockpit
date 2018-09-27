@@ -10,11 +10,18 @@
         }
     }
 
+    // Generate title
+    $_title = [];
+
+    foreach (explode('/', $app['route']) as $part) {
+        if (trim($part)) $_title[] = $app->helpers['i18n']->get(ucfirst($part));
+    }
+
 ?><!doctype html>
 <html lang="{{ $app('i18n')->locale }}" data-base="@base('/')" data-route="@route('/')" data-version="{{ $app['cockpit/version'] }}" data-locale="{{ $app('i18n')->locale }}">
 <head>
     <meta charset="UTF-8">
-    <title>{{ $app['app.name'] }}</title>
+    <title>{{ implode(' > ', $_title).(count($_title) ? ' - ':'').$app['app.name'] }}</title>
     <link rel="icon" href="@base('/favicon.ico')" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
