@@ -1303,6 +1303,8 @@ class App implements \ArrayAccess {
 
         $modules = [];
         $dirs    = (array)$dirs;
+        $extensions = array_merge($this->registry['extensions'], ['Cockpit' => 1]);
+        $enabled = array_keys(array_filter($extensions));
 
         foreach ($dirs as &$dir) {
 
@@ -1313,7 +1315,7 @@ class App implements \ArrayAccess {
                 // load modules
                 foreach (new \DirectoryIterator($dir) as $module) {
 
-                    if ($module->isFile() || $module->isDot()) continue;
+                    if (!in_array($module, $enabled) || $module->isFile() || $module->isDot()) continue;
 
                     $name = $prefix ? "{$pfx}-".$module->getBasename() : $module->getBasename();
 
