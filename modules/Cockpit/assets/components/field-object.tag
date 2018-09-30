@@ -27,9 +27,15 @@
                 editor = new JSONEditor(this.refs.input, {
                     modes: ['tree', 'code'],
                     mode: 'code',
-                    onChange: function(){
-                        $this.value = editor.get() || {};
-                        $this.$setValue($this.value, true);
+                    onError: function (e) {
+                        alert(e.toString());
+                    },
+                    onChange: function() {
+                        try {
+                            $this.value = editor.get() || {};
+                            $this.$setValue($this.value, true);
+                        }
+                        catch (e) {}
                     }
                 });
 
