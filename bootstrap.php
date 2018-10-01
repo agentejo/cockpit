@@ -111,6 +111,8 @@ function cockpit($module = null) {
 
             'filestorage' => [],
 
+            'extensions' => ['Cockpit' => 1],
+
         ], is_array($customconfig) ? $customconfig : []);
 
         $app = new LimeExtra\App($config);

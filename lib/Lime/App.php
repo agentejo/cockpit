@@ -1303,8 +1303,7 @@ class App implements \ArrayAccess {
 
         $modules = [];
         $dirs    = (array)$dirs;
-        $extensions = array_merge($this->registry['extensions'], ['Cockpit' => 1]);
-        $enabled = array_keys(array_filter($extensions));
+        $enabled = array_keys(array_filter($this->registry['extensions']));
 
         foreach ($dirs as &$dir) {
 
