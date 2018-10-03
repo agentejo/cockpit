@@ -103,6 +103,14 @@ class Admin extends \Cockpit\AuthController {
             return false;
         }
 
+        if (!isset($collection['_id']) && !$this->module('cockpit')->hasaccess('collections', 'create')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        if (isset($collection['_id']) && !$this->module('collections')->hasaccess($collection['name'], 'collection_edit')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
         return $this->module('collections')->saveCollection($collection['name'], $collection, $rules);
     }
 
@@ -287,6 +295,10 @@ class Admin extends \Cockpit\AuthController {
         $collection = $this->module('collections')->collection($collection);
 
         if (!$collection) return false;
+
+        if (!$this->module('collections')->hasaccess($collection['name'], 'entries_view')) {
+            return $this->helper('admin')->denyRequest();
+        }
 
         $entries = $this->module('collections')->find($collection['name']);
 

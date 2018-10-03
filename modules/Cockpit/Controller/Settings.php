@@ -11,6 +11,10 @@ class Settings extends \Cockpit\AuthController {
 
     public function info() {
 
+        if (!$this->module('cockpit')->hasaccess('cockpit', 'info')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
         $info                  = [];
 
         $info['app']           = $this->app->helper('admin')->data['cockpit'];
