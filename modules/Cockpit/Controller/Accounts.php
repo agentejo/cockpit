@@ -104,6 +104,10 @@ class Accounts extends \Cockpit\AuthController {
 
     public function remove() {
 
+        if (!$this->module('cockpit')->hasaccess('cockpit', 'accounts')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
         if ($data = $this->param('account', false)) {
 
             // user can't delete himself
@@ -149,11 +153,9 @@ class Accounts extends \Cockpit\AuthController {
 
         foreach ($accounts as &$account) {
 
-            $account['md5email'] = md5(@$account['email']);
-
-            if (isset($account["password"])) {
-                unset($account["password"]);
-            }
+            if (isset($account['password']))     unset($account['password']);
+            if (isset($account['api_key']))      unset($account['api_key']);
+            if (isset($account['_reset_token'])) unset($account['_reset_token']);
         }
 
         return compact('accounts', 'count', 'pages', 'page');
