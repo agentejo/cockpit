@@ -79,8 +79,6 @@ class Auth extends \LimeExtra\Controller {
             $this->app->storage->save('cockpit/accounts', $data);
             $message = $this->app->view('cockpit:emails/recover.php', compact('user','token','target'));
 
-            file_put_contents(COCKPIT_DIR.'/message.txt', $message);
-
             $this->app->mailer->mail(
                 $user['email'],
                 $this->param('subject', $this->app->getSiteUrl().' - Pasword Recovery'),
