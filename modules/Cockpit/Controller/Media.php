@@ -324,7 +324,7 @@ class Media extends \Cockpit\AuthController {
 
         $zip->finish();
 
-        $this->app-stop();
+        $this->app->stop();
     }
 
     protected function getfilelist() {
