@@ -277,7 +277,7 @@ $this->module('forms')->extend([
                 // There is an email template available
                 if ($template = $this->app->path("#config:forms/emails/{$form}.php")) {
 
-                    $body = $this->app->renderer->file($template, $data, false);
+                    $body = $this->app->renderer->file($template, ['data' => $data, 'frm' => $frm], false);
 
                 // Prepare template manually
                 } else {
