@@ -256,11 +256,13 @@
 
         submit(e) {
 
-            if(e) e.preventDefault();
+            if (e) e.preventDefault();
 
-            App.request("/accounts/save", {"account": this.account}).then(function(data){
+            App.request("/accounts/save", {account: this.account}).then(function(data){
                 $this.account = data;
-                App.ui.notify("Account saved", "success");
+                App.ui.notify('Account saved', 'success');
+            }, function(res) {
+                App.ui.notify(res && (res.message || res.error) ? (res.message || res.error) : 'Saving failed.', 'danger');
             });
 
             return false;
