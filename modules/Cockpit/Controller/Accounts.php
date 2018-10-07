@@ -62,12 +62,34 @@ class Accounts extends \Cockpit\AuthController {
 
         if ($data = $this->param('account', false)) {
 
+            // prevent saving empty users with STRG+S
+            if (empty($data['user']) || empty($data['email']) || (!isset($data['_id']) && empty($data['password']))) {
+                return false;
+            }
+            
+            if (!isset($data['name']) || empty($data['name'])) {
+                $data['name'] = $data['user'];
+            }
+
             // check rights
             if (!$this->module('cockpit')->hasaccess('cockpit', 'accounts')) {
 
                 if (!isset($data['_id']) || $data['_id'] != $this->user['_id']) {
                     return $this->helper('admin')->denyRequest();
                 }
+
+                if ($data['user'] != $this->user['user']) {
+                    return false;
+                }
+
+            } else {
+                  
+                $user = $this->app->storage->findOne('cockpit/accounts', ['user' => $data['user']]);
+
+                if (isset($user['user']) && $user['user'] == $data['user'] && $user['_id'] != $data['_id']) {
+                    return false;
+                }
+
             }
 
             $data['_modified'] = time();

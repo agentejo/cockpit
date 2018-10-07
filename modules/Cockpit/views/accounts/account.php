@@ -46,7 +46,7 @@
 
                             <div class="uk-form-row">
                                 <label class="uk-text-small">@lang('Username')</label>
-                                <input class="uk-width-1-1 uk-form-large" type="text" bind="account.user" autocomplete="off" required>
+                                <input class="uk-width-1-1 uk-form-large" type="text" bind="account.user" autocomplete="off" ref="user" required>
                             </div>
 
                             <div class="uk-form-row">
@@ -216,6 +216,14 @@
                 UIkit.Utils.checkDisplay();
             }, 50);
         }
+
+        this.on('update', function(){
+
+            // lock user name if saved
+            if (this.account._id) {
+                this.refs.user.disabled = true;
+            }
+        });
 
 
         this.on('mount', function(){
