@@ -105,6 +105,7 @@ class RestApi extends \LimeExtra\Controller {
         }
         // --
 
+        $this->app->trigger('cockpit.accounts.save', [&$data, isset($data['_id'])]);
         $this->app->storage->save('cockpit/accounts', $data);
 
         if (isset($data['password'])) {

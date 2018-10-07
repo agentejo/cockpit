@@ -104,6 +104,7 @@ class Accounts extends \Cockpit\AuthController {
             }
             // --
 
+            $this->app->trigger('cockpit.accounts.save', [&$data, isset($data['_id'])]);
             $this->app->storage->save('cockpit/accounts', $data);
 
             if (isset($data['password'])) {
