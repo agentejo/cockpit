@@ -86,6 +86,10 @@ class Accounts extends \Cockpit\AuthController {
                 $data['_created'] = $data['_modified'];
             }
 
+            if (isset($data['group']) && !$this->module('cockpit')->hasaccess('cockpit', 'accounts')) {
+                unset($data['group']);
+            }
+
             if (isset($data['password'])) {
 
                 if (strlen($data['password'])){

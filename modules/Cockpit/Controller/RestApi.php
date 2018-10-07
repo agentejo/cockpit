@@ -35,12 +35,18 @@ class RestApi extends \LimeExtra\Controller {
 
         if ($user) {
 
-            if (!isset($data['_id']) && !$this->module('cockpit')->isSuperAdmin()) {
+            $hasAccess = $this->module('cockpit')->hasaccess('cockpit', 'accounts');
+
+            if (!isset($data['_id']) && !$hasAccess) {
                 return $this->stop(401);
             }
 
-            if (!$this->module('cockpit')->isSuperAdmin() && $data['_id'] != $user['_id'] ) {
+            if (!$hasAccess && $data['_id'] != $user['_id'] ) {
                 return $this->stop(401);
+            }
+
+            if (isset($data['_id'], $data['group']) && !$hasAccess) {
+                unset($data['group']);
             }
         }
 
