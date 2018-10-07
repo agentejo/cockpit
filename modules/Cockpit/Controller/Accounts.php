@@ -73,6 +73,16 @@ class Accounts extends \Cockpit\AuthController {
             $data['_modified'] = time();
 
             if (!isset($data['_id'])) {
+
+                // new user needs a password
+                if (!isset($data['password']) || !trim($data['password'])) {
+                    return $this->stop(['error' => 'User password required'], 412);
+                }
+
+                if (!isset($data['user']) || !trim($data['user'])) {
+                    return $this->stop(['error' => 'Username required'], 412);
+                }
+
                 $data['_created'] = $data['_modified'];
             }
 
@@ -85,8 +95,16 @@ class Accounts extends \Cockpit\AuthController {
                 }
             }
 
-            foreach (['user', 'email'] as $key) {
-                if (isset($data[$key])) $data[$key] = trim($data[$key]);
+            if (isset($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+                return $this->stop(['error' => 'Valid email required'], 412);
+            }
+
+            if (isset($data['user']) && !trim($data['user'])) {
+                return $this->stop(['error' => 'Username cannot be empty!'], 412);
+            }
+
+            foreach (['name', 'user', 'email'] as $key) {
+                if (isset($data[$key])) $data[$key] = strip_tags(trim($data[$key]));
             }
 
             // unique check

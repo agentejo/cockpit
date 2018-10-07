@@ -51,7 +51,7 @@
 
                             <div class="uk-form-row">
                                 <label class="uk-text-small">@lang('Email')</label>
-                                <input class="uk-width-1-1 uk-form-large" type="email" bind="account.email" autocomplete="off" required>
+                                <input class="uk-width-1-1 uk-form-large" type="email" bind="account.email" autocomplete="off">
                             </div>
 
                             <div class="uk-form-row">
