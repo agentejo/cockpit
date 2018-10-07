@@ -44,6 +44,8 @@ class RestApi extends \LimeExtra\Controller {
             }
         }
 
+        $data['_modified'] = time();
+
         // new user needs a password
         if (!isset($data['_id'])) {
 
@@ -53,7 +55,7 @@ class RestApi extends \LimeExtra\Controller {
             }
 
             // new user needs a username
-            if (!isset($data['user'])) {
+            if (!isset($data['user']) || !trim($data['user'])) {
                 return $this->stop(['error' => 'Username required'], 412);
             }
 
@@ -69,6 +71,8 @@ class RestApi extends \LimeExtra\Controller {
             if (isset($data['api_key'])) {
                 $data['api_key'] = uniqid('account-').uniqid();
             }
+
+            $data['_created'] = $data['_modified'];
         }
 
         if (isset($data['password'])) {
@@ -80,14 +84,16 @@ class RestApi extends \LimeExtra\Controller {
             }
         }
 
-        $data['_modified'] = time();
-
-        if (!isset($data['_id'])) {
-            $data['_created'] = $data['_modified'];
+        if (isset($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            return $this->stop(['error' => 'Valid email required'], 412);
         }
 
-        foreach (['user', 'email'] as $key) {
-            if (isset($data[$key])) $data[$key] = trim($data[$key]);
+        if (isset($data['user']) && !trim($data['user'])) {
+            return $this->stop(['error' => 'Username cannot be empty!'], 412);
+        }
+
+        foreach (['name', 'user', 'email'] as $key) {
+            if (isset($data[$key])) $data[$key] = strip_tags(trim($data[$key]));
         }
 
         // unique check
