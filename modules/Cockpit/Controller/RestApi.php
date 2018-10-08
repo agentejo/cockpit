@@ -135,10 +135,11 @@ class RestApi extends \LimeExtra\Controller {
 
     public function listUsers() {
 
-        $user = $this->module('cockpit')->getUser();
+        $user    = $this->module('cockpit')->getUser();
+        $isAdmin = false;
 
         if ($user) {
-            // Todo: user specific checks
+            $isAdmin = $this->module('cockpit')->isSuperAdmin($user['group']);
         }
 
         $options = ['sort' => ['user' => 1]];
@@ -164,6 +165,7 @@ class RestApi extends \LimeExtra\Controller {
         foreach ($accounts as &$account) {
 
             if (isset($account['password']))     unset($account['password']);
+            if (isset($account['api_key']))      unset($account['api_key']);
             if (isset($account['_reset_token'])) unset($account['_reset_token']);
         }
 
