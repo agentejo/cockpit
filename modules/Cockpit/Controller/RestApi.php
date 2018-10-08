@@ -104,16 +104,22 @@ class RestApi extends \LimeExtra\Controller {
 
         // unique check
         // --
-        $exists = $this->app->storage->findOne('cockpit/accounts', [
-            '$or' => [
-                ['user'  => $data['user']],
-                ['email' => $data['email']],
-            ]
+        $exists = $this->app->storage->find('cockpit/accounts', [
+            'filter' => [
+                '$or' => [
+                    ['user'  => $data['user']],
+                    ['email' => $data['email']],
+                ]
+            ],
+            'limit' => 2
         ]);
 
-        if ($exists && (!isset($data['_id']) || $data['_id'] != $exists['_id'])) {
-            $field = $exists['user'] == $data['user'] ? 'Username' : 'Email';
-            $this->app->stop(['error' =>  "{$field} is already used!"], 412);
+        foreach ($exists as $e) {
+
+            if (!isset($data['_id']) || $data['_id'] != $e['_id']) {
+                $field = $e['user'] == $data['user'] ? 'Username' : 'Email';
+                $this->app->stop(['error' =>  "{$field} is already used!"], 412);
+            }
         }
         // --
 
