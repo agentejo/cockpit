@@ -49,12 +49,12 @@ $COCKPIT_BASE_ROUTE  = $COCKPIT_BASE_URL;
  * SYSTEM DEFINES
  */
 if (!defined('COCKPIT_ADMIN'))                  define('COCKPIT_ADMIN'          , 0);
+if (!defined('COCKPIT_DOCS_ROOT'))              define('COCKPIT_DOCS_ROOT'      , $COCKPIT_DOCS_ROOT);
 if (!defined('COCKPIT_BASE_URL'))               define('COCKPIT_BASE_URL'       , $COCKPIT_BASE_URL);
 if (!defined('COCKPIT_API_REQUEST'))            define('COCKPIT_API_REQUEST'    , COCKPIT_ADMIN && strpos($_SERVER['REQUEST_URI'], COCKPIT_BASE_URL.'/api/')!==false ? 1:0);
 if (!defined('COCKPIT_DIR'))                    define('COCKPIT_DIR'            , $COCKPIT_DIR);
-if (!defined('COCKPIT_SITE_DIR'))               define('COCKPIT_SITE_DIR'       , $COCKPIT_DIR == $COCKPIT_DOCS_ROOT ? $COCKPIT_DIR : dirname($COCKPIT_DIR));
+if (!defined('COCKPIT_SITE_DIR'))               define('COCKPIT_SITE_DIR'       , $COCKPIT_DIR == COCKPIT_DOCS_ROOT ? $COCKPIT_DIR : dirname(COCKPIT_DOCS_ROOT));
 if (!defined('COCKPIT_CONFIG_DIR'))             define('COCKPIT_CONFIG_DIR'     , COCKPIT_DIR.'/config');
-if (!defined('COCKPIT_DOCS_ROOT'))              define('COCKPIT_DOCS_ROOT'      , $COCKPIT_DOCS_ROOT);
 if (!defined('COCKPIT_BASE_ROUTE'))             define('COCKPIT_BASE_ROUTE'     , $COCKPIT_BASE_ROUTE);
 if (!defined('COCKPIT_STORAGE_FOLDER'))         define('COCKPIT_STORAGE_FOLDER' , COCKPIT_DIR.'/storage');
 if (!defined('COCKPIT_PUBLIC_STORAGE_FOLDER'))  define('COCKPIT_PUBLIC_STORAGE_FOLDER' , COCKPIT_DIR.'/storage');
@@ -87,6 +87,7 @@ function cockpit($module = null) {
             'base_route'   => COCKPIT_BASE_ROUTE,
             'docs_root'    => COCKPIT_DOCS_ROOT,
             'session.name' => md5(__DIR__),
+            'session.init' => COCKPIT_API_REQUEST ? false : true,
             'sec-key'      => 'c3b40c4c-db44-s5h7-a814-b4931a15e5e1',
             'i18n'         => 'en',
             'database'     => ['server' => 'mongolite://'.(COCKPIT_STORAGE_FOLDER.'/data'), 'options' => ['db' => 'cockpitdb'] ],

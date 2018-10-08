@@ -12,13 +12,13 @@ class RestApi extends \LimeExtra\Controller {
         $data = [ 'user' => $this->param('user'), 'password' => $this->param('password') ];
 
         if (!$data['user'] || !$data['password']) {
-            return $this->stop('{"error": "Missing user or password"}', 412);
+            return $this->stop(['error' => 'Missing user or password'], 412);
         }
 
         $user = $this->module('cockpit')->authenticate($data);
 
         if (!$user) {
-            return $this->stop('{"error": "Authentication failed"}', 401);
+            return $this->stop(['error' => 'Authentication failed'], 401);
         }
 
         return $user;
@@ -26,7 +26,7 @@ class RestApi extends \LimeExtra\Controller {
 
     public function saveUser() {
 
-        $data = $this->param("user", false);
+        $data = $this->param('user', false);
         $user = $this->module('cockpit')->getUser();
 
         if (!$data) {
@@ -35,26 +35,34 @@ class RestApi extends \LimeExtra\Controller {
 
         if ($user) {
 
-            if (!isset($data['_id']) && !$this->module('cockpit')->isSuperAdmin()) {
+            $hasAccess = $this->module('cockpit')->hasaccess('cockpit', 'accounts');
+
+            if (!isset($data['_id']) && !$hasAccess) {
                 return $this->stop(401);
             }
 
-            if (!$this->module('cockpit')->isSuperAdmin() && $data['_id'] != $user['_id'] ) {
+            if (!$hasAccess && $data['_id'] != $user['_id'] ) {
                 return $this->stop(401);
             }
+
+            if (isset($data['_id'], $data['group']) && !$hasAccess) {
+                unset($data['group']);
+            }
         }
+
+        $data['_modified'] = time();
 
         // new user needs a password
         if (!isset($data['_id'])) {
 
             // new user needs a password
-            if (!isset($data["password"])) {
-                return $this->stop('{"error": "User password required"}', 412);
+            if (!isset($data['password'])) {
+                return $this->stop(['error' => 'User password required'], 412);
             }
 
             // new user needs a username
-            if (!isset($data["user"])) {
-                return $this->stop('{"error": "User password required"}', 412);
+            if (!isset($data['user']) || !trim($data['user'])) {
+                return $this->stop(['error' => 'Username required'], 412);
             }
 
             $data = array_merge($account = [
@@ -70,10 +78,7 @@ class RestApi extends \LimeExtra\Controller {
                 $data['api_key'] = uniqid('account-').uniqid();
             }
 
-            // check for duplicate users
-            if ($user = $this->app->storage->findOne('cockpit/accounts', ['user' => $data['user']])) {
-                return $this->stop('{"error": "User already exists"}', 412);
-            }
+            $data['_created'] = $data['_modified'];
         }
 
         if (isset($data['password'])) {
@@ -85,12 +90,40 @@ class RestApi extends \LimeExtra\Controller {
             }
         }
 
-        $data['_modified'] = time();
-
-        if (!isset($data['_id'])) {
-            $data['_created'] = $data['_modified'];
+        if (isset($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            return $this->stop(['error' => 'Valid email required'], 412);
         }
 
+        if (isset($data['user']) && !trim($data['user'])) {
+            return $this->stop(['error' => 'Username cannot be empty!'], 412);
+        }
+
+        foreach (['name', 'user', 'email'] as $key) {
+            if (isset($data[$key])) $data[$key] = strip_tags(trim($data[$key]));
+        }
+
+        // unique check
+        // --
+        $exists = $this->app->storage->find('cockpit/accounts', [
+            'filter' => [
+                '$or' => [
+                    ['user'  => $data['user']],
+                    ['email' => $data['email']],
+                ]
+            ],
+            'limit' => 2
+        ]);
+
+        foreach ($exists as $e) {
+
+            if (!isset($data['_id']) || $data['_id'] != $e['_id']) {
+                $field = $e['user'] == $data['user'] ? 'Username' : 'Email';
+                $this->app->stop(['error' =>  "{$field} is already used!"], 412);
+            }
+        }
+        // --
+
+        $this->app->trigger('cockpit.accounts.save', [&$data, isset($data['_id'])]);
         $this->app->storage->save('cockpit/accounts', $data);
 
         if (isset($data['password'])) {
@@ -102,10 +135,11 @@ class RestApi extends \LimeExtra\Controller {
 
     public function listUsers() {
 
-        $user = $this->module('cockpit')->getUser();
+        $user    = $this->module('cockpit')->getUser();
+        $isAdmin = false;
 
         if ($user) {
-            // Todo: user specific checks
+            $isAdmin = $this->module('cockpit')->isSuperAdmin($user['group']);
         }
 
         $options = ['sort' => ['user' => 1]];
@@ -126,10 +160,13 @@ class RestApi extends \LimeExtra\Controller {
             }
         }
 
-        $accounts = $this->storage->find("cockpit/accounts", $options)->toArray();
+        $accounts = $this->storage->find('cockpit/accounts', $options)->toArray();
 
         foreach ($accounts as &$account) {
-            unset($account["password"]);
+
+            if (isset($account['password']))     unset($account['password']);
+            if (isset($account['api_key']))      unset($account['api_key']);
+            if (isset($account['_reset_token'])) unset($account['_reset_token']);
         }
 
         return $accounts;

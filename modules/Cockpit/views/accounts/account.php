@@ -51,7 +51,7 @@
 
                             <div class="uk-form-row">
                                 <label class="uk-text-small">@lang('Email')</label>
-                                <input class="uk-width-1-1 uk-form-large" type="email" bind="account.email" autocomplete="off" required>
+                                <input class="uk-width-1-1 uk-form-large" type="email" bind="account.email" autocomplete="off">
                             </div>
 
                             <div class="uk-form-row">
@@ -256,11 +256,13 @@
 
         submit(e) {
 
-            if(e) e.preventDefault();
+            if (e) e.preventDefault();
 
-            App.request("/accounts/save", {"account": this.account}).then(function(data){
+            App.request("/accounts/save", {account: this.account}).then(function(data){
                 $this.account = data;
-                App.ui.notify("Account saved", "success");
+                App.ui.notify('Account saved', 'success');
+            }, function(res) {
+                App.ui.notify(res && (res.message || res.error) ? (res.message || res.error) : 'Saving failed.', 'danger');
             });
 
             return false;
