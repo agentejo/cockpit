@@ -162,7 +162,9 @@ class RestApi extends \LimeExtra\Controller {
         $accounts = $this->storage->find('cockpit/accounts', $options)->toArray();
 
         foreach ($accounts as &$account) {
-            unset($account['password']);
+
+            if (isset($account['password']))     unset($account['password']);
+            if (isset($account['_reset_token'])) unset($account['_reset_token']);
         }
 
         return $accounts;
