@@ -39,6 +39,23 @@
         App.$data = {{ json_encode($app('admin')->data->get('extract')) }};
         UIkit.modal.labels.Ok = App.i18n.get(UIkit.modal.labels.Ok);
         UIkit.modal.labels.Cancel = App.i18n.get(UIkit.modal.labels.Cancel);
+
+        // check session
+        setInterval(function() {
+
+            App.request('/check-backend-session').then(function(resp) {
+
+                var modal = UIkit.modal('#loginmodal', {
+                    keyboard: false,
+                    bgclose: false
+                });
+
+                if (resp && !resp.status && !modal.isActive()) {
+                    modal.show();
+                }
+            });
+
+        }, 30000);
     </script>
 
     @trigger('app.layout.header')
@@ -212,6 +229,74 @@
     @foreach($app('fs')->ls('*.tag', '#config:tags') as $component)
     <script type="riot/tag" src="{{$app->pathToUrl('#config:tags/'.$component->getBasename())}}?nc={{ $app['debug'] ? time() : $app['cockpit/version'] }}"></script>
     @endforeach
+
+
+    <div id="loginmodal" class="uk-modal" riot-view>
+
+        <style>
+            .uk-modal-dialog { width: 450px; }
+        </style>
+
+        <div class="uk-modal-dialog uk-form" ref="loginDialog">
+
+            <form class="uk-form" method="post" action="@route('/auth/check')" onsubmit="{ submit }">
+
+                <div class="uk-text-center">
+                    <img src="@base('assets:app/media/icons/login.svg')" width="120" height="120">
+                </div>
+
+                <div class="uk-form-row uk-margin-large-top">
+                    <input ref="user" class="uk-form-large uk-width-1-1" type="text" placeholder="@lang('Username')" required>
+                </div>
+
+                <div class="uk-form-row">
+                    <input ref="password" class="uk-form-large uk-width-1-1" type="password" placeholder="@lang('Password')" required>
+                </div>
+
+                <div class="uk-margin-top">
+                    <button class="uk-button uk-button-outline uk-button-large uk-text-primary uk-width-1-1">@lang('Authenticate')</button>
+                </div>
+
+            </form>
+
+        </div>
+
+        <script type="view/script">
+
+            submit(e) {
+
+                e.preventDefault();
+
+                var dialog = App.$(this.refs.loginDialog);
+
+                App.request('/auth/check', {auth:{user:this.refs.user.value, password:this.refs.password.value}}).then(function(data) {
+
+                    if (data && data.success) {
+
+                        if (data.user._id != App.$data.user._id) {
+                            App.reroute('/');
+                        } else {
+                            App.$(this.root).find('form')[0].reset();
+                            UIkit.modal('#loginmodal').hide();
+                        }
+
+                    } else {
+
+                        dialog.removeClass('uk-animation-shake');
+
+                        setTimeout(function(){
+                            dialog.addClass('uk-animation-shake');
+                        }, 50);
+                    }
+
+                }.bind(this));
+
+                return false;
+            }
+
+        </script>
+
+    </div>
 
 </body>
 </html>
