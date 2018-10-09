@@ -38,8 +38,6 @@ class Auth extends \LimeExtra\Controller {
 
     public function logout() {
 
-        $this->app->trigger('cockpit.account.logout', [$this->app->module('cockpit')->getUser()]);
-
         $this->module('cockpit')->logout();
 
         if ($this->req_is('ajax')) {

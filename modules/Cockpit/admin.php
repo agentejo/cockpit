@@ -99,6 +99,41 @@ $app->bindClass('Cockpit\\Controller\\Webhooks', 'webhooks');
 
 
 /**
+ * Check user session for backend ui
+ */
+$app->on('cockpit.auth.setuser', function($user, $permanent) {
+    if (!$permanent) return;
+    $this('session')->write('cockpit.session.time', time());
+});
+
+// update session time
+$app->on('admin.init', function() {
+    if ($this['route'] != '/check-backend-session' && isset($_SESSION['cockpit.session.time'])) {
+        $_SESSION['cockpit.session.time'] = time();
+    }
+});
+
+// check + validate session time
+$app->bind('/check-backend-session', function() {
+
+    $user = $this->module('cockpit')->getUser();
+    $status = true;
+
+    if (!$user) {
+        $status = false;
+    }
+
+    // check for inactivity: 15min by default
+    if ($status && isset($_SESSION['cockpit.session.time']) && ($_SESSION['cockpit.session.time'] + $this->retrieve('session.lifetime', 900) < time())) {
+        $this->module('cockpit')->logout();
+        $status = false;
+    }
+
+    return ['status' => $status];
+});
+
+
+/**
  * on admint init
  */
 $app->on('admin.init', function() {

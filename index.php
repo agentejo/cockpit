@@ -35,4 +35,4 @@ if (COCKPIT_API_REQUEST) {
 
 
 // run backend
-$cockpit->set('route', COCKPIT_ADMIN_ROUTE)->trigger("admin.init")->run();
+$cockpit->set('route', COCKPIT_ADMIN_ROUTE)->trigger('admin.init')->run();
