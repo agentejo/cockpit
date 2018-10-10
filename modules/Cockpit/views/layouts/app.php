@@ -217,9 +217,7 @@
     <div id="loginmodal" class="uk-modal" riot-view>
 
         <style>
-            .uk-modal-dialog {
-                width: 450px; 
-            }
+            .uk-modal-dialog { width: 360px; }
         </style>
 
         <div class="uk-modal-dialog uk-form" ref="loginDialog">
@@ -228,6 +226,10 @@
 
                 <div class="uk-text-center">
                     <img src="@base('assets:app/media/icons/login.svg')" width="120" height="120">
+                </div>
+
+                <div class="uk-form-row uk-text-center uk-h2 uk-text-bold">
+                    {{ $app['app.name'] }}
                 </div>
 
                 <div class="uk-form-row uk-margin-large-top">

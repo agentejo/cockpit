@@ -612,7 +612,7 @@ riot.tag2('cp-fieldsmanager', '<div ref="fieldscontainer" class="uk-sortable uk-
 
             this.field = e.item.field;
 
-            UIkit.modal(this.refs.modalField).show()
+            UIkit.modal(this.refs.modalField, {bgclose:false}).show()
         }.bind(this)
 
         this.togglelist = function(e) {
