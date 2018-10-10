@@ -1,15 +1,5 @@
 <?php
 
-    $modules = new \SplPriorityQueue();
-    $menuorder = $app->storage->getKey('cockpit/options', 'app.menu.order.'.$app["user"]["_id"], []);
-
-    if ($app('admin')->data['menu.modules']->count()) {
-
-        foreach($app('admin')->data['menu.modules'] as &$item) {
-            $modules->insert($item, -1* intval(\Lime\fetch_from_array($menuorder, $item['route'], 0)));
-        }
-    }
-
     // Generate title
     $_title = [];
 
@@ -107,9 +97,9 @@
                                         </div>
 
                                         @if($app('admin')->data['menu.modules']->count())
-                                        <ul class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-text-center" data-modules-menu data-uk-sortable>
+                                        <ul class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-text-center">
 
-                                            @foreach(clone $modules as $item)
+                                            @foreach($app('admin')->data['menu.modules'] as $item)
                                             <li class="uk-width-1-2 uk-width-medium-1-3" data-route="{{ $item['route'] }}">
                                                 <a class="uk-display-block uk-panel-box {{ (@$item['active']) ? 'uk-bg-primary uk-contrast':'uk-panel-framed' }}" href="@route($item['route'])">
                                                     <div class="uk-svg-adjust">
@@ -146,7 +136,7 @@
                     @if($app('admin')->data['menu.modules']->count())
                     <div class="uk-hidden-small">
                         <ul class="uk-subnav app-modulesbar">
-                            @foreach($modules as $item)
+                            @foreach($app('admin')->data['menu.modules'] as $item)
                             <li>
                                 <a class="uk-svg-adjust {{ (@$item['active']) ? 'uk-active':'' }}" href="@route($item['route'])" title="@lang($item['label'])" data-uk-tooltip="offset:10">
                                     @if(preg_match('/\.svg$/i', $item['icon']))
@@ -260,7 +250,7 @@
                 });
 
                 // check session
-                setInterval(function() {
+                var check = function() {
 
                     App.request('/check-backend-session').then(function(resp) {
 
@@ -272,8 +262,13 @@
                             $this.modal.show();
                         }
                     });
+                }
 
-                }, 60000);
+                setInterval(check, 60000);
+
+                document.addEventListener('visibilitychange', function() {
+                    if (!document.hidden) check();
+                }, false);
             });
 
             submit(e) {
