@@ -264,6 +264,10 @@
 
                     App.request('/check-backend-session').then(function(resp) {
 
+                        if (resp && resp.status && $this.modal.isActive()) {
+                            $this.modal.hide();
+                        }
+
                         if (resp && !resp.status && !$this.modal.isActive()) {
                             $this.modal.show();
                         }
