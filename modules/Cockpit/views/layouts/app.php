@@ -39,23 +39,6 @@
         App.$data = {{ json_encode($app('admin')->data->get('extract')) }};
         UIkit.modal.labels.Ok = App.i18n.get(UIkit.modal.labels.Ok);
         UIkit.modal.labels.Cancel = App.i18n.get(UIkit.modal.labels.Cancel);
-
-        // check session
-        setInterval(function() {
-
-            App.request('/check-backend-session').then(function(resp) {
-
-                var modal = UIkit.modal('#loginmodal', {
-                    keyboard: false,
-                    bgclose: false
-                });
-
-                if (resp && !resp.status && !modal.isActive()) {
-                    modal.show();
-                }
-            });
-
-        }, 30000);
     </script>
 
     @trigger('app.layout.header')
@@ -234,7 +217,9 @@
     <div id="loginmodal" class="uk-modal" riot-view>
 
         <style>
-            .uk-modal-dialog { width: 450px; }
+            .uk-modal-dialog {
+                width: 450px; 
+            }
         </style>
 
         <div class="uk-modal-dialog uk-form" ref="loginDialog">
@@ -263,11 +248,31 @@
 
         <script type="view/script">
 
+            var $this = this;
+
+            this.on('mount', function() {
+
+                this.modal = UIkit.modal($this.root, {
+                    keyboard: false,
+                    bgclose: false
+                });
+
+                // check session
+                setInterval(function() {
+
+                    App.request('/check-backend-session').then(function(resp) {
+
+                        if (resp && !resp.status && !$this.modal.isActive()) {
+                            $this.modal.show();
+                        }
+                    });
+
+                }, 30000);
+            });
+
             submit(e) {
 
                 e.preventDefault();
-
-                var dialog = App.$(this.refs.loginDialog);
 
                 App.request('/auth/check', {auth:{user:this.refs.user.value, password:this.refs.password.value}}).then(function(data) {
 
@@ -276,20 +281,20 @@
                         if (data.user._id != App.$data.user._id) {
                             App.reroute('/');
                         } else {
-                            App.$(this.root).find('form')[0].reset();
-                            UIkit.modal('#loginmodal').hide();
+                            $this.modal.dialog.find('form')[0].reset();
+                            $this.modal.hide();
                         }
 
                     } else {
 
-                        dialog.removeClass('uk-animation-shake');
+                        $this.modal.dialog.removeClass('uk-animation-shake');
 
                         setTimeout(function(){
-                            dialog.addClass('uk-animation-shake');
+                            $this.modal.dialog.addClass('uk-animation-shake');
                         }, 50);
                     }
 
-                }.bind(this));
+                });
 
                 return false;
             }
