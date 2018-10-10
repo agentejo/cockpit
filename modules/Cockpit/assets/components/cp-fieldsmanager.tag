@@ -293,7 +293,7 @@
 
             this.field = e.item.field;
 
-            UIkit.modal(this.refs.modalField).show()
+            UIkit.modal(this.refs.modalField, {bgclose:false}).show()
         }
 
         togglelist(e) {
