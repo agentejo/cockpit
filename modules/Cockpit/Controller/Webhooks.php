@@ -15,7 +15,7 @@ class Webhooks extends \Cockpit\AuthController {
 
     public function index() {
 
-        $webhooks = $this->storage->find('cockpit/webhooks', [
+        $webhooks = $this->app->storage->find('cockpit/webhooks', [
             'sort' => ['name' => 1]
         ])->toArray();
 
@@ -35,7 +35,7 @@ class Webhooks extends \Cockpit\AuthController {
 
         if ($id) {
 
-            $webhook = $this->storage->findOne('cockpit/webhooks', ['_id' => $id]);
+            $webhook = $this->app->storage->findOne('cockpit/webhooks', ['_id' => $id]);
 
             if (!$webhook) {
                 return false;

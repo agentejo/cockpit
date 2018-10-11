@@ -145,7 +145,7 @@ $app->on('admin.init', function() {
         $this["user"] = $this->module('cockpit')->getUser();
         return $this->view('cockpit:views/base/finder.php');
 
-    }, $this->module("cockpit")->hasaccess('cockpit', 'finder'));
+    }, $this->module('cockpit')->hasaccess('cockpit', 'finder'));
 
 }, 0);
 
