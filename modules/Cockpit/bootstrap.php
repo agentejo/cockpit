@@ -307,9 +307,9 @@ if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
 
     include_once(__DIR__.'/admin.php');
 
-    $this->bind('/api.js', function() {
+    $this->bind('/cockpit-api.js', function() {
 
-        $token                = $this->param('token', '');
+        $token = $this->param('token', '');
         $this->response->mime = 'js';
 
         $apiurl = ($this->req_is('ssl') ? 'https':'http').'://';

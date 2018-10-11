@@ -1,15 +1,5 @@
 <?php
 
-    $modules = new \SplPriorityQueue();
-    $menuorder = $app->storage->getKey('cockpit/options', 'app.menu.order.'.$app["user"]["_id"], []);
-
-    if ($app('admin')->data['menu.modules']->count()) {
-
-        foreach($app('admin')->data['menu.modules'] as &$item) {
-            $modules->insert($item, -1* intval(\Lime\fetch_from_array($menuorder, $item['route'], 0)));
-        }
-    }
-
     // Generate title
     $_title = [];
 
@@ -107,9 +97,9 @@
                                         </div>
 
                                         @if($app('admin')->data['menu.modules']->count())
-                                        <ul class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-text-center" data-modules-menu data-uk-sortable>
+                                        <ul class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-text-center">
 
-                                            @foreach(clone $modules as $item)
+                                            @foreach($app('admin')->data['menu.modules'] as $item)
                                             <li class="uk-width-1-2 uk-width-medium-1-3" data-route="{{ $item['route'] }}">
                                                 <a class="uk-display-block uk-panel-box {{ (@$item['active']) ? 'uk-bg-primary uk-contrast':'uk-panel-framed' }}" href="@route($item['route'])">
                                                     <div class="uk-svg-adjust">
@@ -146,7 +136,7 @@
                     @if($app('admin')->data['menu.modules']->count())
                     <div class="uk-hidden-small">
                         <ul class="uk-subnav app-modulesbar">
-                            @foreach($modules as $item)
+                            @foreach($app('admin')->data['menu.modules'] as $item)
                             <li>
                                 <a class="uk-svg-adjust {{ (@$item['active']) ? 'uk-active':'' }}" href="@route($item['route'])" title="@lang($item['label'])" data-uk-tooltip="offset:10">
                                     @if(preg_match('/\.svg$/i', $item['icon']))
@@ -212,6 +202,107 @@
     @foreach($app('fs')->ls('*.tag', '#config:tags') as $component)
     <script type="riot/tag" src="{{$app->pathToUrl('#config:tags/'.$component->getBasename())}}?nc={{ $app['debug'] ? time() : $app['cockpit/version'] }}"></script>
     @endforeach
+
+
+    <div id="loginmodal" class="uk-modal" riot-view>
+
+        <style>
+            .uk-modal-dialog { width: 360px; }
+        </style>
+
+        <div class="uk-modal-dialog uk-form" ref="loginDialog">
+
+            <form class="uk-form" method="post" action="@route('/auth/check')" onsubmit="{ submit }">
+
+                <div class="uk-text-center">
+                    <img src="@base('assets:app/media/icons/login.svg')" width="120" height="120">
+                </div>
+
+                <div class="uk-form-row uk-text-center uk-h2 uk-text-bold">
+                    {{ $app['app.name'] }}
+                </div>
+
+                <div class="uk-form-row uk-margin-large-top">
+                    <input ref="user" class="uk-form-large uk-width-1-1" type="text" placeholder="@lang('Username')" required>
+                </div>
+
+                <div class="uk-form-row">
+                    <input ref="password" class="uk-form-large uk-width-1-1" type="password" placeholder="@lang('Password')" required>
+                </div>
+
+                <div class="uk-margin-top">
+                    <button class="uk-button uk-button-outline uk-button-large uk-text-primary uk-width-1-1">@lang('Authenticate')</button>
+                </div>
+
+            </form>
+
+        </div>
+
+        <script type="view/script">
+
+            var $this = this;
+
+            this.on('mount', function() {
+
+                this.modal = UIkit.modal($this.root, {
+                    keyboard: false,
+                    bgclose: false
+                });
+
+                // check session
+                var check = function() {
+
+                    App.request('/check-backend-session').then(function(resp) {
+
+                        if (resp && resp.status && $this.modal.isActive()) {
+                            $this.modal.hide();
+                        }
+
+                        if (resp && !resp.status && !$this.modal.isActive()) {
+                            $this.modal.show();
+                        }
+                    });
+                }
+
+                setInterval(check, 60000);
+
+                document.addEventListener('visibilitychange', function() {
+                    if (!document.hidden) check();
+                }, false);
+            });
+
+            submit(e) {
+
+                e.preventDefault();
+
+                App.request('/auth/check', {auth:{user:this.refs.user.value, password:this.refs.password.value}}).then(function(data) {
+
+                    if (data && data.success) {
+
+                        if (data.user._id != App.$data.user._id) {
+                            App.reroute('/');
+                        } else {
+                            $this.modal.dialog.find('form')[0].reset();
+                            $this.modal.hide();
+                        }
+
+                    } else {
+
+                        $this.modal.dialog.removeClass('uk-animation-shake');
+
+                        setTimeout(function(){
+                            $this.modal.dialog.addClass('uk-animation-shake');
+                        }, 50);
+                    }
+
+                });
+
+                return false;
+            }
+
+        </script>
+
+    </div>
 
 </body>
 </html>

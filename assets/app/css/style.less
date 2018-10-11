@@ -36,6 +36,12 @@
     animation-duration: .35s;
 }
 
+.uk-container-breakout {
+    position: relative;
+    width: 100vw;
+    left: ~"calc(-1 * (100vw - 100%) / 2)";
+}
+
 .uk-svg-adjust path,
 .uk-svg-adjust rect,
 .uk-svg-adjust circle:not([fill="none"]),
@@ -143,6 +149,15 @@
         transform: scale(2.5);
         opacity: 0
     }
+}
+
+.dashboard-header-panel {
+    background: @global-contrast-color;
+    margin-top: -35px;
+    margin-bottom: -80px;
+    padding-top: 20px;
+    padding-bottom: 120px;
+    z-index: 0;
 }
 
 

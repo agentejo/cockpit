@@ -87,7 +87,7 @@ function cockpit($module = null) {
             'base_route'   => COCKPIT_BASE_ROUTE,
             'docs_root'    => COCKPIT_DOCS_ROOT,
             'session.name' => md5(__DIR__),
-            'session.init' => COCKPIT_API_REQUEST ? false : true,
+            'session.init' => (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) ? true : false,
             'sec-key'      => 'c3b40c4c-db44-s5h7-a814-b4931a15e5e1',
             'i18n'         => 'en',
             'database'     => ['server' => 'mongolite://'.(COCKPIT_STORAGE_FOLDER.'/data'), 'options' => ['db' => 'cockpitdb'] ],

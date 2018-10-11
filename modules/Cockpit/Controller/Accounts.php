@@ -190,8 +190,8 @@ class Accounts extends \Cockpit\AuthController {
             }
         }
 
-        $accounts = $this->storage->find('cockpit/accounts', $options)->toArray();
-        $count    = (!isset($options['skip']) && !isset($options['limit'])) ? count($accounts) : $this->storage->count('cockpit/accounts', isset($options['filter']) ? $options['filter'] : []);
+        $accounts = $this->app->storage->find('cockpit/accounts', $options)->toArray();
+        $count    = (!isset($options['skip']) && !isset($options['limit'])) ? count($accounts) : $this->app->storage->count('cockpit/accounts', isset($options['filter']) ? $options['filter'] : []);
         $pages    = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
         $page     = 1;
 
