@@ -53,7 +53,7 @@ $this->on('before', function() {
                             break;
                         }
 
-                        foreach(explode("\n", $rules) as $rule) {
+                        foreach (explode("\n", $rules) as $rule) {
 
                             $rule = trim($rule);
                             if (!$rule) continue;

@@ -160,7 +160,7 @@ class RestApi extends \LimeExtra\Controller {
             }
         }
 
-        $accounts = $this->storage->find('cockpit/accounts', $options)->toArray();
+        $accounts = $this->app->storage->find('cockpit/accounts', $options)->toArray();
 
         foreach ($accounts as &$account) {
 
