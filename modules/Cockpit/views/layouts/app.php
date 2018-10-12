@@ -231,7 +231,7 @@
                 </div>
 
                 <div class="uk-margin-top">
-                    <button class="uk-button uk-button-outline uk-button-large uk-text-primary uk-width-1-1">@lang('Authenticate')</button>
+                    <button class="uk-button uk-button-primary uk-button-large uk-width-1-1">@lang('Authenticate')</button>
                 </div>
 
             </form>
