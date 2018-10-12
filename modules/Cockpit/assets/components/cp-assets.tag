@@ -14,6 +14,8 @@
             transform: translateX(-50%) translateY(-50%);
             visibility: hidden;
         }
+
+        .uk-breadcrumb { margin-bottom: 0; }
     </style>
 
     <div ref="list" show="{ mode=='list' }">
@@ -60,27 +62,68 @@
                         { App.i18n.get('Delete') } <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
                     </button>
 
+                    <button class="uk-button uk-button-large uk-button-link" onclick="{addFolder}">{ App.i18n.get('Add folder') }</button>
+
                     <span class="uk-button-group uk-button-large">
                         <button class="uk-button uk-button-large {listmode=='list' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-list"></i></button>
                         <button class="uk-button uk-button-large {listmode=='grid' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-th"></i></button>
                     </span>
 
-                    <span class="uk-button uk-button-large uk-button-primary uk-margin-small-right uk-form-file">
+                    <span class="uk-button uk-button-large uk-button-primary uk-form-file">
                         <input class="js-upload-select" type="file" multiple="true">
                         <i class="uk-icon-upload"></i>
                     </span>
                 </div>
             </div>
 
-            <div class="uk-margin-large-top uk-panel-space uk-text-center" show="{ !loading && !assets.length }">
-                <span class="uk-text-muted uk-h2">{ App.i18n.get('No Assets found') }</span>
+            <div class="uk-margin">
+                <ul class="uk-breadcrumb">
+                    <li onclick="{ changeDir }"><a title="{ App.i18n.get('Change dir to root') }"><i class="uk-icon-home"></i></a></li>
+                    <li each="{folder, idx in foldersPath}"><a onclick="{ parent.changeDir }" title="Change dir to { folder.name }">{ folder.name }</a></li>
+                </ul>
             </div>
 
             <div class="uk-text-center uk-text-muted uk-h2 uk-margin-large-top" show="{ loading }">
                 <cp-preloader class="uk-container-center"></cp-preloader>
             </div>
 
-            <div class="uk-margin-large-top {modal && 'uk-overflow-container'}" if="{ !loading && assets.length }">
+            <div class="uk-margin" if="{ !loading && folders.length }">
+
+                <strong class="uk-text-small uk-text-muted"><i class="uk-icon-folder-o uk-margin-small-right"></i> {folders.length} {App.i18n.get('Folders')}</strong>
+
+                <div class="uk-grid uk-grid-small uk-grid-match uk-grid-width-medium-1-4">
+                    <div class="uk-grid-margin" each="{ folder,idx in folders }">
+                        <div class="uk-panel uk-panel-box uk-panel-card">
+                            <div class="uk-flex">
+                                <div class="uk-margin-small-right"><i class="uk-icon-folder-o"></i></div>
+                                <div class="uk-flex-item-1 uk-text-bold uk-text-truncate"><a class="uk-link-muted" onclick="{parent.changeDir}">{ folder.name }</a></div>
+                                <div>
+                                    <span data-uk-dropdown="mode:'click', pos:'bottom-right'">
+                                        <a><i class="uk-icon-ellipsis-v js-no-item-select"></i></a>
+                                        <div class="uk-dropdown">
+                                            <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
+                                                <li class="uk-nav-header uk-text-truncate">{ folder.name }</li>
+                                                <li><a class="uk-dropdown-close" onclick="{ parent.renameFolder }">{ App.i18n.get('Rename') }</a></li>
+                                                <li class="uk-nav-divider"></li>
+                                                <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.removeFolder }">{ App.i18n.get('Delete') }</a></li>
+                                            </ul>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="uk-margin-large-top uk-panel-space uk-text-center" show="{ !loading && !assets.length }">
+                <span class="uk-text-muted uk-h2">{ App.i18n.get('No Assets found') }</span>
+            </div>
+
+            <div class="uk-margin {modal && 'uk-overflow-container'}" if="{ !loading && assets.length }">
+
+                <strong class="uk-text-small uk-text-muted"><i class="uk-icon-file-o uk-margin-small-right"></i> {count} {App.i18n.get('Assets')}</strong>
 
                 <div class="uk-grid uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
                     <div class="uk-grid-margin" each="{ asset,idx in assets }" onclick="{ select }">
@@ -295,6 +338,10 @@
         this.assets   = [];
         this.selected = [];
 
+        this.folders  = [];
+        this.folder   = '';
+        this.foldersPath = [];
+
         this.modal    = opts.modal;
 
         // pagination
@@ -328,7 +375,7 @@
                     action: App.route('/assetsmanager/upload'),
                     type: 'json',
                     before: function(options) {
-
+                        options.params.folder = $this.folder
                     },
                     loadstart: function() {
                         $this.refs.uploadprogress.classList.remove('uk-hidden');
@@ -401,17 +448,30 @@
                 filter : this.filter || null,
                 limit  : this.limit,
                 skip   : (this.page-1) * this.limit,
-                sort   : {created:-1}
+                sort   : {created:-1},
+                folder : this.folder
             };
 
-            App.request('/assetsmanager/listAssets', options).then(function(response){
+            if (this.folder) {
 
+                if (!options.filter) {
+                    options.filter = {};
+                }
+
+                options.filter.folder = this.folder;
+            }
+
+            App.request('/assetsmanager/listAssets', options).then(function(response) {
+
+                $this.folders  = Array.isArray(response.folders) ? response.folders:[];
                 $this.assets   = Array.isArray(response.assets) ? response.assets:[];
                 $this.count    = response.total || 0;
                 $this.pages    = Math.ceil($this.count/$this.limit);
                 $this.loading  = false;
                 $this.selected = [];
                 $this.update();
+            }, function(res) {
+                App.ui.notify(res && (res.message || res.error) ? (res.message || res.error) : 'Loading failed.', 'danger');
             });
 
         }
@@ -597,6 +657,64 @@
             });
         }
 
+        addFolder() {
+
+            App.ui.prompt(App.i18n.get('Folder Name:'), '', function(name) {
+
+                if (!name.trim()) return;
+
+                App.request('/assetsmanager/addFolder', {name:name, parent:$this.folder}).then(function(folder) {
+
+                    if (!folder._id) return;
+
+                    $this.folders.push(folder);
+                    $this.update();
+                });
+            });
+        }
+
+        renameFolder(e) {
+
+            var folder = e.item.folder;
+
+            App.ui.prompt(App.i18n.get('Folder Name:'), folder.name, function(name) {
+
+                if (!name.trim()) return;
+
+                App.request('/assetsmanager/renameFolder', {name:name, folder:folder}).then(function() {
+
+                    folder.name = name;
+                    $this.update();
+                });
+            });
+        }
+
+        changeDir(e) {
+
+            var folder = e.item ? e.item.folder : {_id:''};
+
+            if (this.folder == folder._id) {
+                return;
+            }
+
+            this.folder = folder._id;
+
+            if (this.folder) {
+
+                var skip = false;
+
+                this.foldersPath = this.foldersPath.filter(function(f) {
+                    if (f._id == folder._id) skip = true;
+                    return !skip;
+                });
+
+                this.foldersPath.push(folder);
+            } else {
+                this.foldersPath = [];
+            }
+
+            $this.listAssets(1);
+        }
 
     </script>
 

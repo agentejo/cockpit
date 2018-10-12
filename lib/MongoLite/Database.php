@@ -323,6 +323,7 @@ class UtilArrayQuery {
                 $r = $a == $b;
                 break;
             case '$not' :
+            case '$ne' :
                 $r = $a != $b;
                 break;
             case '$gte' :

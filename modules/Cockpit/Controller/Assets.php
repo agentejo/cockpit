@@ -16,16 +16,26 @@ class Assets extends \Cockpit\AuthController {
         ];
 
         if ($filter = $this->param('filter', null)) $options['filter'] = $filter;
-        if ($limit  = $this->param('limit' , null))  $options['limit'] = $limit;
-        if ($sort   = $this->param('sort'  , null))   $options['sort'] = $sort;
-        if ($skip   = $this->param('skip'  , null))   $options['skip'] = $skip;
+        if ($limit  = $this->param('limit' , null)) $options['limit']  = $limit;
+        if ($sort   = $this->param('sort'  , null)) $options['sort']   = $sort;
+        if ($skip   = $this->param('skip'  , null)) $options['skip']   = $skip;
+        if ($folder = $this->param('folder'  , '')) $options['folder'] = $folder;
 
-        return $this->module('cockpit')->listAssets($options);
+        $ret = $this->module('cockpit')->listAssets($options);
+
+        // virtual folders
+        $ret['folders'] = $this->app->storage->find('cockpit/assets_folders', [
+            'filter' => ['_p' => $this->param('folder', '')]
+        ])->toArray();
+
+        return $ret;
     }
 
     public function upload() {
 
-        return $this->module('cockpit')->uploadAssets('files');
+        $meta = ['folder' => $this->param('folder', '')];
+
+        return $this->module('cockpit')->uploadAssets('files', $meta);
     }
 
     public function removeAssets() {
@@ -44,6 +54,39 @@ class Assets extends \Cockpit\AuthController {
         }
 
         return false;
+    }
+
+    public function addFolder() {
+
+        $name   = $this->param('name', null);
+        $parent = $this->param('parent', '');
+
+        if (!$name) return;
+
+        $folder = [
+            'name' => $name,
+            '_p' => $parent
+        ];
+
+        $this->app->storage->save('cockpit/assets_folders', $folder);
+
+        return $folder;
+    }
+
+    public function renameFolder() {
+
+        $folder = $this->param('folder');
+        $name = $this->param('name');
+
+        if (!$folder || !$name) {
+            return false;
+        }
+
+        $folder['name'] = $name;
+
+        $this->app->storage->save('cockpit/assets_folders', $folder);
+
+        return $folder;
     }
 
 }
