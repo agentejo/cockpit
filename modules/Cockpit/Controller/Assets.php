@@ -25,7 +25,8 @@ class Assets extends \Cockpit\AuthController {
 
         // virtual folders
         $ret['folders'] = $this->app->storage->find('cockpit/assets_folders', [
-            'filter' => ['_p' => $this->param('folder', '')]
+            'filter' => ['_p' => $this->param('folder', '')],
+            'sort' => ['name' => 1]
         ])->toArray();
 
         return $ret;
@@ -87,6 +88,26 @@ class Assets extends \Cockpit\AuthController {
         $this->app->storage->save('cockpit/assets_folders', $folder);
 
         return $folder;
+    }
+
+    public function removeFolder() {
+
+        $folder = $this->param('folder');
+
+        if (!$folder || !isset($folder['_id'])) {
+            return false;
+        }
+
+        $ids = [$folder['_id']];
+        $f   = ['_id' => $folder['_id']];
+
+        while ($f = $this->app->storage->findOne('cockpit/assets_folders', ['_p' => $f['_id']])) {
+            $ids[] = $f['_id'];
+        }
+
+        $this->app->storage->remove('cockpit/assets_folders', ['_id' => ['$in' => $ids]]);
+
+        return $ids;
     }
 
 }

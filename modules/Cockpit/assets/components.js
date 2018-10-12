@@ -460,6 +460,21 @@ riot.tag2('cp-assets', '<div ref="list" show="{mode==\'list\'}"> <div ref="uploa
             });
         }.bind(this)
 
+        this.removeFolder = function(e) {
+
+            var folder = e.item.folder, idx = e.item.idx;
+
+            App.ui.confirm(App.i18n.get('Are you sure?'), function() {
+
+                App.request('/assetsmanager/removeFolder', {folder:folder}).then(function() {
+
+                    $this.folders.splice(idx, 1);
+                    $this.update();
+                });
+            });
+
+        }.bind(this)
+
         this.changeDir = function(e) {
 
             var folder = e.item ? e.item.folder : {_id:''};

@@ -689,6 +689,21 @@
             });
         }
 
+        removeFolder(e) {
+
+            var folder = e.item.folder, idx = e.item.idx;
+
+            App.ui.confirm(App.i18n.get('Are you sure?'), function() {
+
+                App.request('/assetsmanager/removeFolder', {folder:folder}).then(function() {
+
+                    $this.folders.splice(idx, 1);
+                    $this.update();
+                });
+            });
+
+        }
+
         changeDir(e) {
 
             var folder = e.item ? e.item.folder : {_id:''};
