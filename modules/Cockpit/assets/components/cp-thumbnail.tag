@@ -55,6 +55,10 @@
                 return;
             }
 
+            if (!$this.refs.spinner.style) {
+                return;
+            }
+
             $this.refs.spinner.style.display = '';
 
             requestAnimationFrame(function() {
