@@ -87,155 +87,160 @@
                 <cp-preloader class="uk-container-center"></cp-preloader>
             </div>
 
-            <div class="uk-margin" if="{ !loading && folders.length }">
+            <div class="{modal && 'uk-overflow-container'}">
 
-                <strong class="uk-text-small uk-text-muted"><i class="uk-icon-folder-o uk-margin-small-right"></i> {folders.length} {App.i18n.get('Folders')}</strong>
+                <div class="uk-margin" if="{ !loading && folders.length }">
 
-                <div class="uk-grid uk-grid-small uk-grid-match uk-grid-width-medium-1-4">
-                    <div class="uk-grid-margin" each="{ folder,idx in folders }">
-                        <div class="uk-panel uk-panel-box uk-panel-card">
-                            <div class="uk-flex">
-                                <div class="uk-margin-small-right"><i class="uk-icon-folder-o"></i></div>
-                                <div class="uk-flex-item-1 uk-text-bold uk-text-truncate"><a class="uk-link-muted" onclick="{parent.changeDir}">{ folder.name }</a></div>
-                                <div>
-                                    <span data-uk-dropdown="mode:'click', pos:'bottom-right'">
-                                        <a><i class="uk-icon-ellipsis-v js-no-item-select"></i></a>
-                                        <div class="uk-dropdown">
-                                            <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
-                                                <li class="uk-nav-header uk-text-truncate">{ folder.name }</li>
-                                                <li><a class="uk-dropdown-close" onclick="{ parent.renameFolder }">{ App.i18n.get('Rename') }</a></li>
-                                                <li class="uk-nav-divider"></li>
-                                                <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.removeFolder }">{ App.i18n.get('Delete') }</a></li>
+                    <strong class="uk-text-small uk-text-muted"><i class="uk-icon-folder-o uk-margin-small-right"></i> {folders.length} {App.i18n.get('Folders')}</strong>
+
+                    <div class="uk-grid uk-grid-small uk-grid-match uk-grid-width-medium-1-4">
+                        <div class="uk-grid-margin" each="{ folder,idx in folders }">
+                            <div class="uk-panel uk-panel-box uk-panel-card">
+                                <div class="uk-flex">
+                                    <div class="uk-margin-small-right"><i class="uk-icon-folder-o"></i></div>
+                                    <div class="uk-flex-item-1 uk-text-bold uk-text-truncate"><a class="uk-link-muted" onclick="{parent.changeDir}">{ folder.name }</a></div>
+                                    <div>
+                                        <span data-uk-dropdown="mode:'click', pos:'bottom-right'">
+                                            <a><i class="uk-icon-ellipsis-v js-no-item-select"></i></a>
+                                            <div class="uk-dropdown">
+                                                <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
+                                                    <li class="uk-nav-header uk-text-truncate">{ folder.name }</li>
+                                                    <li><a class="uk-dropdown-close" onclick="{ parent.renameFolder }">{ App.i18n.get('Rename') }</a></li>
+                                                    <li class="uk-nav-divider"></li>
+                                                    <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.removeFolder }">{ App.i18n.get('Delete') }</a></li>
+                                                </ul>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="uk-margin-large-top uk-panel-space uk-text-center" show="{ !loading && !assets.length }">
+                    <span class="uk-text-muted uk-h2">{ App.i18n.get('No Assets found') }</span>
+                </div>
+
+                <div class="uk-margin" if="{ !loading && assets.length }">
+
+                    <strong class="uk-text-small uk-text-muted"><i class="uk-icon-file-o uk-margin-small-right"></i> {count} {App.i18n.get('Assets')}</strong>
+
+                    <div class="uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
+                        <div class="uk-grid-margin" each="{ asset,idx in assets }" onclick="{ select }">
+                            <div class="uk-panel uk-panel-box uk-panel-card { selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}">
+                                <div class="uk-overlay uk-display-block uk-position-relative">
+                                    <canvas class="uk-responsive-width" width="200" height="150"></canvas>
+                                    <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle">
+                                        <div class="uk-width-1-1 uk-text-center">
+                                            <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-h1 uk-text-muted uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
+                                            <cp-thumbnail src="{asset._id}" height="150" if="{ asset.mime.match(/^image\//) }" title="{ asset.width && [asset.width, asset.height].join('x') }"></cp-thumbnail>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="uk-text-small uk-margin-small-top uk-text-truncate">
+                                    <a onclick="{ parent.edit }">{ asset.title }</a>
+                                </div>
+                                <div class="uk-text-small uk-text-muted uk-margin-small-top uk-flex">
+                                    <strong>{ asset.mime }</strong>
+                                    <span class="uk-flex-item-1 uk-margin-small-left uk-margin-small-right">{ App.Utils.formatSize(asset.size) }</span>
+                                    <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
+                                        <i class="uk-icon-search"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="uk-table uk-table-tabbed" if="{ listmode=='list' }">
+                        <thead>
+                            <tr>
+                                <td width="30"></td>
+                                <th class="uk-text-small uk-noselect">{ App.i18n.get('Title') }</th>
+                                <th class="uk-text-small uk-noselect" width="20%">{ App.i18n.get('Type') }</th>
+                                <th class="uk-text-small uk-noselect" width="10%">{ App.i18n.get('Size') }</th>
+                                <th class="uk-text-small uk-noselect" width="10%">{ App.i18n.get('Updated') }</th>
+                                <th class="uk-text-small uk-noselect" width="30"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="{ selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}" each="{ asset,idx in assets }" onclick="{ select }">
+                                <td class="uk-text-center">
+
+                                    <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-text-muted uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
+
+                                    <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
+                                        <cp-thumbnail src="{ASSETS_URL+asset.path}" width="20" height="20"></cp-thumbnail>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a if="{!parent.modal}" onclick="{ parent.edit }">{ asset.title }</a>
+                                    <span if="{parent.modal}">{ asset.title }</span>
+                                </td>
+                                <td class="uk-text-small">{ asset.mime }</td>
+                                <td class="uk-text-small">{ App.Utils.formatSize(asset.size) }</td>
+                                <td class="uk-text-small">{ App.Utils.dateformat( new Date( 1000 * asset.modified )) }</td>
+                                <td>
+                                    <span class="uk-float-right" data-uk-dropdown="mode:'click'">
+
+                                        <a class="uk-icon-bars"></a>
+
+                                        <div class="uk-dropdown uk-dropdown-flip">
+                                            <ul class="uk-nav uk-nav-dropdown">
+                                                <li class="uk-nav-header">{ App.i18n.get('Actions') }</li>
+                                                <li><a class="uk-dropdown-close" onclick="{ parent.edit }">{ App.i18n.get('Edit') }</a></li>
+                                                <li><a class="uk-dropdown-close" onclick="{ parent.remove }">{ App.i18n.get('Delete') }</a></li>
                                             </ul>
                                         </div>
                                     </span>
-                                </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+
+            <div class="uk-margin uk-flex uk-flex-middle uk-noselect" if="{ pages > 1 }">
+
+                <ul class="uk-breadcrumb uk-margin-remove">
+                    <li class="uk-active"><span>{ page }</span></li>
+                    <li data-uk-dropdown="mode:'click'">
+
+                        <a><i class="uk-icon-bars"></i> { pages }</a>
+
+                        <div class="uk-dropdown">
+
+                            <strong class="uk-text-small"> { App.i18n.get('Pages') }</strong>
+
+                            <div class="uk-margin-small-top { pages > 5 ? 'uk-scrollable-box':'' }">
+                                <ul class="uk-nav uk-nav-dropdown">
+                                    <li class="uk-text-small" each="{k,v in new Array(pages)}"><a class="uk-dropdown-close" onclick="{ parent.loadPage }" data-page="{ (v + 1) }"> { App.i18n.get('Page') } {v + 1}</a></li>
+                                </ul>
                             </div>
                         </div>
-                    </div>
+
+                    </li>
+                </ul>
+
+                <div class="uk-button-group uk-margin-small-left">
+                    <a class="uk-button uk-button-link uk-button-small" onclick="{ loadPage }" data-page="{ (page - 1) }" if="{page-1 > 0}"> { App.i18n.get('Previous') }</a>
+                    <a class="uk-button uk-button-link uk-button-small" onclick="{ loadPage }" data-page="{ (page + 1) }" if="{page+1 <= pages}"> { App.i18n.get('Next') }</a>
                 </div>
 
             </div>
-
-            <div class="uk-margin-large-top uk-panel-space uk-text-center" show="{ !loading && !assets.length }">
-                <span class="uk-text-muted uk-h2">{ App.i18n.get('No Assets found') }</span>
-            </div>
-
-            <div class="uk-margin {modal && 'uk-overflow-container'}" if="{ !loading && assets.length }">
-
-                <strong class="uk-text-small uk-text-muted"><i class="uk-icon-file-o uk-margin-small-right"></i> {count} {App.i18n.get('Assets')}</strong>
-
-                <div class="uk-grid uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
-                    <div class="uk-grid-margin" each="{ asset,idx in assets }" onclick="{ select }">
-                        <div class="uk-panel uk-panel-box { selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}">
-                            <div class="uk-overlay uk-display-block uk-position-relative">
-                                <canvas class="uk-responsive-width" width="200" height="150"></canvas>
-                                <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle">
-                                    <div class="uk-width-1-1 uk-text-center">
-                                        <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-h1 uk-text-muted uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
-                                        <cp-thumbnail src="{asset._id}" height="150" if="{ asset.mime.match(/^image\//) }" title="{ asset.width && [asset.width, asset.height].join('x') }"></cp-thumbnail>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="uk-text-small uk-margin-small-top uk-text-truncate">
-                                <a onclick="{ parent.edit }"><i class="uk-icon-pencil uk-small-margin-right"></i> { asset.title }</a>
-                            </div>
-                            <div class="uk-text-small uk-text-muted uk-margin-small-top uk-flex">
-                                <strong>{ asset.mime }</strong>
-                                <span class="uk-flex-item-1 uk-margin-small-left uk-margin-small-right">{ App.Utils.formatSize(asset.size) }</span>
-                                <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
-                                    <i class="uk-icon-search"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <table class="uk-table uk-table-tabbed" if="{ listmode=='list' }">
-                    <thead>
-                        <tr>
-                            <td width="30"></td>
-                            <th class="uk-text-small uk-noselect">{ App.i18n.get('Title') }</th>
-                            <th class="uk-text-small uk-noselect" width="20%">{ App.i18n.get('Type') }</th>
-                            <th class="uk-text-small uk-noselect" width="10%">{ App.i18n.get('Size') }</th>
-                            <th class="uk-text-small uk-noselect" width="10%">{ App.i18n.get('Updated') }</th>
-                            <th class="uk-text-small uk-noselect" width="30"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="{ selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}" each="{ asset,idx in assets }" onclick="{ select }">
-                            <td class="uk-text-center">
-
-                                <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-text-muted uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
-
-                                <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
-                                    <cp-thumbnail src="{ASSETS_URL+asset.path}" width="20" height="20"></cp-thumbnail>
-                                </a>
-                            </td>
-                            <td>
-                                <a if="{!parent.modal}" onclick="{ parent.edit }">{ asset.title }</a>
-                                <span if="{parent.modal}">{ asset.title }</span>
-                            </td>
-                            <td class="uk-text-small">{ asset.mime }</td>
-                            <td class="uk-text-small">{ App.Utils.formatSize(asset.size) }</td>
-                            <td class="uk-text-small">{ App.Utils.dateformat( new Date( 1000 * asset.modified )) }</td>
-                            <td>
-                                <span class="uk-float-right" data-uk-dropdown="mode:'click'">
-
-                                    <a class="uk-icon-bars"></a>
-
-                                    <div class="uk-dropdown uk-dropdown-flip">
-                                        <ul class="uk-nav uk-nav-dropdown">
-                                            <li class="uk-nav-header">{ App.i18n.get('Actions') }</li>
-                                            <li><a class="uk-dropdown-close" onclick="{ parent.edit }">{ App.i18n.get('Edit') }</a></li>
-                                            <li><a class="uk-dropdown-close" onclick="{ parent.remove }">{ App.i18n.get('Delete') }</a></li>
-                                        </ul>
-                                    </div>
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div class="uk-margin uk-flex uk-flex-middle uk-noselect" if="{ pages > 1 }">
-
-                    <ul class="uk-breadcrumb uk-margin-remove">
-                        <li class="uk-active"><span>{ page }</span></li>
-                        <li data-uk-dropdown="mode:'click'">
-
-                            <a><i class="uk-icon-bars"></i> { pages }</a>
-
-                            <div class="uk-dropdown">
-
-                                <strong class="uk-text-small"> { App.i18n.get('Pages') }</strong>
-
-                                <div class="uk-margin-small-top { pages > 5 ? 'uk-scrollable-box':'' }">
-                                    <ul class="uk-nav uk-nav-dropdown">
-                                        <li class="uk-text-small" each="{k,v in new Array(pages)}"><a class="uk-dropdown-close" onclick="{ parent.loadPage }" data-page="{ (v + 1) }"> { App.i18n.get('Page') } {v + 1}</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                        </li>
-                    </ul>
-
-                    <div class="uk-button-group uk-margin-small-left">
-                        <a class="uk-button uk-button-small" onclick="{ loadPage }" data-page="{ (page - 1) }" if="{page-1 > 0}"> { App.i18n.get('Previous') }</a>
-                        <a class="uk-button uk-button-small" onclick="{ loadPage }" data-page="{ (page + 1) }" if="{page+1 <= pages}"> { App.i18n.get('Next') }</a>
-                    </div>
-
-                </div>
-
-            </div>
-
         </div>
     </div>
 
     <div class="uk-form" if="{asset && mode=='edit'}">
 
+        <h3 class="uk-text-bold">{ App.i18n.get('Edit Asset') }</h3>
+
         <form onsubmit="{ updateAsset }">
 
-            <ul class="uk-tab uk-flex-center uk-margin">
+            <ul class="uk-tab uk-flex-center uk-margin" show="{ App.Utils.count(panels) }">
                 <li class="{!panel && 'uk-active'}"><a onclick="{selectPanel}">Main</a></li>
                 <li class="uk-text-capitalize {p.name == panel && 'uk-active'}" each="{p in panels}"><a onclick="{parent.selectPanel}">{p.name}</a></li>
             </ul>
