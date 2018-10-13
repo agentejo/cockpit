@@ -112,9 +112,25 @@ class Assets extends \Cockpit\AuthController {
 
     public function _folders() {
 
-        $folders = $this->app->storage->find('cockpit/assets_folders', [
-            'sort' => ['_p' => 1]
+        function parent_sort(array $objects, array &$result=[], $parent='', $depth=0) {
+
+            foreach ($objects as $key => $object) {
+
+                if ($object['_p'] == $parent) {
+                    $object['_lvl'] = $depth;
+                    array_push($result, $object);
+                    unset($objects[$key]);
+                    parent_sort($objects, $result, $object['_id'], $depth + 1);
+                }
+            }
+            return $result;
+        }
+
+        $_folders = $this->app->storage->find('cockpit/assets_folders', [
+            'sort' => ['name' => 1]
         ])->toArray();
+
+        $folders = parent_sort($_folders);
 
         return $folders;
     }

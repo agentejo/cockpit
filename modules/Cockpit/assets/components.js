@@ -504,7 +504,7 @@ riot.tag2('cp-assets', '<div ref="list" show="{mode==\'list\'}"> <div ref="uploa
 
 });
 
-riot.tag2('cp-assets-folderselect', '<div data-uk-dropdown="mode:\'click\'"> <a class="uk-text-muted"> <i class="uk-icon-folder-o"></i> {asset.folder && folders[asset.folder] ? folders[asset.folder].name : App.i18n.get(\'Select folder\')} </a> <div class="uk-dropdown uk-dropdown-close uk-width-1-1"> <strong>{App.i18n.get(\'Folders\')}</strong> <div class="uk-margin-small-top {App.Utils.count(folders) > 10 && \'uk-scrollable-box\'}"> <ul class="uk-list"> <li each="{folder, idx in folders}"> <a class="uk-link-muted" onclick="{selectFolder}"><i class="uk-icon-folder-o"></i> {folder.name}</a> </li> </ul> </div> </div> </div>', '', '', function(opts) {
+riot.tag2('cp-assets-folderselect', '<div data-uk-dropdown="mode:\'click\'"> <a class="uk-text-muted"> <i class="uk-icon-folder-o"></i> {asset.folder && folders[asset.folder] ? folders[asset.folder].name : App.i18n.get(\'Select folder\')} </a> <div class="uk-dropdown uk-dropdown-close uk-width-1-1"> <strong>{App.i18n.get(\'Folders\')}</strong> <div class="uk-margin-small-top {App.Utils.count(folders) > 10 && \'uk-scrollable-box\'}"> <ul class="uk-list"> <li each="{folder, idx in folders}" riot-style="margin-left: {(folder._lvl * 10)}px"> <a class="uk-link-muted" onclick="{selectFolder}"><i class="uk-icon-folder-o"></i> {folder.name}</a> </li> </ul> </div> </div> </div>', '', '', function(opts) {
 
         var $this = this;
 

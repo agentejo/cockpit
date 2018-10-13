@@ -758,7 +758,7 @@
 
             <div class="uk-margin-small-top { App.Utils.count(folders) > 10 && 'uk-scrollable-box' }">
                 <ul class="uk-list">
-                    <li each="{folder, idx in folders}">
+                    <li each="{folder, idx in folders}" riot-style="margin-left: {(folder._lvl * 10)}px">
                         <a class="uk-link-muted" onclick="{selectFolder}"><i class="uk-icon-folder-o"></i> {folder.name}</a>
                     </li>
                 </ul>
