@@ -110,4 +110,13 @@ class Assets extends \Cockpit\AuthController {
         return $ids;
     }
 
+    public function _folders() {
+
+        $folders = $this->app->storage->find('cockpit/assets_folders', [
+            'sort' => ['_p' => 1]
+        ])->toArray();
+
+        return $folders;
+    }
+
 }

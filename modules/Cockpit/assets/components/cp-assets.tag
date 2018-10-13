@@ -87,7 +87,7 @@
                 <cp-preloader class="uk-container-center"></cp-preloader>
             </div>
 
-            <div class="{modal && 'uk-overflow-container'}">
+            <div class="{modal && 'uk-overflow-container'}" style="padding: 1px 1px;">
 
                 <div class="uk-margin" if="{ !loading && folders.length }">
 
@@ -215,7 +215,7 @@
 
                             <strong class="uk-text-small"> { App.i18n.get('Pages') }</strong>
 
-                            <div class="uk-margin-small-top { pages > 5 ? 'uk-scrollable-box':'' }">
+                            <div class="uk-margin-small-top { pages > 5 && 'uk-scrollable-box' }">
                                 <ul class="uk-nav uk-nav-dropdown">
                                     <li class="uk-text-small" each="{k,v in new Array(pages)}"><a class="uk-dropdown-close" onclick="{ parent.loadPage }" data-page="{ (v + 1) }"> { App.i18n.get('Page') } {v + 1}</a></li>
                                 </ul>
@@ -276,6 +276,10 @@
                     <div class="uk-margin">
                         <label class="uk-text-small uk-text-bold">{ App.i18n.get('Id') }</label>
                         <div class="uk-margin-small-top uk-text-muted">{ asset._id }</div>
+                    </div>
+                    <div class="uk-margin">
+                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Folder') }</label>
+                        <div class="uk-margin-small-top"><cp-assets-folderselect asset="{asset}"></cp-assets-folderselect></div>
                     </div>
                     <div class="uk-margin">
                         <label class="uk-text-small uk-text-bold">{ App.i18n.get('Type') }</label>
@@ -739,3 +743,64 @@
     </script>
 
 </cp-assets>
+
+<cp-assets-folderselect>
+
+    <div data-uk-dropdown="mode:'click'">
+
+        <a class="uk-text-muted">
+            <i class="uk-icon-folder-o"></i> { asset.folder && folders[asset.folder] ? folders[asset.folder].name : App.i18n.get('Select folder') }
+        </a>
+
+        <div class="uk-dropdown uk-dropdown-close uk-width-1-1">
+
+            <strong>{ App.i18n.get('Folders') }</strong>
+
+            <div class="uk-margin-small-top { App.Utils.count(folders) > 10 && 'uk-scrollable-box' }">
+                <ul class="uk-list">
+                    <li each="{folder, idx in folders}">
+                        <a class="uk-link-muted" onclick="{selectFolder}"><i class="uk-icon-folder-o"></i> {folder.name}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+
+        var $this = this;
+
+        this.asset   = opts.asset;
+        this.folders = {};
+        this.loading = true;
+
+        this.on('mount', function() {
+
+            this.load();
+        });
+
+        selectFolder(e) {
+            this.asset.folder = e.item.folder._id;
+        }
+
+        load() {
+
+            this.loading = true;
+
+            App.request('/assetsmanager/_folders', {}).then(function(folders) {
+
+                $this.loading = false;
+                $this.folders = {};
+
+                folders.forEach( function(f) {
+                    $this.folders[f._id] = f
+                });
+
+                $this.update();
+            });
+        }
+
+    </script>
+
+</cp-assets-folderselect>
