@@ -14,7 +14,7 @@ $this->module('cockpit')->extend([
         return compact('assets', 'total');
     },
 
-    'addAssets' => function($files) use($app) {
+    'addAssets' => function($files, $meta = []) use($app) {
 
         $files     = isset($files[0]) ? $files : [$files];
         $finfo     = finfo_open(FILEINFO_MIME_TYPE);
@@ -78,6 +78,10 @@ $this->module('cockpit')->extend([
             $this->app->filestorage->writeStream("assets://{$path}", $stream);
             fclose($stream);
 
+            foreach ($meta as $key => $val) {
+                $asset[$key] = $val;
+            }
+
             $assets[] = $asset;
         }
 
@@ -89,7 +93,7 @@ $this->module('cockpit')->extend([
         return $assets;
     },
 
-    'uploadAssets' => function($param = 'files') {
+    'uploadAssets' => function($param = 'files', $meta = []) {
 
         $files     = $_FILES[$param] ?? [];
         $uploaded  = [];
@@ -120,7 +124,7 @@ $this->module('cockpit')->extend([
 
         if (count($_files)) {
 
-            $assets = $this->addAssets($_files);
+            $assets = $this->addAssets($_files, $meta);
 
             foreach ($_files as $file) {
                 unlink($file);

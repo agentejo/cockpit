@@ -55,6 +55,10 @@
                 return;
             }
 
+            if (!$this.refs.spinner.style) {
+                return;
+            }
+
             $this.refs.spinner.style.display = '';
 
             requestAnimationFrame(function() {
@@ -103,6 +107,10 @@
                     backgroundImage: 'url('+url+')',
                     visibility: 'visible'
                 });
+
+                if (!$this.refs.spinner.style) {
+                    return;
+                }
 
                 $this.refs.spinner.style.display = 'none';
                 $this.update();
