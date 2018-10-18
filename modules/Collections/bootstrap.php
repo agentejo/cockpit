@@ -317,7 +317,7 @@ $this->module('collections')->extend([
                             break;
 
                         case 'email':
-                            $value = filter_var($value, FILTER_VALIDATE_EMAIL) ? $value:null;
+                            $value = $this->app->helper('utils')->isEmail($value) ? $value:null;
                             break;
 
                         case 'password':

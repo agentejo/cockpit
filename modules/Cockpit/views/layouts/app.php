@@ -295,6 +295,8 @@
                         }, 50);
                     }
 
+                }, function(res) {
+                    App.ui.notify(res && (res.message || res.error) ? (res.message || res.error) : 'Login failed.', 'danger');
                 });
 
                 return false;

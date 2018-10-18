@@ -223,7 +223,7 @@ class Utils extends \Lime\Helper {
 	* @param   string  $url
 	* @return  string
 	*/
-	public function url_get_contents ($url) {
+	public function url_get_contents($url) {
 
         $content = '';
 
@@ -357,5 +357,15 @@ class Utils extends \Lime\Helper {
 	    }
 
 	    return $token;
+	}
+
+
+	public function isEmail($email) {
+
+		if (function_exists('idn_to_ascii')) {
+			$email = idn_to_ascii($email);
+		}
+
+		return (bool) filter_var($email, FILTER_VALIDATE_EMAIL);
 	}
 }

@@ -99,7 +99,7 @@ class Accounts extends \Cockpit\AuthController {
                 }
             }
 
-            if (isset($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            if (isset($data['email']) && !$this->helper('utils')->isEmail($data['email'])) {
                 return $this->stop(['error' => 'Valid email required'], 412);
             }
 

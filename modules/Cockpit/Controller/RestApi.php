@@ -90,7 +90,7 @@ class RestApi extends \LimeExtra\Controller {
             }
         }
 
-        if (isset($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        if (isset($data['email']) && !$this->app->helper('utils')->isEmail($data['email'])) {
             return $this->stop(['error' => 'Valid email required'], 412);
         }
 
