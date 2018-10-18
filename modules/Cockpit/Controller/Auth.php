@@ -58,7 +58,7 @@ class Auth extends \LimeExtra\Controller {
 
             $query = ['active' => true];
 
-            if (filter_var($user, FILTER_VALIDATE_EMAIL)) {
+            if ($this->app->helper('utils')->isEmail($user)) {
                 $query['email'] = $user;
             } else {
                 $query['user'] = $user;
