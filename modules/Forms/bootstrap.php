@@ -310,7 +310,7 @@ $this->module('forms')->extend([
 ]);
 
 // ACL
-$app('acl')->addResource('forms', ['manage']);
+$app('acl')->addResource('forms', ['create', 'delete', 'manage']);
 
 
 // REST
