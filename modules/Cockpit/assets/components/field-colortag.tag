@@ -25,8 +25,15 @@
     <script>
 
         this.value  = '';
-        this.size   = opts.size || 'inherit';
-        this.colors = opts.colors || ['#D8334A','#FFCE54','#A0D468','#48CFAD','#4FC1E9','#5D9CEC','#AC92EC','#EC87C0','#BAA286','#8E8271','#3C3B3D'];
+
+        this.on('mount',function(){
+            this.update();
+        });
+
+        this.on('update', function(){
+            this.size   = opts.size || 'inherit';
+            this.colors = opts.colors || ['#D8334A','#FFCE54','#A0D468','#48CFAD','#4FC1E9','#5D9CEC','#AC92EC','#EC87C0','#BAA286','#8E8271','#3C3B3D'];
+        });
 
         this.$updateValue = function(value, field) {
 
