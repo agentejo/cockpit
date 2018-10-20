@@ -162,7 +162,7 @@ $this->module('cockpit')->extend([
 
 // ACL
 $app('acl')->addResource('cockpit', [
-    'backend', 'finder',
+    'backend', 'finder', 'accounts', 'settings', 'rest', 'webhooks', 'info'
 ]);
 
 
