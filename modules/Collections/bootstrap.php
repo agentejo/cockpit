@@ -648,7 +648,7 @@ function _check_collection_rule($collection, $rule, $_context = null) {
 }
 
 // ACL
-$app('acl')->addResource("collections", ['create', 'delete']);
+$app('acl')->addResource("collections", ['create', 'delete', 'manage']);
 
 $this->module("collections")->extend([
 
