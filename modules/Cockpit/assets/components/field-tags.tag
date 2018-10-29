@@ -35,6 +35,10 @@
         this._tags = [];
 
         this.on('mount', function(){
+            this.update()
+        });
+
+        this.on('update', function(){
 
             if (opts.autocomplete) {
 
