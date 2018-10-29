@@ -58,6 +58,12 @@
 
             App.$(this.root).on({
 
+                'selectitem.uk.autocomplete': function() {
+                    setTimeout(function(){
+                        $this.refs.input.value = '';
+                    }, 0)
+                },
+
                 'selectitem.uk.autocomplete keydown': function(e, data) {
 
                     var value = e.type=='keydown' ? $this.refs.input.value : data.value;
