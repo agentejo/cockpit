@@ -3,7 +3,7 @@
 
     <div class="uk-container uk-container-center">
 
-        <div class="uk-grid uk-grid-width uk-grid-margin">
+        <div class="uk-grid uk-grid-width uk-grid-margin" data-uk-grid-margin>
 
             <div class="uk-width-medium-1-2">
 
@@ -19,7 +19,6 @@
                     </div>
                 </div>
 
-
                 <hr>
 
                 <div>
@@ -29,10 +28,10 @@
 
             </div>
 
-            <div class="uk-width-medium-1-2 uk-grid-margin">
+            <div class="uk-width-medium-1-2">
 
                 @if($app('admin')->data['menu.modules']->count())
-                <ul class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-text-center">
+                <ul class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-text-center" data-uk-grid-margin>
 
                     @foreach($app('admin')->data['menu.modules'] as $item)
                     <li class="uk-width-1-2 uk-width-medium-1-4" data-route="{{ $item['route'] }}">

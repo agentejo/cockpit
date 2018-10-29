@@ -155,7 +155,7 @@
                         <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4">
 
                             <li class="uk-grid-margin" each="{folder, idx in data.folders}" onclick="{ select }" if="{ infilter(folder) }">
-                                <div class="uk-panel uk-panel-box finder-folder { folder.selected ? 'uk-selected':'' }">
+                                <div class="uk-panel uk-panel-box uk-panel-card finder-folder { folder.selected ? 'uk-selected':'' }">
                                     <div class="uk-flex">
                                         <div class="uk-margin-small-right">
                                             <i class="uk-icon-folder-o uk-text-muted js-no-item-select"></i>
