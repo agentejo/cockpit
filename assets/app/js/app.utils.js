@@ -318,8 +318,27 @@
     };
 
 
-    App.Utils.renderValue = function(renderer, v) {
-        return (this.renderer[renderer] || this.renderer.default)(v);
+    App.Utils.renderValue = function(renderer, v, field = null) {
+
+        if ( renderer !== 'set') {
+
+            return (this.renderer[renderer] || this.renderer.default)(v);
+
+        } else {
+
+            var cnt = field.options.fields.length;
+
+            if (cnt > 4) return '<span class="uk-badge">'+(cnt+(cnt ==1 ? ' Item' : ' Items'))+'</span>';
+
+            var out = '';
+            field.options.fields.map(function(e){
+                out += '<span class="uk-panel-box uk-panel-card" style="position: relative;"><label class="uk-text-small" style="position: absolute;top: 2px;left: 4px;">' + (e.label || e.name) + '</label><span class="uk-panel-box">' + (App.Utils.renderer[e.type] || App.Utils.renderer.default)(v[e.name]) + '</span></span>';
+            });
+
+            return out;
+
+        }
+
     };
 
     // riot enhancments
