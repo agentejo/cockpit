@@ -15,7 +15,7 @@
             <div class="uk-text-center uk-margin-top uk-margin-bottom" show="{ !image.path }">
                 <img class="uk-svg-adjust uk-text-muted" riot-src="{App.base('/assets/app/media/icons/photo.svg')}" width="60" data-uk-svg>
                 <div class="uk-margin-top">
-                    <a class="uk-button uk-button-link" onclick="{ selectImage }">{ App.i18n.get('Select Image') }</a>
+                    <a class="uk-button uk-button-link" onclick="{ selectImage }" show="{App.$data.acl.finder}">{ App.i18n.get('Select Image') }</a>
                     <a class="uk-button uk-button-link" onclick="{ selectAsset }">{ App.i18n.get('Select Asset') }</a>
                     <a class="uk-button uk-button-link" onclick="{ editUrl }">{ App.i18n.get('Enter Image Url') }</a>
                 </div>

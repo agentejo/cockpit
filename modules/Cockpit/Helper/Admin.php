@@ -71,7 +71,11 @@ class Admin extends \Lime\Helper {
                 'locale'    => $this->app->helper('i18n')->locale,
                 'site_url'  => $this->app->pathToUrl('site:'),
                 'languages' => $languages,
-                'groups'    => $this->app->helper('acl')->getGroups()
+                'groups'    => $this->app->helper('acl')->getGroups(),
+
+                'acl' => [
+                    'finder' => $this->app->module('cockpit')->hasaccess('cockpit', 'finder')
+                ]
             ]
         ]);
     }

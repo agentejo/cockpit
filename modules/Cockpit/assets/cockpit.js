@@ -37,6 +37,8 @@
 
             select: function(callback, options) {
 
+                if (!App.$data.acl.finder) return;
+
                 callback = callback || function(){};
 
                 options  = App.$.extend({
