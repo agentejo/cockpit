@@ -1301,9 +1301,9 @@ class App implements \ArrayAccess {
 
     public function loadModules($dirs, $autoload = true, $prefix = false) {
 
-        $modules = [];
-        $dirs    = (array)$dirs;
-        $disabled = $this->registry['modules.disabled'] ?? [];
+        $modules  = [];
+        $dirs     = (array)$dirs;
+        $disabled = $this->registry['modules.disabled'] ?? null;
 
         foreach ($dirs as &$dir) {
 
@@ -1314,9 +1314,11 @@ class App implements \ArrayAccess {
                 // load modules
                 foreach (new \DirectoryIterator($dir) as $module) {
 
-                    if (in_array($module, $disabled) || $module->isFile() || $module->isDot()) continue;
+                    if ($module->isFile() || $module->isDot()) continue;
 
                     $name = $prefix ? "{$pfx}-".$module->getBasename() : $module->getBasename();
+
+                    if ($disabled && in_array($name, $disabled)) continue;
 
                     $this->registerModule($name, $module->getRealPath());
 
