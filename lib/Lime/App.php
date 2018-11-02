@@ -1303,7 +1303,7 @@ class App implements \ArrayAccess {
 
         $modules = [];
         $dirs    = (array)$dirs;
-        $enabled = array_keys(array_filter($this->registry['extensions']));
+        $disabled = $this->registry['modules.disabled'] ?? [];
 
         foreach ($dirs as &$dir) {
 
@@ -1314,7 +1314,7 @@ class App implements \ArrayAccess {
                 // load modules
                 foreach (new \DirectoryIterator($dir) as $module) {
 
-                    if (!in_array($module, $enabled) || $module->isFile() || $module->isDot()) continue;
+                    if (in_array($module, $disabled) || $module->isFile() || $module->isDot()) continue;
 
                     $name = $prefix ? "{$pfx}-".$module->getBasename() : $module->getBasename();
 

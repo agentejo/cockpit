@@ -111,7 +111,7 @@ function cockpit($module = null) {
 
             'filestorage' => [],
 
-            'extensions' => ['Cockpit' => 1, 'Collections' => 1, 'Forms' => 1, 'Singletons' => 1],
+            'modules.disabled' => [],
 
         ], is_array($customconfig) ? $customconfig : []);
 
