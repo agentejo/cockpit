@@ -111,6 +111,8 @@ function cockpit($module = null) {
 
             'filestorage' => [],
 
+            'modules.disabled' => [],
+
         ], is_array($customconfig) ? $customconfig : []);
 
         $app = new LimeExtra\App($config);
