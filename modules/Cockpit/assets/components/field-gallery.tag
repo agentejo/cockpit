@@ -26,7 +26,7 @@
                                         <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                                             <li class="uk-nav-header">{ App.i18n.get('Source') }</li>
                                             <li><a onclick="{ parent.selectAsset }">{ App.i18n.get('Select Asset') }</a></li>
-                                            <li><a onclick="{ parent.selectImage }">{ App.i18n.get('Select Image') }</a></li>
+                                            <li show="{App.$data.acl.finder}"><a onclick="{ parent.selectImage }">{ App.i18n.get('Select Image') }</a></li>
                                         </ul>
                                     </div>
                                 </li>
@@ -50,11 +50,11 @@
                 <a class="uk-text-large" onclick="{ selectAssetsImages }">
                     <i class="uk-icon-plus-circle" title="{ App.i18n.get('Add images') }" data-uk-tooltip></i>
                 </a>
-                <div class="uk-dropdown">
+                <div class="uk-dropdown" if="{App.$data.acl.finder}">
                     <ul class="uk-nav uk-nav-dropdown uk-text-left uk-dropdown-close">
                         <li class="uk-nav-header">{ App.i18n.get('Select') }</li>
                         <li><a onclick="{ selectAssetsImages }">Asset</a></li>
-                        <li><a onclick="{ selectimages }">File</a></li>
+                        <li><a onclick="{ selectimages }">{App.i18n.get('Finder')}</a></li>
                     </ul>
                 </div>
             </div>

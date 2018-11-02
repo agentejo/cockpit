@@ -126,18 +126,21 @@
 
             tinymce.PluginManager.add('mediapath', function(editor) {
 
-                editor.addMenuItem('mediapath', {
-                    icon: 'image',
-                    text: 'Insert image (Finder)',
-                    onclick: function(){
+                if (App.$data.acl.finder) {
+                    
+                    editor.addMenuItem('mediapath', {
+                        icon: 'image',
+                        text: 'Insert image (Finder)',
+                        onclick: function(){
 
-                        App.media.select(function(selected) {
-                            editor.insertContent('<img src="' + SITE_URL+'/'+selected + '" alt="">');
-                        }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
-                    },
-                    context: 'insert',
-                    prependToContext: true
-                });
+                            App.media.select(function(selected) {
+                                editor.insertContent('<img src="' + SITE_URL+'/'+selected + '" alt="">');
+                            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
+                        },
+                        context: 'insert',
+                        prependToContext: true
+                    });
+                }
 
                 editor.addMenuItem('assetpath', {
                     icon: 'image',
