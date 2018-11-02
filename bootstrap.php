@@ -113,6 +113,11 @@ function cockpit($module = null) {
 
         ], is_array($customconfig) ? $customconfig : []);
 
+        // make sure Cockpit module is not disabled
+        if (isset($config['modules.disabled']) && in_array('Cockpit', $config['modules.disabled'])) {
+            array_splice($config['modules.disabled'], array_search('Cockpit', $config['modules.disabled']), 1);
+        }
+
         $app = new LimeExtra\App($config);
 
         $app['config'] = $config;
