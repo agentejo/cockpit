@@ -265,7 +265,7 @@ $this->module('forms')->extend([
             foreach ($emails as $to){
 
                 // Validate each email address individually, push if valid
-                if (filter_var($to, FILTER_VALIDATE_EMAIL)){
+                if ($this->app->helper('utils')->isEmail($to)){
                     $filtered_emails[] = $to;
                 }
             }
@@ -310,7 +310,7 @@ $this->module('forms')->extend([
 ]);
 
 // ACL
-$app('acl')->addResource('forms', ['manage']);
+$app('acl')->addResource('forms', ['create', 'delete', 'manage']);
 
 
 // REST

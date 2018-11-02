@@ -340,7 +340,7 @@ $this->module('singletons')->extend([
 ]);
 
 // ACL
-$app("acl")->addResource('singletons', ['create', 'form', 'edit', 'data', 'delete']);
+$app("acl")->addResource('singletons', ['create', 'form', 'edit', 'data', 'delete', 'manage']);
 
 $this->module('singletons')->extend([
 

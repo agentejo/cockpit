@@ -10,7 +10,7 @@
 
             <div class="uk-grid uk-grid-small uk-margin-small-top uk-grid-width-1-4">
                 <div class="uk-grid-margin" each="{color in colors}">
-                    <a onclick="{parent.select}" style="color:{color};"><i class="uk-icon-circle"></i></a>
+                    <a onclick="{parent.select}" riot-style="color:{color};"><i class="uk-icon-circle"></i></a>
                 </div>
             </div>
 
@@ -24,9 +24,18 @@
 
     <script>
 
+        var _defColors = ['#D8334A','#FFCE54','#A0D468','#48CFAD','#4FC1E9','#5D9CEC','#AC92EC','#EC87C0','#BAA286','#8E8271','#3C3B3D'];
+
         this.value  = '';
-        this.size   = opts.size || 'inherit';
-        this.colors = opts.colors || ['#D8334A','#FFCE54','#A0D468','#48CFAD','#4FC1E9','#5D9CEC','#AC92EC','#EC87C0','#BAA286','#8E8271','#3C3B3D'];
+
+        this.on('mount',function(){
+            this.update();
+        });
+
+        this.on('update', function(){
+            this.size   = opts.size || 'inherit';
+            this.colors = opts.colors || _defColors;
+        });
 
         this.$updateValue = function(value, field) {
 

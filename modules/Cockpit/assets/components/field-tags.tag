@@ -35,6 +35,10 @@
         this._tags = [];
 
         this.on('mount', function(){
+            this.update()
+        });
+
+        this.on('update', function(){
 
             if (opts.autocomplete) {
 
@@ -53,6 +57,12 @@
             }
 
             App.$(this.root).on({
+
+                'selectitem.uk.autocomplete': function() {
+                    setTimeout(function(){
+                        $this.refs.input.value = '';
+                    }, 0)
+                },
 
                 'selectitem.uk.autocomplete keydown': function(e, data) {
 

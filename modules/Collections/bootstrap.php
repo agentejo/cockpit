@@ -317,7 +317,7 @@ $this->module('collections')->extend([
                             break;
 
                         case 'email':
-                            $value = filter_var($value, FILTER_VALIDATE_EMAIL) ? $value:null;
+                            $value = $this->app->helper('utils')->isEmail($value) ? $value:null;
                             break;
 
                         case 'password':
@@ -603,7 +603,7 @@ function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $field
             $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ($level + 1), $fieldsFilter);
         }
 
-        if (isset($v['_id'], $v['link'])) {
+        if ($level > 0 && isset($v['_id'], $v['link'])) {
             $link = $v['link'];
             $items[$k] = cockpit('collections')->_resolveLinkedItem($v['link'], $v['_id'], $fieldsFilter);
             $items[$k]['_link'] = $link;
@@ -648,7 +648,7 @@ function _check_collection_rule($collection, $rule, $_context = null) {
 }
 
 // ACL
-$app('acl')->addResource("collections", ['create', 'delete']);
+$app('acl')->addResource("collections", ['create', 'delete', 'manage']);
 
 $this->module("collections")->extend([
 
