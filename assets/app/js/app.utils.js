@@ -317,28 +317,37 @@
         return Array.isArray(v) ? '<span class="uk-badge">'+v.length+(v.length==1 ? ' Component':' Components')+'</span>' : App.Utils.renderer.default(v);
     };
 
-
-    App.Utils.renderValue = function(renderer, v, field = null) {
-
-        if ( renderer !== 'set') {
-
-            return (this.renderer[renderer] || this.renderer.default)(v);
-
-        } else {
-
-            var cnt = field.options.fields.length;
-
-            if (cnt > 4) return '<span class="uk-badge">'+(cnt+(cnt ==1 ? ' Item' : ' Items'))+'</span>';
-
-            var out = '';
+    App.Utils.renderer.set = function(v, field = null) {
+        var out = '';
+        if (field) {
             field.options.fields.map(function(e){
-                out += '<span class="uk-panel-box uk-panel-card" style="position: relative;"><label class="uk-text-small" style="position: absolute;top: 2px;left: 4px;">' + (e.label || e.name) + '</label><span class="uk-panel-box">' + (App.Utils.renderer[e.type] || App.Utils.renderer.default)(v[e.name]) + '</span></span>';
+
+                if (e.display) {
+
+                    var type = e.display !== true ? e.display : e.type
+
+                    out += '<span class="app-set-field">';
+                    out += '<label class="uk-text-small">';
+                    out += (e.label || e.name);
+                    out += '</label><span>';
+
+                    if (type === 'set') { // take care of nested sets
+                        out += App.Utils.renderer[type](v[e.name], e);
+                    } else {
+                        out += (App.Utils.renderer[type] || App.Utils.renderer.default)(v[e.name]);
+                    }
+
+                    out += '</span></span>';
+
+                }
             });
-
-            return out;
-
         }
 
+        return out;
+    };
+
+    App.Utils.renderValue = function(renderer, v, field = null) {
+        return renderer !== 'set' ? (this.renderer[renderer] || this.renderer.default)(v) : this.renderer[renderer](v, field);
     };
 
     // riot enhancments
