@@ -8,9 +8,13 @@ class Mongo {
     protected $db;
     protected $options;
 
-    public function __construct($server, $options=[]) {
+    public function __construct($server, $options=[], $driverOptions=[]) {
 
-        $this->client  = new \MongoDB\Client($server, $options, ['typeMap' => ['root' => 'array', 'document' => 'array', 'array' => 'array']]);
+        $driverOptions = array_merge([
+            'typeMap' => ['root' => 'array', 'document' => 'array', 'array' => 'array']
+        ], $driverOptions);
+
+        $this->client  = new \MongoDB\Client($server, $options, $driverOptions);
         $this->db      = $this->client->selectDatabase($options["db"]);
         $this->options = $options;
     }

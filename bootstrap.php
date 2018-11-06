@@ -90,7 +90,7 @@ function cockpit($module = null) {
             'session.init' => (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) ? true : false,
             'sec-key'      => 'c3b40c4c-db44-s5h7-a814-b4931a15e5e1',
             'i18n'         => 'en',
-            'database'     => ['server' => 'mongolite://'.(COCKPIT_STORAGE_FOLDER.'/data'), 'options' => ['db' => 'cockpitdb'] ],
+            'database'     => ['server' => 'mongolite://'.(COCKPIT_STORAGE_FOLDER.'/data'), 'options' => ['db' => 'cockpitdb'], 'driverOptions' => [] ],
             'memory'       => ['server' => 'redislite://'.(COCKPIT_STORAGE_FOLDER.'/data/cockpit.memory.sqlite'), 'options' => [] ],
 
             'paths'         => [
@@ -129,7 +129,7 @@ function cockpit($module = null) {
 
         // nosql storage
         $app->service('storage', function() use($config) {
-            $client = new MongoHybrid\Client($config['database']['server'], $config['database']['options']);
+            $client = new MongoHybrid\Client($config['database']['server'], $config['database']['options'], $config['database']['driverOptions']);
             return $client;
         });
 
