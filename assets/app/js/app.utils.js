@@ -318,7 +318,9 @@
     };
 
     App.Utils.renderer.set = function(v, field = null) {
+
         var out = '';
+
         if (field) {
             field.options.fields.map(function(e){
 
@@ -343,7 +345,12 @@
             });
         }
 
-        return out;
+        if (out !== '') return out;
+
+        // display items count if output is empty
+        var cnt = Object.keys(v).length;
+        return '<span class="uk-badge">'+(cnt+(cnt ==1 ? ' Item' : ' Items'))+'</span>';
+
     };
 
     App.Utils.renderValue = function(renderer, v, field = null) {
