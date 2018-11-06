@@ -229,7 +229,7 @@
             this.components = App.$.extend(true, this.components, window.CP_LAYOUT_COMPONENTS);
         }
 
-        App.trigger('field.layout.components', {components:this.components});
+        App.trigger('field.layout.components', {components:this.components, opts:opts});
 
         this.on('mount', function() {
 
