@@ -318,8 +318,8 @@
     };
 
 
-    App.Utils.renderValue = function(renderer, v) {
-        return (this.renderer[renderer] || this.renderer.default)(v);
+    App.Utils.renderValue = function(renderer, v, meta) {
+        return (this.renderer[renderer] || this.renderer.default)(v, meta);
     };
 
     // riot enhancments

@@ -155,7 +155,7 @@
 
             <div class="uk-text-truncate uk-margin-small-left" each="{field,idy in fields}" if="{ field.name != '_modified' && field.name != '_created' }">
                 <a class="uk-link-muted" href="{ App.route('/collections/entry/'+parent.collection.name+'/'+parent.entry._id) }">
-                    <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }" if="{parent.entry[field.name] !== undefined}"></raw>
+                    <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name], field) }" if="{parent.entry[field.name] !== undefined}"></raw>
                     <span class="uk-icon-eye-slash uk-text-muted" if="{parent.entry[field.name] === undefined}"></span>
                 </a>
             </div>
@@ -168,7 +168,7 @@
                     <div class="uk-margin-small-bottom" each="{field,idy in extrafields}" if="{ field.name != '_modified' && field.name != '_created' }">
                         <span class="uk-text-small uk-text-uppercase uk-text-muted">{ field.label || field.name }</span>
                         <a class="uk-link-muted uk-text-small uk-display-block uk-text-truncate" href="{App.route('/collections/entry/'+parent.collection.name+'/'+parent.entry._id) }">
-                            <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }" if="{parent.entry[field.name] !== undefined}"></raw>
+                            <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name], field) }" if="{parent.entry[field.name] !== undefined}"></raw>
                             <span class="uk-icon-eye-slash uk-text-muted" if="{parent.entry[field.name] === undefined}"></span>
                         </a>
                     </div>
