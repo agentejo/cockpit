@@ -317,6 +317,18 @@
         return Array.isArray(v) ? '<span class="uk-badge">'+v.length+(v.length==1 ? ' Component':' Components')+'</span>' : App.Utils.renderer.default(v);
     };
 
+    App.Utils.renderer.set = function(v, meta) {
+
+        if (v && meta && meta.options && meta.options.display) {
+
+            var str = meta.options.display;
+            Object.keys(v).forEach(function(k) { str = str.replace('{'+k+'}', v[k]) });
+            return str;
+        }
+
+        return App.Utils.renderer.default(v);
+    };
+
 
     App.Utils.renderValue = function(renderer, v, meta) {
         return (this.renderer[renderer] || this.renderer.default)(v, meta);
