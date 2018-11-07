@@ -104,7 +104,7 @@
                         <tr each="{entry,idx in entries}">
                             <td show="{parent.opts.multiple}"><input class="uk-checkbox" type="checkbox" onclick="{parent.toggleSelected}"></td>
                             <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' }">
-                                <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name]) }"></raw>
+                                <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name], field) }"></raw>
                             </td>
                             <td>{ App.Utils.dateformat( new Date( 1000 * entry._modified )) }</td>
                             <td>
