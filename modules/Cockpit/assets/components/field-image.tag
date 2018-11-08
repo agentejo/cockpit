@@ -29,7 +29,7 @@
                     <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                         <li class="uk-nav-header">{ App.i18n.get('Source') }</li>
                         <li><a onclick="{ selectAsset }">{ App.i18n.get('Select Asset') }</a></li>
-                        <li><a onclick="{ selectImage }">{ App.i18n.get('Select Image') }</a></li>
+                        <li><a onclick="{ selectImage }" show="{App.$data.acl.finder}">{ App.i18n.get('Select Image') }</a></li>
                         <li><a onclick="{ editUrl }">{ App.i18n.get('Enter Image Url') }</a></li>
                     </ul>
                 </div>
