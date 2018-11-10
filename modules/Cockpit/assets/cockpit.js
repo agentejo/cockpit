@@ -97,6 +97,29 @@
 
         assets: {
 
+            edit: function(callback, el){
+
+                var dialog = UIkit.modal.dialog([
+                    '<div>',
+                        '<cp-asset></cp-asset>',
+                    '</div>'
+                ].join(''), {modal:false});
+
+                dialog.dialog.addClass('uk-modal-dialog-large');
+
+                el.updateAsset = function(asset) {
+                    callback(asset);
+                };
+
+                el.cancelEdit = function() {
+                    dialog.hide();
+                };
+
+                riot.mount(dialog.dialog, '*', {asset: el.asset, parent: el});
+
+                dialog.show();
+            },
+
             select: function(callback, options){
 
                 options  = App.$.extend({

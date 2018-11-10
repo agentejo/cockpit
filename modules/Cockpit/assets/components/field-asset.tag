@@ -38,6 +38,7 @@
         <hr>
         <div class="uk-text-small">
             <a class="uk-margin-small-right" onclick="{ selectAsset }">{ App.i18n.get('Replace') }</a>
+            <a class="uk-margin-small-right" onclick="{ editAsset }">{ App.i18n.get('Edit') }</a>
             <a onclick="{reset}"><i class="uk-icon-trash-o"></i></a>
         </div>
 
@@ -116,6 +117,12 @@
                     $this.$setValue(assets[0]);
                 }
             });
+        }
+
+        editAsset() {
+            Cockpit.assets.edit(function(assets){
+                $this.$setValue(assets[0]);
+            }, $this);
         }
 
         reset() {
