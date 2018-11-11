@@ -123,8 +123,8 @@ $app->bind('/check-backend-session', function() {
         $status = false;
     }
 
-    // check for inactivity: 15min by default
-    if ($status && isset($_SESSION['cockpit.session.time']) && ($_SESSION['cockpit.session.time'] + $this->retrieve('session.lifetime', 900) < time())) {
+    // check for inactivity: 45min by default
+    if ($status && isset($_SESSION['cockpit.session.time']) && ($_SESSION['cockpit.session.time'] + $this->retrieve('session.lifetime', 2700) < time())) {
         $this->module('cockpit')->logout();
         $status = false;
     }

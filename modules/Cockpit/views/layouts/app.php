@@ -215,7 +215,7 @@
             <form class="uk-form" method="post" action="@route('/auth/check')" onsubmit="{ submit }">
 
                 <div class="uk-text-center">
-                    <img src="@base('assets:app/media/icons/login.svg')" width="120" height="120">
+                    <img src="@base('assets:app/media/icons/login.svg')" width="100" height="100">
                 </div>
 
                 <div class="uk-form-row uk-text-center uk-h2 uk-text-bold">
