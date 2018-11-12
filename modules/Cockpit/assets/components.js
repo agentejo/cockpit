@@ -3556,9 +3556,11 @@ riot.tag2('field-tags', '<div class="uk-grid uk-grid-small uk-flex-middle" data-
 
 });
 
-riot.tag2('field-text', '<input ref="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" placeholder="{opts.placeholder}"> <div class="uk-text-muted uk-text-small uk-margin-small-top" if="{opts.slug}" title="Slug"> {slug} </div>', '', '', function(opts) {
+riot.tag2('field-text', '<div class="uk-position-relative field-text-container"> <input ref="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" oninput="{updateLengthIndicator}" placeholder="{opts.placeholder}"> <span class="uk-text-muted" ref="lengthIndicator" show="{type==\'text\'}"></span> </div> <div class="uk-text-muted uk-text-small uk-margin-small-top" if="{opts.slug}" title="Slug"> {slug} </div>', 'field-text [ref="input"],[data-is="field-text"] [ref="input"]{ padding-right: 30px !important; } field-text .field-text-container span,[data-is="field-text"] .field-text-container span{ position: absolute; top: 50%; right: 0; font-family: monospace; transform: translateY(-50%) scale(.9); }', '', function(opts) {
 
         var $this = this;
+
+        this.type = opts.type || 'text';
 
         this.on('mount', function() {
 
@@ -3574,9 +3576,11 @@ riot.tag2('field-text', '<input ref="input" class="uk-width-1-1" bind="{opts.bin
                 this.slug = this.$getValue(opts.bind+'_slug') || '';
             }
 
-            (['maxlength', 'minlength', 'step', 'placeholder', 'pattern', 'size']).forEach( function(key) {
+            (['maxlength', 'minlength', 'step', 'placeholder', 'pattern', 'size', 'min', 'max']).forEach( function(key) {
                 if (opts[key]) $this.refs.input.setAttribute(key, opts[key]);
             });
+
+            this.updateLengthIndicator();
 
             this.update();
         });
@@ -3589,7 +3593,18 @@ riot.tag2('field-text', '<input ref="input" class="uk-width-1-1" bind="{opts.bin
                 this.update();
             }
 
+            this.updateLengthIndicator();
+
         }.bind(this);
+
+        this.updateLengthIndicator = function() {
+
+            if (this.type != 'text') {
+                return;
+            }
+
+            this.refs.lengthIndicator.innerText = Math.abs((opts.maxlength || 0) - this.refs.input.value.length);
+        }
 
 });
 
