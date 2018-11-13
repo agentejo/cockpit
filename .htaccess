@@ -165,3 +165,8 @@ AddType application/x-shockwave-flash   swf
 
 # Remove ETags
 FileETag None
+
+<IfModule mod_headers.c>
+  Header set Access-Control-Allow-Origin "*"
+  Header set Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
+</IfModule>
