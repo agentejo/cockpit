@@ -2609,7 +2609,7 @@ riot.tag2('field-layout', '<div class="uk-sortable layout-components {!items.len
             this.components = App.$.extend(true, this.components, window.CP_LAYOUT_COMPONENTS);
         }
 
-        App.trigger('field.layout.components', {components:this.components});
+        App.trigger('field.layout.components', {components:this.components, opts:opts});
 
         this.on('mount', function() {
 
