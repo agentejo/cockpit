@@ -23,22 +23,27 @@
 
                     <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-h1 uk-text-muted uk-icon-{ getIconCls(asset.path) }"></i></span>
 
-                    <a riot-href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
-                        <cp-thumbnail riot-src="{asset && ASSETS_URL+asset.path}" height="160"></cp-thumbnail>
+                    <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
+                        <cp-thumbnail src="{asset && ASSETS_URL+asset.path}" height="160"></cp-thumbnail>
                     </a>
                 </div>
             </div>
         </div>
-        <div class="uk-margin-small-top uk-text-truncate"><a href="{ASSETS_URL+asset.path}" target="_blank">{ asset.title }</a></div>
+        <div class="uk-margin-small-top uk-text-truncate">
+          <a href="{ASSETS_URL+asset.path}" target="_blank">{ asset.title }</a>
+        </div>
         <div class="uk-text-small uk-text-muted">
             <strong>{ asset.mime }</strong>
             { App.Utils.formatSize(asset.size) }
         </div>
 
-        <hr>
-        <div class="uk-text-small">
-            <a class="uk-margin-small-right" onclick="{ selectAsset }">{ App.i18n.get('Replace') }</a>
-            <a onclick="{reset}"><i class="uk-icon-trash-o"></i></a>
+        <div class="uk-margin-top">
+            <a class="uk-button uk-button-small uk-margin-small-right" onclick="{ selectAsset }">{ App.i18n.get('Replace') }</a>
+            
+            <span class="uk-button-group">
+            <a class="uk-button uk-button-small" onclick="{edit}"><i class="uk-icon-pencil"></i></a>
+            <a class="uk-button uk-button-small uk-text-danger" onclick="{reset}"><i class="uk-icon-trash-o"></i></a>
+            </span>
         </div>
 
     </div>
@@ -112,6 +117,7 @@
         selectAsset() {
 
             Cockpit.assets.select(function(assets){
+
                 if (Array.isArray(assets)) {
                     $this.$setValue(assets[0]);
                 }
@@ -121,6 +127,33 @@
         reset() {
             $this.asset = null;
             $this.$setValue($this.asset);
+        }
+        
+        edit() {
+          
+            var dialog = UIkit.modal.dialog([
+                '<div>',
+                    '<div class="uk-modal-header uk-text-large"><h3>'+App.i18n.get('Edit asset')+'</h3></div>',
+                    '<cp-asset asset="'+this.asset._id+'"></cp-asset>',
+                    '<div class="uk-modal-footer uk-text-right">',
+                        '<button class="uk-button uk-button-primary uk-margin-right uk-button-large js-save-button">Save</button>',
+                        '<a class="uk-button uk-button-large uk-button-link uk-modal-close">Close</a>',
+                    '</div>',
+                '</div>'
+            ].join(''), {modal:false});
+            
+            dialog.dialog.addClass('uk-modal-dialog-large');
+            
+            riot.mount(dialog.element[0], '*', {});
+            
+            dialog.dialog.find('.js-save-button').on('click', function() {
+              
+                App.$('cp-asset', dialog.element)[0]._tag.updateAsset(function(asset) {
+                    $this.$setValue(asset);
+                });
+            });
+            
+            dialog.show();
         }
 
         getIconCls(path) {

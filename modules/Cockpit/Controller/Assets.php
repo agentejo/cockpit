@@ -32,6 +32,11 @@ class Assets extends \Cockpit\AuthController {
         return $ret;
     }
 
+    public function asset($id) {
+  
+        return $this->app->storage->findOne('cockpit/assets', ['_id' => $id]);
+    }
+
     public function upload() {
 
         $meta = ['folder' => $this->param('folder', '')];

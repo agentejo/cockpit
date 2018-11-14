@@ -16,6 +16,7 @@
         this.on('mount', function() {
 
             if (!('IntersectionObserver' in window)) {
+                this.inView = true;
                 this.load();
                 return;
             }
@@ -41,9 +42,7 @@
         });
 
         this.on('update', function() {
-            if (this.inView) {
-                this.load();
-            }
+            if (this.inView) this.load();
         })
 
         this.load = function() {
