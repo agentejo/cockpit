@@ -1,20 +1,6 @@
 <cp-assets>
 
     <style>
-        .cp-assets-fp {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: red;
-            box-shadow: 0 0 10px rgba(0,0,0,.1);
-            border: 2px #fff solid;
-            top: 50%;
-            left: 50%;
-            transform: translateX(-50%) translateY(-50%);
-            visibility: hidden;
-        }
-
         .uk-breadcrumb { margin-bottom: 0; }
     </style>
 
@@ -83,7 +69,7 @@
                 </ul>
             </div>
 
-            <div class="uk-text-center uk-text-muted uk-h2 uk-margin-large-top" show="{ loading }">
+            <div class="uk-text-center uk-margin-large-top" show="{ loading }">
                 <cp-preloader class="uk-container-center"></cp-preloader>
             </div>
 
@@ -237,94 +223,13 @@
     <div class="uk-form" if="{asset && mode=='edit'}">
 
         <h3 class="uk-text-bold">{ App.i18n.get('Edit Asset') }</h3>
-
-        <form onsubmit="{ updateAsset }">
-
-            <ul class="uk-tab uk-flex-center uk-margin" show="{ App.Utils.count(panels) }">
-                <li class="{!panel && 'uk-active'}"><a onclick="{selectPanel}">Main</a></li>
-                <li class="uk-text-capitalize {p.name == panel && 'uk-active'}" each="{p in panels}"><a onclick="{parent.selectPanel}">{p.name}</a></li>
-            </ul>
-
-            <div class="uk-grid" show="{!panel}">
-                <div class="uk-width-2-3">
-
-                    <div class="uk-panel uk-panel-box uk-panel-card uk-panel-space">
-                        <div class="uk-form-row">
-                            <label class="uk-text-small uk-text-bold">{ App.i18n.get('Title') }</label>
-                            <input class="uk-width-1-1" type="text" bind="asset.title" required>
-                        </div>
-
-                        <div class="uk-form-row">
-                            <label class="uk-text-small uk-text-bold">{ App.i18n.get('Description') }</label>
-                            <textarea class="uk-width-1-1" bind="asset.description"></textarea>
-                        </div>
-
-                        <div class="uk-margin-large-top uk-text-center" if="{asset}">
-                            <span class="uk-h1" if="{asset.mime.match(/^image\//) == null }"><i class="uk-icon-{ getIconCls(asset.path) }"></i></span>
-                            <div class="uk-display-inline-block uk-position-relative asset-fp-image" if="{asset.mime.match(/^image\//) }">
-                                <cp-thumbnail src="{ASSETS_URL+asset.path}" width="800"></cp-thumbnail>
-                                <div class="cp-assets-fp" title="Focal Point" data-uk-tooltip></div>
-                            </div>
-                            <div class="uk-margin-top uk-text-truncate uk-text-small uk-text-muted">
-                                <a class="uk-button uk-button-outline uk-text-primary" href="{ASSETS_URL+asset.path}" target="_blank"><i class="uk-icon-link"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="uk-width-1-3" if="{ asset }">
-
-                    <div class="uk-margin">
-                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Id') }</label>
-                        <div class="uk-margin-small-top uk-text-muted">{ asset._id }</div>
-                    </div>
-                    <div class="uk-margin">
-                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Folder') }</label>
-                        <div class="uk-margin-small-top"><cp-assets-folderselect asset="{asset}"></cp-assets-folderselect></div>
-                    </div>
-                    <div class="uk-margin">
-                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Type') }</label>
-                        <div class="uk-margin-small-top uk-text-muted"><span class="uk-badge uk-badge-outline">{ asset.mime }</span></div>
-                    </div>
-                    <div class="uk-margin" if="{asset.colors && Array.isArray(asset.colors) && asset.colors.length}">
-                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Colors') }</label>
-                        <div class="uk-margin-small-top uk-text-muted">
-                            <span class="uk-icon-circle uk-text-large uk-margin-small-right" each="{color in asset.colors}" riot-style="color: #{String(color).replace('#', '')}"></span>
-                        </div>
-                    </div>
-                    <div class="uk-margin">
-                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Size') }</label>
-                        <div class="uk-margin-small-top uk-text-muted">{ App.Utils.formatSize(asset.size) }</div>
-                    </div>
-                    <div class="uk-margin">
-                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Modified') }</label>
-                        <div class="uk-margin-small-top uk-text-primary"><span class="uk-badge uk-badge-outline">{ App.Utils.dateformat( new Date( 1000 * asset.modified )) }</span></div>
-                    </div>
-                    <div class="uk-margin">
-                        <label class="uk-text-small uk-text-bold">{ App.i18n.get('Tags') }</label>
-                        <div class="uk-margin-small-top">
-                            <field-tags bind="asset.tags"></field-tags>
-                        </div>
-                    </div>
-                    <div class="uk-margin" if="{ asset._by }">
-                        <label class="uk-text-small">{ App.i18n.get('Last update by') }</label>
-                        <div class="uk-margin-small-top">
-                            <cp-account account="{asset._by}"></cp-account>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div data-is="{'assetspanel-'+p.name}" asset="{asset}" each="{p in panels}" show="{panel == p.name}"></div>
-
-
-            <div class="uk-margin-large-top">
-                <button type="submit" class="uk-button uk-button-large uk-button-primary">{ App.i18n.get('Save') }</button>
-                <a class="uk-button uk-button-large uk-button-link" onclick="{ cancelEdit }">{ App.i18n.get('Cancel') }</a>
-            </div>
-
-        </form>
-
+        
+        <cp-asset asset="{asset._id}"></cp-asset>
+        
+        <div class="uk-margin-top">
+            <button type="button" class="uk-button uk-button-large uk-button-primary" onclick="{ saveAsset }">{ App.i18n.get('Save') }</button>
+            <a class="uk-button uk-button-large uk-button-link" onclick="{ cancelAssetEdit }">{ App.i18n.get('Cancel') }</a>
+        </div>
     </div>
 
 
@@ -358,19 +263,6 @@
         this.page     = 1;
         this.pages    = 1;
         this.limit    = opts.limit || 15;
-
-        this.panel    = null;
-        this.panels   = [];
-
-        for (var tag in riot.tags) {
-
-            if (tag.indexOf('assetspanel-')==0) {
-
-                f = tag.replace('assetspanel-', '');
-
-                this.panels.push({name:f, value:f});
-            }
-        }
 
         this.on('mount', function() {
 
@@ -430,16 +322,6 @@
                 uploaddrop   = UIkit.uploadDrop($this.refs.list, uploadSettings);
 
                 UIkit.init(this.root);
-            });
-
-            App.$(this.root).on('click', '.asset-fp-image canvas', function(e) {
-
-                var x = e.offsetX, y = e.offsetY,
-                    px = (x / this.offsetWidth),
-                    py = (y / this.offsetHeight);
-
-                $this.asset.fp = {x: px, y: py};
-                $this.placeFocalPoint($this.asset.fp);
             });
         });
 
@@ -567,36 +449,19 @@
 
             this.asset = e.item.asset;
             this.mode  = 'edit';
-
-            if (this.asset.mime.match(/^image\//)) {
-                setTimeout(function() {
-                    $this.placeFocalPoint($this.asset.fp);
-                }, 500)
-            }
+        }
+        
+        saveAsset() {
+          
+          App.$('cp-asset', this.root)[0]._tag.updateAsset(function(asset) {
+              $this.asset = _.extend($this.asset, asset);
+          });
         }
 
-        cancelEdit() {
+        cancelAssetEdit() {
             this.asset = null;
             this.mode  = 'list';
-            this.panel = null;
-        }
-
-        selectPanel(e) {
-            this.panel = e.item ? e.item.p.name : null;
-        }
-
-        updateAsset(e) {
-
-            e.preventDefault();
-
-            App.request('/assetsmanager/updateAsset', {asset:$this.asset}).then(function(asset) {
-
-                App.$.extend($this.asset, asset);
-                App.ui.notify("Asset updated", "success");
-                $this.update();
-            });
-
-            return false;
+            this.update();
         }
 
         select(e) {
@@ -649,21 +514,6 @@
 
         getRefValue(name) {
             return this.refs[name] && this.refs[name].value;
-        }
-
-        placeFocalPoint(point) {
-
-            point = point || {x:0.5, y:0.5};
-
-            var canvas = App.$(this.root).find('.asset-fp-image canvas')[0];
-            var x = (point.x * 100)+'%';
-            var y = (point.y * 100)+'%';
-
-            App.$(this.root).find('.cp-assets-fp').css({
-                left: x,
-                top: y,
-                visibility: 'visible'
-            });
         }
 
         addFolder() {
@@ -743,6 +593,206 @@
     </script>
 
 </cp-assets>
+
+<cp-asset>
+
+  <style>
+  
+    .cp-assets-fp {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: red;
+        box-shadow: 0 0 10px rgba(0,0,0,.1);
+        border: 2px #fff solid;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+        visibility: hidden;
+    }
+  </style>
+  
+  <div class="uk-text-center uk-margin-large-top" show="{ !asset }">
+      <cp-preloader class="uk-container-center"></cp-preloader>
+  </div>
+
+  <div class="uk-form" if="{asset}">
+
+      <ul class="uk-tab uk-flex-center uk-margin" show="{ App.Utils.count(panels) }">
+          <li class="{!panel && 'uk-active'}"><a onclick="{selectPanel}">Main</a></li>
+          <li class="uk-text-capitalize {p.name == panel && 'uk-active'}" each="{p in panels}"><a onclick="{parent.selectPanel}">{p.name}</a></li>
+      </ul>
+
+      <div class="uk-grid" show="{!panel}">
+          <div class="uk-width-2-3">
+
+              <div class="uk-panel uk-panel-box uk-panel-card uk-panel-space">
+                  <div class="uk-form-row">
+                      <label class="uk-text-small uk-text-bold">{ App.i18n.get('Title') }</label>
+                      <input class="uk-width-1-1" type="text" bind="asset.title" required>
+                  </div>
+
+                  <div class="uk-form-row">
+                      <label class="uk-text-small uk-text-bold">{ App.i18n.get('Description') }</label>
+                      <textarea class="uk-width-1-1" bind="asset.description"></textarea>
+                  </div>
+
+                  <div class="uk-margin-large-top uk-text-center" if="{asset}">
+                      <span class="uk-h1" if="{asset.mime.match(/^image\//) == null }"><i class="uk-icon-{ getIconCls(asset.path) }"></i></span>
+                      <div class="uk-display-inline-block uk-position-relative asset-fp-image" if="{asset.mime.match(/^image\//) }">
+                          <cp-thumbnail src="{ASSETS_URL+asset.path}" width="800"></cp-thumbnail>
+                          <div class="cp-assets-fp" title="Focal Point" data-uk-tooltip></div>
+                      </div>
+                      <div class="uk-margin-top uk-text-truncate uk-text-small uk-text-muted">
+                          <a class="uk-button uk-button-outline uk-text-primary" href="{ASSETS_URL+asset.path}" target="_blank"><i class="uk-icon-link"></i></a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="uk-width-1-3">
+
+              <div class="uk-margin">
+                  <label class="uk-text-small uk-text-bold">{ App.i18n.get('Id') }</label>
+                  <div class="uk-margin-small-top uk-text-muted">{ asset._id }</div>
+              </div>
+              <div class="uk-margin">
+                  <label class="uk-text-small uk-text-bold">{ App.i18n.get('Folder') }</label>
+                  <div class="uk-margin-small-top"><cp-assets-folderselect asset="{asset}"></cp-assets-folderselect></div>
+              </div>
+              <div class="uk-margin">
+                  <label class="uk-text-small uk-text-bold">{ App.i18n.get('Type') }</label>
+                  <div class="uk-margin-small-top uk-text-muted"><span class="uk-badge uk-badge-outline">{ asset.mime }</span></div>
+              </div>
+              <div class="uk-margin" if="{asset.colors && Array.isArray(asset.colors) && asset.colors.length}">
+                  <label class="uk-text-small uk-text-bold">{ App.i18n.get('Colors') }</label>
+                  <div class="uk-margin-small-top uk-text-muted">
+                      <span class="uk-icon-circle uk-text-large uk-margin-small-right" each="{color in asset.colors}" riot-style="color: #{String(color).replace('#', '')}"></span>
+                  </div>
+              </div>
+              <div class="uk-margin">
+                  <label class="uk-text-small uk-text-bold">{ App.i18n.get('Size') }</label>
+                  <div class="uk-margin-small-top uk-text-muted">{ App.Utils.formatSize(asset.size) }</div>
+              </div>
+              <div class="uk-margin">
+                  <label class="uk-text-small uk-text-bold">{ App.i18n.get('Modified') }</label>
+                  <div class="uk-margin-small-top uk-text-primary"><span class="uk-badge uk-badge-outline">{ App.Utils.dateformat( new Date( 1000 * asset.modified )) }</span></div>
+              </div>
+              <div class="uk-margin">
+                  <label class="uk-text-small uk-text-bold">{ App.i18n.get('Tags') }</label>
+                  <div class="uk-margin-small-top">
+                      <field-tags bind="asset.tags"></field-tags>
+                  </div>
+              </div>
+              <div class="uk-margin" if="{ asset._by }">
+                  <label class="uk-text-small">{ App.i18n.get('Last update by') }</label>
+                  <div class="uk-margin-small-top">
+                      <cp-account account="{asset._by}"></cp-account>
+                  </div>
+              </div>
+
+          </div>
+      </div>
+
+      <div data-is="{'assetspanel-'+p.name}" asset="{asset}" each="{p in panels}" show="{panel == p.name}"></div>
+
+  </div>
+  
+  <script>
+    
+    this.mixin(RiotBindMixin);
+    
+    var $this = this, $root = App.$(this.root);
+    
+    this.panel  = null;
+    this.panels = [];
+
+    for (var tag in riot.tags) {
+
+        if (tag.indexOf('assetspanel-')==0) {
+
+            var f = tag.replace('assetspanel-', '');
+
+            this.panels.push({name:f, value:f});
+        }
+    }
+    
+    this.on('mount', function() {
+      
+      App.request('/assetsmanager/asset/'+opts.asset, {}).then(function(asset) {
+          
+          $this.asset = asset;
+          $this.update();
+          
+          if ($this.asset.mime.match(/^image\//)) {
+              
+              setTimeout(function() {
+                  
+                  $this.placeFocalPoint($this.asset.fp);
+                  
+                  $root.on('click', '.asset-fp-image canvas', function(e) {
+
+                      var x = e.offsetX, y = e.offsetY,
+                          px = (x / this.offsetWidth),
+                          py = (y / this.offsetHeight);
+
+                      $this.asset.fp = {x: px, y: py};
+                      $this.placeFocalPoint($this.asset.fp);
+                  });
+                  
+              }, 500)
+          }
+          
+      }, function(res) {
+          App.ui.notify(res && (res.message || res.error) ? (res.message || res.error) : 'Loading failed.', 'danger');
+      });
+      
+    });
+    
+    selectPanel(e) {
+        this.panel = e.item ? e.item.p.name : null;
+    }
+
+    updateAsset(clb) {
+  
+        if (!this.asset) {
+          return;
+        }
+        
+        return App.request('/assetsmanager/updateAsset', {asset:$this.asset}).then(function(asset) {
+
+            if (Array.isArray(asset)) {
+                asset = asset[0];
+            }
+
+            App.$.extend($this.asset, asset);
+            App.ui.notify("Asset updated", "success");
+            $this.update();
+            
+            if (clb) clb(asset);
+            
+            return asset;
+        });
+    }
+    
+    placeFocalPoint(point) {
+        
+        point = point || {x:0.5, y:0.5};
+
+        var canvas = $root.find('.asset-fp-image canvas')[0];
+        var x = (point.x * 100)+'%';
+        var y = (point.y * 100)+'%';
+
+        $root.find('.cp-assets-fp').css({
+            left: x,
+            top: y,
+            visibility: 'visible'
+        });
+    }
+  
+  </script>
+
+</cp-asset>
 
 <cp-assets-folderselect>
 
