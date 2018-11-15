@@ -6,7 +6,7 @@
 
 <div riot-view>
 
-    <div if="{ ready }">
+    <div>
 
         <div class="uk-margin uk-clearfix" if="{ App.Utils.count(forms) }">
 
@@ -42,15 +42,15 @@
 
         <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4 uk-margin-top">
 
-            <div each="{ meta, form in forms }" show="{ infilter(meta) }">
+            <div each="{ form, idx in forms }" show="{ infilter(form.meta) }">
 
                 <div class="uk-panel uk-panel-box uk-panel-card">
 
                     <div class="uk-panel-teaser uk-position-relative">
                         <canvas width="600" height="350"></canvas>
-                        <a href="@route('/forms/entries')/{form}" class="uk-position-cover uk-flex uk-flex-middle uk-flex-center">
-                            <div class="uk-width-1-4 uk-svg-adjust" style="color:{ (meta.color) }">
-                                <img riot-src="{ meta.icon ? '@url('assets:app/media/icons/')'+meta.icon : '@url('forms:icon.svg')'}" alt="icon" data-uk-svg>
+                        <a href="@route('/forms/entries')/{form.name}" class="uk-position-cover uk-flex uk-flex-middle uk-flex-center">
+                            <div class="uk-width-1-4 uk-svg-adjust" style="color:{ (form.meta.color) }">
+                                <img riot-src="{ form.meta.icon ? '@url('assets:app/media/icons/')'+form.meta.icon : '@url('forms:icon.svg')'}" alt="icon" data-uk-svg>
                             </div>
                         </a>
                     </div>
@@ -59,25 +59,25 @@
 
                         <div data-uk-dropdown="delay:300">
 
-                            <a class="uk-icon-cog" style="color:{ (meta.color) }" href="@route('/forms/form')/{ form }"></a>
+                            <a class="uk-icon-cog" style="color:{ (form.meta.color) }" href="@route('/forms/form')/{ form.name }"></a>
 
                             <div class="uk-dropdown">
                                 <ul class="uk-nav uk-nav-dropdown">
                                     <li class="uk-nav-header">@lang('Actions')</li>
-                                    <li><a href="@route('/forms/entries')/{form}">@lang('Entries')</a></li>
+                                    <li><a href="@route('/forms/entries')/{form.name}">@lang('Entries')</a></li>
                                     <li class="uk-nav-divider"></li>
-                                    <li><a href="@route('/forms/form')/{ form }">@lang('Edit')</a></li>
+                                    <li><a href="@route('/forms/form')/{ form.name }">@lang('Edit')</a></li>
                                     <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
                                     <li class="uk-nav-divider"></li>
-                                    <li class="uk-text-truncate"><a href="@route('/forms/export')/{ meta.name }" download="{ meta.name }.form.json">@lang('Export entries')</a></li>
+                                    <li class="uk-text-truncate"><a href="@route('/forms/export')/{ form.meta.name }" download="{ form.meta.name }.form.json">@lang('Export entries')</a></li>
                                 </ul>
                             </div>
                         </div>
 
-                        <a class="uk-text-bold uk-flex-item-1 uk-text-center uk-link-muted" href="@route('/forms/entries')/{form}">{ meta.label || form }</a>
+                        <a class="uk-text-bold uk-flex-item-1 uk-text-center uk-link-muted" href="@route('/forms/entries')/{form}">{ form.label }</a>
 
                         <div>
-                            <span class="uk-badge" style="background-color:{ (meta.color) }">{ meta.itemsCount }</span>
+                            <span class="uk-badge" style="background-color:{ (form.meta.color) }">{ form.meta.itemsCount }</span>
                         </div>
                     </div>
 
@@ -94,32 +94,18 @@
 
         var $this = this;
 
-        this.ready  = false;
-        this.forms = [];
-
-        this.on('mount', function() {
-
-            App.callmodule('forms:forms', true).then(function(data) {
-
-                this.forms = data.result;
-                this.ready  = true;
-                this.update();
-
-            }.bind(this));
-        });
+        this.forms = {{ json_encode($forms) }};
 
         remove(e, form) {
 
             form = e.item.form;
 
-            App.ui.confirm("Are you sure?", function() {
+            App.ui.confirm('Are you sure?', function() {
 
-                App.callmodule('forms:removeForm', form).then(function(data) {
+                App.callmodule('forms:removeForm', form.name).then(function(data) {
 
-                    App.ui.notify("Form removed", "success");
-
-                    delete $this.forms[form];
-
+                    App.ui.notify('Form removed', 'success');
+                    $this.forms.splice(e.item.idx, 1);
                     $this.update();
                 });
             });

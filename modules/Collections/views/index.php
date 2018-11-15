@@ -6,7 +6,7 @@
 
 <div riot-view>
 
-    <div if="{ ready }">
+    <div>
 
         <div class="uk-margin uk-clearfix" if="{ App.Utils.count(collections) }">
 
@@ -44,15 +44,15 @@
 
         <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4 uk-margin-top">
 
-            <div each="{ meta, collection in collections }" show="{ infilter(meta) }">
+            <div each="{ collection, idx in collections }" show="{ infilter(collection.meta) }">
 
                 <div class="uk-panel uk-panel-box uk-panel-card">
 
                     <div class="uk-panel-teaser uk-position-relative">
                         <canvas width="600" height="350"></canvas>
-                        <a href="@route('/collections/entries')/{collection}" class="uk-position-cover uk-flex uk-flex-middle uk-flex-center">
-                            <div class="uk-width-1-4 uk-svg-adjust" style="color:{ (meta.color) }">
-                                <img riot-src="{ meta.icon ? '@url('assets:app/media/icons/')'+meta.icon : '@url('collections:icon.svg')'}" alt="icon" data-uk-svg>
+                        <a href="@route('/collections/entries')/{collection.name}" class="uk-position-cover uk-flex uk-flex-middle uk-flex-center">
+                            <div class="uk-width-1-4 uk-svg-adjust" style="color:{ (collection.meta.color) }">
+                                <img riot-src="{ collection.meta.icon ? '@url('assets:app/media/icons/')'+collection.meta.icon : '@url('collections:icon.svg')'}" alt="icon" data-uk-svg>
                             </div>
                         </a>
                     </div>
@@ -61,29 +61,29 @@
 
                         <div data-uk-dropdown="delay:300">
 
-                            <a class="uk-icon-cog" style="color:{ (meta.color) }" href="@route('/collections/collection')/{ collection }" if="{ meta.allowed.edit }"></a>
-                            <a class="uk-icon-cog" style="color:{ (meta.color) }" if="{ !meta.allowed.edit }"></a>
+                            <a class="uk-icon-cog" style="color:{ (collection.meta.color) }" href="@route('/collections/collection')/{ collection.name }" if="{ collection.meta.allowed.edit }"></a>
+                            <a class="uk-icon-cog" style="color:{ (collection.meta.color) }" if="{ !collection.meta.allowed.edit }"></a>
 
                             <div class="uk-dropdown">
                                 <ul class="uk-nav uk-nav-dropdown">
                                     <li class="uk-nav-header">@lang('Actions')</li>
                                     <li><a href="@route('/collections/entries')/{collection}">@lang('Entries')</a></li>
-                                    <li><a href="@route('/collections/entry')/{collection}" if="{ meta.allowed.entries_create }">@lang('Add entry')</a></li>
-                                    <li if="{ meta.allowed.edit || meta.allowed.delete }" class="uk-nav-divider"></li>
-                                    <li if="{ meta.allowed.edit }"><a href="@route('/collections/collection')/{ collection }">@lang('Edit')</a></li>
+                                    <li><a href="@route('/collections/entry')/{collection}" if="{ collection.meta.allowed.entries_create }">@lang('Add entry')</a></li>
+                                    <li if="{ collection.meta.allowed.edit || collection.meta.allowed.delete }" class="uk-nav-divider"></li>
+                                    <li if="{ collection.meta.allowed.edit }"><a href="@route('/collections/collection')/{ collection }">@lang('Edit')</a></li>
                                     @hasaccess?('collections', 'delete')
-                                    <li class="uk-nav-item-danger" if="{ meta.allowed.delete }"><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
+                                    <li class="uk-nav-item-danger" if="{ collection.meta.allowed.delete }"><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
                                     @end
-                                    <li class="uk-nav-divider" if="{ meta.allowed.edit }"></li>
-                                    <li class="uk-text-truncate" if="{ meta.allowed.edit }"><a href="@route('/collections/export')/{ meta.name }" download="{ meta.name }.collection.json">@lang('Export entries')</a></li>
-                                    <li class="uk-text-truncate" if="{ meta.allowed.edit }"><a href="@route('/collections/import/collection')/{ meta.name }">@lang('Import entries')</a></li>
+                                    <li class="uk-nav-divider" if="{ collection.meta.allowed.edit }"></li>
+                                    <li class="uk-text-truncate" if="{ collection.meta.allowed.edit }"><a href="@route('/collections/export')/{ collection.name }" download="{ collection.meta.name }.collection.json">@lang('Export entries')</a></li>
+                                    <li class="uk-text-truncate" if="{ collection.meta.allowed.edit }"><a href="@route('/collections/import/collection')/{ collection.name }">@lang('Import entries')</a></li>
                                 </ul>
                             </div>
                         </div>
 
-                        <a class="uk-text-bold uk-flex-item-1 uk-text-center uk-link-muted" href="@route('/collections/entries')/{collection}">{ meta.label || collection }</a>
+                        <a class="uk-text-bold uk-flex-item-1 uk-text-center uk-link-muted" href="@route('/collections/entries')/{collection.name}">{ collection.label }</a>
                         <div>
-                            <span class="uk-badge" riot-style="background-color:{ (meta.color) }">{ meta.itemsCount }</span>
+                            <span class="uk-badge" riot-style="background-color:{ (collection.meta.color) }">{ collection.meta.itemsCount }</span>
                         </div>
                     </div>
 
@@ -100,7 +100,6 @@
 
         var $this = this;
 
-        this.ready  = true;
         this.collections = {{ json_encode($collections) }};
 
         remove(e, collection) {
@@ -109,11 +108,11 @@
 
             App.ui.confirm("Are you sure?", function() {
 
-                App.callmodule('collections:removeCollection', collection).then(function(data) {
+                App.callmodule('collections:removeCollection', collection.name).then(function(data) {
 
                     App.ui.notify("Collection removed", "success");
 
-                    delete $this.collections[collection];
+                    $this.collections.splice(e.item.idx, 1);
 
                     $this.update();
                 });

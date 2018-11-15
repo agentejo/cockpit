@@ -46,15 +46,15 @@
 
         <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4 uk-margin-top">
 
-            <div each="{ meta, singleton in singletons }" show="{ infilter(meta) }">
+            <div each="{ singleton,idx in singletons }" show="{ infilter(singleton.meta) }">
 
                 <div class="uk-panel uk-panel-box uk-panel-card">
 
                     <div class="uk-panel-teaser uk-position-relative">
                         <canvas width="600" height="350"></canvas>
-                        <a href="@route('/singletons/form')/{ singleton }" class="uk-position-cover uk-flex uk-flex-middle uk-flex-center">
-                            <div class="uk-width-1-4 uk-svg-adjust" style="color:{ (meta.color) }">
-                                <img riot-src="{ meta.icon ? '@url('assets:app/media/icons/')'+meta.icon : '@url('singletons:icon.svg')'}" alt="icon" data-uk-svg>
+                        <a href="@route('/singletons/form')/{ singleton.name }" class="uk-position-cover uk-flex uk-flex-middle uk-flex-center">
+                            <div class="uk-width-1-4 uk-svg-adjust" style="color:{ (singleton.meta.color) }">
+                                <img riot-src="{ singleton.meta.icon ? '@url('assets:app/media/icons/')'+singleton.meta.icon : '@url('singletons:icon.svg')'}" alt="icon" data-uk-svg>
                             </div>
                         </a>
                     </div>
@@ -63,15 +63,15 @@
 
                         <div data-uk-dropdown="delay:300">
 
-                            <a class="uk-icon-cog" style="color: { (meta.color) }" href="@route('/singletons/singleton')/{ singleton }" if="{ meta.allowed.singleton_edit }"></a>
-                            <a class="uk-icon-cog" style="color: { (meta.color) }" if="{ !meta.allowed.singleton_edit }"></a>
+                            <a class="uk-icon-cog" style="color: { (singleton.meta.color) }" href="@route('/singletons/singleton')/{ singleton.name }" if="{ singleton.meta.allowed.singleton_edit }"></a>
+                            <a class="uk-icon-cog" style="color: { (singleton.meta.color) }" if="{ !singleton.meta.allowed.singleton_edit }"></a>
 
                             <div class="uk-dropdown">
                                 <ul class="uk-nav uk-nav-dropdown">
                                     <li class="uk-nav-header">@lang('Actions')</li>
-                                    <li><a href="@route('/singletons/form')/{ singleton }">@lang('Form')</a></li>
-                                    <li if="{ meta.allowed.singleton_edit }" class="uk-nav-divider"></li>
-                                    <li if="{ meta.allowed.singleton_edit }"><a href="@route('/singletons/singleton')/{ singleton }">@lang('Edit')</a></li>
+                                    <li><a href="@route('/singletons/form')/{ singleton.name }">@lang('Form')</a></li>
+                                    <li if="{ singleton.meta.allowed.singleton_edit }" class="uk-nav-divider"></li>
+                                    <li if="{ singleton.meta.allowed.singleton_edit }"><a href="@route('/singletons/singleton')/{ singleton.name }">@lang('Edit')</a></li>
                                     @hasaccess?('singletons', 'delete')
                                     <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ this.parent.remove }">@lang('Delete')</a></li>
                                     @end
@@ -79,7 +79,7 @@
                             </div>
                         </div>
                         <div class="uk-flex-item-1 uk-text-center">
-                            <a class="uk-text-bold uk-link-muted" href="@route('/singletons/form')/{singleton}">{ meta.label || singleton }</a>
+                            <a class="uk-text-bold uk-link-muted" href="@route('/singletons/form')/{singleton.name}">{ singleton.label }</a>
                         </div>
                         <div>&nbsp;</div>
 
@@ -107,11 +107,11 @@
 
             App.ui.confirm("Are you sure?", function() {
 
-                App.request('/singletons/remove_singleton/'+singleton, {nc:Math.random()}).then(function(data) {
+                App.request('/singletons/remove_singleton/'+singleton.name, {nc:Math.random()}).then(function(data) {
 
                     App.ui.notify("Singleton removed", "success");
 
-                    delete $this.singletons[singleton];
+                    $this.singletons.splice(e.item.idx, 1);
 
                     $this.update();
                 });
