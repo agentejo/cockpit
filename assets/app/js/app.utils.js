@@ -14,6 +14,7 @@
 
     App.Utils.isString    = function(val){ return "string"===typeof val; };
     App.Utils.isNumber    = function(val){ return "number"===typeof val; };
+    App.Utils.isNumeric   = function(val){ return !isNaN(parseFloat(val)) && isFinite(val); };
     App.Utils.isFunction  = function(val){ return "function"===typeof val; };
     App.Utils.isUndefined = function(val){ return "undefined"===typeof val; };
     App.Utils.isDefined   = function(val){ return "undefined"!==typeof val; };
