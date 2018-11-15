@@ -5,6 +5,12 @@
 </style>
 @endif
 
+<script>
+
+  window.__revisions = {{ json_encode($revisions) }};
+
+</script>
+
 <div>
     <ul class="uk-breadcrumb">
         <li><a href="@route('/singletons')">@lang('Singletons')</a></li>
@@ -130,9 +136,9 @@
 
         var $this = this;
 
-        this.singleton   = {{ json_encode($singleton) }};
-        this.revisions = {{ json_encode($revisions) }};
-        this.current   = {{ json_encode($data) }};
+        this.singleton  = {{ json_encode($singleton) }};
+        this.revisions  = window.__revisions;
+        this.current    = {{ json_encode($data) }};
 
         this.showOnlyChanged = true;
 

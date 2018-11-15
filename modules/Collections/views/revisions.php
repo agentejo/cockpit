@@ -5,6 +5,12 @@
 </style>
 @endif
 
+<script>
+
+  window.__revisions = {{ json_encode($revisions) }};
+
+</script>
+
 <div>
     <ul class="uk-breadcrumb">
         <li><a href="@route('/collections')">@lang('Collections')</a></li>
@@ -131,9 +137,9 @@
 
         var $this = this;
 
-        this.collection   = {{ json_encode($collection) }};
-        this.revisions = {{ json_encode($revisions) }};
-        this.current   = {{ json_encode($entry) }};
+        this.collection = {{ json_encode($collection) }};
+        this.revisions  = window.__revisions;
+        this.current    = {{ json_encode($entry) }};
 
         this.showOnlyChanged = true;
 
