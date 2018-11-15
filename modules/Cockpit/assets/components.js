@@ -1287,6 +1287,7 @@ riot.tag2('cp-revisions-info', '<span> <span class="uk-icon-spinner uk-icon-spin
         this.cnt = false;
 
         this.on('mount', function() {
+
             this.sync();
 
             if (opts.parent) {
@@ -1304,6 +1305,10 @@ riot.tag2('cp-revisions-info', '<span> <span class="uk-icon-spinner uk-icon-spin
             this.loading = true;
 
             App.request('/cockpit/utils/revisionsCount', {id:opts.rid}, 'text').then(function(cnt){
+
+                if (!App.Utils.isNumeric(cnt)) {
+                    cnt = 'n/a';
+                }
 
                 $this.loading = false;
                 $this.cnt = cnt;
