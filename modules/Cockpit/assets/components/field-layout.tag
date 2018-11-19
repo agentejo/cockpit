@@ -405,6 +405,10 @@
 
         remove(e) {
             this.items.splice(e.item.idx, 1);
+            
+            if (opts.child) {
+                this.parent.update()
+            }
         }
 
         settings(e) {
@@ -531,7 +535,7 @@
             var n = this;
 
             while (n.parent) {
-                if (n.parent.root.getAttribute('data-is') == 'field-layout') {
+                if (n.parent.root.tagName == 'field-layout' || n.parent.root.getAttribute('data-is') == 'field-layout') {
                     n.parent.$setValue(n.parent.items);
                 }
                 n = n.parent;

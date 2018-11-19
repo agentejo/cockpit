@@ -2856,6 +2856,10 @@ riot.tag2('field-layout', '<div class="uk-sortable layout-components {!items.len
 
         this.remove = function(e) {
             this.items.splice(e.item.idx, 1);
+
+            if (opts.child) {
+                this.parent.update()
+            }
         }.bind(this)
 
         this.settings = function(e) {
@@ -2943,7 +2947,7 @@ riot.tag2('field-layout-grid', '<div class="uk-text-center uk-placeholder" if="{
             var n = this;
 
             while (n.parent) {
-                if (n.parent.root.getAttribute('data-is') == 'field-layout') {
+                if (n.parent.root.tagName == 'field-layout' || n.parent.root.getAttribute('data-is') == 'field-layout') {
                     n.parent.$setValue(n.parent.items);
                 }
                 n = n.parent;
@@ -3212,9 +3216,13 @@ riot.tag2('field-object', '<div ref="input" riot-style="height: {opts.height || 
                 editor = new JSONEditor(this.refs.input, {
                     modes: ['tree', 'code'],
                     mode: 'code',
-                    onChange: function(){
-                        $this.value = editor.get() || {};
-                        $this.$setValue($this.value, true);
+                    onError: function(e) {},
+                    onChange: function() {
+
+                        try {
+                            $this.value = editor.get() || {};
+                            $this.$setValue($this.value, true);
+                        } catch(e) {}
                     }
                 });
 
