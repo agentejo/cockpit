@@ -66,6 +66,8 @@ $this->module('collections')->extend([
         $this->app->trigger('collections.updatecollection', [$collection]);
         $this->app->trigger("collections.updatecollection.{$name}", [$collection]);
 
+        if (function_exists('opcache_reset')) opcache_reset();
+
         return $collection;
     },
 
