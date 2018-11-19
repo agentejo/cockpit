@@ -62,6 +62,8 @@ $this->module('forms')->extend([
             return false;
         }
 
+        if (function_exists('opcache_reset')) opcache_reset();
+
         return $form;
     },
 

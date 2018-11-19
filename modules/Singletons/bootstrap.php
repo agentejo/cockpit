@@ -75,6 +75,8 @@ $this->module('singletons')->extend([
         $this->app->trigger('singleton.save.after', [$singleton]);
         $this->app->trigger("singleton.save.after.{$name}", [$singleton]);
 
+        if (function_exists('opcache_reset')) opcache_reset();
+
         return $singleton;
     },
 
