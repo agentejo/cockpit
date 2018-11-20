@@ -70,7 +70,7 @@
                                     <li><a href="@route('/collections/entries')/{collection}">@lang('Entries')</a></li>
                                     <li><a href="@route('/collections/entry')/{collection}" if="{ collection.meta.allowed.entries_create }">@lang('Add entry')</a></li>
                                     <li if="{ collection.meta.allowed.edit || collection.meta.allowed.delete }" class="uk-nav-divider"></li>
-                                    <li if="{ collection.meta.allowed.edit }"><a href="@route('/collections/collection')/{ collection }">@lang('Edit')</a></li>
+                                    <li if="{ collection.meta.allowed.edit }"><a href="@route('/collections/collection')/{ collection.name }">@lang('Edit')</a></li>
                                     @hasaccess?('collections', 'delete')
                                     <li class="uk-nav-item-danger" if="{ collection.meta.allowed.delete }"><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
                                     @end
