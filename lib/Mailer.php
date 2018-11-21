@@ -34,7 +34,7 @@ class Mailer {
 
     public function createMessage($to, $subject, $message, $options=[]) {
 
-        $mail = new PHPMailer();
+        $mail = new PHPMailer(true);
 
         if ($this->transport == 'smtp') {
 

@@ -296,7 +296,11 @@ $this->module('forms')->extend([
 
                 $formname = isset($frm['label']) && trim($frm['label']) ? $frm['label'] : $form;
 
-                $this->app->mailer->mail($frm['email_forward'], $options['subject'] ?? "New form data for: {$formname}", $body, $options);
+                try {
+                    $response = $this->app->mailer->mail($frm['email_forward'], $options['subject'] ?? "New form data for: {$formname}", $body, $options);
+                } catch (\Exception $e) {
+                    $response = $e->getMessage();
+                }
             }
         }
 
@@ -307,7 +311,7 @@ $this->module('forms')->extend([
 
         $this->app->trigger('forms.submit.after', [$form, &$data, $frm]);
 
-        return $data;
+        return (isset($response) && $response !== true) ? ['error' => $response, 'data' => $data] : $data;
     }
 ]);
 
