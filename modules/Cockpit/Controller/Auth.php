@@ -67,7 +67,7 @@ class Auth extends \LimeExtra\Controller {
             $user = $this->app->storage->findOne('cockpit/accounts', $query);
 
             if (!$user) {
-                return $this->stop('{"error": "User not found"}', 404);
+                return $this->stop(['error' => $this('i18n')->get('User does not exist')], 404);
             }
 
             $token  = uniqid('rp-').'-'.time();
@@ -77,16 +77,24 @@ class Auth extends \LimeExtra\Controller {
             $this->app->storage->save('cockpit/accounts', $data);
             $message = $this->app->view('cockpit:emails/recover.php', compact('user','token','target'));
 
-            $this->app->mailer->mail(
-                $user['email'],
-                $this->param('subject', $this->app->getSiteUrl().' - Pasword Recovery'),
-                $message
-            );
+            try {
+                $response = $this->app->mailer->mail(
+                    $user['email'],
+                    $this->param('subject', $this->app->getSiteUrl().' - '.$this('i18n')->get('Password Recovery')),
+                    $message
+                );
+            } catch (\Exception $e) {
+                $response = $e->getMessage();
+            }
 
-            return ['message' => 'Recovery email sent'];
+            if ($response !== true) {
+                return $this->stop(['error' => $this('i18n')->get($response)], 404);
+            }
+
+            return ['message' => $this('i18n')->get('Recovery email sent')];
         }
 
-        return $this->stop('{"error": "User required"}', 412);
+        return $this->stop(['error' => $this('i18n')->get('User required')], 412);
     }
 
     public function newpassword() {
@@ -123,9 +131,9 @@ class Auth extends \LimeExtra\Controller {
 
             $this->app->storage->save('cockpit/accounts', $data);
 
-            return ['success' => true, 'message' => 'Password updated'];
+            return ['success' => true, 'message' => $this('i18n')->get('Password updated')];
         }
 
-        return $this->stop('{"error": "Token required"}', 412);
+        return $this->stop(['error' => $this('i18n')->get('Token required')], 412);
     }
 }
