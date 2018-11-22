@@ -63,7 +63,7 @@
                     <div class="uk-margin">
                         <field-boolean bind="singleton.in_menu" title="@lang('Show in system menu')" label="@lang('Show in system menu')"></field-boolean>
                     </div>
-                    
+
                </div>
 
             </div>
@@ -129,21 +129,23 @@
 
                     </div>
 
-                    <div class="uk-margin-large-top">
-
-                        <div class="uk-button-group">
-                            <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
-                            <a class="uk-button uk-button-large" href="@route('/singletons/form')/{ singleton.name }" if="{ singleton._id }">@lang('Show form')</a>
-                        </div>
-
-                        <a class="uk-button uk-button-large uk-button-link" href="@route('/singletons')">
-                            <span show="{ !singleton._id }">@lang('Cancel')</span>
-                            <span show="{ singleton._id }">@lang('Close')</span>
-                        </a>
-                    </div>
-
                 </div>
 
+            </div>
+        </div>
+
+        <div class="app-action-bar">
+            <div class="uk-container uk-container-center">
+
+                <div class="uk-button-group">
+                    <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
+                    <a class="uk-button uk-button-large" href="@route('/singletons/form')/{ singleton.name }" if="{ singleton._id }">@lang('Show form')</a>
+                </div>
+
+                <a class="uk-button uk-button-large uk-button-link" href="@route('/singletons')">
+                    <span show="{ !singleton._id }">@lang('Cancel')</span>
+                    <span show="{ singleton._id }">@lang('Close')</span>
+                </a>
             </div>
         </div>
     </form>

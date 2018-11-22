@@ -196,22 +196,23 @@
 
                 </div>
 
-
-                <div class="uk-margin-large-top" show="{ collection.fields.length }">
-
-                    <div class="uk-button-group">
-                        <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
-                        <a class="uk-button uk-button-large" href="@route('/collections/entries')/{ collection.name }" if="{ collection._id }">@lang('Show entries')</a>
-                    </div>
-
-                    <a class="uk-button uk-button-large uk-button-link" href="@route('/collections')">
-                        <span show="{ !collection._id }">@lang('Cancel')</span>
-                        <span show="{ collection._id }">@lang('Close')</span>
-                    </a>
-                </div>
-
             </div>
 
+        </div>
+
+        <div class="app-action-bar">
+            <div class="uk-container uk-container-center">
+
+                <div class="uk-button-group">
+                    <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
+                    <a class="uk-button uk-button-large" href="@route('/collections/entries')/{ collection.name }" if="{ collection._id }">@lang('Show entries')</a>
+                </div>
+
+                <a class="uk-button uk-button-large uk-button-link" href="@route('/collections')">
+                    <span show="{ !collection._id }">@lang('Cancel')</span>
+                    <span show="{ collection._id }">@lang('Close')</span>
+                </a>
+            </div>
         </div>
 
     </form>
