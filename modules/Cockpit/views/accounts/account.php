@@ -109,9 +109,11 @@
 
                         @trigger('cockpit.account.editview')
 
-                        <div class="uk-margin-large-top">
-                            <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
-                            <a class="uk-button uk-button-large uk-button-link" href="@route('/accounts')">@lang('Cancel')</a>
+                        <div class="app-action-bar">
+                            <div class="uk-container uk-container-center">
+                                <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
+                                <a class="uk-button uk-button-large uk-button-link" href="@route('/accounts')">@lang('Cancel')</a>
+                            </div>
                         </div>
 
                     </form>
