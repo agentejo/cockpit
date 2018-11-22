@@ -53,6 +53,10 @@
                     <div class="uk-animation-shake uk-margin-top" if="{ error }">
                         <strong>{ error }</strong>
                     </div>
+
+                    <div class="uk-animation-shake uk-margin-top" if="{ message }">
+                        <strong>{ message }</strong>
+                    </div>
                 </div>
 
                 <div class="uk-alert uk-alert-success uk-text-center uk-animation-slide-bottom" if="{ reset }">
@@ -77,6 +81,7 @@
 
             this.error = false;
             this.reset = false;
+            this.message = false;
 
             submit(e) {
 
@@ -88,11 +93,12 @@
                 App.request('/auth/requestreset', {user:this.refs.user.value}).then(function(data){
 
                     this.reset = true;
+                    this.message = data.message;
                     this.update();
 
                 }.bind(this)).catch(function(data) {
 
-                    this.error = '@lang("User does not exist")';
+                    this.error = typeof data.error === 'string' ? data.error : '@lang("Something went wrong")';
 
                     App.$('#reset-dialog').removeClass('uk-animation-shake');
 
