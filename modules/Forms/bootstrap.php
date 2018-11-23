@@ -80,10 +80,10 @@ $this->module('forms')->extend([
 
         if ($form = $this->form($name)) {
 
-            $form = $forms['_id'];
+            $form = $form['_id'];
 
             $this->app->helper('fs')->delete("#storage:forms/{$name}.form.php");
-            $this->app->storage->dropform("forms/{$form}");
+            $this->app->storage->dropCollection("forms/{$form}");
 
             return true;
         }

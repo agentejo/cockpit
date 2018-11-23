@@ -136,12 +136,6 @@ class RestApi extends \LimeExtra\Controller {
     public function listUsers() {
 
         $user    = $this->module('cockpit')->getUser();
-        $isAdmin = false;
-
-        if ($user) {
-            $isAdmin = $this->module('cockpit')->isSuperAdmin($user['group']);
-        }
-
         $options = ['sort' => ['user' => 1]];
 
         if ($filter = $this->param('filter')) {
