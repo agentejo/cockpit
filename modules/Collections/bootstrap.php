@@ -189,11 +189,6 @@ $this->module('collections')->extend([
         $name       = $collection;
         $collection = $_collection['_id'];
 
-        // sort by custom order if collection is sortable
-        if (isset($_collection['sortable']) && $_collection['sortable'] && !isset($options['sort'])) {
-            //$options['sort'] = ['_o' => 1];
-        }
-
         // check rule
         $context = new \stdClass();
         $context->options = $options;
@@ -244,7 +239,6 @@ $this->module('collections')->extend([
         if (!$_collection) return false;
 
         $name       = $collection;
-        $collection = $_collection['_id'];
         $options    = [
             'filter'       => $criteria,
             'fields'       => $projection,
@@ -315,7 +309,7 @@ $this->module('collections')->extend([
                             break;
 
                         case 'url':
-                            $value = filter_var($value, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED) ? $value:null;
+                            $value = filter_var($value, FILTER_VALIDATE_URL) ? $value:null;
                             break;
 
                         case 'email':

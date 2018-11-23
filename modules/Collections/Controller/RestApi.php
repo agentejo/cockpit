@@ -41,7 +41,6 @@ class RestApi extends \LimeExtra\Controller {
         if ($fields && isset($_GET['fields'])) $options['fields'] = $this->_fixStringBooleanValues($fields);
 
         // fields filter
-        $fieldsFilter = [];
 
         if ($fieldsFilter = $this->param('fieldsFilter', [])) $options['fieldsFilter'] = $fieldsFilter;
         if ($lang = $this->param('lang', false)) $fieldsFilter['lang'] = $lang;
@@ -105,7 +104,6 @@ class RestApi extends \LimeExtra\Controller {
             'total'    => (!$skip && !$limit) ? $count : $this->module('collections')->count($collection['name'], $filter ? $filter : [])
         ];
 
-        return $entries;
     }
 
     public function save($collection=null) {
