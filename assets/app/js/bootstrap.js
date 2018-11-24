@@ -111,20 +111,6 @@
         }, 500);
     });
 
-    // $(function() {
-    //
-    //     var appbar = $('.app-action-bar:first');
-    //
-    //     if (appbar.length) {
-    //         var fn = function() {
-    //             UIkit.$body.css('padding-bottom', appbar.outerHeight());
-    //             return fn;
-    //         };
-    //
-    //         UI.domObserve(appbar, fn());
-    //     }
-    // });
-
 })(jQuery, UIkit);
 
 
@@ -137,7 +123,7 @@ class AppActionBarElement extends HTMLElement {
     connectedCallback() {
         document.body.style.paddingBottom = this.offsetHeight+'px';
     }
-    
+
     disconnectedCallback() {
         document.body.style.paddingBottom = '';
     }
