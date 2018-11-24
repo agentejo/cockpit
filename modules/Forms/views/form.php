@@ -82,7 +82,7 @@
 
         </div>
 
-        <div class="app-action-bar">
+        <cp-actionbar>
             <div class="uk-container uk-container-center">
 
                 <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
@@ -92,7 +92,7 @@
                     <span show="{ form._id }">@lang('Close')</span>
                 </a>
             </div>
-        </div>
+        </cp-actionbar>
 
     </form>
 

@@ -205,7 +205,7 @@
 
         </div>
 
-        <div class="app-action-bar">
+        <cp-actionbar>
             <div class="uk-container uk-container-center">
 
                 <div class="uk-button-group">
@@ -218,7 +218,7 @@
                     <span show="{ collection._id }">@lang('Close')</span>
                 </a>
             </div>
-        </div>
+        </cp-actionbar>
 
     </form>
 
