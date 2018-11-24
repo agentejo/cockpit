@@ -300,7 +300,7 @@
             if (!state.scopes) {
               state.variables = prepend(null, 'ij');
             }
-          } else if (state.tag.match(/^@(?:param\??|inject)/)) {
+          } else if (state.tag.match(/^@(?:param\??|inject|prop)/)) {
             state.soyState.push("param-def");
           }
           return "keyword";
@@ -349,6 +349,8 @@
       fold: "indent"
     };
   }, "htmlmixed");
+
+  CodeMirror.registerHelper("wordChars", "soy", /[\w$]/);
 
   CodeMirror.registerHelper("hintWords", "soy", indentingTags.concat(
       ["delpackage", "namespace", "alias", "print", "css", "debugger"]));
