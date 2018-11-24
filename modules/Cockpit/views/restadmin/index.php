@@ -73,12 +73,12 @@
                 <button class="uk-button uk-button-link" onclick="{ addKey }"><i class="uk-icon-plus"></i> @lang('API Key')</button>
             </div>
 
-            <div class="app-action-bar">
+            <cp-actionbar>
                 <div class="uk-container uk-container-center">
                     <button class="uk-button uk-button-primary uk-button-large" type="button" name="button" onclick="{ save }">@lang('Save')</button>
                     <a class="uk-button uk-button-large uk-button-link" href="@route('/settings')">@lang('Close')</a>
                 </div>
-            </div>
+            </cp-actionbar>
 
         </div>
 
