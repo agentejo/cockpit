@@ -73,14 +73,6 @@ class Collection {
      */
     protected function _insert(&$document) {
 
-        //JSON_NUMERIC_CHECK - without destroying values with leading zeros
-        array_walk_recursive($document, function (&$val, $key) {
-
-            if (is_string($val) && is_numeric($val) && $val[0] !== '0') {
-                $val += 0;
-            }
-        });
-
         $table           = $this->name;
         $document['_id'] = isset($document['_id']) ? $document['_id'] : createMongoDbLikeId();
         $data            = ['document' => json_encode($document, JSON_UNESCAPED_UNICODE)];
@@ -130,13 +122,6 @@ class Collection {
         $sql    = 'SELECT id, document FROM '.$this->name.' WHERE document_criteria("'.$this->database->registerCriteriaFunction($criteria).'", document)';
         $stmt   = $this->database->connection->query($sql);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        array_walk_recursive($data, function (&$val, $key) {
-
-            if (is_string($val) && is_numeric($val) && $val[0] !== '0') {
-                $val += 0;
-            }
-        });
 
         foreach ($result as &$doc) {
 
