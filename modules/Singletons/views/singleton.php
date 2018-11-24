@@ -30,6 +30,11 @@
                    </div>
 
                    <div class="uk-margin">
+                       <label class="uk-text-small">@lang('Group')</label>
+                       <input class="uk-width-1-1 uk-form-large" type="text" ref="group" bind="singleton.group">
+                   </div>
+
+                   <div class="uk-margin">
                        <label class="uk-text-small">@lang('Icon')</label>
                        <div data-uk-dropdown="pos:'right-center', mode:'click'">
                            <a><img class="uk-display-block uk-margin uk-container-center" riot-src="{ singleton.icon ? '@url('assets:app/media/icons/')'+singleton.icon : '@url('singletons:icon.svg')'}" alt="icon" width="100"></a>

@@ -41,10 +41,17 @@
 
         </div>
 
+        <div class="uk-margin" if="{groups.length}">
+
+            <ul class="uk-tab uk-flex uk-flex-center uk-noselect">
+                <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize { group && 'uk-text-muted'}" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
+                <li class="{ group==parent.group && 'uk-active'}" each="{group in groups}"><a class="uk-text-capitalize { group!=parent.group && 'uk-text-muted'}" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+            </ul>
+        </div>
 
         <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4 uk-margin-top">
 
-            <div each="{ collection, idx in collections }" show="{ infilter(collection.meta) }">
+            <div each="{ collection, idx in collections }" show="{ ingroup(collection.meta) && infilter(collection.meta) }">
 
                 <div class="uk-panel uk-panel-box uk-panel-card">
 
@@ -101,6 +108,15 @@
         var $this = this;
 
         this.collections = {{ json_encode($collections) }};
+        this.groups = [];
+
+        this.collections.forEach(function(collection) {
+
+            if (collection.meta.group) {
+                $this.groups.push(collection.meta.group);
+            }
+        });
+
 
         remove(e, collection) {
 
@@ -114,13 +130,27 @@
 
                     $this.collections.splice(e.item.idx, 1);
 
+                    $this.groups = [];
+
+                    $this.collections.forEach(function(collection) {
+                        if (collection.meta.group) $this.groups.push(collection.meta.group);
+                    });
+
                     $this.update();
                 });
             });
         }
 
+        toggleGroup(e) {
+            this.group = e.item && e.item.group || false;
+        }
+
         updatefilter(e) {
 
+        }
+
+        ingroup(singleton) {
+            return this.group ? (this.group == singleton.group) : true;
         }
 
         infilter(collection, value, name, label) {
