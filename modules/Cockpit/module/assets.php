@@ -73,14 +73,20 @@ $this->module('cockpit')->extend([
                 }
             }
 
+            $opts = ['mimetype' => $asset['mime']];
+
+            $this->app->trigger('cockpit.asset.upload', [&$asset, &$meta, &$opts]);
+
             // move file
             $stream = fopen($file, 'r+');
-            $this->app->filestorage->writeStream("assets://{$path}", $stream);
+            $this->app->filestorage->writeStream("assets://{$path}", $stream, $opts);
             fclose($stream);
 
             foreach ($meta as $key => $val) {
                 $asset[$key] = $val;
             }
+
+            $this->app->trigger('cockpit.asset.save', [&$asset]);
 
             $assets[] = $asset;
         }
@@ -172,6 +178,8 @@ $this->module('cockpit')->extend([
 
             $asset['modified'] = time();
             $asset['_by'] = $this->app->module('cockpit')->getUser('_id');
+
+            $this->app->trigger('cockpit.asset.save', [&$asset]);
 
             $this->app->storage->save('cockpit/assets', $asset);
 
