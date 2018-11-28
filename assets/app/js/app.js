@@ -32,6 +32,7 @@
                 var xhr = new XMLHttpRequest();
 
                 xhr.open('post', url, true);
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
                 url += (url.indexOf('?') !== -1 ? '&':'?') + 'nc=' + Math.random().toString(36).substr(2);
 

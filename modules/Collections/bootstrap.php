@@ -266,7 +266,7 @@ $this->module('collections')->extend([
         $return     = [];
         $modified   = time();
 
-        foreach($data as &$entry) {
+        foreach ($data as &$entry) {
 
             $isUpdate = isset($entry['_id']);
 
@@ -344,7 +344,7 @@ $this->module('collections')->extend([
             }
 
             // check rule
-            $context = _check_collection_rule($_collection, 'read', [
+            $context = _check_collection_rule($_collection, $isUpdate ? 'update':'create', [
                 'options' => $options,
                 'entry'   => $entry
             ]);
