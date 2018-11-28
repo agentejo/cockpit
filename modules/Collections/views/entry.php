@@ -222,6 +222,11 @@
 
             // bind clobal command + save
             Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
+
+                if (App.$('.uk-modal.uk-open').length) {
+                    return;
+                }
+
                 $this.submit(e);
                 return false;
             });
