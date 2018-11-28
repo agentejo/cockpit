@@ -363,7 +363,7 @@ class Utils extends \Lime\Helper {
 	public function isEmail($email) {
 
 		if (function_exists('idn_to_ascii')) {
-			$email = idn_to_ascii($email);
+			$email = @idn_to_ascii($email);
 		}
 
 		return (bool) filter_var($email, FILTER_VALIDATE_EMAIL);
