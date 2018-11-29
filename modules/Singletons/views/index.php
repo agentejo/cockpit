@@ -117,6 +117,10 @@
             }
         });
 
+        if (this.groups.length) {
+            this.groups = _.uniq(this.groups.sort());
+        }
+
         remove(e, singleton) {
 
             singleton = e.item.singleton;
@@ -134,6 +138,10 @@
                     $this.singletons.forEach(function(singleton) {
                         if (singleton.meta.group) $this.groups.push(singleton.meta.group);
                     });
+
+                    if ($this.groups.length) {
+                        $this.groups = _.uniq($this.groups.sort());
+                    }
 
                     $this.update();
                 });
