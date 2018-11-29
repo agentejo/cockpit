@@ -117,6 +117,10 @@
             }
         });
 
+        if (this.groups.length) {
+            this.groups = _.uniq(this.groups.sort());
+        }
+
 
         remove(e, collection) {
 
@@ -135,6 +139,10 @@
                     $this.collections.forEach(function(collection) {
                         if (collection.meta.group) $this.groups.push(collection.meta.group);
                     });
+
+                    if ($this.groups.length) {
+                        $this.groups = _.uniq($this.groups.sort());
+                    }
 
                     $this.update();
                 });
