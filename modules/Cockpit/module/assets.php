@@ -76,6 +76,9 @@ $this->module('cockpit')->extend([
             $opts = ['mimetype' => $asset['mime']];
 
             $this->app->trigger('cockpit.asset.upload', [&$asset, &$meta, &$opts]);
+            if (!$asset) {
+                continue;
+            }
 
             // move file
             $stream = fopen($file, 'r+');
