@@ -106,6 +106,7 @@
                     </table>
                 </div>
 
+            @trigger("cockpit.settings.infopage.main.menu")
             </div>
 
 
@@ -134,6 +135,7 @@
             <ul class="uk-nav uk-nav-side" data-uk-switcher="connect:'#settings-info'">
                 <li><a href="#SYSTEM">System</a></li>
                 <li><a href="#PHP">PHP</a></li>
+                @trigger("cockpit.settings.infopage.aside.menu")
             </ul>
 
             @trigger("cockpit.settings.infopage.aside")
