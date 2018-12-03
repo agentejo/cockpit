@@ -135,6 +135,11 @@ $this->on('before', function() {
             }
         }
 
+        if ($output === false && $resource == 'public') {
+            $this->response->mime = 'json';
+            $this->stop(404);
+        }
+
         if ($output === false && !$allowed) {
             $this->response->mime = 'json';
             $this->stop(401);
