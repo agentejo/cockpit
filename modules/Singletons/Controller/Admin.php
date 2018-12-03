@@ -135,7 +135,7 @@ class Admin extends \Cockpit\AuthController {
             $revision = true;
         }
 
-        $singleton = $this->module('singletons')->saveData($singleton['name'], $data, ['revision' => $revision]);
+        $this->module('singletons')->saveData($singleton['name'], $data, ['revision' => $revision]);
 
         return ['data' => $data];
     }

@@ -54,7 +54,7 @@
 
                 <div class="uk-grid uk-grid-match uk-grid-gutter" if="{ !preview }">
 
-                    <div class="uk-width-medium-{field.width}" each="{field,idx in fields}" show="{!group || (group == field.group) }" if="{ hasFieldAccess(field.name) }" no-reorder>
+                    <div class="uk-width-medium-{field.width}" each="{field,idx in fields}" show="{checkVisibilityRule(field) && (!group || (group == field.group)) }" if="{ hasFieldAccess(field.name) }" no-reorder>
 
                         <div class="uk-panel">
 
@@ -89,13 +89,15 @@
 
                 </div>
 
-                <div class="uk-margin-large-top">
-                    <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
-                    <a class="uk-button uk-button-link" href="@route('/collections/entries/'.$collection['name'])">
-                        <span show="{ !entry._id }">@lang('Cancel')</span>
-                        <span show="{ entry._id }">@lang('Close')</span>
-                    </a>
-                </div>
+                <cp-actionbar>
+                    <div class="uk-container uk-container-center">
+                        <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
+                        <a class="uk-button uk-button-link" href="@route('/collections/entries/'.$collection['name'])">
+                            <span show="{ !entry._id }">@lang('Cancel')</span>
+                            <span show="{ entry._id }">@lang('Close')</span>
+                        </a>
+                    </div>
+                </cp-actionbar>
 
             </form>
 
@@ -220,6 +222,11 @@
 
             // bind clobal command + save
             Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
+
+                if (App.$('.uk-modal.uk-open').length) {
+                    return;
+                }
+
                 $this.submit(e);
                 return false;
             });
@@ -327,6 +334,25 @@
                 val = JSON.stringify(this.entry[field+(lang ? '_':'')+lang]);
 
             this.entry[field+(this.lang ? '_':'')+this.lang] = JSON.parse(val);
+        }
+
+        checkVisibilityRule(field) {
+
+            if (field.options && field.options['@visibility']) {
+
+                try {
+                    return (new Function('$', 'v','return ('+field.options['@visibility']+')'))(this.entry, function(key) {
+                        var f = this.fieldsidx[key] || {};
+                        return this.entry[(f.localize && this.lang ? (f.name+'_'+this.lang):f.name)];
+                    }.bind(this));
+                } catch(e) {
+                    return false;
+                }
+
+                return this.data.check;
+            }
+
+            return true;
         }
 
     </script>

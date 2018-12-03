@@ -113,21 +113,21 @@ class Accounts extends \Cockpit\AuthController {
 
             // unique check
             // --
-            $exists = $this->app->storage->find('cockpit/accounts', [
-                'filter' => [
-                    '$or' => [
-                        ['user'  => $data['user']],
-                        ['email' => $data['email']],
-                    ]
-                ],
-                'limit' => 2
-            ]);
+            if (isset($data['user'])) {
 
-            foreach ($exists as $e) {
+                $_account = $this->app->storage->findOne('cockpit/accounts', ['user'  => $data['user']]);
 
-                if (!isset($data['_id']) || $data['_id'] != $e['_id']) {
-                    $field = $e['user'] == $data['user'] ? 'Username' : 'Email';
-                    $this->app->stop(['error' =>  "{$field} is already used!"], 412);
+                if ($_account && (!isset($data['_id']) || $data['_id'] != $_account['_id'])) {
+                    $this->app->stop(['error' =>  'Username is already used!'], 412);
+                }
+            }
+
+            if (isset($data['email'])) {
+
+                $_account = $this->app->storage->findOne('cockpit/accounts', ['email'  => $data['email']]);
+
+                if ($_account && (!isset($data['_id']) || $data['_id'] != $_account['_id'])) {
+                    $this->app->stop(['error' =>  'Email is already used!'], 412);
                 }
             }
             // --

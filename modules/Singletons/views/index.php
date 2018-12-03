@@ -25,6 +25,14 @@
 
         </div>
 
+        <div class="uk-margin" if="{groups.length}">
+
+            <ul class="uk-tab uk-flex uk-flex-center uk-noselect">
+                <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize { group && 'uk-text-muted'}" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
+                <li class="{ group==parent.group && 'uk-active'}" each="{group in groups}"><a class="uk-text-capitalize { group!=parent.group && 'uk-text-muted'}" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+            </ul>
+        </div>
+
         <div class="uk-width-medium-1-1 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-middle uk-flex-center" if="{ !App.Utils.count(singletons) }">
 
             <div class="uk-animation-scale">
@@ -46,7 +54,7 @@
 
         <div class="uk-grid uk-grid-match uk-grid-gutter uk-grid-width-1-1 uk-grid-width-medium-1-3 uk-grid-width-large-1-4 uk-margin-top">
 
-            <div each="{ singleton,idx in singletons }" show="{ infilter(singleton.meta) }">
+            <div each="{ singleton,idx in singletons }" show="{ ingroup(singleton.meta) && infilter(singleton.meta) }">
 
                 <div class="uk-panel uk-panel-box uk-panel-card">
 
@@ -100,6 +108,18 @@
 
         this.ready  = true;
         this.singletons = {{ json_encode($singletons) }};
+        this.groups = [];
+
+        this.singletons.forEach(function(singleton) {
+
+            if (singleton.meta.group) {
+                $this.groups.push(singleton.meta.group);
+            }
+        });
+
+        if (this.groups.length) {
+            this.groups = _.uniq(this.groups.sort());
+        }
 
         remove(e, singleton) {
 
@@ -113,13 +133,31 @@
 
                     $this.singletons.splice(e.item.idx, 1);
 
+                    $this.groups = [];
+
+                    $this.singletons.forEach(function(singleton) {
+                        if (singleton.meta.group) $this.groups.push(singleton.meta.group);
+                    });
+
+                    if ($this.groups.length) {
+                        $this.groups = _.uniq($this.groups.sort());
+                    }
+
                     $this.update();
                 });
             });
         }
 
+        toggleGroup(e) {
+            this.group = e.item && e.item.group || false;
+        }
+
         updatefilter(e) {
 
+        }
+
+        ingroup(collection) {
+            return this.group ? (this.group == collection.group) : true;
         }
 
         infilter(singleton, value, name, label) {

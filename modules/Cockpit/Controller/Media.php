@@ -282,15 +282,24 @@ class Media extends \Cockpit\AuthController {
 
         $pathinfo = $path_parts = pathinfo($file);
 
-        header("Pragma: public");
-        header("Expires: 0");
-        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-        header("Cache-Control: private",false);
-        header("Content-Type: application/force-download");
-        header("Content-Disposition: attachment; filename=\"".$pathinfo["basename"]."\";" );
-        header("Content-Transfer-Encoding: binary");
-        header("Content-Length: ".filesize($file));
-        readfile($file);
+        header('Pragma: public');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Cache-Control: private', false);
+        header('Content-Type: application/force-download');
+        header('Content-Disposition: attachment; filename="'.$pathinfo["basename"].'";' );
+        header('Content-Transfer-Encoding: binary');
+        header('Content-Length: '.filesize($file));
+
+        //readfile($file);
+
+        $handle = fopen($file, 'rb');
+
+        while (!feof($handle)) {
+            echo fread($handle, 1000);
+        }
+
+        fclose($handle);
 
         $this->app->stop();
     }

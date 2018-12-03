@@ -25,4 +25,23 @@ class RestApi extends \LimeExtra\Controller {
 
         return false;
     }
+
+	public function export($form) {
+
+        $user = $this->module('cockpit')->getUser();
+        $form = $this->module('forms')->form($form);
+
+        if (!$form) {
+            return false;
+        }
+
+        if ($user) {
+
+            if (!$this->module('cockpit')->isSuperAdmin($user['group'])) {
+                return $this->stop(401);
+            }
+        }
+
+        return $this->module('forms')->find($form['name']);
+    }
 }

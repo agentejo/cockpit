@@ -74,7 +74,7 @@
                             </div>
                         </div>
 
-                        <a class="uk-text-bold uk-flex-item-1 uk-text-center uk-link-muted" href="@route('/forms/entries')/{form}">{ form.label }</a>
+                        <a class="uk-text-bold uk-flex-item-1 uk-text-center uk-link-muted" href="@route('/forms/entries')/{form.name}">{ form.label }</a>
 
                         <div>
                             <span class="uk-badge" style="background-color:{ (form.meta.color) }">{ form.meta.itemsCount }</span>

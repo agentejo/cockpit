@@ -30,6 +30,11 @@
                    </div>
 
                    <div class="uk-margin">
+                       <label class="uk-text-small">@lang('Group')</label>
+                       <input class="uk-width-1-1 uk-form-large" type="text" ref="group" bind="singleton.group">
+                   </div>
+
+                   <div class="uk-margin">
                        <label class="uk-text-small">@lang('Icon')</label>
                        <div data-uk-dropdown="pos:'right-center', mode:'click'">
                            <a><img class="uk-display-block uk-margin uk-container-center" riot-src="{ singleton.icon ? '@url('assets:app/media/icons/')'+singleton.icon : '@url('singletons:icon.svg')'}" alt="icon" width="100"></a>
@@ -63,7 +68,7 @@
                     <div class="uk-margin">
                         <field-boolean bind="singleton.in_menu" title="@lang('Show in system menu')" label="@lang('Show in system menu')"></field-boolean>
                     </div>
-                    
+
                </div>
 
             </div>
@@ -129,23 +134,25 @@
 
                     </div>
 
-                    <div class="uk-margin-large-top">
-
-                        <div class="uk-button-group">
-                            <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
-                            <a class="uk-button uk-button-large" href="@route('/singletons/form')/{ singleton.name }" if="{ singleton._id }">@lang('Show form')</a>
-                        </div>
-
-                        <a class="uk-button uk-button-large uk-button-link" href="@route('/singletons')">
-                            <span show="{ !singleton._id }">@lang('Cancel')</span>
-                            <span show="{ singleton._id }">@lang('Close')</span>
-                        </a>
-                    </div>
-
                 </div>
 
             </div>
         </div>
+
+        <cp-actionbar>
+            <div class="uk-container uk-container-center">
+
+                <div class="uk-button-group">
+                    <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
+                    <a class="uk-button uk-button-large" href="@route('/singletons/form')/{ singleton.name }" if="{ singleton._id }">@lang('Show form')</a>
+                </div>
+
+                <a class="uk-button uk-button-large uk-button-link" href="@route('/singletons')">
+                    <span show="{ !singleton._id }">@lang('Cancel')</span>
+                    <span show="{ singleton._id }">@lang('Close')</span>
+                </a>
+            </div>
+        </cp-actionbar>
     </form>
 
     <script type="view/script">
@@ -173,6 +180,10 @@
 
             // bind clobal command + save
             Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
+
+                if (App.$('.uk-modal.uk-open').length) {
+                    return;
+                }
 
                 e.preventDefault();
                 $this.submit();

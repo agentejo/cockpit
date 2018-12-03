@@ -189,11 +189,6 @@ $this->module('collections')->extend([
         $name       = $collection;
         $collection = $_collection['_id'];
 
-        // sort by custom order if collection is sortable
-        if (isset($_collection['sortable']) && $_collection['sortable'] && !isset($options['sort'])) {
-            //$options['sort'] = ['_o' => 1];
-        }
-
         // check rule
         $context = new \stdClass();
         $context->options = $options;
@@ -244,7 +239,6 @@ $this->module('collections')->extend([
         if (!$_collection) return false;
 
         $name       = $collection;
-        $collection = $_collection['_id'];
         $options    = [
             'filter'       => $criteria,
             'fields'       => $projection,
@@ -272,7 +266,7 @@ $this->module('collections')->extend([
         $return     = [];
         $modified   = time();
 
-        foreach($data as &$entry) {
+        foreach ($data as &$entry) {
 
             $isUpdate = isset($entry['_id']);
 
@@ -315,7 +309,7 @@ $this->module('collections')->extend([
                             break;
 
                         case 'url':
-                            $value = filter_var($value, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED) ? $value:null;
+                            $value = filter_var($value, FILTER_VALIDATE_URL) ? $value:null;
                             break;
 
                         case 'email':
@@ -350,7 +344,7 @@ $this->module('collections')->extend([
             }
 
             // check rule
-            $context = _check_collection_rule($_collection, 'read', [
+            $context = _check_collection_rule($_collection, $isUpdate ? 'update':'create', [
                 'options' => $options,
                 'entry'   => $entry
             ]);
@@ -555,7 +549,7 @@ $this->module('collections')->extend([
 
                 foreach ($localfields as $name => $local) {
 
-                    foreach($languages as $l) {
+                    foreach ($languages as $l) {
 
                         if (isset($entry["{$name}_{$l}"])) {
 
@@ -568,15 +562,15 @@ $this->module('collections')->extend([
                                 }
                             }
 
-                            unset($entry["{$name}_{$l}"]);
-                            unset($entry["{$name}_{$l}_slug"]);
-
                         } elseif ($l == $lang && $ignoreDefaultFallback) {
 
                             if ($ignoreDefaultFallback === true || (is_array($ignoreDefaultFallback) && in_array($name, $ignoreDefaultFallback))) {
                                 $entry[$name] = null;
                             }
                         }
+
+                        unset($entry["{$name}_{$l}"]);
+                        unset($entry["{$name}_{$l}_slug"]);
                     }
                 }
 
