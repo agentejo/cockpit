@@ -76,6 +76,9 @@ $this->module('cockpit')->extend([
             $opts = ['mimetype' => $asset['mime']];
 
             $this->app->trigger('cockpit.asset.upload', [&$asset, &$meta, &$opts]);
+            if (!$asset) {
+                continue;
+            }
 
             // move file
             $stream = fopen($file, 'r+');
@@ -109,6 +112,7 @@ $this->module('cockpit')->extend([
 
         $allowed   = $this->getGroupVar('assets.allowed_uploads', $this->app->retrieve('allowed_uploads', '*'));
         $allowed   = $allowed == '*' ? true : str_replace([' ', ','], ['', '|'], preg_quote(is_array($allowed) ? implode(',', $allowed) : $allowed));
+        $max_size = $this->getGroupVar('assets.max_upload_size', $this->app->retrieve('max_upload_size', 0));
 
         if (isset($files['name']) && is_array($files['name'])) {
 
@@ -116,8 +120,9 @@ $this->module('cockpit')->extend([
 
                 $_file  = $this->app->path('#tmp:').'/'.$files['name'][$i];
                 $_isAllowed = $allowed === true ? true : preg_match("/\.({$allowed})$/i", $_file);
+                $_sizeAllowed = $max_size ? filesize($files['tmp_name'][$i]) < $max_size : TRUE;
 
-                if (!$files['error'][$i] && $_isAllowed && move_uploaded_file($files['tmp_name'][$i], $_file)) {
+                if (!$files['error'][$i] && $_isAllowed && $_sizeAllowed && move_uploaded_file($files['tmp_name'][$i], $_file)) {
 
                     $_files[]   = $_file;
                     $uploaded[] = $files['name'][$i];
