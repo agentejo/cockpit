@@ -120,7 +120,7 @@ $this->module('cockpit')->extend([
 
                 $_file  = $this->app->path('#tmp:').'/'.$files['name'][$i];
                 $_isAllowed = $allowed === true ? true : preg_match("/\.({$allowed})$/i", $_file);
-                $_sizeAllowed = $max_size ? filesize($files['tmp_name'][$i]) < $max_size : TRUE;
+                $_sizeAllowed = $max_size ? filesize($files['tmp_name'][$i]) < $max_size : true;
 
                 if (!$files['error'][$i] && $_isAllowed && $_sizeAllowed && move_uploaded_file($files['tmp_name'][$i], $_file)) {
 

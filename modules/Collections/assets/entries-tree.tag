@@ -153,7 +153,7 @@
 
             <input data-check="{entry._id}" type="checkbox" class="uk-margin-small-right uk-checkbox">
 
-            <div class="uk-text-truncate uk-margin-small-left" each="{field,idy in fields}" if="{ field.name != '_modified' && field.name != '_created' }">
+            <div class="uk-text-truncate uk-margin-small-left" each="{field,idy in fields}" if="{ entry[field.name] !== null && entry[field.name] !== undefined && field.name != '_modified' && field.name != '_created' }">
                 <a class="uk-link-muted" href="{ App.route('/collections/entry/'+parent.collection.name+'/'+parent.entry._id) }">
                     <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name], field) }" if="{parent.entry[field.name] !== undefined}"></raw>
                     <span class="uk-icon-eye-slash uk-text-muted" if="{parent.entry[field.name] === undefined}"></span>
