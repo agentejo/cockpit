@@ -603,7 +603,7 @@ function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $field
             $link = $v['link'];
             $items[$k] = cockpit('collections')->_resolveLinkedItem($v['link'], $v['_id'], $fieldsFilter);
             $items[$k]['_link'] = $link;
-            $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, $level, $fieldsFilter);
+            $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ($level + 1), $fieldsFilter);
         }
     }
 
