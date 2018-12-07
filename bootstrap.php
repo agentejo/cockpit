@@ -134,7 +134,7 @@ function cockpit($module = null) {
         });
 
         // file storage
-        $app->service('filestorage', function($name) use($config, $app) {
+        $app->service('filestorage', function() use($config, $app) {
 
             $storages = array_replace_recursive([
 
