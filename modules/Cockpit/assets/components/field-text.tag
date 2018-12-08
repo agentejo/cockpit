@@ -17,7 +17,7 @@
 
     <div class="uk-position-relative field-text-container">
         <input ref="input" class="uk-width-1-1" bind="{opts.bind}" type="{ opts.type || 'text' }" oninput="{updateLengthIndicator}" placeholder="{ opts.placeholder }">
-        <span class="uk-text-muted" ref="lengthIndicator" show="{type=='text'}"></span>
+        <span class="uk-text-muted" ref="lengthIndicator" show="{type=='text'}" hide="{opts.showCount === false}"></span>
     </div>
 
     <div class="uk-text-muted uk-text-small uk-margin-small-top" if="{opts.slug}" title="Slug">
@@ -67,7 +67,7 @@
 
         this.updateLengthIndicator = function() {
 
-            if (this.type != 'text') {
+            if (this.type != 'text' || opts.showCount === false) {
                 return;
             }
 

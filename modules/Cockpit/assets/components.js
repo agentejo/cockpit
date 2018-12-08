@@ -3642,7 +3642,7 @@ riot.tag2('field-tags', '<div class="uk-grid uk-grid-small uk-flex-middle" data-
 
 });
 
-riot.tag2('field-text', '<div class="uk-position-relative field-text-container"> <input ref="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" oninput="{updateLengthIndicator}" placeholder="{opts.placeholder}"> <span class="uk-text-muted" ref="lengthIndicator" show="{type==\'text\'}"></span> </div> <div class="uk-text-muted uk-text-small uk-margin-small-top" if="{opts.slug}" title="Slug"> {slug} </div>', 'field-text [ref="input"],[data-is="field-text"] [ref="input"]{ padding-right: 30px !important; } field-text .field-text-container span,[data-is="field-text"] .field-text-container span{ position: absolute; top: 50%; right: 0; font-family: monospace; transform: translateY(-50%) scale(.9); }', '', function(opts) {
+riot.tag2('field-text', '<div class="uk-position-relative field-text-container"> <input ref="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" oninput="{updateLengthIndicator}" placeholder="{opts.placeholder}"> <span class="uk-text-muted" ref="lengthIndicator" show="{type==\'text\'}" hide="{opts.showCount === false}"></span> </div> <div class="uk-text-muted uk-text-small uk-margin-small-top" if="{opts.slug}" title="Slug"> {slug} </div>', 'field-text [ref="input"],[data-is="field-text"] [ref="input"]{ padding-right: 30px !important; } field-text .field-text-container span,[data-is="field-text"] .field-text-container span{ position: absolute; top: 50%; right: 0; font-family: monospace; transform: translateY(-50%) scale(.9); }', '', function(opts) {
 
         var $this = this;
 
@@ -3685,7 +3685,7 @@ riot.tag2('field-text', '<div class="uk-position-relative field-text-container">
 
         this.updateLengthIndicator = function() {
 
-            if (this.type != 'text') {
+            if (this.type != 'text' || opts.showCount === false) {
                 return;
             }
 
@@ -3694,7 +3694,7 @@ riot.tag2('field-text', '<div class="uk-position-relative field-text-container">
 
 });
 
-riot.tag2('field-textarea', '<textarea ref="input" class="uk-width-1-1 {opts.cls}" bind="{opts.bind}" bind-event="input" riot-rows="{opts.rows || 10}" riot-placeholder="{opts.placeholder}"></textarea>', '', '', function(opts) {
+riot.tag2('field-textarea', '<textarea ref="input" class="uk-width-1-1 {opts.cls}" bind="{opts.bind}" bind-event="input" riot-rows="{opts.rows || 10}" riot-placeholder="{opts.placeholder}"></textarea> <div class="uk-text-right uk-text-small uk-text-muted" ref="lengthIndicator" hide="{opts.showCount === false}"></div>', 'field-textarea [ref="lengthIndicator"],[data-is="field-textarea"] [ref="lengthIndicator"]{ font-family: monospace; }', '', function(opts) {
 
         var $this = this;
 
@@ -3722,8 +3722,23 @@ riot.tag2('field-textarea', '<textarea ref="input" class="uk-width-1-1 {opts.cls
                 if (opts[key]) $this.refs.input.setAttribute(key, opts[key]);
             });
 
+            this.updateLengthIndicator();
+
             this.update();
         });
+
+        this.$updateValue = function(value) {
+            this.updateLengthIndicator();
+        }.bind(this);
+
+        this.updateLengthIndicator = function() {
+
+            if (opts.showCount === false) {
+                return;
+            }
+
+            this.refs.lengthIndicator.innerText = Math.abs((opts.maxlength || 0) - this.refs.input.value.length);
+        }
 
 });
 
