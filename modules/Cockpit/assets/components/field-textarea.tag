@@ -1,7 +1,16 @@
 <field-textarea>
+    
+    <style>
+        [ref="lengthIndicator"] {
+            font-family: monospace;
+        }
+    </style>
+
 
     <textarea ref="input" class="uk-width-1-1 {opts.cls}" bind="{opts.bind}" bind-event="input" riot-rows="{opts.rows || 10}" riot-placeholder="{ opts.placeholder }"></textarea>
-
+    <div class="uk-text-right uk-text-small uk-text-muted" ref="lengthIndicator" hide="{opts.showCount === false}"></div>
+    
+    
     <script>
 
         var $this = this;
@@ -29,9 +38,25 @@
             (['maxlength', 'minlength', 'placeholder', 'cols', 'rows']).forEach( function(key) {
                 if (opts[key]) $this.refs.input.setAttribute(key, opts[key]);
             });
+            
+            this.updateLengthIndicator();
 
             this.update();
         });
+        
+        this.$updateValue = function(value) {
+            this.updateLengthIndicator();
+        }.bind(this);
+        
+        
+        this.updateLengthIndicator = function() {
+            
+            if (opts.showCount === false) {
+                return;
+            }
+            
+            this.refs.lengthIndicator.innerText = Math.abs((opts.maxlength || 0) - this.refs.input.value.length);
+        }
 
     </script>
 
