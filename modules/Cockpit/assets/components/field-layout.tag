@@ -38,10 +38,12 @@
 
         <div class="uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
 
+            { App.trigger('field.layout.components.label', {component: parent.components[item.component], item: item} ) }
+
             <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">
                 <img class="uk-margin-small-right" riot-src="{ parent.components[item.component].icon ? parent.components[item.component].icon : App.base('/assets/app/media/icons/component.svg')}" width="16">
                 <div class="uk-text-bold uk-text-truncate uk-flex-item-1">
-                    <a class="uk-link-muted" onclick="{ parent.settings }">{ item.name || parent.components[item.component].label || App.Utils.ucfirst(item.component) }</a>
+                    <a class="uk-link-muted" onclick="{ parent.settings }">{ item.name || parent.components[item.component].customLabel || parent.components[item.component].label || App.Utils.ucfirst(item.component) }</a>
                 </div>
                 <div class="uk-text-small uk-invisible">
                     <a onclick="{ parent.addComponent }" title="{ App.i18n.get('Add Component') }"><i class="uk-icon-plus"></i></a>
@@ -231,9 +233,9 @@
 
 
         this.on('mount', function() {
-            
+
             App.trigger('field.layout.components', {components:this.components, opts:opts});
-            
+
             // exclude components?
             if (Array.isArray(opts.exclude) && opts.exclude.length) {
 
@@ -241,7 +243,7 @@
                     if ($this.components[c]) delete $this.components[c];
                 });
             }
-            
+
 
             if (opts.components && App.Utils.isObject(opts.components)) {
                 this.components = App.$.extend(true, this.components, opts.components);
@@ -415,7 +417,7 @@
 
         remove(e) {
             this.items.splice(e.item.idx, 1);
-            
+
             if (opts.child) {
                 this.parent.update()
             }
@@ -476,7 +478,7 @@
 <field-layout-grid>
 
     <div class="uk-text-center uk-placeholder" if="{!columns.length}">
-        <a class="uk-button uk-button-link" onclick="{ addColumn }">{ App.i18n.get('Add Colum') }</a>
+        <a class="uk-button uk-button-link" onclick="{ addColumn }">{ App.i18n.get('Add Column') }</a>
     </div>
 
     <div class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-{columns.length > 4 ? 1 : columns.length}" show="{columns.length}" ref="columns" data-uk-sortable="animation:false">
