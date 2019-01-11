@@ -94,7 +94,7 @@ class BulkWrite implements Executable
      *
      *    This is not supported for server versions < 3.6 and will result in an
      *    exception at execution time if used.
-    *
+     *
      * Supported options for the bulk write operation:
      *
      *  * bypassDocumentValidation (boolean): If true, allows the write to

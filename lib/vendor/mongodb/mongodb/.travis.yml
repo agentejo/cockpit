@@ -15,8 +15,8 @@ cache:
 
 env:
   global:
-    - DRIVER_VERSION=1.4.0
-    - SERVER_VERSION=3.6.2
+    - DRIVER_VERSION=1.5.0
+    - SERVER_VERSION=4.0.0
 
 matrix:
   fast_finish: true
@@ -28,16 +28,16 @@ matrix:
     - php: 7.2
     - php: 7.0
       env:
-        - SERVER_VERSION=2.6.12
-    - php: 7.0
-      env:
         - SERVER_VERSION=3.0.15
     - php: 7.0
       env:
-        - SERVER_VERSION=3.2.18
+        - SERVER_VERSION=3.2.20
     - php: 7.0
       env:
-        - SERVER_VERSION=3.4.11
+        - SERVER_VERSION=3.4.15
+    - php: 7.0
+      env:
+        - SERVER_VERSION=3.6.5
 
 before_install:
   - pip install "mongo-orchestration>=0.6.7,<1.0" --user `whoami`

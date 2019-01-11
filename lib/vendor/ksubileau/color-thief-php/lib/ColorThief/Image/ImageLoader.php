@@ -6,6 +6,7 @@ class ImageLoader
 {
     /**
      * @param mixed $source Path/URL to the image, GD resource, Imagick instance, or image as binary string
+     *
      * @return Adapter\ImageAdapter
      */
     public function load($source)
@@ -14,11 +15,11 @@ class ImageLoader
 
         if (is_string($source)) {
             if ($this->isImagickLoaded()) {
-                $image = $this->getAdapter("Imagick");
+                $image = $this->getAdapter('Imagick');
             } elseif ($this->isGmagickLoaded()) {
-                $image = $this->getAdapter("Gmagick");
+                $image = $this->getAdapter('Gmagick');
             } else {
-                $image = $this->getAdapter("GD");
+                $image = $this->getAdapter('GD');
             }
 
             // Tries to detect if the source string is a binary string or a path to an existing file
@@ -37,13 +38,13 @@ class ImageLoader
             }
         } else {
             if ((is_resource($source) && get_resource_type($source) == 'gd')) {
-                $image = $this->getAdapter("GD");
+                $image = $this->getAdapter('GD');
             } elseif (is_a($source, 'Imagick')) {
-                $image = $this->getAdapter("Imagick");
+                $image = $this->getAdapter('Imagick');
             } elseif (is_a($source, 'Gmagick')) {
-                $image = $this->getAdapter("Gmagick");
+                $image = $this->getAdapter('Gmagick');
             } else {
-                throw new \InvalidArgumentException("Passed variable is not a valid image source");
+                throw new \InvalidArgumentException('Passed variable is not a valid image source');
             }
             $image->load($source);
         }
@@ -52,30 +53,34 @@ class ImageLoader
     }
 
     /**
-     * Checks if Imagick extension is loaded
+     * Checks if Imagick extension is loaded.
+     *
      * @return bool
      */
     public function isImagickLoaded()
     {
-        return extension_loaded("imagick");
+        return extension_loaded('imagick');
     }
 
     /**
-     * Checks if Gmagick extension is loaded
+     * Checks if Gmagick extension is loaded.
+     *
      * @return bool
      */
     public function isGmagickLoaded()
     {
-        return extension_loaded("gmagick");
+        return extension_loaded('gmagick');
     }
 
     /**
      * @param string $adapterType
+     *
      * @return Adapter\ImageAdapter
      */
     public function getAdapter($adapterType)
     {
-        $classname = "\\ColorThief\\Image\\Adapter\\" . $adapterType . "ImageAdapter";
+        $classname = '\\ColorThief\\Image\\Adapter\\' . $adapterType . 'ImageAdapter';
+
         return new $classname();
     }
 }

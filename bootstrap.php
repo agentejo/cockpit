@@ -243,7 +243,7 @@ function cockpit($module = null) {
             COCKPIT_DIR.'/addons' # addons
         ], $config['loadmodules'] ?? []));
 
-        // load config global bootstrap
+        // load config global bootstrap file
         if ($custombootfile = $app->path('#config:bootstrap.php')) {
             include($custombootfile);
         }

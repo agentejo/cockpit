@@ -1,4 +1,5 @@
 <?php
+
 namespace ColorThief\Image\Adapter;
 
 /**
@@ -35,14 +36,14 @@ interface IImageAdapter
     /**
      * Returns image height.
      *
-     * @return integer
+     * @return int
      */
     public function getHeight();
 
     /**
      * Returns image width.
      *
-     * @return integer
+     * @return int
      */
     public function getWidth();
 
@@ -51,12 +52,13 @@ interface IImageAdapter
      *
      * @param int $x
      * @param int $y
+     *
      * @return object
      */
     public function getPixelColor($x, $y);
 
     /**
-     * Get the raw resource
+     * Get the raw resource.
      *
      * @return resource
      */

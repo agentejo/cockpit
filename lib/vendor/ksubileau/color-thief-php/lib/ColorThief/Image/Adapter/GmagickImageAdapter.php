@@ -7,32 +7,39 @@ use Gmagick;
 class GmagickImageAdapter extends ImageAdapter
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function load($resource)
     {
         if (!($resource instanceof Gmagick)) {
-            throw new \InvalidArgumentException("Passed variable is not an instance of Gmagick");
+            throw new \InvalidArgumentException('Passed variable is not an instance of Gmagick');
+        }
+
+        if ($resource->getImageColorSpace() == Gmagick::COLORSPACE_CMYK) {
+            // Leave original object unmodified
+            $resource = clone $resource;
+            $resource->setImageColorspace(Gmagick::COLORSPACE_RGB);
         }
 
         parent::load($resource);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function loadBinaryString($data)
     {
-        $this->resource = new Gmagick();
+        $resource = new Gmagick();
         try {
-            $this->resource->readImageBlob($data);
+            $resource->readImageBlob($data);
         } catch (\GmagickException $e) {
-            throw new \InvalidArgumentException("Passed binary string is empty or is not a valid image", 0, $e);
+            throw new \InvalidArgumentException('Passed binary string is empty or is not a valid image', 0, $e);
         }
+        $this->load($resource);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function loadFile($file)
     {
@@ -43,19 +50,21 @@ class GmagickImageAdapter extends ImageAdapter
             if ($image === false) {
                 throw new \RuntimeException("Image '" . $file . "' is not readable or does not exists.", 0);
             }
+
             return $this->loadBinaryString($image);
         }
 
-        $this->resource = null;
+        $resource = null;
         try {
-            $this->resource = new Gmagick($file);
+            $resource = new Gmagick($file);
         } catch (\GmagickException $e) {
             throw new \RuntimeException("Image '" . $file . "' is not readable or does not exists.", 0, $e);
         }
+        $this->load($resource);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function destroy()
     {
@@ -67,7 +76,7 @@ class GmagickImageAdapter extends ImageAdapter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getHeight()
     {
@@ -75,7 +84,7 @@ class GmagickImageAdapter extends ImageAdapter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getWidth()
     {
@@ -83,7 +92,7 @@ class GmagickImageAdapter extends ImageAdapter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPixelColor($x, $y)
     {
@@ -95,10 +104,10 @@ class GmagickImageAdapter extends ImageAdapter
         // So we ask for normalized values, and then we un-normalize it ourselves.
         $colorArray = $pixel->getColor(true, true);
         $color = new \stdClass();
-        $color->red = (int)round($colorArray['r'] * 255);
-        $color->green = (int)round($colorArray['g'] * 255);
-        $color->blue = (int)round($colorArray['b'] * 255);
-        $color->alpha = (int)round($pixel->getcolorvalue(\Gmagick::COLOR_OPACITY) * 127);
+        $color->red = (int) round($colorArray['r'] * 255);
+        $color->green = (int) round($colorArray['g'] * 255);
+        $color->blue = (int) round($colorArray['b'] * 255);
+        $color->alpha = (int) round($pixel->getcolorvalue(\Gmagick::COLOR_OPACITY) * 127);
 
         return $color;
     }

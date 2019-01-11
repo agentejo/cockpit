@@ -29,6 +29,7 @@ use MongoDB\Exception\UnsupportedException;
 use MongoDB\Model\DatabaseInfoIterator;
 use MongoDB\Operation\DropDatabase;
 use MongoDB\Operation\ListDatabases;
+use MongoDB\Operation\Watch;
 
 class Client
 {
@@ -37,9 +38,12 @@ class Client
         'document' => 'MongoDB\Model\BSONDocument',
         'root' => 'MongoDB\Model\BSONDocument',
     ];
+    private static $wireVersionForReadConcern = 4;
     private static $wireVersionForWritableCommandWriteConcern = 5;
 
     private $manager;
+    private $readConcern;
+    private $readPreference;
     private $uri;
     private $typeMap;
     private $writeConcern;
@@ -81,6 +85,8 @@ class Client
         unset($driverOptions['typeMap']);
 
         $this->manager = new Manager($uri, $uriOptions, $driverOptions);
+        $this->readConcern = $this->manager->getReadConcern();
+        $this->readPreference = $this->manager->getReadPreference();
         $this->writeConcern = $this->manager->getWriteConcern();
     }
 
@@ -173,7 +179,7 @@ class Client
      */
     public function getReadConcern()
     {
-        return $this->manager->getReadConcern();
+        return $this->readConcern;
     }
 
     /**
@@ -183,7 +189,7 @@ class Client
      */
     public function getReadPreference()
     {
-        return $this->manager->getReadPreference();
+        return $this->readPreference;
     }
 
     /**
@@ -267,5 +273,35 @@ class Client
     public function startSession(array $options = [])
     {
         return $this->manager->startSession($options);
+    }
+
+    /**
+     * Create a change stream for watching changes to the cluster.
+     *
+     * @see Watch::__construct() for supported options
+     * @param array $pipeline List of pipeline operations
+     * @param array $options  Command options
+     * @return ChangeStream
+     * @throws InvalidArgumentException for parameter/option parsing errors
+     */
+    public function watch(array $pipeline = [], array $options = [])
+    {
+        if ( ! isset($options['readPreference'])) {
+            $options['readPreference'] = $this->readPreference;
+        }
+
+        $server = $this->manager->selectServer($options['readPreference']);
+
+        if ( ! isset($options['readConcern']) && \MongoDB\server_supports_feature($server, self::$wireVersionForReadConcern)) {
+            $options['readConcern'] = $this->readConcern;
+        }
+
+        if ( ! isset($options['typeMap'])) {
+            $options['typeMap'] = $this->typeMap;
+        }
+
+        $operation = new Watch($this->manager, null, null, $pipeline, $options);
+
+        return $operation->execute($server);
     }
 }

@@ -7,46 +7,64 @@ use Imagick;
 class ImagickImageAdapter extends ImageAdapter
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function load($resource)
     {
         if (!($resource instanceof Imagick)) {
-            throw new \InvalidArgumentException("Passed variable is not an instance of Imagick");
+            throw new \InvalidArgumentException('Passed variable is not an instance of Imagick');
+        }
+
+        if ($resource->getImageColorspace() == Imagick::COLORSPACE_CMYK) {
+            // Leave original object unmodified
+            $resource = clone $resource;
+
+            if (version_compare(phpversion('imagick'), '3.0.0') < 0) {
+                throw new \RuntimeException('Imagick extension version 3.0.0 or later is required for sampling CMYK images');
+            }
+
+            // With ImageMagick version 6.7.7, CMYK images converted to RGB color space work as expected,
+            // but for later versions (6.9.7 and 7.0.8 have been tested), conversion to SRGB seems to be required
+            $imageMagickVersion = $resource->getVersion();
+            if ($imageMagickVersion['versionNumber'] > 1655) {
+                $resource->transformImageColorspace(Imagick::COLORSPACE_SRGB);
+            } else {
+                $resource->transformImageColorspace(Imagick::COLORSPACE_RGB);
+            }
         }
 
         parent::load($resource);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function loadBinaryString($data)
     {
-        $this->resource = new Imagick();
+        $resource = new Imagick();
         try {
-            $this->resource->readImageBlob($data);
+            $resource->readImageBlob($data);
         } catch (\ImagickException $e) {
-            throw new \InvalidArgumentException("Passed binary string is empty or is not a valid image", 0, $e);
+            throw new \InvalidArgumentException('Passed binary string is empty or is not a valid image', 0, $e);
         }
+        $this->load($resource);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function loadFile($file)
     {
-        $this->resource = null;
-
         try {
-            $this->resource = new Imagick($file);
+            $resource = new Imagick($file);
         } catch (\ImagickException $e) {
             throw new \RuntimeException("Image '" . $file . "' is not readable or does not exists.", 0, $e);
         }
+        $this->load($resource);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function destroy()
     {
@@ -57,7 +75,7 @@ class ImagickImageAdapter extends ImageAdapter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getHeight()
     {
@@ -65,7 +83,7 @@ class ImagickImageAdapter extends ImageAdapter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getWidth()
     {
@@ -73,7 +91,7 @@ class ImagickImageAdapter extends ImageAdapter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPixelColor($x, $y)
     {
@@ -83,10 +101,10 @@ class ImagickImageAdapter extends ImageAdapter
         // So we ask for normalized values, and then we un-normalize it ourselves.
         $colorArray = $pixel->getColor(true);
         $color = new \stdClass();
-        $color->red = round($colorArray['r'] * 255);
-        $color->green = round($colorArray['g'] * 255);
-        $color->blue = round($colorArray['b'] * 255);
-        $color->alpha = 127 - round($colorArray['a'] * 127);
+        $color->red = (int) round($colorArray['r'] * 255);
+        $color->green = (int) round($colorArray['g'] * 255);
+        $color->blue = (int) round($colorArray['b'] * 255);
+        $color->alpha = (int) (127 - round($colorArray['a'] * 127));
 
         return $color;
     }

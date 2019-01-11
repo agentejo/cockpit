@@ -3,17 +3,17 @@
 namespace ColorThief\Image\Adapter;
 
 /**
- * Base adapter implementation to handle image manipulation
+ * Base adapter implementation to handle image manipulation.
  */
 abstract class ImageAdapter implements IImageAdapter
 {
     /**
-     * The image resource handler
+     * The image resource handler.
      */
     protected $resource;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function load($resource)
     {
@@ -21,7 +21,7 @@ abstract class ImageAdapter implements IImageAdapter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function destroy()
     {
@@ -29,7 +29,7 @@ abstract class ImageAdapter implements IImageAdapter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getResource()
     {
