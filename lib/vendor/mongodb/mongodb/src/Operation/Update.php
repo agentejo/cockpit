@@ -35,7 +35,7 @@ use MongoDB\Exception\UnsupportedException;
  * @internal
  * @see http://docs.mongodb.org/manual/reference/command/update/
  */
-class Update implements Executable
+class Update implements Executable, Explainable
 {
     private static $wireVersionForArrayFilters = 6;
     private static $wireVersionForCollation = 5;
@@ -167,6 +167,66 @@ class Update implements Executable
             throw UnsupportedException::collationNotSupported();
         }
 
+        $bulkOptions = [];
+
+        if (isset($this->options['bypassDocumentValidation']) && \MongoDB\server_supports_feature($server, self::$wireVersionForDocumentLevelValidation)) {
+            $bulkOptions['bypassDocumentValidation'] = $this->options['bypassDocumentValidation'];
+        }
+
+        $bulk = new Bulk($bulkOptions);
+        $bulk->update($this->filter, $this->update, $this->createUpdateOptions());
+
+        $writeResult = $server->executeBulkWrite($this->databaseName . '.' . $this->collectionName, $bulk, $this->createExecuteOptions());
+
+        return new UpdateResult($writeResult);
+    }
+
+    public function getCommandDocument(Server $server)
+    {
+        $cmd = ['update' => $this->collectionName, 'updates' => [['q' => $this->filter, 'u' => $this->update] + $this->createUpdateOptions()]];
+
+        if (isset($this->options['writeConcern'])) {
+            $cmd['writeConcern'] = $this->options['writeConcern'];
+        }
+
+        if (isset($this->options['bypassDocumentValidation']) && \MongoDB\server_supports_feature($server, self::$wireVersionForDocumentLevelValidation)) {
+            $cmd['bypassDocumentValidation'] = $this->options['bypassDocumentValidation'];
+        }
+
+        return $cmd;
+    }
+
+    /**
+     * Create options for executing the bulk write.
+     *
+     * @see http://php.net/manual/en/mongodb-driver-server.executebulkwrite.php
+     * @return array
+     */
+    private function createExecuteOptions()
+    {
+        $options = [];
+
+        if (isset($this->options['session'])) {
+            $options['session'] = $this->options['session'];
+        }
+
+        if (isset($this->options['writeConcern'])) {
+            $options['writeConcern'] = $this->options['writeConcern'];
+        }
+
+        return $options;
+    }
+
+    /**
+     * Create options for the update command.
+     *
+     * Note that these options are different from the bulk write options, which
+     * are created in createExecuteOptions().
+     *
+     * @return array
+     */
+    private function createUpdateOptions()
+    {
         $updateOptions = [
             'multi' => $this->options['multi'],
             'upsert' => $this->options['upsert'],
@@ -180,38 +240,6 @@ class Update implements Executable
             $updateOptions['collation'] = (object) $this->options['collation'];
         }
 
-        $bulkOptions = [];
-
-        if (isset($this->options['bypassDocumentValidation']) && \MongoDB\server_supports_feature($server, self::$wireVersionForDocumentLevelValidation)) {
-            $bulkOptions['bypassDocumentValidation'] = $this->options['bypassDocumentValidation'];
-        }
-
-        $bulk = new Bulk($bulkOptions);
-        $bulk->update($this->filter, $this->update, $updateOptions);
-
-        $writeResult = $server->executeBulkWrite($this->databaseName . '.' . $this->collectionName, $bulk, $this->createOptions());
-
-        return new UpdateResult($writeResult);
-    }
-
-    /**
-     * Create options for executing the bulk write.
-     *
-     * @see http://php.net/manual/en/mongodb-driver-server.executebulkwrite.php
-     * @return array
-     */
-    private function createOptions()
-    {
-        $options = [];
-
-        if (isset($this->options['session'])) {
-            $options['session'] = $this->options['session'];
-        }
-
-        if (isset($this->options['writeConcern'])) {
-            $options['writeConcern'] = $this->options['writeConcern'];
-        }
-
-        return $options;
+        return $updateOptions;
     }
 }

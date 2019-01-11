@@ -5,7 +5,7 @@ namespace ColorThief;
 /* Simple priority queue */
 class PQueue
 {
-    private $contents = array();
+    private $contents = [];
     private $sorted = false;
     private $comparator = null;
 

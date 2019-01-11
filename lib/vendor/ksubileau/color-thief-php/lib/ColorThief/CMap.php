@@ -19,10 +19,10 @@ class CMap
 
     public function push($vbox)
     {
-        $this->vboxes->push(array(
+        $this->vboxes->push([
             'vbox' => $vbox,
-            'color' => $vbox->avg()
-        ));
+            'color' => $vbox->avg(),
+        ]);
     }
 
     public function palette()

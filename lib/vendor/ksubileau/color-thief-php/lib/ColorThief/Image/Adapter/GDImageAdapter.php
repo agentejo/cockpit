@@ -5,34 +5,34 @@ namespace ColorThief\Image\Adapter;
 class GDImageAdapter extends ImageAdapter
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function load($resource)
     {
         if (!is_resource($resource) || get_resource_type($resource) != 'gd') {
-            throw new \InvalidArgumentException("Passed variable is not a valid GD resource");
+            throw new \InvalidArgumentException('Passed variable is not a valid GD resource');
         }
 
         parent::load($resource);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function loadBinaryString($data)
     {
         $this->resource = @imagecreatefromstring($data);
         if ($this->resource === false) {
-            throw new \InvalidArgumentException("Passed binary string is empty or is not a valid image");
+            throw new \InvalidArgumentException('Passed binary string is empty or is not a valid image');
         }
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function loadFile($file)
     {
-        list(, , $type) = @getImageSize($file);
+        list(, , $type) = @getimagesize($file);
 
         switch ($type) {
             case IMAGETYPE_GIF:
@@ -60,7 +60,7 @@ class GDImageAdapter extends ImageAdapter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function destroy()
     {
@@ -71,7 +71,7 @@ class GDImageAdapter extends ImageAdapter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getHeight()
     {
@@ -79,7 +79,7 @@ class GDImageAdapter extends ImageAdapter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getWidth()
     {
@@ -87,12 +87,13 @@ class GDImageAdapter extends ImageAdapter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPixelColor($x, $y)
     {
         $rgba = imagecolorat($this->resource, $x, $y);
         $color = imagecolorsforindex($this->resource, $rgba);
-        return (object)$color;
+
+        return (object) $color;
     }
 }

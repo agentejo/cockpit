@@ -23,6 +23,7 @@ use MongoDB\Driver\Server;
 use MongoDB\Driver\WriteConcern;
 use MongoDB\Exception\InvalidArgumentException;
 use stdClass;
+use ReflectionClass;
 
 /**
  * Applies a type map to a document.
@@ -194,3 +195,31 @@ function is_string_array($input) {
     return true;
 }
 
+/**
+ * Performs a deep copy of a value.
+ *
+ * This function will clone objects and recursively copy values within arrays.
+ *
+ * @internal
+ * @see https://bugs.php.net/bug.php?id=49664
+ * @param mixed $element Value to be copied
+ * @return mixed
+ */
+function recursive_copy($element) {
+    if (is_array($element)) {
+        foreach ($element as $key => $value) {
+            $element[$key] = recursive_copy($value);
+        }
+        return $element;
+    }
+
+    if ( ! is_object($element)) {
+        return $element;
+    }
+
+    if ( ! (new ReflectionClass($element))->isCloneable()) {
+        return $element;
+    }
+
+    return clone $element;
+}

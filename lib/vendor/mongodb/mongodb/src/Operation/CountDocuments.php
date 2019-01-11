@@ -28,13 +28,13 @@ use MongoDB\Exception\UnexpectedValueException;
 use MongoDB\Exception\UnsupportedException;
 
 /**
- * Operation for the count command.
+ * Operation for obtaining an exact count of documents in a collection
  *
  * @api
- * @see \MongoDB\Collection::count()
- * @see http://docs.mongodb.org/manual/reference/command/count/
+ * @see \MongoDB\Collection::countDocuments()
+ * @see https://github.com/mongodb/specifications/blob/master/source/crud/crud.rst#countdocuments
  */
-class Count implements Executable, Explainable
+class CountDocuments implements Executable
 {
     private static $wireVersionForCollation = 5;
     private static $wireVersionForReadConcern = 4;
@@ -45,7 +45,7 @@ class Count implements Executable, Explainable
     private $options;
 
     /**
-     * Constructs a count command.
+     * Constructs an aggregate command for counting documents
      *
      * Supported options:
      *
@@ -83,7 +83,7 @@ class Count implements Executable, Explainable
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct($databaseName, $collectionName, $filter = [], array $options = [])
+    public function __construct($databaseName, $collectionName, $filter, array $options = [])
     {
         if ( ! is_array($filter) && ! is_object($filter)) {
             throw InvalidArgumentException::invalidType('$filter', $filter, 'array or object');
@@ -152,19 +152,20 @@ class Count implements Executable, Explainable
         }
 
         $cursor = $server->executeReadCommand($this->databaseName, new Command($this->createCommandDocument()), $this->createOptions());
-        $result = current($cursor->toArray());
+        $allResults = $cursor->toArray();
 
-        // Older server versions may return a float
+        /* If there are no documents to count, the aggregation pipeline has no items to group, and
+         * hence the result is an empty array (PHPLIB-376) */
+        if (count($allResults) == 0) {
+            return 0;
+        }
+
+        $result = current($allResults);
         if ( ! isset($result->n) || ! (is_integer($result->n) || is_float($result->n))) {
             throw new UnexpectedValueException('count command did not return a numeric "n" value');
         }
 
         return (integer) $result->n;
-    }
-
-    public function getCommandDocument(Server $server)
-    {
-        return $this->createCommandDocument();
     }
 
     /**
@@ -174,11 +175,25 @@ class Count implements Executable, Explainable
      */
     private function createCommandDocument()
     {
-        $cmd = ['count' => $this->collectionName];
+        $pipeline = [
+            ['$match' => (object) $this->filter]
+        ];
 
-        if ( ! empty($this->filter)) {
-            $cmd['query'] = (object) $this->filter;
+        if (isset($this->options['skip'])) {
+            $pipeline[] = ['$skip' => $this->options['skip']];
         }
+
+        if (isset($this->options['limit'])) {
+            $pipeline[] = ['$limit' => $this->options['limit']];
+        }
+
+        $pipeline[] = ['$group' => ['_id' => null, 'n' => ['$sum' => 1]]];
+
+        $cmd = [
+            'aggregate' => $this->collectionName,
+            'pipeline' => $pipeline,
+            'cursor' => (object) [],
+        ];
 
         if (isset($this->options['collation'])) {
             $cmd['collation'] = (object) $this->options['collation'];
@@ -188,10 +203,8 @@ class Count implements Executable, Explainable
             $cmd['hint'] = is_array($this->options['hint']) ? (object) $this->options['hint'] : $this->options['hint'];
         }
 
-        foreach (['limit', 'maxTimeMS', 'skip'] as $option) {
-            if (isset($this->options[$option])) {
-                $cmd[$option] = $this->options[$option];
-            }
+        if (isset($this->options['maxTimeMS'])) {
+            $cmd['maxTimeMS'] = $this->options['maxTimeMS'];
         }
 
         return $cmd;

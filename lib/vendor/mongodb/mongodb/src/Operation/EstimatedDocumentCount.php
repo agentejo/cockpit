@@ -28,37 +28,25 @@ use MongoDB\Exception\UnexpectedValueException;
 use MongoDB\Exception\UnsupportedException;
 
 /**
- * Operation for the count command.
+ * Operation for obtaining an estimated count of documents in a collection
  *
  * @api
- * @see \MongoDB\Collection::count()
+ * @see \MongoDB\Collection::estimatedDocumentCount()
  * @see http://docs.mongodb.org/manual/reference/command/count/
  */
-class Count implements Executable, Explainable
+class EstimatedDocumentCount implements Executable, Explainable
 {
     private static $wireVersionForCollation = 5;
     private static $wireVersionForReadConcern = 4;
 
     private $databaseName;
     private $collectionName;
-    private $filter;
     private $options;
 
     /**
      * Constructs a count command.
      *
      * Supported options:
-     *
-     *  * collation (document): Collation specification.
-     *
-     *    This is not supported for server versions < 3.4 and will result in an
-     *    exception at execution time if used.
-     *
-     *  * hint (string|document): The index to use. Specify either the index
-     *    name as a string or the index key pattern as a document. If specified,
-     *    then the query system will only consider plans using the hinted index.
-     *
-     *  * limit (integer): The maximum number of documents to count.
      *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
      *    run.
@@ -74,33 +62,13 @@ class Count implements Executable, Explainable
      *
      *    Sessions are not supported for server versions < 3.6.
      *
-     *  * skip (integer): The number of documents to skip before returning the
-     *    documents.
-     *
      * @param string       $databaseName   Database name
      * @param string       $collectionName Collection name
-     * @param array|object $filter         Query by which to filter documents
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct($databaseName, $collectionName, $filter = [], array $options = [])
+    public function __construct($databaseName, $collectionName, array $options = [])
     {
-        if ( ! is_array($filter) && ! is_object($filter)) {
-            throw InvalidArgumentException::invalidType('$filter', $filter, 'array or object');
-        }
-
-        if (isset($options['collation']) && ! is_array($options['collation']) && ! is_object($options['collation'])) {
-            throw InvalidArgumentException::invalidType('"collation" option', $options['collation'], 'array or object');
-        }
-
-        if (isset($options['hint']) && ! is_string($options['hint']) && ! is_array($options['hint']) && ! is_object($options['hint'])) {
-            throw InvalidArgumentException::invalidType('"hint" option', $options['hint'], 'string or array or object');
-        }
-
-        if (isset($options['limit']) && ! is_integer($options['limit'])) {
-            throw InvalidArgumentException::invalidType('"limit" option', $options['limit'], 'integer');
-        }
-
         if (isset($options['maxTimeMS']) && ! is_integer($options['maxTimeMS'])) {
             throw InvalidArgumentException::invalidType('"maxTimeMS" option', $options['maxTimeMS'], 'integer');
         }
@@ -117,17 +85,12 @@ class Count implements Executable, Explainable
             throw InvalidArgumentException::invalidType('"session" option', $options['session'], 'MongoDB\Driver\Session');
         }
 
-        if (isset($options['skip']) && ! is_integer($options['skip'])) {
-            throw InvalidArgumentException::invalidType('"skip" option', $options['skip'], 'integer');
-        }
-
         if (isset($options['readConcern']) && $options['readConcern']->isDefault()) {
             unset($options['readConcern']);
         }
 
         $this->databaseName = (string) $databaseName;
         $this->collectionName = (string) $collectionName;
-        $this->filter = $filter;
         $this->options = $options;
     }
 
@@ -176,22 +139,8 @@ class Count implements Executable, Explainable
     {
         $cmd = ['count' => $this->collectionName];
 
-        if ( ! empty($this->filter)) {
-            $cmd['query'] = (object) $this->filter;
-        }
-
-        if (isset($this->options['collation'])) {
-            $cmd['collation'] = (object) $this->options['collation'];
-        }
-
-        if (isset($this->options['hint'])) {
-            $cmd['hint'] = is_array($this->options['hint']) ? (object) $this->options['hint'] : $this->options['hint'];
-        }
-
-        foreach (['limit', 'maxTimeMS', 'skip'] as $option) {
-            if (isset($this->options[$option])) {
-                $cmd[$option] = $this->options[$option];
-            }
+        if (isset($this->options['maxTimeMS'])) {
+            $cmd['maxTimeMS'] = $this->options['maxTimeMS'];
         }
 
         return $cmd;

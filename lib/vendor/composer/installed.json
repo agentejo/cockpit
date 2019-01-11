@@ -184,32 +184,32 @@
     },
     {
         "name": "ksubileau/color-thief-php",
-        "version": "v1.3.1",
-        "version_normalized": "1.3.1.0",
+        "version": "v1.4.1",
+        "version_normalized": "1.4.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/ksubileau/color-thief-php.git",
-            "reference": "a673d7d3fa815c70fa4bebdee74d337e9e6944fa"
+            "reference": "fc2acefacbd037f68cf61bcc62b30ac1bb16ed59"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/ksubileau/color-thief-php/zipball/a673d7d3fa815c70fa4bebdee74d337e9e6944fa",
-            "reference": "a673d7d3fa815c70fa4bebdee74d337e9e6944fa",
+            "url": "https://api.github.com/repos/ksubileau/color-thief-php/zipball/fc2acefacbd037f68cf61bcc62b30ac1bb16ed59",
+            "reference": "fc2acefacbd037f68cf61bcc62b30ac1bb16ed59",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.3.0"
+            "php": ">=5.4.0"
         },
         "require-dev": {
-            "phpunit/phpunit": "~4.8|~5.7",
-            "squizlabs/php_codesniffer": "~2.7"
+            "friendsofphp/php-cs-fixer": "^2.13",
+            "phpunit/phpunit": "~4.8|~5.7"
         },
         "suggest": {
             "ext-gd": "to use the GD image adapter.",
             "ext-gmagick": "to use the Gmagick image adapter.",
             "ext-imagick": "to use the Imagick image adapter."
         },
-        "time": "2016-12-18T03:12:25+00:00",
+        "time": "2018-10-27T18:57:38+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -295,27 +295,27 @@
     },
     {
         "name": "league/flysystem",
-        "version": "1.0.46",
-        "version_normalized": "1.0.46.0",
+        "version": "1.0.49",
+        "version_normalized": "1.0.49.0",
         "source": {
             "type": "git",
             "url": "https://github.com/thephpleague/flysystem.git",
-            "reference": "f3e0d925c18b92cf3ce84ea5cc58d62a1762a2b2"
+            "reference": "a63cc83d8a931b271be45148fa39ba7156782ffd"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/f3e0d925c18b92cf3ce84ea5cc58d62a1762a2b2",
-            "reference": "f3e0d925c18b92cf3ce84ea5cc58d62a1762a2b2",
+            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/a63cc83d8a931b271be45148fa39ba7156782ffd",
+            "reference": "a63cc83d8a931b271be45148fa39ba7156782ffd",
             "shasum": ""
         },
         "require": {
+            "ext-fileinfo": "*",
             "php": ">=5.5.9"
         },
         "conflict": {
             "league/flysystem-sftp": "<1.0.6"
         },
         "require-dev": {
-            "ext-fileinfo": "*",
             "phpspec/phpspec": "^3.4",
             "phpunit/phpunit": "^5.7.10"
         },
@@ -335,7 +335,7 @@
             "spatie/flysystem-dropbox": "Allows you to use Dropbox storage",
             "srmklive/flysystem-dropbox-v2": "Allows you to use Dropbox storage for PHP 5 applications"
         },
-        "time": "2018-08-22T07:45:22+00:00",
+        "time": "2018-11-23T23:41:29+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -435,33 +435,33 @@
     },
     {
         "name": "mongodb/mongodb",
-        "version": "1.3.2",
-        "version_normalized": "1.3.2.0",
+        "version": "1.4.2",
+        "version_normalized": "1.4.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/mongodb/mongo-php-library.git",
-            "reference": "b9f35916125976533f4b1e67a4a0ee7baf1d3bb9"
+            "reference": "bd148eab0493e38354e45e2cd7db59b90fdcad79"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/b9f35916125976533f4b1e67a4a0ee7baf1d3bb9",
-            "reference": "b9f35916125976533f4b1e67a4a0ee7baf1d3bb9",
+            "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/bd148eab0493e38354e45e2cd7db59b90fdcad79",
+            "reference": "bd148eab0493e38354e45e2cd7db59b90fdcad79",
             "shasum": ""
         },
         "require": {
             "ext-hash": "*",
             "ext-json": "*",
-            "ext-mongodb": "^1.4.0",
+            "ext-mongodb": "^1.5.0",
             "php": ">=5.5"
         },
         "require-dev": {
             "phpunit/phpunit": "^4.8.36 || ^6.4"
         },
-        "time": "2018-04-19T17:20:30+00:00",
+        "time": "2018-07-18T14:33:41+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.3.x-dev"
+                "dev-master": "1.4.x-dev"
             }
         },
         "installation-source": "dist",
@@ -502,17 +502,17 @@
     },
     {
         "name": "phpmailer/phpmailer",
-        "version": "v6.0.5",
-        "version_normalized": "6.0.5.0",
+        "version": "v6.0.6",
+        "version_normalized": "6.0.6.0",
         "source": {
             "type": "git",
             "url": "https://github.com/PHPMailer/PHPMailer.git",
-            "reference": "cb3ea134d4d3729e7857737d5f320cce9caf4d32"
+            "reference": "8190d73eb5def11a43cfb020b7f36db65330698c"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/cb3ea134d4d3729e7857737d5f320cce9caf4d32",
-            "reference": "cb3ea134d4d3729e7857737d5f320cce9caf4d32",
+            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/8190d73eb5def11a43cfb020b7f36db65330698c",
+            "reference": "8190d73eb5def11a43cfb020b7f36db65330698c",
             "shasum": ""
         },
         "require": {
@@ -537,7 +537,7 @@
             "stevenmaguire/oauth2-microsoft": "Needed for Microsoft XOAUTH2 authentication",
             "symfony/polyfill-mbstring": "To support UTF-8 if the Mbstring PHP extension is not enabled (^1.2)"
         },
-        "time": "2018-03-27T13:49:45+00:00",
+        "time": "2018-11-16T00:41:32+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

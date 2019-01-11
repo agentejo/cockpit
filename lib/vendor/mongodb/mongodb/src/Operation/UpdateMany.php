@@ -30,7 +30,7 @@ use MongoDB\Exception\UnsupportedException;
  * @see \MongoDB\Collection::updateMany()
  * @see http://docs.mongodb.org/manual/reference/command/update/
  */
-class UpdateMany implements Executable
+class UpdateMany implements Executable, Explainable
 {
     private $update;
 
@@ -103,5 +103,10 @@ class UpdateMany implements Executable
     public function execute(Server $server)
     {
         return $this->update->execute($server);
+    }
+
+    public function getCommandDocument(Server $server)
+    {
+        return $this->update->getCommandDocument($server);
     }
 }
