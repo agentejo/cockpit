@@ -23,9 +23,10 @@ $this->module('cockpit')->extend([
 
         $dirs = ['#cache:','#tmp:','#thumbs:'];
 
-        foreach($dirs as $dir) {
+        foreach ($dirs as $dir) {
 
-            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($app->path($dir)), \RecursiveIteratorIterator::SELF_FIRST);
+            $path = $app->path($dir);
+            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
 
             foreach ($files as $file) {
 
@@ -35,7 +36,7 @@ $this->module('cockpit')->extend([
                 @unlink($file->getRealPath());
             }
 
-            $app->helper('fs')->removeEmptySubFolders('#cache:');
+            $app->helper('fs')->removeEmptySubFolders($path);
         }
 
         $app->trigger('cockpit.clearcache');
