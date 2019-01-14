@@ -46,14 +46,16 @@ $this->on('before', function() {
 
                     if ($apikey['token'] == $token) {
 
-                        $rules =  trim($apikey['rules']);
+                        $rules = trim($apikey['rules']);
 
                         if ($rules == '*') {
                             $allowed = true;
                             break;
                         }
 
-                        foreach (explode("\n", $rules) as $rule) {
+                        $rules = explode("\n", $rules);
+
+                        foreach ($rules as &$rule) {
 
                             $rule = trim($rule);
                             if (!$rule) continue;
@@ -71,9 +73,9 @@ $this->on('before', function() {
 
         }
 
-        $parts      = explode('/', $path, 2);
-        $resource   = $parts[0];
-        $params     = isset($parts[1]) ? explode('/', $parts[1]) : [];
+        $parts    = explode('/', $path, 2);
+        $resource = $parts[0];
+        $params   = isset($parts[1]) ? explode('/', $parts[1]) : [];
 
         // trigger authenticate event
         if (!$allowed) {

@@ -75,7 +75,7 @@ class RestApi extends \LimeExtra\Controller {
             ], $data);
 
             if (isset($data['api_key'])) {
-                $data['api_key'] = uniqid('account-').uniqid();
+                $data['api_key'] = 'account-'.uniqid(bin2hex(random_bytes(16)));
             }
 
             $data['_created'] = $data['_modified'];

@@ -30,6 +30,17 @@ class Mongo {
         return $this->db->selectCollection($name);
     }
 
+    public function dropCollection($name, $db = null){
+
+        if ($db) {
+            $name = "{$db}/{$name}";
+        }
+
+        $name = str_replace('/', '_', $name);
+
+        return $this->db->dropCollection($name);
+    }
+
     public function findOneById($collection, $id){
 
         if (is_string($id)) $id = new \MongoDB\BSON\ObjectID($id);
