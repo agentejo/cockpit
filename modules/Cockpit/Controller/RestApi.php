@@ -167,10 +167,8 @@ class RestApi extends \LimeExtra\Controller {
         $accounts = $this->app->storage->find('cockpit/accounts', $options)->toArray();
 
         foreach ($accounts as &$account) {
-
-            if (isset($account['password']))     unset($account['password']);
-            if (isset($account['api_key']))      unset($account['api_key']);
-            if (isset($account['_reset_token'])) unset($account['_reset_token']);
+            unset($account['password'], $account['api_key'], $account['_reset_token']);
+            $this->app->trigger('cockpit.accounts.disguise', [&$account]);
         }
 
         return $accounts;
