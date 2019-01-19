@@ -78,6 +78,8 @@
                                 </div>
                             </div>
 
+                            @trigger('cockpit.account.panel', [&$account])
+
                         </div>
 
                         <div if="{ App.Utils.count(fields) }">
@@ -107,7 +109,7 @@
 
                         </div>
 
-                        @trigger('cockpit.account.editview')
+                        @trigger('cockpit.account.editview', [&$account])
 
                         <cp-actionbar>
                             <div class="uk-container uk-container-center">
