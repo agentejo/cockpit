@@ -231,9 +231,9 @@
 
 
         this.on('mount', function() {
-            
+
             App.trigger('field.layout.components', {components:this.components, opts:opts});
-            
+
             // exclude components?
             if (Array.isArray(opts.exclude) && opts.exclude.length) {
 
@@ -241,7 +241,7 @@
                     if ($this.components[c]) delete $this.components[c];
                 });
             }
-            
+
 
             if (opts.components && App.Utils.isObject(opts.components)) {
                 this.components = App.$.extend(true, this.components, opts.components);
@@ -381,7 +381,7 @@
             if (Array.isArray(settings.fields)) {
 
                 settings.fields.forEach(function(field) {
-                    item.settings[field.name] = field.default || null;
+                    item.settings[field.name] = field.options.default || null;
                 })
             }
 
@@ -415,7 +415,7 @@
 
         remove(e) {
             this.items.splice(e.item.idx, 1);
-            
+
             if (opts.child) {
                 this.parent.update()
             }
