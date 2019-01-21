@@ -29,6 +29,7 @@
     },
 
     "config": {
-        "vendor-dir": "lib/vendor"
+        "vendor-dir": "lib/vendor",
+        "optimize-autoloader": true
     }
 }
