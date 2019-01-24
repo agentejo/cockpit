@@ -19,7 +19,7 @@ $app->on('admin.init', function() {
     $this->bindClass('Collections\\Controller\\Admin', 'collections');
 
     // add to modules menu
-    $this('admin')->addMenuItem('modules', [
+    $this->helper('admin')->addMenuItem('modules', [
         'label' => 'Collections',
         'icon'  => 'collections:icon.svg',
         'route' => '/collections',
