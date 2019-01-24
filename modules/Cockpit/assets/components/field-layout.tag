@@ -381,7 +381,7 @@
             if (Array.isArray(settings.fields)) {
 
                 settings.fields.forEach(function(field) {
-                    item.settings[field.name] = field.options.default || null;
+                    item.settings[field.name] = field.options && field.options.default || null;
                 })
             }
 

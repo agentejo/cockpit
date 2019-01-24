@@ -2829,7 +2829,7 @@ riot.tag2('field-layout', '<div class="uk-sortable layout-components {!items.len
             if (Array.isArray(settings.fields)) {
 
                 settings.fields.forEach(function(field) {
-                    item.settings[field.name] = field.options.default || null;
+                    item.settings[field.name] = field.options && field.options.default || null;
                 })
             }
 
