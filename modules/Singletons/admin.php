@@ -15,7 +15,7 @@ $app->on('admin.init', function() {
     $this->bindClass('Singletons\\Controller\\Admin', 'singletons');
 
     // add to modules menu
-    $this('admin')->addMenuItem('modules', [
+    $this-helper('admin')->addMenuItem('modules', [
         'label' => 'Singletons',
         'icon'  => 'singletons:icon.svg',
         'route' => '/singletons',

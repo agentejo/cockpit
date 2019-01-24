@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="uk-height-1-1" lang="en" data-base="@base('/')" data-route="@route('/')">
+<html class="uk-height-1-1" lang="{{ $app('i18n')->locale }}" data-base="@base('/')" data-route="@route('/')">
     <head>
         <meta charset="UTF-8">
         <title>@lang('Authenticate Please!')</title>

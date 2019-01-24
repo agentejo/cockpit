@@ -21,12 +21,14 @@ if (COCKPIT_ADMIN && !defined('COCKPIT_ADMIN_ROUTE')) {
 
 if (COCKPIT_API_REQUEST) {
 
-    header("Access-Control-Allow-Origin: ".$cockpit->retrieve('config/cors/allowedOrigins', '*'));
-    header("Access-Control-Allow-Credentials: ".$cockpit->retrieve('config/cors/allowCredentials', 'true'));
-    header("Access-Control-Max-Age: ".$cockpit->retrieve('config/cors/maxAge', '1000'));
-    header("Access-Control-Allow-Headers: ".$cockpit->retrieve('config/cors/allowedHeaders', 'X-Requested-With, Content-Type, Origin, Cache-Control, Pragma, Authorization, Accept, Accept-Encoding, Cockpit-Token'));
-    header("Access-Control-Allow-Methods: ".$cockpit->retrieve('config/cors/allowedMethods', 'PUT, POST, GET, OPTIONS, DELETE'));
-    header("Access-Control-Expose-Headers: ".$cockpit->retrieve('config/cors/exposedHeaders', 'true'));
+    $_cors = $cockpit->retrieve('config/cors', []);
+
+    header('Access-Control-Allow-Origin: '      .($_cors['allowedOrigins'] ?? '*'));
+    header('Access-Control-Allow-Credentials: ' .($_cors['allowCredentials'] ?? 'true'));
+    header('Access-Control-Max-Age: '           .($_cors['maxAge'] ?? '1000'));
+    header('Access-Control-Allow-Headers: '     .($_cors['allowedHeaders'] ?? 'X-Requested-With, Content-Type, Origin, Cache-Control, Pragma, Authorization, Accept, Accept-Encoding, Cockpit-Token'));
+    header('Access-Control-Allow-Methods: '     .($_cors['allowedMethods'] ?? 'PUT, POST, GET, OPTIONS, DELETE'));
+    header('Access-Control-Expose-Headers: '    .($_cors['exposedHeaders'] ?? 'true'));
 
     if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
         exit(0);
