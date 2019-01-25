@@ -20,7 +20,7 @@
         var SITE_URL   = '{{ rtrim($app->filestorage->getUrl('site://'), '/') }}';
         var ASSETS_URL = '{{ rtrim($app->filestorage->getUrl('assets://'), '/') }}';
     </script>
-    <script src="@base('assets:lib/fuc.js.php')"></script>
+
     {{ $app->assets($app('admin')->data->get('assets'), $app['debug'] ? time() : $app['cockpit/version']) }}
 
     <script src="@route('/cockpit.i18n.data')"></script>
@@ -203,7 +203,7 @@
     <script type="riot/tag" src="{{$app->pathToUrl('#config:tags/'.$component->getBasename())}}?nc={{ $app['debug'] ? time() : $app['cockpit/version'] }}"></script>
     @endforeach
 
-    @render('cockpit:views/_partials/logincheck.php');
+    @render('cockpit:views/_partials/logincheck.php')
 
 </body>
 </html>
