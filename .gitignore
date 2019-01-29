@@ -10,12 +10,12 @@ composer.lock
 package-lock.json
 /lib/**/doc/*
 /lib/**/docs/*
+/lib/**/example/*
+/lib/**/phpunit*
 /lib/**/tests/*
 /lib/**/test/*
 /lib/**/\.travis/*
 /lib/**/\.travis.yml
-/lib/**/phpunit*
-/lib/**/example/*
 /storage/*.*
 /storage/*/*
 /config/*
