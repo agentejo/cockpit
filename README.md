@@ -25,7 +25,7 @@ make also sure that <code>$_SERVER['DOCUMENT_ROOT']</code> exists and is set cor
 4. You're ready to use Cockpit :-)
 
 
-### Build (Only if you modify JS components)
+### Build (Only if you modify JS components or LESS styles)
 
 You need [nodejs](https://nodejs.org/) installed on your system.
 
