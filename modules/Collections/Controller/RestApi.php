@@ -259,6 +259,8 @@ class RestApi extends \LimeExtra\Controller {
 
                 if ($v === 'true' || $v === 'false') {
                     $v = filter_var($v, FILTER_VALIDATE_BOOLEAN);
+                } else {
+                    $v = filter_var($v, FILTER_VALIDATE_INT);
                 }
             }
 
