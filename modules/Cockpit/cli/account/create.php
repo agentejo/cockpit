@@ -66,5 +66,3 @@ $exist = $app->storage->findOne('cockpit/accounts', ['email'  => $email]);
 $app->storage->insert('cockpit/accounts', $account);
 
 CLI::writeln('Account created', true);
-
-// ./cp account/create --user cliuser --email cliuser@huhu.de --passwd $2y$10$iJArAtk8DJJe3YEMDL.Boe7YxWnJiuQNxjmvIWMZ2viZME.tZ41ma
