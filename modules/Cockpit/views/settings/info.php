@@ -95,12 +95,20 @@
                                 <td>{{ ini_get("max_execution_time") }} sec.</td>
                             </tr>
                             <tr>
+                                <td width="30%">OPCache enabled</td>
+                                <td>{{ ini_get("opcache.enable") }}</td>
+                            </tr>
+                            <tr>
                                 <td width="30%">Memory limit</td>
                                 <td>{{ ini_get("memory_limit") }}</td>
                             </tr>
                             <tr>
                                 <td width="30%">Upload file size limit</td>
                                 <td>{{ ini_get("upload_max_filesize") }}</td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Realpath Cache</td>
+                                <td>{{ ini_get("realpath_cache_size") }} / {{ ini_get("realpath_cache_ttl") }} (ttl)</td>
                             </tr>
                         </tbody>
                     </table>
