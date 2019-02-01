@@ -204,7 +204,7 @@ $app->on('after', function() {
 
             if ($this['debug']) {
 
-                if ($this->req_is('ajax')) {
+                if ($this->req_is('ajax') || COCKPIT_API_REQUEST) {
                     $this->response->body = json_encode(['error' => json_decode($this->response->body, true)]);
                 } else {
                     $this->response->body = $this->render('cockpit:views/errors/500-debug.php', ['error' => json_decode($this->response->body, true)]);
@@ -212,7 +212,7 @@ $app->on('after', function() {
 
             } else {
 
-                if ($this->req_is('ajax')) {
+                if ($this->req_is('ajax') || COCKPIT_API_REQUEST) {
                     $this->response->body = '{"error": "500", "message": "system error"}';
                 } else {
                     $this->response->body = $this->view('cockpit:views/errors/500.php');
@@ -229,7 +229,7 @@ $app->on('after', function() {
 
         case 401:
 
-            if ($this->req_is('ajax')) {
+            if ($this->req_is('ajax') || COCKPIT_API_REQUEST) {
                 $this->response->body = '{"error": "401", "message":"Unauthorized"}';
             } else {
                 $this->response->body = $this->view('cockpit:views/errors/401.php');
@@ -240,7 +240,7 @@ $app->on('after', function() {
 
         case 404:
 
-            if ($this->req_is('ajax')) {
+            if ($this->req_is('ajax') || COCKPIT_API_REQUEST) {
                 $this->response->body = '{"error": "404", "message":"File not found"}';
             } else {
 
