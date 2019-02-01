@@ -367,7 +367,11 @@ class Utils extends \Lime\Helper {
 	    return $token;
 	}
 
-
+	/**
+	 * Check if string is valid email
+	 * @param  string  $email
+	 * @return boolean
+	 */
 	public function isEmail($email) {
 
 		if (function_exists('idn_to_ascii')) {
@@ -376,4 +380,66 @@ class Utils extends \Lime\Helper {
 
 		return (bool) filter_var($email, FILTER_VALIDATE_EMAIL);
 	}
+
+	/**
+	 * Cast boolean string values to boolean
+	 * @param  mixed $input
+	 * @return mixed
+	 */
+	public function fixStringBooleanValues(&$input) {
+
+        if (!is_array($input)) {
+
+			if (is_string($input) && ($input === 'true' || $input === 'false')) {
+				$input = filter_var($input, FILTER_VALIDATE_BOOLEAN);
+			}
+            return $input;
+        }
+
+        foreach ($input as $k => $v) {
+
+            if (is_array($input[$k])) {
+                $input[$k] = $this->fixStringBooleanValues($input[$k]);
+            }
+
+            if (is_string($v) && ($v === 'true' || $v === 'false')) {
+				$v = filter_var($v, FILTER_VALIDATE_BOOLEAN);
+            }
+
+            $input[$k] = $v;
+        }
+
+        return $input;
+    }
+
+	/**
+	 * Cast numeric string values to numbers
+	 * @param  mixed $input
+	 * @return mixed
+	 */
+	public function fixStringNumericValues(&$input) {
+
+        if (!is_array($input)) {
+
+			if (is_string($input) && is_numeric($input)) {
+				$input += 0;
+			}
+            return $input;
+        }
+
+        foreach ($input as $k => $v) {
+
+            if (is_array($input[$k])) {
+                $input[$k] = $this->fixStringNumericValues($input[$k]);
+            }
+
+            if (is_string($v) && is_numeric($v)) {
+                $v += 0;
+            }
+
+            $input[$k] = $v;
+        }
+
+        return $input;
+    }
 }
