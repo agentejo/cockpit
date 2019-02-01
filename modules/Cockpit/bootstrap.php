@@ -295,6 +295,11 @@ $this->module('cockpit')->extend([
         }
 
         if ($output) {
+
+            if ($output == 'redirect') {
+                $this->app->reroute($this->app->filestorage->getURL($thumbpath));
+            }
+
             header("Content-Type: image/{$ext}");
             header('Content-Length: '.$this->app->filestorage->getSize($thumbpath));
             echo $this->app->filestorage->read($thumbpath);
