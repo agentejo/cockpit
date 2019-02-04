@@ -41,6 +41,8 @@
 
     </style>
 
+    @trigger('app.login.header')
+
 </head>
 <body class="login-page uk-height-viewport uk-flex uk-flex-middle uk-flex-center">
 
@@ -91,6 +93,8 @@
 
 
         </form>
+
+        @trigger('app.login.footer')
 
 
         <script type="view/script">
