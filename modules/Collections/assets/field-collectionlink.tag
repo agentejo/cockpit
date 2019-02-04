@@ -22,7 +22,10 @@
 
             <div class="uk-panel uk-panel-card uk-panel-box">
 
-                <div>{ link.display }</div>
+                <div class="uk-flex">
+                    <span class="uk-flex-item-1">{ link.display }</span>
+                    <a class="uk-margin-small-left" href="{ App.route('/collections/entry/'+opts.link+'/'+link._id) }"><i class="uk-icon-link"></i></a>
+                </div>
 
                 <div class="uk-panel-box-footer uk-text-small uk-padding-bottom-remove">
                     <a class="uk-margin-small-right" onclick="{ showDialog }"><i class="uk-icon-link"></i> { App.i18n.get('Link item') }</a>
@@ -40,7 +43,10 @@
                     <li each="{l,index in link}" data-idx="{ index }">
                         <div class="uk-grid uk-grid-small uk-text-small">
                             <div><a onclick="{ removeListItem }"><i class="uk-icon-trash-o"></i></a></div>
-                            <div class="uk-flex-item-1">{ l.display }</div>
+                            <div class="uk-flex uk-flex-item-1">
+                                <span class="uk-flex-item-1">{ l.display }</span>
+                                <a class="uk-margin-small-left" href="{ App.route('/collections/entry/'+parent.opts.link+'/'+l._id) }"><i class="uk-icon-link"></i></a>
+                            </div>
                         </div>
                     </li>
                 </ul>
