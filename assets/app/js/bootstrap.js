@@ -112,21 +112,3 @@
     });
 
 })(jQuery, UIkit);
-
-
-class AppActionBarElement extends HTMLElement {
-
-    constructor() {
-        super();
-    }
-
-    connectedCallback() {
-        document.body.style.paddingBottom = this.offsetHeight+'px';
-    }
-
-    disconnectedCallback() {
-        document.body.style.paddingBottom = '';
-    }
-}
-
-customElements.define('cp-actionbar', AppActionBarElement);
