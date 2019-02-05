@@ -76,6 +76,25 @@ class Admin extends \Cockpit\AuthController {
         return $this->render($view, compact('form', 'count'));
     }
 
+    public function find() {
+
+        $form = $this->app->param('form');
+        $options    = $this->app->param('options');
+
+        if (!$form) return false;
+
+        $entries = $this->app->module('forms')->find($form, $options);
+        $count   = $this->app->module('forms')->count($form, isset($options['filter']) ? $options['filter'] : []);
+        $pages   = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
+        $page    = 1;
+
+        if ($pages > 1 && isset($options['skip'])) {
+            $page = ceil($options['skip'] / $options['limit']) + 1;
+        }
+
+        return compact('entries', 'count', 'pages', 'page');
+    }
+
     public function export($form) {
 
         if (!$this->app->module('cockpit')->hasaccess('forms', 'manage')) {
