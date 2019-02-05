@@ -6,7 +6,7 @@ customElements.define('cp-actionbar', class extends HTMLElement {
     }
 
     connectedCallback() {
-        document.body.style.paddingBottom = this.offsetHeight+'px';
+        document.body.style.paddingBottom = `calc(2rem + ${this.offsetHeight}px)`;
     }
 
     disconnectedCallback() {
