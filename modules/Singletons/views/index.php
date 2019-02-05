@@ -56,7 +56,7 @@
 
             <div each="{ singleton,idx in singletons }" show="{ ingroup(singleton.meta) && infilter(singleton.meta) }">
 
-                <div class="uk-panel uk-panel-box uk-panel-card">
+                <div class="uk-panel uk-panel-box uk-panel-card uk-panel-card-hover">
 
                     <div class="uk-panel-teaser uk-position-relative">
                         <canvas width="600" height="350"></canvas>
