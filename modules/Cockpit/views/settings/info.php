@@ -96,7 +96,7 @@
                             </tr>
                             <tr>
                                 <td width="30%">OPCache enabled</td>
-                                <td>{{ ini_get("opcache.enable") }}</td>
+                                <td><span class="uk-badge uk-badge-outline uk-text-{{ ini_get("opcache.enable") ? 'success':'danger' }}">{{ ini_get("opcache.enable") ? 'Yes':'No' }}</span></td>
                             </tr>
                             <tr>
                                 <td width="30%">Memory limit</td>
