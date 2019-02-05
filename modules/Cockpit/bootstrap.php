@@ -262,9 +262,18 @@ $this->module('cockpit')->extend([
 
                 // Apply single filter
                 foreach ($_filters as $f) {
+                    $filterName = $f;
+                    // fix filters with spaces
+                    if (strpos($filterName, ' ') !== false) {
+                        $parts = explode(' ', $filterName);
+                        for ($i = 1; $i < count($parts); $i++) {
+                            $parts[$i] = ucfirst($parts[$i]);
+                        }
+                        $filterName = implode('', $parts);
+                    }
 
                     if (isset($options[$f])) {
-                        $img->{$f}($options[$f]);
+                        $img->{$filterName}($options[$f]);
                     }
                 }
 
