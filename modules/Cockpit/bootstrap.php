@@ -256,7 +256,7 @@ $this->module('cockpit')->extend([
                     'blur', 'brighten',
                     'colorize', 'contrast',
                     'darken', 'desaturate',
-                    'edge detect', 'emboss',
+                    'edgeDetect', 'emboss',
                     'flip', 'invert', 'opacity', 'pixelate', 'sepia', 'sharpen', 'sketch'
                 ];
 

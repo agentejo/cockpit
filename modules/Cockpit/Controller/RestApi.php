@@ -203,7 +203,7 @@ class RestApi extends \LimeExtra\Controller {
             'blur', 'brighten',
             'colorize', 'contrast',
             'darken', 'desaturate',
-            'edge detect', 'emboss',
+            'edgeDetect', 'emboss',
             'flip', 'invert', 'opacity', 'pixelate', 'sepia', 'sharpen', 'sketch'
         ] as $f) {
             if ($this->param($f)) $options[$f] = $this->param($f);
