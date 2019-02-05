@@ -4,8 +4,8 @@
 
     @foreach($singletons as $singleton)
     <li>
-        <a href="@route('/singletons/form/'.$singleton['name'])">
-        <i class="uk-icon-justify uk-icon-list"></i> {{ htmlspecialchars($singleton['label'] ? $singleton['label'] : $singleton['name']) }}
+        <a class="uk-flex uk-flex-middle" href="@route('/singletons/form/'.$singleton['name'])">
+            <i class="uk-icon-justify"><img class="uk-svg-adjust" src="@base('singletons:icon.svg')" width="20" height="20" data-uk-svg></i> {{ htmlspecialchars($singleton['label'] ? $singleton['label'] : $singleton['name']) }}
         </a>
     </li>
     @endforeach

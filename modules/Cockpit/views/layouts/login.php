@@ -6,9 +6,6 @@
     <link rel="icon" href="@base('/favicon.ico')" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
-    {{ $app->assets($app['app.assets.base'], $app['cockpit/version']) }}
-    {{ $app->assets(['assets:lib/uikit/js/components/form-password.min.js'], $app['cockpit/version']) }}
-
     <style>
 
         .login-container {
@@ -40,6 +37,10 @@
         }
 
     </style>
+
+    {{ $app->assets($app['app.assets.base'], $app['cockpit/version']) }}
+    {{ $app->assets(['assets:lib/uikit/js/components/form-password.min.js'], $app['cockpit/version']) }}
+
 
     @trigger('app.login.header')
 

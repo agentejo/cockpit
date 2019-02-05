@@ -4,8 +4,8 @@
 
     @foreach($collections as $collection)
     <li>
-        <a href="@route('/collections/entries/'.$collection['name'])">
-        <i class="uk-icon-justify uk-icon-list"></i> {{ htmlspecialchars($collection['label'] ? $collection['label'] : $collection['name']) }}
+        <a class="uk-flex uk-flex-middle" href="@route('/collections/entries/'.$collection['name'])">
+            <i class="uk-icon-justify"><img class="uk-svg-adjust" src="@base('collections:icon.svg')" width="20" height="20" data-uk-svg></i> {{ htmlspecialchars($collection['label'] ? $collection['label'] : $collection['name']) }}
         </a>
     </li>
     @endforeach
