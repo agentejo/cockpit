@@ -255,8 +255,13 @@ class Admin extends \Cockpit\AuthController {
             $_entry = $this->module('collections')->findOne($collection['name'], ['_id' => $entry['_id']]);
             $revision = !(json_encode($_entry) == json_encode($entry));
         } else {
+
             $entry['_by'] = $entry['_mby'];
             $revision = true;
+
+            if ($collection['sortable']) {
+                 $entry['_o'] = $this->app->storage->count("collections/{$collection['_id']}", ['_pid' => ['$exists' => false]]);
+            }
         }
 
         $entry = $this->module('collections')->save($collection['name'], $entry, ['revision' => $revision]);
