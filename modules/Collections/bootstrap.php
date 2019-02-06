@@ -559,7 +559,7 @@ $this->module('collections')->extend([
 
                     foreach ($languages as $l) {
 
-                        if (isset($entry["{$name}_{$l}"])) {
+                        if (isset($entry["{$name}_{$l}"]) && $entry["{$name}_{$l}"] !== '') {
 
                             if ($l == $lang) {
 

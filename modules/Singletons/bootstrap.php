@@ -304,7 +304,7 @@ $this->module('singletons')->extend([
 
                 foreach ($languages as $l) {
 
-                    if (isset($data["{$name}_{$l}"])) {
+                    if (isset($data["{$name}_{$l}"]) && $data["{$name}_{$l}"] !== '') {
 
                         if ($l == $lang) {
 
