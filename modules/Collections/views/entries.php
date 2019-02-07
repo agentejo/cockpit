@@ -7,26 +7,6 @@
 
 <script>
 
-App.Utils.renderer.collectionlink = function(v) {
-
-    if (Array.isArray(v)) {
-
-        var vals = [];
-
-        v.forEach(function(val) {
-            vals.push(val && val.display ? val.display: App.Utils.renderer.default(val));
-        });
-
-        if (vals.length > 1) {
-            return '<span class="uk-badge" title="'+vals.join(', ')+'" data-uk-tooltip>'+vals.length+'</span>';
-        }
-
-        return vals[0];
-    }
-
-    return v && v.display ? v.display : App.Utils.renderer.default(v);
-};
-
 function CollectionHasFieldAccess(field) {
 
     var acl = field.acl || [];
