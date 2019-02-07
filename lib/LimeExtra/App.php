@@ -90,6 +90,12 @@ class App extends \Lime\App {
     */
     public function view($template, $slots = []) {
 
+        $this->trigger('app.render.view', [&$template, &$slots]);
+
+        if (is_string($template) && $template) {
+            $this->trigger("app.render.view/{$template}", [&$template, &$slots]);
+        }
+
         $renderer     = $this->renderer;
         $olayout      = $this->layout;
 
