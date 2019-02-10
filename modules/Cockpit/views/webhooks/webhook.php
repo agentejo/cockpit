@@ -98,9 +98,12 @@
                     </table>
 
                     <div class="uk-margin uk-form">
-                        <div class="uk-form-icon uk-width-1-1 uk-display-block">
+                        <div class="uk-form-icon uk-autocomplete uk-width-1-1 uk-display-block" ref="eventAutocomplete">
                             <i class="uk-icon-bolt"></i>
                             <input class="uk-width-1-1 uk-form-large" type="text" ref="event" placeholder="@lang('Add event...')">
+                            <div class="uk-dropdown uk-dropdown-scrollable uk-width-1-1" aria-expanded="true">
+                            
+                            </div>
                         </div>
                     </div>
 
@@ -149,6 +152,10 @@
         this.advanced = false;
 
         this.on('mount', function(){
+            const triggers = {{$triggers}}.map(function(trigger) {
+                return { value: trigger }
+            });
+            UIkit.autocomplete(App.$(this.refs.eventAutocomplete), {source: triggers});
 
             App.$(this.refs.event).on('keydown', function(e) {
 
