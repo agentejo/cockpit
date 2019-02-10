@@ -1,6 +1,6 @@
 <field-boolean>
 
-    <div ref="container" class="uk-display-inline-block" onclick="{ toggle }" style="cursor:pointer;">
+    <div ref="container" class="uk-display-inline-block" onchange="{ toggle }" style="cursor:pointer;">
         <div class="uk-form-switch">
             <input ref="check" type="checkbox" id="{ id }"/>
             <label for="{ id }"></label>
