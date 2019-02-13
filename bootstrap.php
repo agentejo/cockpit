@@ -13,12 +13,17 @@
  */
 define('COCKPIT_START_TIME', microtime(true));
 
-// Autoload vendor libs
-include(__DIR__.'/lib/vendor/autoload.php');
-
 if (!defined('COCKPIT_CLI')) {
     define('COCKPIT_CLI', PHP_SAPI == 'cli');
 }
+
+// Autoload vendor libs
+include(__DIR__.'/lib/vendor/autoload.php');
+
+// include core classes for better performance
+include(__DIR__.'/lib/Lime/App.php');
+include(__DIR__.'/lib/LimeExtra/App.php');
+include(__DIR__.'/lib/LimeExtra/Controller.php');
 
 /*
  * Autoload from lib folder (PSR-0)
