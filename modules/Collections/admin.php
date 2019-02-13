@@ -69,7 +69,7 @@ $app->on('admin.init', function() {
     // dashboard widgets
     $this->on("admin.dashboard.widgets", function($widgets) {
 
-        $collections = $this->module("collections")->getCollectionsInGroup(null, true);
+        $collections = $this->module("collections")->getCollectionsInGroup(null, false);
 
         $widgets[] = [
             "name"    => "collections",
