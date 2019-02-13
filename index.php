@@ -38,7 +38,7 @@ if (COCKPIT_API_REQUEST) {
     header('Access-Control-Allow-Methods: '     .($_cors['allowedMethods'] ?? 'PUT, POST, GET, OPTIONS, DELETE'));
     header('Access-Control-Expose-Headers: '    .($_cors['exposedHeaders'] ?? 'true'));
 
-    if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
         exit(0);
     }
 }
