@@ -74,8 +74,8 @@
                             <div class="uk-dropdown">
                                 <ul class="uk-nav uk-nav-dropdown">
                                     <li class="uk-nav-header">@lang('Actions')</li>
-                                    <li><a href="@route('/collections/entries')/{collection}">@lang('Entries')</a></li>
-                                    <li><a href="@route('/collections/entry')/{collection}" if="{ collection.meta.allowed.entries_create }">@lang('Add entry')</a></li>
+                                    <li><a href="@route('/collections/entries')/{collection.name}">@lang('Entries')</a></li>
+                                    <li><a href="@route('/collections/entry')/{collection.name}" if="{ collection.meta.allowed.entries_create }">@lang('Add entry')</a></li>
                                     <li if="{ collection.meta.allowed.edit || collection.meta.allowed.delete }" class="uk-nav-divider"></li>
                                     <li if="{ collection.meta.allowed.edit }"><a href="@route('/collections/collection')/{ collection.name }">@lang('Edit')</a></li>
                                     @hasaccess?('collections', 'delete')
