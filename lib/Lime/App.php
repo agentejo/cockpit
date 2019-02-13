@@ -962,37 +962,19 @@ class App implements \ArrayAccess {
         }
 
         register_shutdown_function(function() use($self){
-
-            if ($self->isExit()){
-                return;
-            }
-
-            $error = error_get_last();
-
-            if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR])){
-
-                ob_end_clean();
-
-                $self->response->status = '500';
-                $self->response->body   = $self['debug'] ? json_encode($error, JSON_PRETTY_PRINT):'Internal Error.';
-
-            } elseif (!$self->response->body && !is_string($self->response->body) && !is_array($self->response->body)) {
-                $self->response->status = '404';
-                $self->response->body   = 'Path not found.';
-            }
-
-            $self->trigger('after');
-
-            echo $self->response->flush();
-
             $self->trigger('shutdown');
         });
 
         $this->response = new Response();
         $this->trigger('before');
         $this->response->body = $this->dispatch($this->registry['route']);
+        $this->trigger('after');
 
-        if ($this->response->gzip && !ob_start('ob_gzhandler')) ob_start();
+        if ($this->response->gzip && !ob_start('ob_gzhandler')) {
+            ob_start();
+        }
+
+        $this->response->flush();
     }
 
     /**
