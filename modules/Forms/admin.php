@@ -66,7 +66,7 @@ $app->on('admin.init', function() {
     // dashboard widgets
     $this->on('admin.dashboard.widgets', function($widgets) {
 
-        $forms = $this->module('forms')->forms(true);
+        $forms = $this->module('forms')->forms(false);
 
         $widgets[] = [
             'name'    => 'forms',
