@@ -106,11 +106,12 @@
                 this.width = img.width;
                 this.height = img.height;
 
+                this.refs.canvas.width = img.width;
+                this.refs.canvas.height = img.height;
+
                 App.$(this.refs.canvas).css({
                     backgroundImage: 'url('+img.src+')',
-                    visibility: 'visible',
-                    width: img.width,
-                    height: img.height
+                    visibility: 'visible'
                 });
 
                 if (!$this.refs.spinner.style) {

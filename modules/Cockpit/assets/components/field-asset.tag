@@ -14,9 +14,9 @@
 
     </div>
 
-    <div class="uk-panel uk-panel-box uk-panel-card" if="{asset}">
+    <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-card" if="{asset}">
 
-        <div class="uk-overlay uk-display-block uk-position-relative">
+        <div class="uk-overlay uk-display-block uk-position-relative { asset.mime.match(/^image\//) && 'uk-bg-transparent-pattern' }">
             <canvas class="uk-responsive-width" width="200" height="150"></canvas>
             <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle">
                 <div class="uk-width-1-1 uk-text-center">
@@ -29,21 +29,24 @@
                 </div>
             </div>
         </div>
-        <div class="uk-margin-small-top uk-text-truncate">
-          <a href="{ASSETS_URL+asset.path}" target="_blank">{ asset.title }</a>
-        </div>
-        <div class="uk-text-small uk-text-muted">
-            <strong>{ asset.mime }</strong>
-            { App.Utils.formatSize(asset.size) }
-        </div>
+        
+        <div class="uk-panel-body">
+            <div class="uk-margin-small-top uk-text-truncate">
+              <a href="{ASSETS_URL+asset.path}" target="_blank">{ asset.title }</a>
+            </div>
+            <div class="uk-text-small uk-text-muted">
+                <strong>{ asset.mime }</strong>
+                { App.Utils.formatSize(asset.size) }
+            </div>
 
-        <div class="uk-margin-top">
-            <a class="uk-button uk-button-small uk-margin-small-right" onclick="{ selectAsset }">{ App.i18n.get('Replace') }</a>
-            
-            <span class="uk-button-group">
-            <a class="uk-button uk-button-small" onclick="{edit}"><i class="uk-icon-pencil"></i></a>
-            <a class="uk-button uk-button-small uk-text-danger" onclick="{reset}"><i class="uk-icon-trash-o"></i></a>
-            </span>
+            <div class="uk-margin-top">
+                <a class="uk-button uk-button-small uk-margin-small-right" onclick="{ selectAsset }">{ App.i18n.get('Replace') }</a>
+                
+                <span class="uk-button-group">
+                <a class="uk-button uk-button-small" onclick="{edit}"><i class="uk-icon-pencil"></i></a>
+                <a class="uk-button uk-button-small uk-text-danger" onclick="{reset}"><i class="uk-icon-trash-o"></i></a>
+                </span>
+            </div>
         </div>
 
     </div>
