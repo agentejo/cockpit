@@ -150,7 +150,7 @@
                             <div class="uk-panel">
 
                                 <label class="uk-text-bold">
-                                    { field.label || field.name }
+                                    <i class="uk-icon-pencil-square uk-margin-small-right"></i> { field.label || field.name }
                                     <span if="{ field.localize }" class="uk-icon-globe" title="{ App.i18n.get('Localized field') }" data-uk-tooltip="pos:'right'"></span>
                                 </label>
 
