@@ -1888,7 +1888,7 @@ riot.tag2('field-asset', '<div ref="uploadprogress" class="uk-margin uk-hidden">
 
 });
 
-riot.tag2('field-boolean', '<div ref="container" class="uk-display-inline-block" onclick="{toggle}" style="cursor:pointer;"> <div class="uk-form-switch"> <input ref="check" type="checkbox" id="{id}"> <label for="{id}"></label> </div> <span show="{value && (opts.label !== \'false\' && opts.label !== false)}">{opts.label || \'On\'}</span> <span class="uk-text-muted" show="{!value && (opts.label !== \'false\' && opts.label !== false)}">{opts.label || \'Off\'}</span> </div>', '', '', function(opts) {
+riot.tag2('field-boolean', '<div ref="container" class="uk-display-inline-block" onchange="{toggle}" style="cursor:pointer;"> <div class="uk-form-switch"> <input ref="check" type="checkbox" id="{id}"> <label for="{id}"></label> </div> <span show="{value && (opts.label !== \'false\' && opts.label !== false)}">{opts.label || \'On\'}</span> <span class="uk-text-muted" show="{!value && (opts.label !== \'false\' && opts.label !== false)}">{opts.label || \'Off\'}</span> </div>', '', '', function(opts) {
 
         this.id = 'switch'+Math.ceil(Math.random()*10000000);
 

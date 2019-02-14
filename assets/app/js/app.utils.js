@@ -275,6 +275,7 @@
     };
 
     App.Utils.renderer.boolean = function(v) {
+        v = typeof v == 'string' ? parseInt(v) : v;
         return '<i class="uk-icon-circle uk-text-'+(v ? 'success':'danger')+'"></i>';
     };
 
