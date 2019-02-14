@@ -74,8 +74,8 @@
 
                         <div class="uk-panel">
 
-                            <label class="uk-text-bold">
-                                { field.label || name }
+                            <label class="uk-text-small uk-text-bold">
+                                <i class="uk-icon-pencil-square uk-margin-small-right"></i> { field.label || name }
                             </label>
 
                             <div class="uk-margin uk-text-small uk-text-muted">
@@ -238,7 +238,7 @@
             this.image = this.images[e.item.idx];
 
             setTimeout(function() {
-                UIkit.modal($this.refs.modalmeta).show().on('close.uk.modal', function(){
+                UIkit.modal($this.refs.modalmeta, {modal:false}).show().on('close.uk.modal', function(){
                     $this.image = null;
                 });
             }, 50)

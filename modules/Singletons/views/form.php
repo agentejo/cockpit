@@ -61,7 +61,7 @@
 
                                 <label>
 
-                                    <span class="uk-text-bold">{ field.label || field.name }</span>
+                                    <span class="uk-text-bold"><i class="uk-icon-pencil-square uk-margin-small-right"></i> { field.label || field.name }</span>
 
                                     <span if="{ field.localize }" data-uk-dropdown="mode:'click'">
                                         <a class="uk-icon-globe" title="@lang('Localized field')" data-uk-tooltip="pos:'right'"></a>
