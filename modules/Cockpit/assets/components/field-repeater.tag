@@ -8,7 +8,9 @@
         <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
             
             <div class="uk-flex uk-flex-middle">
-                <div class="uk-badge uk-display-block uk-text-left uk-flex-item-1"><i class="uk-icon-ellipsis-v uk-margin-small-left uk-margin-small-right"></i> { App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</div>
+                <div class="uk-badge uk-display-block uk-text-left uk-flex-item-1 {!parent.visibility[idx] && 'uk-badge-outline uk-text-muted'}" riot-style="{!parent.visibility[idx] && 'border-color: rgba(0,0,0,0)'}">
+                    <i class="uk-icon-ellipsis-v uk-margin-small-left uk-margin-small-right"></i> { App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }
+                </div>
                 <a class="uk-margin-left" onclick="{ parent.toggleVisibility }"><i class="uk-icon-eye{parent.visibility[idx] && '-slash uk-text-muted'}"></i></a>
                 <a class="uk-margin-left" onclick="{ parent.remove }"><i class="uk-icon-trash-o uk-text-danger"></i></a>
             </div>
