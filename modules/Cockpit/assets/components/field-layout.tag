@@ -120,13 +120,13 @@
 
                     <div class="uk-panel">
 
-                        <label class="uk-text-bold">{ field.label || field.name }</label>
+                        <label class="uk-text-small uk-text-bold">{ field.label || field.name }</label>
 
-                            <div class="uk-margin uk-text-small uk-text-muted">{ field.info || ' ' }</div>
+                        <div class="uk-margin-small-top uk-text-small uk-text-muted" show="{field.info}">{ field.info }</div>
 
-                            <div class="uk-margin">
-                                <cp-field type="{field.type || 'text'}" bind="settingsComponent.settings.{field.name}" opts="{ field.options || {} }"></cp-field>
-                            </div>
+                        <div class="uk-margin-small-top">
+                            <cp-field type="{field.type || 'text'}" bind="settingsComponent.settings.{field.name}" opts="{ field.options || {} }"></cp-field>
+                        </div>
                     </div>
 
                 </div>

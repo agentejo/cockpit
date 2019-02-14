@@ -198,13 +198,26 @@ cp-fieldcontainer {
 
 // vendor styles
 
+.mce-tinymce {
+    box-shadow: none !important;
+}
+
 .mce-panel {
     border: none !important;
 }
 
+.uk-htmleditor-content,
+.uk-htmleditor-navbar {
+    border: none;
+}
+.uk-htmleditor-navbar {
+    position: relative;
+    box-shadow:0 1px 2px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
 .jsoneditor {
-    border-color: #ccc !important;
-    border-color: #ccc !important;
+    border: none !important;
 }
 
 div.jsoneditor-tree {
@@ -213,7 +226,8 @@ div.jsoneditor-tree {
 
 .jsoneditor-menu {
     background-color: @global-contrast-color !important;
-    border-color: #ccc !important;
+    border: none !important;
+    box-shadow:0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .jsoneditor-menu input {
@@ -239,6 +253,11 @@ div.jsoneditor-menu>div.jsoneditor-modes>button {
 
 .CodeMirror .CodeMirror-activeline-background { background: #e8f2ff; }
 .CodeMirror .CodeMirror-matchingbracket { outline:1px solid grey; color:black !important; }
+
+.CodeMirror .CodeMirror-gutters {
+    border: none;
+    background-color: @global-contrast-color;
+}
 
 .CodeMirror-hints {
   z-index: 1010;
