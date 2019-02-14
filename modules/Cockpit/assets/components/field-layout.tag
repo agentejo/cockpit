@@ -120,7 +120,7 @@
 
                     <div class="uk-panel">
 
-                        <label class="uk-text-small uk-text-bold">{ field.label || field.name }</label>
+                        <label class="uk-text-small uk-text-bold"><i class="uk-icon-pencil-square uk-margin-small-right"></i> { field.label || field.name }</label>
 
                         <div class="uk-margin-small-top uk-text-small uk-text-muted" show="{field.info}">{ field.info }</div>
 
