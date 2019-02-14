@@ -91,7 +91,17 @@
                         </thead>
                         <tbody>
                             <tr each="{event,idx in webhook.events}">
-                                <td><i class="uk-icon-bolt uk-margin-small-right uk-text-primary"></i> {event}</td>
+                                <td>
+                                    <div class="uk-flex uk-flex-middle">
+                                        <div class="uk-margin-small-right">
+                                            <i class="uk-icon-bolt uk-text-primary"></i>
+                                        </div>
+                                        <div class="uk-flex-item-1">
+                                            <input class="uk-width-1-1 uk-form-blank" type="text" bind="webhook.events[{idx}]">
+                                        </div>
+                                    </div>
+
+                                 </td>
                                 <td><a class="uk-text-danger" onclick="{ removeEvent }"><i class="uk-icon-trash"></i></a></td>
                             </tr>
                         </tbody>
