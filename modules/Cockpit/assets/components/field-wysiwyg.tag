@@ -84,6 +84,9 @@
                               ed.on('ExecCommand', clbChange);
                               ed.on('KeyUp', clbChange);
                               ed.on('Change', clbChange);
+                              ed.on('focus', function() {
+                                $this.root.dispatchEvent(new Event('focusin', { bubbles: true, cancelable: true }));      
+                              });
 
                               var clbSave = function(){
                                 var form = App.$($this.root).closest('form');
