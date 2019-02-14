@@ -66,7 +66,7 @@
 
                 <span class="uk-margin-right uk-position-relative" data-uk-dropdown="mode:'click', pos:'bottom-right'">
 
-                    <button class="uk-button uk-button-outline uk-text-primary uk-button-large"><i class="uk-icon-magic"></i></button>
+                    <a class="uk-button uk-button-link uk-text-primary uk-button-large">{ App.i18n.get('Create') }</a>
 
                     <div class="uk-dropdown uk-margin-top uk-text-left">
                         <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">

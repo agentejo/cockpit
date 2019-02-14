@@ -38,9 +38,9 @@
                         <a class="uk-display-block uk-panel-box" href="@route($item['route'])">
                             <div class="uk-svg-adjust">
                                 @if(preg_match('/\.svg$/i', $item['icon']))
-                                <img src="@url($item['icon'])" alt="@lang($item['label'])" data-uk-svg width="30px" height="30px" />
+                                <img src="@url($item['icon'])" alt="@lang($item['label'])" data-uk-svg width="30" height="30" />
                                 @else
-                                <img src="@url('assets:app/media/icons/module.svg')" alt="@lang($item['label'])" data-uk-svg width="30px" height="30px" />
+                                <img src="@url('assets:app/media/icons/module.svg')" alt="@lang($item['label'])" data-uk-svg width="30" height="30" />
                                 @endif
                             </div>
                             <div class="uk-text-truncate uk-text-small uk-margin-small-top">@lang($item['label'])</div>

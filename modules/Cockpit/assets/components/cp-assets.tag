@@ -115,8 +115,8 @@
 
                     <div class="uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
                         <div class="uk-grid-margin" each="{ asset,idx in assets }" onclick="{ select }">
-                            <div class="uk-panel uk-panel-box uk-panel-card { selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}">
-                                <div class="uk-overlay uk-display-block uk-position-relative">
+                            <div class="uk-panel uk-panel-box uk-panel-card uk-padding-remove { selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}">
+                                <div class="uk-overlay uk-display-block uk-position-relative uk-bg-transparent-pattern">
                                     <canvas class="uk-responsive-width" width="200" height="150"></canvas>
                                     <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle">
                                         <div class="uk-width-1-1 uk-text-center">
@@ -125,15 +125,17 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="uk-text-small uk-margin-small-top uk-text-truncate">
-                                    <a onclick="{ parent.edit }">{ asset.title }</a>
-                                </div>
-                                <div class="uk-text-small uk-text-muted uk-margin-small-top uk-flex">
-                                    <strong>{ asset.mime }</strong>
-                                    <span class="uk-flex-item-1 uk-margin-small-left uk-margin-small-right">{ App.Utils.formatSize(asset.size) }</span>
-                                    <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
-                                        <i class="uk-icon-search"></i>
-                                    </a>
+                                <div class="uk-panel-body">
+                                    <div class="uk-text-small uk-margin-small-top uk-text-truncate">
+                                        <a onclick="{ parent.edit }">{ asset.title }</a>
+                                    </div>
+                                    <div class="uk-text-small uk-text-muted uk-margin-small-top uk-flex">
+                                        <strong>{ asset.mime }</strong>
+                                        <span class="uk-flex-item-1 uk-margin-small-left uk-margin-small-right">{ App.Utils.formatSize(asset.size) }</span>
+                                        <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
+                                            <i class="uk-icon-search"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
