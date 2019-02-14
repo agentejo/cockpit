@@ -6,14 +6,17 @@
 
     <div show="{mode=='edit' && items.length}">
         <div class="uk-margin uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
-
-            <div class="uk-badge uk-display-block uk-margin">{ App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</div>
-
-            <cp-field type="{ item.field.type || 'text' }" bind="items[{ idx }].value" opts="{ item.field.options || {} }"></cp-field>
-
-            <div class="uk-panel-box-footer uk-bg-light">
-                <a onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a>
+            
+            <div class="uk-flex uk-flex-middle">
+                <div class="uk-badge uk-display-block uk-text-left uk-flex-item-1">{ App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</div>
+                <a class="uk-margin-left" onclick="{ parent.toggleVisibility }"><i class="uk-icon-eye{parent.visibility[idx] && '-slash uk-text-muted'}"></i></a>
+                <a class="uk-margin-left" onclick="{ parent.remove }"><i class="uk-icon-trash-o uk-text-danger"></i></a>
             </div>
+            
+            <div class="uk-animation-fade uk-margin" if="{parent.visibility[idx]}">
+                <cp-field type="{ item.field.type || 'text' }" bind="items[{ idx }].value" opts="{ item.field.options || {} }"></cp-field>
+            </div>
+            
         </div>
     </div>
 
@@ -53,6 +56,8 @@
         this.field  = {type:'text'};
         this.fields = false;
         this.mode   = 'edit';
+        
+        this.visibility = {};
 
         this.on('mount', function() {
 
@@ -101,6 +106,8 @@
             } else {
                 this.items.push({field:this.field, value:null});
             }
+            
+            this.visibility[this.items.length-1] = true;
         }
 
         remove(e) {
@@ -108,7 +115,14 @@
         }
 
         switchreorder() {
+            
+            this.visibility = {};
+
             $this.mode = $this.mode == 'edit' ? 'reorder':'edit';
+        }
+        
+        toggleVisibility(e) {
+            this.visibility[e.item.idx] = this.visibility[e.item.idx] ? false:true;
         }
 
         updateorder() {
