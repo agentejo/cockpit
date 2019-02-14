@@ -116,7 +116,7 @@
                     <div class="uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
                         <div class="uk-grid-margin" each="{ asset,idx in assets }" onclick="{ select }">
                             <div class="uk-panel uk-panel-box uk-panel-card uk-padding-remove { selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}">
-                                <div class="uk-overlay uk-display-block uk-position-relative uk-bg-transparent-pattern">
+                                <div class="uk-overlay uk-display-block uk-position-relative { asset.mime.match(/^image\//) && 'uk-bg-transparent-pattern' }">
                                     <canvas class="uk-responsive-width" width="200" height="150"></canvas>
                                     <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle">
                                         <div class="uk-width-1-1 uk-text-center">
