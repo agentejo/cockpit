@@ -148,6 +148,23 @@ cp-actionbar {
     z-index: 4;
 }
 
+cp-fieldcontainer {
+    display: block;
+}
+
+@media (min-width:1220px) {
+
+    cp-fieldcontainer {
+        padding-left: 15px;
+        border-left: 3px rgba(0,0,0,.2) solid;
+        transition: border-color 200ms;
+    }
+
+    cp-fieldcontainer[active="true"] {
+        border-color: @global-primary-background;
+    }
+}
+
 .material-ripple {
     position: absolute;
     pointer-events: none;
