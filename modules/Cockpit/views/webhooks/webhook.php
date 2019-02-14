@@ -102,7 +102,7 @@
                             <i class="uk-icon-bolt"></i>
                             <input class="uk-width-1-1 uk-form-large" type="text" ref="event" placeholder="@lang('Add event...')">
                             <div class="uk-dropdown uk-dropdown-scrollable uk-width-1-1" aria-expanded="true">
-                            
+
                             </div>
                         </div>
                     </div>
@@ -150,23 +150,33 @@
 
         this.webhook  = {{ json_encode($webhook) }};
         this.advanced = false;
+        this.triggers = {{ json_encode($triggers) }};
 
         this.on('mount', function(){
-            const triggers = {{$triggers}}.map(function(trigger) {
+
+            var src = this.triggers.map(function(trigger) {
                 return { value: trigger }
             });
-            UIkit.autocomplete(App.$(this.refs.eventAutocomplete), {source: triggers});
+
+            UIkit.autocomplete(App.$(this.refs.eventAutocomplete), {source: src}).on('selectitem.uk.autocomplete', function(e, data) {
+                $this.webhook.events.push(data.value.trim());
+
+                $this.webhook.events = _.uniq($this.webhook.events).sort();
+
+                setTimeout(function() {
+                    $this.refs.event.value = '';
+                }, 10);
+
+                $this.update();
+            });
 
             App.$(this.refs.event).on('keydown', function(e) {
 
-                if (e.keyCode == 13) {
+                if (e.keyCode == 13 && $this.refs.event.value.trim()) {
                     e.preventDefault();
 
-                    if ($this.webhook.events.indexOf($this.refs.event.value.trim()) != -1) {
-                        App.ui.notify("Event already exists");
-                    } else {
-                        $this.webhook.events.push($this.refs.event.value.trim());
-                    }
+                    $this.webhook.events.push($this.refs.event.value.trim());
+                    $this.webhook.events = _.uniq($this.webhook.events).sort();
 
                     $this.refs.event.value = '';
                     $this.update();

@@ -76,4 +76,24 @@ $app->on('admin.init', function() {
         ];
 
     }, 100);
+
+    // register events for autocomplete
+    $this->on('cockpit.webhook.events', function($triggers) {
+
+        foreach([
+            'singleton.getData.after',
+            'singleton.getData.after.{$name}',
+            'singleton.remove',
+            'singleton.remove.{$name}',
+            'singleton.save.after',
+            'singleton.save.after.{$name}',
+            'singleton.save.before',
+            'singleton.save.before.{$name}',
+            'singleton.saveData.after',
+            'singleton.saveData.after.{$name}',
+            'singleton.saveData.before',
+            'singleton.saveData.before.{$name}',
+        ] as &$evt) { $triggers[] = $evt; }
+    });
+
 });

@@ -250,9 +250,6 @@ $app->on('after', function() {
     }
 });
 
-// load triggers
-$app['triggers'] = include(__DIR__.'/triggers.php');
-
 // load package info
 $app['cockpit'] = json_decode($app('fs')->read('#root:package.json'), true);
 
