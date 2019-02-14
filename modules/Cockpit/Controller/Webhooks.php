@@ -50,7 +50,9 @@ class Webhooks extends \Cockpit\AuthController {
             }
         }
 
-        return $this->render('cockpit:views/webhooks/webhook.php', compact('webhook'));
+        $triggers = json_encode($this->app->triggers);
+
+        return $this->render('cockpit:views/webhooks/webhook.php', compact('webhook', 'triggers'));
     }
 
     public function save() {
