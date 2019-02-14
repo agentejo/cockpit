@@ -54,11 +54,9 @@
                 return;
             }
 
-            if (!$this.refs.spinner.style) {
-                return;
-            }
-
-            $this.refs.spinner.style.display = '';
+            this.refs.spinner.style.display = '';
+            
+            src = _src;
 
             requestAnimationFrame(function() {
 
@@ -72,51 +70,58 @@
 
                     return;
                 }
-
-                App.request('/cockpit/utils/thumb_url', {src:_src,w:opts.width,h:opts.height,m:mode}, 'text').then(function(url){
-
-                    if (_src.match(/\.(svg|ico)$/i)) {
-                        url = _src;
-                    }
-
-                    src = _src;
-
+                
+                var url;
+                
+                if (_src.match(/\.(svg|ico)$/i)) {
+                    url = _src;
+                } else {
+                    url = App.route(`/cockpit/utils/thumb_url?src=${_src}&w=${opts.width}&h=${opts.height}&m=${mode}&o=1`);
+                }
+                
+                var img = new Image();
+                
+                img.onload = function() {    
+                    
                     setTimeout(function() {
-                        $this.updateCanvasDim(url)
-                    }, 50);
-
-                }).catch(function(e){});
+                        $this.updateCanvasDim(img)
+                    }, 0);
+                }
+                
+                img.onerror = function() {
+                    //console.log(`error ${url}`)
+                }
+                
+                img.src = url;
+                
             });
         };
 
-        this.updateCanvasDim = function(url) {
+        this.updateCanvasDim = function(img) {
 
-            if (!App.$($this.root).closest('body').length) return;
-
-            var img = new Image();
-
-            img.src = url
+            if (!App.$(this.root).closest('body').length) return;
 
             setTimeout(function() {
 
-                $this.width = img.width;
-                $this.height = img.height;
+                this.width = img.width;
+                this.height = img.height;
 
-                App.$($this.refs.canvas).css({
-                    backgroundImage: 'url('+url+')',
-                    visibility: 'visible'
+                App.$(this.refs.canvas).css({
+                    backgroundImage: 'url('+img.src+')',
+                    visibility: 'visible',
+                    width: img.width,
+                    height: img.height
                 });
 
                 if (!$this.refs.spinner.style) {
                     return;
                 }
 
-                $this.refs.spinner.style.display = 'none';
-                $this.update();
+                this.refs.spinner.style.display = 'none';
+                //this.update();
 
-            }, 50);
+            }.bind(this), 0);
 
-            $this.refs.canvas
         }
 
     </script>

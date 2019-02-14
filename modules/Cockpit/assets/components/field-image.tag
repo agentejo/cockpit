@@ -6,14 +6,14 @@
         </div>
     </div>
 
-    <div class="uk-display-block uk-panel uk-panel-box uk-panel-card">
+    <div class="uk-display-block uk-panel uk-panel-box uk-panel-card uk-padding-remove">
 
         <div class="uk-flex uk-flex-middle uk-flex-center uk-text-muted">
-            <div class="uk-width-1-1 uk-text-center" if="{ image.path }">
+            <div class="uk-width-1-1 uk-text-center uk-bg-transparent-pattern" if="{ image.path }">
                 <cp-thumbnail src="{ image.path.match(/^(http\:|https\:|\/\/)/) ? image.path : (SITE_URL+'/'+image.path.replace(/^\//, '')) }" height="160"></cp-thumbnail>
             </div>
             <div class="uk-text-center uk-margin-top uk-margin-bottom" show="{ !image.path }">
-                <img class="uk-svg-adjust uk-text-muted" riot-src="{App.base('/assets/app/media/icons/photo.svg')}" width="60" data-uk-svg>
+                <img class="uk-svg-adjust uk-text-muted" riot-src="{App.base('/assets/app/media/icons/photo.svg')}" width="60" height="60" data-uk-svg>
                 <div class="uk-margin-top">
                     <a class="uk-button uk-button-link" onclick="{ selectImage }" show="{App.$data.acl.finder}">{ App.i18n.get('Select Image') }</a>
                     <a class="uk-button uk-button-link" onclick="{ selectAsset }">{ App.i18n.get('Select Asset') }</a>
@@ -21,22 +21,24 @@
                 </div>
             </div>
         </div>
-
-        <ul class="uk-grid uk-grid-small uk-flex-center uk-margin" show="{ image.path }">
-            <li data-uk-dropdown="pos:'bottom-center'">
-                <a class="uk-text-muted" onclick="{ selectAsset }" title="{ App.i18n.get('Select image') }" data-uk-tooltip><i class="uk-icon-image"></i></a>
-                <div class="uk-dropdown">
-                    <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
-                        <li class="uk-nav-header">{ App.i18n.get('Source') }</li>
-                        <li><a onclick="{ selectAsset }">{ App.i18n.get('Select Asset') }</a></li>
-                        <li><a onclick="{ selectImage }" show="{App.$data.acl.finder}">{ App.i18n.get('Select Image') }</a></li>
-                        <li><a onclick="{ editUrl }">{ App.i18n.get('Enter Image Url') }</a></li>
-                    </ul>
-                </div>
-            </li>
-            <li><a class="uk-text-muted" onclick="{ showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
-            <li><a class="uk-text-danger" onclick="{ remove }" title="{ App.i18n.get('Reset') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
-        </ul>
+        
+        <div class="uk-panel-body" show="{ image.path }">
+            <ul class="uk-grid uk-grid-small uk-flex-center ">
+                <li data-uk-dropdown="pos:'bottom-center'">
+                    <a class="uk-text-muted" onclick="{ selectAsset }" title="{ App.i18n.get('Select image') }" data-uk-tooltip><i class="uk-icon-image"></i></a>
+                    <div class="uk-dropdown">
+                        <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
+                            <li class="uk-nav-header">{ App.i18n.get('Source') }</li>
+                            <li><a onclick="{ selectAsset }">{ App.i18n.get('Select Asset') }</a></li>
+                            <li><a onclick="{ selectImage }" show="{App.$data.acl.finder}">{ App.i18n.get('Select Image') }</a></li>
+                            <li><a onclick="{ editUrl }">{ App.i18n.get('Enter Image Url') }</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li><a class="uk-text-muted" onclick="{ showMeta }" title="{ App.i18n.get('Edit meta data') }" data-uk-tooltip><i class="uk-icon-cog"></i></a></li>
+                <li><a class="uk-text-danger" onclick="{ remove }" title="{ App.i18n.get('Reset') }" data-uk-tooltip><i class="uk-icon-trash-o"></i></a></li>
+            </ul>
+        </div>
 
     </div>
 
