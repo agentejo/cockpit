@@ -57,7 +57,7 @@
 
                         <div class="uk-width-medium-{field.width}" each="{field,idx in fields}" show="{checkVisibilityRule(field) && (!group || (group == field.group)) }" if="{ hasFieldAccess(field.name) }" no-reorder>
 
-                            <div class="uk-panel">
+                            <cp-fieldcontainer>
 
                                 <label>
 
@@ -84,7 +84,7 @@
                                     <cp-field type="{field.type || 'text'}" bind="{ parent.getBindValue(field) }" opts="{ field.options || {} }"></cp-field>
                                 </div>
 
-                            </div>
+                            </cp-fieldcontainer>
 
                         </div>
 
