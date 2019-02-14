@@ -125,11 +125,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="uk-panel-body">
-                                    <div class="uk-text-small uk-margin-small-top uk-text-truncate">
+                                <div class="uk-panel-body uk-text-small">
+                                    <div class="uk-text-truncate">
                                         <a onclick="{ parent.edit }">{ asset.title }</a>
                                     </div>
-                                    <div class="uk-text-small uk-text-muted uk-margin-small-top uk-flex">
+                                    <div class="uk-text-muted uk-margin-small-top uk-flex">
                                         <strong>{ asset.mime }</strong>
                                         <span class="uk-flex-item-1 uk-margin-small-left uk-margin-small-right">{ App.Utils.formatSize(asset.size) }</span>
                                         <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
