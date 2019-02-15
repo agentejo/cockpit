@@ -35,10 +35,14 @@
         }
 
         setTimeout(() => {
-            linkCache[v._id].then(display => document.getElementById(v._id).innerText = display)
+            linkCache[v._id].then(display => {
+                for (let vClass of document.getElementsByClassName(v._id)) {
+                    vClass.innerText = display;
+                }
+            })
         });
 
-        return `<span id="${v._id}"><i class="uk-icon-spin uk-icon-spinner uk-text-muted"></i></span>`;
+        return `<span class="${v._id}"><i class="uk-icon-spin uk-icon-spinner uk-text-muted"></i></span>`;
     };
 
     function selectCollectionItem(fn, options) {
