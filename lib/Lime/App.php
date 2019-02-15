@@ -1278,6 +1278,9 @@ class App implements \ArrayAccess {
             $module = new Module($this);
 
             $module->_dir      = $dir;
+            
+            /* return false if no bootstrap.php file exists */
+            if(!file_exists("{$dir}/bootstrap.php")){return false;}
             $module->_bootfile = "{$dir}/bootstrap.php";
 
             $this->path($name, $dir);
@@ -1309,7 +1312,8 @@ class App implements \ArrayAccess {
 
                     if ($disabled && in_array($name, $disabled)) continue;
 
-                    $this->registerModule($name, $module->getRealPath());
+                    /* skip loading the module if registerModule returns false */
+                    if ( $this->registerModule($name, $module->getRealPath()) === false ) continue;
 
                     $modules[] = strtolower($module);
                 }
