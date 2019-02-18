@@ -35,10 +35,18 @@
         }
 
         setTimeout(() => {
-            linkCache[v._id].then(display => document.getElementById(v._id).innerText = display)
+            linkCache[v._id].then(display => {
+
+                let spans = document.querySelectorAll(`[data-collection-display-id='${v._id}']`);
+
+                [...spans].forEach(span => {
+                    span.innerText = display;
+                    span.removeAttribute('data-collection-display-id');
+                });
+            })
         });
 
-        return `<span id="${v._id}"><i class="uk-icon-spin uk-icon-spinner uk-text-muted"></i></span>`;
+        return `<span data-collection-display-id="${v._id}"><i class="uk-icon-spin uk-icon-spinner uk-text-muted"></i></span>`;
     };
 
     function selectCollectionItem(fn, options) {
