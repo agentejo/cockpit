@@ -140,15 +140,15 @@
 
         });
 
-        this.$updateValue = function(value, field) {
+        this.$updateValue = function(value, field, force) {
 
             value = value || Object.create(_default);
 
-            if (value && !value.path) {
-               return $this.$setValue(Object.create(_default));
+            if (!value.path) {
+               value = Object.create(_default);
             }
 
-            if (JSON.stringify(this.image) !== JSON.stringify(value)) {
+            if ((JSON.stringify(this.image) !== JSON.stringify(value)) || force) {
                 this.image = value;
                 return this.update();
             }

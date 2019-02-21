@@ -152,8 +152,10 @@
                     ele.$updateValue = function(value, field) {
 
                         if (ele._tag.$updateValue) {
-                            ele._tag.$updateValue.apply(ele._tag, arguments);
+                            ele._tag.$updateValue.apply(ele._tag, [value, field, ele.__bindField != field]);
                         }
+
+                        ele.__bindField = field;
                     };
 
                     if (ele._tag.$initBind) {

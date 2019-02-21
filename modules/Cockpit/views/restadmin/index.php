@@ -16,13 +16,13 @@
                 <span class="uk-badge uk-badge-danger" show="{ keys.master }">@lang('Share with caution')</span>
             </div>
 
-            <div class="uk-grid uk-grid-small uk-margin-top">
+            <div class="uk-grid uk-grid-small uk-flex-middle uk-margin-top">
                 <div class="uk-flex-item-1">
                     <input class="uk-width-1-1 uk-form-large uk-text-primary" type="text" placeholder="@lang('No key generated')" bind="keys.master" name="fullaccesskey" readonly>
                 </div>
                 <div if="{keys.master}">
-                    <button class="uk-button uk-button-link uk-button-large" type="button" onclick="{ copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-copy"></i></button>
-                    <button class="uk-button uk-button-link uk-button-large" type="button" onclick="{ removeMasterKey }" title="@lang('Delete')" data-uk-tooltip="pos:'top'"><i class="uk-icon-trash-o uk-text-danger"></i></button>
+                    <a class="uk-margin-right" onclick="{ copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-copy"></i></a>
+                    <a onclick="{ removeMasterKey }" title="@lang('Delete')" data-uk-tooltip="pos:'top'"><i class="uk-icon-trash-o uk-text-danger"></i></a>
                 </div>
                 <div>
                     <button class="uk-button uk-button-primary uk-button-large" type="button" onclick="{ generate }" title="@lang('Generate Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-magic"></i></button>
@@ -41,10 +41,10 @@
                         <div class="uk-form-row">
                             <label class="uk-text-small uk-text-uppercase">@lang('API-Key')</label>
 
-                            <div class="uk-flex">
+                            <div class="uk-flex uk-flex-middle">
                                 <input class="uk-width-1-1 uk-form-large uk-margin-right uk-text-primary" type="text" placeholder="@lang('No key generated')" bind="keys.special[{idx}].token" readonly>
-                                <button class="uk-button uk-button-link" type="button" onclick="{ parent.copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-copy"></i></button>
-                                <button class="uk-button uk-button-link" type="button" onclick="{ parent.generate }" title="@lang('Generate Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-magic"></i></button>
+                                <a class="uk-margin-right" onclick="{ parent.copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-copy"></i></a>
+                                <a onclick="{ parent.generate }" title="@lang('Generate Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-magic"></i></a>
                             </div>
                         </div>
 

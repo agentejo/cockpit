@@ -64,9 +64,13 @@
 
         this.asset = opts.default || false;
 
-        this.$updateValue = function(value) {
+        this.$updateValue = function(value, field, force) {
 
-            if (JSON.stringify(this.asset) != JSON.stringify(value)) {
+            if (force || (JSON.stringify(this.asset) != JSON.stringify(value))) {
+                
+                if (value && !value._id) {
+                    value = false;
+                }
 
                 this.asset = value;
                 this.update();
