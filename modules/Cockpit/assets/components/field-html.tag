@@ -4,24 +4,24 @@
 
     <script>
 
-        var $this = this, editor, evtSrc;
+        var $this = this, editor;
 
         this.value = '';
-
         this._field = null;
+        this.evtSrc = false;
 
-        this.$updateValue = function(value, field) {
+        this.$updateValue = function(value, field, force) {
 
             if (this.value != value) {
 
                 this.value = value;
 
-                if (editor && !evtSrc) {
+                if (editor && (!this.evtSrc || force)) {
                     editor.editor.setValue(value || '', true);
                 }
             }
 
-            evtSrc = false;
+            this.evtSrc = false;
 
         }.bind(this);
 
@@ -40,7 +40,7 @@
                     editor = UIkit.htmleditor(this.refs.input, opts);
 
                     editor.editor.on('change', function() {
-                        evtSrc = true;
+                        $this.evtSrc = true;
                         $this.$setValue(editor.editor.getValue());
                     });
 

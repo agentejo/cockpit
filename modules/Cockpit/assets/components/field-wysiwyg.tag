@@ -10,20 +10,17 @@
             editor;
 
         this.value = null;
-        this._field = null;
 
-        this.$updateValue = function(value, field) {
+        this.$updateValue = function(value, field, force) {
 
             if (this.value != value) {
 
                 this.value = value;
 
-                if (editor && this._field != field) {
+                if (editor && force) {
                     editor.setContent(this.value || '');
                 }
             }
-
-            this._field = field;
 
         }.bind(this);
 

@@ -1759,9 +1759,13 @@ riot.tag2('field-asset', '<div ref="uploadprogress" class="uk-margin uk-hidden">
 
         this.asset = opts.default || false;
 
-        this.$updateValue = function(value) {
+        this.$updateValue = function(value, field, force) {
 
-            if (JSON.stringify(this.asset) != JSON.stringify(value)) {
+            if (force || (JSON.stringify(this.asset) != JSON.stringify(value))) {
+
+                if (value && !value._id) {
+                    value = false;
+                }
 
                 this.asset = value;
                 this.update();
@@ -2369,24 +2373,24 @@ riot.tag2('field-gallery', '<div ref="uploadprogress" class="uk-margin uk-hidden
 
 riot.tag2('field-html', '<textarea ref="input" class="uk-visibility-hidden" hidden></textarea>', '', '', function(opts) {
 
-        var $this = this, editor, evtSrc;
+        var $this = this, editor;
 
         this.value = '';
-
         this._field = null;
+        this.evtSrc = false;
 
-        this.$updateValue = function(value, field) {
+        this.$updateValue = function(value, field, force) {
 
             if (this.value != value) {
 
                 this.value = value;
 
-                if (editor && !evtSrc) {
+                if (editor && (!this.evtSrc || force)) {
                     editor.editor.setValue(value || '', true);
                 }
             }
 
-            evtSrc = false;
+            this.evtSrc = false;
 
         }.bind(this);
 
@@ -2404,7 +2408,7 @@ riot.tag2('field-html', '<textarea ref="input" class="uk-visibility-hidden" hidd
                     editor = UIkit.htmleditor(this.refs.input, opts);
 
                     editor.editor.on('change', function() {
-                        evtSrc = true;
+                        $this.evtSrc = true;
                         $this.$setValue(editor.editor.getValue());
                     });
 
@@ -2530,15 +2534,15 @@ riot.tag2('field-image', '<div ref="uploadprogress" class="uk-margin uk-hidden">
 
         });
 
-        this.$updateValue = function(value, field) {
+        this.$updateValue = function(value, field, force) {
 
             value = value || Object.create(_default);
 
-            if (value && !value.path) {
-               return $this.$setValue(Object.create(_default));
+            if (!value.path) {
+               value = Object.create(_default);
             }
 
-            if (JSON.stringify(this.image) !== JSON.stringify(value)) {
+            if ((JSON.stringify(this.image) !== JSON.stringify(value)) || force) {
                 this.image = value;
                 return this.update();
             }
@@ -3791,20 +3795,17 @@ riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" 
             editor;
 
         this.value = null;
-        this._field = null;
 
-        this.$updateValue = function(value, field) {
+        this.$updateValue = function(value, field, force) {
 
             if (this.value != value) {
 
                 this.value = value;
 
-                if (editor && this._field != field) {
+                if (editor && force) {
                     editor.setContent(this.value || '');
                 }
             }
-
-            this._field = field;
 
         }.bind(this);
 
