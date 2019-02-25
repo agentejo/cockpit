@@ -2,7 +2,7 @@
 
 [![Backers on Open Collective](https://opencollective.com/cockpit/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/cockpit/sponsors/badge.svg)](#sponsors)
 
-* Homepage: [http://getcockpit.com](http://getcockpit.com)
+* Homepage: [http://getcockpit.com](https://getcockpit.com)
 * Twitter: [@getcockpit](http://twitter.com/getcockpit)
 * Support Forum: [https://discourse.getcockpit.com](https://discourse.getcockpit.com)
 
@@ -45,7 +45,7 @@ You need docker installed on your system: https://www.docker.com.
 
 ### Copyright and license
 
-Copyright 2015 [Agentejo](http://www.agentejo.com) under the MIT license.
+Copyright since 2015 [Agentejo](https://agentejo.com) under the MIT license.
 
 See [LICENSE](LICENSE) for more information.
 
