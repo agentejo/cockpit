@@ -29,7 +29,7 @@ $this->module('cockpit')->extend([
         $assets    = [];
         $created   = time();
 
-        foreach ($files as &$file) {
+        foreach ($files as $idx => &$file) {
 
             // clean filename
             $name = basename($file);
@@ -82,6 +82,10 @@ $this->module('cockpit')->extend([
             }
 
             $opts = ['mimetype' => $asset['mime']];
+
+            if (isset($meta[$idx]) && is_array($meta[$idx])) {
+                $meta = $meta[$idx];
+            }
 
             $this->app->trigger('cockpit.asset.upload', [&$asset, &$meta, &$opts]);
             if (!$asset) {
