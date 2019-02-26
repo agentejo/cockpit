@@ -83,9 +83,7 @@ $this->module('cockpit')->extend([
 
             $opts = ['mimetype' => $asset['mime']];
 
-            if (isset($meta[$idx]) && is_array($meta[$idx])) {
-                $meta = $meta[$idx];
-            }
+            $asset_meta = isset($meta[$idx]) && is_array($meta[$idx]) ? $meta[$idx] : $meta;
 
             $this->app->trigger('cockpit.asset.upload', [&$asset, &$meta, &$opts]);
             if (!$asset) {
@@ -97,7 +95,7 @@ $this->module('cockpit')->extend([
             $this->app->filestorage->writeStream("assets://{$path}", $stream, $opts);
             fclose($stream);
 
-            foreach ($meta as $key => $val) {
+            foreach ($asset_meta as $key => $val) {
                 $asset[$key] = $val;
             }
 
