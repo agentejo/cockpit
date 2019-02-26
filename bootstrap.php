@@ -241,6 +241,8 @@ function cockpit($module = null) {
                     $body = $app->req_is('ajax') || COCKPIT_API_REQUEST ? '{"error": "500", "message": "system error"}' : $app->view('cockpit:views/errors/500.php');
                 }
 
+                $app->trigger('error', [$error, $exception]);
+
                 header('HTTP/1.0 500 Internal Server Error');
                 echo $body;
 
