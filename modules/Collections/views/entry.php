@@ -273,6 +273,10 @@
 
                 if (entry) {
 
+                    if (!$this.entry._id && entry._id){
+                        window.history.pushState(null,null,App.route('/collections/entry/' + $this.collection.name + '/' + entry._id));
+                    }
+
                     App.ui.notify("Saving successful", "success");
 
                     _.extend($this.entry, entry);
