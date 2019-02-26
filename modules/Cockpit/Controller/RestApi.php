@@ -228,8 +228,7 @@ class RestApi extends \LimeExtra\Controller {
     }
 
     public function addAssets() {
-
-        return $this->module('cockpit')->uploadAssets('files');
+        return $this->module('cockpit')->uploadAssets('files', $this->param('meta', []));
     }
 
     public function updateAssets() {
