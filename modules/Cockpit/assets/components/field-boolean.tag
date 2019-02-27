@@ -1,15 +1,13 @@
 <field-boolean>
 
-    <div ref="container" class="uk-display-inline-block" onchange="{ toggle }" style="cursor:pointer;">
+    <div ref="container" class="uk-display-inline-block" onchange="{ toggle }" onclick="{ toggle }" style="cursor:pointer;">
         <div class="uk-form-switch">
             <input ref="check" type="checkbox" id="{ id }"/>
-            <label></label>
+            <label for="{ id }"></label>
         </div>
 
-        <label for="{ id }">
-            <span show="{value && (opts.label !== 'false' && opts.label !== false)}">{ opts.label || 'On' }</span>
-            <span class="uk-text-muted" show="{!value && (opts.label !== 'false' && opts.label !== false)}">{ opts.label || 'Off' }</span>
-        </label>
+        <span show="{value && (opts.label !== 'false' && opts.label !== false)}">{ opts.label || 'On' }</span>
+        <span class="uk-text-muted" show="{!value && (opts.label !== 'false' && opts.label !== false)}">{ opts.label || 'Off' }</span>
 
     </div>
 
