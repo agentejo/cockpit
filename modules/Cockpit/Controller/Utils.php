@@ -51,4 +51,27 @@ class Utils extends \Cockpit\AuthController {
 
         return 0;
     }
+
+    public function isResourceLocked($resourceId) {
+
+        $meta = $this->app->helper('admin')->isResourceLocked($resourceId);
+
+        if ($meta) {
+            return array_merge($meta, ['locked' => true]);
+        }
+
+        return ['locked' => false];
+    }
+
+    public function lockResourceId($resourceId) {
+        $user = null;
+        $meta = $this->app->helper('admin')->lockResourceId($resourceId, $user);
+        return $meta;
+    }
+
+    public function unlockResourceId($resourceId) {
+        $this->app->helper('admin')->unlockResourceId($resourceId);
+
+        return ['success' => true];
+    }
 }

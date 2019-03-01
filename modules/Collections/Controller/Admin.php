@@ -208,6 +208,12 @@ class Admin extends \Cockpit\AuthController {
             if (!$entry) {
                 return false;
             }
+
+            $meta = $this->app->helper('admin')->isResourceLocked($id);
+
+            if ($meta && $meta['user']['_id'] != $this->module('cockpit')->getUser('_id')) {
+                return $this->render('collections:views/locked.php', compact('collection', 'entry', 'meta'));
+            }
         }
 
         $context = _check_collection_rule($collection, 'read', ['options' => ['filter'=>[]]]);
@@ -223,6 +229,8 @@ class Admin extends \Cockpit\AuthController {
         if ($override = $this->app->path('#config:collections/'.$collection['name'].'/views/entry.php')) {
             $view = $override;
         }
+
+        $this->app->helper('admin')->lockResourceId($id);
 
         return $this->render($view, compact('collection', 'entry', 'excludeFields'));
     }
@@ -265,6 +273,8 @@ class Admin extends \Cockpit\AuthController {
         }
 
         $entry = $this->module('collections')->save($collection['name'], $entry, ['revision' => $revision]);
+
+        $this->app->helper('admin')->lockResourceId($entry['_id']);
 
         return $entry;
     }
