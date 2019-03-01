@@ -6,19 +6,19 @@
 
     <div show="{mode=='edit' && items.length}">
         <div class="uk-margin-small-bottom uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
-            
+
             <div class="uk-flex uk-flex-middle">
-                <div class="uk-badge uk-display-block uk-text-left uk-flex-item-1 {!parent.visibility[idx] && 'uk-badge-outline uk-text-muted'}" riot-style="{!parent.visibility[idx] && 'border-color: rgba(0,0,0,0)'}">
-                    <i class="uk-icon-ellipsis-v uk-margin-small-left uk-margin-small-right"></i> { App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }
-                </div>
+                <a onclick="{ parent.toggleVisibility }" class="uk-badge uk-display-block uk-text-left uk-flex-item-1 {!parent.visibility[idx] && 'uk-badge-outline uk-text-muted'}" riot-style="{!parent.visibility[idx] && 'border-color: rgba(0,0,0,0)'}">
+                    <i class="uk-icon-ellipsis-v uk-margin-small-left uk-margin-small-right"></i> { App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) } {getOrderPreview(item, idx)}
+                </a>
                 <a class="uk-margin-left" onclick="{ parent.toggleVisibility }"><i class="uk-icon-eye{parent.visibility[idx] && '-slash uk-text-muted'}"></i></a>
                 <a class="uk-margin-left" onclick="{ parent.remove }"><i class="uk-icon-trash-o uk-text-danger"></i></a>
             </div>
-            
+
             <div class="uk-animation-fade uk-margin" if="{parent.visibility[idx]}">
                 <cp-field type="{ item.field.type || 'text' }" bind="items[{ idx }].value" opts="{ item.field.options || {} }"></cp-field>
             </div>
-            
+
             <!--
             <div class="uk-margin-small-top uk-margin-small-left" if="{!parent.visibility[idx] && (item.field.options || {}).display}">
                 <raw content="{ parent.getOrderPreview(item,idx) }"></raw>
@@ -63,7 +63,7 @@
         this.field  = {type:'text'};
         this.fields = false;
         this.mode   = 'edit';
-        
+
         this.visibility = {};
 
         this.on('mount', function() {
@@ -113,7 +113,7 @@
             } else {
                 this.items.push({field:this.field, value:null});
             }
-            
+
             this.visibility[this.items.length-1] = true;
         }
 
@@ -122,12 +122,12 @@
         }
 
         switchreorder() {
-            
+
             this.visibility = {};
 
             $this.mode = $this.mode == 'edit' ? 'reorder':'edit';
         }
-        
+
         toggleVisibility(e) {
             this.visibility[e.item.idx] = this.visibility[e.item.idx] ? false:true;
         }
