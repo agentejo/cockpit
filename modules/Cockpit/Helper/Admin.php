@@ -158,6 +158,45 @@ class Admin extends \Lime\Helper {
         return $this->app->module('cockpit')->updateUserOption($key, $value);
     }
 
+    public function isResourceLocked($resourceId, $ttl = 300) {
+
+        $key  = "locked:{$resourceId}";
+        $meta = $this->app->memory->get($key, false);
+
+        if ($meta && ($meta['time'] + $ttl) < time()) {
+            $this->app->memory->del($key);
+            $meta = false;
+        }
+
+        if ($meta) {
+            return $meta;
+        }
+
+        return false;
+    }
+
+    public function lockResourceId($resourceId, $user = null) {
+
+        $key  = "locked:{$resourceId}";
+        $user = $user ?? $this->app->module('cockpit')->getUser();
+
+        $meta = [
+            'user' => $user,
+            'time' => time()
+        ];
+
+        $this->app->memory->set($key, $meta);
+
+        return true;
+    }
+
+    public function unlockResourceId($resourceId) {
+
+        $key = "locked:{$resourceId}";
+        $this->app->memory->del($key);
+        return true;
+    }
+
     public function denyRequest() {
 
         if ($this->app->module('cockpit')->getUser()) {

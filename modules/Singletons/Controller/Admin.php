@@ -61,6 +61,8 @@ class Admin extends \Cockpit\AuthController {
             if (!$singleton) {
                 return false;
             }
+
+
         }
 
         // acl groups
@@ -95,7 +97,16 @@ class Admin extends \Cockpit\AuthController {
                 'description' => ''
             ], $singleton);
 
+            $lockId = "singleton_{$singleton['name']}";
+            $meta   = $this->app->helper('admin')->isResourceLocked($lockId);
+
+            if ($meta && $meta['user']['_id'] != $this->module('cockpit')->getUser('_id')) {
+                return $this->render('singletons:views/locked.php', compact('singleton', 'meta'));
+            }
+
             $data = $this->module('singletons')->getData($name);
+
+            $this->app->helper('admin')->lockResourceId($lockId);
 
             return $this->render('singletons:views/form.php', compact('singleton', 'data'));
         }
@@ -144,6 +155,8 @@ class Admin extends \Cockpit\AuthController {
         }
 
         $this->module('singletons')->saveData($singleton['name'], $data, ['revision' => $revision]);
+
+        $this->app->helper('admin')->lockResourceId("singleton_{$singleton['name']}");
 
         return ['data' => $data];
     }
