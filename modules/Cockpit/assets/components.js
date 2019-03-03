@@ -3846,7 +3846,8 @@ riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" 
                             menubar: 'edit insert view format table tools',
                             plugins: [
                                 "link image lists preview hr anchor",
-                                "code fullscreen media mediapath",
+                                "code fullscreen media mediapath assetpath",
+                                "pageurl",
                                 "table contextmenu paste"
                             ],
                             relative_urls: false
@@ -3923,6 +3924,10 @@ riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" 
                         prependToContext: true
                     });
                 }
+
+            });
+
+            tinymce.PluginManager.add('assetpath', function(editor) {
 
                 editor.addMenuItem('assetpath', {
                     icon: 'image',

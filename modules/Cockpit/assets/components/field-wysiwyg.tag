@@ -62,7 +62,8 @@
                             menubar: 'edit insert view format table tools',
                             plugins: [
                                 "link image lists preview hr anchor",
-                                "code fullscreen media mediapath",
+                                "code fullscreen media mediapath assetpath",
+                                "pageurl", // collection-link
                                 "table contextmenu paste"
                             ],
                             relative_urls: false
@@ -141,6 +142,10 @@
                         prependToContext: true
                     });
                 }
+
+            });
+
+            tinymce.PluginManager.add('assetpath', function(editor) {
 
                 editor.addMenuItem('assetpath', {
                     icon: 'image',
