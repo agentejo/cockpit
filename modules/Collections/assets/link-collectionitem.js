@@ -101,7 +101,7 @@
 
             ed.addMenuItem('pageurl', {
                 icon: 'link',
-                text: 'Link Collection Item',
+                text: App.i18n.get('Link Collection Item'),
                 onclick: function(){
 
                     selectCollectionItem(function(data){

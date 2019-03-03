@@ -3919,7 +3919,7 @@ riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" 
 
                     editor.addMenuItem('mediapath', {
                         icon: 'image',
-                        text: 'Insert image (Finder)',
+                        text: App.i18n.get('Insert image (Finder)'),
                         onclick: function(){
 
                             App.media.select(function(selected) {
@@ -3937,7 +3937,7 @@ riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" 
 
                 editor.addMenuItem('assetpath', {
                     icon: 'image',
-                    text: 'Insert Asset (Assets)',
+                    text: App.i18n.get('Insert Asset (Assets)'),
                     onclick: function(){
 
                         App.assets.select(function(assets){
