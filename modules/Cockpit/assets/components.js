@@ -3790,7 +3790,7 @@ riot.tag2('field-time', '<input ref="input" class="uk-width-1-1" bind="{opts.bin
 riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" style="height:350px;visibility:hidden;"></textarea>', '', '', function(opts) {
 
         var $this     = this,
-            lang      = document.documentElement.getAttribute('lang') || 'en',
+            lang      = App.$data.user.i18n || document.documentElement.getAttribute('lang') || 'en',
             languages = ['ar','az','ba','bg','by','ca','cs','da','de','el','eo','es_ar','es','fa','fi','fr','ge','he','hr','hu','id','it','ja','ko','lt','lv','mk','nl','no_NB','pl','pt_br','pt_pt','ro','ru','sl','sq','sr-cir','sr-lat','sv','th','tr','ua','vi','zh_cn','zh_tw'],
             editor;
 
@@ -3810,6 +3810,10 @@ riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" 
         }.bind(this);
 
         this.on('mount', function(){
+
+            if (opts.editor && opts.editor.language) {
+                lang = opts.editor.language;
+            }
 
             if (opts.cls) {
                 App.$(this.refs.input).addClass(opts.cls);
@@ -3840,6 +3844,8 @@ riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" 
                         if (!App.$('#'+this.refs.input.id).length) return;
 
                         tinymce.init(App.$.extend(true, {
+                            language: lang,
+                            language_url : lang == 'en' ? '' : App.route('/config/cockpit/i18n/tinymce/'+lang+'.js'),
                             branding: false,
                             resize: true,
                             height: 350,
