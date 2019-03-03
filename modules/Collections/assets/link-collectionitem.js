@@ -97,17 +97,21 @@
 
     App.$(document).on('init-wysiwyg-editor', function(e, editor){
 
-        editor.addMenuItem('pageurl', {
-            icon: 'link',
-            text: 'Link Collection Item',
-            onclick: function(){
+        tinymce.PluginManager.add('pageurl', function(ed) {
 
-                selectCollectionItem(function(data){
-                    editor.insertContent('<a href="' + data.url + '" alt="">'+data.title+'</a>');
-                }, {url:'',title:''});
-            },
-            context: 'insert',
-            prependToContext: true
+            ed.addMenuItem('pageurl', {
+                icon: 'link',
+                text: 'Link Collection Item',
+                onclick: function(){
+
+                    selectCollectionItem(function(data){
+                        ed.insertContent('<a href="' + data.url + '" alt="">'+data.title+'</a>');
+                    }, {url:'',title:''});
+                },
+                context: 'insert',
+                prependToContext: true
+            });
+
         });
 
     });
