@@ -68,8 +68,8 @@
                             menubar: 'edit insert view format table tools',
                             plugins: [
                                 "link image lists preview hr anchor",
-                                "code fullscreen media mediapath assetpath",
-                                "pageurl", // collection-link
+                                "code fullscreen media cpmediapath cpassetpath",
+                                "cpcollectionlink",
                                 "table contextmenu paste"
                             ],
                             relative_urls: false
@@ -131,7 +131,7 @@
 
             if (initPlugins.done) return;
 
-            tinymce.PluginManager.add('mediapath', function(editor) {
+            tinymce.PluginManager.add('cpmediapath', function(editor) {
 
                 if (App.$data.acl.finder) {
                     
@@ -151,7 +151,7 @@
 
             });
 
-            tinymce.PluginManager.add('assetpath', function(editor) {
+            tinymce.PluginManager.add('cpassetpath', function(editor) {
 
                 editor.addMenuItem('assetpath', {
                     icon: 'image',
