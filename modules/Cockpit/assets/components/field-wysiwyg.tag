@@ -5,7 +5,7 @@
     <script>
 
         var $this     = this,
-            lang      = document.documentElement.getAttribute('lang') || 'en',
+            lang      = App.$data.user.i18n || document.documentElement.getAttribute('lang') || 'en',
             languages = ['ar','az','ba','bg','by','ca','cs','da','de','el','eo','es_ar','es','fa','fi','fr','ge','he','hr','hu','id','it','ja','ko','lt','lv','mk','nl','no_NB','pl','pt_br','pt_pt','ro','ru','sl','sq','sr-cir','sr-lat','sv','th','tr','ua','vi','zh_cn','zh_tw'],
             editor;
 
@@ -26,6 +26,10 @@
 
 
         this.on('mount', function(){
+
+            if (opts.editor && opts.editor.language) {
+                lang = opts.editor.language;
+            }
 
             if (opts.cls) {
                 App.$(this.refs.input).addClass(opts.cls);
@@ -56,13 +60,16 @@
                         if (!App.$('#'+this.refs.input.id).length) return;
 
                         tinymce.init(App.$.extend(true, {
+                            language: lang,
+                            language_url : lang == 'en' ? '' : App.route('/config/cockpit/i18n/tinymce/'+lang+'.js'),
                             branding: false,
                             resize: true,
                             height: 350,
                             menubar: 'edit insert view format table tools',
                             plugins: [
                                 "link image lists preview hr anchor",
-                                "code fullscreen media mediapath",
+                                "code fullscreen media mediapath assetpath",
+                                "pageurl", // collection-link
                                 "table contextmenu paste"
                             ],
                             relative_urls: false
@@ -130,7 +137,7 @@
                     
                     editor.addMenuItem('mediapath', {
                         icon: 'image',
-                        text: 'Insert image (Finder)',
+                        text: App.i18n.get('Insert image (Finder)'),
                         onclick: function(){
 
                             App.media.select(function(selected) {
@@ -142,9 +149,13 @@
                     });
                 }
 
+            });
+
+            tinymce.PluginManager.add('assetpath', function(editor) {
+
                 editor.addMenuItem('assetpath', {
                     icon: 'image',
-                    text: 'Insert Asset (Assets)',
+                    text: App.i18n.get('Insert Asset (Assets)'),
                     onclick: function(){
 
                         App.assets.select(function(assets){
