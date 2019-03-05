@@ -97,7 +97,7 @@
 
     App.$(document).on('init-wysiwyg-editor', function(e, editor){
 
-        tinymce.PluginManager.add('pageurl', function(ed) {
+        tinymce.PluginManager.add('cpcollectionlink', function(ed) {
 
             ed.addMenuItem('pageurl', {
                 icon: 'link',
