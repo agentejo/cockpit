@@ -114,7 +114,7 @@
 
         remove(e) {
             if (this.opts && this.opts.safeDelete) {
-                UIkit.modal.confirm("Delete?", function() {
+                UIkit.modal.confirm(App.i18n.get("Confirm removal?"), function() {
                     $this.items.splice(e.item.idx, 1);
                     $this.update();
                 });
