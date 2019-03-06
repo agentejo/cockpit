@@ -113,7 +113,14 @@
         }
 
         remove(e) {
-            this.items.splice(e.item.idx, 1);
+            if (this.opts && this.opts.safeDelete) {
+                UIkit.modal.confirm("Delete?", function() {
+                    $this.items.splice(e.item.idx, 1);
+                    $this.update();
+                });
+            } else {
+                this.items.splice(e.item.idx, 1);
+            }
         }
 
         switchreorder() {
@@ -160,9 +167,9 @@
                 } else {
                     value = _.get(item.value, display) || 'Item '+(idx+1);
                 }
-                
+
                 return value;
-                
+
             }
 
             return 'Item '+(idx+1);

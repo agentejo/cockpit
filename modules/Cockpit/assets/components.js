@@ -3430,7 +3430,14 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
         }.bind(this)
 
         this.remove = function(e) {
-            this.items.splice(e.item.idx, 1);
+            if (this.opts && this.opts.safeDelete) {
+                UIkit.modal.confirm("Delete?", function() {
+                    $this.items.splice(e.item.idx, 1);
+                    $this.update();
+                });
+            } else {
+                this.items.splice(e.item.idx, 1);
+            }
         }.bind(this)
 
         this.switchreorder = function() {
