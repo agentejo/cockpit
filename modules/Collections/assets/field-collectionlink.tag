@@ -61,7 +61,7 @@
 
     </div>
 
-    <div class="uk-modal">
+    <div class="uk-modal" ref="modal">
 
         <div class="uk-modal-dialog uk-modal-dialog-large">
             <a href="" class="uk-modal-close uk-close"></a>
@@ -179,7 +179,9 @@
 
         if (!opts.link) return;
 
-        modal = UIkit.modal(App.$('.uk-modal', this.root), {modal:false});
+        modal = UIkit.modal(this.refs.modal, {modal:false});
+
+        modal.element.appendTo(document.body)
 
         App.request('/collections/_collections').then(function(data){
             collections = data;
@@ -203,6 +205,10 @@
                 $this.updateorder();
             });
         }
+    });
+    
+    this.on('before-unmount', function() {
+        modal.element.appendTo(this.root);
     });
 
     showDialog(){
