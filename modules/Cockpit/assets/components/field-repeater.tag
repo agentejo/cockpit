@@ -9,7 +9,7 @@
 
             <div class="uk-flex uk-flex-middle">
                 <a onclick="{ parent.toggleVisibility }" class="uk-badge uk-display-block uk-text-left uk-flex-item-1 {!parent.visibility[idx] && 'uk-badge-outline uk-text-muted'}" riot-style="{!parent.visibility[idx] && 'border-color: rgba(0,0,0,0)'}">
-                    <i class="uk-icon-ellipsis-v uk-margin-small-left uk-margin-small-right"></i> { App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) } {getOrderPreview(item, idx)}
+                    <i class="uk-icon-ellipsis-v uk-margin-small-left uk-margin-small-right"></i> { App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) } <raw content="{ parent.getOrderPreview(item,idx) }"></raw>
                 </a>
                 <a class="uk-margin-left" onclick="{ parent.toggleVisibility }"><i class="uk-icon-eye{parent.visibility[idx] && '-slash uk-text-muted'}"></i></a>
                 <a class="uk-margin-left" onclick="{ parent.remove }"><i class="uk-icon-trash-o uk-text-danger"></i></a>
@@ -19,11 +19,6 @@
                 <cp-field type="{ item.field.type || 'text' }" bind="items[{ idx }].value" opts="{ item.field.options || {} }"></cp-field>
             </div>
 
-            <!--
-            <div class="uk-margin-small-top uk-margin-small-left" if="{!parent.visibility[idx] && (item.field.options || {}).display}">
-                <raw content="{ parent.getOrderPreview(item,idx) }"></raw>
-            </div>
-            -->
         </div>
     </div>
 
@@ -158,15 +153,16 @@
 
             if (item.field && item.field.type && item.field.options && (opts.display || item.field.options.display)) {
 
-                var value, display = opts.display || item.field.options.display;
+                var value, display = opts.display || item.field.options.display, ftype = item.field.type;
 
                 if (item.field.options.display == '$value') {
-                    value = item.value;
+                    value = App.Utils.renderValue(item.field.type, item.value, item.field);
                 } else {
                     value = _.get(item.value, display) || 'Item '+(idx+1);
                 }
-
-                return App.Utils.renderValue(item.field.type, value);
+                
+                return value;
+                
             }
 
             return 'Item '+(idx+1);
