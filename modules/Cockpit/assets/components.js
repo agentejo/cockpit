@@ -3431,7 +3431,7 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
 
         this.remove = function(e) {
             if (this.opts && this.opts.safeDelete) {
-                UIkit.modal.confirm("Delete?", function() {
+                UIkit.modal.confirm(App.i18n.get("Confirm removal?"), function() {
                     $this.items.splice(e.item.idx, 1);
                     $this.update();
                 });
