@@ -15,7 +15,7 @@
                 <a class="uk-margin-left" onclick="{ parent.remove }"><i class="uk-icon-trash-o uk-text-danger"></i></a>
             </div>
 
-            <div class="uk-animation-fade uk-margin" if="{parent.visibility[idx]}">
+            <div class="uk-margin" if="{parent.visibility[idx]}">
                 <cp-field type="{ item.field.type || 'text' }" bind="items[{ idx }].value" opts="{ item.field.options || {} }"></cp-field>
             </div>
 
