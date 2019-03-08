@@ -84,8 +84,7 @@ class Utils extends \Cockpit\AuthController {
     }
 
     public function lockResourceId($resourceId) {
-        $user = null;
-        $meta = $this->app->helper('admin')->lockResourceId($resourceId, $user);
+        $meta = $this->app->helper('admin')->lockResourceId($resourceId);
         return $meta;
     }
 

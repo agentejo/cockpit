@@ -219,6 +219,23 @@
                 App.$(this.root).on('submit', function(e, component) {
                     if (component) $this.submit(e);
                 });
+
+                // lock resource
+                var idle = setInterval(function() {
+                    App.request('/cockpit/utils/lockResourceId/'+'singleton_'+$this.singleton.name, {});
+                }, 120000);
+
+                // unlock resource
+                window.addEventListener("beforeunload", function (event) {
+
+                    clearInterval(idle);
+
+                    if (navigator.sendBeacon) {
+                        navigator.sendBeacon(App.route('/cockpit/utils/unlockResourceId/'+'singleton_'+$this.singleton.name));
+                    } else {
+                        App.request('/cockpit/utils/unlockResourceId/'+'singleton_'+$this.singleton.name, {});
+                    }
+                });
             });
 
             toggleGroup(e) {

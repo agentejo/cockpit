@@ -235,6 +235,26 @@
             App.$(this.root).on('submit', function(e, component) {
                 if (component) $this.submit(e);
             });
+
+            // lock resource
+            var idle = setInterval(function() {
+                if (!$this.entry._id) return;
+                App.request('/cockpit/utils/lockResourceId/'+$this.entry._id, {});
+            }, 120000);
+
+            // unlock resource
+            window.addEventListener("beforeunload", function (event) {
+
+                clearInterval(idle);
+
+                if (!$this.entry._id) return;
+
+                if (navigator.sendBeacon) {
+                    navigator.sendBeacon(App.route('/cockpit/utils/unlockResourceId/'+$this.entry._id));
+                } else {
+                    App.request('/cockpit/utils/unlockResourceId/'+$this.entry._id, {});
+                }
+            });
         });
 
         toggleGroup(e) {
