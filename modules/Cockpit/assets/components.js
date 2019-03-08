@@ -605,7 +605,7 @@ riot.tag2('cp-preloader', '<div> <div></div> <div></div> <div></div> <div></div>
 riot.tag2('cp-preloader-fullscreen', '<div class="uk-text-center"> <cp-preloader></cp-preloader> <div class="uk-margin-top uk-text-large uk-text-bold" if="{opts.message}"> {opts.message} </div> </div>', 'cp-preloader-fullscreen { position: fixed; display: flex; top: 0; bottom: 0; left: 0; right: 0; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.5); z-index: 1000000000000000; } cp-preloader-fullscreen cp-preloader,[data-is="cp-preloader-fullscreen"] cp-preloader{ display: inline-block; }', '', function(opts) {
 });
 
-riot.tag2('cp-diff', '<div class="uk-overflow-container"> <div ref="canvas"></div> </div>', 'cp-diff pre,[data-is="cp-diff"] pre{ background:none; margin:0; width overflow: auto; word-wrap: normal; white-space: pre; }', '', function(opts) {
+riot.tag2('cp-diff', '<div class="uk-overflow-container"> <div><pre ref="canvas" style="background:none;margin:0;"></pre></div> </div>', 'cp-diff pre,[data-is="cp-diff"] pre{ background:none; margin:0; width:100%; overflow: auto; word-wrap: normal; white-space: pre; } cp-diff del,[data-is="cp-diff"] del{ text-decoration: none; background: #A52A2A; color: #fff; } cp-diff ins,[data-is="cp-diff"] ins{ text-decoration: none; background: #008000; color: #fff; }', '', function(opts) {
 
         var $this = this;
 
@@ -620,30 +620,35 @@ riot.tag2('cp-diff', '<div class="uk-overflow-container"> <div ref="canvas"></di
 
         this.diff = function(oldtxt, newtxt) {
 
-            if (['string', 'number', 'boolean'].indexOf(typeof(oldtxt)) !== -1) {
-                this.refs.canvas.innerHTML = '<pre><code>'+JSON.stringify(oldtxt)+'</code></pre>';
-            } else {
-                App.assets.require([
+            App.assets.require(['/assets/lib/diff.js'], function() {
 
-                    '/assets/lib/jsoneditor/jsoneditor.min.css',
-                    '/assets/lib/jsoneditor/jsoneditor.min.js'
+                if (typeof(oldtxt) !== 'string') oldtxt = JSON.stringify(oldtxt, null, 2);
+                if (typeof(newtxt) !== 'string') newtxt = JSON.stringify(newtxt, null, 2);
 
-                ], function() {
+                var diff = JsDiff.diffLines(oldtxt || '', newtxt || '');
+                var html = '';
 
-                    editor = new JSONEditor(this.refs.canvas, {
-                        modes: ['tree'],
-                        mode: 'tree',
-                        navigationBar: false,
-                        onEditable: function() {
-                            return false;
-                        }
-                    });
+                for (var i=0; i < diff.length; i++) {
 
-                    editor.set(oldtxt);
+                    if (diff[i].added && diff[i + 1] && diff[i + 1].removed) {
+                        var swap = diff[i];
+                        diff[i] = diff[i + 1];
+                        diff[i + 1] = swap;
+                    }
 
-                }.bind(this));
-            }
+                    if (diff[i].removed) {
+                        html += '<del>'+diff[i].value+'</del>';
+                    } else if (diff[i].added) {
+                        html += '<ins>'+diff[i].value+'</ins>';
+                    } else {
+                        html += diff[i].value;
+                    }
+                }
 
+                this.refs.canvas.textContent = '';
+                this.refs.canvas.innerHTML = html;
+
+            }.bind(this));
         }.bind(this)
 
 });
