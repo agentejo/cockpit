@@ -5,16 +5,28 @@
         pre {
             background:none;
             margin:0;
-            width
+            width:100%;
             overflow: auto;
             word-wrap: normal;
             white-space: pre;
+        }
+        
+        del {
+            text-decoration: none;
+            background: #A52A2A;
+            color: #fff;
+        }
+
+        ins {
+            text-decoration: none;
+            background: #008000;
+            color: #fff;
         }
     </style>
 
 
     <div class="uk-overflow-container">
-        <div ref="canvas"></div>
+        <div><pre ref="canvas" style="background:none;margin:0;"></pre></div>
     </div>
 
     <script>
@@ -31,31 +43,38 @@
         });
 
         diff(oldtxt, newtxt) {
+            
+            App.assets.require(['/assets/lib/diff.js'], function() {
+                
+                if (typeof(oldtxt) !== 'string') oldtxt = JSON.stringify(oldtxt, null, 2);
+                if (typeof(newtxt) !== 'string') newtxt = JSON.stringify(newtxt, null, 2);
 
-            if (['string', 'number', 'boolean'].indexOf(typeof(oldtxt)) !== -1) {
-                this.refs.canvas.innerHTML = '<pre><code>'+JSON.stringify(oldtxt)+'</code></pre>';
-            } else {
-                App.assets.require([
+                //var diff = JsDiff.diffWords(oldtxt || '', newtxt || '');
+                //var diff = JsDiff.diffChars(oldtxt || '', newtxt || '');
+                var diff = JsDiff.diffLines(oldtxt || '', newtxt || '');
+                var html = '';
 
-                    '/assets/lib/jsoneditor/jsoneditor.min.css',
-                    '/assets/lib/jsoneditor/jsoneditor.min.js'
+                for (var i=0; i < diff.length; i++) {
 
-                ], function() {
+                    if (diff[i].added && diff[i + 1] && diff[i + 1].removed) {
+                        var swap = diff[i];
+                        diff[i] = diff[i + 1];
+                        diff[i + 1] = swap;
+                    }
 
-                    editor = new JSONEditor(this.refs.canvas, {
-                        modes: ['tree'],
-                        mode: 'tree',
-                        navigationBar: false,
-                        onEditable: function() {
-                            return false;
-                        }
-                    });
+                    if (diff[i].removed) {
+                        html += '<del>'+diff[i].value+'</del>';
+                    } else if (diff[i].added) {
+                        html += '<ins>'+diff[i].value+'</ins>';
+                    } else {
+                        html += diff[i].value;
+                    }
+                }
 
-                    editor.set(oldtxt);
+                this.refs.canvas.textContent = '';
+                this.refs.canvas.innerHTML = html;
 
-                }.bind(this));
-            }
-
+            }.bind(this));
         }
 
     </script>
