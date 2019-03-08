@@ -115,15 +115,19 @@
         </div>
         <div class="uk-width-1-4">
 
-            <h3 class="uk-text-bold">@lang('Revisions')</h3>
+            <h3 class="uk-text-bold uk-flex">
+                <span class="uk-flex-item-1">@lang('Revisions')</span>
+                <a class="uk-button uk-button-link uk-button-small" onclick="{removeAll}">@lang('Delete all')</a>
+            </h3>
 
             <div class="uk-margin revisions-box { revisions.length > 10 && 'uk-scrollable-box'}">
-                <ul class="uk-nav uk-nav-side">
-                    <li class="{rev == active && 'uk-active'}" each="{rev in revisions}">
-                        <a class="{rev !== active && 'uk-text-muted'}" onclick="{ parent.selectRevision }">
+                <ul class="uk-nav">
+                    <li class="uk-flex {rev == active && 'uk-active'}" each="{rev,idx in revisions}">
+                        <a class="uk-flex-item-1 uk-margin-small-right {rev !== active && 'uk-text-muted'}" onclick="{ parent.selectRevision }">
                             { App.Utils.dateformat(rev._created*1000, 'MMMM Do YYYY') }<br>
                             <span class="uk-text-small">{ App.Utils.dateformat(rev._created*1000, 'hh:mm:ss a') }</span>
                         </a>
+                        <a show="{rev==active}" onclick="{remove}"><i class="uk-text-danger uk-icon-trash-o"></i></a>
                     </li>
                 </ul>
             </div>
@@ -189,6 +193,31 @@
                 $this.update();
 
                 $this.save("Entry restored");
+            });
+        }
+
+        removeAll() {
+
+            App.ui.confirm('Are you sure?', function() {
+
+                App.request('/cockpit/utils/revisionsRemoveAll', {oid:$this.revisions[0]._oid}).then(function(){
+                    $this.revisions = [];
+                    $this.update();
+                });
+            });
+        }
+
+        remove(e) {
+
+            var idx = e.item.idx;
+
+            App.ui.confirm('Are you sure?', function() {
+
+                App.request('/cockpit/utils/revisionsRemove', {rid:$this.active._id}).then(function(){
+                    $this.active = null;
+                    $this.revisions.splice(idx, 1);
+                    $this.update();
+                });
             });
         }
 
