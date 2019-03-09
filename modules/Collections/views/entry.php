@@ -91,7 +91,9 @@
 
                 <cp-actionbar>
                     <div class="uk-container uk-container-center">
+                        @if($app->module('collections')->hasaccess($collection['name'], 'entries_edit'))
                         <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
+                        @endif
                         <a class="uk-button uk-button-link" href="@route('/collections/entries/'.$collection['name'])">
                             <span show="{ !entry._id }">@lang('Cancel')</span>
                             <span show="{ entry._id }">@lang('Close')</span>
@@ -290,6 +292,10 @@
             App.request('/collections/save_entry/'+this.collection.name, {entry:this.entry}).then(function(entry) {
 
                 if (entry) {
+
+                    if (!$this.entry._id && entry._id){
+                        window.history.pushState(null,null,App.route('/collections/entry/' + $this.collection.name + '/' + entry._id));
+                    }
 
                     App.ui.notify("Saving successful", "success");
 

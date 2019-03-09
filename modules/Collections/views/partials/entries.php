@@ -93,6 +93,7 @@
 
             <div class="uk-float-right">
 
+                @if($app->module('collections')->hasaccess($collection['name'], 'entries_edit'))
                 <div class="uk-display-inline-block uk-margin-small-right" data-uk-dropdown="mode:'click'" if="{ selected.length }">
                     <button class="uk-button uk-button-large uk-animation-fade">@lang('Batch Action') <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span></button>
                     <div class="uk-dropdown">
@@ -105,6 +106,7 @@
                         </ul>
                     </div>
                 </div>
+                @endif
 
                 @if($app->module('collections')->hasaccess($collection['name'], 'entries_create'))
                 <a class="uk-button uk-button-large uk-button-primary" href="@route('/collections/entry/'.$collection['name'])">@lang('Add Entry')</a>
@@ -158,7 +160,13 @@
                             <div class="uk-dropdown uk-dropdown-flip">
                                 <ul class="uk-nav uk-nav-dropdown">
                                     <li class="uk-nav-header">@lang('Actions')</li>
+
+                                    @if($app->module('collections')->hasaccess($collection['name'], 'entries_edit'))
                                     <li><a href="@route('/collections/entry/'.$collection['name'])/{ entry._id }">@lang('Edit')</a></li>
+
+                                    @else
+                                    <li><a href="@route('/collections/entry/'.$collection['name'])/{ entry._id }">@lang('View')</a></li>
+                                    @endif
 
                                     @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
                                     <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
@@ -223,7 +231,13 @@
                                 <div class="uk-dropdown uk-dropdown-flip">
                                     <ul class="uk-nav uk-nav-dropdown">
                                         <li class="uk-nav-header">@lang('Actions')</li>
+
+                                        @if($app->module('collections')->hasaccess($collection['name'], 'entries_edit'))
                                         <li><a href="@route('/collections/entry/'.$collection['name'])/{ entry._id }">@lang('Edit')</a></li>
+
+                                        @else
+                                        <li><a href="@route('/collections/entry/'.$collection['name'])/{ entry._id }">@lang('View')</a></li>
+                                        @endif
 
                                         @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
                                         <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
@@ -290,7 +304,9 @@
 
     </div>
 
+    @if($app->module('collections')->hasaccess($collection['name'], 'entries_edit'))
     <entries-batchedit collection="{collection}" fields={fieldsidx}></entries-batchedit>
+    @endif
 
 
     <script type="view/script">
