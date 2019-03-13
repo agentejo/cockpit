@@ -300,7 +300,7 @@
 
                         App.ui.notify("Saving successful", "success");
 
-                        $this.data = res.data;
+                        _.extend($this.data, res.data);
 
                         $this.fields.forEach(function(field){
 
