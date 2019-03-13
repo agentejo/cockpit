@@ -128,7 +128,7 @@ $this->module('singletons')->extend([
                 $this->app->helper('revisions')->add($singleton['_id'], $data, "singletons/{$singleton['name']}", true);
             }
 
-            return true;
+            return $data;
         }
 
         return false;
