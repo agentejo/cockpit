@@ -157,7 +157,7 @@ class Admin extends \Cockpit\AuthController {
             $revision = true;
         }
 
-        $this->module('singletons')->saveData($singleton['name'], $data, ['revision' => $revision]);
+        $data = $this->module('singletons')->saveData($singleton['name'], $data, ['revision' => $revision]);
 
         $this->app->helper('admin')->lockResourceId("singleton_{$singleton['name']}");
 
