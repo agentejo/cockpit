@@ -7,6 +7,10 @@
 </style>
 @endif
 
+<script>
+    window.__collectionEntry = {{ json_encode($entry) }};
+</script>
+
 <div>
     <ul class="uk-breadcrumb">
         <li><a href="@route('/collections')">@lang('Collections')</a></li>
@@ -164,7 +168,7 @@
         this.fieldsidx    = {};
         this.excludeFields = {{ json_encode($excludeFields) }};
 
-        this.entry        = {{ json_encode($entry) }};
+        this.entry        = window.__collectionEntry;
 
         this.languages    = App.$data.languages;
         this.groups       = {Main:[]};
