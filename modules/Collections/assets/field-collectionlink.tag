@@ -228,11 +228,12 @@
 
     linkItem(e) {
 
+        var defaultField = this.collection.fields[0].name;
         var _entry = e.item.entry;
         var entry = {
             _id: _entry._id,
             link: this.collection.name,
-            display: _entry[opts.display] || _entry[this.collection.fields[0].name] || 'n/a'
+            display: _.get(_entry, opts.display) || typeof _entry[defaultField] === 'string' && _entry[defaultField] || 'n/a'
         };
 
         if (opts.multiple) {
@@ -273,11 +274,12 @@
 
         this.selected.forEach(function(_entry) {
             
+            var defaultField = $this.collection.fields[0].name;
             cache[_entry._id] = _entry;
             entry = {
                 _id: _entry._id,
                 link: $this.collection.name,
-                display: _entry[opts.display] || _entry[$this.collection.fields[0].name] || 'n/a'
+                display: _.get(_entry, opts.display) || typeof _entry[defaultField] === 'string' && _entry[defaultField] || 'n/a'
             };
 
             $this.link.push(entry);
