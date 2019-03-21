@@ -5,6 +5,10 @@
 </style>
 @endif
 
+<script>
+    window.__singletonData = {{ json_encode($data) }} || {};
+</script>
+
 <div>
 
     <ul class="uk-breadcrumb">
@@ -153,15 +157,15 @@
 
             this.mixin(RiotBindMixin);
 
-            this.singleton    = {{ json_encode($singleton) }};
+            this.singleton = {{ json_encode($singleton) }};
             this.fields    = this.singleton.fields;
             this.fieldsidx = {};
 
-            this.data      = {{ json_encode($data) }} || {};
+            this.data      = window.__singletonData;
 
             this.languages = App.$data.languages;
-            this.groups       = {main:[]};
-            this.group        = 'main';
+            this.groups    = {main:[]};
+            this.group     = 'main';
 
             // fill with default values
             this.fields.forEach(function(field){
