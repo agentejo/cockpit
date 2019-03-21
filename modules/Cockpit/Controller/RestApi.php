@@ -30,7 +30,32 @@ class RestApi extends \LimeExtra\Controller {
             return $this->stop(['error' => 'Authentication failed'], 401);
         }
 
+        if ($this->param('generateApiKey')) {
+            $user['api_key'] = 'account-'.uniqid(bin2hex(random_bytes(16)));
+            $this->app->storage->save('cockpit/accounts', $user);
+        }
+
         return $user;
+    }
+
+    public function refreshUserApiKey() {
+
+        $apiKey = $this->param('apiKey');
+
+        if (!$apiKey) {
+            return $this->stop(['error' => 'apiKey parameter is missing'], 412);
+        }
+
+        $user = $this->app->storage->findOne('cockpit/accounts', ['api_key' => $apiKey]);
+
+        if (!$user) {
+            return $this->stop(['error' => 'User not found'], 401);
+        }
+
+        $user['api_key'] = 'account-'.uniqid(bin2hex(random_bytes(16)));
+        $this->app->storage->save('cockpit/accounts', $user);
+
+        return ['success' => true];
     }
 
     public function saveUser() {
