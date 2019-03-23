@@ -8,7 +8,7 @@
 @endif
 
 <script>
-    window.__collectionEntry = {{ json_encode($entry) }};
+    window.__collectionEntry = {{ json_encode($entry, JSON_NUMERIC_CHECK) }};
 </script>
 
 <div>

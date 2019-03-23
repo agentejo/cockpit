@@ -3212,6 +3212,21 @@ riot.tag2('field-multipleselect', '<div class="{options.length > 10 ? \'uk-scrol
 
 });
 
+riot.tag2('field-number', '<div class="uk-position-relative field-number-container"> <input ref="input" class="uk-width-1-1" bind="{opts.bind}" placeholder="{opts.placeholder}" type="number"> </div>', '', '', function(opts) {
+        this.on('mount', function() {
+
+            opts.cls && App.$(this.refs.input).addClass(opts.cls);
+
+            opts.required && this.refs.input.setAttribute('required', 'required');
+
+            ['max', 'min', 'placeholder', 'readonly', 'step'].forEach( function(key) {
+                opts[key] && this.refs.input.setAttribute(key, opts[key]);
+            }.bind(this));
+
+            this.update();
+        });
+});
+
 riot.tag2('field-object', '<div ref="input" riot-style="height: {opts.height || \'300px\'}"></div>', '', '', function(opts) {
 
         var $this = this, editor;
