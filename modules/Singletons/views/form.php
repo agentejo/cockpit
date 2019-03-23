@@ -50,9 +50,22 @@
 
             <div class="uk-width-medium-3-4 uk-grid-margin">
 
-                <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center" show="{ App.Utils.count(groups) > 1 }">
+                <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center" if="{ App.Utils.count(_groups) > 1 && App.Utils.count(_groups) < 6 }">
                     <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
-                    <li class="{ group==parent.group && 'uk-active'}" each="{items,group in groups}" show="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+                    <li class="{ group==parent.group && 'uk-active'}" each="{group, idx in _groups}" show="{ parent.groups[group].length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+                </ul>
+
+                <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center" if="{ App.Utils.count(_groups) > 5 }">
+                    <li class="uk-active" data-uk-dropdown="mode:'click', pos:'bottom-center'">
+                        <a>{ App.i18n.get(group || 'All') }</a>
+                        <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-close">
+                            <ul class="uk-nav uk-nav-dropdown">
+                            <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
+                            <li class="uk-nav-divider"></li>
+                            <li class="{ group==parent.group && 'uk-active'}" each="{group in _groups}" show="{ parent.groups[group].length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+                            </ul>
+                        </div>
+                    </li>
                 </ul>
 
                 <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
@@ -165,6 +178,7 @@
 
             this.languages = App.$data.languages;
             this.groups    = {main:[]};
+            this._groups   = [];
             this.group     = 'main';
 
             // fill with default values
@@ -202,8 +216,12 @@
                 $this.groups[field.group || 'main'].push(field);
             });
 
+            this._groups = Object.keys(this.groups).sort(function (a, b) {
+                return a.toLowerCase().localeCompare(b.toLowerCase());
+            });
+
             if (!this.groups[this.group].length) {
-                this.group = Object.keys(this.groups)[1];
+                this.group = $this._groups[1];
             }
 
             this.on('mount', function(){
