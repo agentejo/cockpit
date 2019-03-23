@@ -1,3 +1,7 @@
+<script>
+    window.__singletons = {{ json_encode($singletons) }};
+</script>
+
 <div>
     <ul class="uk-breadcrumb">
         <li class="uk-active"><span>@lang('Singletons')</span></li>
@@ -107,7 +111,7 @@
         var $this = this;
 
         this.ready  = true;
-        this.singletons = {{ json_encode($singletons) }};
+        this.singletons = window.__singletons;
         this.groups = [];
 
         this.singletons.forEach(function(singleton) {
