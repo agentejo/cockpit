@@ -57,7 +57,7 @@
 
                 <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center" if="{ App.Utils.count(_groups) > 5 }">
                     <li class="uk-active" data-uk-dropdown="mode:'click', pos:'bottom-center'">
-                        <a>{ App.i18n.get(group || 'All') }</a>
+                        <a>{ App.i18n.get(group || 'All') } <i class="uk-margin-small-left uk-icon-angle-down"></i></a>
                         <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-close">
                             <ul class="uk-nav uk-nav-dropdown">
                             <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
