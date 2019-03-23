@@ -1,3 +1,7 @@
+<script>
+    window.__forms = {{ json_encode($forms) }};
+</script>
+
 <div>
     <ul class="uk-breadcrumb">
         <li class="uk-active"><span>@lang('Forms')</span></li>
@@ -94,7 +98,7 @@
 
         var $this = this;
 
-        this.forms = {{ json_encode($forms) }};
+        this.forms = window.__forms;
 
         remove(e, form) {
 

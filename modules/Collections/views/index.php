@@ -1,3 +1,7 @@
+<script>
+    window.__collections = {{ json_encode($collections) }};
+</script>
+
 <div>
     <ul class="uk-breadcrumb">
         <li class="uk-active"><span>@lang('Collections')</span></li>
@@ -107,7 +111,7 @@
 
         var $this = this;
 
-        this.collections = {{ json_encode($collections) }};
+        this.collections = window.__collections;
         this.groups = [];
 
         this.collections.forEach(function(collection) {
