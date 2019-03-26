@@ -415,6 +415,10 @@ class Media extends \Cockpit\AuthController {
 
         $allowed = trim($this->module('cockpit')->getGroupVar('finder.allowed_uploads', $this->app->retrieve('allowed_uploads', '*')));
 
+        if (strtolower(pathinfo($file, PATHINFO_EXTENSION)) == 'php' && !$this->module('cockpit')->isSuperAdmin()) {
+            return false;
+        }
+
         if ($allowed == '*') {
             return true;
         }
