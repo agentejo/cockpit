@@ -19,7 +19,11 @@ class Media extends \Cockpit\AuthController {
         $cmd       = $this->param('cmd', false);
         $mediapath = $this->module('cockpit')->getGroupVar('finder.path', '');
 
-        $this->root = rtrim($this->app->path("site:{$mediapath}"), '/');
+        if (!$mediapath && !$this->module('cockpit')->isSuperAdmin()) {
+            $this->root = rtrim($this->app->path("#uploads:"), '/');
+        } else {
+            $this->root = rtrim($this->app->path("site:{$mediapath}"), '/');
+        }
 
         if (file_exists($this->root) && in_array($cmd, get_class_methods($this))){
 
