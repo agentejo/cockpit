@@ -83,6 +83,14 @@ class Admin extends \Cockpit\AuthController {
             if (!$collection) {
                 return false;
             }
+
+            $meta = $this->app->helper('admin')->isResourceLocked($collection['_id']);
+
+            if ($meta && $meta['user']['_id'] != $this->module('cockpit')->getUser('_id')) {
+                return $this->render('cockpit:views/base/locked.php', compact('meta'));
+            }
+
+            $this->app->helper('admin')->lockResourceId($collection['_id']);
         }
 
         // get field templates

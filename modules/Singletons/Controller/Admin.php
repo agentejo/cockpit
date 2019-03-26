@@ -62,7 +62,13 @@ class Admin extends \Cockpit\AuthController {
                 return false;
             }
 
+            $meta = $this->app->helper('admin')->isResourceLocked($singleton['_id']);
 
+            if ($meta && $meta['user']['_id'] != $this->module('cockpit')->getUser('_id')) {
+                return $this->render('cockpit:views/base/locked.php', compact('meta'));
+            }
+
+            $this->app->helper('admin')->lockResourceId($singleton['_id']);
         }
 
         // acl groups

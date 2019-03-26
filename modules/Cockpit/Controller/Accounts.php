@@ -47,6 +47,14 @@ class Accounts extends \Cockpit\AuthController {
         $languages = $this->getLanguages();
         $groups    = $this->module('cockpit')->getGroups();
 
+        $meta = $this->app->helper('admin')->isResourceLocked($uid);
+
+        if ($meta && $meta['user']['_id'] != $this->module('cockpit')->getUser('_id')) {
+            return $this->render('cockpit:views/base/locked.php', compact('meta'));
+        }
+
+        $this->app->helper('admin')->lockResourceId($uid);
+
         $this->app->trigger('cockpit.account.fields', [&$fields, &$account]);
 
         return $this->render('cockpit:views/accounts/account.php', compact('account', 'uid', 'languages', 'groups', 'fields'));
