@@ -442,4 +442,24 @@ class Utils extends \Lime\Helper {
 
         return $input;
     }
+
+	/**
+	 * Execute callable with retry if it fails
+	 * @param  int $times
+	 * @param  callable $fn
+	 * @return null
+	 */
+	public function retry($times, callable $fn) {
+
+		retrybeginning:
+	    try {
+	        return $fn();
+	    } catch (\Exception $e) {
+	        if (!$times) {
+	            throw new \Exception('', 0, $e);
+	        }
+	        $times--;
+	        goto retrybeginning;
+	    }
+	}
 }
