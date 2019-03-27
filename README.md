@@ -12,7 +12,7 @@
 * PHP >= 7.0
 * PDO + SQLite (or MongoDB)
 * GD extension
-* mod_rewrite enabled (on apache)
+* mod_rewrite, mod_versions enabled (on apache)
 
 make also sure that <code>$_SERVER['DOCUMENT_ROOT']</code> exists and is set correctly.
 
