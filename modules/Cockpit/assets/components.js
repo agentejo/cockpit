@@ -235,8 +235,8 @@ riot.tag2('cp-assets', '<div ref="list" show="{mode==\'list\'}"> <div ref="uploa
             if (this.refs.filtertitle.value) {
 
                 this.filter.$or = [];
-                this.filter.$or.push({title: {'$regex':this.refs.filtertitle.value}});
-                this.filter.$or.push({tags: {'$has':this.refs.filtertitle.value}});
+                this.filter.$or.push({title: {'$regex':this.refs.filtertitle.value, '$options': 'i'}});
+                this.filter.$or.push({tags: this.refs.filtertitle.value});
             }
 
             if (this.refs.filtertype.value) {

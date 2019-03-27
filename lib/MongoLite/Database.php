@@ -310,6 +310,8 @@ class UtilArrayQuery {
 
         foreach ($keys as &$key) {
 
+            if ($key == '$options') continue;
+
             if (!self::evaluate($key, $value, $condition[$key])) {
                 return false;
             }

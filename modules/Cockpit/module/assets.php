@@ -60,6 +60,10 @@ $this->module('cockpit')->extend([
                 $asset['mime'] = 'unknown';
             }
 
+            if ($asset['mime'] == 'image/svg') {
+                $asset['mime'] = 'image/svg+xml';
+            }
+
             if ($asset['image'] && !preg_match('/\.svg$/i', $file)) {
 
                 $info = getimagesize($file);
@@ -75,7 +79,7 @@ $this->module('cockpit')->extend([
                         $asset['colors'] = [];
                     }
 
-                    foreach($asset['colors'] as &$color) {
+                    foreach ($asset['colors'] as &$color) {
                         $color = sprintf("#%02x%02x%02x", $color[0], $color[1], $color[2]);
                     }
                 }
