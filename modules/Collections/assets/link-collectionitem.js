@@ -8,8 +8,11 @@
             return '<i class="uk-icon-eye-slash uk-text-muted"></i>';
         }
 
-        if (Array.isArray(v) && v.length > 1) {
-            return `<span class="uk-badge ${!v.length && 'uk-badge-outline uk-text-muted'}">${v.length}</span>`;
+        if (Array.isArray(v)) {
+            if (v.length > 1) {
+                return `<span class="uk-badge ${!v.length && 'uk-badge-outline uk-text-muted'}">${v.length}</span>`;
+            }
+            v = v[0];
         }
 
         if (!linkCache[v._id]) {
