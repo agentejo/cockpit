@@ -260,8 +260,8 @@ $this->module('forms')->extend([
         }
 
         // custom form validation
-        if ($this->app->path("#config:forms/{$form}.php") && false===include($this->app->path("#config:forms/{$form}.php"))) {
-            return false;
+        if ($this->app->path("#config:forms/{$form}.php") && true!==$validation=include($this->app->path("#config:forms/{$form}.php"))) {
+            return false===$validation ? false : ['error' => $validation, 'data' => $data];
         }
 
         $this->app->trigger('forms.submit.before', [$form, &$data, $frm, &$options]);
