@@ -78,7 +78,7 @@ class Auth extends \LimeExtra\Controller {
                 return $this->stop(['error' => $this('i18n')->get('User does not exist')], 404);
             }
 
-            $token  = uniqid('rp-').'-'.time();
+            $token  = uniqid('rp-'.bin2hex(random_bytes(16)));
             $target = $this->app->param('', $this->app->getSiteUrl(true).'/auth/newpassword');
             $data   = ['_id' => $user['_id'], '_reset_token' => $token];
 
