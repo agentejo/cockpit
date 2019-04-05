@@ -18,10 +18,10 @@ class SimpleAcl
 {
 
 
-    protected $resources = array();
-    protected $groups    = array();
-    protected $rights    = array();
-    protected $vars      = array();
+    protected $resources = [];
+    protected $groups    = [];
+    protected $rights    = [];
+    protected $vars      = [];
 
     /**
      * @param $group
@@ -36,7 +36,7 @@ class SimpleAcl
      * @param $resource
      * @param array $actions
      */
-    public function addResource($resource, $actions = array())
+    public function addResource($resource, $actions = [])
     {
         $this->resources[$resource] = $actions;
     }
@@ -45,7 +45,7 @@ class SimpleAcl
      * @param $name
      * @param bool|false $isSuperAdmin
      */
-    public function addGroup($name, $isSuperAdmin = false, $vars = array())
+    public function addGroup($name, $isSuperAdmin = false, $vars = [])
     {
         $this->groups[$name] = $isSuperAdmin;
         $this->vars[$name]   = $vars;
@@ -81,7 +81,7 @@ class SimpleAcl
      */
     public function getVars($group)
     {
-        return isset($this->vars[$group]) ? $this->vars[$group] : array();
+        return isset($this->vars[$group]) ? $this->vars[$group] : [];
     }
 
     /**
@@ -97,7 +97,7 @@ class SimpleAcl
      * @param $resource
      * @param array $actions
      */
-    public function allow($group, $resource, $actions = array())
+    public function allow($group, $resource, $actions = [])
     {
 
         $actions = (array)$actions;
@@ -117,7 +117,7 @@ class SimpleAcl
      * @param $resource
      * @param array $actions
      */
-    public function deny($group, $resource, $actions = array())
+    public function deny($group, $resource, $actions = [])
     {
 
         $actions = (array)$actions;

@@ -88,7 +88,7 @@ class Cursor implements \Iterator {
                 $sql[] = 'LIMIT '.$this->limit;
             }
 
-            $stmt = $this->collection->database->connection->query(implode(" ", $sql));
+            $stmt = $this->collection->database->connection->query(\implode(" ", $sql));
         }
 
         $res  = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -182,7 +182,7 @@ class Cursor implements \Iterator {
                 $orders[] = 'document_key("'.$field.'", document) '.($direction==-1 ? "DESC":"ASC");
             }
 
-            $sql[] = 'ORDER BY '.implode(',', $orders);
+            $sql[] = 'ORDER BY '.\implode(',', $orders);
         }
 
         if ($this->limit) {
@@ -200,7 +200,7 @@ class Cursor implements \Iterator {
         if (!$this->projection) {
 
             foreach ($result as &$doc) {
-                $documents[] = json_decode($doc['document'], true);
+                $documents[] = \json_decode($doc['document'], true);
             }
 
         } else {
@@ -219,11 +219,11 @@ class Cursor implements \Iterator {
 
             foreach ($result as &$doc) {
 
-                $item = json_decode($doc['document'], true);
+                $item = \json_decode($doc['document'], true);
                 $id   = $item['_id'];
 
                 if ($exclude) {
-                    $item = array_diff_key($item, $exclude);
+                    $item = \array_diff_key($item, $exclude);
                 }
 
                 if ($include) {

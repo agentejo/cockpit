@@ -21,7 +21,7 @@ class App extends \Lime\App {
      */
     public function __construct ($settings = []) {
 
-        $settings["helpers"]  = array_merge([
+        $settings["helpers"]  = \array_merge([
             "acl"     => "Lime\\Helper\\SimpleAcl",
             "assets"  => "Lime\\Helper\\Assets",
             "fs"      => "Lime\\Helper\\Filesystem",
@@ -59,10 +59,10 @@ class App extends \Lime\App {
                 ];
 
 
-                $content = preg_replace_callback('/\B@(\w+)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \))?/x', function($match) use($replace) {
+                $content = \preg_replace_callback('/\B@(\w+)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \))?/x', function($match) use($replace) {
 
-                    if (isset($match[3]) && trim($match[1]) && isset($replace[$match[1]])) {
-                        return str_replace('(expr)', $match[3], $replace[$match[1]]);
+                    if (isset($match[3]) && \trim($match[1]) && isset($replace[$match[1]])) {
+                        return \str_replace('(expr)', $match[3], $replace[$match[1]]);
                     }
 
                     return $match[0];
@@ -92,23 +92,23 @@ class App extends \Lime\App {
 
         $this->trigger('app.render.view', [&$template, &$slots]);
 
-        if (is_string($template) && $template) {
+        if (\is_string($template) && $template) {
             $this->trigger("app.render.view/{$template}", [&$template, &$slots]);
         }
 
         $renderer     = $this->renderer;
         $olayout      = $this->layout;
 
-        $slots        = array_merge($this->viewvars, $slots);
+        $slots        = \array_merge($this->viewvars, $slots);
         $layout       = $olayout;
 
         $this->layout = false;
 
-        if (strpos($template, ' with ') !== false ) {
-            list($template, $layout) = explode(' with ', $template, 2);
+        if (\strpos($template, ' with ') !== false ) {
+            list($template, $layout) = \explode(' with ', $template, 2);
         }
 
-        if (strpos($template, ':') !== false && $file = $this->path($template)) {
+        if (\strpos($template, ':') !== false && $file = $this->path($template)) {
             $template = $file;
         }
 
@@ -116,7 +116,7 @@ class App extends \Lime\App {
             $layout = $from;
         };
 
-        if (!file_exists($template)) {
+        if (!\file_exists($template)) {
             return "Couldn't resolve {$template}.";
         }
 
@@ -124,11 +124,11 @@ class App extends \Lime\App {
 
         if ($layout) {
 
-            if (strpos($layout, ':') !== false && $file = $this->path($layout)) {
+            if (\strpos($layout, ':') !== false && $file = $this->path($layout)) {
                 $layout = $file;
             }
 
-            if(!file_exists($layout)) {
+            if(!\file_exists($layout)) {
                 return "Couldn't resolve {$layout}.";
             }
 
