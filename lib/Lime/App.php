@@ -968,6 +968,11 @@ class App implements \ArrayAccess {
         $this->response = new Response();
         $this->trigger('before');
         $this->response->body = $this->dispatch($this->registry['route']);
+
+        if ($this->response->body === false) {
+            $this->response->status = 404;
+        }
+
         $this->trigger('after');
 
         if ($this->response->gzip && !ob_start('ob_gzhandler')) {
