@@ -36,6 +36,8 @@ $this->module('cockpit')->extend([
             return $user;
         }
 
+        $app->trigger('cockpit.account.login.error', [$data['user']]);
+
         return false;
     },
 
