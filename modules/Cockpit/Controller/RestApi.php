@@ -31,7 +31,7 @@ class RestApi extends \LimeExtra\Controller {
         }
 
         if ($this->param('generateApiKey')) {
-            $user['api_key'] = 'account-'.uniqid(bin2hex(random_bytes(16)));
+            $user['api_key'] = 'account-'.\uniqid(\bin2hex(\random_bytes(16)));
             $this->app->storage->save('cockpit/accounts', $user);
         }
 
@@ -52,7 +52,7 @@ class RestApi extends \LimeExtra\Controller {
             return $this->stop(['error' => 'User not found'], 401);
         }
 
-        $user['api_key'] = 'account-'.uniqid(bin2hex(random_bytes(16)));
+        $user['api_key'] = 'account-'.\uniqid(\bin2hex(\random_bytes(16)));
         $this->app->storage->save('cockpit/accounts', $user);
 
         return ['success' => true];
@@ -99,7 +99,7 @@ class RestApi extends \LimeExtra\Controller {
                 return $this->stop(['error' => 'Username required'], 412);
             }
 
-            $data = array_merge($account = [
+            $data = \array_merge($account = [
                 'user'   => 'admin',
                 'name'   => '',
                 'email'  => '',
@@ -109,7 +109,7 @@ class RestApi extends \LimeExtra\Controller {
             ], $data);
 
             if (isset($data['api_key'])) {
-                $data['api_key'] = 'account-'.uniqid(bin2hex(random_bytes(16)));
+                $data['api_key'] = 'account-'.\uniqid(\bin2hex(\random_bytes(16)));
             }
 
             $data['_created'] = $data['_modified'];
@@ -128,12 +128,12 @@ class RestApi extends \LimeExtra\Controller {
             return $this->stop(['error' => 'Valid email required'], 412);
         }
 
-        if (isset($data['user']) && !trim($data['user'])) {
+        if (isset($data['user']) && !\trim($data['user'])) {
             return $this->stop(['error' => 'Username cannot be empty!'], 412);
         }
 
         foreach (['name', 'user', 'email'] as $key) {
-            if (isset($data[$key])) $data[$key] = strip_tags(trim($data[$key]));
+            if (isset($data[$key])) $data[$key] = \strip_tags(\trim($data[$key]));
         }
 
         // unique check
@@ -164,14 +164,14 @@ class RestApi extends \LimeExtra\Controller {
             unset($data['password']);
         }
 
-        return json_encode($data);
+        return \json_encode($data);
     }
 
     public function listUsers() {
 
         $user    = $this->module('cockpit')->getUser();
         $isAdmin = false;
-        $options = array_merge(['sort' => ['user' => 1]], $this->param('options', []));
+        $options = \array_merge(['sort' => ['user' => 1]], $this->param('options', []));
 
         if ($user) {
 
@@ -186,7 +186,7 @@ class RestApi extends \LimeExtra\Controller {
 
             $options['filter'] = $filter;
 
-            if (is_string($filter)) {
+            if (\is_string($filter)) {
 
                 $options['filter'] = [
                     '$or' => [

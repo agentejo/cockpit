@@ -25,7 +25,7 @@ class YAML extends \Lime\Helper {
      * @param $path
      */
     public function setCachePath($path){
-        $this->cachePath = is_string($path) ? rtrim($path, "/\\") : $path;
+        $this->cachePath = \is_string($path) ? \rtrim($path, "/\\") : $path;
     }
 
     /**
@@ -43,7 +43,7 @@ class YAML extends \Lime\Helper {
      */
     public function fromFile($file) {
 
-        if (strpos($file, ':') !== false) {
+        if (\strpos($file, ':') !== false) {
             $file = $this->app->path($file);
         }
 
@@ -74,7 +74,7 @@ class YAML extends \Lime\Helper {
      * @return int
      */
     public function toFile($file, $array) {
-        return file_put_contents($file, $this->toYAML($array));
+        return \file_put_contents($file, $this->toYAML($array));
     }
 
     /**
@@ -85,15 +85,15 @@ class YAML extends \Lime\Helper {
 
         $cachedfile = $this->cachePath.'/'.basename($file).'.'.md5($file).'.php';
 
-        if (!file_exists($cachedfile)) {
+        if (!\file_exists($cachedfile)) {
             $cachedfile = $this->cache_file($file, $cachedfile, null);
         }
 
         if ($cachedfile) {
 
-            $mtime = filemtime($file);
+            $mtime = \filemtime($file);
 
-            if(filemtime($cachedfile)!=$mtime) {
+            if (\filemtime($cachedfile)!=$mtime) {
                 $cachedfile = $this->cache_file($file, $cachedfile, $mtime);
             }
 
@@ -112,13 +112,13 @@ class YAML extends \Lime\Helper {
     protected function cache_file($file, $cachedfile, $filemtime = null) {
 
         if (!$filemtime){
-            $filemtime = filemtime($file);
+            $filemtime = \filemtime($file);
         }
 
-        $data = var_export(Spyc::YAMLLoad($file), true);
+        $data = \var_export(Spyc::YAMLLoad($file), true);
 
-        if (file_put_contents($cachedfile, "<?php return {$data};")) {
-            touch($cachedfile,  $filemtime);
+        if (\file_put_contents($cachedfile, "<?php return {$data};")) {
+            \touch($cachedfile,  $filemtime);
             return $cachedfile;
         }
 

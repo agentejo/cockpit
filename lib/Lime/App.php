@@ -173,9 +173,9 @@ class App implements \ArrayAccess {
     public function __construct ($settings = []) {
 
         $self = $this;
-        $base_url = implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1));
+        $base_url = implode('/', \array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1));
 
-        $this->registry = array_merge([
+        $this->registry = \array_merge([
             'debug'        => true,
             'app.name'     => 'LimeApp',
             'session.name' => 'limeappsession',
@@ -186,7 +186,7 @@ class App implements \ArrayAccess {
             'helpers'      => [],
             'base_url'     => $base_url,
             'base_route'   => $base_url,
-            'base_host'    => $_SERVER['SERVER_NAME'] ?? php_uname('n'),
+            'base_host'    => $_SERVER['SERVER_NAME'] ?? \php_uname('n'),
             'base_port'    => $_SERVER['SERVER_PORT'] ?? 80,
             'docs_root'    => null,
             'site_url'     => null
@@ -200,22 +200,22 @@ class App implements \ArrayAccess {
 
             $url = ($this->req_is('ssl') ? 'https':'http').'://';
 
-            if (!in_array($this->registry['base_port'], ['80', '443'])) {
+            if (!\in_array($this->registry['base_port'], ['80', '443'])) {
                 $url .= $this->registry['base_host'].':'.$this->registry['base_port'];
             } else {
                 $url .= $this->registry['base_host'];
             }
 
-            $this['site_url'] = trim($url, '/');
+            $this['site_url'] = \trim($url, '/');
         }
 
         if (!isset($this['docs_root'])) {
-            $this['docs_root'] = str_replace(DIRECTORY_SEPARATOR, '/', isset($_SERVER['DOCUMENT_ROOT']) ? realpath($_SERVER['DOCUMENT_ROOT']) : dirname($_SERVER['SCRIPT_FILENAME']));
+            $this['docs_root'] = \str_replace(DIRECTORY_SEPARATOR, '/', isset($_SERVER['DOCUMENT_ROOT']) ? \realpath($_SERVER['DOCUMENT_ROOT']) : \dirname($_SERVER['SCRIPT_FILENAME']));
         }
 
         // make sure base + route url doesn't end with a slash;
-        $this->registry['base_url']   = rtrim($this->registry['base_url'], '/');
-        $this->registry['base_route'] = rtrim($this->registry['base_route'], '/');
+        $this->registry['base_url']   = \rtrim($this->registry['base_url'], '/');
+        $this->registry['base_route'] = \rtrim($this->registry['base_route'], '/');
 
         // default global viewvars
         $this->viewvars['app']        = $this;
@@ -226,16 +226,16 @@ class App implements \ArrayAccess {
         self::$apps[$this['app.name']] = $this;
 
         // default helpers
-        $this->helpers = new \ArrayObject(array_merge(['session' => 'Lime\\Session', 'cache' => 'Lime\\Cache'], $this->registry["helpers"]));
+        $this->helpers = new \ArrayObject(\array_merge(['session' => 'Lime\\Session', 'cache' => 'Lime\\Cache'], $this->registry["helpers"]));
 
         // register simple autoloader
         spl_autoload_register(function ($class) use($self){
 
             foreach ($self->retrieve('autoload', []) as $dir) {
 
-                $class_file = $dir.'/'.str_replace('\\', '/', $class).'.php';
+                $class_file = $dir.'/'.\str_replace('\\', '/', $class).'.php';
 
-                if (file_exists($class_file)){
+                if (\file_exists($class_file)){
                     include_once($class_file);
                     return;
                 }
@@ -245,11 +245,11 @@ class App implements \ArrayAccess {
 
         // check for php://input and merge with $_REQUEST
         if (
-            (isset($_SERVER['CONTENT_TYPE']) && stripos($_SERVER['CONTENT_TYPE'],'application/json')!==false) ||
-            (isset($_SERVER['HTTP_CONTENT_TYPE']) && stripos($_SERVER['HTTP_CONTENT_TYPE'],'application/json')!==false) // PHP build in Webserver !?
+            (isset($_SERVER['CONTENT_TYPE']) && \stripos($_SERVER['CONTENT_TYPE'],'application/json')!==false) ||
+            (isset($_SERVER['HTTP_CONTENT_TYPE']) && \stripos($_SERVER['HTTP_CONTENT_TYPE'],'application/json')!==false) // PHP build in Webserver !?
         ) {
-            if ($json = json_decode(@file_get_contents('php://input'), true)) {
-                $_REQUEST = array_merge($_REQUEST, $json);
+            if ($json = json_decode(@\file_get_contents('php://input'), true)) {
+                $_REQUEST = \array_merge($_REQUEST, $json);
             }
         }
     }
@@ -299,12 +299,12 @@ class App implements \ArrayAccess {
             $this->response->body = $data;
         }
 
-        if (is_numeric($data) && isset(self::$statusCodes[$data])) {
+        if (\is_numeric($data) && isset(self::$statusCodes[$data])) {
 
             $this->response->status = $data;
 
             if ($this->response->mime == 'json') {
-                $this->response->body = json_encode(['error' => self::$statusCodes[$data]]);
+                $this->response->body = \json_encode(['error' => self::$statusCodes[$data]]);
             } else {
                 $this->response->body = self::$statusCodes[$data];
             }
@@ -334,7 +334,7 @@ class App implements \ArrayAccess {
 
         $url = '';
 
-        if (strpos($path, ':')===false) {
+        if (\strpos($path, ':')===false) {
 
             /*
             if ($this->registry['base_port'] != '80') {
@@ -342,7 +342,7 @@ class App implements \ArrayAccess {
             }
             */
 
-            $url .= $this->registry['base_url'].'/'.ltrim($path, '/');
+            $url .= $this->registry['base_url'].'/'.\ltrim($path, '/');
 
         } else {
             $url = $this->pathToUrl($path);
@@ -353,9 +353,9 @@ class App implements \ArrayAccess {
 
     public function base($path) {
 
-        $args = func_get_args();
+        $args = \func_get_args();
 
-        echo (count($args)==1) ? $this->baseUrl($args[0]) : $this->baseUrl(call_user_func_array('sprintf', $args));
+        echo (\count($args)==1) ? $this->baseUrl($args[0]) : $this->baseUrl(\call_user_func_array('sprintf', $args));
     }
 
     /**
@@ -375,14 +375,14 @@ class App implements \ArrayAccess {
 
         $url .= $this->registry['base_route'];
 
-        return $url.'/'.ltrim($path, '/');
+        return $url.'/'.\ltrim($path, '/');
     }
 
     public function route() {
 
-        $args = func_get_args();
+        $args = \func_get_args();
 
-        echo (count($args)==1) ? $this->routeUrl($args[0]) : $this->routeUrl(call_user_func_array('sprintf', $args));
+        echo (\count($args)==1) ? $this->routeUrl($args[0]) : $this->routeUrl(\call_user_func_array('sprintf', $args));
 
     }
 
@@ -393,14 +393,14 @@ class App implements \ArrayAccess {
     */
     public function reroute($path) {
 
-        if (strpos($path,'://') === false) {
-            if (substr($path,0,1)!='/'){
+        if (\strpos($path,'://') === false) {
+            if (\substr($path,0,1)!='/'){
                 $path = '/'.$path;
             }
             $path = $this->routeUrl($path);
         }
 
-        header('Location: '.$path);
+        \header('Location: '.$path);
         $this->stop();
     }
 
@@ -411,11 +411,11 @@ class App implements \ArrayAccess {
     */
     public function set($key, $value) {
 
-        $keys = explode('/',$key);
+        $keys = \explode('/',$key);
 
-        if (count($keys)>5) return false;
+        if (\count($keys)>5) return false;
 
-        switch(count($keys)){
+        switch (\count($keys)){
 
           case 1:
             $this->registry[$keys[0]] = $value;
@@ -438,8 +438,6 @@ class App implements \ArrayAccess {
             break;
         }
 
-
-
         return $this;
     }
 
@@ -460,25 +458,25 @@ class App implements \ArrayAccess {
     */
     public function path(){
 
-        $args = func_get_args();
+        $args = \func_get_args();
 
-        switch(count($args)){
+        switch (\count($args)){
 
             case 1:
 
                 $file  = $args[0];
 
-                if ($this->isAbsolutePath($file) && file_exists($file)) {
+                if ($this->isAbsolutePath($file) && \file_exists($file)) {
                     return $file;
                 }
 
-                $parts = explode(':', $file, 2);
+                $parts = \explode(':', $file, 2);
 
                 if (count($parts)==2){
                     if (!isset($this->paths[$parts[0]])) return false;
 
-                    foreach($this->paths[$parts[0]] as &$path){
-                        if (file_exists($path.$parts[1])){
+                    foreach ($this->paths[$parts[0]] as &$path){
+                        if (\file_exists($path.$parts[1])){
                             return $path.$parts[1];
                         }
                     }
@@ -491,7 +489,7 @@ class App implements \ArrayAccess {
                 if (!isset($this->paths[$args[0]])) {
                     $this->paths[$args[0]] = [];
                 }
-                array_unshift($this->paths[$args[0]], rtrim(str_replace(DIRECTORY_SEPARATOR, '/', $args[1]), '/').'/');
+                \array_unshift($this->paths[$args[0]], \rtrim(\str_replace(DIRECTORY_SEPARATOR, '/', $args[1]), '/').'/');
 
                 return $this;
         }
@@ -522,14 +520,14 @@ class App implements \ArrayAccess {
 
         if ($file = $this->path($path)) {
 
-            $file = str_replace(DIRECTORY_SEPARATOR, '/', $file);
-            $root = str_replace(DIRECTORY_SEPARATOR, '/', $this['docs_root']);
+            $file = \str_replace(DIRECTORY_SEPARATOR, '/', $file);
+            $root = \str_replace(DIRECTORY_SEPARATOR, '/', $this['docs_root']);
 
-            $url = '/'.ltrim(str_replace($root, '', $file), '/');
-            $url = implode('/', array_map('rawurlencode', explode('/', $url)));
+            $url = '/'.\ltrim(\str_replace($root, '', $file), '/');
+            $url = \implode('/', \array_map('rawurlencode', explode('/', $url)));
 
             if ($full) {
-                $url = rtrim($this->registry['site_url'], '/').$url;
+                $url = \rtrim($this->registry['site_url'], '/').$url;
             }
         }
 
@@ -542,9 +540,9 @@ class App implements \ArrayAccess {
     */
     public function cache(){
 
-        $args = func_get_args();
+        $args = \func_get_args();
 
-        switch(count($args)){
+        switch(\count($args)){
         case 1:
             return $this->helper('cache')->read($args[0]);
         case 2:
@@ -563,7 +561,7 @@ class App implements \ArrayAccess {
     */
     public function on($event, $callback, $priority = 0){
 
-        if (is_array($event)) {
+        if (\is_array($event)) {
 
             foreach ($event as &$evt) {
                 $this->on($evt, $callback, $priority);
@@ -574,7 +572,7 @@ class App implements \ArrayAccess {
         if (!isset($this->events[$event])) $this->events[$event] = [];
 
         // make $this available in closures
-        if (is_object($callback) && $callback instanceof \Closure) {
+        if (\is_object($callback) && $callback instanceof \Closure) {
             $callback = $callback->bindTo($this, $this);
         }
 
@@ -595,7 +593,7 @@ class App implements \ArrayAccess {
             return $this;
         }
 
-        if (!count($this->events[$event])){
+        if (!\count($this->events[$event])){
             return $this;
         }
 
@@ -609,8 +607,8 @@ class App implements \ArrayAccess {
 
         while ($queue->valid()){
             $index = $queue->current();
-            if (is_callable($this->events[$event][$index]['fn'])){
-                if (call_user_func_array($this->events[$event][$index]['fn'], $params) === false) {
+            if (\is_callable($this->events[$event][$index]['fn'])){
+                if (\call_user_func_array($this->events[$event][$index]['fn'], $params) === false) {
                     break; // stop Propagation
                 }
             }
@@ -630,18 +628,18 @@ class App implements \ArrayAccess {
 
         $this->trigger('app.render.view', [&$____template, &$_____slots]);
 
-        if (is_string($____template) && $____template) {
+        if (\is_string($____template) && $____template) {
             $this->trigger("app.render.view/{$____template}", [&$____template, &$slots]);
         }
 
-        $_____slots = array_merge($this->viewvars, $_____slots);
+        $_____slots = \array_merge($this->viewvars, $_____slots);
         $____layout = $this->layout;
 
-        if (strpos($____template, ' with ') !== false ) {
-            list($____template, $____layout) = explode(' with ', $____template, 2);
+        if (\strpos($____template, ' with ') !== false ) {
+            list($____template, $____layout) = \explode(' with ', $____template, 2);
         }
 
-        if (strpos($____template, ':') !== false && $____file = $this->path($____template)) {
+        if (\strpos($____template, ':') !== false && $____file = $this->path($____template)) {
             $____template = $____file;
         }
 
@@ -649,23 +647,23 @@ class App implements \ArrayAccess {
             $____layout = $from;
         };
 
-        extract((array)$_____slots);
+        \extract((array)$_____slots);
 
-        ob_start();
+        \ob_start();
         include $____template;
-        $output = ob_get_clean();
+        $output = \ob_get_clean();
 
         if ($____layout) {
 
-            if (strpos($____layout, ':') !== false && $____file = $this->path($____layout)) {
+            if (\strpos($____layout, ':') !== false && $____file = $this->path($____layout)) {
                 $____layout = $____file;
             }
 
             $content_for_layout = $output;
 
-            ob_start();
+            \ob_start();
             include $____layout;
-            $output = ob_get_clean();
+            $output = \ob_get_clean();
 
         }
 
@@ -683,7 +681,7 @@ class App implements \ArrayAccess {
             $this->blocks[$name] = [];
         }
 
-        ob_start();
+        \ob_start();
     }
 
     /**
@@ -693,7 +691,7 @@ class App implements \ArrayAccess {
     */
     public function end($name) {
 
-        $out = ob_get_clean();
+        $out = \ob_get_clean();
 
         if (isset($this->blocks[$name])){
             $this->blocks[$name][] = $out;
@@ -710,11 +708,11 @@ class App implements \ArrayAccess {
 
         if (!isset($this->blocks[$name])) return null;
 
-        $options = array_merge([
+        $options = \array_merge([
             'print' => true
         ], $options);
 
-        $block = implode("\n", $this->blocks[$name]);
+        $block = \implode("\n", $this->blocks[$name]);
 
         if ($options['print']){
             echo $block;
@@ -731,11 +729,11 @@ class App implements \ArrayAccess {
     */
     public function escape($string, $charset=null) {
 
-        if (is_null($charset)){
+        if (\is_null($charset)){
             $charset = $this['charset'];
         }
 
-        return htmlspecialchars($string, ENT_QUOTES, $charset);
+        return \htmlspecialchars($string, \ENT_QUOTES, $charset);
     }
 
     /**
@@ -750,19 +748,19 @@ class App implements \ArrayAccess {
         $src = $source ? $source : $_REQUEST;
         $cast = null;
 
-        if (strpos($index, ':') !== false) {
-            list($index, $cast) = explode(':', $index, 2);
+        if (\strpos($index, ':') !== false) {
+            list($index, $cast) = \explode(':', $index, 2);
         }
 
         $value = fetch_from_array($src, $index, $default);
 
         if ($cast) {
 
-            if (in_array($cast, ['bool', 'boolean']) && is_string($value) && in_array($cast, ['true', 'false'])) {
+            if (\in_array($cast, ['bool', 'boolean']) && \is_string($value) && \in_array($cast, ['true', 'false'])) {
                 $value = $value == 'true' ? true : false;
             }
 
-            settype($value, $cast);
+            \settype($value, $cast);
         }
 
         return $value;
@@ -777,21 +775,21 @@ class App implements \ArrayAccess {
 
         $list = [];
 
-        foreach((array)$href as $style) {
+        foreach ((array)$href as $style) {
 
             $type = 'text/css';
             $rel  = 'stylesheet';
             $src  = $style;
 
-            if (is_array($style)) {
+            if (\is_array($style)) {
                 extract($style);
             }
 
-            $ispath = strpos($src, ':') !== false && !preg_match('#^(|http\:|https\:)//#', $src);
+            $ispath = \strpos($src, ':') !== false && !\preg_match('#^(|http\:|https\:)//#', $src);
             $list[] = '<link href="'.($ispath ? $this->pathToUrl($src):$src).($version ? "?ver={$version}":"").'" type="'.$type.'" rel="'.$rel.'">';
         }
 
-        return implode("\n", $list);
+        return \implode("\n", $list);
     }
 
     /**
@@ -803,45 +801,45 @@ class App implements \ArrayAccess {
 
         $list = [];
 
-        foreach((array)$src as $script) {
+        foreach ((array)$src as $script) {
 
             $type = 'text/javascript';
             $src  = $script;
             $load = '';
 
-            if (is_array($script)) {
+            if (\is_array($script)) {
                 extract($script);
             }
 
-            $ispath = strpos($src, ':') !== false && !preg_match('#^(|http\:|https\:)//#', $src);
+            $ispath = \strpos($src, ':') !== false && !\preg_match('#^(|http\:|https\:)//#', $src);
             $list[] = '<script src="'.($ispath ? $this->pathToUrl($src):$src).($version ? "?ver={$version}":"").'" type="'.$type.'" '.$load.'></script>';
         }
 
-        return implode("\n", $list);
+        return \implode("\n", $list);
     }
 
     public function assets($src, $version=false){
 
         $list = [];
 
-        foreach((array)$src as $asset) {
+        foreach ((array)$src as $asset) {
 
             $src = $asset;
 
-            if (is_array($asset)) {
+            if (\is_array($asset)) {
                 extract($asset);
             }
 
-            if (@substr($src, -3) == '.js') {
+            if (@\substr($src, -3) == '.js') {
                 $list[] = $this->script($asset, $version);
             }
 
-            if (@substr($src, -4) == '.css') {
+            if (@\substr($src, -4) == '.css') {
                 $list[] = $this->style($asset, $version);
             }
         }
 
-        return implode("\n", $list);
+        return \implode("\n", $list);
     }
 
     /**
@@ -876,13 +874,13 @@ class App implements \ArrayAccess {
     public function bindClass($class, $alias = false) {
 
         $self  = $this;
-        $clean = $alias ? $alias : trim(strtolower(str_replace("\\", "/", $class)), "\\");
+        $clean = $alias ? $alias : \trim(\strtolower(\str_replace("\\", "/", $class)), "\\");
 
         $this->bind('/'.$clean.'/*', function() use($self, $class, $clean) {
 
-            $parts      = explode('/', trim(preg_replace("#$clean#","",$self["route"],1),'/'));
+            $parts      = \explode('/', \trim(\preg_replace("#$clean#","",$self["route"],1),'/'));
             $action     = isset($parts[0]) ? $parts[0]:"index";
-            $params     = count($parts)>1 ? array_slice($parts, 1):[];
+            $params     = \count($parts)>1 ? \array_slice($parts, 1):[];
 
             return $self->invoke($class,$action, $params);
         });
@@ -900,21 +898,21 @@ class App implements \ArrayAccess {
     public function bindNamespace($namespace, $alias) {
 
         $self  = $this;
-        $clean = $alias ? $alias : trim(strtolower(str_replace("\\", "/", $namespace)), "\\");
+        $clean = $alias ? $alias : \trim(\strtolower(\str_replace("\\", "/", $namespace)), "\\");
 
         $this->bind('/'.$clean.'/*', function() use($self, $namespace, $clean) {
 
-            $parts      = explode('/', trim(preg_replace("#$clean#","",$self["route"],1),'/'));
+            $parts      = \explode('/', trim(preg_replace("#$clean#","",$self["route"],1),'/'));
             $class      = $namespace.'\\'.$parts[0];
             $action     = isset($parts[1]) ? $parts[1]:"index";
-            $params     = count($parts)>2 ? array_slice($parts, 2):[];
+            $params     = \count($parts)>2 ? \array_slice($parts, 2):[];
 
             return $self->invoke($class,$action, $params);
         });
 
-        $this->bind('/'.strtolower($namespace), function() use($self, $namespace) {
+        $this->bind('/'.\strtolower($namespace), function() use($self, $namespace) {
 
-            $class = $namespace."\\".array_pop(explode('\\', $namespace));
+            $class = $namespace."\\".\array_pop(\explode('\\', $namespace));
 
             return $self->invoke($class, 'index', []);
         });
@@ -936,13 +934,13 @@ class App implements \ArrayAccess {
         }
 
         // make $this available in closures
-        if (is_object($callback) && $callback instanceof \Closure) {
+        if (\is_object($callback) && $callback instanceof \Closure) {
             $callback = $callback->bindTo($this, $this);
         }
 
         // autou-register for /route/* also /route
-        if (substr($path, -2) == '/*' && !isset($this->routes[substr($path, 0, -2)])) {
-            $this->bind(substr($path, 0, -2), $callback, $condition);
+        if (\substr($path, -2) == '/*' && !isset($this->routes[\substr($path, 0, -2)])) {
+            $this->bind(\substr($path, 0, -2), $callback, $condition);
         }
 
         $this->routes[$path] = $callback;
@@ -961,7 +959,7 @@ class App implements \ArrayAccess {
             $this->registry['route'] = $route;
         }
 
-        register_shutdown_function(function() use($self){
+        \register_shutdown_function(function() use($self){
             $self->trigger('shutdown');
         });
 
@@ -975,8 +973,8 @@ class App implements \ArrayAccess {
 
         $this->trigger('after');
 
-        if ($this->response->gzip && !ob_start('ob_gzhandler')) {
-            ob_start();
+        if ($this->response->gzip && !\ob_start('ob_gzhandler')) {
+            \ob_start();
         }
 
         $this->response->flush();
@@ -1003,23 +1001,23 @@ class App implements \ArrayAccess {
                     $params = [];
 
                     /* e.g. #\.html$#  */
-                    if (substr($route,0,1)=='#' && substr($route,-1)=='#'){
+                    if (\substr($route,0,1)=='#' && \substr($route,-1)=='#'){
 
-                        if (preg_match($route, $path, $matches)){
-                            $params[':captures'] = array_slice($matches, 1);
+                        if (\preg_match($route, $path, $matches)){
+                            $params[':captures'] = \array_slice($matches, 1);
                             $found = $this->render_route($route, $params);
                             break;
                         }
                     }
 
                     /* e.g. /admin/*  */
-                    if (strpos($route, '*') !== false){
+                    if (\strpos($route, '*') !== false){
 
-                        $pattern = '#^'.str_replace('\*', '(.*)', preg_quote($route, '#')).'#';
+                        $pattern = '#^'.\str_replace('\*', '(.*)', \preg_quote($route, '#')).'#';
 
-                        if (preg_match($pattern, $path, $matches)){
+                        if (\preg_match($pattern, $path, $matches)){
 
-                            $params[':splat'] = array_slice($matches, 1);
+                            $params[':splat'] = \array_slice($matches, 1);
                             $found = $this->render_route($route, $params);
                             break;
                         }
@@ -1028,16 +1026,16 @@ class App implements \ArrayAccess {
                     /* e.g. /admin/:id  */
                     if (strpos($route, ':') !== false){
 
-                        $parts_p = explode('/', $path);
-                        $parts_r = explode('/', $route);
+                        $parts_p = \explode('/', $path);
+                        $parts_r = \explode('/', $route);
 
-                        if (count($parts_p) == count($parts_r)){
+                        if (\count($parts_p) == \count($parts_r)){
 
                             $matched = true;
 
-                            foreach($parts_r as $index => $part){
-                                if (':' === substr($part,0,1)) {
-                                    $params[substr($part,1)] = $parts_p[$index];
+                            foreach ($parts_r as $index => $part){
+                                if (':' === \substr($part,0,1)) {
+                                    $params[\substr($part,1)] = $parts_p[$index];
                                     continue;
                                 }
 
@@ -1073,11 +1071,11 @@ class App implements \ArrayAccess {
 
             $ret = null;
 
-            if (is_callable($this->routes[$route])){
-                $ret = call_user_func($this->routes[$route], $params);
+            if (\is_callable($this->routes[$route])){
+                $ret = \call_user_func($this->routes[$route], $params);
             }
 
-            if ( !is_null($ret) ){
+            if (!is_null($ret)){
                 return $ret;
             }
         }
@@ -1097,8 +1095,8 @@ class App implements \ArrayAccess {
 
         $controller = new $class($this);
 
-        return method_exists($controller, $action) && is_callable([$controller, $action])
-                ? call_user_func_array([$controller,$action], $params)
+        return \method_exists($controller, $action) && \is_callable([$controller, $action])
+                ? \call_user_func_array([$controller,$action], $params)
                 : false;
     }
 
@@ -1109,12 +1107,12 @@ class App implements \ArrayAccess {
     */
     public function req_is($type){
 
-        switch(strtolower($type)){
+        switch (\strtolower($type)){
             case 'ajax':
                 return (
                     (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'))       ||
-                    (isset($_SERVER["CONTENT_TYPE"]) && stripos($_SERVER["CONTENT_TYPE"],'application/json')!==false)           ||
-                    (isset($_SERVER["HTTP_CONTENT_TYPE"]) && stripos($_SERVER["HTTP_CONTENT_TYPE"],'application/json')!==false)
+                    (isset($_SERVER["CONTENT_TYPE"]) && \stripos($_SERVER["CONTENT_TYPE"],'application/json')!==false)           ||
+                    (isset($_SERVER["HTTP_CONTENT_TYPE"]) && \stripos($_SERVER["HTTP_CONTENT_TYPE"],'application/json')!==false)
                 );
                 break;
 
@@ -1126,23 +1124,23 @@ class App implements \ArrayAccess {
                     'sda','sgh-','vodafone','xda','iphone', 'ipod','android'
                 ];
 
-                return preg_match('/(' . implode('|', $mobileDevices). ')/i',strtolower($_SERVER['HTTP_USER_AGENT']));
+                return \preg_match('/(' . \implode('|', $mobileDevices). ')/i', \strtolower($_SERVER['HTTP_USER_AGENT']));
                 break;
 
             case 'post':
-                return (strtolower($_SERVER['REQUEST_METHOD']) == 'post');
+                return (\strtolower($_SERVER['REQUEST_METHOD']) == 'post');
                 break;
 
             case 'get':
-                return (strtolower($_SERVER['REQUEST_METHOD']) == 'get');
+                return (\strtolower($_SERVER['REQUEST_METHOD']) == 'get');
                 break;
 
             case 'put':
-                return (strtolower($_SERVER['REQUEST_METHOD']) == 'put');
+                return (\strtolower($_SERVER['REQUEST_METHOD']) == 'put');
                 break;
 
             case 'delete':
-                return (strtolower($_SERVER['REQUEST_METHOD']) == 'delete');
+                return (\strtolower($_SERVER['REQUEST_METHOD']) == 'delete');
                 break;
 
             case 'ssl':
@@ -1184,7 +1182,7 @@ class App implements \ArrayAccess {
         if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             return $default;
         }
-        return strtolower(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2));
+        return \strtolower(\substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2));
     }
 
     /**
@@ -1196,10 +1194,10 @@ class App implements \ArrayAccess {
         $url = $this->registry['site_url'];
 
         if ($withpath) {
-            $url .= implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1));
+            $url .= \implode('/', \array_slice(\explode('/', $_SERVER['SCRIPT_NAME']), 0, -1));
         }
 
-        return rtrim($url, '/');
+        return \rtrim($url, '/');
     }
 
     /**
@@ -1207,7 +1205,7 @@ class App implements \ArrayAccess {
     * @return String
     */
     public function hash($text, $algo = PASSWORD_BCRYPT) {
-        return password_hash($text, $algo);
+        return \password_hash($text, $algo);
     }
 
     /**
@@ -1223,11 +1221,11 @@ class App implements \ArrayAccess {
         $box = [''];
         $cipher = '';
 
-        $pwd_length = strlen($pwd);
-        $data_length = strlen($data);
+        $pwd_length = \strlen($pwd);
+        $data_length = \strlen($data);
 
         for ($i = 0; $i < 256; $i++) {
-            $key[$i] = ord($pwd[$i % $pwd_length]);
+            $key[$i] = \ord($pwd[$i % $pwd_length]);
             $box[$i] = $i;
         }
         for ($j = $i = 0; $i < 256; $i++) {
@@ -1243,9 +1241,9 @@ class App implements \ArrayAccess {
             $box[$a] = $box[$j];
             $box[$j] = $tmp;
             $k = $box[(($box[$a] + $box[$j]) % 256)];
-            $cipher .= chr(ord($data[$i]) ^ $k);
+            $cipher .= \chr(\ord($data[$i]) ^ $k);
         }
-        return $base64encoded ? base64_encode($cipher):$cipher;
+        return $base64encoded ? \base64_encode($cipher):$cipher;
     }
 
     /**
@@ -1259,7 +1257,7 @@ class App implements \ArrayAccess {
     }
 
     public function helper($helper) {
-        if (isset($this->helpers[$helper]) && !is_object($this->helpers[$helper])) {
+        if (isset($this->helpers[$helper]) && !\is_object($this->helpers[$helper])) {
             $this->helpers[$helper] = new $this->helpers[$helper]($this);
         }
 
@@ -1267,7 +1265,7 @@ class App implements \ArrayAccess {
     }
 
     public function isAbsolutePath($path) {
-        return '/' == $path[0] || '\\' == $path[0] || (3 < strlen($path) && ctype_alpha($path[0]) && $path[1] == ':' && ('\\' == $path[2] || '/' == $path[2]));
+        return '/' == $path[0] || '\\' == $path[0] || (3 < \strlen($path) && \ctype_alpha($path[0]) && $path[1] == ':' && ('\\' == $path[2] || '/' == $path[2]));
     }
 
     public function module($name) {
@@ -1276,7 +1274,7 @@ class App implements \ArrayAccess {
 
     public function registerModule($name, $dir) {
 
-        $name = strtolower($name);
+        $name = \strtolower($name);
 
         if (!isset($this->registry['modules'][$name])) {
 
@@ -1301,9 +1299,9 @@ class App implements \ArrayAccess {
 
         foreach ($dirs as &$dir) {
 
-            if (file_exists($dir)){
+            if (\file_exists($dir)){
 
-                $pfx = is_bool($prefix) ? strtolower(basename($dir)) : $prefix;
+                $pfx = \is_bool($prefix) ? \strtolower(basename($dir)) : $prefix;
 
                 // load modules
                 foreach (new \DirectoryIterator($dir) as $module) {
@@ -1312,11 +1310,11 @@ class App implements \ArrayAccess {
 
                     $name = $prefix ? "{$pfx}-".$module->getBasename() : $module->getBasename();
 
-                    if ($disabled && in_array($name, $disabled)) continue;
+                    if ($disabled && \in_array($name, $disabled)) continue;
 
                     $this->registerModule($name, $module->getRealPath());
 
-                    $modules[] = strtolower($module);
+                    $modules[] = \strtolower($module);
                 }
 
                 if ($autoload) $this['autoload']->append($dir);
@@ -1390,26 +1388,26 @@ class Response {
 
             $body = $this->body;
 
-            if (is_array($this->body) || is_object($this->body)) {
-                $body = json_encode($this->body);
+            if (\is_array($this->body) || \is_object($this->body)) {
+                $body = \json_encode($this->body);
                 $this->mime = 'json';
             }
 
             if ($this->nocache){
-                header('Cache-Control: no-cache, must-revalidate'); // HTTP/1.1
-                header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
-                header('Pragma: no-cache');
+                \header('Cache-Control: no-cache, must-revalidate'); // HTTP/1.1
+                \header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
+                \header('Pragma: no-cache');
             }
 
             if ($this->etag){
-                header('ETag: "'.md5($this->body).'"');
+                \header('ETag: "'.md5($this->body).'"');
             }
 
-            header('HTTP/1.0 '.$this->status.' '.App::$statusCodes[$this->status]);
-            header('Content-type: '.App::$mimeTypes[$this->mime]);
+            \header('HTTP/1.0 '.$this->status.' '.App::$statusCodes[$this->status]);
+            \header('Content-type: '.App::$mimeTypes[$this->mime]);
 
             foreach ($this->headers as $h) {
-                header($h);
+                \header($h);
             }
 
             echo $body;
@@ -1435,8 +1433,8 @@ class AppAware {
 
     public function __call($name, $arguments) {
 
-        if (is_callable([$this->app, $name])) {
-            return call_user_func_array([$this->app, $name], $arguments);
+        if (\is_callable([$this->app, $name])) {
+            return \call_user_func_array([$this->app, $name], $arguments);
         }
         return $this;
     }
@@ -1483,12 +1481,12 @@ class Module extends AppAware {
     }
     public function __call($name, $arguments) {
 
-        if (isset($this->apis[$name]) && is_callable($this->apis[$name])) {
-            return call_user_func_array($this->apis[$name], $arguments);
+        if (isset($this->apis[$name]) && \is_callable($this->apis[$name])) {
+            return \call_user_func_array($this->apis[$name], $arguments);
         }
 
-        if (isset($this->apis['__call']) && is_callable($this->apis['__call'])) {
-            return call_user_func_array($this->apis['__call'], [$name, $arguments]);
+        if (isset($this->apis['__call']) && \is_callable($this->apis['__call'])) {
+            return \call_user_func_array($this->apis['__call'], [$name, $arguments]);
         }
 
         return null;
@@ -1508,13 +1506,13 @@ class Session extends Helper {
 
         if ($this->initialized) return;
 
-        if (!strlen(session_id())) {
+        if (!\strlen(\session_id())) {
             $this->name = $sessionname ? $sessionname : $this->app["session.name"];
 
-            session_name($this->name);
-            session_start();
+            \session_name($this->name);
+            \session_start();
         } else {
-            $this->name = session_name();
+            $this->name = \session_name();
         }
 
         $this->initialized = true;
@@ -1533,7 +1531,7 @@ class Session extends Helper {
     }
 
     public function destroy(){
-        session_destroy();
+        \session_destroy();
     }
 }
 
@@ -1544,7 +1542,7 @@ class Cache extends Helper {
 
 
     public function initialize(){
-        $this->cachePath = rtrim(sys_get_temp_dir(),"/\\").'/';
+        $this->cachePath = \rtrim(\sys_get_temp_dir(),"/\\").'/';
         $this->prefix    = $this->app['app.name'];
     }
 
@@ -1561,41 +1559,41 @@ class Cache extends Helper {
 
     public function write($key, $value, $duration = -1){
 
-        $expire = ($duration==-1) ? -1:(time() + (is_string($duration) ? strtotime($duration):$duration));
+        $expire = ($duration==-1) ? -1:(\time() + (\is_string($duration) ? \strtotime($duration):$duration));
 
         $safe_var = [
             'expire' => $expire,
-            'value' => serialize($value)
+            'value' => \serialize($value)
         ];
 
-        file_put_contents($this->cachePath.md5($this->prefix.'-'.$key).".cache" , serialize($safe_var));
+        \file_put_contents($this->cachePath.\md5($this->prefix.'-'.$key).".cache" , \serialize($safe_var));
     }
 
     public function read($key, $default=null){
 
-        $var = @file_get_contents($this->cachePath.md5($this->prefix.'-'.$key).".cache");
+        $var = @\file_get_contents($this->cachePath.\md5($this->prefix.'-'.$key).".cache");
 
         if ($var==='') {
             return $default;
         } else {
 
-            $time = time();
-            $var  = unserialize($var);
+            $time = \time();
+            $var  = \unserialize($var);
 
             if (($var['expire'] < $time) && $var['expire']!=-1) {
                 $this->delete($key);
-                return is_callable($default) ? call_user_func($default):$default;
+                return \is_callable($default) ? \call_user_func($default):$default;
             }
 
-            return unserialize($var['value']);
+            return \unserialize($var['value']);
         }
     }
 
     public function delete($key){
 
-        $file = $this->cachePath.md5($this->prefix.'-'.$key).".cache";
+        $file = $this->cachePath.\md5($this->prefix.'-'.$key).".cache";
 
-        if (file_exists($file)) {
+        if (\file_exists($file)) {
             @unlink($file);
         }
 
@@ -1606,8 +1604,8 @@ class Cache extends Helper {
         $iterator = new \RecursiveDirectoryIterator($this->cachePath);
 
         foreach ($iterator as $file) {
-            if ($file->isFile() && substr($file, -6)==".cache") {
-                @unlink($this->cachePath.$file->getFilename());
+            if ($file->isFile() && \substr($file, -6)==".cache") {
+                @\unlink($this->cachePath.$file->getFilename());
             }
         }
     }
@@ -1615,7 +1613,7 @@ class Cache extends Helper {
 
 // helper functions
 
-function fetch_from_array(&$array, $index=null, $default = null) {
+function fetch_from_array(&$array, $index = null, $default = null) {
 
     if (is_null($index)) {
 
@@ -1625,11 +1623,11 @@ function fetch_from_array(&$array, $index=null, $default = null) {
 
         return $array[$index];
 
-    } elseif (strpos($index, '/')) {
+    } elseif (\strpos($index, '/')) {
 
-        $keys = explode('/', $index);
+        $keys = \explode('/', $index);
 
-        switch(count($keys)){
+        switch (\count($keys)){
 
             case 1:
                 if (isset($array[$keys[0]])){
@@ -1657,5 +1655,5 @@ function fetch_from_array(&$array, $index=null, $default = null) {
         }
     }
 
-    return is_callable($default) ? call_user_func($default) : $default;
+    return \is_callable($default) ? \call_user_func($default) : $default;
 }

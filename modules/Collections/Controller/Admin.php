@@ -155,8 +155,6 @@ class Admin extends \Cockpit\AuthController {
             return false;
         }
 
-        $count = $this->module('collections')->count($collection['name']);
-
         $collection = array_merge([
             'sortable' => false,
             'color' => '',
@@ -180,7 +178,7 @@ class Admin extends \Cockpit\AuthController {
             $view = $override;
         }
 
-        return $this->render($view, compact('collection', 'count'));
+        return $this->render($view, compact('collection'));
     }
 
     public function entry($collection, $id = null) {

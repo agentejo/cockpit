@@ -53,14 +53,14 @@ class Database {
 
         $this->connection->sqliteCreateFunction('document_key', function($key, $document){
 
-            $document = json_decode($document, true);
+            $document = \json_decode($document, true);
             $val      = '';
 
             if (strpos($key, '.') !== false) {
 
-                $keys = explode('.', $key);
+                $keys = \explode('.', $key);
 
-                switch(count($keys)) {
+                switch (\count($keys)) {
                     case 2:
                         $val = isset($document[$keys[0]][$keys[1]]) ? $document[$keys[0]][$keys[1]] : '';
                         break;
@@ -75,12 +75,12 @@ class Database {
                 $val = isset($document[$key]) ? $document[$key] : '';
             }
 
-            return is_array($val) || is_object($val) ? json_encode($val) : $val;
+            return \is_array($val) || \is_object($val) ? \json_encode($val) : $val;
         }, 2);
 
         $this->connection->sqliteCreateFunction('document_criteria', function($funcid, $document) use($database) {
 
-            $document = json_decode($document, true);
+            $document = \json_decode($document, true);
 
             return $database->callCriteriaFunction($funcid, $document);
         }, 2);
@@ -98,9 +98,9 @@ class Database {
      */
     public function registerCriteriaFunction($criteria) {
 
-        $id = uniqid("criteria");
+        $id = \uniqid("criteria");
 
-        if (is_callable($criteria)) {
+        if (\is_callable($criteria)) {
            $this->document_criterias[$id] = $criteria;
            return $id;
         }
@@ -143,7 +143,7 @@ class Database {
      */
     public function drop() {
         if ($this->path != ":memory:") {
-            unlink($this->path);
+            \unlink($this->path);
         }
     }
 
@@ -176,7 +176,7 @@ class Database {
         $tables = $stmt->fetchAll( \PDO::FETCH_ASSOC);
         $names  = [];
 
-        foreach($tables as $table) {
+        foreach ($tables as $table) {
             $names[] = $table["name"];
         }
 
@@ -207,9 +207,9 @@ class Database {
      */
     public function selectCollection($name) {
 
-        if(!isset($this->collections[$name])) {
+        if (!isset($this->collections[$name])) {
 
-            if(!in_array($name, $this->getCollectionNames())) {
+            if (!in_array($name, $this->getCollectionNames())) {
                 $this->createCollection($name);
             }
 
@@ -244,7 +244,7 @@ class UtilArrayQuery {
                         $_fn[] = self::buildCondition($v, ' && ');
                     }
 
-                    $fn[] = '('.implode(' && ', $_fn).')';
+                    $fn[] = '('.\implode(' && ', $_fn).')';
 
                     break;
                 case '$or':
@@ -255,13 +255,13 @@ class UtilArrayQuery {
                         $_fn[] = self::buildCondition($v, ' && ');
                     }
 
-                    $fn[] = '('.implode(' || ', $_fn).')';
+                    $fn[] = '('.\implode(' || ', $_fn).')';
 
                     break;
 
                 case '$where':
 
-                    if (is_callable($value)) {
+                    if (\is_callable($value)) {
 
                         // need implementation
                     }
@@ -272,9 +272,9 @@ class UtilArrayQuery {
 
                     $d = '$document';
 
-                    if (strpos($key, '.') !== false) {
+                    if (\strpos($key, '.') !== false) {
 
-                        $keys = explode('.', $key);
+                        $keys = \explode('.', $key);
 
                         foreach ($keys as $k) {
                             $d .= '[\''.$k.'\']';
@@ -284,11 +284,11 @@ class UtilArrayQuery {
                         $d .= '[\''.$key.'\']';
                     }
 
-                    if (is_array($value)) {
-                        $fn[] = "\\MongoLite\\UtilArrayQuery::check((isset({$d}) ? {$d} : null), ".var_export($value, true).')';
+                    if (\is_array($value)) {
+                        $fn[] = "\\MongoLite\\UtilArrayQuery::check((isset({$d}) ? {$d} : null), ".\var_export($value, true).')';
                     } else {
 
-                        $_value = var_export($value, true);
+                        $_value = \var_export($value, true);
 
                         $fn[] = "(isset({$d}) && (
                                     is_array({$d}) && is_string({$_value})
@@ -300,13 +300,13 @@ class UtilArrayQuery {
             }
         }
 
-        return count($fn) ? trim(implode($concat, $fn)) : 'true';
+        return \count($fn) ? \trim(\implode($concat, $fn)) : 'true';
     }
 
 
     public static function check($value, $condition) {
 
-        $keys = array_keys($condition);
+        $keys = \array_keys($condition);
 
         foreach ($keys as &$key) {
 
@@ -324,7 +324,7 @@ class UtilArrayQuery {
 
         $r = false;
 
-        if (is_null($a) && $func != '$exists') {
+        if (\is_null($a) && $func != '$exists') {
             return false;
         }
 
@@ -339,72 +339,72 @@ class UtilArrayQuery {
                 break;
 
             case '$gte' :
-                if ( (is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b)) ) {
+                if ( (\is_numeric($a) && \is_numeric($b)) || (\is_string($a) && \is_string($b)) ) {
                     $r = $a >= $b;
                 }
                 break;
 
             case '$gt' :
-                if ( (is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b)) ) {
+                if ( (\is_numeric($a) && \is_numeric($b)) || (\is_string($a) && \is_string($b)) ) {
                     $r = $a > $b;
                 }
                 break;
 
             case '$lte' :
-                if ( (is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b)) ) {
+                if ( (\is_numeric($a) && \is_numeric($b)) || (\is_string($a) && \is_string($b)) ) {
                     $r = $a <= $b;
                 }
                 break;
 
             case '$lt' :
-                if ( (is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b)) ) {
+                if ( (\is_numeric($a) && \is_numeric($b)) || (\is_string($a) && \is_string($b)) ) {
                     $r = $a < $b;
                 }
                 break;
 
             case '$in' :
-                if (is_array($a)) {
-                    $r = is_array($b) ? count(array_intersect($a, $b)) : false;
+                if (\is_array($a)) {
+                    $r = \is_array($b) ? \count(\array_intersect($a, $b)) : false;
                 } else {
-                    $r = is_array($b) ? in_array($a, $b) : false;
+                    $r = \is_array($b) ? \in_array($a, $b) : false;
                 }
                 break;
 
             case '$nin' :
-                if (is_array($a)) {
-                    $r = is_array($b) ? (count(array_intersect($a, $b)) === 0) : false;
+                if (\is_array($a)) {
+                    $r = \is_array($b) ? (\count(\array_intersect($a, $b)) === 0) : false;
                 } else {
-                    $r = is_array($b) ? (in_array($a, $b) === false) : false;
+                    $r = \is_array($b) ? (\in_array($a, $b) === false) : false;
                 }
                 break;
 
             case '$has' :
-                if (is_array($b))
+                if (\is_array($b))
                     throw new \InvalidArgumentException('Invalid argument for $has array not supported');
-                if (!is_array($a)) $a = @json_decode($a, true) ?  : [];
-                $r = in_array($b, $a);
+                if (!\is_array($a)) $a = @\json_decode($a, true) ?  : [];
+                $r = \in_array($b, $a);
                 break;
 
             case '$all' :
-                if (!is_array($a)) $a = @json_decode($a, true) ?  : [];
-                if (!is_array($b))
+                if (!\is_array($a)) $a = @\json_decode($a, true) ?  : [];
+                if (!\is_array($b))
                     throw new \InvalidArgumentException('Invalid argument for $all option must be array');
-                $r = count(array_intersect_key($a, $b)) == count($b);
+                $r = \count(\array_intersect_key($a, $b)) == \count($b);
                 break;
 
             case '$regex' :
             case '$preg' :
             case '$match' :
-                $r = (boolean) @preg_match(isset($b[0]) && $b[0]=='/' ? $b : '/'.$b.'/i', $a, $match);
+                $r = (boolean) @\preg_match(isset($b[0]) && $b[0]=='/' ? $b : '/'.$b.'/i', $a, $match);
                 break;
 
             case '$size' :
-                if (!is_array($a)) $a = @json_decode($a, true) ?  : [];
-                $r = (int) $b == count($a);
+                if (!\is_array($a)) $a = @\json_decode($a, true) ?  : [];
+                $r = (int) $b == \count($a);
                 break;
 
             case '$mod' :
-                if (! is_array($b))
+                if (! \is_array($b))
                     throw new \InvalidArgumentException('Invalid argument for $mod option must be array');
                 list($x, $y) = each($b);
                 $r = $a % $x == 0;
@@ -413,13 +413,13 @@ class UtilArrayQuery {
             case '$func' :
             case '$fn' :
             case '$f' :
-                if (! is_callable($b))
+                if (! \is_callable($b))
                     throw new \InvalidArgumentException('Function should be callable');
                 $r = $b($a);
                 break;
 
             case '$exists':
-                $r = $b ? !is_null($a) : is_null($a);
+                $r = $b ? !\is_null($a) : \is_null($a);
                 break;
 
             case '$fuzzy':
@@ -428,10 +428,10 @@ class UtilArrayQuery {
                 $distance = 3;
                 $minScore = 0.7;
 
-                if (is_array($b) && isset($b['$search'])) {
+                if (\is_array($b) && isset($b['$search'])) {
 
-                    if (isset($b['$minScore']) && is_numeric($b['$minScore'])) $minScore = $b['$minScore'];
-                    if (isset($b['$distance']) && is_numeric($b['$distance'])) $distance = $b['$distance'];
+                    if (isset($b['$minScore']) && \is_numeric($b['$minScore'])) $minScore = $b['$minScore'];
+                    if (isset($b['$distance']) && \is_numeric($b['$distance'])) $distance = $b['$distance'];
 
                     $b = $b['search'];
                 }
@@ -458,15 +458,15 @@ function levenshtein_utf8($s1, $s2) {
         // find all multibyte characters (cf. utf-8 encoding specs)
         $matches = [];
 
-        if (!preg_match_all('/[\xC0-\xF7][\x80-\xBF]+/', $str, $matches)) return $str; // plain ascii string
+        if (!\preg_match_all('/[\xC0-\xF7][\x80-\xBF]+/', $str, $matches)) return $str; // plain ascii string
 
         // update the encoding map with the characters not already met
         foreach ($matches[0] as $mbc) {
-            if (!isset($map[$mbc])) $map[$mbc] = chr(128 + count($map));
+            if (!isset($map[$mbc])) $map[$mbc] = \chr(128 + \count($map));
         }
 
         // finally remap non-ascii characters
-        return strtr($str, $map);
+        return \strtr($str, $map);
     };
 
     return levenshtein($utf8_to_extended_ascii($s1), $utf8_to_extended_ascii($s2));
@@ -474,22 +474,22 @@ function levenshtein_utf8($s1, $s2) {
 
 function fuzzy_search($search, $text, $distance = 3){
 
-    $needles = explode(' ', mb_strtolower($search, 'UTF-8'));
-    $tokens  = explode(' ', mb_strtolower($text, 'UTF-8'));
+    $needles = \explode(' ', \mb_strtolower($search, 'UTF-8'));
+    $tokens  = \explode(' ', \mb_strtolower($text, 'UTF-8'));
     $score   = 0;
 
     foreach ($needles as $needle){
 
         foreach ($tokens as $token) {
 
-            if (strpos($token, $needle) !== false) {
+            if (\strpos($token, $needle) !== false) {
                 $score += 1;
             } else {
 
-                $d = levenshtein_utf8($needle, $token);
+                $d = \levenshtein_utf8($needle, $token);
 
                 if ($d <= $distance) {
-                    $l       = mb_strlen($token, 'UTF-8');
+                    $l       = \mb_strlen($token, 'UTF-8');
                     $matches = $l - $d;
                     $score  += ($matches / $l);
                 }
@@ -498,31 +498,31 @@ function fuzzy_search($search, $text, $distance = 3){
 
     }
 
-    return $score / count($needles);
+    return $score / \count($needles);
 }
 
 function createMongoDbLikeId() {
 
     // based on https://gist.github.com/h4cc/9b716dc05869296c1be6
 
-    $timestamp = microtime(true);
-    $hostname  = php_uname('n');
-    $processId = getmypid();
-    $id        = random_int(10, 1000);
+    $timestamp = \microtime(true);
+    $hostname  = \php_uname('n');
+    $processId = \getmypid();
+    $id        = \random_int(10, 1000);
     $result    = '';
 
     // Building binary data.
-    $bin = sprintf(
+    $bin = \sprintf(
         "%s%s%s%s",
-        pack('N', $timestamp),
-        substr(md5($hostname), 0, 3),
-        pack('n', $processId),
-        substr(pack('N', $id), 1, 3)
+        \pack('N', $timestamp),
+        \substr(md5($hostname), 0, 3),
+        \pack('n', $processId),
+        \substr(\pack('N', $id), 1, 3)
     );
 
     // Convert binary to hex.
     for ($i = 0; $i < 12; $i++) {
-        $result .= sprintf("%02x", ord($bin[$i]));
+        $result .= \sprintf("%02x", ord($bin[$i]));
     }
 
     return $result;

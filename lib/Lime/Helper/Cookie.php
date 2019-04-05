@@ -35,7 +35,7 @@ class Cookie extends \Lime\Helper {
      */
     public function set($name, $value, $ttl = 86400 /* 1 day */, $path = '/', $domain = '', $secure = false, $http_only = false) {
         $this->_cookies[$name] = $value;
-        $result = setcookie($name, $value, time() + $ttl, $path, $domain, $secure, $http_only);
+        $result = \setcookie($name, $value, time() + $ttl, $path, $domain, $secure, $http_only);
 
         if (isset($this->_deleted_cookies[$name])) {
             unset($this->_deleted_cookies[$name]);
@@ -55,7 +55,7 @@ class Cookie extends \Lime\Helper {
             return null;
         }
 
-        if (array_key_exists($name, $this->_cookies)) {
+        if (\array_key_exists($name, $this->_cookies)) {
             return $this->_cookies[$name];
         }
 

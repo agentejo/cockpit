@@ -29,7 +29,7 @@ class AuthController extends \LimeExtra\Controller {
         $this->user  = $user;
         $app['user'] = $user;
 
-        $controller = strtolower(str_replace('\\', '.', get_class($this)));
+        $controller = \strtolower(\str_replace('\\', '.', \get_class($this)));
 
         $app->trigger("app.{$controller}.init", [$this]);
 

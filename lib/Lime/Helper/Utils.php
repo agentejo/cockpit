@@ -22,7 +22,7 @@ class Utils extends \Lime\Helper {
      * @return string
      */
 	public function gravatar($email, $size=40) {
-		return "//www.gravatar.com/avatar/".md5($email)."?d=mm&s=".$size;
+		return "//www.gravatar.com/avatar/".\md5($email)."?d=mm&s=".$size;
 	}
 
     /**
@@ -31,7 +31,7 @@ class Utils extends \Lime\Helper {
      */
     public function formatSize($size) {
       $sizes = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB");
-      return ($size == 0) ? "n/a" : (round($size/pow(1024, ($i = floor(log($size, 1024)))), 2) . $sizes[$i]);
+      return ($size == 0) ? "n/a" : (\round($size/\pow(1024, ($i = \floor(\log($size, 1024)))), 2) . $sizes[$i]);
     }
 
     /**
@@ -44,14 +44,14 @@ class Utils extends \Lime\Helper {
         $protocols = '[a-zA-Z0-9\-]+:';
         $regex     = '#\s+(src|href|poster)="(?!/|' . $protocols . '|\#|\')([^"]*)"#m';
 
-        preg_match_all($regex, $content, $matches);
+        \preg_match_all($regex, $content, $matches);
 
         if (isset($matches[0])) {
 
             foreach ($matches[0] as $i => $match) {
 
-                if (trim($matches[2][$i])) {
-                    $content = str_replace($match, " {$matches[1][$i]}=\"{$base}{$matches[2][$i]}\"", $content);
+                if (\trim($matches[2][$i])) {
+                    $content = \str_replace($match, " {$matches[1][$i]}=\"{$base}{$matches[2][$i]}\"", $content);
                 }
             }
         }
@@ -60,7 +60,7 @@ class Utils extends \Lime\Helper {
 
         // Background image.
         $regex     = '#style\s*=\s*[\'\"](.*):\s*url\s*\([\'\"]?(?!/|' . $protocols . '|\#)([^\)\'\"]+)[\'\"]?\)#m';
-        $content   = preg_replace($regex, 'style="$1: url(\'' . $base . '$2$3\')', $content);
+        $content   = \preg_replace($regex, 'style="$1: url(\'' . $base . '$2$3\')', $content);
 
         return $content;
 
@@ -73,12 +73,12 @@ class Utils extends \Lime\Helper {
      * @return mixed|string
      */
     public function sluggify($string, $replacement = '-', $tolower = true) {
-        $quotedReplacement = preg_quote($replacement, '/');
+        $quotedReplacement = \preg_quote($replacement, '/');
 
         $merge = array(
             '/[^\s\p{Ll}\p{Lm}\p{Lo}\p{Lt}\p{Lu}\p{Nd}]/mu' => ' ',
             '/\\s+/' => $replacement,
-            sprintf('/^[%s]+|[%s]+$/', $quotedReplacement, $quotedReplacement) => '',
+            \sprintf('/^[%s]+|[%s]+$/', $quotedReplacement, $quotedReplacement) => '',
         );
 
         $map = array(
@@ -134,9 +134,9 @@ class Utils extends \Lime\Helper {
                 '/ƒ/' => 'f'
         ) + $merge;
 
-        $string = preg_replace(array_keys($map), array_values($map), $string);
+        $string = \preg_replace(\array_keys($map), \array_values($map), $string);
 
-        return $tolower ? strtolower($string):$string;
+        return $tolower ? \strtolower($string):$string;
     }
 
     /**
@@ -157,17 +157,17 @@ class Utils extends \Lime\Helper {
      */
     public function resolveDependencies(array $data) {
         $new_data = array();
-        $original_count = count($data);
-        while (count($new_data) < $original_count) {
+        $original_count = \count($data);
+        while (\count($new_data) < $original_count) {
             foreach ($data as $name => $dependencies) {
-                if (!count($dependencies)) {
+                if (!\count($dependencies)) {
                     $new_data[] = $name;
                     unset($data[$name]);
                     continue;
                 }
 
                 foreach ($dependencies as $key => $dependency) {
-                    if (in_array($dependency, $new_data)) {
+                    if (\in_array($dependency, $new_data)) {
                         unset($data[$name][$key]);
                     }
                 }
@@ -191,9 +191,9 @@ class Utils extends \Lime\Helper {
 		$yes_words = 'affirmative|all right|aye|indubitably|most assuredly|ok|of course|okay|sure thing|y|yes+|yea|yep|sure|yeah|true|t|on|1|oui|vrai';
 		$no_words  = 'no*|no way|nope|nah|na|never|absolutely not|by no means|negative|never ever|false|f|off|0|non|faux';
 
-		if (preg_match('/^('.$yes_words.')$/i', $string)) {
+		if (\preg_match('/^('.$yes_words.')$/i', $string)) {
 			return true;
-		} else if (preg_match('/^('.$no_words.')$/i', $string)) {
+		} else if (\preg_match('/^('.$no_words.')$/i', $string)) {
 			return false;
 		}
 
@@ -211,11 +211,11 @@ class Utils extends \Lime\Helper {
 	*/
 	public function safe_truncate($string, $length, $append = '...') {
 
-		$ret        = substr($string, 0, $length);
-		$last_space = strrpos($ret, ' ');
+		$ret        = \substr($string, 0, $length);
+		$last_space = \strrpos($ret, ' ');
 
 		if ($last_space !== false && $string != $ret) {
-			$ret = substr($ret, 0, $last_space);
+			$ret = \substr($ret, 0, $last_space);
 		}
 
 		if ($ret != $string ) {
@@ -235,31 +235,31 @@ class Utils extends \Lime\Helper {
 
         $content = '';
 
-		if (function_exists('curl_exec')){
-            $conn = curl_init($url);
-            curl_setopt($conn, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($conn, CURLOPT_FRESH_CONNECT,  true);
-            curl_setopt($conn, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($conn,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.52 Safari/537.17');
-            curl_setopt($conn, CURLOPT_AUTOREFERER, true);
-            curl_setopt($conn, CURLOPT_FOLLOWLOCATION, 1);
-            curl_setopt($conn, CURLOPT_VERBOSE, 0);
-            $content = (curl_exec($conn));
-            curl_close($conn);
+		if (\function_exists('curl_exec')){
+            $conn = \curl_init($url);
+            \curl_setopt($conn, CURLOPT_SSL_VERIFYPEER, true);
+            \curl_setopt($conn, CURLOPT_FRESH_CONNECT,  true);
+            \curl_setopt($conn, CURLOPT_RETURNTRANSFER, 1);
+            \curl_setopt($conn,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.52 Safari/537.17');
+            \curl_setopt($conn, CURLOPT_AUTOREFERER, true);
+            \curl_setopt($conn, CURLOPT_FOLLOWLOCATION, 1);
+            \curl_setopt($conn, CURLOPT_VERBOSE, 0);
+            $content = (\curl_exec($conn));
+            \curl_close($conn);
         }
-        if (!$content && function_exists('file_get_contents')){
-            $content = @file_get_contents($url);
+        if (!$content && \function_exists('file_get_contents')){
+            $content = @\file_get_contents($url);
         }
-        if (!$content && function_exists('fopen') && function_exists('stream_get_contents')){
-            $handle  = @fopen ($url, "r");
-            $content = @stream_get_contents($handle);
+        if (!$content && \function_exists('fopen') && function_exists('stream_get_contents')){
+            $handle  = @\fopen ($url, "r");
+            $content = @\stream_get_contents($handle);
         }
         return $content;
 	}
 
 	public function buildTree(array $elements, $options = [], $parentId = null) {
 
-        $options = array_merge([
+        $options = \array_merge([
             'parent_id_column_name' => '_pid',
             'children_key_name' => 'children',
             'id_column_name' => '_id',
@@ -287,7 +287,7 @@ class Utils extends \Lime\Helper {
 
 		if ($options['sort_column_name']) {
 
-			usort($branch, function ($a, $b) use($options) {
+			\usort($branch, function ($a, $b) use($options) {
 
 				$_a = isset($a[$options['sort_column_name']]) ? $a[$options['sort_column_name']] : null;
 				$_b = isset($b[$options['sort_column_name']]) ? $b[$options['sort_column_name']] : null;
@@ -305,7 +305,7 @@ class Utils extends \Lime\Helper {
 
 	public function buildTreeList($items, $options = [], $parent = null, $result = null, $depth = 0, $path = '-') {
 
-		$options = array_merge([
+		$options = \array_merge([
             'parent_id_column_name' => '_pid',
             'id_column_name' => '_id'
         ], $options);
@@ -320,7 +320,7 @@ class Utils extends \Lime\Helper {
                 $item['_depth'] = $depth;
                 $item['_path'] = $path.$item[$options['id_column_name']];
                 $result[] = $item;
-                $idx = count($result) - 1;
+                $idx = \count($result) - 1;
                 unset($items[$key]);
                 $this->buildTreeList($items, $item[$options['id_column_name']], $result, $depth + 1, "{$path}{$item[$options['id_column_name']]}-");
             }
@@ -345,21 +345,21 @@ class Utils extends \Lime\Helper {
 	    $token   = null;
 
 	    if (isset($_SERVER['Authorization'])) {
-	        $headers = trim($_SERVER['Authorization']);
+	        $headers = \trim($_SERVER['Authorization']);
 	    } elseif (isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
-	        $headers = trim($_SERVER['HTTP_AUTHORIZATION']);
-	    } elseif (function_exists('apache_request_headers')) {
-	        $requestHeaders = apache_request_headers();
+	        $headers = \trim($_SERVER['HTTP_AUTHORIZATION']);
+	    } elseif (\function_exists('apache_request_headers')) {
+	        $requestHeaders = \apache_request_headers();
 	        // Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
-	        $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
+	        $requestHeaders = \array_combine(\array_map('ucwords', \array_keys($requestHeaders)), \array_values($requestHeaders));
 	        if (isset($requestHeaders['Authorization'])) {
-	            $headers = trim($requestHeaders['Authorization']);
+	            $headers = \trim($requestHeaders['Authorization']);
 	        }
 	    }
 
 	    // HEADER: Get the access token from the header
 	    if ($headers) {
-	        if (preg_match('/Bearer\s(\S+)/', $headers, $matches)) {
+	        if (\preg_match('/Bearer\s(\S+)/', $headers, $matches)) {
 	            $token = $matches[1];
 	        }
 	    }
@@ -374,11 +374,11 @@ class Utils extends \Lime\Helper {
 	 */
 	public function isEmail($email) {
 
-		if (function_exists('idn_to_ascii')) {
-			$email = @idn_to_ascii($email);
+		if (\function_exists('idn_to_ascii')) {
+			$email = @\idn_to_ascii($email);
 		}
 
-		return (bool) filter_var($email, FILTER_VALIDATE_EMAIL);
+		return (bool) \filter_var($email, FILTER_VALIDATE_EMAIL);
 	}
 
 	/**
@@ -388,9 +388,9 @@ class Utils extends \Lime\Helper {
 	 */
 	public function fixStringBooleanValues(&$input) {
 
-        if (!is_array($input)) {
+        if (!\is_array($input)) {
 
-			if (is_string($input) && ($input === 'true' || $input === 'false')) {
+			if (\is_string($input) && ($input === 'true' || $input === 'false')) {
 				$input = filter_var($input, FILTER_VALIDATE_BOOLEAN);
 			}
             return $input;
@@ -398,12 +398,12 @@ class Utils extends \Lime\Helper {
 
         foreach ($input as $k => $v) {
 
-            if (is_array($input[$k])) {
+            if (\is_array($input[$k])) {
                 $input[$k] = $this->fixStringBooleanValues($input[$k]);
             }
 
-            if (is_string($v) && ($v === 'true' || $v === 'false')) {
-				$v = filter_var($v, FILTER_VALIDATE_BOOLEAN);
+            if (\is_string($v) && ($v === 'true' || $v === 'false')) {
+				$v = \filter_var($v, FILTER_VALIDATE_BOOLEAN);
             }
 
             $input[$k] = $v;
@@ -419,9 +419,9 @@ class Utils extends \Lime\Helper {
 	 */
 	public function fixStringNumericValues(&$input) {
 
-        if (!is_array($input)) {
+        if (!\is_array($input)) {
 
-			if (is_string($input) && is_numeric($input)) {
+			if (\is_string($input) && \is_numeric($input)) {
 				$input += 0;
 			}
             return $input;
@@ -429,11 +429,11 @@ class Utils extends \Lime\Helper {
 
         foreach ($input as $k => $v) {
 
-            if (is_array($input[$k])) {
+            if (\is_array($input[$k])) {
                 $input[$k] = $this->fixStringNumericValues($input[$k]);
             }
 
-            if (is_string($v) && is_numeric($v)) {
+            if (\is_string($v) && \is_numeric($v)) {
                 $v += 0;
             }
 
