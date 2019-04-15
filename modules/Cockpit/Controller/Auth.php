@@ -24,7 +24,7 @@ class Auth extends \LimeExtra\Controller {
             }
 
             if ($user) {
-                $this->app->trigger('cockpit.account.login', [&$user]);
+                $this->app->trigger('cockpit.authentication.success', [&$user]);
                 $this->module('cockpit')->setUser($user);
             }
 
@@ -33,6 +33,8 @@ class Auth extends \LimeExtra\Controller {
             } else {
                 $this->reroute('/');
             }
+
+            $this->app->trigger('cockpit.authentication.failed', [$data['user']]);
         }
 
         return false;
