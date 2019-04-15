@@ -47,9 +47,7 @@ class Accounts extends \Cockpit\AuthController {
         $languages = $this->getLanguages();
         $groups    = $this->module('cockpit')->getGroups();
 
-        $meta = $this->app->helper('admin')->isResourceLocked($uid);
-
-        if ($meta && $meta['user']['_id'] != $this->module('cockpit')->getUser('_id')) {
+        if (!$this->app->helper('admin')->isResourceEditableByCurrentUser($uid, $meta)) {
             return $this->render('cockpit:views/base/locked.php', compact('meta'));
         }
 
