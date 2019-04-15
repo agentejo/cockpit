@@ -25,12 +25,16 @@ class RestApi extends \LimeExtra\Controller {
         }
 
         $user = $this->module('cockpit')->authenticate($data);
+        $generateApiKey = $this->param('generateApiKey');
 
         if (!$user) {
+            $this->app->trigger('cockpit.authentication.failed', [$data['user']]);
             return $this->stop(['error' => 'Authentication failed'], 401);
         }
 
-        if ($this->param('generateApiKey')) {
+        $this->app->trigger('cockpit.authentication.success', [&$user]);
+
+        if ($generateApiKey) {
             $user['api_key'] = 'account-'.\uniqid(\bin2hex(\random_bytes(16)));
             $this->app->storage->save('cockpit/accounts', $user);
         }
