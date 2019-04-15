@@ -62,9 +62,7 @@ class Admin extends \Cockpit\AuthController {
                 return false;
             }
 
-            $meta = $this->app->helper('admin')->isResourceLocked($singleton['_id']);
-
-            if ($meta && $meta['user']['_id'] != $this->module('cockpit')->getUser('_id')) {
+            if (!$this->app->helper('admin')->isResourceEditableByCurrentUser($singleton['_id'], $meta)) {
                 return $this->render('cockpit:views/base/locked.php', compact('meta'));
             }
 
@@ -104,10 +102,9 @@ class Admin extends \Cockpit\AuthController {
             ], $singleton);
 
             $lockId = "singleton_{$singleton['name']}";
-            $meta   = $this->app->helper('admin')->isResourceLocked($lockId);
 
-            if ($meta && $meta['user']['_id'] != $this->module('cockpit')->getUser('_id')) {
-                return $this->render('singletons:views/locked.php', compact('singleton', 'meta'));
+            if (!$this->app->helper('admin')->isResourceEditableByCurrentUser($lockId, $meta)) {
+                return $this->render('singletons:views/locked.php', compact('meta', 'singleton'));
             }
 
             $data = $this->module('singletons')->getData($name);

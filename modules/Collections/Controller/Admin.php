@@ -84,9 +84,7 @@ class Admin extends \Cockpit\AuthController {
                 return false;
             }
 
-            $meta = $this->app->helper('admin')->isResourceLocked($collection['_id']);
-
-            if ($meta && $meta['user']['_id'] != $this->module('cockpit')->getUser('_id')) {
+            if (!$this->app->helper('admin')->isResourceEditableByCurrentUser($collection['_id'], $meta)) {
                 return $this->render('cockpit:views/base/locked.php', compact('meta'));
             }
 
@@ -215,10 +213,8 @@ class Admin extends \Cockpit\AuthController {
                 return false;
             }
 
-            $meta = $this->app->helper('admin')->isResourceLocked($id);
-
-            if ($meta && $meta['user']['_id'] != $this->module('cockpit')->getUser('_id')) {
-                return $this->render('collections:views/locked.php', compact('collection', 'entry', 'meta'));
+            if (!$this->app->helper('admin')->isResourceEditableByCurrentUser($id, $meta)) {
+                return $this->render('collections:views/locked.php', compact('meta', 'collection', 'entry'));
             }
         }
 
