@@ -27,3 +27,6 @@ addons/
 !/storage/*/index.html
 !/storage/*/.htaccess
 defines.php
+# Sublime Text
+*.sublime-workspace
+*.sublime-project

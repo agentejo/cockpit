@@ -335,7 +335,7 @@ $this->module('collections')->extend([
                     }
 
                     if (!$isUpdate && isset($field['required']) && $field['required'] && !$value) {
-                        // Todo
+                        $this->app->stop([‘error’ => “The ${field[‘name’]} is required!”], 422);
                     }
 
                     if ($isUpdate && $field['type'] == 'password' && !$value && isset($entry[$field['name']])) {
