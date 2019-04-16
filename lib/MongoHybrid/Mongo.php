@@ -64,7 +64,7 @@ class Mongo {
 
         if (!$filter) $filter = [];
 
-        $filter = $this->_fixMongoIds($filter);
+        $filter = $this->_fixMongoIds($filter, true);
         $doc    = $this->getCollection($collection)->findOne($filter, ['projection' => $projection]);
 
         if (isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
@@ -80,7 +80,7 @@ class Mongo {
         $sort   = isset($options["sort"])   && $options["sort"]   ? $options["sort"]   : null;
         $skip   = isset($options["skip"])   && $options["skip"]   ? $options["skip"]   : null;
 
-        $filter = $this->_fixMongoIds($filter);
+        $filter = $this->_fixMongoIds($filter, true);
 
         $cursor = $this->getCollection($collection)->find($filter, [
             'projection' => $fields,
@@ -172,49 +172,57 @@ class Mongo {
 
         if (!$filter) $filter = [];
 
-        $filter = $this->_fixMongoIds($filter);
+        $filter = $this->_fixMongoIds($filter, true);
 
         return $this->getCollection($collection)->count($filter);
     }
 
-    protected function _fixMongoIds(&$data) {
+    protected function _fixMongoIds(&$data, $infinite = false, $_level = 0) {
 
         if (!is_array($data)) {
             return $data;
         }
 
-        foreach ($data as $k => $v) {
+        if ($_level == 0 && isset($data[0])) {
+            foreach ($data as $i => $doc) {
+                $data[$i] = $this->_fixMongoIds($doc, $infinite);
+            }
+            return $data;
+        }
 
-            if (is_array($data[$k])) {
-                $data[$k] = $this->_fixMongoIds($data[$k]);
+        foreach ($data as $k => &$v) {
+
+            if (is_array($data[$k]) && $infinite) {
+                $data[$k] = $this->_fixMongoIds($data[$k], $infinite, $_level + 1);
             }
 
             if ($k === '_id') {
 
                 if (is_string($v)) {
+                    
                     $v = new \MongoDB\BSON\ObjectID($v);
-                }
 
-                if (is_array($v) && isset($v['$in'])) {
+                } elseif (is_array($v)) {
 
-                    foreach ($v['$in'] as &$id) {
-                        if (is_string($id)) {
-                            $id = new \MongoDB\BSON\ObjectID($id);
+                    if (isset($v['$in'])) {
+
+                        foreach ($v['$in'] as &$id) {
+                            if (is_string($id)) {
+                                $id = new \MongoDB\BSON\ObjectID($id);
+                            }
                         }
                     }
-                }
-
-                if (is_array($v) && isset($v['$nin'])) {
-
-                    foreach ($v['$nin'] as &$id) {
-                        if (is_string($id)) {
-                            $id = new \MongoDB\BSON\ObjectID($id);
+    
+                    if (isset($v['$nin'])) {
+    
+                        foreach ($v['$nin'] as &$id) {
+                            if (is_string($id)) {
+                                $id = new \MongoDB\BSON\ObjectID($id);
+                            }
                         }
                     }
                 }
             }
-
-            $data[$k] = $v;
         }
 
         return $data;
