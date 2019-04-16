@@ -282,7 +282,7 @@ $this->module('collections')->extend([
 
             if (isset($_collection['fields'])) {
 
-                foreach($_collection['fields'] as $field) {
+                foreach ($_collection['fields'] as $field) {
 
                     // skip missing fields on update
                     if (!isset($entry[$field['name']]) && $isUpdate) {
@@ -327,15 +327,18 @@ $this->module('collections')->extend([
                         case 'password':
 
                             if ($value) {
-
                                 $value = $this->app->hash($value);
                             }
 
                             break;
                     }
 
+                    // check required
                     if (!$isUpdate && isset($field['required']) && $field['required'] && !$value) {
-                        $this->app->stop([‘error’ => “The ${field[‘name’]} is required!”], 422);
+
+                        if (!is_numeric($value) && $value !== false && empty($value)) {
+                            $this->app->stop([‘error’ => "The ${field[‘name’]} is required!"], 422);
+                        }
                     }
 
                     if ($isUpdate && $field['type'] == 'password' && !$value && isset($entry[$field['name']])) {
