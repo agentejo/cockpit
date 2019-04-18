@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit669399906f705702d64bc0966a31f62b
+class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
 {
     public static $files = array (
         '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
@@ -248,11 +248,11 @@ class ComposerStaticInit669399906f705702d64bc0966a31f62b
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit669399906f705702d64bc0966a31f62b::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit669399906f705702d64bc0966a31f62b::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInit669399906f705702d64bc0966a31f62b::$fallbackDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit669399906f705702d64bc0966a31f62b::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit669399906f705702d64bc0966a31f62b::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$fallbackDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$classMap;
 
         }, null, ClassLoader::class);
     }
