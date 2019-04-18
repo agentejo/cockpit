@@ -98,7 +98,7 @@ class Database {
      */
     public function registerCriteriaFunction($criteria) {
 
-        $id = \uniqid("criteria");
+        $id = \uniqid('criteria');
 
         if (\is_callable($criteria)) {
            $this->document_criterias[$id] = $criteria;
@@ -142,7 +142,7 @@ class Database {
      * Drop database
      */
     public function drop() {
-        if ($this->path != ":memory:") {
+        if ($this->path != ':memory:') {
             \unlink($this->path);
         }
     }
@@ -177,7 +177,7 @@ class Database {
         $names  = [];
 
         foreach ($tables as $table) {
-            $names[] = $table["name"];
+            $names[] = $table['name'];
         }
 
         return $names;
@@ -513,7 +513,7 @@ function createMongoDbLikeId() {
 
     // Building binary data.
     $bin = \sprintf(
-        "%s%s%s%s",
+        '%s%s%s%s',
         \pack('N', $timestamp),
         \substr(md5($hostname), 0, 3),
         \pack('n', $processId),
@@ -522,7 +522,7 @@ function createMongoDbLikeId() {
 
     // Convert binary to hex.
     for ($i = 0; $i < 12; $i++) {
-        $result .= \sprintf("%02x", ord($bin[$i]));
+        $result .= \sprintf('%02x', ord($bin[$i]));
     }
 
     return $result;

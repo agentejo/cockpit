@@ -22,15 +22,15 @@ class App extends \Lime\App {
     public function __construct ($settings = []) {
 
         $settings["helpers"]  = \array_merge([
-            "acl"     => "Lime\\Helper\\SimpleAcl",
-            "assets"  => "Lime\\Helper\\Assets",
-            "fs"      => "Lime\\Helper\\Filesystem",
-            "image"   => "Lime\\Helper\\Image",
-            "i18n"    => "Lime\\Helper\\I18n",
-            "utils"   => "Lime\\Helper\\Utils",
-            "coockie" => "Lime\\Helper\\Cookie",
-            "yaml" => "Lime\\Helper\\YAML",
-        ], isset($settings["helpers"]) ? $settings["helpers"] : []);
+            'acl'     => 'Lime\\Helper\\SimpleAcl',
+            'assets'  => 'Lime\\Helper\\Assets',
+            'fs'      => 'Lime\\Helper\\Filesystem',
+            'image'   => 'Lime\\Helper\\Image',
+            'i18n'    => 'Lime\\Helper\\I18n',
+            'utils'   => 'Lime\\Helper\\Utils',
+            'coockie' => 'Lime\\Helper\\Cookie',
+            'yaml'    => 'Lime\\Helper\\YAML',
+        ], isset($settings['helpers']) ? $settings['helpers'] : []);
 
         parent::__construct($settings);
 
@@ -132,7 +132,7 @@ class App extends \Lime\App {
                 return "Couldn't resolve {$layout}.";
             }
 
-            $slots["content_for_layout"] = $output;
+            $slots['content_for_layout'] = $output;
 
             $output = $renderer->file($layout, $slots);
         }

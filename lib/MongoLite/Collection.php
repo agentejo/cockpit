@@ -115,7 +115,7 @@ class Collection {
      */
     public function save(&$document) {
 
-        return isset($document["_id"]) ? $this->update(array("_id" => $document["_id"]), $document) : $this->insert($document);
+        return isset($document['_id']) ? $this->update(array('_id' => $document['_id']), $document) : $this->insert($document);
     }
 
     /**
@@ -135,7 +135,7 @@ class Collection {
 
             $document = \array_merge(\json_decode($doc['document'], true), $data);
 
-            $sql = "UPDATE ".$this->name." SET document=".$this->database->connection->quote(json_encode($document, JSON_UNESCAPED_UNICODE))." WHERE id=".$doc['id'];
+            $sql = 'UPDATE '.$this->name.' SET document='.$this->database->connection->quote(json_encode($document, JSON_UNESCAPED_UNICODE)).' WHERE id='.$doc['id'];
 
             $this->database->connection->exec($sql);
         }
@@ -200,7 +200,7 @@ class Collection {
 
         if (!in_array($newname, $this->database->getCollectionNames())) {
 
-            $this->database->connection->exec("ALTER TABLE '.$this->name.' RENAME TO {$newname}");
+            $this->database->connection->exec('ALTER TABLE '.$this->name.' RENAME TO '.$newname);
 
             $this->name = $newname;
 

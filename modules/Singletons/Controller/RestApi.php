@@ -70,5 +70,4 @@ class RestApi extends \LimeExtra\Controller {
 
         return $extended ? $singletons : \array_keys($singletons);
     }
-
 }

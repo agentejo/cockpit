@@ -76,7 +76,7 @@ class Cursor implements \Iterator {
 
         if (!$this->criteria) {
 
-            $stmt = $this->collection->database->connection->query("SELECT COUNT(*) AS C FROM ".$this->collection->name);
+            $stmt = $this->collection->database->connection->query('SELECT COUNT(*) AS C FROM '.$this->collection->name);
 
         } else {
 
@@ -88,7 +88,7 @@ class Cursor implements \Iterator {
                 $sql[] = 'LIMIT '.$this->limit;
             }
 
-            $stmt = $this->collection->database->connection->query(\implode(" ", $sql));
+            $stmt = $this->collection->database->connection->query(\implode(' ', $sql));
         }
 
         $res  = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -179,7 +179,7 @@ class Cursor implements \Iterator {
             $orders = [];
 
             foreach ($this->sort as $field => $direction) {
-                $orders[] = 'document_key("'.$field.'", document) '.($direction==-1 ? "DESC":"ASC");
+                $orders[] = 'document_key("'.$field.'", document) '.($direction==-1 ? 'DESC':'ASC');
             }
 
             $sql[] = 'ORDER BY '.\implode(',', $orders);
