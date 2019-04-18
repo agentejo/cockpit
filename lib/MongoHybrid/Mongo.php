@@ -23,7 +23,7 @@ class Mongo {
         ], $driverOptions);
 
         $this->client  = new \MongoDB\Client($server, $options, $driverOptions);
-        $this->db      = $this->client->selectDatabase($options["db"]);
+        $this->db      = $this->client->selectDatabase($options['db']);
         $this->options = $options;
     }
 
@@ -53,9 +53,9 @@ class Mongo {
 
         if (is_string($id)) $id = new \MongoDB\BSON\ObjectID($id);
 
-        $doc =  $this->getCollection($collection)->findOne(["_id" => $id]);
+        $doc =  $this->getCollection($collection)->findOne(['_id' => $id]);
 
-        if (isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
+        if (isset($doc['_id'])) $doc['_id'] = (string) $doc['_id'];
 
         return $doc;
     }
@@ -67,18 +67,18 @@ class Mongo {
         $filter = $this->_fixMongoIds($filter, true);
         $doc    = $this->getCollection($collection)->findOne($filter, ['projection' => $projection]);
 
-        if (isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
+        if (isset($doc['_id'])) $doc['_id'] = (string) $doc['_id'];
 
         return $doc;
     }
 
     public function find($collection, $options = []){
 
-        $filter = isset($options["filter"]) && $options["filter"] ? $options["filter"] : [];
-        $fields = isset($options["fields"]) && $options["fields"] ? $options["fields"] : [];
-        $limit  = isset($options["limit"])  && $options["limit"]  ? $options["limit"]  : null;
-        $sort   = isset($options["sort"])   && $options["sort"]   ? $options["sort"]   : null;
-        $skip   = isset($options["skip"])   && $options["skip"]   ? $options["skip"]   : null;
+        $filter = isset($options['filter']) && $options['filter'] ? $options['filter'] : [];
+        $fields = isset($options['fields']) && $options['fields'] ? $options['fields'] : [];
+        $limit  = isset($options['limit'])  && $options['limit']  ? $options['limit']  : null;
+        $sort   = isset($options['sort'])   && $options['sort']   ? $options['sort']   : null;
+        $skip   = isset($options['skip'])   && $options['skip']   ? $options['skip']   : null;
 
         $filter = $this->_fixMongoIds($filter, true);
 
@@ -94,7 +94,7 @@ class Mongo {
         if (count($docs)) {
 
             foreach ($docs as &$doc) {
-                if(isset($doc["_id"])) $doc["_id"] = (string) $doc["_id"];
+                if(isset($doc['_id'])) $doc['_id'] = (string) $doc['_id'];
             }
 
         } else {
@@ -124,7 +124,7 @@ class Mongo {
 
         $ref['_id'] = $return->getInsertedId();
 
-        if (isset($ref["_id"])) $ref["_id"] = (string) $ref["_id"];
+        if (isset($ref['_id'])) $ref['_id'] = (string) $ref['_id'];
 
         $doc = $ref;
 
@@ -137,14 +137,14 @@ class Mongo {
 
         $ref = $data;
 
-        if (isset($data["_id"])) {
-            $return = $this->getCollection($collection)->updateOne(['_id' => $data["_id"]], ['$set' => $ref]);
+        if (isset($data['_id'])) {
+            $return = $this->getCollection($collection)->updateOne(['_id' => $data['_id']], ['$set' => $ref]);
         } else {
             $return = $this->getCollection($collection)->insertOne($ref);
             $ref['_id'] = $return->getInsertedId();
         }
 
-        if (isset($ref["_id"])) $ref["_id"] = (string) $ref["_id"];
+        if (isset($ref['_id'])) $ref['_id'] = (string) $ref['_id'];
 
         $data = $ref;
 

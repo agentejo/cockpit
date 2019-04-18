@@ -17,7 +17,7 @@ class MongoLite {
     public function __construct($server, $options=[]) {
 
         $this->client = new \MongoLite\Client(str_replace('mongolite://', '', $server));
-        $this->db     = $options["db"];
+        $this->db     = $options['db'];
     }
 
     public function getCollection($name, $db = null){
@@ -56,16 +56,16 @@ class MongoLite {
 
     public function findOneById($collection, $id){
 
-        return $this->getCollection($collection)->findOne(["_id" => $id]);
+        return $this->getCollection($collection)->findOne(['_id' => $id]);
     }
 
     public function find($collection, $options = []){
 
-        $filter = isset($options["filter"]) ? $options["filter"] : null;
-        $fields = isset($options["fields"]) && $options["fields"] ? $options["fields"] : null;
-        $limit  = isset($options["limit"])  ? $options["limit"] : null;
-        $sort   = isset($options["sort"])   ? $options["sort"] : null;
-        $skip   = isset($options["skip"])   ? $options["skip"] : null;
+        $filter = isset($options['filter']) ? $options['filter'] : null;
+        $fields = isset($options['fields']) && $options['fields'] ? $options['fields'] : null;
+        $limit  = isset($options['limit'])  ? $options['limit'] : null;
+        $sort   = isset($options['sort'])   ? $options['sort'] : null;
+        $skip   = isset($options['skip'])   ? $options['skip'] : null;
 
         $cursor = $this->getCollection($collection)->find($filter, $fields);
 

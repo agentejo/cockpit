@@ -52,7 +52,7 @@ class Client {
 
         foreach (new \DirectoryIterator($this->path) as $fileInfo) {
             if (\preg_match('/\.sqlite$/', $fileInfo->getFilename())) {
-                $databases[] = \str_replace(".sqlite", "", $fileInfo->getFilename());
+                $databases[] = \str_replace('.sqlite', '', $fileInfo->getFilename());
              }
         }
 

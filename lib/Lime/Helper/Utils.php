@@ -22,7 +22,7 @@ class Utils extends \Lime\Helper {
      * @return string
      */
 	public function gravatar($email, $size=40) {
-		return "//www.gravatar.com/avatar/".\md5($email)."?d=mm&s=".$size;
+		return '//www.gravatar.com/avatar/'.\md5($email).'?d=mm&s='.$size;
 	}
 
     /**
@@ -30,8 +30,8 @@ class Utils extends \Lime\Helper {
      * @return string
      */
     public function formatSize($size) {
-      $sizes = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB");
-      return ($size == 0) ? "n/a" : (\round($size/\pow(1024, ($i = \floor(\log($size, 1024)))), 2) . $sizes[$i]);
+      $sizes = array(' Bytes', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB');
+      return ($size == 0) ? 'n/a' : (\round($size/\pow(1024, ($i = \floor(\log($size, 1024)))), 2) . $sizes[$i]);
     }
 
     /**
@@ -156,6 +156,7 @@ class Utils extends \Lime\Helper {
      * @return array
      */
     public function resolveDependencies(array $data) {
+        
         $new_data = array();
         $original_count = \count($data);
         while (\count($new_data) < $original_count) {

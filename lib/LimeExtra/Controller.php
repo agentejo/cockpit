@@ -31,7 +31,7 @@ class Controller extends \Lime\AppAware {
      * @return string
      */
     public function index() {
-        return "Please implement the index action";
+        return 'Please implement the index action';
     }
 
     /**
