@@ -5,6 +5,7 @@
 .project
 .settings
 .idea
+.vscode
 .env
 composer.lock
 package-lock.json
