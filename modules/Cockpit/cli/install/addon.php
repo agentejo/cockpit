@@ -5,15 +5,15 @@ if (!COCKPIT_CLI) return;
 $url  = $app->param('url', null);
 $name = $app->param('name', null);
 
-if (!$url) {
-    return CLI::writeln('No addon url defined', false);;
-}
-
 if (!$name) {
     return CLI::writeln('No addon name defined', false);;
 }
 
 $name = str_replace(['.', '/', ' '], '', $name);
+
+if (!$url) {
+    $url = "https://github.com/agentejo/{$name}/archive/master.zip";
+}
 
 $fs      = $app->helper('fs');
 $tmppath = $app->path('#tmp:').'/'.$name;
