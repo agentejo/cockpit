@@ -24,7 +24,7 @@ if (!is_writable($app->path('#addons:'))) {
     $error = 'Addons folder is not writable!';
 }
 
-CLI::writeln("Installing addon <{$name}>...");
+CLI::writeln("Installing addon <{$name}>...🤖");
 
 //download
 if (!$fs->mkdir($tmppath)) {
@@ -80,7 +80,7 @@ if (!$fs->mkdir("#addons:{$name}")) {
 
 $fs->copy($addonRoot, "#addons:{$name}");
 
-CLI::writeln("Addon <{$name}> installed!", true);
+CLI::writeln("Addon <{$name}> installed! ✅", true);
 
 // cleanup
 $fs->delete($tmppath);
