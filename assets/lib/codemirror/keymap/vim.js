@@ -53,6 +53,7 @@
     { keys: '<Down>', type: 'keyToKey', toKeys: 'j' },
     { keys: '<Space>', type: 'keyToKey', toKeys: 'l' },
     { keys: '<BS>', type: 'keyToKey', toKeys: 'h', context: 'normal'},
+    { keys: '<Del>', type: 'keyToKey', toKeys: 'x', context: 'normal'},
     { keys: '<C-Space>', type: 'keyToKey', toKeys: 'W' },
     { keys: '<C-BS>', type: 'keyToKey', toKeys: 'B', context: 'normal' },
     { keys: '<S-Space>', type: 'keyToKey', toKeys: 'w' },
@@ -1977,7 +1978,9 @@
           }
         }
         if (ch < lineText.length) {
-          var matched = cm.findMatchingBracket(Pos(line, ch), {bracketRegex: /[(){}[\]<>]/});
+          // Only include angle brackets in analysis if they are being matched.
+          var re = (ch === '<' || ch === '>') ? /[(){}[\]<>]/ : /[(){}[\]]/;
+          var matched = cm.findMatchingBracket(Pos(line, ch), {bracketRegex: re});
           return matched.to;
         } else {
           return cursor;
