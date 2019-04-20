@@ -116,7 +116,7 @@ unlink(__FILE__);
         
         $disabled_functions = \explode(',', \ini_get('disable_functions'));
         
-        return \in_array('exec', $disabled_functions);
+        return !\in_array('exec', $disabled_functions);
     }
 
 }
