@@ -12,6 +12,7 @@
 
 $this->helpers['revisions']  = 'Cockpit\\Helper\\Revisions';
 $this->helpers['updater']  = 'Cockpit\\Helper\\Updater';
+$this->helpers['async']  = 'Cockpit\\Helper\\Async';
 
 // API
 $this->module('cockpit')->extend([
