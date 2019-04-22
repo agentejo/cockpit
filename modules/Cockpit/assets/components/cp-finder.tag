@@ -152,7 +152,7 @@
 
                         <strong class="uk-text-small uk-text-muted" if="{ !(this.refs.filter.value) }"><i class="uk-icon-folder-o uk-margin-small-right"></i> { data.folders.length } { App.i18n.get('Folders') }</strong>
 
-                        <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4">
+                        <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4  uk-grid-width-xlarge-1-5">
 
                             <li class="uk-grid-margin" each="{folder, idx in data.folders}" onclick="{ select }" if="{ infilter(folder) }">
                                 <div class="uk-panel uk-panel-box uk-panel-card finder-folder { folder.selected ? 'uk-selected':'' }">
@@ -189,7 +189,7 @@
 
                         <strong class="uk-text-small uk-text-muted" if="{ !(this.typefilter || this.refs.filter.value) }"><i class="uk-icon-file-o uk-margin-small-right"></i> { data.files.length } { App.i18n.get('Files') }</strong>
 
-                        <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4" if="{ listmode=='grid' }">
+                        <ul class="uk-grid uk-grid-small uk-grid-match uk-grid-width-1-2 uk-grid-width-medium-1-4 uk-grid-width-xlarge-1-5" if="{ listmode=='grid' }">
 
                             <li class="uk-grid-margin" each="{file, idx in data.files}" onclick="{ select }" if="{ infilter(file) }">
                                 <div class="uk-panel uk-panel-box finder-file { file.selected ? 'uk-selected':'' }">
