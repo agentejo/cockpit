@@ -24,7 +24,7 @@
                     <li>
                         <div class="uk-grid uk-grid-small">
                             <div class="uk-flex-item-1 uk-text-truncate">
-                                <a href="@route('/collections/entries/'.$col['name'])">
+                                <a class="uk-link-muted" href="@route('/collections/entries/'.$col['name'])">
 
                                     <img class="uk-margin-small-right uk-svg-adjust" src="@url(isset($col['icon']) && $col['icon'] ? 'assets:app/media/icons/'.$col['icon']:'collections:icon.svg')" width="18px" alt="icon" data-uk-svg>
 
