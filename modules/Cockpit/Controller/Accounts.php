@@ -159,9 +159,10 @@ class Accounts extends \Cockpit\AuthController {
             $this->app->trigger('cockpit.accounts.save', [&$data, isset($data['_id'])]);
             $this->app->storage->save('cockpit/accounts', $data);
 
-            if (isset($data['password'])) {
-                unset($data['password']);
-            }
+            $data = $this->app->storage->findOne('cockpit/accounts', ['_id' => $data['_id']]);
+
+            if (isset($data['password'])) unset($data['password']);
+            if (isset($data['_reset_token'])) unset($data['_reset_token']);
 
             if ($data['_id'] == $this->user['_id']) {
                 $this->module('cockpit')->setUser($data);
