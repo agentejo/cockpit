@@ -17,7 +17,7 @@
             <div class="uk-form-icon uk-form uk-text-muted">
 
                 <i class="uk-icon-filter"></i>
-                <input class="uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="@lang('Filter forms...')" onkeyup="{ updatefilter }">
+                <input class="uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="@lang('Filter forms...')" aria-label="@lang('Filter forms...')" onkeyup="{ updatefilter }">
 
             </div>
 
@@ -52,7 +52,7 @@
 
                     <div class="uk-panel-teaser uk-position-relative">
                         <canvas width="600" height="350"></canvas>
-                        <a href="@route('/forms/entries')/{form.name}" class="uk-position-cover uk-flex uk-flex-middle uk-flex-center">
+                        <a aria-label="{ form.label }" href="@route('/forms/entries')/{form.name}" class="uk-position-cover uk-flex uk-flex-middle uk-flex-center">
                             <div class="uk-width-1-4 uk-svg-adjust" style="color:{ (form.meta.color) }">
                                 <img riot-src="{ form.meta.icon ? '@url('assets:app/media/icons/')'+form.meta.icon : '@url('forms:icon.svg')'}" alt="icon" data-uk-svg>
                             </div>
@@ -63,7 +63,7 @@
 
                         <div data-uk-dropdown="delay:300">
 
-                            <a class="uk-icon-cog" style="color:{ (form.meta.color) }" href="@route('/forms/form')/{ form.name }"></a>
+                            <a aria-label="@lang('Edit form')" class="uk-icon-cog" style="color:{ (form.meta.color) }" href="@route('/forms/form')/{ form.name }"></a>
 
                             <div class="uk-dropdown">
                                 <ul class="uk-nav uk-nav-dropdown">

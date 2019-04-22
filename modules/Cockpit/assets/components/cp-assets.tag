@@ -22,7 +22,7 @@
 
                                 <span class="uk-button uk-button-large { getRefValue('filtertype') && 'uk-button-primary'} uk-text-capitalize"><i class="uk-icon-eye uk-margin-small-right"></i> { getRefValue('filtertype') || App.i18n.get('All') }</span>
 
-                                <select ref="filtertype" onchange="{ updateFilter }">
+                                <select ref="filtertype" onchange="{ updateFilter }" aria-label="{App.i18n.get('Mime Type')}">
                                     <option value="">All</option>
                                     <option value="image">Image</option>
                                     <option value="video">Video</option>
@@ -37,7 +37,7 @@
                         <div class="uk-flex-item-1">
                             <div class="uk-form-icon uk-display-block uk-width-1-1">
                                 <i class="uk-icon-search"></i>
-                                <input class="uk-width-1-1 uk-form-large" type="text" ref="filtertitle" onchange="{ updateFilter }">
+                                <input class="uk-width-1-1 uk-form-large" type="text" aria-label="{ App.i18n.get('Search assets') }" ref="filtertitle" onchange="{ updateFilter }">
                             </div>
                         </div>
                     </div>
@@ -51,12 +51,12 @@
                     <button class="uk-button uk-button-large uk-button-link" onclick="{addFolder}">{ App.i18n.get('Add folder') }</button>
 
                     <span class="uk-button-group uk-button-large">
-                        <button class="uk-button uk-button-large {listmode=='list' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-list"></i></button>
-                        <button class="uk-button uk-button-large {listmode=='grid' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }"><i class="uk-icon-th"></i></button>
+                        <button class="uk-button uk-button-large {listmode=='list' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }" aria-label="{ App.i18n.get('Switch to list-mode') }"><i class="uk-icon-list"></i></button>
+                        <button class="uk-button uk-button-large {listmode=='grid' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }" aria-label="{ App.i18n.get('Switch to tile-mode') }"><i class="uk-icon-th"></i></button>
                     </span>
 
                     <span class="uk-button uk-button-large uk-button-primary uk-form-file">
-                        <input class="js-upload-select" type="file" multiple="true">
+                        <input class="js-upload-select" aria-label="{ App.i18n.get('Select file') }" type="file" multiple="true">
                         <i class="uk-icon-upload"></i>
                     </span>
                 </div>
@@ -132,7 +132,7 @@
                                     <div class="uk-text-muted uk-margin-small-top uk-flex">
                                         <strong>{ asset.mime }</strong>
                                         <span class="uk-flex-item-1 uk-margin-small-left uk-margin-small-right">{ App.Utils.formatSize(asset.size) }</span>
-                                        <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
+                                        <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }" aria-label="{ asset.width && [asset.width, asset.height].join('x') }">
                                             <i class="uk-icon-search"></i>
                                         </a>
                                     </div>
@@ -158,7 +158,7 @@
 
                                     <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-text-muted uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
 
-                                    <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
+                                    <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }" aria-label="{ asset.width && [asset.width, asset.height].join('x') }">
                                         <cp-thumbnail src="{ASSETS_URL+asset.path}" width="20" height="20"></cp-thumbnail>
                                     </a>
                                 </td>

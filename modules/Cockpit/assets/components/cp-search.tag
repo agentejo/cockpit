@@ -9,7 +9,7 @@
         </style>
 
         <i class="uk-icon-search"></i>
-        <input class="uk-width-1-1 uk-form-blank" type="text" placeholder="{ App.i18n.get('Search for anything...') }">
+        <input class="uk-width-1-1 uk-form-blank" type="text" aria-label="{App.i18n.get('Search for anything...')}" placeholder="{ App.i18n.get('Search for anything...') }">
 
     </div>
 

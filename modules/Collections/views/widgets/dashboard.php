@@ -33,7 +33,7 @@
                             </div>
                             <div>
                                 @if($app->module('collections')->hasaccess($col['name'], 'entries_create'))
-                                <a class="uk-text-muted" href="@route('/collections/entry')/{{ $col['name'] }}" title="@lang('Add entry')" data-uk-tooltip="pos:'right'">
+                                <a class="uk-text-muted" href="@route('/collections/entry')/{{ $col['name'] }}" title="@lang('Add entry')" aria-label="@lang('Add entry')" data-uk-tooltip="pos:'right'">
                                     <img src="@url('assets:app/media/icons/plus-circle.svg')" width="1.2em" data-uk-svg />
                                 </a>
                                 @endif

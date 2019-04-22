@@ -17,7 +17,7 @@
             <div class="uk-form-icon uk-form uk-text-muted">
 
                 <i class="uk-icon-filter"></i>
-                <input class="uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="@lang('Filter singleton...')" onkeyup="{ updatefilter }">
+                <input class="uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="@lang('Filter singleton...')" aria-label="@lang('Filter singleton...')" onkeyup="{ updatefilter }">
 
             </div>
 
@@ -64,7 +64,7 @@
 
                     <div class="uk-panel-teaser uk-position-relative">
                         <canvas width="600" height="350"></canvas>
-                        <a href="@route('/singletons/form')/{ singleton.name }" class="uk-position-cover uk-flex uk-flex-middle uk-flex-center">
+                        <a aria-label="{ singleton.label }" href="@route('/singletons/form')/{ singleton.name }" class="uk-position-cover uk-flex uk-flex-middle uk-flex-center">
                             <div class="uk-width-1-4 uk-svg-adjust" style="color:{ (singleton.meta.color) }">
                                 <img riot-src="{ singleton.meta.icon ? '@url('assets:app/media/icons/')'+singleton.meta.icon : '@url('singletons:icon.svg')'}" alt="icon" data-uk-svg>
                             </div>
@@ -75,7 +75,7 @@
 
                         <div data-uk-dropdown="delay:300">
 
-                            <a class="uk-icon-cog" style="color: { (singleton.meta.color) }" href="@route('/singletons/singleton')/{ singleton.name }" if="{ singleton.meta.allowed.singleton_edit }"></a>
+                            <a aria-label="{App.i18n.get('Edit singleton')}" class="uk-icon-cog" style="color: { (singleton.meta.color) }" href="@route('/singletons/singleton')/{ singleton.name }" if="{ singleton.meta.allowed.singleton_edit }"></a>
                             <a class="uk-icon-cog" style="color: { (singleton.meta.color) }" if="{ !singleton.meta.allowed.singleton_edit }"></a>
 
                             <div class="uk-dropdown">

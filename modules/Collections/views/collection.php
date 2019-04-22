@@ -16,7 +16,7 @@
 
                    <div class="uk-margin">
                        <label class="uk-text-small">@lang('Name')</label>
-                       <input class="uk-width-1-1 uk-form-large" type="text" ref="name" bind="collection.name" pattern="[a-zA-Z0-9_]+" required>
+                       <input aria-label="@lang('Name')" class="uk-width-1-1 uk-form-large" type="text" ref="name" bind="collection.name" pattern="[a-zA-Z0-9_]+" required>
                        <p class="uk-text-small uk-text-muted" if="{!collection._id}">
                            @lang('Only alpha nummeric value is allowed')
                        </p>
@@ -24,12 +24,12 @@
 
                    <div class="uk-margin">
                        <label class="uk-text-small">@lang('Label')</label>
-                       <input class="uk-width-1-1 uk-form-large" type="text" ref="label" bind="collection.label">
+                       <input aria-label="@lang('Label')" class="uk-width-1-1 uk-form-large" type="text" ref="label" bind="collection.label">
                    </div>
 
                    <div class="uk-margin">
                        <label class="uk-text-small">@lang('Group')</label>
-                       <input class="uk-width-1-1 uk-form-large" type="text" ref="group" bind="collection.group">
+                       <input aria-label="@lang('Group')" class="uk-width-1-1 uk-form-large" type="text" ref="group" bind="collection.group">
                    </div>
 
                    <div class="uk-margin">
@@ -60,7 +60,7 @@
 
                    <div class="uk-margin">
                        <label class="uk-text-small">@lang('Description')</label>
-                       <textarea class="uk-width-1-1 uk-form-large" name="description" bind="collection.description" bind-event="input" rows="5"></textarea>
+                       <textarea aria-label="@lang('Description')" class="uk-width-1-1 uk-form-large" name="description" bind="collection.description" bind-event="input" rows="5"></textarea>
                    </div>
 
                     <div class="uk-margin">

@@ -12,12 +12,12 @@
 
         <span class="uk-form-icon">
             <i class="uk-icon-filter"></i>
-            <input type="text" class="uk-form-large uk-form-blank" ref="txtfilter" placeholder="@lang('Filter accounts...')" onchange="{ updatefilter }">
+            <input type="text" class="uk-form-large uk-form-blank" ref="txtfilter" placeholder="@lang('Filter accounts...')" aria-label="@lang('Filter accounts...')" onchange="{ updatefilter }">
         </span>
 
         <div class="uk-form-select">
             <span class="uk-button uk-button-outline uk-text-uppercase {(filterGroup != '_all' && 'uk-text-primary') || 'uk-text-muted'}"><i class="uk-icon-group"></i> {filterGroup == '_all' ? App.i18n.get('All') : filterGroup }</span>
-            <select onchange="{ updatefilter }" ref="groupfilter">
+            <select onchange="{ updatefilter }" aria-label="@lang('Filter groups')" ref="groupfilter">
                 <option value="_all">@lang('All')</option>
                 <option value="{g}" each="{g in groups}">{g}</option>
             </select>
@@ -76,7 +76,7 @@
         <tbody>
             <tr each="{account, $index in accounts}">
                 <td class="uk-text-center">
-                    <a class="uk-link-muted" href="@route('/accounts/account')/{ account._id }" title="@lang('Edit account')">
+                    <a class="uk-link-muted" href="@route('/accounts/account')/{ account._id }" title="@lang('Edit account')" aria-label="@lang('Edit account')">
                         <cp-gravatar email="{ account.email }" size="25" alt="{ account.name || account.user }"></cp-gravatar>
                     </a>
                 </td>
