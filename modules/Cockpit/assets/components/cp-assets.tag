@@ -79,7 +79,7 @@
 
                     <strong class="uk-text-small uk-text-muted"><i class="uk-icon-folder-o uk-margin-small-right"></i> {folders.length} {App.i18n.get('Folders')}</strong>
 
-                    <div class="uk-grid uk-grid-small uk-grid-match uk-grid-width-medium-1-4">
+                    <div class="uk-grid uk-grid-small uk-grid-match uk-grid-width-medium-1-4 uk-grid-width-xlarge-1-5">
                         <div class="uk-grid-margin" each="{ folder,idx in folders }">
                             <div class="uk-panel uk-panel-box uk-panel-card">
                                 <div class="uk-flex">

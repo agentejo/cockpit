@@ -34,7 +34,7 @@
                 <ul class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-text-center" data-uk-grid-margin>
 
                     @foreach($app('admin')->data['menu.modules'] as $item)
-                    <li class="uk-width-1-2 uk-width-medium-1-4" data-route="{{ $item['route'] }}">
+                    <li class="uk-width-1-2 uk-width-medium-1-4 uk-width-xlarge-1-5" data-route="{{ $item['route'] }}">
                         <a class="uk-display-block uk-panel-box" href="@route($item['route'])">
                             <div class="uk-svg-adjust">
                                 @if(preg_match('/\.svg$/i', $item['icon']))
