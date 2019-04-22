@@ -23,7 +23,7 @@
                 <ul class="uk-list uk-list-space uk-margin-top">
                     @foreach(array_slice($singletons, 0, count($singletons) > 5 ? 5: count($singletons)) as $singleton)
                     <li class="uk-text-truncate">
-                        <a href="@route('/singletons/form/'.$singleton['name'])">
+                        <a class="uk-link-muted" href="@route('/singletons/form/'.$singleton['name'])">
 
                             <img class="uk-margin-small-right uk-svg-adjust" src="@url(isset($singleton['icon']) && $singleton['icon'] ? 'assets:app/media/icons/'.$singleton['icon']:'singletons:icon.svg')" width="18px" alt="icon" data-uk-svg>
 

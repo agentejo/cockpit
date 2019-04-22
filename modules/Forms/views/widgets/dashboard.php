@@ -23,7 +23,7 @@
                 <ul class="uk-list uk-list-space uk-margin-top">
                     @foreach(array_slice($forms, 0, count($forms) > 5 ? 5: count($forms)) as $form)
                     <li class="uk-text-truncate">
-                        <a href="@route('/forms/entries/'.$form['name'])">
+                        <a class="uk-link-muted" href="@route('/forms/entries/'.$form['name'])">
 
                             <img class="uk-margin-small-right uk-svg-adjust" src="@url(isset($form['icon']) && $form['icon'] ? 'assets:app/media/icons/'.$form['icon']:'forms:icon.svg')" width="18px" alt="icon" data-uk-svg>
 
