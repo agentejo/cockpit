@@ -17,7 +17,7 @@
             <div class="uk-form-icon uk-form uk-text-muted">
 
                 <i class="uk-icon-filter"></i>
-                <input class="uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="@lang('Filter collections...')" onkeyup="{ updatefilter }">
+                <input class="uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="@lang('Filter collections...')" aria-label="@lang('Filter collections...')" onkeyup="{ updatefilter }">
 
             </div>
 
@@ -61,7 +61,7 @@
 
                     <div class="uk-panel-teaser uk-position-relative">
                         <canvas width="600" height="350"></canvas>
-                        <a href="@route('/collections/entries')/{collection.name}" class="uk-position-cover uk-flex uk-flex-middle uk-flex-center">
+                        <a aria-label="{ collection.label }" href="@route('/collections/entries')/{collection.name}" class="uk-position-cover uk-flex uk-flex-middle uk-flex-center">
                             <div class="uk-width-1-4 uk-svg-adjust" style="color:{ (collection.meta.color) }">
                                 <img riot-src="{ collection.meta.icon ? '@url('assets:app/media/icons/')'+collection.meta.icon : '@url('collections:icon.svg')'}" alt="icon" data-uk-svg>
                             </div>
@@ -72,7 +72,7 @@
 
                         <div data-uk-dropdown="delay:300">
 
-                            <a class="uk-icon-cog" style="color:{ (collection.meta.color) }" href="@route('/collections/collection')/{ collection.name }" if="{ collection.meta.allowed.edit }"></a>
+                            <a aria-label="@lang('Edit collection')" class="uk-icon-cog" style="color:{ (collection.meta.color) }" href="@route('/collections/collection')/{ collection.name }" if="{ collection.meta.allowed.edit }"></a>
                             <a class="uk-icon-cog" style="color:{ (collection.meta.color) }" if="{ !collection.meta.allowed.edit }"></a>
 
                             <div class="uk-dropdown">

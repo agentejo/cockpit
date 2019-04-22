@@ -15,7 +15,7 @@
 
                 <div class="uk-margin">
                     <label class="uk-text-small">@lang('Name')</label>
-                    <input class="uk-width-1-1 uk-form-large" type="text" ref="name" bind="form.name" pattern="[a-zA-Z0-9_]+" required>
+                    <input aria-label="@lang('Name')" class="uk-width-1-1 uk-form-large" type="text" ref="name" bind="form.name" pattern="[a-zA-Z0-9_]+" required>
                     <p class="uk-text-small uk-text-muted" if="{!form._id}">
                         @lang('Only alpha nummeric value is allowed')
                     </p>
@@ -23,7 +23,7 @@
 
                 <div class="uk-margin">
                     <label class="uk-text-small">@lang('Label')</label>
-                    <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.label">
+                    <inpu aria-label="@lang('Label')"t class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.label">
                 </div>
 
                 <div class="uk-margin">
@@ -54,12 +54,12 @@
 
                 <div class="uk-margin">
                     <label class="uk-text-small">@lang('Description')</label>
-                    <textarea class="uk-width-1-1 uk-form-large" name="description" bind="form.description" rows="5"></textarea>
+                    <textarea aria-label="@lang('Description')" class="uk-width-1-1 uk-form-large" name="description" bind="form.description" rows="5"></textarea>
                 </div>
 
                 <div class="uk-margin">
                     <label class="uk-text-small">@lang('Email')</label>
-                    <input class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.email_forward">
+                    <input aria-label="@lang('Email')" class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.email_forward">
 
                     <div class="uk-alert">
                         @lang('Leave the email field empty if you don`t want to recieve any form data via email.')

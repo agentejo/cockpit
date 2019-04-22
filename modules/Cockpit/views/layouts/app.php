@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <title>{{ implode(' &raquo; ', $_title).(count($_title) ? ' - ':'').$app['app.name'] }}</title>
     <link rel="icon" href="@base('/favicon.png')" type="image/png">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <script>
         // App constants
@@ -138,7 +138,7 @@
                         <ul class="uk-subnav app-modulesbar">
                             @foreach($app('admin')->data['menu.modules'] as $item)
                             <li>
-                                <a class="uk-svg-adjust {{ (@$item['active']) ? 'uk-active':'' }}" href="@route($item['route'])" title="@lang($item['label'])" data-uk-tooltip="offset:10">
+                                <a class="uk-svg-adjust {{ (@$item['active']) ? 'uk-active':'' }}" href="@route($item['route'])" title="@lang($item['label'])" aria-label="@lang($item['label'])" data-uk-tooltip="offset:10">
                                     @if(preg_match('/\.svg$/i', $item['icon']))
                                     <img src="@url($item['icon'])" alt="@lang($item['label'])" data-uk-svg width="20px" height="20px" />
                                     @else
@@ -159,7 +159,7 @@
 
                         <div data-uk-dropdown="mode:'click'">
 
-                            <a class="uk-display-block" href="@route('/accounts/account')" style="width:30px;height:30px;" riot-mount>
+                            <a class="uk-display-block" href="@route('/accounts/account')" style="width:30px;height:30px;" aria-label="@lang('Edit account')" riot-mount>
                                 <cp-gravatar email="{{ $app['user/email'] }}" size="30" alt="{{ $app["user/name"] ?? $app["user/user"] }}"></cp-gravatar>
                             </a>
 
@@ -183,7 +183,7 @@
 
     </div>
 
-    <div class="app-main">
+    <div class="app-main" role="main">
         <div class="uk-container uk-container-center">
             @trigger('app.layout.contentbefore')
             {{ $content_for_layout }}
