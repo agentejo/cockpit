@@ -9,14 +9,14 @@
 
             <div class="uk-flex uk-flex-middle">
                 <a onclick="{ parent.toggleVisibility }" class="uk-badge uk-display-block uk-text-left uk-flex-item-1 {!parent.visibility[idx] && 'uk-badge-outline uk-text-muted'}" riot-style="{!parent.visibility[idx] && 'border-color: rgba(0,0,0,0)'}">
-                    <i class="uk-icon-ellipsis-v uk-margin-small-left uk-margin-small-right"></i> { App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) } <raw content="{ parent.getOrderPreview(item,idx) }"></raw>
+                    <i class="uk-icon-ellipsis-v uk-margin-small-left uk-margin-small-right"></i> { App.Utils.ucfirst(parent.getMeta(item).label || parent.getMeta(item).type) } <raw content="{ parent.getItemPreview(item,idx) }"></raw>
                 </a>
                 <a class="uk-margin-left" onclick="{ parent.toggleVisibility }"><i class="uk-icon-eye{parent.visibility[idx] && '-slash uk-text-muted'}"></i></a>
                 <a class="uk-margin-left" onclick="{ parent.remove }"><i class="uk-icon-trash-o uk-text-danger"></i></a>
             </div>
 
             <div class="uk-margin" if="{parent.visibility[idx]}">
-                <cp-field type="{ item.field.type || 'text' }" bind="items[{ idx }].value" opts="{ item.field.options || {} }"></cp-field>
+                <cp-field type="{ parent.getMeta(item).type || 'text' }" bind="items[{ idx }].value" opts="{ parent.getMeta(item).options || {} }"></cp-field>
             </div>
 
         </div>
@@ -25,8 +25,8 @@
     <div ref="itemscontainer" class="uk-sortable" show="{ mode=='reorder' && items.length }">
         <div class="uk-margin-small-bottom uk-panel-box uk-panel-card" each="{ item,idx in items }" data-idx="{idx}">
             <div class="uk-grid uk-grid-small">
-                <div class="uk-flex-item-1"><i class="uk-icon-bars uk-margin-small-right"></i> { App.Utils.ucfirst(typeof(item.field) == 'string' ? item.field : (item.field.label || item.field.type)) }</div>
-                <div class="uk-text-muted uk-text-small uk-text-truncate"> <raw content="{ parent.getOrderPreview(item,idx) }"></raw></div>
+                <div class="uk-flex-item-1"><i class="uk-icon-bars uk-margin-small-right"></i> { App.Utils.ucfirst(parent.getMeta(item).label || parent.getMeta(item).type) }</div>
+                <div class="uk-text-muted uk-text-small uk-text-truncate"> <raw content="{ parent.getItemPreview(item,idx) }"></raw></div>
             </div>
         </div>
     </div>
@@ -106,7 +106,7 @@
             if (this.fields) {
                 this.items.push({field:e.item.field, value:null});
             } else {
-                this.items.push({field:this.field, value:null});
+                this.items.push({value:null});
             }
 
             this.visibility[this.items.length-1] = true;
@@ -156,23 +156,37 @@
             }, 50);
         }
 
-        getOrderPreview(item, idx) {
+        getItemPreview(item, idx) {
 
-            if (item.field && item.field.type && item.field.options && (opts.display || item.field.options.display)) {
+            var meta = this.getMeta(item), display = meta.display || false;
 
-                var value, display = opts.display || item.field.options.display, ftype = item.field.type;
+            if (display) {
 
-                if (item.field.options.display == '$value') {
-                    value = App.Utils.renderValue(item.field.type, item.value, item.field);
+                var value;
+
+                if (display == '$value') {
+                    value = App.Utils.renderValue(meta.type, item.value, meta);
                 } else {
                     value = _.get(item.value, display) || 'Item '+(idx+1);
                 }
 
                 return value;
-
             }
 
             return 'Item '+(idx+1);
+        }
+
+        getMeta(item) {
+            
+            if (item.field) {
+                return item.field;
+            }
+
+            if (this.opts.field) {
+                return this.opts.field;
+            }
+
+            return {type:'text', options: {}};
         }
 
     </script>

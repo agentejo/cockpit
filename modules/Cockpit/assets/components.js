@@ -3370,7 +3370,7 @@ riot.tag2('field-rating', '<ul class="uk-grid uk-grid-small"> <li class="{(!hove
 
 });
 
-riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.i18n.get(\'No items\')}. </div> <div show="{mode==\'edit\' && items.length}"> <div class="uk-margin-small-bottom uk-panel-box uk-panel-card" each="{item,idx in items}" data-idx="{idx}"> <div class="uk-flex uk-flex-middle"> <a onclick="{parent.toggleVisibility}" class="uk-badge uk-display-block uk-text-left uk-flex-item-1 {!parent.visibility[idx] && \'uk-badge-outline uk-text-muted\'}" riot-style="{!parent.visibility[idx] && \'border-color: rgba(0,0,0,0)\'}"> <i class="uk-icon-ellipsis-v uk-margin-small-left uk-margin-small-right"></i> {App.Utils.ucfirst(typeof(item.field) == \'string\' ? item.field : (item.field.label || item.field.type))} <raw content="{parent.getOrderPreview(item,idx)}"></raw> </a> <a class="uk-margin-left" onclick="{parent.toggleVisibility}"><i class="uk-icon-eye{parent.visibility[idx] && \'-slash uk-text-muted\'}"></i></a> <a class="uk-margin-left" onclick="{parent.remove}"><i class="uk-icon-trash-o uk-text-danger"></i></a> </div> <div class="uk-margin" if="{parent.visibility[idx]}"> <cp-field type="{item.field.type || \'text\'}" bind="items[{idx}].value" opts="{item.field.options || {}}"></cp-field> </div> </div> </div> <div ref="itemscontainer" class="uk-sortable" show="{mode==\'reorder\' && items.length}"> <div class="uk-margin-small-bottom uk-panel-box uk-panel-card" each="{item,idx in items}" data-idx="{idx}"> <div class="uk-grid uk-grid-small"> <div class="uk-flex-item-1"><i class="uk-icon-bars uk-margin-small-right"></i> {App.Utils.ucfirst(typeof(item.field) == \'string\' ? item.field : (item.field.label || item.field.type))}</div> <div class="uk-text-muted uk-text-small uk-text-truncate"> <raw content="{parent.getOrderPreview(item,idx)}"></raw></div> </div> </div> </div> <div class="uk-margin"> <a class="uk-button" onclick="{add}" show="{mode==\'edit\'}" if="{!fields}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add item\')}</a> <span show="{mode==\'edit\'}" if="{fields}" data-uk-dropdown="mode:\'click\'"> <a class="uk-button"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add item\')}</a> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li each="{field in fields}"><a class="uk-dropdown-close" onclick="{parent.add}">{field.label && field.label || App.Utils.ucfirst(typeof(field) == \'string\' ? field:field.type)}</a></li> </ul> </div> </span> <a class="uk-button uk-button-success" onclick="{updateorder}" show="{mode==\'reorder\'}"><i class="uk-icon-check"></i> {App.i18n.get(\'Update order\')}</a> <a class="uk-button uk-button-link uk-link-reset" onclick="{switchreorder}" show="{items.length > 1}"> <span show="{mode==\'edit\'}"><i class="uk-icon-arrows"></i> {App.i18n.get(\'Reorder\')}</span> <span show="{mode==\'reorder\'}">{App.i18n.get(\'Cancel\')}</span> </a> </div>', '', '', function(opts) {
+riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.i18n.get(\'No items\')}. </div> <div show="{mode==\'edit\' && items.length}"> <div class="uk-margin-small-bottom uk-panel-box uk-panel-card" each="{item,idx in items}" data-idx="{idx}"> <div class="uk-flex uk-flex-middle"> <a onclick="{parent.toggleVisibility}" class="uk-badge uk-display-block uk-text-left uk-flex-item-1 {!parent.visibility[idx] && \'uk-badge-outline uk-text-muted\'}" riot-style="{!parent.visibility[idx] && \'border-color: rgba(0,0,0,0)\'}"> <i class="uk-icon-ellipsis-v uk-margin-small-left uk-margin-small-right"></i> {App.Utils.ucfirst(parent.getMeta(item).label || parent.getMeta(item).type)} <raw content="{parent.getItemPreview(item,idx)}"></raw> </a> <a class="uk-margin-left" onclick="{parent.toggleVisibility}"><i class="uk-icon-eye{parent.visibility[idx] && \'-slash uk-text-muted\'}"></i></a> <a class="uk-margin-left" onclick="{parent.remove}"><i class="uk-icon-trash-o uk-text-danger"></i></a> </div> <div class="uk-margin" if="{parent.visibility[idx]}"> <cp-field type="{parent.getMeta(item).type || \'text\'}" bind="items[{idx}].value" opts="{parent.getMeta(item).options || {}}"></cp-field> </div> </div> </div> <div ref="itemscontainer" class="uk-sortable" show="{mode==\'reorder\' && items.length}"> <div class="uk-margin-small-bottom uk-panel-box uk-panel-card" each="{item,idx in items}" data-idx="{idx}"> <div class="uk-grid uk-grid-small"> <div class="uk-flex-item-1"><i class="uk-icon-bars uk-margin-small-right"></i> {App.Utils.ucfirst(parent.getMeta(item).label || parent.getMeta(item).type)}</div> <div class="uk-text-muted uk-text-small uk-text-truncate"> <raw content="{parent.getItemPreview(item,idx)}"></raw></div> </div> </div> </div> <div class="uk-margin"> <a class="uk-button" onclick="{add}" show="{mode==\'edit\'}" if="{!fields}"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add item\')}</a> <span show="{mode==\'edit\'}" if="{fields}" data-uk-dropdown="mode:\'click\'"> <a class="uk-button"><i class="uk-icon-plus-circle"></i> {App.i18n.get(\'Add item\')}</a> <div class="uk-dropdown"> <ul class="uk-nav uk-nav-dropdown"> <li each="{field in fields}"><a class="uk-dropdown-close" onclick="{parent.add}">{field.label && field.label || App.Utils.ucfirst(typeof(field) == \'string\' ? field:field.type)}</a></li> </ul> </div> </span> <a class="uk-button uk-button-success" onclick="{updateorder}" show="{mode==\'reorder\'}"><i class="uk-icon-check"></i> {App.i18n.get(\'Update order\')}</a> <a class="uk-button uk-button-link uk-link-reset" onclick="{switchreorder}" show="{items.length > 1}"> <span show="{mode==\'edit\'}"><i class="uk-icon-arrows"></i> {App.i18n.get(\'Reorder\')}</span> <span show="{mode==\'reorder\'}">{App.i18n.get(\'Cancel\')}</span> </a> </div>', '', '', function(opts) {
 
         var $this = this;
 
@@ -3428,7 +3428,7 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
             if (this.fields) {
                 this.items.push({field:e.item.field, value:null});
             } else {
-                this.items.push({field:this.field, value:null});
+                this.items.push({value:null});
             }
 
             this.visibility[this.items.length-1] = true;
@@ -3478,23 +3478,37 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
             }, 50);
         }.bind(this)
 
-        this.getOrderPreview = function(item, idx) {
+        this.getItemPreview = function(item, idx) {
 
-            if (item.field && item.field.type && item.field.options && (opts.display || item.field.options.display)) {
+            var meta = this.getMeta(item), display = meta.display || false;
 
-                var value, display = opts.display || item.field.options.display, ftype = item.field.type;
+            if (display) {
 
-                if (item.field.options.display == '$value') {
-                    value = App.Utils.renderValue(item.field.type, item.value, item.field);
+                var value;
+
+                if (display == '$value') {
+                    value = App.Utils.renderValue(meta.type, item.value, meta);
                 } else {
                     value = _.get(item.value, display) || 'Item '+(idx+1);
                 }
 
                 return value;
-
             }
 
             return 'Item '+(idx+1);
+        }.bind(this)
+
+        this.getMeta = function(item) {
+
+            if (item.field) {
+                return item.field;
+            }
+
+            if (this.opts.field) {
+                return this.opts.field;
+            }
+
+            return {type:'text', options: {}};
         }.bind(this)
 
 });
