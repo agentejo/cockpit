@@ -17,6 +17,11 @@ class Auth extends \LimeExtra\Controller {
 
         if ($data = $this->param('auth')) {
 
+            if (isset($data['user']) && $this->app->helper('utils')->isEmail($data['user'])) {
+                $data['email'] = $data['user'];
+                $data['user']  = '';
+            }
+
             $user = $this->module('cockpit')->authenticate($data);
 
             if ($user && !$this->module('cockpit')->hasaccess('cockpit', 'backend', @$user['group'])) {
