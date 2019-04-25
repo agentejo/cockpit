@@ -50,7 +50,7 @@
             </div>
 
             <div class="uk-margin" if="{parent.components[item.component].children}">
-                <field-layout bind="items[{idx}].children" child="true" components="{ parent.components }" exclude="{ opts.exclude }"></field-layout>
+                <field-layout bind="items[{idx}].children" parent="{ items[idx].options || null }" child="true" components="{ parent.components }" exclude="{ opts.exclude }"></field-layout>
             </div>
 
             <div class="uk-margin" if="{item.component == 'grid'}">
@@ -373,6 +373,7 @@
 
             var item = {
                 component: e.item.name,
+                options: e.item.component.options || null,
                 settings: { id: '', 'class': '', style: '' }
             };
 
