@@ -12,7 +12,7 @@
                     <i class="uk-icon-ellipsis-v uk-margin-small-left uk-margin-small-right"></i> { App.Utils.ucfirst(parent.getMeta(item).label || parent.getMeta(item).type) } <raw content="{ parent.getItemPreview(item,idx) }"></raw>
                 </a>
                 <a class="uk-margin-left" onclick="{ parent.toggleVisibility }"><i class="uk-icon-eye{parent.visibility[idx] && '-slash uk-text-muted'}"></i></a>
-                <a if="{opts.clonable}" class="uk-margin-small-left" onclick="{ parent.clone }"><i class="uk-icon-clone"></i></a>
+                <a class="uk-margin-left" onclick="{ parent.clone }" title="{ App.i18n.get('Clone item') }" data-uk-tooltip><i class="uk-icon-clone"></i></a>
                 <a class="uk-margin-left" onclick="{ parent.remove }"><i class="uk-icon-trash-o uk-text-danger"></i></a>
             </div>
 
