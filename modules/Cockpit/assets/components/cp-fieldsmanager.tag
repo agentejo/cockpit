@@ -62,7 +62,7 @@
     </div>
 
     <div class="uk-modal uk-sortable-nodrag" ref="modalField">
-        <div class="uk-modal-dialog" if="{field}">
+        <div class="uk-modal-dialog uk-modal-dialog-large" if="{field}">
 
             <div class="uk-form-row uk-text-large uk-text-bold">
                 { field.name || 'Field' }
