@@ -31,6 +31,8 @@ class Auth extends \LimeExtra\Controller {
             if ($user) {
                 $this->app->trigger('cockpit.authentication.success', [&$user]);
                 $this->module('cockpit')->setUser($user);
+            } else {
+                $this->app->trigger('cockpit.authentication.failed', [$data['user']]);
             }
 
             if ($this->req_is('ajax')) {
@@ -39,7 +41,6 @@ class Auth extends \LimeExtra\Controller {
                 $this->reroute('/');
             }
 
-            $this->app->trigger('cockpit.authentication.failed', [$data['user']]);
         }
 
         return false;
