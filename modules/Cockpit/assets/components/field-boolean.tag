@@ -1,16 +1,18 @@
 <field-boolean>
 
-    <div ref="container" class="uk-display-inline-block" onchange="{ toggle }" style="cursor:pointer;">
+    <div ref="container" class="uk-display-inline-block" style="cursor:pointer;">
+
         <div class="uk-form-switch">
-            <input ref="check" type="checkbox" id="{ id }"/>
-            <label for="{ id }"></label>
+
+            <input ref="check" type="checkbox" id="{ id }" onchange="{ toggle }"/>
+            <label for="{ id }">
+                <span show="{value && (opts.label !== 'false' && opts.label !== false)}">{ opts.label || 'On' }</span>
+                <span class="uk-text-muted" show="{!value && (opts.label !== 'false' && opts.label !== false)}">{ opts.label || 'Off' }</span>
+            </label>
+
         </div>
 
-        <span show="{value && (opts.label !== 'false' && opts.label !== false)}">{ opts.label || 'On' }</span>
-        <span class="uk-text-muted" show="{!value && (opts.label !== 'false' && opts.label !== false)}">{ opts.label || 'Off' }</span>
-
     </div>
-
 
     <script>
 
@@ -23,7 +25,7 @@
         this.value = opts.default || false;
 
         this.$updateValue = function(value) {
-            
+
             if (this.value != value) {
                 this.value = value;
                 this.update();
@@ -33,10 +35,10 @@
         }.bind(this);
 
         toggle(e) {
-            e.preventDefault();
-            this.value = !Boolean(this.value);
-            this.refs.check.checked = this.value;
+
+            this.value = this.refs.check.checked;
             this.$setValue(this.value);
+
         }
 
     </script>
