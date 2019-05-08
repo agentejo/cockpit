@@ -43,6 +43,8 @@
                     <span class="uk-text-muted"><?=($meta['user']['email'])?></span>
                 </div>
             </div>
+
+            @render('cockpit:views/_partials/unlock.php', ['resource' => $singleton])
         </div>
 
     </div>
