@@ -96,7 +96,7 @@ class Utils extends \Cockpit\AuthController {
 
             $user = $this->app->module('cockpit')->getUser();
 
-            if ($meta['user']['_id'] == $user['_id'] || $this->app->module('cockpit')->isSuperAdmin()) {
+            if ($meta['user']['_id'] == $user['_id'] || $this->app->module('cockpit')->isSuperAdmin() || $this->module('cockpit')->hasaccess('cockpit', 'unlockresources')) {
                 $this->app->helper('admin')->unlockResourceId($resourceId);
             }
         }
