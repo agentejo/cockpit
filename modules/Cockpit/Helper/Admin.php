@@ -199,6 +199,7 @@ class Admin extends \Lime\Helper {
         $user = $user ?? $this->app->module('cockpit')->getUser();
 
         $meta = [
+            'rid'  => $resourceId,
             'user' => ['_id' => $user['_id'], 'name' => $user['name'], 'user' => $user['user'], 'email' => $user['email']],
             'sid'  => md5(session_id()),
             'time' => time()

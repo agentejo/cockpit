@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            @render('cockpit:views/_partials/unlock.php', ['resourceId' => $entry['_id']])
+            @render('cockpit:views/_partials/unlock.php', ['resourceId' => $meta['rid']])
         </div>
 
 
