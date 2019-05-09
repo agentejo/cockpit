@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            @render('cockpit:views/_partials/unlock.php', ['resourceId' => "singleton_{$singleton['name']}"])
+            @render('cockpit:views/_partials/unlock.php', ['resourceId' => $meta['rid']])
         </div>
 
     </div>

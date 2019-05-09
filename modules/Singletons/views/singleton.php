@@ -204,9 +204,9 @@
                 if (!$this.singleton._id) return;
 
                 if (navigator.sendBeacon) {
-                    navigator.sendBeacon(App.route('/cockpit/utils/unlockResourceId/'+$this.singleton._id));
+                    navigator.sendBeacon(App.route('/cockpit/utils/unlockResourceIdByCurrentUser/'+$this.singleton._id));
                 } else {
-                    App.request('/cockpit/utils/unlockResourceId/'+$this.singleton._id, {});
+                    App.request('/cockpit/utils/unlockResourceIdByCurrentUser/'+$this.singleton._id, {});
                 }
             });
         });

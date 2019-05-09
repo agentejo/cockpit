@@ -304,9 +304,9 @@
                 if (!$this.collection._id) return;
 
                 if (navigator.sendBeacon) {
-                    navigator.sendBeacon(App.route('/cockpit/utils/unlockResourceId/'+$this.collection._id));
+                    navigator.sendBeacon(App.route('/cockpit/utils/unlockResourceIdByCurrentUser/'+$this.collection._id));
                 } else {
-                    App.request('/cockpit/utils/unlockResourceId/'+$this.collection._id, {});
+                    App.request('/cockpit/utils/unlockResourceIdByCurrentUser/'+$this.collection._id, {});
                 }
             });
         });
