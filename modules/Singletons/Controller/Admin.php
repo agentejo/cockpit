@@ -147,6 +147,12 @@ class Admin extends \Cockpit\AuthController {
             return $this->helper('admin')->denyRequest();
         }
 
+        $lockId = "singleton_{$singleton['name']}";
+
+        if (!$this->app->helper('admin')->isResourceEditableByCurrentUser($lockId)) {
+            $this->stop(['error' => "Saving failed! Singleton is locked!"], 412);
+        }
+
         $data['_mby'] = $this->module('cockpit')->getUser('_id');
 
         if (isset($data['_by'])) {
@@ -159,7 +165,7 @@ class Admin extends \Cockpit\AuthController {
 
         $data = $this->module('singletons')->saveData($singleton['name'], $data, ['revision' => $revision]);
 
-        $this->app->helper('admin')->lockResourceId("singleton_{$singleton['name']}");
+        $this->app->helper('admin')->lockResourceId($lockId);
 
         return ['data' => $data];
     }

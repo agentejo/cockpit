@@ -11,9 +11,9 @@
 
         window.btnUnlockResource = function() {
 
-            var resource = {{ json_encode($resource) }};
+            var resourceId = '{{ $resourceId }}';
 
-            App.request('/cockpit/utils/unlockResourceId/'+resource._id, {}).then(function(data) {
+            App.request('/cockpit/utils/unlockResourceId/'+resourceId, {}).then(function(data) {
                 
                 if (data && data.success) {
                     location.reload();
