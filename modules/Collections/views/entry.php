@@ -261,9 +261,16 @@
 
             // lock resource
             var idle = setInterval(function() {
+                
                 if (!$this.entry._id) return;
-                App.request('/cockpit/utils/lockResourceId/'+$this.entry._id, {});
-            }, 120000);
+                
+                App.request('/cockpit/utils/lockResourceId/'+$this.entry._id, {}).catch(function(e){
+                    if ($this.entry._id) {
+                        window.location.href = App.route('/collections/entry/'+$this.collection.name+'/'+$this.entry._id);
+                    }
+                });
+
+            }, 60000);
 
             // unlock resource
             window.addEventListener("beforeunload", function (event) {
@@ -273,9 +280,9 @@
                 if (!$this.entry._id) return;
 
                 if (navigator.sendBeacon) {
-                    navigator.sendBeacon(App.route('/cockpit/utils/unlockResourceId/'+$this.entry._id));
+                    navigator.sendBeacon(App.route('/cockpit/utils/unlockResourceIdByCurrentUser/'+$this.entry._id));
                 } else {
-                    App.request('/cockpit/utils/unlockResourceId/'+$this.entry._id, {});
+                    App.request('/cockpit/utils/unlockResourceIdByCurrentUser/'+$this.entry._id, {});
                 }
             });
         });

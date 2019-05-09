@@ -84,23 +84,58 @@ class Utils extends \Cockpit\AuthController {
     }
 
     public function lockResourceId($resourceId) {
+
+        $lockedMeta = $this->app->helper('admin')->isResourceLocked($resourceId);
+
+        if ($lockedMeta) {
+
+            if ($lockedMeta['sid'] !== md5(session_id())) {
+                $this->stop(412);
+            }
+        }
+
         $meta = $this->app->helper('admin')->lockResourceId($resourceId);
+        
         return $meta;
     }
 
     public function unlockResourceId($resourceId) {
 
         $meta = $this->app->helper('admin')->isResourceLocked($resourceId);
+        $success = false;
 
         if ($meta) {
 
-            $user = $this->app->module('cockpit')->getUser();
+            $canUnlock = $this->module('cockpit')->hasaccess('cockpit', 'unlockresources');
 
-            if ($meta['user']['_id'] == $user['_id'] || $this->app->module('cockpit')->isSuperAdmin() || $this->module('cockpit')->hasaccess('cockpit', 'unlockresources')) {
+            if (!$canUnlock) {
+                $canUnlock = $meta['sid'] == md5(session_id()) || $this->app->module('cockpit')->isSuperAdmin();
+            }
+
+            if ($canUnlock) {
                 $this->app->helper('admin')->unlockResourceId($resourceId);
+                $success = true;
             }
         }
 
-        return ['success' => true];
+        return ['success' => $success];
+    }
+
+    public function unlockResourceIdByCurrentUser($resourceId) {
+
+        $meta = $this->app->helper('admin')->isResourceLocked($resourceId);
+        $success = false;
+
+        if ($meta) {
+
+            $canUnlock = $meta['sid'] == md5(session_id());
+
+            if ($canUnlock) {
+                $this->app->helper('admin')->unlockResourceId($resourceId);
+                $success = true;
+            }
+        }
+
+        return ['success' => $success];
     }
 }

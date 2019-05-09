@@ -1,24 +1,29 @@
 @if($app->module('cockpit')->hasaccess('cockpit', 'unlockresources'))
-<div>
+<div class="uk-margin-large-top uk-text-center">
 
-  <div class="uk-margin-top">
-    <button class="uk-button uk-button-danger" onclick="{unlock}"><i class="uk-icon-unlock"></i> @lang('Unlock')</button>
-  </div>
+    <hr>
 
-  <script type="view/script">
-      var $this = this;
-      this.resource = {{ json_encode($resource) }};
+    <div>
+        <button class="uk-button uk-button-large uk-button-danger" onclick="btnUnlockResource()"><i class="uk-icon-unlock"></i> @lang('Unlock')</button>
+    </div>
 
-      unlock() {
-          App.request('/cockpit/utils/unlockResourceId/'+$this.resource._id, {}).then(function(data) {
-              if (data && data.success) {
-                  location.reload();
-              } else {
-                  App.ui.notify("Error during unlock operation", "danger");
-              }
-          });
-      }
-  </script>
+    <script>
+
+        window.btnUnlockResource = function() {
+
+            var resource = {{ json_encode($resource) }};
+
+            App.request('/cockpit/utils/unlockResourceId/'+resource._id, {}).then(function(data) {
+                
+                if (data && data.success) {
+                    location.reload();
+                } else {
+                    App.ui.notify('Error during unlock operation', 'danger');
+                }
+
+            }.bind(this));
+        }
+    </script>
 
 </div>
 @endif

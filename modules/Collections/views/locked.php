@@ -36,7 +36,7 @@
             <strong class="uk-text-uppercase uk-text-small">@lang('Current editor')</strong>
             <div class="uk-margin-top uk-flex">
                 <div>
-                    <cp-gravatar size="30" alt="<?=($meta['user']['name'] ? $meta['user']['name'] : $meta['user']['user'])?>"></cp-gravatar>
+                    <cp-gravatar size="40" alt="<?=($meta['user']['name'] ? $meta['user']['name'] : $meta['user']['user'])?>"></cp-gravatar>
                 </div>
                 <div class="uk-margin-left">
                     <span><?=($meta['user']['name'] ? $meta['user']['name'] : $meta['user']['user'])?></span><br />

@@ -262,8 +262,14 @@ class Admin extends \Cockpit\AuthController {
         $entry['_mby'] = $this->module('cockpit')->getUser('_id');
 
         if (isset($entry['_id'])) {
+
+            if (!$this->app->helper('admin')->isResourceEditableByCurrentUser($entry['_id'])) {
+                $this->stop(['error' => "Saving failed! Entry is locked!"], 412);
+            }
+
             $_entry = $this->module('collections')->findOne($collection['name'], ['_id' => $entry['_id']]);
             $revision = !(json_encode($_entry) == json_encode($entry));
+            
         } else {
 
             $entry['_by'] = $entry['_mby'];
