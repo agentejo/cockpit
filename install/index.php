@@ -21,7 +21,7 @@ function ensure_writable($path) {
         $dir = COCKPIT_STORAGE_FOLDER.$path;
         $exists = file_exists($dir);
         if (!$exists) {
-            mkdir($dir, 0777, TRUE);
+            mkdir($dir, 0700, TRUE);
             if ($path === '/data') {
                 $file = $dir.'/.htaccess';
                 file_put_contents($file, 'deny from all');
