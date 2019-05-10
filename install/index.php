@@ -41,10 +41,10 @@ $checks = array(
     'Missing PDO extension with Sqlite support'         => $sqlitesupport,
     'GD extension not available'                        => extension_loaded('gd'),
     'MBString extension not available'                  => extension_loaded('mbstring'),
-    'Data  folder is not writable: /storage/data'       => ensure_writable('/data'),
+    'Data folder is not writable: /storage/data'        => ensure_writable('/data'),
     'Cache folder is not writable: /storage/cache'      => ensure_writable('/cache'),
     'Temp folder is not writable: /storage/tmp'         => ensure_writable('/tmp'),
-    'Thumbs  folder is not writable: /storage/thumbs'   => ensure_writable('/thumbs'),
+    'Thumbs folder is not writable: /storage/thumbs'    => ensure_writable('/thumbs'),
     'Uploads folder is not writable: /storage/uploads'  => ensure_writable('/uploads'),
 );
 
