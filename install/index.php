@@ -25,6 +25,7 @@ $checks = array(
     'Data folder is not writable: /storage/data'       => is_writable(COCKPIT_STORAGE_FOLDER.'/data'),
     'Cache folder is not writable: /storage/cache'      => is_writable(COCKPIT_STORAGE_FOLDER.'/cache'),
     'Temp folder is not writable: /storage/tmp'         => is_writable(COCKPIT_STORAGE_FOLDER.'/tmp'),
+    'Thumbs folder is not writable: /storage/thumbs'         => is_writable(COCKPIT_STORAGE_FOLDER.'/thumbs'),
     'Uploads folder is not writable: /storage/uploads'  => is_writable(COCKPIT_STORAGE_FOLDER.'/uploads'),
 );
 
