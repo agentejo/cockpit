@@ -75,8 +75,6 @@ $app->on('shutdown', function() use($webHookCalls) {
         return;
     }
 
-    \session_write_close();
-
     foreach ($webHookCalls as $webhook) {
 
         $ch = curl_init($webhook['url']);
