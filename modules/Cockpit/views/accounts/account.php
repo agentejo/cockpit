@@ -243,24 +243,20 @@
             }
 
             // lock resource
+
+
+            // lock resource
             var idle = setInterval(function() {
+                
                 if (!$this.account._id) return;
-                App.request('/cockpit/utils/lockResourceId/'+$this.account._id, {});
-            }, 120000);
 
-            // unlock resource
-            window.addEventListener("beforeunload", function (event) {
-
+                Cockpit.lockResource($this.account._id, function(e){
+                    window.location.href = App.route('/accounts/account/'+$this.account._id);
+                });
+                
                 clearInterval(idle);
 
-                if (!$this.account._id) return;
-
-                if (navigator.sendBeacon) {
-                    navigator.sendBeacon(App.route('/cockpit/utils/unlockResourceId/'+$this.account._id));
-                } else {
-                    App.request('/cockpit/utils/unlockResourceId/'+$this.account._id, {});
-                }
-            });
+            }, 60000);
 
             $this.update();
         });

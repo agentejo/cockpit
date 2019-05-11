@@ -130,15 +130,27 @@ class Admin extends \Cockpit\AuthController {
             return false;
         }
 
-        if (!isset($collection['_id']) && !$this->module('cockpit')->hasaccess('collections', 'create')) {
+        $isUpdate = isset($collection['_id']);
+
+        if (!$isUpdate && !$this->module('cockpit')->hasaccess('collections', 'create')) {
             return $this->helper('admin')->denyRequest();
         }
 
-        if (isset($collection['_id']) && !$this->module('collections')->hasaccess($collection['name'], 'collection_edit')) {
+        if ($isUpdate && !$this->module('collections')->hasaccess($collection['name'], 'collection_edit')) {
             return $this->helper('admin')->denyRequest();
         }
 
-        return $this->module('collections')->saveCollection($collection['name'], $collection, $rules);
+        if ($isUpdate && !$this->app->helper('admin')->isResourceEditableByCurrentUser($collection['_id'])) {
+            $this->stop(['error' => "Saving failed! Collection is locked!"], 412);
+        }
+
+        $collection = $this->module('collections')->saveCollection($collection['name'], $collection, $rules);
+
+        if (!$isUpdate) {
+            $this->app->helper('admin')->lockResourceId($collection['_id']);
+        }
+
+        return $collection;
     }
 
     public function entries($collection) {
@@ -216,6 +228,8 @@ class Admin extends \Cockpit\AuthController {
             if (!$this->app->helper('admin')->isResourceEditableByCurrentUser($id, $meta)) {
                 return $this->render('collections:views/locked.php', compact('meta', 'collection', 'entry'));
             }
+
+            $this->app->helper('admin')->lockResourceId($id);
         }
 
         $context = _check_collection_rule($collection, 'read', ['options' => ['filter'=>[]]]);
@@ -231,8 +245,6 @@ class Admin extends \Cockpit\AuthController {
         if ($override = $this->app->path('#config:collections/'.$collection['name'].'/views/entry.php')) {
             $view = $override;
         }
-
-        $this->app->helper('admin')->lockResourceId($id);
 
         return $this->render($view, compact('collection', 'entry', 'excludeFields'));
     }
@@ -278,6 +290,8 @@ class Admin extends \Cockpit\AuthController {
             if ($collection['sortable']) {
                  $entry['_o'] = $this->app->storage->count("collections/{$collection['_id']}", ['_pid' => ['$exists' => false]]);
             }
+
+            $this->app->helper('admin')->lockResourceId($entry['_id']);
         }
 
         $entry = $this->module('collections')->save($collection['name'], $entry, ['revision' => $revision]);

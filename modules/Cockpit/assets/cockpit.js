@@ -146,6 +146,29 @@
 
                 dialog.show();
             }
+        },
+
+        lockResource: function(resourceId, catchCallback) {
+            
+            catchCallback = catchCallback || function() {
+                App.ui.notify('This resource is locked!', 'danger');
+            };
+
+            var idle = setInterval(function() {
+                App.request('/cockpit/utils/lockResourceId/'+resourceId, {}).catch(catchCallback);
+            }, 60000);
+
+            // unlock resource
+            window.addEventListener('beforeunload', function(event) {
+
+                clearInterval(idle);
+
+                if (navigator.sendBeacon) {
+                    navigator.sendBeacon(App.route('/cockpit/utils/unlockResourceIdByCurrentUser/'+resourceId));
+                } else {
+                    App.request('/cockpit/utils/unlockResourceIdByCurrentUser/'+resourceId, {});
+                }
+            });
         }
     };
 

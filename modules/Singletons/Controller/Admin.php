@@ -82,39 +82,39 @@ class Admin extends \Cockpit\AuthController {
 
     public function form($name = null) {
 
-        if ($name) {
-
-            $singleton = $this->module('singletons')->singleton($name);
-
-            if (!$singleton) {
-                return false;
-            }
-
-            if (!$this->module('singletons')->hasaccess($singleton['name'], 'form')) {
-                return $this->helper('admin')->denyRequest();
-            }
-
-            $singleton = array_merge([
-                'sortable' => false,
-                'color' => '',
-                'icon' => '',
-                'description' => ''
-            ], $singleton);
-
-            $lockId = "singleton_{$singleton['name']}";
-
-            if (!$this->app->helper('admin')->isResourceEditableByCurrentUser($lockId, $meta)) {
-                return $this->render('singletons:views/locked.php', compact('meta', 'singleton'));
-            }
-
-            $data = $this->module('singletons')->getData($name);
-
-            $this->app->helper('admin')->lockResourceId($lockId);
-
-            return $this->render('singletons:views/form.php', compact('singleton', 'data'));
+        if (!$name) {
+            return false;
         }
 
-        return false;
+        $singleton = $this->module('singletons')->singleton($name);
+
+        if (!$singleton) {
+            return false;
+        }
+
+        if (!$this->module('singletons')->hasaccess($singleton['name'], 'form')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        $singleton = array_merge([
+            'sortable' => false,
+            'color' => '',
+            'icon' => '',
+            'description' => ''
+        ], $singleton);
+
+        $lockId = "singleton_{$singleton['name']}";
+
+        if (!$this->app->helper('admin')->isResourceEditableByCurrentUser($lockId, $meta)) {
+            return $this->render('singletons:views/locked.php', compact('meta', 'singleton'));
+        }
+
+        $data = $this->module('singletons')->getData($name);
+
+        $this->app->helper('admin')->lockResourceId($lockId);
+
+        return $this->render('singletons:views/form.php', compact('singleton', 'data'));
+        
     }
 
     public function remove_singleton($singleton) {

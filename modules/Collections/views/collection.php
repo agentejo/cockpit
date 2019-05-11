@@ -293,22 +293,9 @@
             // lock resource
             var idle = setInterval(function() {
                 if (!$this.collection._id) return;
-                App.request('/cockpit/utils/lockResourceId/'+$this.collection._id, {});
-            }, 120000);
-
-            // unlock resource
-            window.addEventListener("beforeunload", function (event) {
-
+                Cockpit.lockResource($this.collection._id);
                 clearInterval(idle);
-
-                if (!$this.collection._id) return;
-
-                if (navigator.sendBeacon) {
-                    navigator.sendBeacon(App.route('/cockpit/utils/unlockResourceIdByCurrentUser/'+$this.collection._id));
-                } else {
-                    App.request('/cockpit/utils/unlockResourceIdByCurrentUser/'+$this.collection._id, {});
-                }
-            });
+            }, 60000);
         });
 
         toggleTab(e) {
@@ -329,8 +316,8 @@
                 $this.collection = collection;
                 $this.update();
 
-            }).catch(function() {
-                App.ui.notify("Saving failed.", "danger");
+            }, function(res) {
+                App.ui.notify(res && (res.message || res.error) ? (res.message || res.error) : 'Saving failed.', 'danger');
             });
         }
 
