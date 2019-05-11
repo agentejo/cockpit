@@ -19,13 +19,12 @@ require(__DIR__.'/../bootstrap.php');
 function ensure_writable($path) {
     try {
         $dir = COCKPIT_STORAGE_FOLDER.$path;
-        $exists = file_exists($dir);
-        if (!$exists) {
-            mkdir($dir, 0700, TRUE);
+        if (!file_exists($dir)) {
+            mkdir($dir, 0700, true);
             if ($path === '/data') {
-                $file = $dir.'/.htaccess';
-                file_put_contents($file, 'deny from all');
-                if (!file_exists($file)) return false;
+                if (file_put_contents($dir.'/.htaccess', 'deny from all') === false) {
+                    return false;
+                }
             }
         }
         return is_writable($dir);
@@ -50,7 +49,7 @@ $checks = array(
 
 $failed = [];
 
-foreach($checks as $info => $check) {
+foreach ($checks as $info => $check) {
 
     if (!$check) {
         $failed[] = $info;
