@@ -14,6 +14,8 @@ class Utils extends \Cockpit\AuthController {
 
     public function thumb_url() {
 
+        \session_write_close(); // improve concurrency loading
+
         $options = [
             'src' => $this->param('src', false),
             'fp' => $this->param('fp', null),

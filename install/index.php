@@ -115,7 +115,7 @@ if (!count($failed)) {
 
             <img src="../assets/app/media/logo.svg" width="80" height="80" alt="logo">
 
-            <?php if(count($failed)): ?>
+            <?php if (count($failed)): ?>
 
                 <h1 class="uk-text-bold">Installation failed</h1>
 

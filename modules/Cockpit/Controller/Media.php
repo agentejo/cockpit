@@ -249,6 +249,8 @@ class Media extends \Cockpit\AuthController {
 
     protected function unzip() {
 
+        \session_write_close(); // improve concurrency loading
+
         $path    = $this->_getPathParameter();
 
         if (!$path) return false;
@@ -318,6 +320,8 @@ class Media extends \Cockpit\AuthController {
 
     protected function downloadfolder() {
 
+        \session_write_close(); // improve concurrency loading
+
         $path   = $this->_getPathParameter();
 
         if (!$path) return false;
@@ -349,6 +353,8 @@ class Media extends \Cockpit\AuthController {
     }
 
     protected function getfilelist() {
+
+        \session_write_close(); // improve concurrency loading
 
         $list = [];
         $toignore = [
