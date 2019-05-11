@@ -195,8 +195,16 @@ class Admin extends \Lime\Helper {
 
     public function lockResourceId($resourceId, $user = null) {
 
+        if (!$resourceId) {
+            return false;
+        }
+
         $key  = "locked:{$resourceId}";
         $user = $user ?? $this->app->module('cockpit')->getUser();
+
+        if (!$user) {
+            return false;
+        }
 
         $meta = [
             'rid'  => $resourceId,

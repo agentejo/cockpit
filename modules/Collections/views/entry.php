@@ -263,28 +263,15 @@
             var idle = setInterval(function() {
                 
                 if (!$this.entry._id) return;
-                
-                App.request('/cockpit/utils/lockResourceId/'+$this.entry._id, {}).catch(function(e){
-                    if ($this.entry._id) {
-                        window.location.href = App.route('/collections/entry/'+$this.collection.name+'/'+$this.entry._id);
-                    }
+
+                Cockpit.lockResource($this.entry._id, function(e){
+                    window.location.href = App.route('/collections/entry/'+$this.collection.name+'/'+$this.entry._id);
                 });
+                
+                clearInterval(idle);
 
             }, 60000);
 
-            // unlock resource
-            window.addEventListener("beforeunload", function (event) {
-
-                clearInterval(idle);
-
-                if (!$this.entry._id) return;
-
-                if (navigator.sendBeacon) {
-                    navigator.sendBeacon(App.route('/cockpit/utils/unlockResourceIdByCurrentUser/'+$this.entry._id));
-                } else {
-                    App.request('/cockpit/utils/unlockResourceIdByCurrentUser/'+$this.entry._id, {});
-                }
-            });
         });
 
         toggleGroup(e) {
@@ -342,7 +329,7 @@
                     App.ui.notify("Saving failed.", "danger");
                 }
             }, function(res) {
-                App.ui.notify(res && (res.message || res.error) ? (res.message || res.error) : "Saving failed.", "danger");
+                App.ui.notify(res && (res.message || res.error) ? (res.message || res.error) : 'Saving failed.', 'danger');
             });
 
             return false;

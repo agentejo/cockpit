@@ -244,22 +244,8 @@
                 });
 
                 // lock resource
-                var idle = setInterval(function() {
-                    App.request('/cockpit/utils/lockResourceId/'+'singleton_'+$this.singleton.name, {}).catch(function(e){
-                        window.location.reload();
-                    });
-                }, 60000);
-
-                // unlock resource
-                window.addEventListener("beforeunload", function (event) {
-
-                    clearInterval(idle);
-
-                    if (navigator.sendBeacon) {
-                        navigator.sendBeacon(App.route('/cockpit/utils/unlockResourceIdByCurrentUser/'+'singleton_'+$this.singleton.name));
-                    } else {
-                        App.request('/cockpit/utils/unlockResourceIdByCurrentUser/'+'singleton_'+$this.singleton.name, {});
-                    }
+                Cockpit.lockResource('singleton_'+$this.singleton.name, function(e){
+                    window.location.reload();
                 });
             });
 
@@ -322,7 +308,7 @@
                     }
 
                 }, function(res) {
-                    App.ui.notify(res && (res.message || res.error) ? (res.message || res.error) : "Saving failed.", "danger");
+                    App.ui.notify(res && (res.message || res.error) ? (res.message || res.error) : 'Saving failed.', 'danger');
                 });
             }
 

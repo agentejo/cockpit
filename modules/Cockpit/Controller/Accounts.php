@@ -95,6 +95,7 @@ class Accounts extends \Cockpit\AuthController {
             }
 
             $data['_modified'] = time();
+            $isUpdate = false;
 
             if (!isset($data['_id'])) {
 
@@ -108,6 +109,14 @@ class Accounts extends \Cockpit\AuthController {
                 }
 
                 $data['_created'] = $data['_modified'];
+                
+            } else {
+                
+                if (!$this->app->helper('admin')->isResourceEditableByCurrentUser($data['_id'])) {
+                    $this->stop(['error' => "Saving failed! Account is locked!"], 412);
+                }
+
+                $isUpdate = true;
             }
 
             if (isset($data['group']) && !$this->module('cockpit')->hasaccess('cockpit', 'accounts')) {
@@ -166,6 +175,10 @@ class Accounts extends \Cockpit\AuthController {
 
             if ($data['_id'] == $this->user['_id']) {
                 $this->module('cockpit')->setUser($data);
+            }
+
+            if (!$isUpdate) {
+                $this->app->helper('admin')->lockResourceId($data['_id']);
             }
 
             return json_encode($data);
