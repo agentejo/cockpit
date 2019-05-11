@@ -17,17 +17,23 @@ if (!function_exists('curl_init')) {
 if ($cachepath = $this->path('#tmp:webhooks.cache.php')) {
     $webhooks = include($cachepath);
 } else {
-    $webhooks = $app->storage->find('cockpit/webhooks');
-    $this->helper('fs')->write('#tmp:webhooks.cache.php', '<?php return '.var_export($webhooks->toArray(), true ).';');
+    $webhooks = $app->storage->find('cockpit/webhooks')->toArray();
+    $this->helper('fs')->write('#tmp:webhooks.cache.php', '<?php return '.var_export($webhooks, true ).';');
 }
 
-foreach ($webhooks as &$webhook) {
+if (!count($webhooks)) {
+    return;
+}
+
+$webHookCalls = new ArrayObject([]);
+
+foreach ($webhooks as $webhook) {
 
     if ($webhook['active'] && $webhook['url'] && count($webhook['events'])) {
 
         foreach ($webhook['events'] as $evt) {
 
-            $app->on($evt, function() use($evt, $webhook) {
+            $app->on($evt, function() use($evt, $webhook, $webHookCalls) {
 
                 $url = trim($webhook['url']);
                 $data = json_encode([
@@ -54,25 +60,41 @@ foreach ($webhooks as &$webhook) {
                     }
                 }
 
-                $ch = curl_init($url);
+                $auth = $webhook['auth'] ?? null; 
 
-                // add basic http auth
-                if (isset($webhook['auth']) && $webhook['auth']['user'] && $webhook['auth']['pass']) {
-                    curl_setopt($ch, CURLOPT_USERPWD, $webhook['auth']['user'] . ":" . $webhook['auth']['pass']);
-                }
-
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-                curl_setopt($ch, CURLOPT_TIMEOUT, 1);
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-                curl_exec($ch);
-                curl_close($ch);
+                $webHookCalls[] = compact('url', 'data', 'headers', 'auth');
 
             }, -1000);
         }
     }
 }
+
+$app->on('shutdown', function() use($webHookCalls) {
+        
+    if (!count($webHookCalls)) {
+        return;
+    }
+
+    \session_write_close();
+
+    foreach ($webHookCalls as $webhook) {
+
+        $ch = curl_init($webhook['url']);
+
+        // add basic http auth
+        if (isset($webhook['auth']) && $webhook['auth']['user'] && $webhook['auth']['pass']) {
+            curl_setopt($ch, CURLOPT_USERPWD, $webhook['auth']['user'] . ":" . $webhook['auth']['pass']);
+        }
+
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $webhook['data']);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $webhook['headers']);
+
+        curl_exec($ch);
+        curl_close($ch);
+    }
+});
