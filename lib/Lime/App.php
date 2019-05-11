@@ -960,6 +960,7 @@ class App implements \ArrayAccess {
         }
 
         \register_shutdown_function(function() use($self){
+            \session_write_close();
             $self->trigger('shutdown');
         });
 
