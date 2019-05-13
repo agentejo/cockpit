@@ -291,7 +291,6 @@ class Admin extends \Cockpit\AuthController {
                  $entry['_o'] = $this->app->storage->count("collections/{$collection['_id']}", ['_pid' => ['$exists' => false]]);
             }
 
-            $this->app->helper('admin')->lockResourceId($entry['_id']);
         }
 
         $entry = $this->module('collections')->save($collection['name'], $entry, ['revision' => $revision]);
