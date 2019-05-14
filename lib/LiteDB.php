@@ -115,8 +115,7 @@ class LiteDBQuery {
             case 2:
 
                 if (is_array($args[1])) {
-                    $this->conditions[] = array($args[0], $args[1]);
-
+                    $this->conditions[] = [$args[0], $args[1]];
                     break;
                 }
             default:
@@ -414,31 +413,44 @@ class LiteDBQuery {
 
         $_conditions = [];
 
-        if (count($conditions)){
+        if (is_array($conditions) && count($conditions)){
 
-          foreach ($conditions as $c){
+            foreach ($conditions as $c) {
 
-            $sql = '';
+                $sql = '';
 
-            if (is_array($c)){
+                if (is_array($c)){
+                    
+                    if (isset($c[0][0], $c[0][1]) && is_array($c[0][1])) {
+                        $c = $c[0];
+                    }
 
-                $sql = $c[0];
+                    if (is_string($c)) {
+                        $sql = $c;
+                    } else {
 
-                foreach ($c[1] as $key=>$value){
-                    $sql = str_replace(':'.$key, $this->connection->quote($value), $sql);
+                        $sql = $c[0];
+
+                        if (!isset($c[1])) {
+                            $c[1] = [];
+                        }
+
+                        foreach ($c[1] as $key=>$value){
+                            $sql = str_replace(':'.$key, $this->connection->quote($value), $sql);
+                        }
+                    }
+
+                } else {
+                    $sql = $c;
                 }
 
-            } else {
-              $sql= $c;
+                if (count($_conditions) > 0  && strtoupper(substr($sql,0,4))!='AND ' && strtoupper(substr($sql,0,3))!='OR '){
+                    $sql = 'AND '.$sql;
+                }
+
+                $_conditions[] = $sql;
+
             }
-
-            if (count($_conditions) > 0  && strtoupper(substr($sql,0,4))!='AND ' && strtoupper(substr($sql,0,3))!='OR '){
-              $sql = 'AND '.$sql;
-            }
-
-            $_conditions[] = $sql;
-
-          }
 
         }
 
