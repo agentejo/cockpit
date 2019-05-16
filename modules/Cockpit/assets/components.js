@@ -129,7 +129,6 @@ riot.tag2('cp-assets', '<div ref="list" show="{mode==\'list\'}"> <div ref="uploa
             Mousetrap.bindGlobal(['escape'], function(e) {
 
                 if ($this.asset) {
-                    console.log('asset');
                     $this.cancelAssetEdit();
                 }
 

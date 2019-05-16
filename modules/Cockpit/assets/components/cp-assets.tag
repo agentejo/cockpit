@@ -276,7 +276,6 @@
             Mousetrap.bindGlobal(['escape'], function(e) {
 
                 if ($this.asset) {
-                    console.log('asset');
                     $this.cancelAssetEdit();
                 }
 
