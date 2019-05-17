@@ -101,32 +101,15 @@ class LiteDBQuery {
         return $this;
     }
 
-    public function where() {
+    public function where($conditions) {
 
-        $args = func_get_args();
+        if (is_string($conditions)) {
+            $this->conditions[] = $conditions;
+        } else {
 
-        switch(func_num_args()) {
-
-            case 0:
-                break;
-            case 1:
-                $this->conditions[] = $args[0];
-                break;
-            case 2:
-
-                if (is_array($args[1])) {
-                    $this->conditions[] = [$args[0], $args[1]];
-                    break;
-                }
-            default:
-
-                $params = is_array($args[0]) ? $args[0] : array($args[0]);
-
-                for ($i=1;$i<count($args);$i++) {
-                    $params[] = $this->connection->quote($args[$i]);
-                }
-
-                $this->conditions[] = call_user_func_array("sprintf", $params);
+            foreach ($conditions as $arg) {
+                $this->conditions[] = $arg;
+            }
         }
 
         return $this;
@@ -165,30 +148,32 @@ class LiteDBQuery {
     public function all($condition = null) {
 
         if (func_num_args() && $condition) {
-            call_user_func_array(array($this, 'where'), func_get_args());
+            foreach (func_get_args() as $arg) {
+                $this->where($arg);
+            }
         }
 
         return $this->connection->fetchAll($this->buildSelect());
     }
 
-    public function one() {
+    public function one($conditions = null) {
 
         $this->limit = 1;
 
-        if (func_num_args()) {
-            call_user_func_array(array($this, 'where'), func_get_args());
+        if ($conditions) {
+            $this->where($conditions);
         }
 
         return $this->connection->fetch($this->buildSelect());
     }
 
-    public function count($condition = null) {
+    public function count($conditions = null) {
 
         $table = $this->table;
         $obj   = $this->connection->{$table}->select('COUNT(*) AS C');
 
-        if (func_num_args() && $condition) {
-            call_user_func_array(array($obj, 'where'), func_get_args());
+        if ($conditions) {
+            $obj->where($conditions);
         }
 
         $count = $obj->one();
@@ -196,7 +181,7 @@ class LiteDBQuery {
         return isset($count['C']) ? intval($count['C']):0;
     }
 
-    public function sum($field) {
+    public function sum($field, $conditions = null) {
 
         $args  = func_get_args();
         $table = $this->table;
@@ -204,8 +189,8 @@ class LiteDBQuery {
 
         array_shift($args);
 
-        if (count($args)) {
-            call_user_func_array(array($obj, 'where'), $args);
+        if ($conditions) {
+            $obj->where($conditions);
         }
 
         $count = $obj->one();
@@ -213,7 +198,7 @@ class LiteDBQuery {
         return isset($count['S']) ? floatval($count['S']):0;
     }
 
-    public function avg($field) {
+    public function avg($field, $conditions = null) {
 
         $args  = func_get_args();
         $table = $this->table;
@@ -221,8 +206,8 @@ class LiteDBQuery {
 
         array_shift($args);
 
-        if (count($args)) {
-            call_user_func_array(array($obj, 'where'), $args);
+        if ($conditions) {
+            $obj->where($conditions);
         }
 
         $avg = $obj->one();
@@ -299,37 +284,9 @@ class LiteDBQuery {
         }
     }
 
-    public function delete(){
+    public function delete($conditions = []){
 
         $table = $this->table;
-        $conditions = [];
-        $args = func_get_args();
-
-        switch(func_num_args()) {
-
-            case 0:
-                return false;
-                break;
-            case 1:
-                $conditions[] = $args[0];
-                break;
-            case 2:
-
-                if (is_array($args[1])) {
-                    $conditions[] = array($args[0], $args[1]);
-                    break;
-                }
-            default:
-
-                $params = array($args[0]);
-
-                for($i=1;$i<count($args);$i++) {
-                    $params[] = $this->connection->quote($args[$i]);
-                }
-
-                $conditions[] = call_user_func_array("sprintf", $params);
-        }
-
         $conditions = $this->buildConditions($conditions);
 
         if (strlen(trim($conditions))>0) $conditions = "WHERE ".$conditions;
@@ -411,48 +368,34 @@ class LiteDBQuery {
 
         if (is_string($conditions)) $conditions = array($conditions);
 
+        if (!is_array($conditions) || !count($conditions)) {
+            return '';
+        }
+
         $_conditions = [];
 
-        if (is_array($conditions) && count($conditions)){
+        foreach ($conditions as $c) {
 
-            foreach ($conditions as $c) {
+            $sql = '';
 
-                $sql = '';
+            if (is_string($c)) {
+                $sql = $c;
+            } elseif (is_array($c) && isset($c[0], $c[1])) {
+                $sql = $c[0];
 
-                if (is_array($c)){
-                    
-                    if (isset($c[0][0], $c[0][1]) && is_array($c[0][1])) {
-                        $c = $c[0];
-                    }
-
-                    if (is_string($c)) {
-                        $sql = $c;
-                    } else {
-
-                        $sql = $c[0];
-
-                        if (!isset($c[1])) {
-                            $c[1] = [];
-                        }
-
-                        foreach ($c[1] as $key=>$value){
-                            $sql = str_replace(':'.$key, $this->connection->quote($value), $sql);
-                        }
-                    }
-
-                } else {
-                    $sql = $c;
+                foreach ($c[1] as $key=>$value){
+                    $sql = str_replace(':'.$key, $this->connection->quote($value), $sql);
                 }
-
-                if (count($_conditions) > 0  && strtoupper(substr($sql,0,4))!='AND ' && strtoupper(substr($sql,0,3))!='OR '){
-                    $sql = 'AND '.$sql;
-                }
-
-                $_conditions[] = $sql;
 
             }
 
+            if (count($_conditions) > 0  && strtoupper(substr($sql,0,4))!='AND ' && strtoupper(substr($sql,0,3))!='OR '){
+                $sql = 'AND '.$sql;
+            }
+
+            $_conditions[] = $sql;
         }
+        
 
        $conditions = implode(' ', $_conditions);
 
