@@ -238,11 +238,6 @@
 
               document.getElementsByTagName('head')[0].appendChild(link);
 
-              var img = document.createElement('img');
-                  img.onerror = function(){
-                      resolve(url);
-                  };
-                  img.src = link.href+'?v='+App.version;
             });
         },
 
