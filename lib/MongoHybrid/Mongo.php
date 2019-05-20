@@ -168,13 +168,13 @@ class Mongo {
         return $this->getCollection($collection)->deleteMany($filter);
     }
 
-    public function count($collection, $filter=[]) {
+    public function count($collection, $filter=[], $options=[]) {
 
         if (!$filter) $filter = [];
 
         $filter = $this->_fixMongoIds($filter, true);
 
-        return $this->getCollection($collection)->count($filter);
+        return $this->getCollection($collection)->countDocuments($filter, $options);
     }
 
     protected function _fixMongoIds(&$data, $infinite = false, $_level = 0) {
