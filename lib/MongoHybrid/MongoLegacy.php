@@ -179,6 +179,20 @@ class MongoLegacy {
                             $id = new \MongoId($id);
                         }
                     }
+
+                    if (isset($v['$nin'])) {
+    
+                        foreach ($v['$nin'] as &$id) {
+                            if (is_string($id)) {
+                                $id = new \MongoId($id);
+                            }
+                        }
+                    }
+
+                    if (isset($v['$ne']) && is_string($v['$ne'])) {
+    
+                        $v['$ne'] = new \MongoId($v['$ne']);                    
+                    }
                 }
             }
 
