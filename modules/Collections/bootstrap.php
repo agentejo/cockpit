@@ -337,7 +337,7 @@ $this->module('collections')->extend([
                     if (!$isUpdate && isset($field['required']) && $field['required'] && !$value) {
 
                         if (!is_numeric($value) && $value !== false && empty($value)) {
-                            $this->app->stop([‘error’ => "The ${field[‘name’]} is required!"], 422);
+                            $this->app->stop(['error' => "The {$field[‘name’]} is required!"], 422);
                         }
                     }
 
