@@ -25,7 +25,7 @@ class RestApi extends \LimeExtra\Controller {
         }
 
         $user = $this->module('cockpit')->authenticate($data);
-        $generateApiKey = $this->param('generateApiKey', true);
+        $generateApiKey = $this->param('generateApiKey', false);
 
         if (!$user) {
             $this->app->trigger('cockpit.authentication.failed', [$data['user']]);
