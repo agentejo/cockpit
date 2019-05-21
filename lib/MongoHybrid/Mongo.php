@@ -221,6 +221,12 @@ class Mongo {
                             }
                         }
                     }
+
+                    if (isset($v['$ne']) && is_string($v['$ne'])) {
+    
+                        $v['$ne'] = new \MongoDB\BSON\ObjectID($v['$ne']);                    
+                    }
+
                 }
             }
         }
