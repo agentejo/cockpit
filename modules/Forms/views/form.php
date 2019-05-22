@@ -23,7 +23,7 @@
 
                 <div class="uk-margin">
                     <label class="uk-text-small">@lang('Label')</label>
-                    <inpu aria-label="@lang('Label')"t class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.label">
+                    <input aria-label="@lang('Label')" class="uk-width-1-1 uk-form-large" type="text" name="label" bind="form.label">
                 </div>
 
                 <div class="uk-margin">
