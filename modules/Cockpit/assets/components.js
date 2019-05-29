@@ -3821,7 +3821,7 @@ riot.tag2('field-time', '<input ref="input" class="uk-width-1-1" bind="{opts.bin
 
 });
 
-riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" style="height:350px;visibility:hidden;"></textarea>', '', '', function(opts) {
+riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" style="height:350px;visibility:hidden;"></textarea>', 'field-wysiwyg .mce-fullscreen,[data-is="field-wysiwyg"] .mce-fullscreen{z-index: 981;}', '', function(opts) {
 
         var $this     = this,
             lang      = App.$data.user.i18n || document.documentElement.getAttribute('lang') || 'en',
