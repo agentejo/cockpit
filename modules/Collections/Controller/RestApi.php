@@ -143,7 +143,11 @@ class RestApi extends \LimeExtra\Controller {
             $data['_by'] = $userId;
         }
 
-        $data = $this->module('collections')->save($collection, $data);
+        $options = [];
+
+        if ($revision = $this->param('revision', null)) $options['revision'] = $revision;
+
+        $data = $this->module('collections')->save($collection, $data, $options); 
 
         return $data;
     }
