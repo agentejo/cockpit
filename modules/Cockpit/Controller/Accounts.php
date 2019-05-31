@@ -210,6 +210,8 @@ class Accounts extends \Cockpit\AuthController {
 
     public function find() {
 
+        \session_write_close();
+
         $options = array_merge([
             'sort'   => ['user' => 1]
         ], $this->param('options', []));

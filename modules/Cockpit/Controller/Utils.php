@@ -46,6 +46,8 @@ class Utils extends \Cockpit\AuthController {
 
     public function revisionsCount() {
 
+        \session_write_close();
+
         if ($id = $this->param('id')) {
             $cnt = $this->app->helper('revisions')->count($id);
             return (string)$cnt;

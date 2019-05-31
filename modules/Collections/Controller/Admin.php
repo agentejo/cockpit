@@ -386,6 +386,8 @@ class Admin extends \Cockpit\AuthController {
 
     public function find() {
 
+        \session_write_close();
+
         $collection = $this->app->param('collection');
         $options    = $this->app->param('options');
 
