@@ -1,5 +1,7 @@
 <field-wysiwyg>
 
+    <style>.mce-fullscreen {z-index: 981;}</style>
+
     <textarea ref="input" class="uk-width-1-1" rows="5" style="height:350px;visibility:hidden;"></textarea>
 
     <script>
