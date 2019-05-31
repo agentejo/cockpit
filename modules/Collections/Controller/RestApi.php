@@ -145,7 +145,7 @@ class RestApi extends \LimeExtra\Controller {
 
         $options = [];
 
-        if ($revision = $this->param('revision', null)) $options['revision'] = $revision;
+        if ($revision = $this->param('revision', null)) $options['revision'] = $this->app->helper('utils')->fixStringBooleanValues($revision);
 
         $data = $this->module('collections')->save($collection, $data, $options); 
 
