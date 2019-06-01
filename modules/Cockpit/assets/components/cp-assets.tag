@@ -228,10 +228,12 @@
         
         <cp-asset asset="{asset._id}"></cp-asset>
         
-        <div class="uk-margin-top">
-            <button type="button" class="uk-button uk-button-large uk-button-primary" onclick="{ saveAsset }">{ App.i18n.get('Save') }</button>
-            <a class="uk-button uk-button-large uk-button-link" onclick="{ cancelAssetEdit }">{ App.i18n.get('Cancel') }</a>
-        </div>
+        <cp-actionbar>
+            <div class="uk-container uk-container-center">
+                <button type="button" class="uk-button uk-button-large uk-button-primary" onclick="{ saveAsset }">{ App.i18n.get('Save') }</button>
+                <a class="uk-button uk-button-large uk-button-link" onclick="{ cancelAssetEdit }">{ App.i18n.get('Cancel') }</a>
+            </div>
+        </cp-actionbar>
     </div>
 
 
@@ -269,6 +271,24 @@
         this.on('mount', function() {
 
             this.listAssets(1);
+
+            // bind escape
+            Mousetrap.bindGlobal(['escape'], function(e) {
+
+                if ($this.asset) {
+                    $this.cancelAssetEdit();
+                }
+
+            });
+            // bind global command + save
+            Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
+
+                if ($this.asset) {
+                    e.preventDefault();
+                    $this.saveAsset();
+                }
+
+            });
 
             // handle uploads
             App.assets.require(['/assets/lib/uikit/js/components/upload.js'], function() {
@@ -637,7 +657,7 @@
 
                   <div class="uk-form-row">
                       <label class="uk-text-small uk-text-bold">{ App.i18n.get('Description') }</label>
-                      <textarea class="uk-width-1-1" bind="asset.description"></textarea>
+                      <field-textarea bind="asset.description" rows="3"></field-textarea>
                   </div>
 
                   <div class="uk-margin-large-top uk-text-center" if="{asset}">
@@ -647,7 +667,7 @@
                           <div class="cp-assets-fp" title="Focal Point" data-uk-tooltip></div>
                       </div>
                       <div class="uk-margin-top uk-text-truncate uk-text-small uk-text-muted">
-                          <a class="uk-button uk-button-outline uk-text-primary" href="{ASSETS_URL+asset.path}" target="_blank"><i class="uk-icon-link"></i></a>
+                          <a class="uk-button uk-button-outline uk-text-primary" href="{ASSETS_URL+asset.path}" target="_blank" title="{ App.i18n.get('Direct link to asset') }" data-uk-tooltip><i class="uk-icon-link"></i></a>
                       </div>
                   </div>
               </div>
@@ -810,6 +830,7 @@
 
             <div class="uk-margin-small-top { App.Utils.count(folders) > 10 && 'uk-scrollable-box' }">
                 <ul class="uk-list">
+                    <li if="{ asset.folder && folders[asset.folder] }"><a class="uk-link-muted" onclick="{unselectFolder}"><i class="uk-icon-close"></i> { App.i18n.get('No folder') }</a></li>
                     <li each="{folder, idx in folders}" riot-style="margin-left: {(folder._lvl * 10)}px">
                         <a class="uk-link-muted" onclick="{selectFolder}"><i class="uk-icon-folder-o"></i> {folder.name}</a>
                     </li>
@@ -834,6 +855,10 @@
 
         selectFolder(e) {
             this.asset.folder = e.item.folder._id;
+        }
+
+        unselectFolder(e) {
+            this.asset.folder = null;
         }
 
         load() {
