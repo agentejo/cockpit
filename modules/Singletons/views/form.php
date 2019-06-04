@@ -227,7 +227,7 @@
 
             this.on('mount', function(){
 
-                // bind clobal command + save
+                // bind global command + save
                 Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
 
                     if (App.$('.uk-modal.uk-open').length) {

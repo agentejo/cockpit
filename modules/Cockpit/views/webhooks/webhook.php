@@ -196,7 +196,7 @@
 
             });
 
-            // bind clobal command + save
+            // bind global command + save
             Mousetrap.bindGlobal(['command+s', 'ctrl+s'], function(e) {
                 e.preventDefault();
                 $this.submit();
