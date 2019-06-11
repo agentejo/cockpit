@@ -637,7 +637,7 @@
 
                   <div class="uk-form-row">
                       <label class="uk-text-small uk-text-bold">{ App.i18n.get('Description') }</label>
-                      <textarea class="uk-width-1-1" bind="asset.description"></textarea>
+                      <textarea class="uk-width-1-1" bind="asset.description" bind-event="input"></textarea>
                   </div>
 
                   <div class="uk-margin-large-top uk-text-center" if="{asset}">
