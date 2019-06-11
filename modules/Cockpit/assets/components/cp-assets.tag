@@ -225,9 +225,9 @@
     <div class="uk-form" if="{asset && mode=='edit'}">
 
         <h3 class="uk-text-bold">{ App.i18n.get('Edit Asset') }</h3>
-        
+
         <cp-asset asset="{asset._id}"></cp-asset>
-        
+
         <div class="uk-margin-top">
             <button type="button" class="uk-button uk-button-large uk-button-primary" onclick="{ saveAsset }">{ App.i18n.get('Save') }</button>
             <a class="uk-button uk-button-large uk-button-link" onclick="{ cancelAssetEdit }">{ App.i18n.get('Cancel') }</a>
@@ -452,9 +452,9 @@
             this.asset = e.item.asset;
             this.mode  = 'edit';
         }
-        
+
         saveAsset() {
-          
+
           App.$('cp-asset', this.root)[0]._tag.updateAsset(function(asset) {
               $this.asset = _.extend($this.asset, asset);
           });
@@ -599,7 +599,7 @@
 <cp-asset>
 
   <style>
-  
+
     .cp-assets-fp {
         position: absolute;
         width: 10px;
@@ -614,7 +614,7 @@
         visibility: hidden;
     }
   </style>
-  
+
   <div class="uk-text-center uk-margin-large-top" show="{ !asset }">
       <cp-preloader class="uk-container-center"></cp-preloader>
   </div>
@@ -637,7 +637,7 @@
 
                   <div class="uk-form-row">
                       <label class="uk-text-small uk-text-bold">{ App.i18n.get('Description') }</label>
-                      <textarea class="uk-width-1-1" bind="asset.description"></textarea>
+                      <textarea class="uk-width-1-1" bind="asset.description" onkeyup="{updateDesc}" ></textarea>
                   </div>
 
                   <div class="uk-margin-large-top uk-text-center" if="{asset}">
@@ -699,13 +699,13 @@
       <div data-is="{'assetspanel-'+p.name}" asset="{asset}" each="{p in panels}" show="{panel == p.name}"></div>
 
   </div>
-  
+
   <script>
-    
+
     this.mixin(RiotBindMixin);
-    
+
     var $this = this, $root = App.$(this.root);
-    
+
     this.panel  = null;
     this.panels = [];
 
@@ -718,20 +718,20 @@
             this.panels.push({name:f, value:f});
         }
     }
-    
+
     this.on('mount', function() {
-      
+
       App.request('/assetsmanager/asset/'+opts.asset, {}).then(function(asset) {
-          
+
           $this.asset = asset;
           $this.update();
-          
+
           if ($this.asset.mime.match(/^image\//)) {
-              
+
               setTimeout(function() {
-                  
+
                   $this.placeFocalPoint($this.asset.fp);
-                  
+
                   $root.on('click', '.asset-fp-image canvas', function(e) {
 
                       var x = e.offsetX, y = e.offsetY,
@@ -741,26 +741,30 @@
                       $this.asset.fp = {x: px, y: py};
                       $this.placeFocalPoint($this.asset.fp);
                   });
-                  
+
               }, 500)
           }
-          
+
       }, function(res) {
           App.ui.notify(res && (res.message || res.error) ? (res.message || res.error) : 'Loading failed.', 'danger');
       });
-      
+
     });
-    
+
     selectPanel(e) {
         this.panel = e.item ? e.item.p.name : null;
     }
 
+    updateDesc(e) {
+        $this.asset.description = e.target.value;
+    }
+
     updateAsset(clb) {
-  
+
         if (!this.asset) {
           return;
         }
-        
+
         return App.request('/assetsmanager/updateAsset', {asset:$this.asset}).then(function(asset) {
 
             if (Array.isArray(asset)) {
@@ -770,15 +774,15 @@
             App.$.extend($this.asset, asset);
             App.ui.notify("Asset updated", "success");
             $this.update();
-            
+
             if (clb) clb(asset);
-            
+
             return asset;
         });
     }
-    
+
     placeFocalPoint(point) {
-        
+
         point = point || {x:0.5, y:0.5};
 
         var canvas = $root.find('.asset-fp-image canvas')[0];
@@ -791,7 +795,7 @@
             visibility: 'visible'
         });
     }
-  
+
   </script>
 
 </cp-asset>
