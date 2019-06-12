@@ -107,13 +107,19 @@ class Media extends \Cockpit\AuthController {
 
                 // clean filename
                 $clean = preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $files['name'][$i]));
+                $_file = $targetpath.'/'.$clean;
 
-                if (!$files['error'][$i] && $this->_isFileTypeAllowed($clean) && move_uploaded_file($files['tmp_name'][$i], $targetpath.'/'.$clean)) {
+                if (!$files['error'][$i] && $this->_isFileTypeAllowed($clean) && move_uploaded_file($files['tmp_name'][$i], $_file)) {
                     $uploaded[]  = $files['name'][$i];
-                    $_uploaded[] = $targetpath.'/'.$clean;
+                    $_uploaded[] = $_file;
+
+                    if (\preg_match('/\.(svg|xml)$/i', $clean)) {
+                        file_put_contents($_file, \SVGSanitizer::clean(\file_get_contents($_file)));
+                    }
+
                 } else {
-                    $failed[]    = ['file' => $files['name'][$i], 'error' => $files['error'][$i]];
-                    $_failed[]   = $targetpath.'/'.$clean;
+                    $failed[]  = ['file' => $files['name'][$i], 'error' => $files['error'][$i]];
+                    $_failed[] = $_file;
                 }
             }
         }

@@ -141,6 +141,10 @@ $this->module('cockpit')->extend([
                     $_files[]   = $_file;
                     $uploaded[] = $files['name'][$i];
 
+                    if (\preg_match('/\.(svg|xml)$/i', $_file)) {
+                        file_put_contents($_file, \SVGSanitizer::clean(\file_get_contents($_file)));
+                    }
+
                 } else {
                     $failed[] = $files['name'][$i];
                 }
