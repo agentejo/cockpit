@@ -228,10 +228,17 @@
         
         <cp-asset asset="{asset._id}"></cp-asset>
         
-        <div class="uk-margin-top">
+        <div class="uk-margin-top" show="{modal}">
             <button type="button" class="uk-button uk-button-large uk-button-primary" onclick="{ saveAsset }">{ App.i18n.get('Save') }</button>
             <a class="uk-button uk-button-large uk-button-link" onclick="{ cancelAssetEdit }">{ App.i18n.get('Cancel') }</a>
         </div>
+
+        <cp-actionbar show="{!modal}">
+            <div class="uk-container uk-container-center">
+                <button type="button" class="uk-button uk-button-large uk-button-primary" onclick="{ saveAsset }">{ App.i18n.get('Save') }</button>
+                <a class="uk-button uk-button-large uk-button-link" onclick="{ cancelAssetEdit }">{ App.i18n.get('Cancel') }</a>
+            </div>
+        </cp-actionbar>
     </div>
 
 
@@ -647,7 +654,7 @@
                           <div class="cp-assets-fp" title="Focal Point" data-uk-tooltip></div>
                       </div>
                       <div class="uk-margin-top uk-text-truncate uk-text-small uk-text-muted">
-                          <a class="uk-button uk-button-outline uk-text-primary" href="{ASSETS_URL+asset.path}" target="_blank"><i class="uk-icon-link"></i></a>
+                          <a class="uk-button uk-button-outline uk-text-primary" href="{ASSETS_URL+asset.path}" target="_blank"  title="{ App.i18n.get('Direct link to asset') }" data-uk-tooltip><i class="uk-icon-link"></i></a>
                       </div>
                   </div>
               </div>
