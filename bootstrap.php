@@ -21,9 +21,11 @@ if (!defined('COCKPIT_CLI')) {
 include(__DIR__.'/lib/vendor/autoload.php');
 
 // include core classes for better performance
-include(__DIR__.'/lib/Lime/App.php');
-include(__DIR__.'/lib/LimeExtra/App.php');
-include(__DIR__.'/lib/LimeExtra/Controller.php');
+if (!class_exists('Lime\\App')) {
+    include(__DIR__.'/lib/Lime/App.php');
+    include(__DIR__.'/lib/LimeExtra/App.php');
+    include(__DIR__.'/lib/LimeExtra/Controller.php');
+}
 
 /*
  * Autoload from lib folder (PSR-0)
@@ -61,16 +63,17 @@ $COCKPIT_BASE_ROUTE  = $COCKPIT_BASE_URL;
 /*
  * SYSTEM DEFINES
  */
+if (!defined('COCKPIT_DIR'))                    define('COCKPIT_DIR'            , $COCKPIT_DIR);
 if (!defined('COCKPIT_ADMIN'))                  define('COCKPIT_ADMIN'          , 0);
 if (!defined('COCKPIT_DOCS_ROOT'))              define('COCKPIT_DOCS_ROOT'      , $COCKPIT_DOCS_ROOT);
+if (!defined('COCKPIT_ENV_ROOT'))               define('COCKPIT_ENV_ROOT'       , COCKPIT_DIR);
 if (!defined('COCKPIT_BASE_URL'))               define('COCKPIT_BASE_URL'       , $COCKPIT_BASE_URL);
 if (!defined('COCKPIT_API_REQUEST'))            define('COCKPIT_API_REQUEST'    , COCKPIT_ADMIN && strpos($_SERVER['REQUEST_URI'], COCKPIT_BASE_URL.'/api/')!==false ? 1:0);
-if (!defined('COCKPIT_DIR'))                    define('COCKPIT_DIR'            , $COCKPIT_DIR);
 if (!defined('COCKPIT_SITE_DIR'))               define('COCKPIT_SITE_DIR'       , $COCKPIT_DIR == COCKPIT_DOCS_ROOT ? $COCKPIT_DIR : dirname(COCKPIT_DIR));
-if (!defined('COCKPIT_CONFIG_DIR'))             define('COCKPIT_CONFIG_DIR'     , COCKPIT_DIR.'/config');
+if (!defined('COCKPIT_CONFIG_DIR'))             define('COCKPIT_CONFIG_DIR'     , COCKPIT_ENV_ROOT.'/config');
 if (!defined('COCKPIT_BASE_ROUTE'))             define('COCKPIT_BASE_ROUTE'     , $COCKPIT_BASE_ROUTE);
-if (!defined('COCKPIT_STORAGE_FOLDER'))         define('COCKPIT_STORAGE_FOLDER' , COCKPIT_DIR.'/storage');
-if (!defined('COCKPIT_PUBLIC_STORAGE_FOLDER'))  define('COCKPIT_PUBLIC_STORAGE_FOLDER' , COCKPIT_DIR.'/storage');
+if (!defined('COCKPIT_STORAGE_FOLDER'))         define('COCKPIT_STORAGE_FOLDER' , COCKPIT_ENV_ROOT.'/storage');
+if (!defined('COCKPIT_PUBLIC_STORAGE_FOLDER'))  define('COCKPIT_PUBLIC_STORAGE_FOLDER' , COCKPIT_ENV_ROOT.'/storage');
 
 if (!defined('COCKPIT_CONFIG_PATH')) {
     $_configpath = COCKPIT_CONFIG_DIR.'/config.'.(file_exists(COCKPIT_CONFIG_DIR.'/config.php') ? 'php':'yaml');
@@ -99,7 +102,7 @@ function cockpit($module = null) {
             'base_url'     => COCKPIT_BASE_URL,
             'base_route'   => COCKPIT_BASE_ROUTE,
             'docs_root'    => COCKPIT_DOCS_ROOT,
-            'session.name' => md5(__DIR__),
+            'session.name' => md5(COCKPIT_ENV_ROOT),
             'session.init' => (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) ? true : false,
             'sec-key'      => 'c3b40c4c-db44-s5h7-a814-b4931a15e5e1',
             'i18n'         => 'en',
@@ -116,7 +119,7 @@ function cockpit($module = null) {
                 '#thumbs'   => COCKPIT_PUBLIC_STORAGE_FOLDER.'/thumbs',
                 '#uploads'  => COCKPIT_PUBLIC_STORAGE_FOLDER.'/uploads',
                 '#modules'  => COCKPIT_DIR.'/modules',
-                '#addons'   => COCKPIT_DIR.'/addons',
+                '#addons'   => COCKPIT_ENV_ROOT.'/addons',
                 '#config'   => COCKPIT_CONFIG_DIR,
                 'assets'    => COCKPIT_DIR.'/assets',
                 'site'      => COCKPIT_SITE_DIR
@@ -252,11 +255,17 @@ function cockpit($module = null) {
             });
         }
 
-        // load modules
-        $app->loadModules(array_merge([
+        $modulesPaths = array_merge([
             COCKPIT_DIR.'/modules',  # core
             COCKPIT_DIR.'/addons' # addons
-        ], $config['loadmodules'] ?? []));
+        ], $config['loadmodules'] ?? []);
+
+        if (COCKPIT_ENV_ROOT !== COCKPIT_DIR) {
+            $modulesPaths[] = COCKPIT_ENV_ROOT.'/addons';
+        }
+
+        // load modules
+        $app->loadModules($modulesPaths);
 
         // load config global bootstrap file
         if ($custombootfile = $app->path('#config:bootstrap.php')) {
