@@ -110,6 +110,22 @@ class MongoLite {
         return true;
     }
 
+    public function renameField($collection, $field, $newfield, $filter = []) {
+
+        $collection = $this->getCollection($collection);
+
+        foreach ($collection->find($filter) as $doc) {
+
+            if (isset($doc[$field])) {
+                $doc[$newfield] = $doc[$field];
+                unset($doc[$field]);
+                $collection->update(['_id' => $doc['_id']], $doc, false);
+            }
+        }
+
+        return true;
+    }
+
     public function count($collection, $filter=[]) {
         return $this->getCollection($collection)->count($filter);
     }

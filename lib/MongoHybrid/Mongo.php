@@ -176,6 +176,14 @@ class Mongo {
         return $this->getCollection($collection)->updateMany($filter, $opts);
     }
 
+    public function renameField($collection, $field, $newfield, $filter = []) {
+
+        $opts = ['$rename' => []];
+        $opts['$rename'][$field] = $newfield;
+
+        return $this->getCollection($collection)->updateMany($filter, $opts);
+    }
+
     public function count($collection, $filter=[], $options=[]) {
 
         if (!$filter) $filter = [];
