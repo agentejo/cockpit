@@ -125,7 +125,7 @@ class Collection {
      * @param  array $data
      * @return integer
      */
-    public function update($criteria, $data) {
+    public function update($criteria, $data, $merge = true) {
 
         $sql    = 'SELECT id, document FROM '.$this->name.' WHERE document_criteria("'.$this->database->registerCriteriaFunction($criteria).'", document)';
         $stmt   = $this->database->connection->query($sql);
@@ -133,7 +133,9 @@ class Collection {
 
         foreach ($result as &$doc) {
 
-            $document = \array_merge(\json_decode($doc['document'], true), $data);
+            $_doc            = \json_decode($doc['document'], true);
+            $document        = $merge ? \array_merge($_doc, $data) : $data;
+            $document['_id'] = $_doc['_id'];
 
             $sql = 'UPDATE '.$this->name.' SET document='.$this->database->connection->quote(json_encode($document, JSON_UNESCAPED_UNICODE)).' WHERE id='.$doc['id'];
 

@@ -168,6 +168,14 @@ class Mongo {
         return $this->getCollection($collection)->deleteMany($filter);
     }
 
+    public function removeField($collection, $field, $filter = []) {
+
+        $opts = ['$unset' => []];
+        $opts['$unset'][$field] = 1;
+
+        return $this->getCollection($collection)->updateMany($filter, $opts);
+    }
+
     public function count($collection, $filter=[], $options=[]) {
 
         if (!$filter) $filter = [];

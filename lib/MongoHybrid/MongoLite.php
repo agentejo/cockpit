@@ -95,6 +95,21 @@ class MongoLite {
         return $this->getCollection($collection)->remove($filter);
     }
 
+    public function removeField($collection, $field, $filter = []) {
+
+        $collection = $this->getCollection($collection);
+
+        foreach ($collection->find($filter) as $doc) {
+
+            if (isset($doc[$field])) {
+                unset($doc[$field]);
+                $collection->update(['_id' => $doc['_id']], $doc, false);
+            }
+        }
+
+        return true;
+    }
+
     public function count($collection, $filter=[]) {
         return $this->getCollection($collection)->count($filter);
     }
