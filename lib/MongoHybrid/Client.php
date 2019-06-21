@@ -17,15 +17,15 @@ class Client {
 
     public function __construct($server, $options=[], $driverOptions=[]) {
 
-        if (strpos($server, 'mongodb://')===0) {
+        if (strpos($server, 'mongodb://') === 0) {
 
-            $cls = class_exists('\MongoClient') ? 'MongoHybrid\\MongoLegacy':'MongoHybrid\\Mongo';
+            $cls = 'MongoHybrid\\Mongo';
 
             $this->driver = new $cls($server, $options, $driverOptions);
             $this->type = 'mongodb';
         }
 
-        if (strpos($server, 'mongolite://')===0) {
+        if (strpos($server, 'mongolite://') === 0) {
             $this->driver = new MongoLite($server, $options);
             $this->type = 'mongolite';
         }
