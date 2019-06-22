@@ -40,6 +40,17 @@ class Client {
         }
     }
 
+    public function get($key, $default = false) {
+        
+        $val = $this->driver->get($key);
+
+        if ($val === false) {
+            return $default;
+        }
+
+        return $val;
+    }
+
 
     public function __call($method, $args) {
 
