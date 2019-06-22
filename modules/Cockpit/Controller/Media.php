@@ -22,7 +22,7 @@ class Media extends \Cockpit\AuthController {
         if (!$mediapath && !$this->module('cockpit')->isSuperAdmin()) {
             $this->root = rtrim($this->app->path("#uploads:"), '/');
         } else {
-            $this->root = rtrim($this->app->path("site:{$mediapath}"), '/');
+            $this->root = COCKPIT_DIR == COCKPIT_ENV_ROOT ? rtrim($this->app->path("site:{$mediapath}"), '/') : COCKPIT_ENV_ROOT;
         }
 
         if (file_exists($this->root) && in_array($cmd, get_class_methods($this))){
