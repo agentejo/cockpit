@@ -65,12 +65,16 @@ $this->module('cockpit')->extend([
         $container = $this->app->path('#storage:').'/api.keys.php';
 
         if (file_exists($container)) {
+            
             $data = include($container);
             $data = @unserialize($this->app->decode($data, $this->app['sec-key']));
 
             if ($data !== false) {
                 $keys = array_merge($keys, $data);
             }
+
+        } else {
+            $keys = $this->app->storage->getKey('cockpit', 'api_keys', $keys);
         }
 
         return $keys;
@@ -78,9 +82,14 @@ $this->module('cockpit')->extend([
 
     'saveApiKeys' => function($data) {
 
-        $data      = serialize(array_merge([ 'master' => '', 'special' => [] ], (array)$data));
-        $export    = var_export($this->app->encode($data, $this->app["sec-key"]), true);
-        $container = $this->app->path('#storage:').'/api.keys.php';
+        $data = array_merge([ 'master' => '', 'special' => [] ], (array)$data);
+
+        $this->app->storage->setKey('cockpit', 'api_keys', $data);
+
+        // cache
+        $serialized = serialize($data);
+        $export     = var_export($this->app->encode($serialized, $this->app["sec-key"]), true);
+        $container  = $this->app->path('#storage:').'/api.keys.php';
 
         return $this->app->helper('fs')->write($container, "<?php\n return {$export};");
     },
