@@ -457,7 +457,7 @@ class Utils extends \Lime\Helper {
             return $fn();
         } catch (\Exception $e) {
             if (!$times) {
-                throw new \Exception('', 0, $e);
+                throw new \Exception($e->getMessage(), 0, $e);
             }
             $times--;
             goto retrybeginning;
