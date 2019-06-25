@@ -17,7 +17,7 @@ class Client {
 
     public function __construct($server, $options=[], $driverOptions=[]) {
 
-        if (strpos($server, 'mongodb://') === 0) {
+        if (strpos($server, 'mongodb://')===0 || strpos($server, 'mongodb+srv://')===0) {
 
             $cls = 'MongoHybrid\\Mongo';
 
