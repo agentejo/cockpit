@@ -281,7 +281,7 @@ class Admin extends \Cockpit\AuthController {
 
             $_entry = $this->module('collections')->findOne($collection['name'], ['_id' => $entry['_id']]);
             $revision = !(json_encode($_entry) == json_encode($entry));
-            
+
         } else {
 
             $entry['_by'] = $entry['_mby'];
@@ -399,7 +399,9 @@ class Admin extends \Cockpit\AuthController {
             $options['filter'] = $this->_filter($options['filter'], $collection);
         }
 
+        $this->app->trigger("collections.admin.find.before.{$collection['name']}", [&$options]);
         $entries = $this->app->module('collections')->find($collection['name'], $options);
+        $this->app->trigger("collections.admin.find.after.{$collection['name']}", [$options, &$entries]);
         $count   = $this->app->module('collections')->count($collection['name'], isset($options['filter']) ? $options['filter'] : []);
         $pages   = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
         $page    = 1;
