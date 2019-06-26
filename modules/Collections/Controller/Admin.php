@@ -401,6 +401,7 @@ class Admin extends \Cockpit\AuthController {
 
         $this->app->trigger("collections.admin.find.before.{$collection['name']}", [&$options]);
         $entries = $this->app->module('collections')->find($collection['name'], $options);
+        $this->app->trigger("collections.admin.find.after.{$collection['name']}", [$options, &$entries]);
         $count   = $this->app->module('collections')->count($collection['name'], isset($options['filter']) ? $options['filter'] : []);
         $pages   = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
         $page    = 1;
