@@ -97,7 +97,9 @@ $this->module('cockpit')->extend([
             // move file
             $stream = fopen($file, 'r+');
             $this->app->filestorage->writeStream("assets://{$path}", $stream, $opts);
-            fclose($stream);
+            if(is_resource($stream)) {
+                fclose($stream);
+            }
 
             foreach ($_meta as $key => $val) {
                 $asset[$key] = $val;
