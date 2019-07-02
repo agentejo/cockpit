@@ -2,7 +2,7 @@
 
     <style>
 
-        [ref="input"] {
+        [type=text] {
             padding-right: 30px !important;
         }
 
