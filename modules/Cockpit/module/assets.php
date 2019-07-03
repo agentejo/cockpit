@@ -97,7 +97,8 @@ $this->module('cockpit')->extend([
             // move file
             $stream = fopen($file, 'r+');
             $this->app->filestorage->writeStream("assets://{$path}", $stream, $opts);
-            if(is_resource($stream)) {
+
+            if (is_resource($stream)) {
                 fclose($stream);
             }
 
