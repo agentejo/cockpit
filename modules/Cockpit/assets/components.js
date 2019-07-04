@@ -53,6 +53,10 @@ riot.tag2('codemirror', '', '', '', function(opts) {
                     }
                 }
 
+                editor.on('focus', function() {
+                    editor.refresh();
+                });
+
                 this.trigger('ready');
 
             }.bind(this));
@@ -2415,6 +2419,10 @@ riot.tag2('field-html', '<textarea ref="input" class="uk-visibility-hidden" hidd
                     editor.editor.on('change', function() {
                         $this.evtSrc = true;
                         $this.$setValue(editor.editor.getValue());
+                    });
+
+                    editor.editor.on('focus', function() {
+                        editor.editor.refresh();
                     });
 
                     var buttons = {};

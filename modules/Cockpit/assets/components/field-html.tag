@@ -44,6 +44,10 @@
                         $this.$setValue(editor.editor.getValue());
                     });
 
+                    editor.editor.on('focus', function() {
+                        editor.editor.refresh();
+                    });
+
                     var buttons = {};
 
                     if (App.$data.acl.finder) {

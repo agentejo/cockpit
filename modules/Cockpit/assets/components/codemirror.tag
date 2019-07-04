@@ -55,6 +55,10 @@
                     }
                 }
 
+                editor.on('focus', function() {
+                    editor.refresh();
+                });
+
                 this.trigger('ready');
 
             }.bind(this));
