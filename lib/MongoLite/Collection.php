@@ -113,9 +113,21 @@ class Collection {
      * @param  array $document
      * @return mixed
      */
-    public function save(&$document) {
+    public function save(&$document, $create = false) {
 
-        return isset($document['_id']) ? $this->update(array('_id' => $document['_id']), $document) : $this->insert($document);
+        if (isset($document['_id'])) {
+            $ret = $this->update(['_id' => $document['_id']], $document);
+
+            // insert document if document doesn't exist
+            if (!$ret && $create) {
+                $ret = $this->insert($document);
+            }
+
+        } else {
+            $ret = $this->insert($document);
+        }
+
+        return $ret;
     }
 
     /**

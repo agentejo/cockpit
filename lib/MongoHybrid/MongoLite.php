@@ -83,8 +83,8 @@ class MongoLite {
         return $this->getCollection($collection)->insert($doc);
     }
 
-    public function save($collection, &$data) {
-        return $this->getCollection($collection)->save($data);
+    public function save($collection, &$data, $create = false) {
+        return $this->getCollection($collection)->save($data, $create);
     }
 
     public function update($collection, $criteria, $data) {

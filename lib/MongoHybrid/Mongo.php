@@ -131,14 +131,19 @@ class Mongo {
         return $return;
     }
 
-    public function save($collection, &$data) {
+    public function save($collection, &$data, $create = false) {
 
         $data = $this->_fixMongoIds($data);
-
-        $ref = $data;
+        $ref  = $data;
 
         if (isset($data['_id'])) {
-            $return = $this->getCollection($collection)->updateOne(['_id' => $data['_id']], ['$set' => $ref]);
+
+            if ($create) {
+                $return = $this->getCollection($collection)->replaceOne(['_id' => $data['_id']], $ref, ['upsert' => true]);
+            } else {
+                $return = $this->getCollection($collection)->updateOne(['_id' => $data['_id']], ['$set' => $ref]);
+            }
+
         } else {
             $return = $this->getCollection($collection)->insertOne($ref);
             $ref['_id'] = $return->getInsertedId();
