@@ -334,7 +334,6 @@ class LiteDBQuery {
         $conditions = $this->buildConditions($conditions);
         $having     = $this->buildConditions($having);
 
-
         if ($limit) {
 
             $rt = '';
@@ -356,7 +355,18 @@ class LiteDBQuery {
         if (strlen(trim($group))>0) $group = "GROUP BY ".$group;
         if (strlen(trim($having))>0) $having = "HAVING ".$conditions;
         if (strlen(trim($fields))==0) $fields = "*";
-        if (strlen(trim($order))>0) $order = "ORDER BY ".$order;
+        if (strlen(trim($order))>0) {
+            
+            $driver = strtolower($this->connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
+
+            if ($driver == 'mysql') {
+                $order = str_replace(['RANDOM()'], ['RAND()'], $order);
+            } elseif ($driver == 'sqlite') {
+                $order = str_replace(['RAND()'], ['RANDOM()'], $order);
+            }
+
+            $order = "ORDER BY ".$order;
+        }
 
         $sql = trim("SELECT {$fields} FROM {$table} {$joins} {$conditions} {$group} {$having} {$order} {$limit}");
 
