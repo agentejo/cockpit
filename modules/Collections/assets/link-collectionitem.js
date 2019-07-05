@@ -22,10 +22,14 @@
                         v.display = 'n/a';
                     } else {
 
-                        var _entry  = data.entries[0];
-                        var display = field.options.display || 'name';
+                        var _entry  = data.entries[0], display = field.options.display;
 
-                        v.display = _entry[display] || _entry.title || 'n/a';
+                        if (!display) {
+                            display = _entry.name ? 'name':'title';
+                            v.display = _entry[display] || 'n/a';
+                        } else {
+                            v.display = App.Utils.interpolate(display, _entry);
+                        }
                     }
 
                     resolve(v.display)

@@ -432,9 +432,14 @@
                     return;
                 }
                 
-                var _entry = data.entries[0];
-                
-                link.display = _entry[opts.display] || _entry[$this.collection.fields[0].name] || 'n/a';
+                var _entry = data.entries[0], display = opts.display;
+
+                if (!display) {
+                    display = _entry.name ? 'name':'title';
+                    link.display = _entry[display] || 'n/a';
+                } else {
+                    link.display = App.Utils.interpolate(display, _entry);
+                }
                 
                 this.update();
 

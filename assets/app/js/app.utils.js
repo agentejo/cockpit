@@ -63,6 +63,12 @@
         return str;
     };
 
+    App.Utils.interpolate = function(str, params) {  
+        const names = Object.keys(params);
+        const vals = Object.values(params);
+        return new Function(...names, `return \`${str}\`;`)(...vals);
+    };
+
     App.Utils.copyText = function (text, cb) {
         var inp = document.createElement('textarea');
         document.body.appendChild(inp)
