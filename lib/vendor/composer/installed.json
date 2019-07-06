@@ -295,17 +295,17 @@
     },
     {
         "name": "league/flysystem",
-        "version": "1.0.51",
-        "version_normalized": "1.0.51.0",
+        "version": "1.0.53",
+        "version_normalized": "1.0.53.0",
         "source": {
             "type": "git",
             "url": "https://github.com/thephpleague/flysystem.git",
-            "reference": "755ba7bf3fb9031e6581d091db84d78275874396"
+            "reference": "08e12b7628f035600634a5e76d95b5eb66cea674"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/755ba7bf3fb9031e6581d091db84d78275874396",
-            "reference": "755ba7bf3fb9031e6581d091db84d78275874396",
+            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/08e12b7628f035600634a5e76d95b5eb66cea674",
+            "reference": "08e12b7628f035600634a5e76d95b5eb66cea674",
             "shasum": ""
         },
         "require": {
@@ -335,7 +335,7 @@
             "spatie/flysystem-dropbox": "Allows you to use Dropbox storage",
             "srmklive/flysystem-dropbox-v2": "Allows you to use Dropbox storage for PHP 5 applications"
         },
-        "time": "2019-03-30T13:22:34+00:00",
+        "time": "2019-06-18T20:09:29+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
