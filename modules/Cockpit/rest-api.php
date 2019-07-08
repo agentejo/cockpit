@@ -31,7 +31,8 @@ $this->on('before', function() {
         // api key check
         $allowed = false;
 
-        if (preg_match('/account-/', $token)) {
+        // is account token?
+        if ($token && preg_match('/account-/', $token)) {
 
             $account = $this->storage->findOne('cockpit/accounts', ['api_key' => $token]);
 
@@ -39,7 +40,13 @@ $this->on('before', function() {
                 $allowed = true;
                 $this->module('cockpit')->setUser($account, false);
             }
+        
+        // is jwt token?
+        } elseif ($token && preg_match('/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/', $token)) {
+        
+            // todo
 
+        // default
         } elseif ($token) {
 
             $apikeys = $this->module('cockpit')->loadApiKeys();
