@@ -28,7 +28,7 @@
                             display = _entry.name ? 'name':'title';
                             v.display = _entry[display] || 'n/a';
                         } else {
-                            v.display = App.Utils.interpolate(display, _entry);
+                            v.display = _entry[display] || App.Utils.interpolate(display, _entry);
                         }
                     }
 

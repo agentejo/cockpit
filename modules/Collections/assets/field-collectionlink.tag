@@ -438,7 +438,7 @@
                     display = _entry.name ? 'name':'title';
                     link.display = _entry[display] || 'n/a';
                 } else {
-                    link.display = App.Utils.interpolate(display, _entry);
+                    link.display = _entry[display] || App.Utils.interpolate(display, _entry);
                 }
                 
                 this.update();
