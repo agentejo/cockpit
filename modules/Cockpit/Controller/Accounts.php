@@ -220,13 +220,18 @@ class Accounts extends \Cockpit\AuthController {
 
             if (is_string($options['filter'])) {
 
-                $options['filter'] = [
-                    '$or' => [
-                        ['name' => ['$regex' => $options['filter']]],
-                        ['user' => ['$regex' => $options['filter']]],
-                        ['email' => ['$regex' => $options['filter']]],
-                    ]
-                ];
+                if ($filter = json_decode($options['filter'], true)) {
+                    $options['filter'] = $filter;
+                } else {
+
+                    $options['filter'] = [
+                        '$or' => [
+                            ['name' => ['$regex' => $options['filter']]],
+                            ['user' => ['$regex' => $options['filter']]],
+                            ['email' => ['$regex' => $options['filter']]],
+                        ]
+                    ];
+                }
             }
         }
 

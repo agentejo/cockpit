@@ -396,7 +396,12 @@ class Admin extends \Cockpit\AuthController {
         $collection = $this->app->module('collections')->collection($collection);
 
         if (isset($options['filter']) && is_string($options['filter'])) {
-            $options['filter'] = $this->_filter($options['filter'], $collection);
+
+            if ($filter = json_decode($options['filter'], true)) {
+                $options['filter'] = $filter;
+            } else {
+                $options['filter'] = $this->_filter($options['filter'], $collection);
+            }
         }
 
         $this->app->trigger("collections.admin.find.before.{$collection['name']}", [&$options]);
