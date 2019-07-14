@@ -410,7 +410,7 @@ if (COCKPIT_API_REQUEST) {
 }
 
 // ADMIN
-if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
+if (COCKPIT_ADMIN_CP) {
     include_once(__DIR__.'/admin.php');
 }
 

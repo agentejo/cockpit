@@ -11,13 +11,13 @@
 @tab-padding-horizontal:                        20px;
 @tab-padding-vertical:                          10px;
 @tab-margin-horizontal:                         10px;
-@tab-color:                                     @global-color;
+@tab-color:                                     @global-muted-color;
 @tab-hover-border:                              transparent;
 @tab-hover-background:                          transparent;
 @tab-hover-color:                               @global-link-hover-color;
 @tab-active-border:                             @global-primary-background;
 @tab-active-background:                         transparent;
-@tab-active-color:                              @global-link-color;
+@tab-active-color:                              @global-color;
 @tab-disabled-color:                            @global-muted-color;
 
 
@@ -56,7 +56,7 @@
 
 // Active
 .hook-tab-active() {
-
+    font-weight: bold;
     &:after { background: @tab-active-border; }
 
 }

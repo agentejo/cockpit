@@ -73,6 +73,7 @@ if (!defined('COCKPIT_SITE_DIR'))               define('COCKPIT_SITE_DIR'       
 if (!defined('COCKPIT_CONFIG_DIR'))             define('COCKPIT_CONFIG_DIR'     , COCKPIT_ENV_ROOT.'/config');
 if (!defined('COCKPIT_BASE_ROUTE'))             define('COCKPIT_BASE_ROUTE'     , $COCKPIT_BASE_ROUTE);
 if (!defined('COCKPIT_STORAGE_FOLDER'))         define('COCKPIT_STORAGE_FOLDER' , COCKPIT_ENV_ROOT.'/storage');
+if (!defined('COCKPIT_ADMIN_CP'))               define('COCKPIT_ADMIN_CP'       , COCKPIT_ADMIN && !COCKPIT_API_REQUEST ? 1 : 0);
 if (!defined('COCKPIT_PUBLIC_STORAGE_FOLDER'))  define('COCKPIT_PUBLIC_STORAGE_FOLDER' , COCKPIT_ENV_ROOT.'/storage');
 
 if (!defined('COCKPIT_CONFIG_PATH')) {

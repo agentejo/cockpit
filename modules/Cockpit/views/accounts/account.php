@@ -137,7 +137,7 @@
 
             <div class="uk-form-controls uk-margin-small-top">
                 <a class="uk-button { !account.active ? 'uk-button-danger':'uk-button-success' }" onclick="{ toggleactive }">
-                    { account.active ? 'Active' : 'Inactive' }
+                    { App.i18n.get(account.active ? 'Active' : 'Inactive') }
                 </a>
             </div>
 

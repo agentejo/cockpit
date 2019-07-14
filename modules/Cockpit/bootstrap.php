@@ -327,7 +327,7 @@ include_once(__DIR__.'/module/assets.php');
 
 
 // ADMIN
-if (COCKPIT_ADMIN && !COCKPIT_API_REQUEST) {
+if (COCKPIT_ADMIN_CP) {
 
     include_once(__DIR__.'/admin.php');
 
