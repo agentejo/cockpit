@@ -51,6 +51,8 @@ class Base extends \Cockpit\AuthController {
 
     public function search() {
 
+        \session_write_close();
+
         $query = $this->app->param('search', false);
         $list  = new \ArrayObject([]);
 

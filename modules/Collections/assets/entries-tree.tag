@@ -2,10 +2,6 @@
 
     <style media="screen">
 
-        .uk-nestable-item.uk-parent > div > div {
-            font-weight: bold;
-        }
-
         .uk-nestable-placeholder {
             opacity: .5;
         }
