@@ -312,7 +312,7 @@ class Utils extends \Lime\Helper {
         ], $options);
 
         if (!$result) {
-            $result = new ArrayObject([]);
+            $result = new \ArrayObject([]);
         }
 
         foreach ($items as $key => &$item) {
@@ -323,7 +323,7 @@ class Utils extends \Lime\Helper {
                 $result[] = $item;
                 $idx = \count($result) - 1;
                 unset($items[$key]);
-                $this->buildTreeList($items, $item[$options['id_column_name']], $result, $depth + 1, "{$path}{$item[$options['id_column_name']]}-");
+                $this->buildTreeList($items, $options, $item[$options['id_column_name']], $result, $depth + 1, "{$path}{$item[$options['id_column_name']]}-");
             }
         }
 
