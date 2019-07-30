@@ -61,7 +61,7 @@
                         <a>{ App.i18n.get(group || 'All') } <i class="uk-margin-small-left uk-icon-angle-down"></i></a>
                         <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-close">
                             <ul class="uk-nav uk-nav-dropdown">
-                            <li class="uk-nav-header">@lang('Groups')</li>  
+                            <li class="uk-nav-header">@lang('Groups')</li>
                             <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
                             <li class="uk-nav-divider"></li>
                             <li class="{ group==parent.group && 'uk-active'}" each="{group in _groups}" show="{ parent.groups[group].length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
@@ -163,7 +163,7 @@
                 </div>
             </div>
 
-            @trigger('collections.entry.aside')
+            @trigger('collections.entry.aside', [$collection['name']])
 
         </div>
 
@@ -260,13 +260,13 @@
 
             // lock resource
             var idle = setInterval(function() {
-                
+
                 if (!$this.entry._id) return;
 
                 Cockpit.lockResource($this.entry._id, function(e){
                     window.location.href = App.route('/collections/entry/'+$this.collection.name+'/'+$this.entry._id);
                 });
-                
+
                 clearInterval(idle);
 
             }, 60000);
