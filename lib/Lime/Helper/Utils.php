@@ -14,14 +14,14 @@ namespace Lime\Helper;
  * Class Utils
  * @package Lime\Helper
  */
-class Utils extends \Lime\Helper {
-
+class Utils extends \Lime\Helper
+{
     /**
      * @param $email
      * @param int $size
      * @return string
      */
-    public function gravatar($email, $size=40) {
+    public function gravatar($email, $size = 40) {
         return '//www.gravatar.com/avatar/'.\md5($email).'?d=mm&s='.$size;
     }
 
@@ -202,14 +202,14 @@ class Utils extends \Lime\Helper {
     }
 
     /**
-    * Truncate a string to a specified length without cutting a word off.
-    *
-    * @param   string  $string  The string to truncate
-    * @param   integer $length  The length to truncate the string to
-    * @param   string  $append  Text to append to the string IF it gets
-    *                           truncated, defaults to '...'
-    * @return  string
-    */
+     * Truncate a string to a specified length without cutting a word off.
+     *
+     * @param   string  $string  The string to truncate
+     * @param   integer $length  The length to truncate the string to
+     * @param   string  $append  Text to append to the string IF it gets
+     *                           truncated, defaults to '...'
+     * @return  string
+     */
     public function safe_truncate($string, $length, $append = '...') {
 
         $ret        = \substr($string, 0, $length);
@@ -227,16 +227,16 @@ class Utils extends \Lime\Helper {
     }
 
     /**
-    * Get content from url source.
-    *
-    * @param   string  $url
-    * @return  string
-    */
+     * Get content from url source.
+     *
+     * @param   string  $url
+     * @return  string
+     */
     public function url_get_contents($url) {
 
         $content = '';
 
-        if (\function_exists('curl_exec')){
+        if (\function_exists('curl_exec')) {
             $conn = \curl_init($url);
             \curl_setopt($conn, CURLOPT_SSL_VERIFYPEER, true);
             \curl_setopt($conn, CURLOPT_FRESH_CONNECT,  true);
@@ -248,10 +248,10 @@ class Utils extends \Lime\Helper {
             $content = (\curl_exec($conn));
             \curl_close($conn);
         }
-        if (!$content && \function_exists('file_get_contents')){
+        if (!$content && \function_exists('file_get_contents')) {
             $content = @\file_get_contents($url);
         }
-        if (!$content && \function_exists('fopen') && function_exists('stream_get_contents')){
+        if (!$content && \function_exists('fopen') && function_exists('stream_get_contents')) {
             $handle  = @\fopen ($url, "r");
             $content = @\stream_get_contents($handle);
         }
@@ -307,8 +307,8 @@ class Utils extends \Lime\Helper {
     public function buildTreeList($items, $options = [], $parent = null, $result = null, $depth = 0, $path = '-') {
 
         $options = \array_merge([
-              'parent_id_column_name' => '_pid',
-              'id_column_name' => '_id'
+            'parent_id_column_name' => '_pid',
+            'id_column_name' => '_id'
         ], $options);
 
         if (!$result) {
@@ -338,8 +338,9 @@ class Utils extends \Lime\Helper {
     }
 
     /**
-     * get access token from header
-     * */
+     * Get access token from header
+     * @return string|null
+     */
     public function getBearerToken() {
 
         $headers = null;

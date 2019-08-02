@@ -10,7 +10,11 @@
 
 namespace Lime\Helper;
 
-class Cookie extends \Lime\Helper {
+/**
+ * Cookie helper
+ */
+class Cookie extends \Lime\Helper
+{
     /**
      * @var array
      */
@@ -22,7 +26,7 @@ class Cookie extends \Lime\Helper {
     protected $_deleted_cookies = array();
 
     /**
-     * sets a cookie
+     * Sets a cookie
      *
      * @param string $name
      * @param string $value
@@ -45,7 +49,7 @@ class Cookie extends \Lime\Helper {
     }
 
     /**
-     * gets a cookie
+     * Gets a cookie
      *
      * @param string $name
      * @return mixed
@@ -66,7 +70,7 @@ class Cookie extends \Lime\Helper {
     }
 
     /**
-     * deletes a cookie
+     * Deletes a cookie
      *
      * @param string $name
      * @return bool
@@ -83,7 +87,7 @@ class Cookie extends \Lime\Helper {
     }
 
     /**
-     * gets a cookie and eats it
+     * Gets a cookie and eats it
      *
      * @param string $name
      * @return mixed

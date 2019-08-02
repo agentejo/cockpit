@@ -14,10 +14,10 @@ namespace LimeExtra;
  * Class App
  * @package LimeExtra
  */
-class App extends \Lime\App {
-
+class App extends \Lime\App
+{
     /**
-     * @param array $settings
+     * @inheritdoc
      */
     public function __construct ($settings = []) {
 
@@ -40,7 +40,7 @@ class App extends \Lime\App {
             $renderer = new \Lexy();
 
             //register app helper functions
-            $renderer->extend(function($content){
+            $renderer->extend(function($content) {
 
                 $replace = [
                     'extend'   => '<?php $extend(expr); ?>',
@@ -81,13 +81,12 @@ class App extends \Lime\App {
         }
     }
 
-
     /**
-    * Render view.
-    * @param  String $template Path to view
-    * @param  Array  $slots   Passed variables
-    * @return String               Rendered view
-    */
+     * Render view.
+     * @param  String $template Path to view
+     * @param  Array  $slots   Passed variables
+     * @return String               Rendered view
+     */
     public function view($template, $slots = []) {
 
         $this->trigger('app.render.view', [&$template, &$slots]);
@@ -144,7 +143,7 @@ class App extends \Lime\App {
 
     /**
      * Outputs view content result
-     * @param $template
+     * @param string $template
      * @param array $slots
      */
     public function renderView($template, $slots = []) {

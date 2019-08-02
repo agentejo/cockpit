@@ -12,9 +12,8 @@ namespace Lime\Helper;
 
 use claviska\SimpleImage;
 
-
-class Image extends \Lime\Helper {
-
+class Image extends \Lime\Helper
+{
     public function take($imgpath) {
 
         $img = new Img($imgpath);
@@ -23,8 +22,8 @@ class Image extends \Lime\Helper {
     }
 }
 
-class Img {
-
+class Img
+{
     protected $image;
 
     public function __construct($img) {
@@ -42,11 +41,11 @@ class Img {
         return $this;
     }
 
-    public function base64data($format=null, $quality=100) {
+    public function base64data($format = null, $quality = 100) {
         return $this->image->toDataUri($format, $quality);
     }
 
-    public function show($format=null, $quality=100) {
+    public function show($format = null, $quality = 100) {
         $this->image->toScreen($format, $quality);
     }
 

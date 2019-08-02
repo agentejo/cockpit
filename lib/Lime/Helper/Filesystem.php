@@ -10,10 +10,13 @@
 
 namespace Lime\Helper;
 
-
-class Filesystem extends \Lime\Helper {
-
+/**
+ * Filesystem helper
+ */
+class Filesystem extends \Lime\Helper
+{
     /**
+     * @param string $path
      * @return mixed
      */
     public function path($path) {
@@ -21,6 +24,7 @@ class Filesystem extends \Lime\Helper {
     }
 
     /**
+     * ls
      * @return array
      */
     public function ls() {
@@ -30,7 +34,7 @@ class Filesystem extends \Lime\Helper {
         $args = \func_get_args();
         $lst  = [];
 
-        switch(\count($args)){
+        switch(\count($args)) {
             case 0:
                 $dir = \getcwd();
             case 1:
@@ -109,7 +113,7 @@ class Filesystem extends \Lime\Helper {
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @param int $mode
      * @return bool
      */
@@ -130,7 +134,7 @@ class Filesystem extends \Lime\Helper {
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @throws \Exception
      */
     public function delete($path) {
@@ -153,8 +157,8 @@ class Filesystem extends \Lime\Helper {
     }
 
     /**
-     * @param $path
-     * @param $dest
+     * @param string $path
+     * @param string $dest
      * @param bool|true $_init
      * @return bool
      */
@@ -194,8 +198,8 @@ class Filesystem extends \Lime\Helper {
     }
 
     /**
-     * @param $path
-     * @param $newpath
+     * @param strin $path
+     * @param string $newpath
      * @param bool|true $overwrite
      * @return bool
      * @throws \Exception
@@ -222,7 +226,7 @@ class Filesystem extends \Lime\Helper {
     }
 
     /**
-     * @param $dir
+     * @param strng $dir
      * @return int
      */
     public function getDirSize($dir) {
@@ -245,7 +249,7 @@ class Filesystem extends \Lime\Helper {
     }
 
     /**
-     * @param $dir
+     * @param string $dir
      * @param bool|false $selfremove
      * @return bool
      */
@@ -269,9 +273,8 @@ class Filesystem extends \Lime\Helper {
 /**
  * Use custom FileObject to prevent "too many files open" error
  */
-
-class FileObject {
-
+class FileObject
+{
     protected $path;
     protected $fileObject;
 
@@ -311,7 +314,7 @@ class FileObject {
 
 
 if (!function_exists('fnmatch')) {
-    function fnmatch($pattern, $string){
+    function fnmatch($pattern, $string) {
         return \preg_match("#^".\strtr(\preg_quote($pattern, '#'), ['\*' => '.*', '\?' => '.'])."$#i", $string);
     }
 }

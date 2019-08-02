@@ -16,15 +16,14 @@ namespace Lime\Helper;
  */
 class SimpleAcl
 {
-
-
     protected $resources = [];
     protected $groups    = [];
     protected $rights    = [];
     protected $vars      = [];
 
     /**
-     * @param $group
+     * Check if group is super admin
+     * @param string $group
      * @param bool
      */
     public function isSuperAdmin($group)
@@ -33,7 +32,8 @@ class SimpleAcl
     }
 
     /**
-     * @param $resource
+     * Add resource
+     * @param string $resource
      * @param array $actions
      */
     public function addResource($resource, $actions = [])
@@ -42,7 +42,8 @@ class SimpleAcl
     }
 
     /**
-     * @param $name
+     * Add group
+     * @param string $name
      * @param bool|false $isSuperAdmin
      */
     public function addGroup($name, $isSuperAdmin = false, $vars = [])
@@ -52,7 +53,8 @@ class SimpleAcl
     }
 
     /**
-     * @param $group
+     * Has group
+     * @param string $group
      * @return bool
      */
     public function hasGroup($group)
@@ -61,6 +63,7 @@ class SimpleAcl
     }
 
     /**
+     * Get groups
      * @return array
      */
     public function getGroups()
@@ -69,6 +72,7 @@ class SimpleAcl
     }
 
     /**
+     * Get resources
      * @return array
      */
     public function getResources()
@@ -77,6 +81,8 @@ class SimpleAcl
     }
 
     /**
+     * Get variables
+     * @param string $group
      * @return array
      */
     public function getVars($group)
@@ -85,6 +91,10 @@ class SimpleAcl
     }
 
     /**
+     * Get variable
+     * @param string $group
+     * @param string $key
+     * @param mixed $default
      * @return mixed
      */
     public function getVar($group, $key, $default = null)
@@ -93,13 +103,13 @@ class SimpleAcl
     }
 
     /**
-     * @param $group
-     * @param $resource
+     * Allow group to access resource actions
+     * @param string $group
+     * @param string $resource
      * @param array $actions
      */
     public function allow($group, $resource, $actions = [])
     {
-
         $actions = (array)$actions;
 
         if (!count($actions)) {
@@ -113,13 +123,13 @@ class SimpleAcl
     }
 
     /**
-     * @param $group
-     * @param $resource
+     * Deny group to access resource actions
+     * @param string $group
+     * @param string $resource
      * @param array $actions
      */
     public function deny($group, $resource, $actions = [])
     {
-
         $actions = (array)$actions;
 
         if (!count($actions)) {
@@ -135,8 +145,9 @@ class SimpleAcl
     }
 
     /**
-     * @param $group
-     * @param $resource
+     * Get group resource rights
+     * @param string $group
+     * @param string $resource
      * @return mixed
      */
     public function getGroupRights($group, $resource)
@@ -149,9 +160,10 @@ class SimpleAcl
     }
 
     /**
-     * @param $groups
-     * @param $resource
-     * @param $actions
+     * Check if group has access to resource actions
+     * @param string $groups
+     * @param string $resource
+     * @param array|string $actions
      * @return bool
      */
     public function hasaccess($groups, $resource, $actions)
@@ -178,5 +190,4 @@ class SimpleAcl
 
         return false;
     }
-
 }

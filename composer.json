@@ -31,5 +31,12 @@
     "config": {
         "vendor-dir": "lib/vendor",
         "optimize-autoloader": true
+    },
+
+    "scripts": {
+        "php-cs-fix": "php-cs-fixer fix"
+    },
+    "scripts-descriptions": {
+        "php-cs-fix": "Fix PHP CS issues"
     }
 }
