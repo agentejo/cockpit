@@ -1409,8 +1409,7 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
 
         this.load = function() {
 
-            var _src = opts.src || opts.riotSrc || opts['riot-src'];
-            var mode = opts.mode || 'bestFit';
+            var _src = opts.src || opts.riotSrc || opts['riot-src'], mode = opts.mode || 'bestFit', img;
 
             if (!_src || src === _src) {
                 return;
@@ -1419,6 +1418,18 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
             this.refs.spinner.style.display = '';
 
             src = _src;
+            img = new Image();
+
+            img.onload = function() {
+
+                setTimeout(function() {
+                    $this.updateCanvasDim(img)
+                }, 0);
+            }
+
+            img.onerror = function() {
+
+            }
 
             requestAnimationFrame(function() {
 
@@ -1427,7 +1438,7 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
                     src = _src;
 
                     setTimeout(function() {
-                        $this.updateCanvasDim(_src)
+                        img.src = _src;
                     }, 50);
 
                     return;
@@ -1439,19 +1450,6 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
                     url = _src;
                 } else {
                     url = App.route(`/cockpit/utils/thumb_url?src=${_src}&w=${opts.width}&h=${opts.height}&m=${mode}&o=1`);
-                }
-
-                var img = new Image();
-
-                img.onload = function() {
-
-                    setTimeout(function() {
-                        $this.updateCanvasDim(img)
-                    }, 0);
-                }
-
-                img.onerror = function() {
-
                 }
 
                 img.src = url;
