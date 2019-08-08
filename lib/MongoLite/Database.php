@@ -163,6 +163,9 @@ class Database {
      */
     public function dropCollection($name) {
         $this->connection->exec("DROP TABLE `{$name}`");
+
+        // Remove collection from cache
+        unset($this->collections[$name]);
     }
 
     /**
