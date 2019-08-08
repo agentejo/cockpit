@@ -406,8 +406,7 @@ class UtilArrayQuery {
             case '$mod' :
                 if (! \is_array($b))
                     throw new \InvalidArgumentException('Invalid argument for $mod option must be array');
-                $x = array_keys($b)[0];
-                $r = $a % $x == 0;
+                $r = $a % $b[0] == $b[1] ?? 0;
                 break;
 
             case '$func' :
