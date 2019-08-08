@@ -84,7 +84,11 @@ class Mailer {
 
         $mail->IsHTML($message !=  strip_tags($message)); // auto-set email format to HTML
 
-        $to_array = explode(',', $to);
+        if (is_string($to)) {
+            $to_array = explode(',', $to);
+        } else {
+            $to_array = $to ?? [];
+        }
 
         foreach ($to_array as $to_single) {
             $mail->addAddress($to_single);
