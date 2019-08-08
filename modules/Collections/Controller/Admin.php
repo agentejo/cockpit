@@ -318,6 +318,27 @@ class Admin extends \Cockpit\AuthController {
             return false;
         }
 
+        $items = $this->module('collections')->find($collection['name'], ['filter' => $filter]);
+
+        if (count($items)) {
+            
+            $trashItems = [];
+            $time = time();
+            $by = $this->module('cockpit')->getUser('_id');
+
+            foreach ($items as $item) {
+
+                $trashItems[] = [
+                    'collection' => $collection['name'],
+                    'data' => $item,
+                    '_by' => $by,
+                    '_created' => $time
+                ];
+            }
+
+            $this->app->getCollection('collections/_trash')->insertMany($trashItems);
+        }
+
         $this->module('collections')->remove($collection['name'], $filter);
 
         return true;
