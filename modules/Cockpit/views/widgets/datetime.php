@@ -22,7 +22,7 @@
         </style>
 
         <div class="uk-panel-box-header">
-            <strong class="uk-h2 uk-text-uppercase">{{ date('d. M Y') }}</strong>
+            <strong class="uk-h3 uk-text-uppercase">{{ date('d. M Y') }}</strong>
         </div>
 
         <div id="{{ $uid }}" class="uk-grid">
