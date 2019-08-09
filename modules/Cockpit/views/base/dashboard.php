@@ -22,8 +22,8 @@
                 <hr>
 
                 <div class="uk-flex uk-flex-middle">
-                    <span class="uk-badge uk-badge-outline uk-text-primary uk-margin-small-right">{{ $app['user/group'] }}</span>
-                    <a class="uk-button uk-button-link uk-text-muted" href="@route('/accounts/account')"><img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/settings.svg')" width="20" height="20" data-uk-svg /> @lang('Account')</a>
+                    <span class="uk-badge uk-margin-small-right">{{ $app['user/group'] }}</span>
+                    <a class="uk-button uk-button-link uk-link-muted" href="@route('/accounts/account')"><img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/settings.svg')" width="20" height="20" data-uk-svg /> @lang('Account')</a>
                 </div>
 
             </div>
