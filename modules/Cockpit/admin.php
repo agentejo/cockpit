@@ -186,7 +186,7 @@ $app->on('cockpit.search', function($search, $list) {
 
 $app->on('admin.dashboard.widgets', function($widgets) {
 
-    $title   = $this('i18n')->get('Today');
+    $title = $this('i18n')->get('Today');
 
     $widgets[] = [
         'name'    => 'time',

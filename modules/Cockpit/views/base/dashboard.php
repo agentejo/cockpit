@@ -21,9 +21,9 @@
 
                 <hr>
 
-                <div>
+                <div class="uk-flex uk-flex-middle">
                     <span class="uk-badge uk-badge-outline uk-text-primary uk-margin-small-right">{{ $app['user/group'] }}</span>
-                    <a class="uk-button uk-button-link uk-text-muted" href="@route('/accounts/account')"><img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/settings.svg')" width="20" height="20" data-uk-svg alt="assets" /> @lang('Account')</a>
+                    <a class="uk-button uk-button-link uk-text-muted" href="@route('/accounts/account')"><img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/settings.svg')" width="20" height="20" data-uk-svg /> @lang('Account')</a>
                 </div>
 
             </div>
@@ -31,9 +31,17 @@
             <div class="uk-width-medium-1-2">
 
                 @if($app('admin')->data['menu.modules']->count())
+
+                {%
+                    $modules = $app('admin')->data['menu.modules']->getArrayCopy();
+
+                    usort($modules, function($a, $b) {
+                        return mb_strtolower($a['label']) <=> mb_strtolower($b['label']);
+                    });    
+                %}
                 <ul class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-text-center" data-uk-grid-margin>
 
-                    @foreach($app('admin')->data['menu.modules'] as $item)
+                    @foreach($modules as $item)
                     <li class="uk-width-1-2 uk-width-medium-1-4 uk-width-xlarge-1-5" data-route="{{ $item['route'] }}">
                         <a class="uk-display-block uk-panel-box uk-panel-card-hover" href="@route($item['route'])">
                             <div class="uk-svg-adjust">

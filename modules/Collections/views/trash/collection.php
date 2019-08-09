@@ -86,7 +86,7 @@
 
         </div>
 
-        <table class="uk-table uk-table-tabbed uk-table-striped uk-margin-large-top">
+        <table class="uk-table uk-table-tabbed uk-table-striped uk-margin-top">
             <thead>
                 <tr>
                     <th width="20"><input class="uk-checkbox" type="checkbox" data-check="all"></th>

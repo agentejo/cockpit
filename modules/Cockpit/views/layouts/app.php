@@ -7,6 +7,13 @@
         if (trim($part)) $_title[] = $app('i18n')->get(ucfirst($part));
     }
 
+    // sort modules by label
+    $modules = $app('admin')->data['menu.modules']->getArrayCopy();
+
+    usort($modules, function($a, $b) {
+        return mb_strtolower($a['label']) <=> mb_strtolower($b['label']);
+    });
+
 ?><!doctype html>
 <html lang="{{ $app('i18n')->locale }}" data-base="@base('/')" data-route="@route('/')" data-version="{{ $app['cockpit/version'] }}" data-locale="{{ $app('i18n')->locale }}">
 <head>
@@ -99,7 +106,7 @@
                                         @if($app('admin')->data['menu.modules']->count())
                                         <ul class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-gutter uk-text-center">
 
-                                            @foreach($app('admin')->data['menu.modules'] as $item)
+                                            @foreach($modules as $item)
                                             <li class="uk-width-1-2 uk-width-medium-1-3" data-route="{{ $item['route'] }}">
                                                 <a class="uk-display-block uk-panel-box {{ (@$item['active']) ? 'uk-bg-primary uk-contrast':'uk-panel-framed' }}" href="@route($item['route'])">
                                                     <div class="uk-svg-adjust">
@@ -136,7 +143,7 @@
                     @if($app('admin')->data['menu.modules']->count())
                     <div class="uk-hidden-small">
                         <ul class="uk-subnav app-modulesbar">
-                            @foreach($app('admin')->data['menu.modules'] as $item)
+                            @foreach($modules as $item)
                             <li>
                                 <a class="uk-svg-adjust {{ (@$item['active']) ? 'uk-active':'' }}" href="@route($item['route'])" title="@lang($item['label'])" aria-label="@lang($item['label'])" data-uk-tooltip="offset:10">
                                     @if(preg_match('/\.svg$/i', $item['icon']))
