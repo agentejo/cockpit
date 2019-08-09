@@ -61,9 +61,9 @@
 
                     <div class="uk-grid uk-grid-small">
 
-                        <div data-uk-dropdown="delay:300">
+                        <div data-uk-dropdown="mode:'click'">
 
-                            <a aria-label="@lang('Edit form')" class="uk-icon-cog" style="color:{ (form.meta.color) }" href="@route('/forms/form')/{ form.name }"></a>
+                            <a aria-label="@lang('Edit form')" class="uk-icon-cog" style="color:{ (form.meta.color) }"></a>
 
                             <div class="uk-dropdown">
                                 <ul class="uk-nav uk-nav-dropdown">

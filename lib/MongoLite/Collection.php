@@ -44,6 +44,16 @@ class Collection {
     }
 
     /**
+     * Insert many documents
+     *
+     * @param array $documents
+     * @return count of inserted documents for arrays
+     */
+    public function insertMany($documents) {
+        return $this->insert($documents);
+    }
+
+    /**
      * Insert document
      *
      * @param  array $document

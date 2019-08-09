@@ -336,7 +336,7 @@ class Admin extends \Cockpit\AuthController {
                 ];
             }
 
-            $this->app->getCollection('collections/_trash')->insertMany($trashItems);
+            $this->app->storage->getCollection('collections/_trash')->insertMany($trashItems);
         }
 
         $this->module('collections')->remove($collection['name'], $filter);

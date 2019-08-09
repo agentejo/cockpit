@@ -41,6 +41,8 @@ function CollectionHasFieldAccess(field) {
                     <li class="uk-nav-header">@lang('Actions')</li>
                     <li><a href="@route('/collections/collection/'.$collection['name'])">@lang('Edit')</a></li>
                     <li class="uk-nav-divider"></li>
+                    <li><a href="@route('/collections/trash/collection/'.$collection['name'])">@lang('Trash')</a></li>
+                    <li class="uk-nav-divider"></li>
                     <li class="uk-text-truncate"><a href="@route('/collections/export/'.$collection['name'])" download="{{ $collection['name'] }}.collection.json">@lang('Export entries')</a></li>
                     <li class="uk-text-truncate"><a href="@route('/collections/import/collection/'.$collection['name'])">@lang('Import entries')</a></li>
                 </ul>

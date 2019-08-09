@@ -311,7 +311,6 @@
         var $this = this, $root = App.$(this.root);
 
         this.collection = {{ json_encode($collection) }};
-        this.loadmore   = false;
         this.loading    = true;
         this.count      = 0;
         this.page       = 1;
@@ -495,8 +494,6 @@
                 this.pages   = data.pages;
                 this.page    = data.page;
                 this.count   = data.count;
-
-                this.loadmore = data.entries.length && data.entries.length == this.limit;
 
                 this.checkselected();
                 this.loading = false;

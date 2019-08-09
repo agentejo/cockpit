@@ -73,10 +73,9 @@
 
                     <div class="uk-grid uk-grid-small">
 
-                        <div data-uk-dropdown="delay:300">
+                        <div data-uk-dropdown="mode:'click'">
 
-                            <a aria-label="{App.i18n.get('Edit singleton')}" class="uk-icon-cog" style="color: { (singleton.meta.color) }" href="@route('/singletons/singleton')/{ singleton.name }" if="{ singleton.meta.allowed.singleton_edit }"></a>
-                            <a class="uk-icon-cog" style="color: { (singleton.meta.color) }" if="{ !singleton.meta.allowed.singleton_edit }"></a>
+                            <a class="uk-icon-cog" style="color: { (singleton.meta.color) }"></a>
 
                             <div class="uk-dropdown">
                                 <ul class="uk-nav uk-nav-dropdown">

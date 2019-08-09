@@ -70,10 +70,9 @@
 
                     <div class="uk-grid uk-grid-small">
 
-                        <div data-uk-dropdown="delay:300">
+                        <div data-uk-dropdown="mode:'click'">
 
-                            <a aria-label="@lang('Edit collection')" class="uk-icon-cog" style="color:{ (collection.meta.color) }" href="@route('/collections/collection')/{ collection.name }" if="{ collection.meta.allowed.edit }"></a>
-                            <a class="uk-icon-cog" style="color:{ (collection.meta.color) }" if="{ !collection.meta.allowed.edit }"></a>
+                            <a class="uk-icon-cog" style="color:{ (collection.meta.color) }"></a>
 
                             <div class="uk-dropdown">
                                 <ul class="uk-nav uk-nav-dropdown">
@@ -85,6 +84,8 @@
                                     @hasaccess?('collections', 'delete')
                                     <li class="uk-nav-item-danger" if="{ collection.meta.allowed.delete }"><a class="uk-dropdown-close" onclick="{ parent.remove }">@lang('Delete')</a></li>
                                     @end
+                                    <li class="uk-nav-divider" if="{ collection.meta.allowed.edit }"></li>
+                                    <li><a href="@route('/collections/trash/collection')/{collection.name}">@lang('Trash')</a></li>
                                     <li class="uk-nav-divider" if="{ collection.meta.allowed.edit }"></li>
                                     <li class="uk-text-truncate" if="{ collection.meta.allowed.edit }"><a href="@route('/collections/export')/{ collection.name }" download="{ collection.meta.name }.collection.json">@lang('Export entries')</a></li>
                                     <li class="uk-text-truncate" if="{ collection.meta.allowed.edit }"><a href="@route('/collections/import/collection')/{ collection.name }">@lang('Import entries')</a></li>

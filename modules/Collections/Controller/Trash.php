@@ -19,12 +19,88 @@ class Trash extends \Cockpit\AuthController {
             return null;
         }
 
-        if (!$this->module('collections')->hasaccess($name, 'entries_create')) {
+        $collection = $this->module('collections')->collection($name);
+
+        if (!$collection) return false;
+
+        if (!$this->module('collections')->hasaccess($collection['name'], 'entries_delete')) {
             return $this->helper('admin')->denyRequest();
         }
 
-        $collection = $this->module('collections')->collection($name);
-
         return $this->render('collections:views/trash/collection.php', compact('collection'));
+    }
+
+    public function find() {
+
+        \session_write_close();
+
+        $collection = $this->app->param('collection');
+        $options    = $this->app->param('options');
+
+        if (!$collection) return false;
+
+        $collection = $this->app->module('collections')->collection($collection);
+
+        if (!$collection) return false;
+
+        $options['sort'] = ['_created' => -1];
+
+        $options['filter'] = [
+            'collection' => $collection['name']
+        ];
+
+        $entries = $this->app->storage->find('collections/_trash', $options)->toArray();
+
+        $count = $this->app->storage->count('collections/_trash', $options['filter']);
+        $pages = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
+        $page  = 1;
+
+        if ($pages > 1 && isset($options['skip'])) {
+            $page = ceil($options['skip'] / $options['limit']) + 1;
+        }
+
+        return compact('entries', 'count', 'pages', 'page');
+    }
+
+    public function empty($collection) {
+
+        $collection = $this->app->module('collections')->collection($collection);
+
+        if (!$collection) return false;
+
+        if (!$this->module('collections')->hasaccess($collection['name'], 'entries_delete')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        $filter = [
+            'collection' => $collection['name']
+        ];
+
+        $this->app->storage->remove('collections/_trash', $filter);
+
+        return ['success' => true];
+    }
+
+    public function delete($collection) {
+
+        $collection = $this->module('collections')->collection($collection);
+
+        if (!$collection) {
+            return false;
+        }
+
+        if (!$this->module('collections')->hasaccess($collection['name'], 'entries_delete')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        $filter = $this->param('filter', false);
+
+        if (!$filter) {
+            return false;
+        }
+
+        $this->app->storage->remove('collections/_trash', $filter);
+
+        return true;
     }
 }
