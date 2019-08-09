@@ -94,12 +94,12 @@
 
                                 </label>
 
-                                <div class="uk-margin uk-text-small uk-text-muted">
-                                    { field.info || ' ' }
-                                </div>
-
                                 <div class="uk-margin">
                                     <cp-field type="{field.type || 'text'}" bind="{ parent.getBindValue(field) }" opts="{ field.options || {} }"></cp-field>
+                                </div>
+
+                                <div class="uk-margin uk-text-small uk-text-muted">
+                                    { field.info || ' ' }
                                 </div>
 
                             </cp-fieldcontainer>

@@ -1,3 +1,9 @@
+<style>
+@if($collection['color'])
+.app-header { border-top: 8px {{ $collection['color'] }} solid; }
+@endif
+</style>
+
 <div>
 
     <ul class="uk-breadcrumb">
@@ -24,7 +30,6 @@
 
 </div>
 
-
 <div riot-view>
 
 
@@ -36,10 +41,15 @@
 
     </div>
 
-    <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-flex uk-flex-center uk-flex-middle" if="{ !loading && !entries.length }">
+    <div class="uk-width-medium-1-3 uk-viewport-height-1-2 uk-container-center uk-text-center uk-text-muted uk-flex uk-flex-center uk-flex-middle" if="{ !loading && !entries.length }">
 
-        <div class="uk-animation-scale uk-text-muted uk-h1">
-            @lang('Empty')
+        <div class="uk-animation-scale">
+
+            <img class="uk-svg-adjust" src="@url('assets:app/media/icons/misc/trash.svg')" width="80" alt="icon" data-uk-svg>
+            
+            <div class="uk-h1 uk-margin-top">
+                @lang('Trash is empty')
+            </div>
         </div>
 
     </div>
@@ -47,6 +57,19 @@
     <div if="{ !loading && entries.length }">
 
         <div class="uk-margin uk-flex uk-flex-right uk-flex-middle">
+            
+            <div class="uk-flex-item-1 uk-flex uk-flex-middle">
+
+                <div class="uk-margin-small-right">
+                    <img class="uk-svg-adjust" src="@url('assets:app/media/icons/misc/trash.svg')" width="50" alt="icon" data-uk-svg>
+                </div>
+
+                <h3>
+                    <strong>{{ htmlspecialchars(@$collection['label'] ? $collection['label']:$collection['name']) }}</strong>
+                    @lang('Trash')
+                </h3>
+            </div>
+
 
             <div class="uk-display-inline-block uk-margin-small-right" data-uk-dropdown="mode:'click'" if="{ selected.length }">
                 <button class="uk-button uk-button-large uk-animation-fade">@lang('Batch Action') <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span></button>
@@ -59,7 +82,7 @@
                 </div>
             </div>
 
-            <button type="button" class="uk-button uk-button-large uk-button-danger" onclick="{ emptyTrash }">@lang('Empty Trash')</button>
+            <button type="button" class="uk-button uk-button-large uk-button-danger uk-flex uk-flex-middle" onclick="{ emptyTrash }">@lang('Empty Trash') <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ count }</span></button>
 
         </div>
 

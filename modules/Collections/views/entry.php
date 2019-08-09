@@ -97,12 +97,12 @@
 
                             </label>
 
-                            <div class="uk-margin uk-text-small uk-text-muted">
-                                { field.info || ' ' }
-                            </div>
-
                             <div class="uk-margin">
                                 <cp-field type="{field.type || 'text'}" bind="entry.{ field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" opts="{ field.options || {} }"></cp-field>
+                            </div>
+
+                            <div class="uk-margin uk-text-small uk-text-muted">
+                                { field.info || ' ' }
                             </div>
 
                         </cp-fieldcontainer>
