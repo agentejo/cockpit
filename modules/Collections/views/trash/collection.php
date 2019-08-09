@@ -258,12 +258,72 @@
             });
         }
 
-        recycle() {
+        recycle(e) {
+            
+            var entry = e.item.entry, idx = e.item.idx;
 
+            App.ui.confirm("Are you sure?", function() {
+
+                App.request('/collections/trash/recycle/'+$this.collection.name, {filter: {'_id':entry._id}}).then(function(data) {
+
+                    App.ui.notify('Item recycled', 'success');
+
+                    $this.entries.splice(idx, 1);
+
+                    if ($this.pages > 1 && !$this.entries.length) {
+                        $this.page = $this.page == 1 ? 1 : $this.page - 1;
+                        $this.load();
+                        return;
+                    }
+
+                    $this.update();
+                    $this.checkselected();
+                });
+
+            }.bind(this));
         }
 
         recycleSelected() {
 
+            if (!this.selected.length) {
+                return;
+            }
+
+            App.ui.confirm('Are you sure?', function() {
+
+                var promises = [];
+
+                this.entries = this.entries.filter(function(entry, yepp){
+
+                    yepp = ($this.selected.indexOf(entry._id) === -1);
+
+                    if (!yepp) {
+                        promises.push(App.request('/collections/trash/recycle/'+$this.collection.name, {filter: {'_id':entry._id}}));
+                    }
+
+                    return yepp;
+                });
+
+                Promise.all(promises).then(function(){
+
+                    App.ui.notify(promises.length > 1 ? (promises.length + ' items recycled') : 'Item recycled', 'success');
+
+                    $this.loading = false;
+
+                    if ($this.pages > 1 && !$this.entries.length) {
+                        $this.page = $this.page == 1 ? 1 : $this.page - 1;
+                        $this.load();
+                    } else {
+                        $this.update();
+                    }
+
+                });
+
+                this.loading = true;
+                this.update();
+                this.checkselected(true);
+
+            }.bind(this));
         }
 
         remove(e) {
@@ -314,7 +374,7 @@
 
                 Promise.all(promises).then(function(){
 
-                    App.ui.notify(promises.length > 1 ? (promises.length + " entries removed") : "Entry removed", "success");
+                    App.ui.notify(promises.length > 1 ? (promises.length + " items removed") : "Item removed", "success");
 
                     $this.loading = false;
 

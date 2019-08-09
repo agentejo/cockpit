@@ -94,9 +94,42 @@ class Trash extends \Cockpit\AuthController {
         }
 
         $filter = $this->param('filter', false);
+        
+        if (!$filter) {
+            return false;
+        }
+        
+        $filter['collection'] = $collection['name'];
+
+        $this->app->storage->remove('collections/_trash', $filter);
+
+        return true;
+    }
+
+    public function recycle($collection) {
+
+        $collection = $this->module('collections')->collection($collection);
+
+        if (!$collection) {
+            return false;
+        }
+
+        if (!$this->module('collections')->hasaccess($collection['name'], 'entries_delete')) {
+            return $this->helper('admin')->denyRequest();
+        }
+
+        $filter = $this->param('filter', false);
 
         if (!$filter) {
             return false;
+        }
+
+        $filter['collection'] = $collection['name'];
+
+        $items = $this->app->storage->find('collections/_trash', ['filter' => $filter])->toArray();
+
+        foreach ($items as $item) {
+            $this->app->storage->insert("collections/{$collection['_id']}", $item['data']);
         }
 
         $this->app->storage->remove('collections/_trash', $filter);

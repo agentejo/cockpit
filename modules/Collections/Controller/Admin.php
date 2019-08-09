@@ -25,7 +25,8 @@ class Admin extends \Cockpit\AuthController {
                 'delete' => $this->module('cockpit')->hasaccess('collections', 'delete'),
                 'create' => $this->module('cockpit')->hasaccess('collections', 'create'),
                 'edit' => $this->module('collections')->hasaccess($collection, 'collection_edit'),
-                'entries_create' => $this->module('collections')->hasaccess($collection, 'collection_create')
+                'entries_create' => $this->module('collections')->hasaccess($collection, 'collection_create'),
+                'entries_delete' => $this->module('collections')->hasaccess($collection, 'entries_delete'),
             ];
 
             $collections[] = [
