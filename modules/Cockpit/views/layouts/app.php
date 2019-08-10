@@ -68,7 +68,7 @@
                                     <div class="uk-width-medium-1-3">
 
                                         <div class="uk-margin">
-                                            <span class="uk-badge uk-badge-outline uk-text-primary">@lang('System')</span>
+                                            <span class="uk-text-upper uk-text-small uk-text-bold">@lang('System')</span>
                                         </div>
 
                                         <ul class="uk-nav uk-nav-side uk-nav-dropdown app-nav">
@@ -100,7 +100,7 @@
                                     <div class="uk-grid-margin uk-width-medium-2-3">
 
                                         <div class="uk-margin">
-                                            <span class="uk-badge uk-badge-outline uk-text-primary">@lang('Modules')</span>
+                                            <span class="uk-text-upper uk-text-small uk-text-bold">@lang('Modules')</span>
                                         </div>
 
                                         @if($app('admin')->data['menu.modules']->count())

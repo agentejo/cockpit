@@ -1,44 +1,71 @@
 
-@if($singleton['color'])
 <style>
+    @if($singleton['color'])
     .app-header { border-top: 8px {{ $singleton['color'] }} solid; }
+    @endif
 </style>
-@endif
 
 <script>
     window.__singletonData = {{ json_encode($data) }} || {};
 </script>
 
-<div>
+<div riot-view>
 
-    <ul class="uk-breadcrumb">
-        <li><a href="@route('/singletons')">@lang('Singletons')</a></li>
-        <li class="uk-active" data-uk-dropdown>
+    <div class="header-sub-panel">
 
-            <a><i class="uk-icon-bars"></i> {{ htmlspecialchars(@$singleton['label'] ? $singleton['label']:$singleton['name']) }}</a>
+        <div class="uk-container uk-container-center">
+            <ul class="uk-breadcrumb">
+                <li><a href="@route('/singletons')">@lang('Singletons')</a></li>
+                <li class="uk-active" data-uk-dropdown>
 
-            @if($app->module('singletons')->hasaccess($singleton['name'], 'edit'))
-            <div class="uk-dropdown">
-                <ul class="uk-nav uk-nav-dropdown">
-                    <li class="uk-nav-header">@lang('Actions')</li>
-                    <li><a href="@route('/singletons/singleton/'.$singleton['name'])">@lang('Edit')</a></li>
-                </ul>
+                    <a><i class="uk-icon-bars"></i> {{ htmlspecialchars(@$singleton['label'] ? $singleton['label']:$singleton['name']) }}</a>
+
+                    @if($app->module('singletons')->hasaccess($singleton['name'], 'edit'))
+                    <div class="uk-dropdown">
+                        <ul class="uk-nav uk-nav-dropdown">
+                            <li class="uk-nav-header">@lang('Actions')</li>
+                            <li><a href="@route('/singletons/singleton/'.$singleton['name'])">@lang('Edit')</a></li>
+                        </ul>
+                    </div>
+                    @endif
+
+                </li>
+            </ul>
+
+            <div class="uk-h3 uk-flex uk-flex-middle uk-text-bold">
+                <div class="uk-margin-small-right">
+                    <img src="@url($singleton['icon'] ? 'assets:app/media/icons/'.$singleton['icon']:'singletons:icon.svg')" width="40" alt="icon">
+                </div>
+                { singleton.label || singleton.name }
             </div>
-            @endif
+        </div>
 
-        </li>
-    </ul>
+        <ul class="uk-tab header-sub-panel-tab uk-flex uk-flex-center" divider="true" if="{ App.Utils.count(_groups) > 1 && App.Utils.count(_groups) < 6 }">
+            <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
+            <li class="{ group==parent.group && 'uk-active'}" each="{group, idx in _groups}" show="{ parent.groups[group].length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+        </ul>
 
-    <div class="uk-margin-top" riot-view>
+        <ul class="uk-tab header-sub-panel-tab uk-flex uk-flex-center" divider="true" if="{ App.Utils.count(_groups) > 5 }">
+            <li class="uk-active" data-uk-dropdown="mode:'click', pos:'bottom-center'">
+                <a>{ App.i18n.get(group || 'All') } <i class="uk-margin-small-left uk-icon-angle-down"></i></a>
+                <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-close">
+                    <ul class="uk-nav uk-nav-dropdown">
+                    <li class="uk-nav-header">@lang('Groups')</li>
+                    <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
+                    <li class="uk-nav-divider"></li>
+                    <li class="{ group==parent.group && 'uk-active'}" each="{group in _groups}" show="{ parent.groups[group].length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+
+    <div class="uk-margin-top">
 
         <div class="uk-alert" if="{ !fields.length }">
             @lang('No fields defined'). <a href="@route('/singletons/singleton')/{ singleton.name }">@lang('Define singleton fields').</a>
         </div>
-
-        <h3 class="uk-flex uk-flex-middle uk-text-bold">
-            <img class="uk-margin-small-right" src="@url($singleton['icon'] ? 'assets:app/media/icons/'.$singleton['icon']:'singletons:icon.svg')" width="25" alt="icon">
-            { singleton.label || singleton.name }
-        </h3>
 
         @if($singleton['description'])
         <div class="uk-margin uk-text-muted">
@@ -49,25 +76,6 @@
         <div class="uk-grid">
 
             <div class="uk-width-medium-3-4 uk-grid-margin">
-
-                <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center" if="{ App.Utils.count(_groups) > 1 && App.Utils.count(_groups) < 6 }">
-                    <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
-                    <li class="{ group==parent.group && 'uk-active'}" each="{group, idx in _groups}" show="{ parent.groups[group].length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
-                </ul>
-
-                <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center" if="{ App.Utils.count(_groups) > 5 }">
-                    <li class="uk-active" data-uk-dropdown="mode:'click', pos:'bottom-center'">
-                        <a>{ App.i18n.get(group || 'All') } <i class="uk-margin-small-left uk-icon-angle-down"></i></a>
-                        <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-close">
-                            <ul class="uk-nav uk-nav-dropdown">
-                            <li class="uk-nav-header">@lang('Groups')</li>
-                            <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
-                            <li class="uk-nav-divider"></li>
-                            <li class="{ group==parent.group && 'uk-active'}" each="{group in _groups}" show="{ parent.groups[group].length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
 
                 <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
 
@@ -80,7 +88,7 @@
                                 <label title="{ field.name }">
 
                                     <span class="uk-text-bold"><i class="uk-icon-pencil-square uk-margin-small-right"></i> { field.label || App.Utils.ucfirst(field.name) }</span>
-
+                                    <span class="uk-text-muted" show="{field.required}">(@lang('required'))</span>
                                     <span if="{ field.localize }" data-uk-dropdown="mode:'click'">
                                         <a class="uk-icon-globe" title="@lang('Localized field')" data-uk-tooltip="pos:'right'"></a>
                                         <div class="uk-dropdown uk-dropdown-close">

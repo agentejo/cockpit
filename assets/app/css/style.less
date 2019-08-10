@@ -202,6 +202,27 @@ cp-fieldcontainer {
     z-index: 0;
 }
 
+.header-sub-panel {
+    &:extend(.uk-container-breakout);
+    background: @global-contrast-color;
+    margin-top: -35px;
+    margin-bottom: 35px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    box-shadow: 0 0 2px 0 rgba(0,0,0,0.22);
+}
+
+.header-sub-panel-tab {
+    margin-top: 20px;
+    margin-bottom: -20px;
+    border-bottom: 0;
+}
+
+.header-sub-panel-tab[divider="true"] {
+    padding-top: 10px;
+    border-top: 1px rgba(0,0,0,.1) solid;
+}
+
 
 // vendor styles
 
