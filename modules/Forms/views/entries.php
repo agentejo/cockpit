@@ -67,9 +67,15 @@
 
         </div>
 
-        <div class="uk-clearfix uk-margin-large-top" if="{ entries.length }">
+        <div class="uk-clearfix uk-margin-top uk-flex uk-flex-middle" show="{!loading}">
 
-            <div class="uk-float-right uk-animation-fade" if="{ selected.length }">
+            <div class="uk-flex-item-1 uk-flex uk-flex-middle uk-h3">
+                <div class="uk-margin-small-right"><img src="@url($form['icon'] ? 'assets:app/media/icons/'.$form['icon']:'forms:icon.svg')" width="40" alt="icon"></div>
+                <strong class="uk-margin-small-right">{{ htmlspecialchars(@$form['label'] ? $form['label']:$form['name']) }}</strong> 
+                @lang('Entries')
+            </div>
+
+            <div class="uk-animation-fade" if="{ selected.length }">
 
                 <a class="uk-button uk-button-large uk-button-danger" onclick="{ removeselected }">
                     @lang('Delete') <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
@@ -79,7 +85,7 @@
 
         </div>
 
-        <table class="uk-table uk-table-border uk-table-striped uk-margin-top" if="{ entries.length }">
+        <table class="uk-table uk-table-border uk-table-striped uk-margin-large-top" if="{ entries.length }">
             <thead>
                 <tr>
                     <th width="20"><input class="uk-checkbox" type="checkbox" data-check="all"></th>
@@ -162,7 +168,6 @@
 
         this.ready      = false;
         this.form       = {{ json_encode($form) }};
-        this.loadmore   = false;
         this.count      = 0;
         this.page       = 1;
         this.limit      = 20;
@@ -260,7 +265,7 @@
         load() {
 
             var options = {
-                sort: {'_created': -1},
+                sort: {_created: -1},
                 limit: this.limit,
                 skip: (this.page - 1) * this.limit
             };
@@ -279,10 +284,7 @@
                 this.page    = data.page;
                 this.count   = data.count;
 
-                this.loadmore = data.entries.length && data.entries.length == this.limit;
-
                 this.checkselected();
-
                 this.update();
 
             }.bind(this))
