@@ -67,7 +67,7 @@
 
         </div>
 
-        <div class="uk-clearfix uk-margin-top uk-flex uk-flex-middle" show="{!loading}">
+        <div class="uk-clearfix uk-margin-top uk-flex uk-flex-middle" show="{!loading && selected.length}">
 
             <div class="uk-flex-item-1 uk-flex uk-flex-middle uk-h3">
                 <div class="uk-margin-small-right"><img src="@url($form['icon'] ? 'assets:app/media/icons/'.$form['icon']:'forms:icon.svg')" width="40" alt="icon"></div>
