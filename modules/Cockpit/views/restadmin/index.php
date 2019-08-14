@@ -21,7 +21,7 @@
                     <input class="uk-width-1-1 uk-form-large uk-text-primary" type="text" placeholder="@lang('No key generated')" bind="keys.master" name="fullaccesskey" readonly>
                 </div>
                 <div if="{keys.master}">
-                    <a class="uk-margin-right" onclick="{ copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-copy"></i></a>
+                    <a class="uk-margin-right" onclick="{ copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-clone"></i></a>
                     <a onclick="{ removeMasterKey }" title="@lang('Delete')" data-uk-tooltip="pos:'top'"><i class="uk-icon-trash-o uk-text-danger"></i></a>
                 </div>
                 <div>
@@ -43,7 +43,7 @@
 
                             <div class="uk-flex uk-flex-middle">
                                 <input class="uk-width-1-1 uk-form-large uk-margin-right uk-text-primary" type="text" placeholder="@lang('No key generated')" bind="keys.special[{idx}].token" readonly>
-                                <a class="uk-margin-right" onclick="{ parent.copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-copy"></i></a>
+                                <a class="uk-margin-right" onclick="{ parent.copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-clone"></i></a>
                                 <a onclick="{ parent.generate }" title="@lang('Generate Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-magic"></i></a>
                             </div>
                         </div>

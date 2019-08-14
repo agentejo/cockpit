@@ -10,7 +10,7 @@
         "watch-style": "watch-run -i -p 'assets/app/css/**/*.less' npm run build-style",
         "watch-components": "watch-run -i -p 'modules/Cockpit/assets/components/*.tag' npm run build-components",
         "docker-init": "docker build -t cockpit/dev .",
-        "docker": "docker run -p 8080:80 -v $PWD:/var/www/html cockpit/dev & open http://localhost:8080/install",
+        "docker": "docker run -p 8080:80 -v $PWD:/var/www/html cockpit/dev & open http://localhost:8080/install"
     },
     "devDependencies": {
         "less": "^2.6.0",

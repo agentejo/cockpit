@@ -74,7 +74,7 @@
                                         <input class="uk-form-large uk-width-1-1" type="text" bind="account.api_key" placeholder="@lang('No token generated yet')" aria-label="@lang('Api token')" bind="account.apikey" disabled>
                                     </div>
                                     <a class="uk-icon-refresh uk-margin-left" onclick="{ generateApiToken }" style="pointer-events:auto;"></a>
-                                    <a class="uk-margin-left" type="button" onclick="{ copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-copy"></i></a>
+                                    <a class="uk-margin-left" type="button" onclick="{ copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-clone"></i></a>
                                 </div>
                             </div>
 
@@ -282,7 +282,7 @@
 
             if (e) e.preventDefault();
 
-            App.request("/accounts/save", {account: this.account}).then(function(data){
+            App.request('/accounts/save', {account: this.account}).then(function(data){
                 $this.account = data;
                 App.ui.notify('Account saved', 'success');
             }, function(res) {
