@@ -38,8 +38,8 @@
 
     </style>
 
-    {{ $app->assets($app['app.assets.base'], $app['cockpit/version']) }}
-    {{ $app->assets(['assets:lib/uikit/js/components/form-password.min.js'], $app['cockpit/version']) }}
+    {{ $app->assets($app['app.assets.base'], $app['debug'] ? time() : $app['cockpit/version']) }}
+    {{ $app->assets(['assets:lib/uikit/js/components/form-password.min.js'], $app['debug'] ? time() : $app['cockpit/version']) }}
 
 
     @trigger('app.login.header')

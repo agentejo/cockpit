@@ -150,4 +150,51 @@ class App extends \Lime\App {
     public function renderView($template, $slots = []) {
         echo $this->view($template, $slots);
     }
+
+    public function assets($src, $version=false){
+
+        $list   = [];
+        $js     = [];
+        $jshash = '';
+
+        foreach ((array)$src as $asset) {
+
+            $src = $asset;
+
+            if (\is_array($asset)) {
+                extract($asset);
+            }
+
+            if (@\substr($src, -3) == '.js') {
+
+                $ispath = \strpos($src, ':') !== false && !\preg_match('#^(|http\:|https\:)//#', $src);
+
+                if ($ispath && $path = $this->path($src)) {
+                    $js[] = $path;
+                    $jshash = md5($jshash.md5_file($path));
+                } else {
+                    $list[] = $this->script($asset, $version);
+                }
+
+            } elseif (@\substr($src, -4) == '.css') {
+                $list[] = $this->style($asset, $version);
+            }
+        }
+
+        if (count($js)) {
+            
+            $path = '#tmp:assets/'.$jshash.'.js';
+
+            if (!$this->path($path)) {
+                $contents = [];
+                foreach ($js as $p) {$contents[] = file_get_contents($p); }
+                $this->helper('fs')->write($path, implode("\n", $contents));
+            }
+
+            $url = $this->pathToUrl($path);
+            $list[] = '<script src="'.($url.($version ? "?ver={$version}":'')).'" type="text/javascript"></script>';
+        }
+
+        return \implode("\n", $list);
+    }
 }
