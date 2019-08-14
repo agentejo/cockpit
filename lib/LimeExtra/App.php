@@ -155,6 +155,7 @@ class App extends \Lime\App {
 
         $list   = [];
         $js     = [];
+        $debug  = $this->retrieve('debug');
         $jshash = '';
 
         foreach ((array)$src as $asset) {
@@ -169,7 +170,7 @@ class App extends \Lime\App {
 
                 $ispath = \strpos($src, ':') !== false && !\preg_match('#^(|http\:|https\:)//#', $src);
 
-                if ($ispath && $path = $this->path($src)) {
+                if (!$debug && $ispath && $path = $this->path($src)) {
                     $js[] = $path;
                     $jshash = md5($jshash.md5_file($path));
                 } else {
