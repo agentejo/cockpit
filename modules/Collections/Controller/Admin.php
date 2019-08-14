@@ -219,11 +219,11 @@ class Admin extends \Cockpit\AuthController {
 
         if ($id) {
 
-            //$entry = $this->module('collections')->findOne($collection['name'], ['_id' => $id]);
-            $entry = $this->app->storage->findOne("collections/{$collection['_id']}", ['_id' => $id]);
+            $entry = $this->module('collections')->findOne($collection['name'], ['_id' => $id]);
+            //$entry = $this->app->storage->findOne("collections/{$collection['_id']}", ['_id' => $id]);
 
             if (!$entry) {
-                return false;
+                return cockpit()->helper('admin')->denyRequest();
             }
 
             if (!$this->app->helper('admin')->isResourceEditableByCurrentUser($id, $meta)) {
