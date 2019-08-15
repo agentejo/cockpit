@@ -230,7 +230,7 @@
                             </li>
                         </ul>
 
-                        <table class="uk-table uk-panel-card" if="{ listmode=='list' && data.files.length }">
+                        <table class="uk-table uk-table-tabbed uk-table-striped" if="{ listmode=='list' && data.files.length }">
                             <thead>
                                 <tr>
                                     <td width="30"></td>
