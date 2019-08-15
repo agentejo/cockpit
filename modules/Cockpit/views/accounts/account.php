@@ -28,7 +28,7 @@
 
                 <div class="uk-width-medium-1-1">
 
-                    <ul class="uk-tab uk-margin uk-flex uk-flex-center" if="{ tabs && tabs.length }">
+                    <ul class="uk-tab uk-tab-noborder uk-margin uk-flex uk-flex-center" if="{ tabs && tabs.length }">
                         <li class="{ tab == 'general' ? 'uk-active':'' }"><a onclick="{ selectTab }" select="general">@lang('General')</a></li>
                         <li class="{ t == parent.tab ? 'uk-active':'' }" each="{t in tabs}">
                             <a onclick="{ parent.selectTab }" select="{t}">{t}</a>
@@ -71,7 +71,7 @@
                                 <div class="uk-flex uk-flex-middle">
                                     <div class="uk-form-icon uk-display-block uk-flex-item-1">
                                         <i class="uk-icon-key"></i>
-                                        <input class="uk-form-large uk-width-1-1" type="text" bind="account.api_key" placeholder="@lang('No token generated yet')" aria-label="@lang('Api token')" bind="account.apikey" disabled>
+                                        <input class="uk-form-large uk-text-monospace uk-width-1-1" type="text" bind="account.api_key" placeholder="@lang('No token generated yet')" aria-label="@lang('Api token')" bind="account.apikey" disabled>
                                     </div>
                                     <a class="uk-icon-refresh uk-margin-left" onclick="{ generateApiToken }" style="pointer-events:auto;"></a>
                                     <a class="uk-margin-left" type="button" onclick="{ copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-clone"></i></a>

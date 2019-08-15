@@ -66,12 +66,12 @@
 
     <div class="uk-modal uk-sortable-nodrag" ref="modalComponents">
         <div class="uk-modal-dialog">
-            <h3 class="uk-flex uk-flex-middle">
+            <h3 class="uk-flex uk-flex-middle uk-text-bold">
                 <img class="uk-margin-small-right" riot-src="{App.base('/assets/app/media/icons/component.svg')}" width="30">
                 { App.i18n.get('Components') }
             </h3>
 
-            <ul class="uk-tab uk-margin-bottom uk-flex uk-flex-center uk-noselect" show="{ App.Utils.count(componentGroups) > 1 }">
+            <ul class="uk-tab uk-tab-noborder uk-margin-bottom uk-flex uk-flex-center uk-noselect" show="{ App.Utils.count(componentGroups) > 1 }">
                 <li class="{ !componentGroup && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleComponentGroup }">{ App.i18n.get('All') }</a></li>
                 <li class="{ group==parent.componentGroup && 'uk-active'}" each="{items,group in componentGroups}" show="{ items.length }"><a class="uk-text-capitalize" onclick="{ toggleComponentGroup }">{ App.i18n.get(group) }</a></li>
             </ul>

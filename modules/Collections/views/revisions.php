@@ -133,7 +133,7 @@
                                 { App.Utils.dateformat(rev._created*1000, 'MMMM Do YYYY') }<br>
                                 <span class="uk-text-small">{ App.Utils.dateformat(rev._created*1000, 'hh:mm:ss a') }</span>
                             </a>
-                            <a show="{rev==active}" onclick="{remove}"><i class="uk-text-danger uk-icon-trash-o"></i></a>
+                            <a show="{rev==active}" onclick="{remove}"><i class="uk-icon-button uk-icon-button-danger uk-icon-trash-o"></i></a>
                         </div>
                         <hr show="{rev==active}">
                     </li>

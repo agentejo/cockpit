@@ -19,7 +19,6 @@
                     <p><strong><span class="uk-badge app-badge">System</span></strong></p>
 
                     <h4 class="uk-text-bold">@lang('General')</h4>
-                    <hr>
 
                     <table class="uk-table uk-table-striped">
                         <tbody>
@@ -31,12 +30,11 @@
                     </table>
 
                     <h4 class="uk-text-bold">@lang('Cache')</h4>
-                    <hr>
 
                     <div class="uk-margin">
 
                         <div class="uk-panel uk-panel-box" if="{ !cleaning && cacheSize }">
-                            { cacheSize } <a title="@lang('Clear cache')" data-uk-tooltip="pos:'right'" onclick="{cleanUpCache}"><i class="uk-icon-trash-o"></i></a>
+                            { cacheSize } <a class="uk-margin-small-left" title="@lang('Clear cache')" data-uk-tooltip="pos:'right'" onclick="{cleanUpCache}"><i class="uk-icon-button uk-icon-trash-o"></i></a>
                         </div>
 
                         <div class="uk-alert" if="{ cleaning }">
@@ -51,7 +49,6 @@
                     @if($app->module('cockpit')->isSuperAdmin() && count(getenv()))
 
                     <h4 class="uk-text-bold">@lang('Environment Variables')</h4>
-                    <hr>
 
                     <table class="uk-table uk-table-striped">
                         <tbody>
