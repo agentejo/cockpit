@@ -13,10 +13,17 @@ namespace MongoHybrid;
 
 class ResultSet extends \ArrayObject {
 
-    protected $documents;
+    /** Driver */
     protected $driver;
-    protected $cache;
 
+    /** @var array - Collection docs cache */
+    protected $cache = [];
+
+    /**
+     * Constructor
+     * @param $driver
+     * @param iterable $documents
+     */
     public function __construct($driver, &$documents) {
 
         $this->driver = $driver;
