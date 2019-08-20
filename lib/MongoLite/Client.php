@@ -33,7 +33,7 @@ class Client {
     /**
      * Constructor
      *
-     * @param string $path
+     * @param string $path - Pathname to database file or :memory:
      * @param array  $options
      */
     public function __construct($path, $options = []) {
@@ -50,10 +50,13 @@ class Client {
 
         $databases = [];
 
-        foreach (new \DirectoryIterator($this->path) as $fileInfo) {
-            if (\preg_match('/\.sqlite$/', $fileInfo->getFilename())) {
-                $databases[] = \str_replace('.sqlite', '', $fileInfo->getFilename());
-             }
+        // Skip when using :memory: as path
+        if (is_dir($this->path)) {
+            foreach (new \DirectoryIterator($this->path) as $fileInfo) {
+                if ($fileInfo->getExtension() === 'sqlite') {
+                    $databases[] = $fileInfo->getBasename('.sqlite');
+                }
+            }
         }
 
         return $databases;
@@ -80,7 +83,10 @@ class Client {
     public function selectDB($name) {
 
         if (!isset($this->databases[$name])) {
-            $this->databases[$name] = new Database($this->path.'/'.$name.'.sqlite', $this->options);
+            $this->databases[$name] = new Database(
+                $this->path === ':memory:' ? $this->path : sprintf('%s/%s.sqlite', $this->path, $name),
+                $this->options
+            );
         }
 
         return $this->databases[$name];
