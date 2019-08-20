@@ -309,12 +309,8 @@
 
         var options = { sort:this.sort };
 
-        if (this.filter) {
-            options.filter = this.filter;
-        } else {
-            if (opts.filter) {
-                options.filter = opts.filter;
-            }
+        if (opts.filter) {
+            options.filter = opts.filter;
         }
 
         if (!this.collection.sortable) {
@@ -327,7 +323,19 @@
         return App.request('/collections/find', {collection:this.collection.name, options:options}).then(function(data){
 
             this.entries = this.entries.concat(data.entries);
+            if (this.filter) {
+                var _filter = this.filter
+                this.entries = this.entries.filter(function (entry) {
+                    var keys = Object.keys(entry).filter(function(key){
+                        return key.startsWith('_') === false
+                    })
+                    return keys.some(function (key) {
+                        if (typeof entry[key] !== 'string') return false;
+                        return entry[key].indexOf(_filter) !== -1
+                    })
 
+                });
+            }
             this.ready    = true;
             this.loadmore = data.entries.length && data.entries.length == limit;
 
