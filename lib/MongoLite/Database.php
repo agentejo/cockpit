@@ -16,6 +16,11 @@ namespace MongoLite;
 class Database {
 
     /**
+     * @var string - DSN path form memory database
+     */
+    public const DSN_PATH_MEMORY = ':memory:';
+
+    /**
      * @var PDO object
      */
     public $connection;
@@ -35,14 +40,13 @@ class Database {
      */
     protected $document_criterias = [];
 
-
     /**
      * Constructor
      *
      * @param string $path
      * @param array  $options
      */
-    public function __construct($path = ":memory:", $options = []) {
+    public function __construct($path = self::DSN_PATH_MEMORY, $options = []) {
 
         $dns = "sqlite:{$path}";
 
@@ -142,7 +146,7 @@ class Database {
      * Drop database
      */
     public function drop() {
-        if ($this->path != ':memory:') {
+        if ($this->path != static::DSN_PATH_MEMORY) {
             \unlink($this->path);
         }
     }
