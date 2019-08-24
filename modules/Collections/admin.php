@@ -53,20 +53,6 @@ $app->on('admin.init', function() {
         }
     });
 
-    $this->on('cockpit.menu.aside', function() {
-
-        $cols        = $this->module('collections')->getCollectionsInGroup();
-        $collections = [];
-
-        foreach($cols as $collection) {
-            if ($collection['in_menu']) $collections[] = $collection;
-        }
-
-        if (count($collections)) {
-            $this->renderView("collections:views/partials/menu.php", compact('collections'));
-        }
-    });
-
     // dashboard widgets
     $this->on("admin.dashboard.widgets", function($widgets) {
 

@@ -67,10 +67,6 @@
                         <field-boolean bind="collection.sortable" title="@lang('Sortable entries')" label="@lang('Custom sortable entries')"></field-boolean>
                     </div>
 
-                    <div class="uk-margin">
-                        <field-boolean bind="collection.in_menu" title="@lang('Show in system menu')" label="@lang('Show in system menu')"></field-boolean>
-                    </div>
-
                 </div>
             </div>
 

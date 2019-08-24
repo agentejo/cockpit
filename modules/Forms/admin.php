@@ -30,20 +30,6 @@ $app->on('admin.init', function() {
         'active' => strpos($this['route'], '/forms') === 0
     ]);
 
-    $this->on('cockpit.menu.aside', function() {
-
-        $frms  = $this->module('forms')->forms();
-        $forms = [];
-
-        foreach($frms as $form) {
-            if ($form['in_menu']) $forms[] = $form;
-        }
-
-        if (count($forms)) {
-            $this->renderView("forms:views/partials/menu.php", compact('forms'));
-        }
-    });
-
     /**
      * listen to app search to filter forms
      */

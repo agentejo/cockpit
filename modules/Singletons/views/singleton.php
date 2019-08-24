@@ -65,10 +65,6 @@
                        <textarea aria-label="@lang('Description')" class="uk-width-1-1 uk-form-large" name="description" bind="singleton.description" rows="5"></textarea>
                    </div>
 
-                    <div class="uk-margin">
-                        <field-boolean bind="singleton.in_menu" title="@lang('Show in system menu')" label="@lang('Show in system menu')"></field-boolean>
-                    </div>
-
                </div>
 
             </div>

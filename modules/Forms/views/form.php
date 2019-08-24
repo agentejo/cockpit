@@ -67,10 +67,6 @@
                 </div>
 
                 <div class="uk-margin">
-                    <field-boolean bind="form.in_menu" label="@lang('Show in system menu')"></field-boolean>
-                </div>
-
-                <div class="uk-margin">
                     <field-boolean bind="form.save_entry" label="@lang('Save form data')"></field-boolean>
                 </div>
 
