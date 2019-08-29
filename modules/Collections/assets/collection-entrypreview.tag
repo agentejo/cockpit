@@ -204,6 +204,18 @@
         this.lang = '';
         this.$idle = false;
 
+        let sluggableFileds = {}
+        Object.keys(this.entry).filter(key => {
+            if (typeof this.entry[key] === 'string') {
+                sluggableFileds[key] = this.entry[key]
+            }
+        })
+        for (let key in sluggableFileds){
+            let value = sluggableFileds[key]
+            if (!value) continue
+            opts.settings.url = opts.settings.url.replace(`{${key}}`, value)
+        }
+
         this.settings = App.$.extend({
             url: '',
             wsurl: '',
