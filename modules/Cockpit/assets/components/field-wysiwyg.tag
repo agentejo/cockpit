@@ -160,18 +160,17 @@
 
                         App.assets.select(function(assets){
 
-                            if (Array.isArray(assets) && assets[0]) {
-
-                                var asset = assets[0], content;
-
-                                if (asset.mime.match(/^image\//)) {
-                                    content = '<img src="' + ASSETS_URL+asset.path + '" alt="">';
-                                } else {
-                                    content = '<a href="' + ASSETS_URL+asset.path + '">'+asset.title+'<a>';
-                                }
-
-                                editor.insertContent(content);
+                            if (Array.isArray(assets)) {
+                                assets.forEach(asset => {
+                                    if (asset.mime.match(/^image\//)) {
+                                        content = '<img src="' + ASSETS_URL+asset.path + '" alt="">';
+                                    } else {
+                                        content = '<a href="' + ASSETS_URL+asset.path + '">'+asset.title+'<a>';
+                                    }
+                                    editor.insertContent(content);
+                                })
                             }
+
                         });
 
                     },
