@@ -16,14 +16,21 @@
                 this.refs.input.setAttribute('required', 'required');
             }
 
-            App.assets.require(['/assets/lib/uikit/js/components/timepicker.js'], function() {
 
-                UIkit.timepicker(this.refs.input, opts).element.on('change', function() {
+            if(!opts['readonly'] || App.$data.user.group == 'admin'){
+                App.assets.require(['/assets/lib/uikit/js/components/timepicker.js', '/assets/lib/uikit/js/components/form-select.js'], function() {
+
+                    UIkit.timepicker(this.refs.input, opts).element.on('change', function() {
                     $this.refs.input.$setValue($this.refs.input.value);
-                });
+                    });
 
-            }.bind(this));
-        });
+                }.bind(this));
+            } else {
+                $this.refs.input.setAttribute('readonly', opts['readonly']);                }
+            });
+
+
+
 
     </script>
 

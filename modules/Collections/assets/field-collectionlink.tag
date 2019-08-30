@@ -4,6 +4,7 @@
         { App.i18n.get('Collection to link not defined in the field settings') }
     </div>
 
+
     <div class="uk-alert uk-alert-danger" if="{opts.link && error}">
         { App.i18n.get('Failed loading collection') } {opts.link}
     </div>
@@ -212,6 +213,10 @@
     });
 
     showDialog(){
+        if(opts['readonly'] && App.$data.user.group != 'admin'){
+               window.alert( App.i18n.get('No Permission to Change Collectionlink') );
+               return;
+        } 
 
         this.selected = [];
 
@@ -227,6 +232,7 @@
     }
 
     linkItem(e) {
+
 
         var defaultField = this.collection.fields[0].name;
         var _entry = e.item.entry;
@@ -294,8 +300,13 @@
     }
 
     removeItem() {
-        this.link = opts.multiple ? [] : null;
-        this.$setValue(this.link);
+        if(opts['readonly'] && App.$data.user.group != 'admin'){
+               window.alert( App.i18n.get('No Permission to Change Collectionlink') );
+        } else {
+            this.link = opts.multiple ? [] : null;
+            this.$setValue(this.link);
+        }
+   
     }
 
     removeListItem(e) {
