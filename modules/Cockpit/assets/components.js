@@ -3702,7 +3702,7 @@ riot.tag2('field-tags', '<div class="uk-grid uk-grid-small uk-flex-middle" data-
 
 });
 
-riot.tag2('field-text', '<div class="uk-position-relative field-text-container"> <input ref="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" oninput="{updateLengthIndicator}" placeholder="{opts.placeholder}"> <span class="uk-text-muted" ref="lengthIndicator" show="{type==\'text\'}" hide="{opts.showCount === false}"></span> </div> <div class="uk-text-muted uk-text-small uk-margin-small-top" if="{opts.slug}" title="Slug"> {slug} </div>', 'field-text [ref="input"][type=text],[data-is="field-text"] [ref="input"][type=text]{ padding-right: 30px !important; } field-text .field-text-container span,[data-is="field-text"] .field-text-container span{ position: absolute; top: 50%; right: 0; font-family: monospace; transform: translateY(-50%) scale(.9); }', '', function(opts) {
+riot.tag2('field-text', '<div class="uk-position-relative field-text-container"> <input ref="input" class="uk-width-1-1" bind="{opts.bind}" type="{opts.type || \'text\'}" oninput="{updateLengthIndicator}" placeholder="{opts.placeholder}"> <span class="uk-text-muted" ref="lengthIndicator" show="{type==\'text\'}" hide="{opts.showCount === false}"></span> </div> <div class="uk-text-muted uk-text-small uk-margin-small-top" if="{opts.slug}" title="Slug"> {slug} </div>', 'field-text [ref="input"][type=text],[data-is="field-text"] [ref="input"][type=text]{ padding-right: 30px !important; } field-text [ref="input"][type=text]:read-only,[data-is="field-text"] [ref="input"][type=text]:read-only{ background-color: lightgray !important; } field-text .field-text-container span,[data-is="field-text"] .field-text-container span{ position: absolute; top: 50%; right: 0; font-family: monospace; transform: translateY(-50%) scale(.9); }', '', function(opts) {
 
         var $this = this;
 
@@ -3725,6 +3725,9 @@ riot.tag2('field-text', '<div class="uk-position-relative field-text-container">
             (['maxlength', 'minlength', 'step', 'placeholder', 'pattern', 'size', 'min', 'max']).forEach( function(key) {
                 if (opts[key]) $this.refs.input.setAttribute(key, opts[key]);
             });
+            if(opts['readonly'] && App.$data.user.group != 'admin'){
+               $this.refs.input.setAttribute('readonly', opts['readonly']);
+            }
 
             this.updateLengthIndicator();
 

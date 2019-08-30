@@ -6,6 +6,10 @@
             padding-right: 30px !important;
         }
 
+[ref="input"][type=text]:read-only {
+            background-color: lightgray !important;
+        }
+
         .field-text-container span {
             position: absolute;
             top: 50%;
@@ -47,6 +51,9 @@
             (['maxlength', 'minlength', 'step', 'placeholder', 'pattern', 'size', 'min', 'max']).forEach( function(key) {
                 if (opts[key]) $this.refs.input.setAttribute(key, opts[key]);
             });
+            if(opts['readonly'] && App.$data.user.group != 'admin'){
+               $this.refs.input.setAttribute('readonly', opts['readonly']);
+            }
 
             this.updateLengthIndicator();
 
