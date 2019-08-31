@@ -231,7 +231,10 @@ $this->module('collections')->extend([
         }
 
         if (isset($options['populate']) && $options['populate']) {
-            $entries = $this->_populate($entries, is_numeric($options['populate']) ? intval($options['populate']) : false, 0, $fieldsFilter);
+            $populateLevel = is_numeric($options['populate'])
+              ? intval($options['populate'])
+              : (is_bool($options['populate'] && $options['populate'] === true) ? 1 : -1);
+            $entries = $this->_populate($entries, $populateLevel, 0, $fieldsFilter);
         }
 
         $this->app->trigger('collections.find.after', [$name, &$entries, false]);
