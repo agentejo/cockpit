@@ -67,6 +67,8 @@
                         <field-boolean bind="collection.sortable" title="@lang('Sortable entries')" label="@lang('Custom sortable entries')"></field-boolean>
                     </div>
 
+                    @trigger('collections.settings.aside')
+
                 </div>
             </div>
 
