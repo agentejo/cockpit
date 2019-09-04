@@ -72,12 +72,12 @@
 
                                     @foreach($modules as $item)
                                     <li class="uk-width-1-2 uk-width-medium-1-3 uk-grid-margin" data-route="{{ $item['route'] }}">
-                                        <a class="uk-display-block uk-panel-box {{ (@$item['active']) ? 'uk-bg-primary uk-contrast':'uk-panel-framed' }}" href="@route($item['route'])">
+                                        <a class="uk-display-block uk-panel-box uk-panel-space {{ (@$item['active']) ? 'uk-bg-primary uk-contrast':'' }}" href="@route($item['route'])">
                                             <div class="uk-svg-adjust">
                                                 @if(preg_match('/\.svg$/i', $item['icon']))
-                                                <img src="@url($item['icon'])" alt="@lang($item['label'])" data-uk-svg width="30px" height="30px" />
+                                                <img src="@url($item['icon'])" alt="@lang($item['label'])" data-uk-svg width="40" height="40" />
                                                 @else
-                                                <img src="@url('assets:app/media/icons/module.svg')" alt="@lang($item['label'])" data-uk-svg width="30px" height="30px" />
+                                                <img src="@url('assets:app/media/icons/module.svg')" alt="@lang($item['label'])" data-uk-svg width="40" height="40" />
                                                 @endif
                                             </div>
                                             <div class="uk-text-truncate uk-text-small uk-margin-small-top">@lang($item['label'])</div>
@@ -98,18 +98,18 @@
                                 <ul class="uk-grid uk-grid-small uk-grid-width-1-2 uk-grid-width-medium-1-4 uk-text-center">
 
                                     <li class="uk-grid-margin">
-                                        <a class="uk-display-block uk-panel-box {{ ($app['route'] == '/cockpit/dashboard') ? 'uk-bg-primary uk-contrast':'uk-panel-framed' }}" href="@route('/cockpit/dashboard')">
+                                        <a class="uk-display-block uk-panel-box uk-panel-space {{ ($app['route'] == '/cockpit/dashboard') ? 'uk-bg-primary uk-contrast':'' }}" href="@route('/cockpit/dashboard')">
                                             <div class="uk-svg-adjust">
-                                                <img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/dashboard.svg')" width="30" height="30" data-uk-svg alt="assets" />
+                                                <img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/dashboard.svg')" width="40" height="40" data-uk-svg alt="assets" />
                                             </div>
                                             <div class="uk-text-truncate uk-text-small uk-margin-small-top">@lang('Dashboard')</div>
                                         </a>
                                     </li>
 
                                     <li class="uk-grid-margin">
-                                        <a class="uk-display-block uk-panel-box {{ (strpos($app['route'],'/assetsmanager')===0) ? 'uk-bg-primary uk-contrast':'uk-panel-framed' }}" href="@route('/assetsmanager')">
+                                        <a class="uk-display-block uk-panel-box uk-panel-space {{ (strpos($app['route'],'/assetsmanager')===0) ? 'uk-bg-primary uk-contrast':'' }}" href="@route('/assetsmanager')">
                                             <div class="uk-svg-adjust">
-                                                <img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/assets.svg')" width="30" height="30" data-uk-svg alt="assets" /> 
+                                                <img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/assets.svg')" width="40" height="40" data-uk-svg alt="assets" /> 
                                             </div>
                                             <div class="uk-text-truncate uk-text-small uk-margin-small-top">@lang('Assets')</div>
                                         </a>
@@ -117,9 +117,9 @@
 
                                     @hasaccess?('cockpit', 'finder')
                                     <li class="uk-grid-margin">
-                                        <a class="uk-display-block uk-panel-box {{ (strpos($app['route'],'/finder')===0) ? 'uk-bg-primary uk-contrast':'uk-panel-framed' }}" href="@route('/finder')">
+                                        <a class="uk-display-block uk-panel-box uk-panel-space {{ (strpos($app['route'],'/finder')===0) ? 'uk-bg-primary uk-contrast':'' }}" href="@route('/finder')">
                                             <div class="uk-svg-adjust">
-                                                <img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/finder.svg')" width="30" height="30" data-uk-svg alt="assets" /> 
+                                                <img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/finder.svg')" width="40" height="40" data-uk-svg alt="assets" /> 
                                             </div>
                                             <div class="uk-text-truncate uk-text-small uk-margin-small-top">@lang('Finder')</div>
                                         </a>
@@ -128,9 +128,9 @@
 
                                     @hasaccess?('cockpit', 'settings')
                                     <li class="uk-grid-margin">
-                                        <a class="uk-display-block uk-panel-box {{ (strpos($app['route'],'/settings')===0) ? 'uk-bg-primary uk-contrast':'uk-panel-framed' }}" href="@route('/settings')">
+                                        <a class="uk-display-block uk-panel-box uk-panel-space {{ (strpos($app['route'],'/settings')===0) ? 'uk-bg-primary uk-contrast':'' }}" href="@route('/settings')">
                                             <div class="uk-svg-adjust">
-                                                <img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/settings.svg')" width="30" height="30" data-uk-svg alt="assets" />
+                                                <img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/settings.svg')" width="40" height="40" data-uk-svg alt="assets" />
                                             </div>
                                             <div class="uk-text-truncate uk-text-small uk-margin-small-top">@lang('Settings')</div>
                                         </a>
@@ -139,9 +139,9 @@
 
                                     @hasaccess?('cockpit', 'accounts')
                                     <li class="uk-grid-margin">
-                                        <a class="uk-display-block uk-panel-box {{ (strpos($app['route'],'/accounts')===0) ? 'uk-bg-primary uk-contrast':'uk-panel-framed' }}" href="@route('/accounts')">
+                                        <a class="uk-display-block uk-panel-box uk-panel-space {{ (strpos($app['route'],'/accounts')===0) ? 'uk-bg-primary uk-contrast':'' }}" href="@route('/accounts')">
                                             <div class="uk-svg-adjust">
-                                                <img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/accounts.svg')" width="30" height="30" data-uk-svg alt="assets" /> 
+                                                <img class="uk-margin-small-right inherit-color" src="@base('assets:app/media/icons/accounts.svg')" width="40" height="40" data-uk-svg alt="assets" /> 
                                             </div>
                                             <div class="uk-text-truncate uk-text-small uk-margin-small-top">@lang('Accounts')</div>
                                         </a>
