@@ -66,6 +66,11 @@ class RedisLite {
     public function get($key, $default = null) {
 
         $stmt = $this->connection->query("SELECT * FROM ".$this->table." WHERE `key`='{$key}';");
+
+        if (!$stmt) {
+            return $default;
+        }
+
         $res  = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         return  isset($res["key"]) ? json_decode($res["keyval"], true) : $default;
