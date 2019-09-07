@@ -74,10 +74,6 @@
 
             </div>
 
-            <div class="uk-width-medium-1-2">
-
-            </div>
-
         </div>
 
         <cp-actionbar>
