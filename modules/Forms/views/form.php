@@ -70,9 +70,7 @@
                     <field-boolean bind="form.save_entry" label="@lang('Save form data')"></field-boolean>
                 </div>
 
-            </div>
-
-            <div class="uk-width-medium-1-2">
+                @trigger('forms.settings.aside')
 
             </div>
 
