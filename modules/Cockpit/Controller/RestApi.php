@@ -53,7 +53,7 @@ class RestApi extends \LimeExtra\Controller {
         $user = $this->app->storage->findOne('cockpit/accounts', ['api_key' => $apiKey]);
 
         if (!$user) {
-            return $this->stop(['error' => 'User not found'], 401);
+            return $this->stop(['error' => 'User not found'], 404);
         }
 
         $user['api_key'] = 'account-'.\uniqid(\bin2hex(\random_bytes(16)));
@@ -68,7 +68,7 @@ class RestApi extends \LimeExtra\Controller {
         $user = $this->module('cockpit')->getUser();
 
         if (!$data) {
-            return false;
+            return $this->stop(['error' => 'Missing user data'], 412);
         }
 
         if ($user) {

@@ -164,6 +164,7 @@ class App implements \ArrayAccess {
         'swf'   => 'application/x-shockwave-flash',
         'tar'   => 'application/x-tar',
         'xhtml' => 'application/xhtml+xml',
+        'text'  => 'text/plain',
     ];
 
     /**
@@ -1275,21 +1276,22 @@ class App implements \ArrayAccess {
 
     public function registerModule($name, $dir) {
 
-        $name = \strtolower($name);
+        $_name = \strtolower($name);
 
-        if (!isset($this->registry['modules'][$name])) {
+        if (!isset($this->registry['modules'][$_name])) {
 
             $module = new Module($this);
 
             $module->_dir      = $dir;
+            $module->_name     = $name;
             $module->_bootfile = "{$dir}/bootstrap.php";
 
             $this->path($name, $dir);
-            $this->registry['modules'][$name] = $module;
+            $this->registry['modules'][$_name] = $module;
             $this->bootModule($module);
         }
 
-        return $this->registry['modules'][$name];
+        return $this->registry['modules'][$_name];
     }
 
     public function loadModules($dirs, $autoload = true, $prefix = false) {
