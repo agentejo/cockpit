@@ -182,6 +182,7 @@
     </div>
 
     <collection-entrypreview collection="{collection}" entry="{entry}" groups="{ groups }" fields="{ fields }" fieldsidx="{ fieldsidx }" excludeFields="{ excludeFields }" languages="{ languages }" settings="{ collection.contentpreview }" if="{ preview }"></collection-entrypreview>
+    <cp-inspectobject ref="inspect"></cp-inspectobject>
 
     <script type="view/script">
 
@@ -262,6 +263,14 @@
                 }
 
                 $this.submit(e);
+                return false;
+            });
+
+            // inspect raw object
+            Mousetrap.bindGlobal(['ctrl+alt+i'], function(e) {
+
+                $this.refs.inspect.show($this.entry);
+                $this.update();
                 return false;
             });
 

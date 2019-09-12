@@ -609,6 +609,28 @@ riot.tag2('cp-preloader', '<div> <div></div> <div></div> <div></div> <div></div>
 riot.tag2('cp-preloader-fullscreen', '<div class="uk-text-center"> <cp-preloader></cp-preloader> <div class="uk-margin-top uk-text-large uk-text-bold" if="{opts.message}"> {opts.message} </div> </div>', 'cp-preloader-fullscreen { position: fixed; display: flex; top: 0; bottom: 0; left: 0; right: 0; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.5); z-index: 1000000000000000; } cp-preloader-fullscreen cp-preloader,[data-is="cp-preloader-fullscreen"] cp-preloader{ display: inline-block; }', '', function(opts) {
 });
 
+riot.tag2('cp-inspectobject', '<div class="uk-offcanvas" ref="offcanvas"> <div class="uk-offcanvas-bar uk-offcanvas-bar-flip uk-width-3-4 uk-panel-space"> <h3 class="uk-text-bold">{opts.title || App.i18n.get(\'Inspect object\')}</h3> <hr> <pre class="uk-text-small">{data || \'n/a\'}</pre> </div> </div>', 'cp-inspectobject pre,[data-is="cp-inspectobject"] pre{ background: none; }', '', function(opts) {
+
+        this.data = null;
+
+        this.on('mount', function() {
+
+        });
+
+        this.show = function(data) {
+            this.data = null;
+
+            if (data) {
+                this.data = JSON.stringify(data, null, 4);
+            }
+
+            UIkit.offcanvas.show(this.refs.offcanvas);
+
+            setTimeout(this.update, 100);
+        }
+
+});
+
 riot.tag2('cp-diff', '<div class="uk-overflow-container"> <div><pre ref="canvas" style="background:none;margin:0;"></pre></div> </div>', 'cp-diff pre,[data-is="cp-diff"] pre{ background:none; margin:0; width:100%; overflow: auto; word-wrap: normal; white-space: pre; } cp-diff del,[data-is="cp-diff"] del{ text-decoration: none; background: #A52A2A; color: #fff; } cp-diff ins,[data-is="cp-diff"] ins{ text-decoration: none; background: #008000; color: #fff; }', '', function(opts) {
 
         var $this = this;

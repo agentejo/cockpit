@@ -158,3 +158,46 @@
         </div>
     </div>
 </cp-preloader-fullscreen>
+
+<cp-inspectobject>
+
+    <style>
+        pre {
+            background: none;
+        }
+    </style>
+
+    <div class="uk-offcanvas" ref="offcanvas">
+
+
+        <div class="uk-offcanvas-bar uk-offcanvas-bar-flip uk-width-3-4 uk-panel-space">
+            <h3 class="uk-text-bold">{opts.title || App.i18n.get('Inspect object') }</h3>
+            <hr>
+            <pre class="uk-text-small">{ data || 'n/a' }</pre>
+        </div>
+
+    </div>
+
+    <script>
+
+        this.data = null;
+
+        this.on('mount', function() {
+            
+        });
+
+        this.show = function(data) {
+            this.data = null;
+
+            if (data) {
+                this.data = JSON.stringify(data, null, 4);
+            }
+
+            UIkit.offcanvas.show(this.refs.offcanvas);
+
+            setTimeout(this.update, 100);
+        }
+
+    </script>
+
+</cp-inspectobject>
