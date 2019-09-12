@@ -1276,22 +1276,21 @@ class App implements \ArrayAccess {
 
     public function registerModule($name, $dir) {
 
-        $_name = \strtolower($name);
+        $name = \strtolower($name);
 
-        if (!isset($this->registry['modules'][$_name])) {
+        if (!isset($this->registry['modules'][$name])) {
 
             $module = new Module($this);
 
             $module->_dir      = $dir;
-            $module->_name     = $name;
             $module->_bootfile = "{$dir}/bootstrap.php";
 
             $this->path($name, $dir);
-            $this->registry['modules'][$_name] = $module;
+            $this->registry['modules'][$name] = $module;
             $this->bootModule($module);
         }
 
-        return $this->registry['modules'][$_name];
+        return $this->registry['modules'][$name];
     }
 
     public function loadModules($dirs, $autoload = true, $prefix = false) {
