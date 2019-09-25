@@ -292,6 +292,19 @@ class App implements \ArrayAccess {
 
         $this->exit = true;
 
+        if (!isset($this->response)) {
+            
+            if (\is_array($data) || \is_object($data)) {
+                $data = \json_encode($data);
+            }
+
+            if ($data) {
+                echo $data;
+            }
+            
+            exit;
+        }
+
         if ($status) {
            $this->response->status = $status;
         }

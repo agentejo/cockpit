@@ -2412,10 +2412,14 @@ riot.tag2('field-html', '<textarea ref="input" class="uk-visibility-hidden" hidd
 
             if (this.value != value) {
 
+                if (typeof(value) != 'string') {
+                    value = '';
+                }
+
                 this.value = value;
 
                 if (editor && (!this.evtSrc || force)) {
-                    editor.editor.setValue(value || '', true);
+                    editor.editor.setValue(value, true);
                 }
             }
 
@@ -2432,7 +2436,7 @@ riot.tag2('field-html', '<textarea ref="input" class="uk-visibility-hidden" hidd
                     '/assets/lib/uikit/js/components/htmleditor.js'
                 ], function() {
 
-                    $this.refs.input.value = $this.value;
+                    $this.refs.input.value = $this.value || '';
 
                     editor = UIkit.htmleditor(this.refs.input, opts);
 
@@ -3862,10 +3866,14 @@ riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" 
 
             if (this.value != value) {
 
+                if (typeof(value) != 'string') {
+                    value = '';
+                }
+
                 this.value = value;
 
                 if (editor && force) {
-                    editor.setContent(this.value || '');
+                    editor.setContent(this.value);
                 }
             }
 
@@ -3924,11 +3932,11 @@ riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" 
                           selector: '#'+this.refs.input.id,
                           setup: function (ed) {
 
-                              $this.refs.input.value = $this.value;
+                              $this.refs.input.value = $this.value || '';
 
                               var clbChange = function(e){
                                 ed.save();
-                                $this.$setValue($this.refs.input.value, true);
+                                $this.$setValue($this.refs.input.value || '', true);
                               };
 
                               ed.on('ExecCommand', clbChange);
@@ -3962,10 +3970,10 @@ riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" 
 
             }.bind(this)).catch(function(){
 
-                this.refs.input.value = this.value;
+                this.refs.input.value = this.value || '';
 
                 App.$(this.refs.input).css('visibility','').on('change', function() {
-                    $this.$setValue(this.value);
+                    $this.$setValue(this.value || '');
                 });
 
             }.bind(this));
