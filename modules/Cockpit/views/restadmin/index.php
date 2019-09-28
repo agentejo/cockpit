@@ -11,14 +11,13 @@
     <div class="uk-grid">
         <div class="uk-width-2-3">
 
-            <div class="uk-text-large uk-text-bold">
-                <span class="uk-text-uppercase">@lang('Master API-Key')</span>
-                <span class="uk-badge uk-badge-danger" show="{ keys.master }">@lang('Share with caution')</span>
-            </div>
-
-            <div class="uk-grid uk-grid-small uk-flex-middle uk-margin-top">
+ 
+            <div class="uk-text-upper uk-text-small uk-text-bold">@lang('Master API-Key')</div>
+   
+            <div class="uk-grid uk-grid-small uk-flex-middle uk-margin-small-top">
                 <div class="uk-flex-item-1">
                     <input class="uk-width-1-1 uk-form-large uk-text-primary uk-text-monospace" type="text" placeholder="@lang('No key generated')" bind="keys.master" name="fullaccesskey" readonly>
+                    <span class="uk-text-small uk-text-danger uk-margin-small-top" show="{ keys.master }">@lang('Share with caution')</span>
                 </div>
                 <div if="{keys.master}">
                     <a class="uk-margin-right" onclick="{ copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-clone"></i></a>
@@ -30,7 +29,7 @@
             </div>
 
             <div class="uk-margin-large-top">
-                <span class="uk-badge uk-badge-outline uk-text-muted">@lang('Custom keys')</span>
+                <span class="uk-text-upper uk-text-small uk-text-bold uk-text-muted">@lang('Custom keys')</span>
             </div>
 
             <div class="uk-margin" show="{keys.special.length}">

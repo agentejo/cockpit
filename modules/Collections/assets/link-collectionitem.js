@@ -216,8 +216,8 @@
                     </div>
                 </form>
                 <div class="uk-modal-footer uk-text-right">
-                    <button class="uk-button uk-button-primary uk-margin-right uk-button-large js-create-button" onclick="App.$('#frmSelectCollectionLink').submit()" show="{val('url')}">Select</button>
-                    <button class="uk-button uk-button-link uk-button-large uk-modal-close">Cancel</button>
+                    <button class="uk-button uk-button-primary uk-margin-right uk-button-large js-create-button" onclick="App.$('#frmSelectCollectionLink').submit()" show="{val('url')}">${App.i18n.get('Select')}</button>
+                    <button class="uk-button uk-button-link uk-button-large uk-modal-close">${App.i18n.get('Cancel')}</button>
                 </div>
 
               `, '', '', function(opts) {

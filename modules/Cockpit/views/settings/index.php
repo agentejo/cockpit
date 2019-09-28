@@ -4,7 +4,7 @@
     </ul>
 </div>
 
-<div class="uk-grid uk-grid-gutter uk-grid-match uk-grid-width-medium-1-4 uk-grid-width-xlarge-1-5 uk-text-center">
+<div class="uk-grid uk-grid-gutter uk-grid-match uk-grid-width-medium-1-4 uk-grid-width-xlarge-1-6 uk-text-center">
 
     @if($app['user']['group']=='admin')
     <div>
@@ -15,20 +15,6 @@
                 @lang('Settings')
             </div>
             <a class="uk-position-cover" aria-label="@lang('Settings')" href="@route('/settings/edit')"></a>
-        </div>
-    </div>
-    @endif
-
-    @hasaccess?('cockpit', 'accounts')
-    <div>
-        <div class="uk-panel uk-panel-space uk-panel-box uk-panel-card">
-
-            <img src="@url('assets:app/media/icons/accounts.svg')" width="50" height="50" alt="@lang('Accounts')" />
-
-            <div class="uk-text-truncate uk-margin">
-                @lang('Accounts')
-            </div>
-            <a class="uk-position-cover" aria-label="@lang('Accounts')" href="@route('/accounts/index')"></a>
         </div>
     </div>
     @endif

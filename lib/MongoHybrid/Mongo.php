@@ -221,7 +221,7 @@ class Mongo {
 
                 if (is_string($v)) {
                     
-                    $v = new \MongoDB\BSON\ObjectID($v);
+                    $v = $v[0] === '@' ? \substr($v, 1) : new \MongoDB\BSON\ObjectID($v);
 
                 } elseif (is_array($v)) {
 

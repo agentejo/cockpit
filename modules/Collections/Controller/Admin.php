@@ -419,7 +419,7 @@ class Admin extends \Cockpit\AuthController {
 
         if (isset($options['filter']) && is_string($options['filter'])) {
 
-            if ($filter = json_decode($options['filter'], true)) {
+            if (\preg_match('/^\{(.*)\}$/', $options['filter']) && $filter = json_decode($options['filter'], true)) {
                 $options['filter'] = $filter;
             } else {
                 $options['filter'] = $this->_filter($options['filter'], $collection);

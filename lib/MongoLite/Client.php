@@ -33,7 +33,7 @@ class Client {
     /**
      * Constructor
      *
-     * @param string $path
+     * @param string $path - Pathname to database file or :memory:
      * @param array  $options
      */
     public function __construct($path, $options = []) {
@@ -44,16 +44,22 @@ class Client {
     /**
      * List Databases
      *
-     * @return array List of databases
+     * @return array List of database names
      */
     public function listDBs() {
 
+        // Return all databases available in memory
+        if ($this->path === Database::DSN_PATH_MEMORY) {
+            return array_keys($this->databases);
+        }
+
+        // Return all databases available on disk
         $databases = [];
 
         foreach (new \DirectoryIterator($this->path) as $fileInfo) {
-            if (\preg_match('/\.sqlite$/', $fileInfo->getFilename())) {
-                $databases[] = \str_replace('.sqlite', '', $fileInfo->getFilename());
-             }
+            if ($fileInfo->getExtension() === 'sqlite') {
+                $databases[] = $fileInfo->getBasename('.sqlite');
+            }
         }
 
         return $databases;
@@ -64,7 +70,7 @@ class Client {
      *
      * @param  string $database
      * @param  string $collection
-     * @return object
+     * @return Collection
      */
     public function selectCollection($database, $collection) {
 
@@ -75,12 +81,15 @@ class Client {
      * Select database
      *
      * @param  string $name
-     * @return object
+     * @return Database
      */
     public function selectDB($name) {
 
         if (!isset($this->databases[$name])) {
-            $this->databases[$name] = new Database($this->path.'/'.$name.'.sqlite', $this->options);
+            $this->databases[$name] = new Database(
+                $this->path === Database::DSN_PATH_MEMORY ? $this->path : sprintf('%s/%s.sqlite', $this->path, $name),
+                $this->options
+            );
         }
 
         return $this->databases[$name];
