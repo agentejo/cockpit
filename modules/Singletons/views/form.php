@@ -172,6 +172,8 @@
 
         </div>
 
+        <cp-inspectobject ref="inspect"></cp-inspectobject>
+
 
         <script type="view/script">
 
@@ -243,6 +245,14 @@
                     }
 
                     $this.submit(e);
+                    return false;
+                });
+
+                // inspect raw object
+                Mousetrap.bindGlobal(['ctrl+alt+i'], function(e) {
+
+                    $this.refs.inspect.show($this.data);
+                    $this.update();
                     return false;
                 });
 

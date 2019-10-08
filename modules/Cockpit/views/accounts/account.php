@@ -16,7 +16,7 @@
 
         <h3>@lang('General')</h3>
 
-        <div class="uk-panel uk-panel-space uk-panel-box uk-panel-card uk-text-center">
+        <div class="uk-panel uk-panel-space uk-text-center">
 
             <cp-gravatar email="{ account.email }" size="100" alt="{ account.name || account.user }"></cp-gravatar>
 
@@ -131,12 +131,12 @@
 
         <h3>@lang('Settings')</h3>
 
-        @if($app["user"]["group"]=="admin" AND @$account["_id"]!=$app["user"]["_id"])
+        @if($app["user"]["group"]=="admin" && @$account["_id"]!=$app["user"]["_id"])
         <div class="uk-form-row">
             <label class="uk-text-small">@lang('Status')</label>
 
             <div class="uk-form-controls uk-margin-small-top">
-                <a class="uk-button { !account.active ? 'uk-button-danger':'uk-button-success' }" onclick="{ toggleactive }">
+                <a class="uk-button { !account.active ? 'uk-button-danger':'uk-button-success' } uk-width-medium-1-3" onclick="{ toggleactive }">
                     { App.i18n.get(account.active ? 'Active' : 'Inactive') }
                 </a>
             </div>
@@ -148,8 +148,8 @@
             <label class="uk-text-small">@lang('Language')</label>
 
             <div class="uk-form-controls uk-margin-small-top">
-                <div class="uk-form-select">
-                    <a>{ _.result(_.find(languages, { 'i18n': account.i18n }), 'language') || account.i18n }</a>
+                <div class="uk-form-select uk-display-block">
+                    <a class="uk-text-upper uk-text-small uk-text-bold uk-text-muted">{ _.result(_.find(languages, { 'i18n': account.i18n }), 'language') || account.i18n }</a>
                     <select class="uk-width-1-1 uk-form-large" ref="i18n" bind="account.i18n">
                         @foreach($languages as $lang)
                         <option value="{{ $lang['i18n'] }}">{{ $lang['language'] }}</option>
@@ -159,13 +159,13 @@
             </div>
         </div>
 
-        @if($app->module('cockpit')->isSuperAdmin() AND @$account["_id"] != $app["user"]["_id"])
+        @if($app->module('cockpit')->isSuperAdmin() && @$account["_id"] != $app["user"]["_id"])
         <div class="uk-form-row">
             <label class="uk-text-small">@lang('Group')</label>
 
             <div class="uk-form-controls uk-margin-small-top">
-                <div class="uk-form-select">
-                    <a>{ account.group }</a>
+                <div class="uk-display-block uk-form-select">
+                    <a class="uk-text-upper uk-text-small uk-text-bold uk-text-primary">{ account.group }</a>
                     <select class="uk-width-1-1 uk-form-large" ref="group" bind="account.group">
                         @foreach($groups as $group)
                         <option value="{{ $group }}">{{ $group }}</option>

@@ -43,7 +43,7 @@
 
                     @foreach($modules as $item)
                     <li class="uk-width-1-2 uk-width-medium-1-4 uk-width-xlarge-1-5" data-route="{{ $item['route'] }}">
-                        <a class="uk-display-block uk-panel-box uk-panel-card-hover" href="@route($item['route'])">
+                        <a class="uk-display-block uk-panel-box uk-panel-space uk-panel-card-hover" href="@route($item['route'])">
                             <div class="uk-svg-adjust">
                                 @if(preg_match('/\.svg$/i', $item['icon']))
                                 <img src="@url($item['icon'])" alt="@lang($item['label'])" data-uk-svg width="40" height="40" />

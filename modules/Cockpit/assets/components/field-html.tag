@@ -14,10 +14,14 @@
 
             if (this.value != value) {
 
+                if (typeof(value) != 'string') {
+                    value = '';
+                }
+
                 this.value = value;
 
                 if (editor && (!this.evtSrc || force)) {
-                    editor.editor.setValue(value || '', true);
+                    editor.editor.setValue(value, true);
                 }
             }
 
@@ -35,7 +39,7 @@
                     '/assets/lib/uikit/js/components/htmleditor.js'
                 ], function() {
 
-                    $this.refs.input.value = $this.value;
+                    $this.refs.input.value = $this.value || '';
 
                     editor = UIkit.htmleditor(this.refs.input, opts);
 

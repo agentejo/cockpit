@@ -97,7 +97,7 @@
                                     <div class="uk-dropdown uk-dropdown-close">
                                         <ul class="uk-nav uk-nav-dropdown">
                                             <li class="uk-nav-header">@lang('Copy content from:')</li>
-                                            <li show="{parent.lang}"><a onclick="{parent.copyLocalizedValue}" lang="" field="{field.name}">@lang('Default')</a></li>
+                                            <li show="{parent.lang}"><a onclick="{parent.copyLocalizedValue}" lang="" field="{field.name}">{App.$data.languageDefaultLabel}</a></li>
                                             <li show="{parent.lang != language.code}" each="{language,idx in languages}" value="{language.code}"><a onclick="{parent.parent.copyLocalizedValue}" lang="{language.code}" field="{field.name}">{language.label}</a></li>
                                         </ul>
                                     </div>
@@ -182,6 +182,7 @@
     </div>
 
     <collection-entrypreview collection="{collection}" entry="{entry}" groups="{ groups }" fields="{ fields }" fieldsidx="{ fieldsidx }" excludeFields="{ excludeFields }" languages="{ languages }" settings="{ collection.contentpreview }" if="{ preview }"></collection-entrypreview>
+    <cp-inspectobject ref="inspect"></cp-inspectobject>
 
     <script type="view/script">
 
@@ -262,6 +263,14 @@
                 }
 
                 $this.submit(e);
+                return false;
+            });
+
+            // inspect raw object
+            Mousetrap.bindGlobal(['ctrl+alt+i'], function(e) {
+
+                $this.refs.inspect.show($this.entry);
+                $this.update();
                 return false;
             });
 

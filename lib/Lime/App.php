@@ -164,6 +164,7 @@ class App implements \ArrayAccess {
         'swf'   => 'application/x-shockwave-flash',
         'tar'   => 'application/x-tar',
         'xhtml' => 'application/xhtml+xml',
+        'text'  => 'text/plain',
     ];
 
     /**
@@ -290,6 +291,19 @@ class App implements \ArrayAccess {
     public function stop($data = false, $status = null){
 
         $this->exit = true;
+
+        if (!isset($this->response)) {
+            
+            if (\is_array($data) || \is_object($data)) {
+                $data = \json_encode($data);
+            }
+
+            if ($data) {
+                echo $data;
+            }
+            
+            exit;
+        }
 
         if ($status) {
            $this->response->status = $status;
