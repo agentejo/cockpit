@@ -27,6 +27,9 @@
         ]);
 
         var $this = this, defaultpos = {lat:53.55909862554551, lng:9.998652343749995};
+        if(opts['readonly'] && App.$data.user.group != 'admin'){
+               $this.refs.input.setAttribute('readonly', opts['readonly']);
+        }
 
         this.latlng = defaultpos;
 
@@ -62,12 +65,16 @@
                     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
                         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     }).addTo(map);
-
-                    var marker = new L.marker([$this.latlng.lat, $this.latlng.lng], {draggable:'true'});
+                    var dragable = true;
+                    if(opts['readonly'] && App.$data.user.group != 'admin'){
+                        dragable = !opts['readonly']
+                    }
+                    var marker = new L.marker([$this.latlng.lat, $this.latlng.lng], {draggable:dragable});
 
                     marker.on('dragend', function(e) {
                         $this.$setValue(marker.getLatLng());
                     });
+                   
 
                     map.addLayer(marker);
 

@@ -58,6 +58,10 @@
 @form-disabled-background:                      #f5f5f5;
 @form-disabled-color:                           #999;
 
+@form-readonly-border:                          #ddd;
+@form-readonly-background:                      rgba(255, 255, 255, 0.582);
+@form-readonly-color:                           #999;
+
 @form-placeholder-color:                        #999;
 
 @form-gutter:                                   15px;
@@ -135,6 +139,17 @@
     /* 4 */
     font: inherit;
     color: inherit;
+}
+
+.uk-form input:read-only {
+    border-color: @form-readonly-border !important;
+    background-color: @form-readonly-background !important;
+    color: @form-readonly-color !important;
+}
+
+.uk-form-switch input[type="checkbox"]:disabled+label:after
+ {
+    background: @form-readonly-color !important;
 }
 
 /*

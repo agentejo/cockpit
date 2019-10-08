@@ -23,7 +23,7 @@
         }
 
         this.value = opts.default || false;
-
+       
         this.$updateValue = function(value) {
 
             if (this.value != value) {
@@ -31,15 +31,24 @@
                 this.update();
             }
             this.refs.check.checked = Boolean(this.value);
+            
 
         }.bind(this);
 
+        this.on('mount', function(){
+            if(opts['readonly'] && App.$data.user.group != 'admin'){
+                this.refs.check.disabled = opts['readonly'];;
+            }
+
+        });
+
+       
         toggle(e) {
 
             this.value = this.refs.check.checked;
             this.$setValue(this.value);
 
-        }
+        };
 
     </script>
 
