@@ -183,8 +183,8 @@ class App extends \Lime\App {
         }
 
         if (count($js)) {
-            
-            $path = '#tmp:assets/'.$jshash.'.js';
+
+            $path = '#compiledAssets:'.$jshash.'.js';
 
             if (!$this->path($path)) {
                 $contents = [];

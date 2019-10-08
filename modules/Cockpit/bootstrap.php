@@ -30,7 +30,7 @@ $this->module('cockpit')->extend([
 
     'clearCache' => function() use($app) {
 
-        $dirs = ['#cache:','#tmp:','#thumbs:'];
+        $dirs = ['#cache:','#tmp:','#compiledAssets:','#thumbs:'];
 
         foreach ($dirs as $dir) {
 

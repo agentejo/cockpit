@@ -34,7 +34,7 @@ class Settings extends \Cockpit\AuthController {
 
         $size = 0;
 
-        foreach (['#cache:','#tmp:','#thumbs:'] as $dir) {
+        foreach (['#cache:','#tmp:','#compiledAssets:','#thumbs:'] as $dir) {
             $size += $this->app->helper("fs")->getDirSize($dir);
         }
 

@@ -117,6 +117,7 @@ function cockpit($module = null) {
                 '#data'     => COCKPIT_STORAGE_FOLDER.'/data',
                 '#cache'    => COCKPIT_STORAGE_FOLDER.'/cache',
                 '#tmp'      => COCKPIT_STORAGE_FOLDER.'/tmp',
+                '#compiledAssets' => COCKPIT_STORAGE_FOLDER. '/tmp/assets',
                 '#thumbs'   => COCKPIT_PUBLIC_STORAGE_FOLDER.'/thumbs',
                 '#uploads'  => COCKPIT_PUBLIC_STORAGE_FOLDER.'/uploads',
                 '#modules'  => COCKPIT_DIR.'/modules',
@@ -174,6 +175,13 @@ function cockpit($module = null) {
                     'args' => [$app->path('#tmp:')],
                     'mount' => true,
                     'url' => $app->pathToUrl('#tmp:', true)
+                ],
+
+                'compiledAssets' => [
+                    'adapter' => 'League\Flysystem\Adapter\Local',
+                    'args' => [$app->path('#compiledAssets:')],
+                    'mount' => true,
+                    'url' => $app->pathToUrl('#compiledAssets:', true)
                 ],
 
                 'thumbs' => [
