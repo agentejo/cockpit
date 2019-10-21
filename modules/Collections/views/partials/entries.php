@@ -114,6 +114,19 @@
             </div>
         </div>
 
+        <div class="uk-margin-top uk-text-center uk-form" if="{ !loading && languages.length }">
+            <div class="uk-form-select">
+
+                <label class="uk-text-small">@lang('Language')</label>
+                <span class="uk-margin-small-top"><span class="uk-badge uk-badge-outline {lang ? 'uk-text-primary' : 'uk-text-muted'}">{ lang ? _.find(languages,{'code':lang}).label : App.$data.languageDefaultLabel }</span></span>
+
+                <select onchange="{changelanguage}" value="{lang}">
+                    <option value="">{App.$data.languageDefaultLabel}</option>
+                    <option each="{language,idx in languages}" value="{language.code}">{language.label}</option>
+                </select>
+            </div>
+        </div>
+
 
         <div class="uk-margin-top" show="{ !loading && (entries.length || filter) }">
 
@@ -194,7 +207,7 @@
 
         </div>
 
-        <div class="uk-margin-large-top uk-overflow-container uk-viewport-height-1-3" if="{ entries.length && !loading && listmode=='list' }">
+        <div class="uk-margin-{languages.length ? 'top' : 'large-top'} uk-overflow-container uk-viewport-height-1-3" if="{ entries.length && !loading && listmode=='list' }">
             <table class="uk-table uk-table-tabbed uk-table-striped">
                 <thead>
                     <tr>
@@ -318,6 +331,10 @@
         this.entries    = [];
         this.fieldsidx  = {};
         this.imageField = null;
+        this.languages  = App.$data.languages;
+        if (this.languages.length) {
+            this.lang = App.session.get('collections.entry.'+this.collection._id+'.lang', '');
+        }
 
         this.fields     = this.collection.fields.filter(function(field){
 
@@ -460,6 +477,10 @@
         load(initial) {
 
             var options = { sort:this.sort };
+
+            if (this.lang) {
+                options.lang = this.lang;
+            }
 
             if (this.filter) {
                 options.filter = this.filter;
@@ -650,6 +671,14 @@
 
         batchedit() {
             this.tags['entries-batchedit'].open(this.entries, this.selected)
+        }
+
+        changelanguage(e) {
+            var lang = e.target.value;
+            App.session.set('collections.entry.'+this.collection._id+'.lang', lang);
+            this.lang = lang;
+            this.load(false);
+            this.update();
         }
 
     </script>
