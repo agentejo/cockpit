@@ -120,9 +120,9 @@
                 <label class="uk-text-small">@lang('Language')</label>
                 <span class="uk-margin-small-top"><span class="uk-badge uk-badge-outline {lang ? 'uk-text-primary' : 'uk-text-muted'}">{ lang ? _.find(languages,{'code':lang}).label : App.$data.languageDefaultLabel }</span></span>
 
-                <select onchange="{changelanguage}" value="{lang}">
-                    <option value="">{App.$data.languageDefaultLabel}</option>
-                    <option each="{language,idx in languages}" value="{language.code}">{language.label}</option>
+                <select onchange="{changelanguage}">
+                    <option value="" selected="{lang === ''}">{App.$data.languageDefaultLabel}</option>
+                    <option each="{language,idx in languages}" value="{language.code}" selected="{lang === language.code}">{language.label}</option>
                 </select>
             </div>
         </div>
