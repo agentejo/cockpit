@@ -512,11 +512,16 @@ function fuzzy_search($search, $text, $distance = 3){
 
 function createMongoDbLikeId() {
 
+    // use native MongoDB ObjectId if available
+    if (class_exists('MongoDB\\BSON\\ObjectId')) {
+        $objId = new \MongoDB\BSON\ObjectId();
+        return (string)$objId;
+    }
+
     // based on https://gist.github.com/h4cc/9b716dc05869296c1be6
 
     $timestamp = \microtime(true);
-    $hostname  = \php_uname('n');
-    $processId = \getmypid();
+    $processId = \random_int(10000, 99999);
     $id        = \random_int(10, 1000);
     $result    = '';
 
@@ -524,7 +529,7 @@ function createMongoDbLikeId() {
     $bin = \sprintf(
         '%s%s%s%s',
         \pack('N', $timestamp),
-        \substr(md5($hostname), 0, 3),
+        \substr(md5(uniqid()), 0, 3),
         \pack('n', $processId),
         \substr(\pack('N', $id), 1, 3)
     );
