@@ -483,7 +483,20 @@
             }
 
             if (this.filter) {
-                options.filter = this.filter;
+                if (this.lang) {
+                    var allowedTypes = ['text','select','html','wysiwyg','markdown','code'];
+                    var filterFields = [];
+                    for (field of this.collection.fields) {
+                        if (allowedTypes.includes(field.type)) {
+                            var criteria = {};
+                            criteria[field.localize ? field.name + "_" + this.lang : field.name] = { "$regex": this.filter, "$options": "i"};
+                            filterFields.push(criteria);
+                        }
+                    }
+                    options.filter = JSON.stringify({"$or":filterFields});
+                } else {
+                    options.filter = this.filter;
+                }
             }
 
             if (this.limit) {
