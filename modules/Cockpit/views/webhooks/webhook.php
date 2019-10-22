@@ -32,14 +32,14 @@
                     <div class="uk-margin">
                         <label class="uk-text-small uk-text-uppercase">HTTP Basic Auth</label>
 
-                        <div class="uk-margin uk-grid uk-grid-small uk-grid-width-1-1">
+                        <div class="uk-margin uk-grid uk-grid-small uk-grid-width-1-2">
                             <div>
                                 <div class="uk-form-icon uk-width-1-1 uk-display-block">
                                     <i class="uk-icon-user"></i>
                                     <input class="uk-form-large uk-width-1-1" type="text" bind="webhook.auth.user" placeholder="@lang('User')">
                                 </div>
                             </div>
-                            <div class="uk-grid-margin">
+                            <div>
                                 <div class="uk-form-icon uk-width-1-1 uk-display-block">
                                     <i class="uk-icon-key"></i>
                                     <input class="uk-form-large uk-width-1-1" type="password" bind="webhook.auth.pass" placeholder="@lang('Password')">
@@ -82,7 +82,7 @@
                         @lang('You have not assign any event yet.')
                     </div>
 
-                    <table class="uk-table uk-table-border" show="{webhook.events.length}">
+                    <table class="uk-table uk-table-tabbed uk-table-striped" show="{webhook.events.length}">
                         <thead>
                             <tr>
                                 <th>@lang('Event')</th>
@@ -107,13 +107,11 @@
                         </tbody>
                     </table>
 
-                    <div class="uk-margin uk-form">
+                    <div class="uk-form">
                         <div class="uk-form-icon uk-autocomplete uk-width-1-1 uk-display-block" ref="eventAutocomplete">
                             <i class="uk-icon-bolt"></i>
                             <input class="uk-width-1-1 uk-form-large" type="text" ref="event" placeholder="@lang('Add event...')">
-                            <div class="uk-dropdown uk-dropdown-scrollable uk-width-1-1" aria-expanded="true">
-
-                            </div>
+                            <div class="uk-dropdown uk-dropdown-scrollable uk-width-1-1" aria-expanded="true"></div>
                         </div>
                     </div>
 
