@@ -95,7 +95,10 @@
 
                         <a class="uk-text-bold uk-flex-item-1 uk-text-center uk-link-muted" href="@route('/collections/entries')/{collection.name}">{ collection.label }</a>
                         <div>
-                            <span class="uk-badge" riot-style="background-color:{ (collection.meta.color) }">{ collection.meta.itemsCount }</span>
+                            <span class="uk-badge" riot-style="background-color:{ (collection.meta.color) }">
+                                <span if="{ collection.meta.itemsCount !==null }">{ collection.meta.itemsCount }</span>
+                                <span class="uk-icon-spinner uk-icon-spin" if="{ collection.meta.itemsCount == null }"></span>
+                            </span>
                         </div>
                     </div>
 
@@ -126,6 +129,9 @@
             this.groups = _.uniq(this.groups.sort());
         }
 
+        this.on('mount', function() {
+            this.loadCounts();
+        });
 
         remove(e, collection) {
 
@@ -176,6 +182,21 @@
             name  = [collection.name.toLowerCase(), collection.label.toLowerCase()].join(' ');
 
             return name.indexOf(value) !== -1;
+        }
+
+        loadCounts() {
+
+            App.request('/collections/utils/getUserCollections').then(function(collections) {
+
+                this.collections.forEach(function(collection) {
+
+                    if (collections[collection.name]) {
+                        collection.meta.itemsCount = collections[collection.name].itemsCount;
+                    }
+                });
+                
+                this.update();
+            }.bind(this));
         }
 
     </script>

@@ -16,7 +16,7 @@ class Admin extends \Cockpit\AuthController {
 
     public function index() {
 
-        $_collections = $this->module('collections')->getCollectionsInGroup(null, true);
+        $_collections = $this->module('collections')->getCollectionsInGroup(null, false);
         $collections  = [];
 
         foreach ($_collections as $collection => $meta) {
@@ -28,6 +28,8 @@ class Admin extends \Cockpit\AuthController {
                 'entries_create' => $this->module('collections')->hasaccess($collection, 'collection_create'),
                 'entries_delete' => $this->module('collections')->hasaccess($collection, 'entries_delete'),
             ];
+
+            $meta['itemsCount'] = null;
 
             $collections[] = [
               'name' => $collection,

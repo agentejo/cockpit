@@ -25,6 +25,7 @@ $app->on('admin.init', function() {
     // bind admin routes /collections/*
     $this->bindClass('Collections\\Controller\\Trash', 'collections/trash');
     $this->bindClass('Collections\\Controller\\Import', 'collections/import');
+    $this->bindClass('Collections\\Controller\\Utils', 'collections/utils');
     $this->bindClass('Collections\\Controller\\Admin', 'collections');
 
     // add to modules menu
