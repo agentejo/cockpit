@@ -15,6 +15,8 @@ class Utils extends \Cockpit\AuthController {
 
     public function getUserCollections() {
 
+        \session_write_close();
+
         $collections = $this->module('collections')->getCollectionsInGroup(null, true);
 
         return $collections;
