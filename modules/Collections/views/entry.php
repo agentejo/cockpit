@@ -44,8 +44,12 @@
                 <div class="uk-margin-small-right">
                     <img src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="40" alt="icon">
                 </div>
-                { App.i18n.get(entry._id ? 'Edit Entry':'Add Entry') }
-                <a class="uk-margin-left" onclick="{showPreview}" if="{ collection.contentpreview && collection.contentpreview.enabled }" title="@lang('Preview')"><i class="uk-icon-button uk-icon-eye"></i></a>
+                <div class="uk-margin-right">{ App.i18n.get(entry._id ? 'Edit Entry':'Add Entry') }</div>
+                <a onclick="{showPreview}" if="{ collection.contentpreview && collection.contentpreview.enabled }" title="@lang('Preview')"><i class="uk-icon-button uk-icon-eye"></i></a>
+                @if($app->module('cockpit')->isSuperAdmin())
+                <div class="uk-flex-item-1"></div>
+                <a class="uk-button uk-button-link uk-text-warning" onclick="{showEntryObject}">@lang('Show json')</a>
+                @endif
             </div>
         </div>
 
@@ -266,14 +270,6 @@
                 return false;
             });
 
-            // inspect raw object
-            Mousetrap.bindGlobal(['ctrl+alt+i'], function(e) {
-
-                $this.refs.inspect.show($this.entry);
-                $this.update();
-                return false;
-            });
-
             // wysiwyg cmd + save hack
             App.$(this.root).on('submit', function(e, component) {
                 if (component) $this.submit(e);
@@ -410,6 +406,11 @@
             }
 
             return true;
+        }
+
+        showEntryObject() {
+            $this.refs.inspect.show($this.entry);
+            $this.update();
         }
 
     </script>

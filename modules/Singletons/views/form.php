@@ -36,7 +36,10 @@
                 <div class="uk-margin-small-right">
                     <img src="@url($singleton['icon'] ? 'assets:app/media/icons/'.$singleton['icon']:'singletons:icon.svg')" width="40" alt="icon">
                 </div>
-                { singleton.label || singleton.name }
+                <div class="uk-flex-item-1">{ singleton.label || singleton.name }</div>
+                @if($app->module('cockpit')->isSuperAdmin())
+                <a class="uk-button uk-button-link uk-text-warning" onclick="{showDataObject}">@lang('Show json')</a>
+                @endif
             </div>
         </div>
 
@@ -248,14 +251,6 @@
                     return false;
                 });
 
-                // inspect raw object
-                Mousetrap.bindGlobal(['ctrl+alt+i'], function(e) {
-
-                    $this.refs.inspect.show($this.data);
-                    $this.update();
-                    return false;
-                });
-
                 // wysiwyg cmd + save hack
                 App.$(this.root).on('submit', function(e, component) {
                     if (component) $this.submit(e);
@@ -374,6 +369,10 @@
                 return true;
             }
 
+            showDataObject() {
+                $this.refs.inspect.show($this.data);
+                $this.update();
+            }
         </script>
 
     </div>
