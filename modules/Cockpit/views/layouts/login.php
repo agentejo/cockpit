@@ -25,11 +25,6 @@
             height: 80px;
         }
 
-        .uk-panel-box-header {
-            background-color: #fafafa;
-            border-bottom: none;
-        }
-
         svg path,
         svg rect,
         svg circle {
@@ -51,7 +46,7 @@
 
         <form class="uk-form" method="post" action="@route('/auth/check')" onsubmit="{ submit }">
 
-            <div class="uk-panel-box uk-panel-space uk-panel-card uk-nbfc uk-text-center uk-animation-slide-bottom" if="{$user}">
+            <div class="uk-panel-space uk-nbfc uk-text-center uk-animation-slide-bottom" if="{$user}">
 
                 <h1 class="uk-h2 uk-text-bold uk-text-truncate">@lang('Welcome back!')</h1>
 
@@ -63,7 +58,7 @@
 
             <div id="login-dialog" class="login-dialog uk-panel-box uk-panel-space uk-nbfc" show="{!$user}">
 
-                <div name="header" class="uk-panel-box-header uk-text-bold uk-text-center">
+                <div name="header" class="uk-panel-space uk-text-bold uk-text-center">
 
                     <div class="uk-margin login-image"></div>
 
@@ -109,7 +104,10 @@
 
                 this.error = false;
 
-                App.request('/auth/check', {"auth":{"user":this.refs.user.value, "password":this.refs.password.value}}).then(function(data){
+                App.request('/auth/check', {
+                    auth : {user:this.refs.user.value, password:this.refs.password.value },
+                    csfr : "{{ $app('csfr')->token('login') }}"
+                }).then(function(data) {
 
                     if (data && data.success) {
 

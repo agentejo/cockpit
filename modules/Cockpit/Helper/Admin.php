@@ -110,7 +110,7 @@ class Admin extends \Lime\Helper {
             $color = $this->favicon['color'] ?? null;
         }
 
-        $ext = strtolower(pathinfo($favicon)['extension']);
+        $ext = \strtolower(pathinfo($favicon, PATHINFO_EXTENSION));
 
         if (!$ext) return;
 

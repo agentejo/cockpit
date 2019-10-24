@@ -32,9 +32,9 @@ class Admin extends \Cockpit\AuthController {
             $meta['itemsCount'] = null;
 
             $collections[] = [
-              'name' => $collection,
-              'label' => isset($meta['label']) && $meta['label'] ? $meta['label'] : $collection,
-              'meta' => $meta
+                'name' => $collection,
+                'label' => isset($meta['label']) && $meta['label'] ? $meta['label'] : $collection,
+                'meta' => $meta
             ];
         }
 
