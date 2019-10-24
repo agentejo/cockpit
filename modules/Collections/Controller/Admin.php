@@ -434,7 +434,7 @@ class Admin extends \Cockpit\AuthController {
             if (\preg_match('/^\{(.*)\}$/', $options['filter']) && $filter = json_decode($options['filter'], true)) {
                 $options['filter'] = $filter;
             } else {
-                $options['filter'] = $this->_filter($options['filter'], $collection);
+                $options['filter'] = $this->_filter($options['filter'], $collection, $options['lang'] ?? null);
             }
         }
 
@@ -478,43 +478,49 @@ class Admin extends \Cockpit\AuthController {
         return $this->render('collections:views/revisions.php', compact('collection', 'entry', 'revisions'));
     }
 
-    protected function _filter($filter, $collection) {
+    protected function _filter($filter, $collection, $lang = null) {
 
         if ($this->app->storage->type == 'mongolite') {
-            return $this->_filterLight($filter, $collection);
+            return $this->_filterLight($filter, $collection, $lang);
         }
 
         if ($this->app->storage->type == 'mongodb') {
-            return $this->_filterMongo($filter, $collection);
+            return $this->_filterMongo($filter, $collection, $lang);
         }
 
         return null;
 
     }
 
-    protected function _filterLight($filter, $collection) {
+    protected function _filterLight($filter, $collection, $lang) {
 
         $allowedtypes = ['text','longtext','boolean','select','html','wysiwyg','markdown','code'];
         $criterias    = [];
         $_filter      = null;
 
-        foreach($collection['fields'] as $field) {
+        foreach ($collection['fields'] as $field) {
+
+            $name = $field['name'];
+
+            if ($lang && $field['localize']) {
+                $name = "{$name}_{$lang}";
+            }
 
             if ($field['type'] != 'boolean' && in_array($field['type'], $allowedtypes)) {
                 $criteria = [];
-                $criteria[$field['name']] = ['$regex' => $filter];
+                $criteria[$name] = ['$regex' => $filter];
                 $criterias[] = $criteria;
             }
 
             if ($field['type']=='collectionlink') {
                 $criteria = [];
-                $criteria[$field['name'].'.display'] = ['$regex' => $filter];
+                $criteria[$name.'.display'] = ['$regex' => $filter];
                 $criterias[] = $criteria;
             }
 
             if ($field['type']=='location') {
                 $criteria = [];
-                $criteria[$field['name'].'.address'] = ['$regex' => $filter];
+                $criteria[$name.'.address'] = ['$regex' => $filter];
                 $criterias[] = $criteria;
             }
 
@@ -527,29 +533,35 @@ class Admin extends \Cockpit\AuthController {
         return $_filter;
     }
 
-    protected function _filterMongo($filter, $collection) {
+    protected function _filterMongo($filter, $collection, $lang) {
 
         $allowedtypes = ['text','longtext','boolean','select','html','wysiwyg','markdown','code'];
         $criterias    = [];
         $_filter      = null;
 
-        foreach($collection['fields'] as $field) {
+        foreach ($collection['fields'] as $field) {
+
+            $name = $field['name'];
+
+            if ($lang && $field['localize']) {
+                $name = "{$name}_{$lang}";
+            }
 
             if ($field['type'] != 'boolean' && in_array($field['type'], $allowedtypes)) {
                 $criteria = [];
-                $criteria[$field['name']] = ['$regex' => $filter, '$options' => 'i'];
+                $criteria[$name] = ['$regex' => $filter, '$options' => 'i'];
                 $criterias[] = $criteria;
             }
 
             if ($field['type']=='collectionlink') {
                 $criteria = [];
-                $criteria[$field['name'].'.display'] = ['$regex' => $filter, '$options' => 'i'];
+                $criteria[$name.'.display'] = ['$regex' => $filter, '$options' => 'i'];
                 $criterias[] = $criteria;
             }
 
             if ($field['type']=='location') {
                 $criteria = [];
-                $criteria[$field['name'].'.address'] = ['$regex' => $filter, '$options' => 'i'];
+                $criteria[$name.'.address'] = ['$regex' => $filter, '$options' => 'i'];
                 $criterias[] = $criteria;
             }
 
