@@ -111,4 +111,30 @@
         }, 500);
     });
 
+    // favicon pollyfill for svgs in chrome
+
+    if (window.chrome) {
+
+        var favicon = document.querySelector('link[app-icon]');
+
+        if (favicon && (favicon.href.match(/\.svg$/) || favicon.href.match(/^data\:image\/svg\+xml/))) {
+
+            var img = new Image();
+    
+            img.onload = function() {
+                var canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                canvas.getContext('2d').drawImage(img,0,0);
+                favicon.href = canvas.toDataURL();
+                delete img;
+                delete canvas;
+            }
+    
+            img.src = favicon.href;
+        }
+    }
+
+    
+
 })(jQuery, UIkit);

@@ -20,6 +20,7 @@
     <meta charset="UTF-8">
     <title>{{ implode(' &raquo; ', $_title).(count($_title) ? ' - ':'').$app['app.name'] }}</title>
     <link rel="icon" href="@base('/favicon.png')" type="image/png">
+    {{ $app->helper('admin')->favicon('red') }}
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <script>

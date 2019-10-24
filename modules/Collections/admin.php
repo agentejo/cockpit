@@ -28,13 +28,19 @@ $app->on('admin.init', function() {
     $this->bindClass('Collections\\Controller\\Utils', 'collections/utils');
     $this->bindClass('Collections\\Controller\\Admin', 'collections');
 
+    $active = strpos($this['route'], '/collections') === 0;
+
     // add to modules menu
     $this->helper('admin')->addMenuItem('modules', [
         'label' => 'Collections',
         'icon'  => 'collections:icon.svg',
         'route' => '/collections',
-        'active' => strpos($this['route'], '/collections') === 0
+        'active' => $active
     ]);
+
+    if ($active) {
+        $this->helper('admin')->favicon = 'collections:icon.svg';
+    } 
 
     /**
      * listen to app search to filter collections

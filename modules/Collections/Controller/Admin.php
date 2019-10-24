@@ -177,6 +177,11 @@ class Admin extends \Cockpit\AuthController {
 
         $context = _check_collection_rule($collection, 'read', ['options' => ['filter'=>[]]]);
 
+        $this->app->helper('admin')->favicon = [
+            'path' => 'collections:icon.svg',
+            'color' => $collection['color']
+        ];
+
         if ($context && isset($context->options['fields'])) {
             foreach ($collection['fields'] as &$field) {
                 if (isset($context->options['fields'][$field['name']]) && !$context->options['fields'][$field['name']]) {
@@ -218,6 +223,11 @@ class Admin extends \Cockpit\AuthController {
             'icon' => '',
             'description' => ''
         ], $collection);
+
+        $this->app->helper('admin')->favicon = [
+            'path' => 'collections:icon.svg',
+            'color' => $collection['color']
+        ];
 
         if ($id) {
 

@@ -103,6 +103,11 @@ class Admin extends \Cockpit\AuthController {
             'description' => ''
         ], $singleton);
 
+        $this->app->helper('admin')->favicon = [
+            'path' => 'singletons:icon.svg',
+            'color' => $singleton['color']
+        ];
+
         $lockId = "singleton_{$singleton['name']}";
 
         if (!$this->app->helper('admin')->isResourceEditableByCurrentUser($lockId, $meta)) {
