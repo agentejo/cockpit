@@ -47,7 +47,7 @@ use MongoDB\Exception\UnsupportedException;
  */
 class Watch implements Executable, /* @internal */ CommandSubscriber
 {
-    private static $wireVersionForOperationTime = 7;
+    private static $wireVersionForStartAtOperationTime = 7;
 
     const FULL_DOCUMENT_DEFAULT = 'default';
     const FULL_DOCUMENT_UPDATE_LOOKUP = 'updateLookup';
@@ -267,9 +267,9 @@ class Watch implements Executable, /* @internal */ CommandSubscriber
     private function executeAggregate(Server $server)
     {
         /* If we've already captured an operation time or the server does not
-         * support returning an operation time (e.g. MongoDB 3.6), execute the
-         * aggregation directly and return its cursor. */
-        if ($this->operationTime !== null || ! \MongoDB\server_supports_feature($server, self::$wireVersionForOperationTime)) {
+         * support resuming from an operation time (e.g. MongoDB 3.6), execute
+         * the aggregation directly and return its cursor. */
+        if ($this->operationTime !== null || ! \MongoDB\server_supports_feature($server, self::$wireVersionForStartAtOperationTime)) {
             return $this->aggregate->execute($server);
         }
 
