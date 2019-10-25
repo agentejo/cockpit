@@ -22,7 +22,7 @@ class Auth extends \LimeExtra\Controller {
                 $data['user']  = '';
             }
 
-            if (!$this->app->helper('csfr')->isValid('login', $this->param('csfr'))) {
+            if (!$this->app->helper('csfr')->isValid('login', $this->param('csfr'), true)) {
                 $this->app->trigger('cockpit.authentication.failed', [$data, 'Csfr validation failed']);
                 return ['success' => false, 'error' => 'Csfr validation failed'];
             }
@@ -53,7 +53,6 @@ class Auth extends \LimeExtra\Controller {
 
 
     public function login() {
-
         return $this->render('cockpit:views/layouts/login.php');
     }
 

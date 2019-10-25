@@ -46,11 +46,24 @@ class Csfr extends \Lime\Helper {
         return $token;
     }
 
-    public function isValid($key, $token) {
+    public function isValid($key, $token, $checkpayload = false) {
+
+        if (!$token) {
+            return false;
+        }
+
+        if ($checkpayload) {
+            try {
+                $payload = JWT::decode($token, $this->app['sec-key'], ['HS256']);
+                return isset($payload->csfr) && $payload->csfr == $key;
+            } catch(\Exception $e) {
+                return false;
+            }
+        }
 
         $stoken = $this->app->helper('session')->read("cockpit.csfr.token.{$key}", null);
 
-        if (!$token || $token != $stoken) {
+        if ($token != $stoken) {
             return false;
         }
 
