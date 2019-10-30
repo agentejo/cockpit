@@ -61,7 +61,7 @@
     </div>
 
     <div class="uk-margin uk-text-center">
-        <a class="uk-text-primary { !opts.child && 'uk-button uk-button-outline uk-button-large'}" onclick="{ addComponent }" title="{ App.i18n.get('Add component') }" data-uk-tooltip="pos:'bottom'"><i class="uk-icon-plus-circle"></i></a>
+        <a class="uk-text-primary { !opts.child && 'uk-button uk-button-outline uk-button-large'}" onclick="{ addComponent.bind(this, true) }" title="{ App.i18n.get('Add component') }" data-uk-tooltip="pos:'bottom'"><i class="uk-icon-plus-circle"></i></a>
     </div>
 
     <div class="uk-modal uk-sortable-nodrag" ref="modalComponents">
@@ -363,9 +363,9 @@
             }
         }
 
-        addComponent(e) {
+        addComponent(e, push) {
             this.componentGroup = null;
-            this.refs.modalComponents.afterComponent = e.item && e.item.item ? e.item.idx : false;
+            this.refs.modalComponents.afterComponent = !push && e.item && e.item.item ? e.item.idx : false;
             UIkit.modal(this.refs.modalComponents, {modal:false}).show();
         }
 
