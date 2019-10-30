@@ -162,12 +162,18 @@
 <cp-inspectobject>
 
     <style>
+
+        .header {
+            padding: 20px;
+        }
+
         pre {
             background: #1C1D21;
             color: #eee;
-            border-radius: 3px;
+            border-radius: 0;
             padding: 15px;
             max-width: 100%;
+            margin: 0;
             overflow: auto;
         }
 
@@ -181,8 +187,8 @@
 
     <div class="uk-offcanvas" ref="offcanvas">
 
-        <div class="uk-offcanvas-bar uk-offcanvas-bar-flip uk-width-3-4 uk-panel-space uk-flex uk-flex-column">
-            <div class="uk-flex uk-flex-middle uk-margin-right">
+        <div class="uk-offcanvas-bar uk-offcanvas-bar-flip uk-width-3-4 uk-flex uk-flex-column">
+            <div class="uk-flex uk-flex-middle header">
                 <span class="uk-badge">{opts.title || 'JSON' }</span>
                 <a class="uk-margin-left" onclick="{ copyJSON }"><i class="uk-icon-clone"></i></a>
             </div>
