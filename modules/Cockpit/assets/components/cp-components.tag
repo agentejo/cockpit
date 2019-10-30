@@ -191,6 +191,9 @@
             <div class="uk-flex uk-flex-middle header">
                 <span class="uk-badge">{opts.title || 'JSON' }</span>
                 <a class="uk-margin-left" onclick="{ copyJSON }"><i class="uk-icon-clone"></i></a>
+                <div class="uk-flex-item-1 uk-text-right">
+                    <a class="uk-offcanvas-close uk-link-muted uk-icon-close"></a>
+                </div>
             </div>
             <pre class="uk-text-small uk-flex-item-1" ref="code"></pre>
         </div>
@@ -226,23 +229,24 @@
             if (typeof json != 'string') {
                 json = JSON.stringify(json, undefined, 2);
             }
+
+            var cls;
             
             json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             
             return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-                var cls = 'number';
+                
+                cls = 'number';
+                
                 if (/^"/.test(match)) {
-                    if (/:$/.test(match)) {
-                    cls = 'key';
-                    } else {
-                    cls = 'string';
-                    }
+                    cls = /:$/.test(match) ? 'key' : 'string';
                 } else if (/true|false/.test(match)) {
                     cls = 'boolean';
                 } else if (/null/.test(match)) {
                     cls = 'null';
                 }
-                return '<span class="' + cls + '">' + match + '</span>';
+                
+                return '<span class="'+cls+'">'+match+'</span>';
             });
         }
 

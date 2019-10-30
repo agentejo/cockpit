@@ -609,7 +609,7 @@ riot.tag2('cp-preloader', '<div> <div></div> <div></div> <div></div> <div></div>
 riot.tag2('cp-preloader-fullscreen', '<div class="uk-text-center"> <cp-preloader></cp-preloader> <div class="uk-margin-top uk-text-large uk-text-bold" if="{opts.message}"> {opts.message} </div> </div>', 'cp-preloader-fullscreen { position: fixed; display: flex; top: 0; bottom: 0; left: 0; right: 0; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.5); z-index: 1000000000000000; } cp-preloader-fullscreen cp-preloader,[data-is="cp-preloader-fullscreen"] cp-preloader{ display: inline-block; }', '', function(opts) {
 });
 
-riot.tag2('cp-inspectobject', '<div class="uk-offcanvas" ref="offcanvas"> <div class="uk-offcanvas-bar uk-offcanvas-bar-flip uk-width-3-4 uk-flex uk-flex-column"> <div class="uk-flex uk-flex-middle header"> <span class="uk-badge">{opts.title || \'JSON\'}</span> <a class="uk-margin-left" onclick="{copyJSON}"><i class="uk-icon-clone"></i></a> </div> <pre class="uk-text-small uk-flex-item-1" ref="code"></pre> </div> </div>', 'cp-inspectobject .header,[data-is="cp-inspectobject"] .header{ padding: 20px; } cp-inspectobject pre,[data-is="cp-inspectobject"] pre{ background: #1C1D21; color: #eee; border-radius: 0; padding: 15px; max-width: 100%; margin: 0; overflow: auto; } cp-inspectobject .string,[data-is="cp-inspectobject"] .string{ color: #4FB4D7; } cp-inspectobject .number,[data-is="cp-inspectobject"] .number{ color: #fff; } cp-inspectobject .boolean,[data-is="cp-inspectobject"] .boolean{ color: #E7CE56;} cp-inspectobject .null,[data-is="cp-inspectobject"] .null{color: #808080;} cp-inspectobject .key,[data-is="cp-inspectobject"] .key{color: #888;}', '', function(opts) {
+riot.tag2('cp-inspectobject', '<div class="uk-offcanvas" ref="offcanvas"> <div class="uk-offcanvas-bar uk-offcanvas-bar-flip uk-width-3-4 uk-flex uk-flex-column"> <div class="uk-flex uk-flex-middle header"> <span class="uk-badge">{opts.title || \'JSON\'}</span> <a class="uk-margin-left" onclick="{copyJSON}"><i class="uk-icon-clone"></i></a> <div class="uk-flex-item-1 uk-text-right"> <a class="uk-offcanvas-close uk-link-muted uk-icon-close"></a> </div> </div> <pre class="uk-text-small uk-flex-item-1" ref="code"></pre> </div> </div>', 'cp-inspectobject .header,[data-is="cp-inspectobject"] .header{ padding: 20px; } cp-inspectobject pre,[data-is="cp-inspectobject"] pre{ background: #1C1D21; color: #eee; border-radius: 0; padding: 15px; max-width: 100%; margin: 0; overflow: auto; } cp-inspectobject .string,[data-is="cp-inspectobject"] .string{ color: #4FB4D7; } cp-inspectobject .number,[data-is="cp-inspectobject"] .number{ color: #fff; } cp-inspectobject .boolean,[data-is="cp-inspectobject"] .boolean{ color: #E7CE56;} cp-inspectobject .null,[data-is="cp-inspectobject"] .null{color: #808080;} cp-inspectobject .key,[data-is="cp-inspectobject"] .key{color: #888;}', '', function(opts) {
 
         this.data = null;
 
@@ -639,22 +639,23 @@ riot.tag2('cp-inspectobject', '<div class="uk-offcanvas" ref="offcanvas"> <div c
                 json = JSON.stringify(json, undefined, 2);
             }
 
+            var cls;
+
             json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
             return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-                var cls = 'number';
+
+                cls = 'number';
+
                 if (/^"/.test(match)) {
-                    if (/:$/.test(match)) {
-                    cls = 'key';
-                    } else {
-                    cls = 'string';
-                    }
+                    cls = /:$/.test(match) ? 'key' : 'string';
                 } else if (/true|false/.test(match)) {
                     cls = 'boolean';
                 } else if (/null/.test(match)) {
                     cls = 'null';
                 }
-                return '<span class="' + cls + '">' + match + '</span>';
+
+                return '<span class="'+cls+'">'+match+'</span>';
             });
         }
 
