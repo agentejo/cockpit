@@ -133,7 +133,7 @@
                             </span>
 
                             <select bind="lang">
-                                <option value="">{ App.i18n.get('Default') }</option>
+                                <option value="">{ App.$data.languageDefaultLabel }</option>
                                 <option each="{language,idx in languages}" value="{language.code}">{language.label}</option>
                             </select>
                         </div>
@@ -201,7 +201,7 @@
 
         this.mode = 'desktop';
         this.group = '';
-        this.lang = '';
+        this.lang = opts.lang || '';
         this.$idle = false;
 
         this.settings = App.$.extend({
@@ -293,6 +293,7 @@
             clearInterval(this.$idle);
             document.body.style.overflow = '';
             this.parent.preview = false;
+            this.parent.lang = this.lang;
             this.parent.update();
         }
 
