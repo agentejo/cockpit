@@ -163,17 +163,30 @@
 
     <style>
         pre {
-            background: none;
+            background: #1C1D21;
+            color: #eee;
+            border-radius: 3px;
+            padding: 15px;
+            max-width: 100%;
+            overflow: auto;
         }
+
+        .string { color: #4FB4D7; }
+        .number { color: #fff; }
+        .boolean { color: #E7CE56;}
+        .null {color: #808080;}
+        .key {color: #888;}
+
     </style>
 
     <div class="uk-offcanvas" ref="offcanvas">
 
-
-        <div class="uk-offcanvas-bar uk-offcanvas-bar-flip uk-width-3-4 uk-panel-space">
-            <h3 class="uk-text-bold">{opts.title || App.i18n.get('Inspect object') }</h3>
-            <hr>
-            <pre class="uk-text-small">{ data || 'n/a' }</pre>
+        <div class="uk-offcanvas-bar uk-offcanvas-bar-flip uk-width-3-4 uk-panel-space uk-flex uk-flex-column">
+            <div class="uk-flex uk-flex-middle uk-margin-right">
+                <span class="uk-badge">{opts.title || 'JSON' }</span>
+                <a class="uk-margin-left" onclick="{ copyJSON }"><i class="uk-icon-clone"></i></a>
+            </div>
+            <pre class="uk-text-small uk-flex-item-1" ref="code"></pre>
         </div>
 
     </div>
@@ -188,14 +201,50 @@
 
         this.show = function(data) {
             this.data = null;
+            this.refs.code.innerHTML = '';
 
             if (data) {
-                this.data = JSON.stringify(data, null, 4);
+                this.data = data;
+                this.refs.code.innerHTML = this.syntaxHighlight(data);
+            } else {
+                this.refs.code.innerHTML = 'n/a';
             }
 
             UIkit.offcanvas.show(this.refs.offcanvas);
 
             setTimeout(this.update, 100);
+        }
+
+        this.syntaxHighlight = function(json) {
+        
+            if (typeof json != 'string') {
+                json = JSON.stringify(json, undefined, 2);
+            }
+            
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                var cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                    cls = 'key';
+                    } else {
+                    cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+
+        this.copyJSON = function() {
+
+            App.Utils.copyText(this.refs.code.innerText, function() {
+                App.ui.notify("Copied!", "success");
+            });
         }
 
     </script>

@@ -48,7 +48,7 @@
                 <a onclick="{showPreview}" if="{ collection.contentpreview && collection.contentpreview.enabled }" title="@lang('Preview')"><i class="uk-icon-button uk-icon-eye"></i></a>
                 @if($app->module('cockpit')->isSuperAdmin())
                 <div class="uk-flex-item-1"></div>
-                <a class="uk-button uk-button-link uk-text-warning" onclick="{showEntryObject}">@lang('Show json')</a>
+                <a class="uk-button uk-button-outline uk-text-warning" onclick="{showEntryObject}">@lang('Show json')</a>
                 @endif
             </div>
         </div>

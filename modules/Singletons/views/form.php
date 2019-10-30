@@ -38,7 +38,7 @@
                 </div>
                 <div class="uk-flex-item-1">{ singleton.label || singleton.name }</div>
                 @if($app->module('cockpit')->isSuperAdmin())
-                <a class="uk-button uk-button-link uk-text-warning" onclick="{showDataObject}">@lang('Show json')</a>
+                <a class="uk-button uk-button-outline uk-text-warning" onclick="{showDataObject}">@lang('Show json')</a>
                 @endif
             </div>
         </div>
