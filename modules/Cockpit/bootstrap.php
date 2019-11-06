@@ -350,6 +350,8 @@ if (COCKPIT_ADMIN_CP) {
     });
 }
 
+$app->helpers['jobs']  = 'Cockpit\\Helper\\Jobs';
+
 // CLI
 if (COCKPIT_CLI) {
     $this->path('#cli', __DIR__.'/cli');

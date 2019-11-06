@@ -7,6 +7,9 @@ if (PHP_SAPI !== 'cli') {
 
 define('COCKPIT_CLI', true);
 
+// set default timezone
+date_default_timezone_set('UTC');
+
 include_once(__DIR__.'/bootstrap.php');
 
 $_REQUEST = CLI::opts(); // make option available via $app->param()
