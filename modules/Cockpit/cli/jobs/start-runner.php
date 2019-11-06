@@ -20,6 +20,8 @@ $app->on('shutdown', function() {
     CLI::writeln('Job queue runner stopped', false);  
 });
 
+$app->storage->rpush('cockpit', 'jobs_queue_runners', getmypid());
+
 while (true) {
     $app->helper('jobs')->work();
     sleep($runnerIdle);
