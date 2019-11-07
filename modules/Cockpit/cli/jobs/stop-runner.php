@@ -8,11 +8,10 @@
  * file that was distributed with this source code.
  */
 
-foreach ($app->storage->getKey('cockpit', 'jobs_queue_runners') as $pid) {
-    
-    if (posix_getsid($pid) !== false && !posix_kill($pid, /* SIGTERM */ 15)) {
-        CLI::writeln("Failed to kill process: {$pid} (".posix_strerror(posix_get_last_error()).')', false);
-    }
+if (!$app->helper('jobs')->isRunnerActive()) {
+    return CLI::writeln("No active job queue runner found", false);
 }
 
-$app->storage->setKey('cockpit', 'jobs_queue_runners', []);
+$app->helper('jobs')->stopRunner();
+
+CLI::writeln("Cockpit: Job queue runner stopped", false);

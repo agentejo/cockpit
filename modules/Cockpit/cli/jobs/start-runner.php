@@ -14,7 +14,11 @@ if (!$runnerIdle) {
     return CLI::writeln('--idle parameter is not valid', false);
 }
 
-CLI::writeln('Job queue runner started', true);
+if ($app->helper('jobs')->isRunnerActive()) {
+    return CLI::writeln("A job queue runner is already active", false);
+}
+
+CLI::writeln('Cockpit: Job queue runner started', true);
 
 $app->on('shutdown', function() {
     CLI::writeln('Job queue runner stopped', false);  

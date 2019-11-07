@@ -66,13 +66,32 @@ class Jobs extends \Lime\Helper {
         $this->remove($job['_id']);
     }
 
-    public function isRunning() {
+    public function isRunnerActive() {
 
-        foreach ($this->app->storage->getKey('cockpit', 'jobs_queue_runners') as $pid) {
-            if (posix_getsid($pid) !== false) return true;
+        foreach ((array)$this->app->storage->getKey('cockpit', 'jobs_queue_runners') as $pid) {
+            if ($pid && posix_getsid($pid) !== false) return true;
         }
 
         return false;
+    }
+
+    public function stopRunner() {
+
+        foreach ((array)$this->app->storage->getKey('cockpit', 'jobs_queue_runners') as $pid) {
+    
+            if ($pid && posix_getsid($pid) !== false && !posix_kill($pid, /* SIGTERM */ 15)) {
+                
+                if (COCKPIT_CLI) {
+                    \CLI::writeln("Failed to kill process: {$pid} (".posix_strerror(posix_get_last_error()).')', false);
+                }
+            }
+        }
+        
+        $this->app->storage->setKey('cockpit', 'jobs_queue_runners', []);
+    }
+
+    public function countJobs() {
+        return $this->app->storage->count('cockpit/jobs_queue');
     }
 
 }

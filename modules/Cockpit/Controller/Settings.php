@@ -41,6 +41,11 @@ class Settings extends \Cockpit\AuthController {
         $info['cacheSize'] = $size ? $this->app->helper('utils')->formatSize($size) : 0;
         $info['mailer']    = $this->app->retrieve('config/mailer', false);
 
+        $info['jobs_queue']= [
+            'running' => $this->app->helper('jobs')->isRunnerActive(),
+            'cntjobs' => $this->app->helper('jobs')->countJobs()
+        ];
+
         $update = $this->getUptdateInfo();
 
         return $this->render('cockpit:views/settings/info.php', compact('info', 'update'));

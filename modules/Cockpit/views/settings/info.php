@@ -46,6 +46,21 @@
                         </div>
                     </div>
 
+                    <h4 class="uk-text-bold">@lang('Jobs queue')</h4>
+
+                    <table class="uk-table uk-table-striped">
+                        <tbody>
+                            <tr>
+                                <td width="30%" class="uk-text-small uk-text-bold">@lang('Runner active')</td>
+                                <td class="uk-text-small"><span class="uk-badge uk-badge-outline uk-text-{{ $info['jobs_queue']['running'] ? 'success':'danger' }}">{{ $info['jobs_queue']['running'] ? 'Yes':'No' }}</span></td>
+                            </tr>
+                            <tr>
+                                <td width="30%" class="uk-text-small uk-text-bold">@lang('Jobs in queue')</td>
+                                <td class="uk-text-small"><span class="uk-text-{{ !$info['jobs_queue']['cntjobs'] ? 'muted':'' }}">{{ $info['jobs_queue']['cntjobs'] }}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     @if($app->module('cockpit')->isSuperAdmin() && count(getenv()))
 
                     <h4 class="uk-text-bold">@lang('Environment Variables')</h4>
