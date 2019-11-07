@@ -36,6 +36,11 @@ class Jobs extends \Lime\Helper {
         return $job['_id'];
     }
 
+    public function remove($id) {
+
+        return $this->app->storage->remove('cockpit/jobs_queue', ['_id' => $id]);
+    }
+
     public function work() {
 
         while ($job = $this->getJob()) {
@@ -58,7 +63,16 @@ class Jobs extends \Lime\Helper {
             }
         }
 
-        $this->app->storage->remove('cockpit/jobs_queue', ['_id' => $job['_id']]);
+        $this->remove($job['_id']);
+    }
+
+    public function isRunning() {
+
+        foreach ($this->app->storage->getKey('cockpit', 'jobs_queue_runners') as $pid) {
+            if (posix_getsid($pid) !== false) return true;
+        }
+
+        return false;
     }
 
 }

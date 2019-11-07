@@ -11,8 +11,9 @@
 // Helpers
 
 $this->helpers['revisions']  = 'Cockpit\\Helper\\Revisions';
-$this->helpers['updater']  = 'Cockpit\\Helper\\Updater';
-$this->helpers['async']  = 'Cockpit\\Helper\\Async';
+$this->helpers['updater']    = 'Cockpit\\Helper\\Updater';
+$this->helpers['async']      = 'Cockpit\\Helper\\Async';
+$this->helpers['jobs']       = 'Cockpit\\Helper\\Jobs';
 
 // API
 $this->module('cockpit')->extend([
@@ -349,8 +350,6 @@ if (COCKPIT_ADMIN_CP) {
         return $this->view('cockpit:views/api.js', compact('token', 'apiurl'));
     });
 }
-
-$app->helpers['jobs']  = 'Cockpit\\Helper\\Jobs';
 
 // CLI
 if (COCKPIT_CLI) {
