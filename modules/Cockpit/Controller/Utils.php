@@ -43,6 +43,24 @@ class Utils extends \Cockpit\AuthController {
         return $this->module('cockpit')->thumbnail($options);
     }
 
+    public function getCacheSize() {
+        
+        \session_write_close();
+
+        $size = 0;
+
+        foreach (['#cache:','#tmp:','#thumbs:'] as $dir) {
+            $size += $this->app->helper("fs")->getDirSize($dir);
+        }
+
+        $ret = [
+            'size' => $size,
+            'size_pretty' => $this->app->helper('utils')->formatSize($size)
+        ];
+
+        return $ret;
+    }
+
 
     public function revisionsCount() {
 

@@ -31,7 +31,11 @@
 
                     <h4 class="uk-text-bold">@lang('Cache')</h4>
 
-                    <div class="uk-margin">
+                    <div class="uk-margin" if="{cacheSize==null}">
+                        <i class="uk-icon-spinner uk-icon-spin"></i>
+                    </div>
+
+                    <div class="uk-margin" if="{cacheSize!==null}">
 
                         <div class="uk-panel uk-panel-box" if="{ !cleaning && cacheSize }">
                             { cacheSize } <a class="uk-margin-small-left" title="@lang('Clear cache')" data-uk-tooltip="pos:'right'" onclick="{cleanUpCache}"><i class="uk-icon-button uk-icon-trash-o"></i></a>
@@ -151,11 +155,16 @@
 
             this._system = {};
             this.system  = {{ json_encode($info['app']) }};
-            this.cacheSize = {{ $info['cacheSize'] ? '"'.$info['cacheSize'].'"':0 }};
+            this.cacheSize = null;
             this.loading = false;
 
             this.on('mount', function() {
 
+                App.request('/cockpit/utils/getCacheSize').then(function(rsp) {
+
+                    $this.cacheSize = rsp.size ? rsp.size_pretty : 0;
+                    $this.update();
+                });
 
             });
 
