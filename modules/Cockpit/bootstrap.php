@@ -31,7 +31,11 @@ $this->module('cockpit')->extend([
 
     'clearCache' => function() use($app) {
 
-        $dirs = ['#cache:','#tmp:','#thumbs:'];
+        $dirs = ['#cache:','#tmp:','#thumbs:', '#pstorage:tmp'];
+
+        foreach (array_unique($dirs) as &$dir) {
+            $dir = $this->app->path($dir);
+        }
 
         foreach ($dirs as $dir) {
 

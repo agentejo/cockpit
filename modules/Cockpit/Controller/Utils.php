@@ -48,8 +48,13 @@ class Utils extends \Cockpit\AuthController {
         \session_write_close();
 
         $size = 0;
+        $dirs = ['#cache:','#tmp:','#thumbs:', '#pstorage:tmp'];
 
-        foreach (['#cache:','#tmp:','#thumbs:'] as $dir) {
+        foreach ($dirs as &$dir) {
+            $dir = $this->app->path($dir);
+        }
+
+        foreach (array_unique($dirs) as $dir) {
             $size += $this->app->helper("fs")->getDirSize($dir);
         }
 
