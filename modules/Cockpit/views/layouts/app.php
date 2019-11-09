@@ -27,6 +27,7 @@
         // App constants
         var SITE_URL   = '{{ rtrim($app->filestorage->getUrl('site://'), '/') }}';
         var ASSETS_URL = '{{ rtrim($app->filestorage->getUrl('assets://'), '/') }}';
+        var PUBLIC_STORAGE_URL = '{{ rtrim($app->pathToUrl('#pstorage:'), '/') }}';
     </script>
 
     {{ $app->assets($app('admin')->data->get('assets'), $app['debug'] ? time() : $app['cockpit/version']) }}
