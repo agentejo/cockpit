@@ -50,7 +50,7 @@
             </div>
 
             <div class="uk-margin" if="{parent.components[item.component].children}">
-                <field-layout bind="items[{idx}].children" child="true" components="{ parent.components }" exclude="{ opts.exclude }"></field-layout>
+                <field-layout bind="items[{idx}].children" child="true" parent-component="{parent.components[item.component]}" components="{ parent.components }" exclude="{ opts.exclude }"></field-layout>
             </div>
 
             <div class="uk-margin" if="{item.component == 'grid'}">
@@ -229,6 +229,9 @@
             this.components = App.$.extend(true, this.components, window.CP_LAYOUT_COMPONENTS);
         }
 
+        if(opts.parentComponent && opts.parentComponent.options) {
+            opts = App.$.extend(true, opts.parentComponent.options, opts);
+        }
 
         this.on('mount', function() {
 
