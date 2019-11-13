@@ -57,13 +57,15 @@
                     <div>
 
                         <div data-uk-dropdown="delay:400,mode:'click'">
-
+                            
                             <a href="@route('/')" class="uk-link-muted uk-text-bold app-name-link uk-flex uk-flex-middle">
                                 <span class="app-logo"></span>
                                 <span class="app-name">{{ $app['app.name'] }}</span>
                             </a>
 
-                            <div class="uk-dropdown app-panel-dropdown">
+                            <div class="uk-dropdown app-panel-dropdown uk-dropdown-close">
+
+                                <a href="#" class="uk-dropdown-close uk-icon-close uk-icon-hover"></a>
 
                                 @if($app('admin')->data['menu.modules']->count())
                                 <div class="uk-visible-small">
