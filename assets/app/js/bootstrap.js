@@ -109,7 +109,15 @@
         setTimeout(function(){
             surface.remove();
         }, 500);
-    });
+
+    }).on('keydown', function (e) {
+
+        var menu = $('.app-menu-container');
+
+        if (e.keyCode === 27 && menu.hasClass('uk-open')) { // ESC
+            menu.data('dropdown').hide();
+        }
+    });;
 
     // favicon pollyfill for svgs in chrome
 
