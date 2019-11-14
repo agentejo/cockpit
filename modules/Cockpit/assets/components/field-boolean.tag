@@ -22,11 +22,15 @@
             App.$(this.refs.container).addClass(opts.cls);
         }
 
-        this.value = opts.default || false;
+        this.value = undefined;
 
         this.$updateValue = function(value) {
 
-            if (this.value != value) {
+            if (typeof(value) !== 'boolean') {
+                return this.$setValue(!!value);
+            }
+
+            if (this.value !== value) {
                 this.value = value;
                 this.update();
             }
@@ -38,7 +42,6 @@
 
             this.value = this.refs.check.checked;
             this.$setValue(this.value);
-
         }
 
     </script>

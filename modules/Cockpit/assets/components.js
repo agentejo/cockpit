@@ -1967,11 +1967,15 @@ riot.tag2('field-boolean', '<div ref="container" class="uk-display-inline-block"
             App.$(this.refs.container).addClass(opts.cls);
         }
 
-        this.value = opts.default || false;
+        this.value = undefined;
 
         this.$updateValue = function(value) {
 
-            if (this.value != value) {
+            if (typeof(value) !== 'boolean') {
+                return this.$setValue(!!value);
+            }
+
+            if (this.value !== value) {
                 this.value = value;
                 this.update();
             }
@@ -1983,7 +1987,6 @@ riot.tag2('field-boolean', '<div ref="container" class="uk-display-inline-block"
 
             this.value = this.refs.check.checked;
             this.$setValue(this.value);
-
         }.bind(this)
 
 });
