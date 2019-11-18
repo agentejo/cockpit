@@ -75,7 +75,7 @@
 
                 <div class="uk-form-row">
                     <div class="uk-form-password uk-width-1-1">
-                        <input ref="password" class="uk-form-large uk-width-1-1" type="password" aria-label="@lang('Password')"placeholder="@lang('Password')" required>
+                        <input ref="password" class="uk-form-large uk-width-1-1" type="password" aria-label="@lang('Password')" placeholder="@lang('Password')" required>
                         <a href="#" class="uk-form-password-toggle" data-uk-form-password>@lang('Show')</a>
                     </div>
                 </div>
