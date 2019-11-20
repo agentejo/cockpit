@@ -109,11 +109,11 @@
 
                             </label>
 
-                            <div class="uk-margin">
+                            <div class="uk-margin-top">
                                 <cp-field type="{field.type || 'text'}" bind="entry.{ field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" opts="{ field.options || {} }"></cp-field>
                             </div>
 
-                            <div class="uk-margin uk-text-small uk-text-muted">
+                            <div class="uk-margin-top uk-text-small uk-text-muted" if="{field.info}">
                                 { field.info || ' ' }
                             </div>
 
