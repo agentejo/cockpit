@@ -3781,7 +3781,7 @@ riot.tag2('field-text', '<div class="uk-position-relative field-text-container">
 
             this.type = opts.type || 'text';
 
-            if (opts.cls) {
+            if (is_string(opts.cls) && strlen(opts.cls) > 0) {
                 App.$(this.refs.input).addClass(opts.cls);
             }
 
@@ -3793,8 +3793,8 @@ riot.tag2('field-text', '<div class="uk-position-relative field-text-container">
                 this.slug = this.$getValue(opts.bind+'_slug') || '';
             }
 
-            (['maxlength', 'minlength', 'step', 'placeholder', 'pattern', 'size', 'min', 'max']).forEach( function(key) {
-                if (opts[key]) $this.refs.input.setAttribute(key, opts[key]);
+            (['maxlength', 'minlength', 'step', 'placeholder', 'pattern', 'size', 'min', 'max', 'value']).forEach( function(key) {
+                if (is_scalar(opts[key])) $this.refs.input.setAttribute(key, opts[key]);
             });
 
             this.updateLengthIndicator();
