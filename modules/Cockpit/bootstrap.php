@@ -61,6 +61,10 @@ $this->module('cockpit')->extend([
             $size += $app->helper('fs')->getDirSize($dir);
         }
 
+        if (function_exists('opcache_reset')) {
+            opcache_reset();
+        }
+        
         return ['size'=>$app->helper('utils')->formatSize($size)];
     },
 
