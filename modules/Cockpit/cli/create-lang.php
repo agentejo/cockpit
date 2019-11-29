@@ -23,6 +23,16 @@ $extensions = ['php', 'md', 'html', 'js', 'tag'];
 $strings    = [];
 $dirs       = [COCKPIT_DIR.'/modules'];
 
+// var_export with bracket array notation
+// source: https://www.php.net/manual/en/function.var-export.php#122853
+function varexport($expression, $return=FALSE) {
+    $export = var_export($expression, TRUE);
+    $array  = preg_split("/\r\n|\n|\r/", $export);
+    $array  = preg_replace(["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"], [NULL, ']$1', ' => ['], $array);
+    $export = join(PHP_EOL, array_filter(["["] + $array));
+    if ((bool)$return) return $export; else echo $export;
+}
+
 
 foreach ($dirs as $dir) {
 
@@ -66,7 +76,7 @@ if (count($strings)) {
 
     ksort($strings);
 
-    $app->helper('fs')->write("#config:cockpit/i18n/{$lang}.php", '<?php return '.var_export($strings, true).';');
+    $app->helper('fs')->write("#config:cockpit/i18n/{$lang}.php", '<?php return '.varexport($strings, true).';');
 }
 
 CLI::writeln("Done! Language file created: config/cockpit/i18n/{$lang}.php", true);
