@@ -14,6 +14,10 @@ if (!$runnerIdle) {
     return CLI::writeln('--idle parameter is not valid', false);
 }
 
+if ($app->param('f')) {
+    $app->helper('jobs')->stopRunner();
+}
+
 if ($app->helper('jobs')->isRunnerActive()) {
     return CLI::writeln("A job queue runner is already active", false);
 }
