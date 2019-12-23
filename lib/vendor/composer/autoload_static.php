@@ -34,6 +34,7 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
         'C' => 
         array (
             'ColorThief\\' => 11,
+            'Cockpit\\' => 8,
         ),
     );
 
@@ -62,6 +63,10 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
         array (
             0 => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief',
         ),
+        'Cockpit\\' => 
+        array (
+            0 => __DIR__ . '/../../..' . '/src/Cockpit',
+        ),
     );
 
     public static $fallbackDirsPsr4 = array (
@@ -87,9 +92,26 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
                 0 => __DIR__ . '/..' . '/erusev/parsedown',
             ),
         ),
+        'L' => 
+        array (
+            'Lime\\' => 
+            array (
+                0 => __DIR__ . '/../../..' . '/lib/Lime',
+            ),
+            'LimeExtra\\' => 
+            array (
+                0 => __DIR__ . '/../../..' . '/lib/LimeExtra',
+            ),
+        ),
+    );
+
+    public static $fallbackDirsPsr0 = array (
+        0 => __DIR__ . '/../../..' . '/lib',
     );
 
     public static $classMap = array (
+        'CLI' => __DIR__ . '/../../..' . '/lib/CLI.php',
+        'Cockpit\\App' => __DIR__ . '/../../..' . '/src/Cockpit/App.php',
         'ColorThief\\CMap' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/CMap.php',
         'ColorThief\\ColorThief' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/ColorThief.php',
         'ColorThief\\Image\\Adapter\\GDImageAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/Image/Adapter/GDImageAdapter.php',
@@ -100,6 +122,13 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
         'ColorThief\\Image\\ImageLoader' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/Image/ImageLoader.php',
         'ColorThief\\PQueue' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/PQueue.php',
         'ColorThief\\VBox' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/VBox.php',
+        'ComposerAutoloaderInit3043aff3db8446d21c22f36f77adce25' => __DIR__ . '/..' . '/composer/autoload_real.php',
+        'Composer\\Autoload\\ClassLoader' => __DIR__ . '/..' . '/composer/ClassLoader.php',
+        'Composer\\Autoload\\ComposerStaticInit3043aff3db8446d21c22f36f77adce25' => __DIR__ . '/..' . '/composer/autoload_static.php',
+        'ContainerArray' => __DIR__ . '/../../..' . '/lib/ContainerArray.php',
+        'DataCollection' => __DIR__ . '/../../..' . '/lib/DataCollection.php',
+        'DotEnv' => __DIR__ . '/../../..' . '/lib/DotEnv.php',
+        'FileStorage' => __DIR__ . '/../../..' . '/lib/FileStorage.php',
         'Firebase\\JWT\\BeforeValidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/BeforeValidException.php',
         'Firebase\\JWT\\ExpiredException' => __DIR__ . '/..' . '/firebase/php-jwt/src/ExpiredException.php',
         'Firebase\\JWT\\JWT' => __DIR__ . '/..' . '/firebase/php-jwt/src/JWT.php',
@@ -153,6 +182,31 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
         'League\\Flysystem\\Util\\ContentListingFormatter' => __DIR__ . '/..' . '/league/flysystem/src/Util/ContentListingFormatter.php',
         'League\\Flysystem\\Util\\MimeType' => __DIR__ . '/..' . '/league/flysystem/src/Util/MimeType.php',
         'League\\Flysystem\\Util\\StreamHasher' => __DIR__ . '/..' . '/league/flysystem/src/Util/StreamHasher.php',
+        'Lexy' => __DIR__ . '/../../..' . '/lib/Lexy.php',
+        'LimeExtra\\App' => __DIR__ . '/../../..' . '/lib/LimeExtra/App.php',
+        'LimeExtra\\Controller' => __DIR__ . '/../../..' . '/lib/LimeExtra/Controller.php',
+        'Lime\\App' => __DIR__ . '/../../..' . '/lib/Lime/App.php',
+        'Lime\\AppAware' => __DIR__ . '/../../..' . '/lib/Lime/App.php',
+        'Lime\\Cache' => __DIR__ . '/../../..' . '/lib/Lime/App.php',
+        'Lime\\Helper' => __DIR__ . '/../../..' . '/lib/Lime/App.php',
+        'Lime\\Helper\\Assets' => __DIR__ . '/../../..' . '/lib/Lime/Helper/Assets.php',
+        'Lime\\Helper\\Cookie' => __DIR__ . '/../../..' . '/lib/Lime/Helper/Cookie.php',
+        'Lime\\Helper\\FileObject' => __DIR__ . '/../../..' . '/lib/Lime/Helper/Filesystem.php',
+        'Lime\\Helper\\Filesystem' => __DIR__ . '/../../..' . '/lib/Lime/Helper/Filesystem.php',
+        'Lime\\Helper\\I18n' => __DIR__ . '/../../..' . '/lib/Lime/Helper/I18n.php',
+        'Lime\\Helper\\Image' => __DIR__ . '/../../..' . '/lib/Lime/Helper/Image.php',
+        'Lime\\Helper\\Img' => __DIR__ . '/../../..' . '/lib/Lime/Helper/Image.php',
+        'Lime\\Helper\\Markdown' => __DIR__ . '/../../..' . '/lib/Lime/Helper/Markdown.php',
+        'Lime\\Helper\\SimpleAcl' => __DIR__ . '/../../..' . '/lib/Lime/Helper/SimpleAcl.php',
+        'Lime\\Helper\\Utils' => __DIR__ . '/../../..' . '/lib/Lime/Helper/Utils.php',
+        'Lime\\Helper\\YAML' => __DIR__ . '/../../..' . '/lib/Lime/Helper/YAML.php',
+        'Lime\\Module' => __DIR__ . '/../../..' . '/lib/Lime/App.php',
+        'Lime\\Response' => __DIR__ . '/../../..' . '/lib/Lime/App.php',
+        'Lime\\Session' => __DIR__ . '/../../..' . '/lib/Lime/App.php',
+        'LiteDB' => __DIR__ . '/../../..' . '/lib/LiteDB.php',
+        'LiteDBQuery' => __DIR__ . '/../../..' . '/lib/LiteDB.php',
+        'Mailer' => __DIR__ . '/../../..' . '/lib/Mailer.php',
+        'Mailer_Message' => __DIR__ . '/../../..' . '/lib/Mailer.php',
         'MongoDB\\BulkWriteResult' => __DIR__ . '/..' . '/mongodb/mongodb/src/BulkWriteResult.php',
         'MongoDB\\ChangeStream' => __DIR__ . '/..' . '/mongodb/mongodb/src/ChangeStream.php',
         'MongoDB\\Client' => __DIR__ . '/..' . '/mongodb/mongodb/src/Client.php',
@@ -228,14 +282,29 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
         'MongoDB\\Operation\\UpdateOne' => __DIR__ . '/..' . '/mongodb/mongodb/src/Operation/UpdateOne.php',
         'MongoDB\\Operation\\Watch' => __DIR__ . '/..' . '/mongodb/mongodb/src/Operation/Watch.php',
         'MongoDB\\UpdateResult' => __DIR__ . '/..' . '/mongodb/mongodb/src/UpdateResult.php',
+        'MongoHybrid\\Client' => __DIR__ . '/../../..' . '/lib/MongoHybrid/Client.php',
+        'MongoHybrid\\Mongo' => __DIR__ . '/../../..' . '/lib/MongoHybrid/Mongo.php',
+        'MongoHybrid\\MongoLite' => __DIR__ . '/../../..' . '/lib/MongoHybrid/MongoLite.php',
+        'MongoHybrid\\ResultSet' => __DIR__ . '/../../..' . '/lib/MongoHybrid/ResultSet.php',
+        'MongoLite\\Client' => __DIR__ . '/../../..' . '/lib/MongoLite/Client.php',
+        'MongoLite\\Collection' => __DIR__ . '/../../..' . '/lib/MongoLite/Collection.php',
+        'MongoLite\\Cursor' => __DIR__ . '/../../..' . '/lib/MongoLite/Cursor.php',
+        'MongoLite\\Database' => __DIR__ . '/../../..' . '/lib/MongoLite/Database.php',
+        'MongoLite\\UtilArrayQuery' => __DIR__ . '/../../..' . '/lib/MongoLite/Database.php',
         'PHPMailer\\PHPMailer\\Exception' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/Exception.php',
         'PHPMailer\\PHPMailer\\OAuth' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/OAuth.php',
         'PHPMailer\\PHPMailer\\PHPMailer' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/PHPMailer.php',
         'PHPMailer\\PHPMailer\\POP3' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/POP3.php',
         'PHPMailer\\PHPMailer\\SMTP' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/SMTP.php',
+        'Pagination' => __DIR__ . '/../../..' . '/lib/Pagination.php',
         'Parsedown' => __DIR__ . '/..' . '/erusev/parsedown/Parsedown.php',
         'ParsedownExtra' => __DIR__ . '/..' . '/erusev/parsedown-extra/ParsedownExtra.php',
         'ParsedownExtraTest' => __DIR__ . '/..' . '/erusev/parsedown-extra/test/ParsedownExtraTest.php',
+        'PriorityQueue' => __DIR__ . '/../../..' . '/lib/PriorityQueue.php',
+        'RedisLite' => __DIR__ . '/../../..' . '/lib/RedisLite.php',
+        'SVGSanitizer' => __DIR__ . '/../../..' . '/lib/SVGSanitizer.php',
+        'SimpleStorage\\Client' => __DIR__ . '/../../..' . '/lib/SimpleStorage/Client.php',
+        'Spyc' => __DIR__ . '/../../..' . '/lib/Spyc.php',
         'ZipStream\\Exception' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/Exception.php',
         'ZipStream\\Exception\\FileNotFoundException' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/Exception/FileNotFoundException.php',
         'ZipStream\\Exception\\FileNotReadableException' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/Exception/FileNotReadableException.php',
@@ -252,6 +321,7 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
             $loader->prefixDirsPsr4 = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$prefixDirsPsr4;
             $loader->fallbackDirsPsr4 = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$fallbackDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$prefixesPsr0;
+            $loader->fallbackDirsPsr0 = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$fallbackDirsPsr0;
             $loader->classMap = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$classMap;
 
         }, null, ClassLoader::class);
