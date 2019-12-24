@@ -7,8 +7,7 @@ use CLI;
 final class App
 {
     const MODE_CLI = 1;
-    const MODE_DASHBOARD = 2;
-    const MODE_API = 3;
+    const MODE_HTTP = 2;
 
     /** @var string */
     private $appPath;
@@ -25,7 +24,7 @@ final class App
      * @param string $appPath The path to the root your application.
      * @param string $publicPath The path from where the Server serves its document. Usually the path where index.php is located.
      * @param array $configuration Configuration parameters.
-     * @param int $mode Is admin?
+     * @param int $mode Request mode
      */
     public function __construct(string $appPath, string $publicPath, array $configuration, int $mode)
     {
@@ -212,15 +211,11 @@ final class App
         $app('i18n')->locale = $config['i18n'] ?? 'en';
 
         switch ($this->mode) {
-            case self::MODE_DASHBOARD:
+            case self::MODE_HTTP:
                 $this->configureDashboard($app);
                 break;
             case self::MODE_CLI:
                 $this->configureCLI($app);
-                break;
-
-            case self::MODE_API:
-                $this->configureAPI($app);
                 break;
         }
 
@@ -380,7 +375,7 @@ final class App
 
     private function isDashboard(): bool
     {
-        return $this->mode === self::MODE_DASHBOARD;
+        return $this->mode === self::MODE_HTTP;
     }
 
     private function isCLI(): bool
