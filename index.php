@@ -14,6 +14,6 @@ include(__DIR__ . '/lib/vendor/autoload.php');
 $configuration = require('app/config.php');
 $appPath = __DIR__;
 $publicPath = __DIR__;
-$app = new \Cockpit\App($appPath, $publicPath, $configuration, \Cockpit\App::MODE_DASHBOARD);
+$app = new \Cockpit\App($appPath, $publicPath, $configuration, \Cockpit\App::MODE_HTTP);
 $app->boot();
 $app->run();
