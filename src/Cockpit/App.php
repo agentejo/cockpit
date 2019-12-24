@@ -102,10 +102,10 @@ final class App
         define('COCKPIT_BASE_URL', $baseURL);
         define('COCKPIT_BASE_ROUTE', $baseURL);
 
-        define('COCKPIT_ADMIN', $this->isDashboard());
-        define('COCKPIT_CLI', PHP_SAPI === 'cli');
-        define('COCKPIT_API_REQUEST', $this->isDashboard() && strpos($_SERVER['REQUEST_URI'], COCKPIT_BASE_URL . '/api/') !== false ? 1 : 0);
-        define('COCKPIT_ADMIN_CP', $this->isDashboard() && !COCKPIT_API_REQUEST ? 1 : 0);
+        define('COCKPIT_ADMIN', $this->isHTTP());
+        define('COCKPIT_CLI', $this->isCLI());
+        define('COCKPIT_API_REQUEST', $this->isHTTP() && strpos($_SERVER['REQUEST_URI'], COCKPIT_BASE_URL . '/api/') !== false ? 1 : 0);
+        define('COCKPIT_ADMIN_CP', $this->isHTTP() && !COCKPIT_API_REQUEST ? 1 : 0);
 
 
         // load config
@@ -272,7 +272,7 @@ final class App
             'base_route' => COCKPIT_BASE_ROUTE,
             'docs_root' => COCKPIT_DOCS_ROOT,
             'session.name' => md5(COCKPIT_ENV_ROOT),
-            'session.init' => ($this->isDashboard() && !COCKPIT_API_REQUEST),
+            'session.init' => ($this->isHTTP() && !COCKPIT_API_REQUEST),
             'sec-key' => 'c3b40c4c-db44-s5h7-a814-b4931a15e5e1',
             'i18n' => 'en',
             'database' => ['server' => 'mongolite://' . (COCKPIT_STORAGE_FOLDER . '/data'), 'options' => ['db' => 'cockpitdb'], 'driverOptions' => []],
@@ -373,7 +373,7 @@ final class App
         });
     }
 
-    private function isDashboard(): bool
+    private function isHTTP(): bool
     {
         return $this->mode === self::MODE_HTTP;
     }
@@ -381,10 +381,5 @@ final class App
     private function isCLI(): bool
     {
         return $this->mode === self::MODE_CLI;
-    }
-
-    private function isAPI(): bool
-    {
-        return $this->mode === self::MODE_API;
     }
 }
