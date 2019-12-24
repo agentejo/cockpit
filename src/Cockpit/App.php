@@ -273,7 +273,7 @@ final class App
             'docs_root' => COCKPIT_DOCS_ROOT,
             'session.name' => md5(COCKPIT_ENV_ROOT),
             'session.init' => ($this->isHTTP() && !COCKPIT_API_REQUEST),
-            'sec-key' => 'c3b40c4c-db44-s5h7-a814-b4931a15e5e1',
+            'sec-key' => 'xxxxx-SiteSecKeyPleaseChangeMe-xxxxx',
             'i18n' => 'en',
             'database' => ['server' => 'mongolite://' . (COCKPIT_STORAGE_FOLDER . '/data'), 'options' => ['db' => 'cockpitdb'], 'driverOptions' => []],
             'memory' => ['server' => 'redislite://' . (COCKPIT_STORAGE_FOLDER . '/data/cockpit.memory.sqlite'), 'options' => []],
