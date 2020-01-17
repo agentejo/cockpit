@@ -44,7 +44,8 @@
                     <a class="uk-link-muted" onclick="{ parent.settings }">{ item.name || parent.components[item.component].label || App.Utils.ucfirst(item.component) }</a>
                 </div>
                 <div class="uk-text-small uk-invisible">
-                    <a onclick="{ parent.addComponent }" title="{ App.i18n.get('Add Component') }"><i class="uk-icon-plus"></i></a>
+                    <a onclick="{ parent.cloneComponent }" title="{ App.i18n.get('Clone Component') }"><i class="uk-icon-clone"></i></a>
+                    <a class="uk-margin-small-left" onclick="{ parent.addComponent }" title="{ App.i18n.get('Add Component') }"><i class="uk-icon-plus"></i></a>
                     <a class="uk-margin-small-left uk-text-danger" onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a>
                 </div>
             </div>
@@ -372,6 +373,18 @@
             UIkit.modal(this.refs.modalComponents, {modal:false}).show();
         }
 
+        cloneComponent(e) {
+
+            var item = JSON.parse(JSON.stringify(e.item.item)), idx = e.item.idx;
+
+            this.items.splice(idx + 1, 0, item);
+            this.$setValue(this.items);
+
+            setTimeout(function() {
+                if (opts.child) $this.propagateUpdate();
+            }.bind(this));
+        }
+
         add(e) {
 
             var item = {
@@ -482,12 +495,13 @@
         <a class="uk-button uk-button-link" onclick="{ addColumn }">{ App.i18n.get('Add Column') }</a>
     </div>
 
-    <div class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-{columns.length > 4 ? 1 : columns.length}" show="{columns.length}" ref="columns" data-uk-sortable="animation:false">
+    <div class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-{columns.length > 5 ? 1 : columns.length}" show="{columns.length}" ref="columns" data-uk-sortable="animation:false">
         <div class="uk-grid-margin" each="{column,idx in columns}">
             <div class="uk-panel">
                 <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">
                     <div class="uk-flex-item-1 uk-margin-small-right"><a class="uk-text-muted uk-text-uppercase field-layout-column-label" onclick="{ parent.settings }" title="{ App.i18n.get('Settings') }"><i class="uk-icon-columns" alt="Column {(idx+1)}"></i> { (idx+1) }</a></div>
-                    <a class="uk-invisible uk-text-upper uk-text-bold uk-margin-small-right" onclick="{ parent.addColumn }" title="{ App.i18n.get('Add Column') }"><i class="uk-icon-plus"></i></a>
+                    <a class="uk-invisible uk-margin-small-right" onclick="{ parent.cloneColumn }" title="{ App.i18n.get('Clone Column') }"><i class="uk-icon-clone"></i></a>
+                    <a class="uk-invisible uk-margin-small-right" onclick="{ parent.addColumn }" title="{ App.i18n.get('Add Column') }"><i class="uk-icon-plus"></i></a>
                     <a class="uk-invisible" onclick="{ parent.remove }"><i class="uk-text-danger uk-icon-trash-o"></i></a>
                 </div>
                 <div class="uk-margin">
@@ -604,6 +618,16 @@
             };
 
             this.columns.push(column);
+            this.$setValue(this.columns);
+
+            this.propagateUpdate();
+        }
+
+        cloneColumn(e) {
+
+            var column = JSON.parse(JSON.stringify(e.item.column)), idx = e.item.idx;
+
+            this.columns.splice(idx + 1, 0, column);
             this.$setValue(this.columns);
 
             this.propagateUpdate();
