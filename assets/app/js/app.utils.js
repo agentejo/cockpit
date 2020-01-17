@@ -236,6 +236,29 @@
         return Number(size) ? ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i] : 'n/a';
     };
 
+    App.Utils.stripTags = function(input, allowed) { // eslint-disable-line camelcase
+
+        var tags = /<\/?([a-z0-9]*)\b[^>]*>?/gi,
+            commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi,
+            after, before;
+      
+        // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
+        allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
+        after = input || '';
+        // removes tha '<' char at the end of the string to replicate PHP's behaviour
+        after = (after.substring(after.length - 1) === '<') ? after.substring(0, after.length - 1) : after;
+      
+        // recursively remove tags to ensure that the returned string doesn't contain forbidden tags after previous passes (e.g. '<<bait/>switch/>')
+        while (true) {
+            before = after
+            after = before.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
+                return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+            });
+            // return once no more tags are removed
+            if (before === after) return after;
+        }
+      };
+
     // custom renderer
     App.Utils.renderer = {};
 

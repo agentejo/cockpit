@@ -31,6 +31,23 @@
             color: rgba(0,0,0,.3);
         }
 
+        .layout-field-preview {
+            display: block;
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 1px rgba(0,0,0,.05) dotted;
+        }
+
+        .layout-field-preview canvas {
+            background-size: contain; 
+            background-position: 50% 50%; 
+            background-repeat: no-repeat; 
+        }
+
+        .layout-field-preview:empty {
+            display:none
+        }
+
     </style>
 
 
@@ -51,12 +68,14 @@
             </div>
 
             <div class="uk-margin" if="{parent.components[item.component].children}">
-                <field-layout bind="items[{idx}].children" child="true" parent-component="{parent.components[item.component]}" components="{ parent.components }" exclude="{ opts.exclude }"></field-layout>
+                <field-layout bind="items[{idx}].children" child="true" parent-component="{parent.components[item.component]}" components="{ parent.components }" exclude="{ opts.exclude }" preview="{opts.preview}"></field-layout>
             </div>
 
             <div class="uk-margin" if="{item.component == 'grid'}">
-                <field-layout-grid bind="items[{idx}].columns" components="{ parent.components }" exclude="{ opts.exclude }"></field-layout-grid>
+                <field-layout-grid bind="items[{idx}].columns" components="{ parent.components }" exclude="{ opts.exclude }" preview="{opts.preview}"></field-layout-grid>
             </div>
+
+            <raw class="layout-field-preview uk-text-small uk-text-muted" content="{getPreview(item)}" if="{showPreview}"></raw>
 
         </div>
     </div>
@@ -230,11 +249,14 @@
             this.components = App.$.extend(true, this.components, window.CP_LAYOUT_COMPONENTS);
         }
 
-        if(opts.parentComponent && opts.parentComponent.options) {
+        if (opts.parentComponent && opts.parentComponent.options) {
             opts = App.$.extend(true, opts.parentComponent.options, opts);
         }
 
+        
         this.on('mount', function() {
+
+            this.showPreview = opts.preview === undefined ? true : opts.preview;
 
             App.trigger('field.layout.components', {components:this.components, opts:opts});
 
@@ -485,6 +507,48 @@
             this.componentGroup = e.item && e.item.group || false;
         }
 
+        getPreview(component) {
+            //console.log(component)
+
+            var def = this.components[component.component];
+
+            if (!def || def.children || component.component == 'grid') {
+                return;
+            }
+
+            if (['heading', 'button'].indexOf(component.component) > -1) {
+                return component.settings.text ? '<div class="uk-text-truncate">'+component.settings.text+'</div>':'';
+            }
+
+            if (['text', 'html'].indexOf(component.component) > -1) {
+                var txt = App.Utils.stripTags(component.settings.text, '<b><strong>').trim();
+                return txt ? '<div class="uk-text-truncate">'+txt.substr(0, 100)+'</div>':'';
+            }
+
+            if (component.component == 'image' && component.settings.image && component.settings.image.path) {
+
+                var p = component.settings.image.path, 
+                    url = p.match(/^(http\:|https\:|\/\/)/) ? p : encodeURI(SITE_URL+'/'+p),
+                    html, src;
+
+                if (url.match(/^(http\:|https\:|\/\/)/) && !(url.includes(ASSETS_URL) || url.includes(SITE_URL))) {
+                    src = url;
+                } else {
+                    src = App.route('/cockpit/utils/thumb_url?src='+url+'&w=50&h=50&m=bestFit&o=1');
+                }
+                
+                if (src.match(/\.(svg|ico)$/i)) {
+                    src = url;
+                }
+                
+                html = '<canvas class="uk-responsive-width" width="50" height="50" style="background-image:url('+src+')"></canvas>';
+
+                return '<a href="'+url+'" data-uk-lightbox>'+html+'</a>';
+            }
+
+            return '';
+        }
+
     </script>
 
 </field-layout>
@@ -505,7 +569,7 @@
                     <a class="uk-invisible" onclick="{ parent.remove }"><i class="uk-text-danger uk-icon-trash-o"></i></a>
                 </div>
                 <div class="uk-margin">
-                    <field-layout bind="columns[{idx}].children" child="true" components="{ opts.components }" exclude="{ opts.exclude }"></field-layout>
+                    <field-layout bind="columns[{idx}].children" child="true" components="{ opts.components }" exclude="{ opts.exclude }" preview="{opts.preview}"></field-layout>
                 </div>
             </div>
         </div>
