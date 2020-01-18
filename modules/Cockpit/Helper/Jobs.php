@@ -94,4 +94,14 @@ class Jobs extends \Lime\Helper {
         return $this->app->storage->count('cockpit/jobs_queue');
     }
 
+    public function run($runnerIdle = 2) {
+
+        $this->app->storage->rpush('cockpit', 'jobs_queue_runners', getmypid());
+
+        while (true) {
+            $this->work();
+            sleep($runnerIdle);
+        }
+    }
+
 }

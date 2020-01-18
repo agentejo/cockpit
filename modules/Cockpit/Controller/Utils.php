@@ -165,4 +165,22 @@ class Utils extends \Cockpit\AuthController {
 
         return ['success' => $success];
     }
+
+    public function startJobRunner() {
+        $this->app->helper('async')->exec("cockpit()->helper('jobs')->stopRunner();cockpit()->helper('jobs')->run();");
+        sleep(3);
+        return ['running' => $this->app->helper('jobs')->isRunnerActive()];
+    }
+
+    public function restartJobRunner() {
+        $this->app->helper('async')->exec("cockpit()->helper('jobs')->stopRunner();cockpit()->helper('jobs')->run();");
+        sleep(3);
+        return ['running' => $this->app->helper('jobs')->isRunnerActive()];
+    }
+
+    public function stopJobRunner() {
+        $this->app->helper('async')->exec("cockpit()->helper('jobs')->stopRunner();");
+        sleep(3);
+        return ['running' => $this->app->helper('jobs')->isRunnerActive()];
+    }
 }

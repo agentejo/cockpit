@@ -56,7 +56,19 @@
                         <tbody>
                             <tr>
                                 <td width="30%" class="uk-text-small uk-text-bold">@lang('Runner active')</td>
-                                <td class="uk-text-small"><span class="uk-badge uk-badge-outline uk-text-{{ $info['jobs_queue']['running'] ? 'success':'danger' }}">{{ $info['jobs_queue']['running'] ? 'Yes':'No' }}</span></td>
+                                <td class="uk-text-small uk-flex">
+                                    <div class="uk-flex-item-1 uk-flex-middle uk-margin-right">
+                                        <span class="uk-badge uk-badge-outline uk-text-{ jobsQueue.running ? 'success':'danger' }">{ jobsQueue.running ? 'Yes':'No' }</span>
+                                    </div>
+                                    <div>
+                                        <i class="uk-icon-spinner uk-icon-spin" show="{JobsRunnerLoading}"></i>
+                                        <div class="uk-button-group" show="{!JobsRunnerLoading}">
+                                            <button type="button" class="uk-button uk-button-small" if="{!jobsQueue.running}" onclick="{startJobsRunner}"><i class="uk-icon-play"></i></button>
+                                            <button type="button" class="uk-button uk-button-small" if="{jobsQueue.running}" onclick="{restartJobsRunner}"><i class="uk-icon-refresh"></i></button>
+                                            <button type="button" class="uk-button uk-button-small" if="{jobsQueue.running}" onclick="{stopJobsRunner}"><i class="uk-icon-stop"></i></button>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                             <tr>
                                 <td width="30%" class="uk-text-small uk-text-bold">@lang('Jobs in queue')</td>
@@ -155,6 +167,7 @@
 
             this._system = {};
             this.system  = {{ json_encode($info['app']) }};
+            this.jobsQueue = {{ json_encode($info['jobs_queue']) }};
             this.cacheSize = null;
             this.loading = false;
 
@@ -178,6 +191,48 @@
                         $this.cacheSize = 0;
                         $this.update();
                     }, 1000);
+                });
+            }
+
+            startJobsRunner() {
+                this.JobsRunnerLoading = true;
+                App.request('/cockpit/utils/startJobRunner').then(function(rsp) {
+
+                    if (!rsp.running) {
+                        App.ui.notify('Runner failed to start', 'danger');
+                    }
+
+                    $this.jobsQueue.running = rsp.running;
+                    $this.JobsRunnerLoading = false;
+                    $this.update();
+                });
+            }
+
+            restartJobsRunner() {
+                this.JobsRunnerLoading = true;
+                App.request('/cockpit/utils/restartJobRunner').then(function(rsp) {
+
+                    if (!rsp.running) {
+                        App.ui.notify('Runner failed to start', 'danger');
+                    }
+
+                    $this.jobsQueue.running = rsp.running;
+                    $this.JobsRunnerLoading = false;
+                    $this.update();
+                });
+            }
+
+            stopJobsRunner() {
+                this.JobsRunnerLoading = true;
+                App.request('/cockpit/utils/stopJobRunner').then(function(rsp) {
+                    
+                    if (rsp.running) {
+                        App.ui.notify('Runner failed to terminate', 'danger');
+                    }
+
+                    $this.jobsQueue.running = rsp.running;
+                    $this.JobsRunnerLoading = false;
+                    $this.update();
                 });
             }
 
