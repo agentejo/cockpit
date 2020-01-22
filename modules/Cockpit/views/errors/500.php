@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="app-page-500">
 <head>
     <meta charset="UTF-8">
     <title>Internal Server Error</title>
@@ -10,11 +10,9 @@
 
     <div class="uk-container uk-container-center uk-text-center uk-animation-slide-bottom">
 
-        <h1><strong>500</strong></h1>
+        <img src="@base('assets:app/media/icons/emoticon-sad.svg')" width="150" height="150">
 
-        <img src="@base('assets:app/media/icons/emoticon-sad.svg')" width="100" height="100">
-
-        <p class="uk-text-large uk-margin-large">Uuuups, something went wrong.</p>
+        <p class="uk-text-large uk-margin-large uk-text-bold">Uuuups, something went wrong.</p>
 
     </div>
 </body>

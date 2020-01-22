@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ $app('i18n')->locale }}" class="uk-height-1-1" data-base="@base('/')" data-route="@route('/')" data-locale="{{ $app('i18n')->locale }}">
+<html lang="{{ $app('i18n')->locale }}" class="uk-height-1-1 app-page-forgetpassword" data-base="@base('/')" data-route="@route('/')" data-locale="{{ $app('i18n')->locale }}">
 <head>
     <meta charset="UTF-8">
     <title>@lang('Password Reset!')</title>
@@ -67,7 +67,7 @@
                     <input ref="user" class="uk-form-large uk-width-1-1 uk-text-center" type="text" placeholder="@lang('Username or Email')" autofocus required>
                 </div>
 
-                <div class="uk-margin-top" show="{ !reset }">
+                <div class="uk-margin-large-top" show="{ !reset }">
                     <button class="uk-button uk-button-outline uk-button-large uk-text-primary uk-width-1-1">@lang('Reset')</button>
                 </div>
             </div>
