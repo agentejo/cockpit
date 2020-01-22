@@ -517,7 +517,7 @@
             }
 
             if (['heading', 'button'].indexOf(component.component) > -1) {
-                return component.settings.text ? '<div class="uk-text-truncate">'+component.settings.text+'</div>':'';
+                return component.settings.text ? '<div class="uk-text-truncate">'+App.Utils.stripTags(component.settings.text)+'</div>':'';
             }
 
             if (['text', 'html'].indexOf(component.component) > -1) {
