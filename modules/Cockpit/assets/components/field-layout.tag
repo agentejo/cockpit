@@ -527,26 +527,53 @@
 
             if (component.component == 'image' && component.settings.image && component.settings.image.path) {
 
-                var p = component.settings.image.path, 
-                    url = p.match(/^(http\:|https\:|\/\/)/) ? p : encodeURI(SITE_URL+'/'+p),
-                    html, src;
-
-                if (url.match(/^(http\:|https\:|\/\/)/) && !(url.includes(ASSETS_URL) || url.includes(SITE_URL))) {
-                    src = url;
-                } else {
-                    src = App.route('/cockpit/utils/thumb_url?src='+url+'&w=50&h=50&m=bestFit&o=1');
-                }
-                
-                if (src.match(/\.(svg|ico)$/i)) {
-                    src = url;
-                }
+                var src = getPathUrl(component.settings.image.path),
+                    url = component.settings.image.path.match(/^(http\:|https\:|\/\/)/) ? component.settings.image.path : encodeURI(SITE_URL+'/'+component.settings.image.path), 
+                    html;
                 
                 html = '<canvas class="uk-responsive-width" width="50" height="50" style="background-image:url('+src+')"></canvas>';
 
                 return '<a href="'+url+'" data-uk-lightbox>'+html+'</a>';
             }
 
+            if (component.component== 'gallery' && Array.isArray(component.settings.gallery) && component.settings.gallery.length) {
+                
+                var html = [], url, src;
+
+                html.push('<div class="uk-flex">');
+                component.settings.gallery.forEach(function(img) {
+                    if (html.length > 6) return;
+                    url = img.path.match(/^(http\:|https\:|\/\/)/) ? img.path : encodeURI(SITE_URL+'/'+img.path);
+                    src = getPathUrl(img.path);
+
+                    html.push('<div><a href="'+url+'" data-uk-lightbox><canvas class="uk-responsive-width" width="50" height="50" style="background-image:url('+src+')"></canvas></a></div>')
+                });
+
+                html.push('</div>');
+
+                return html.join('');
+            }
+
             return '';
+        }
+
+        function getPathUrl(path) {
+
+            var p = path, 
+                url = p.match(/^(http\:|https\:|\/\/)/) ? p : encodeURI(SITE_URL+'/'+p),
+                html, src;
+
+            if (url.match(/^(http\:|https\:|\/\/)/) && !(url.includes(ASSETS_URL) || url.includes(SITE_URL))) {
+                src = url;
+            } else {
+                src = App.route('/cockpit/utils/thumb_url?src='+url+'&w=50&h=50&m=bestFit&o=1');
+            }
+            
+            if (src.match(/\.(svg|ico)$/i)) {
+                src = url;
+            }
+
+            return src;
         }
 
     </script>
