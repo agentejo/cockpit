@@ -28,6 +28,12 @@ class Admin extends \Lime\Helper {
         $this->data =  new \ContainerArray();
         $this->options = [];
         $this->user = $this->app->module('cockpit')->getUser();
+
+        // unset security related information
+        if ($this->user) {
+            unset($this->user['password'], $this->user['api_key'], $this->user['_reset_token']);
+        }
+
         $this->user['data'] = new \ContainerArray(isset($this->user['data']) && is_array($this->user['data']) ? $this->user['data']:[]);
     }
 
