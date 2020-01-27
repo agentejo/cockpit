@@ -9,4 +9,7 @@ return array(
     'claviska' => array($vendorDir . '/claviska/simpleimage/src'),
     'ParsedownExtra' => array($vendorDir . '/erusev/parsedown-extra'),
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),
+    'Lime\\' => array($baseDir . '/lib/Lime'),
+    'LimeExtra\\' => array($baseDir . '/lib/LimeExtra'),
+    '' => array($baseDir . '/lib'),
 );

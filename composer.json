@@ -13,6 +13,17 @@
         }
     ],
 
+    "autoload": {
+        "psr-0": {
+            "": "lib/",
+            "Lime\\": "lib/Lime/",
+            "LimeExtra\\": "lib/LimeExtra/"
+        },
+        "psr-4": {
+            "Cockpit\\": "src/Cockpit/"
+        }
+    },
+
     "require": {
         "php": "^7.1.3",
         "ext-json": "*",

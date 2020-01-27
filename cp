@@ -5,40 +5,19 @@ if (PHP_SAPI !== 'cli') {
     exit('Script needs to be run from Command Line Interface (cli)');
 }
 
-define('COCKPIT_CLI', true);
+// Autoload vendor libs
+include(__DIR__ . '/lib/vendor/autoload.php');
 
-// set default timezone
-date_default_timezone_set('UTC');
-
-include_once(__DIR__.'/bootstrap.php');
+$configuration = require('app/config.php');
+$appPath = __DIR__;
+$publicPath = __DIR__;
+$app = new \Cockpit\App($appPath, $publicPath, $configuration, \Cockpit\App::MODE_CLI);
+$app->boot();
 
 $_REQUEST = CLI::opts(); // make option available via $app->param()
-$app = cockpit();
-
-register_shutdown_function(function() use($app){
-    $app->trigger('shutdown');
-});
-
-set_exception_handler(function($exception) use($app) {
-
-    $error = [
-        'message' => $exception->getMessage(),
-        'file' => $exception->getFile(),
-        'line' => $exception->getLine(),
-    ];
-
-    $app->trigger('error', [$error, $exception]);
-
-    if (function_exists('cockpit_error_handler')) {
-        cockpit_error_handler($error);
-    }
-
-    CLI::writeln('COCKPIT CLI ERROR:', false);
-    CLI::writeln('-> in '.$error['file'].':'.$error['line']."\n");
-    CLI::writeln($error['message']."\n");
-});
 
 if (isset($argv[1])) {
+    $app = $app->cockpit();
 
     $cmd = str_replace('../', '', $argv[1]);
     $script = $app->path("#config:cli/{$cmd}.php");
