@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Lime\Helper;
+namespace LimeExtra\Helper;
 
 /**
  * Class Utils
@@ -344,11 +344,12 @@ class Utils extends \Lime\Helper {
 
         $headers = null;
         $token   = null;
+        $server  = $server;
 
-        if (isset($_SERVER['Authorization'])) {
-            $headers = \trim($_SERVER['Authorization']);
-        } elseif (isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
-            $headers = \trim($_SERVER['HTTP_AUTHORIZATION']);
+        if (isset($server['Authorization'])) {
+            $headers = \trim($server['Authorization']);
+        } elseif (isset($server['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
+            $headers = \trim($server['HTTP_AUTHORIZATION']);
         } elseif (\function_exists('apache_request_headers')) {
             $requestHeaders = \apache_request_headers();
             // Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)

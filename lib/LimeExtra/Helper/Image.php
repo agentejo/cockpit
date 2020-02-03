@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Lime\Helper;
+namespace LimeExtra\Helper;
 
 use claviska\SimpleImage;
 

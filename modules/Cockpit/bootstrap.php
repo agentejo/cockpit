@@ -345,7 +345,7 @@ if (COCKPIT_ADMIN_CP) {
         $token = $this->param('token', '');
         $this->response->mime = 'js';
 
-        $apiurl = ($this->req_is('ssl') ? 'https':'http').'://';
+        $apiurl = ($this->request->is('ssl') ? 'https':'http').'://';
 
         if (!in_array($this->registry['base_port'], ['80', '443'])) {
             $apiurl .= $this->registry['base_host'].":".$this->registry['base_port'];

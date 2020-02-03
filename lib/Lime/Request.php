@@ -1,0 +1,166 @@
+<?php
+
+namespace Lime;
+
+class Request {
+
+    public $request = [];
+    public $post = [];
+    public $query = [];
+    public $headers = [];
+
+    public $server = [];
+    public $body = [];
+
+    public $site_url = '';
+    public $base_url = '';
+    public $base_route = '';
+
+    public static function fromGlobalRequest($config = []) {
+
+        $config = [
+            'site_url'   => '',
+            'base_url'   => '/',
+            'base_route' => '',
+            'request' => $_REQUEST,
+            'post' => $_POST,
+            'query' => $_GET,
+            'server' => $_SERVER
+        ];
+
+        // check for php://input and merge with $_REQUEST
+        if (
+            (isset($_SERVER['CONTENT_TYPE']) && \stripos($_SERVER['CONTENT_TYPE'],'application/json')!==false) ||
+            (isset($_SERVER['HTTP_CONTENT_TYPE']) && \stripos($_SERVER['HTTP_CONTENT_TYPE'],'application/json')!==false) // PHP build in Webserver !?
+        ) {
+            if ($json = json_decode(@\file_get_contents('php://input'), true)) {
+                $config['body'] = $json;
+                $config['request'] = \array_merge($config['request'], $json);
+            }
+        }
+
+        $request = new self($config);
+
+        return $request;
+    }
+
+    public function __construct($config = []) {
+
+        $this->request = $config['request'] ?? [];
+        $this->post = $config['post'] ?? [];
+        $this->query = $config['query'] ?? [];
+        $this->server = $config['server'] ?? [];
+        $this->body = $config['body'] ?? [];
+        $this->headers = $config['headers'] ?? [];
+
+        $this->site_url = $config['headers'] ?? '';
+        $this->base_url = $config['base_url'] ?? '';
+        $this->base_route = $config['base_route'] ?? '';
+    }
+
+    public function param($index=null, $default = null, $source = null) {
+
+        $src = $source ? $source : $this->request;
+        $cast = null;
+
+        if (\strpos($index, ':') !== false) {
+            list($index, $cast) = \explode(':', $index, 2);
+        }
+
+        $value = fetch_from_array($src, $index, $default);
+
+        if ($cast) {
+
+            if (\in_array($cast, ['bool', 'boolean']) && \is_string($value) && \in_array($cast, ['true', 'false'])) {
+                $value = $value == 'true' ? true : false;
+            }
+
+            \settype($value, $cast);
+        }
+
+        return $value;
+    }
+
+    public function getClientIp(){
+
+        if (isset($this->server['HTTP_X_FORWARDED_FOR'])){
+            // Use the forwarded IP address, typically set when the
+            // client is using a proxy server.
+            return $this->server['HTTP_X_FORWARDED_FOR'];
+        }elseif (isset($this->server['HTTP_CLIENT_IP'])){
+            // Use the forwarded IP address, typically set when the
+            // client is using a proxy server.
+            return $this->server['HTTP_CLIENT_IP'];
+        }
+        elseif (isset($this->server['REMOTE_ADDR'])){
+            // The remote IP address
+            return $this->server['REMOTE_ADDR'];
+        }
+
+        return null;
+    }
+
+    public function getClientLang($default="en") {
+        if (!isset($this->server['HTTP_ACCEPT_LANGUAGE'])) {
+            return $default;
+        }
+        return \strtolower(\substr($this->server['HTTP_ACCEPT_LANGUAGE'], 0, 2));
+    }
+
+    public function getSiteUrl($withpath = false) {
+
+        $url = $this->site_url;
+
+        if ($withpath) {
+            $url .= \implode('/', \array_slice(\explode('/', $this->server['SCRIPT_NAME']), 0, -1));
+        }
+
+        return \rtrim($url, '/');
+    }
+
+    public function is($type){
+
+        switch (\strtolower($type)){
+            case 'ajax':
+                return (
+                    (isset($this->server['HTTP_X_REQUESTED_WITH']) && ($this->server['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'))       ||
+                    (isset($this->server["CONTENT_TYPE"]) && \stripos($this->server["CONTENT_TYPE"],'application/json')!==false)           ||
+                    (isset($this->server["HTTP_CONTENT_TYPE"]) && \stripos($this->server["HTTP_CONTENT_TYPE"],'application/json')!==false)
+                );
+                break;
+
+            case 'mobile':
+
+                $mobileDevices = [
+                    'midp','240x320','blackberry','netfront','nokia','panasonic','portalmmm','sharp','sie-','sonyericsson',
+                    'symbian','windows ce','benq','mda','mot-','opera mini','philips','pocket pc','sagem','samsung',
+                    'sda','sgh-','vodafone','xda','iphone', 'ipod','android'
+                ];
+
+                return \preg_match('/(' . \implode('|', $mobileDevices). ')/i', \strtolower($this->server['HTTP_USER_AGENT']));
+                break;
+
+            case 'post':
+                return (\strtolower($this->server['REQUEST_METHOD']) == 'post');
+                break;
+
+            case 'get':
+                return (\strtolower($this->server['REQUEST_METHOD']) == 'get');
+                break;
+
+            case 'put':
+                return (\strtolower($this->server['REQUEST_METHOD']) == 'put');
+                break;
+
+            case 'delete':
+                return (\strtolower($this->server['REQUEST_METHOD']) == 'delete');
+                break;
+
+            case 'ssl':
+                return (!empty($this->server['HTTPS']) && $this->server['HTTPS'] !== 'off');
+                break;
+        }
+
+        return false;
+    }
+}

@@ -46,8 +46,8 @@ class RestApi extends \LimeExtra\Controller {
         if ($populate = $this->param('populate', null)) $options['populate'] = $populate;
 
         // cast string values if get request
-        if ($filter && isset($_GET['filter'])) $options['filter'] = $this->app->helper('utils')->fixStringBooleanValues($filter);
-        if ($fields && isset($_GET['fields'])) $options['fields'] = $this->app->helper('utils')->fixStringNumericValues($fields);
+        if ($filter && isset($this->app->request->query['filter'])) $options['filter'] = $this->app->helper('utils')->fixStringBooleanValues($filter);
+        if ($fields && isset($this->app->request->query['fields'])) $options['fields'] = $this->app->helper('utils')->fixStringNumericValues($fields);
 
         // fields filter
         if ($fieldsFilter = $this->param('fieldsFilter', [])) $options['fieldsFilter'] = $fieldsFilter;
@@ -77,7 +77,7 @@ class RestApi extends \LimeExtra\Controller {
                 'parent_id_column_name' => '_pid',
                 'children_key_name'     => 'children',
                 'id_column_name'        => '_id',
-    			'sort_column_name'      => '_o'
+                'sort_column_name'      => '_o'
             ]);
         }
 

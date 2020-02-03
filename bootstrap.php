@@ -240,9 +240,9 @@ function cockpit($module = null) {
                 ];
 
                 if ($app['debug']) {
-                    $body = $app->req_is('ajax') || COCKPIT_API_REQUEST ? json_encode(['error' => $error['message'], 'file' => $error['file'], 'line' => $error['line']]) : $app->render('cockpit:views/errors/500-debug.php', ['error' => $error]);
+                    $body = $app->request->is('ajax') || COCKPIT_API_REQUEST ? json_encode(['error' => $error['message'], 'file' => $error['file'], 'line' => $error['line']]) : $app->render('cockpit:views/errors/500-debug.php', ['error' => $error]);
                 } else {
-                    $body = $app->req_is('ajax') || COCKPIT_API_REQUEST ? '{"error": "500", "message": "system error"}' : $app->view('cockpit:views/errors/500.php');
+                    $body = $app->request->is('ajax') || COCKPIT_API_REQUEST ? '{"error": "500", "message": "system error"}' : $app->view('cockpit:views/errors/500.php');
                 }
 
                 $app->trigger('error', [$error, $exception]);

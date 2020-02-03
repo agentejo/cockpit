@@ -206,7 +206,7 @@ $app->on('after', function() {
 
         case 401:
 
-            if ($this->req_is('ajax') || COCKPIT_API_REQUEST) {
+            if ($this->request->is('ajax') || COCKPIT_API_REQUEST) {
                 $this->response->body = '{"error": "401", "message":"Unauthorized"}';
             } else {
                 $this->response->body = $this->view('cockpit:views/errors/401.php');
@@ -217,7 +217,7 @@ $app->on('after', function() {
 
         case 404:
 
-            if ($this->req_is('ajax') || COCKPIT_API_REQUEST) {
+            if ($this->request->is('ajax') || COCKPIT_API_REQUEST) {
                 $this->response->body = '{"error": "404", "message":"File not found"}';
             } else {
 
