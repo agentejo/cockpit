@@ -19,7 +19,7 @@ class Request {
 
     public static function fromGlobalRequest($config = []) {
 
-        $config = [
+        $config = array_merge([
             'site_url'   => '',
             'base_url'   => '/',
             'base_route' => '',
@@ -29,7 +29,7 @@ class Request {
             'query' => $_GET,
             'server' => $_SERVER,
             'headers' => function_exists('getallheaders') ? \getallheaders() : self::getAllHeaders($_SERVER)
-        ];
+        ], $config);
 
         // check for php://input and merge with $_REQUEST
         if (
