@@ -15,6 +15,16 @@ include_once(__DIR__.'/bootstrap.php');
 $_REQUEST = CLI::opts(); // make option available via $app->param()
 $app = cockpit();
 
+$request = new \Lime\Request([
+    'request' => $_REQUEST,
+    'server' => $_SERVER,
+    'site_url'   => $app['site_url'],
+    'base_url'   => $app['base_url'],
+    'base_route' => $app['base_route']
+]);
+
+$app->request = $request;
+
 register_shutdown_function(function() use($app){
     $app->trigger('shutdown');
 });

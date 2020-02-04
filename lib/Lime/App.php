@@ -997,7 +997,7 @@ class App implements \ArrayAccess {
     * @return String
     */
     public function getClientIp(){
-        return $this->request->getClientIp();
+        return isset($this->request) ? $this->request->getClientIp() : '';
     }
 
     /**
@@ -1005,7 +1005,7 @@ class App implements \ArrayAccess {
     * @return String
     */
     public function getClientLang($default="en") {
-        return $this->request->getClientLang($default);
+        return isset($this->request) ? $$this->request->getClientLang($default) : $default;
     }
 
     /**
