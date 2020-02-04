@@ -7,6 +7,7 @@ class Request {
     public $request = [];
     public $post = [];
     public $query = [];
+    public $files = [];
     public $headers = [];
     
     public $server = [];
@@ -27,6 +28,7 @@ class Request {
             'request' => $_REQUEST,
             'post' => $_POST,
             'query' => $_GET,
+            'files' => $_FILES,
             'server' => $_SERVER,
             'headers' => function_exists('getallheaders') ? \getallheaders() : self::getAllHeaders($_SERVER)
         ], $config);

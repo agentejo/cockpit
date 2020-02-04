@@ -130,11 +130,7 @@ class App implements \ArrayAccess {
         });
 
         if (PHP_SAPI !== 'cli') {
-            $this->request = Request::fromGlobalRequest([
-                'site_url'   => $this->registry['site_url'],
-                'base_url'   => $this->registry['base_url'],
-                'base_route' => $this->registry['base_route']
-            ]);
+            $this->request = $this->getRequestfromGlobals();
         }
     }
 
@@ -830,6 +826,10 @@ class App implements \ArrayAccess {
             $this->request = $request;
         }
 
+        if (!isset($this->request)) {
+            $this->request = $this->getRequestfromGlobals();
+        }
+
         \register_shutdown_function(function() use($self){
             \session_write_close();
             $self->trigger('shutdown');
@@ -987,7 +987,7 @@ class App implements \ArrayAccess {
     * @return Mixed
     */
     public function param($index=null, $default = null, $source = null) {
-        return $this->request->param($index, $default, $source);
+        return isset($this->request) ? $this->request->param($index, $default, $source) : $default;
     }
 
     /**
@@ -1189,7 +1189,17 @@ class App implements \ArrayAccess {
 
         return $this->helper($helper);
     }
-} // End site
+
+    protected function getRequestfromGlobals() {
+
+        return Request::fromGlobalRequest([
+            'site_url'   => $this->registry['site_url'],
+            'base_url'   => $this->registry['base_url'],
+            'base_route' => $this->registry['base_route']
+        ]);
+    }
+
+} // End App
 
 // Helpers
 
