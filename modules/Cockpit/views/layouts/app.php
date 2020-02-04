@@ -193,7 +193,7 @@
                         <div data-uk-dropdown="mode:'click'">
 
                             <a class="uk-display-block" href="@route('/accounts/account')" style="width:30px;height:30px;" aria-label="@lang('Edit account')" riot-mount>
-                                <cp-gravatar email="{{ $app['user/email'] }}" size="30" alt="{{ $app["user/name"] ?? $app["user/user"] }}"></cp-gravatar>
+                                <cp-gravatar size="30" alt="{{ $app["user"]["name"] ? $app["user"]["name"] : $app["user"]["user"] }}"><canvas width="30" height="30"></canvas></cp-gravatar>
                             </a>
 
                             <div class="uk-dropdown uk-dropdown-navbar uk-dropdown-flip">
