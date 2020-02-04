@@ -818,7 +818,7 @@ class App implements \ArrayAccess {
     * @param  String $route Route to parse
     * @return void
     */
-    public function run($route = null, $request = null) {
+    public function run($route = null, $request = null, $flush = true) {
 
         $self = $this;
 
@@ -835,6 +835,8 @@ class App implements \ArrayAccess {
             $self->trigger('shutdown');
         });
 
+        $this->request->route = $this->registry['route'];
+
         $this->response = new Response();
         $this->trigger('before');
         $this->response->body = $this->dispatch($this->registry['route']);
@@ -845,11 +847,16 @@ class App implements \ArrayAccess {
 
         $this->trigger('after');
 
-        if ($this->response->gzip && !\ob_start('ob_gzhandler')) {
-            \ob_start();
+        if ($flush) {
+
+            if ($this->response->gzip && !\ob_start('ob_gzhandler')) {
+                \ob_start();
+            }
+
+            $this->response->flush();
         }
 
-        $this->response->flush();
+        return $this->response;
     }
 
     /**

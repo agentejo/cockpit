@@ -8,13 +8,14 @@ class Request {
     public $post = [];
     public $query = [];
     public $headers = [];
-
+    
     public $server = [];
     public $body = [];
-
+    
     public $site_url = '';
     public $base_url = '';
     public $base_route = '';
+    public $route = '/';
 
     public static function fromGlobalRequest($config = []) {
 
@@ -22,6 +23,7 @@ class Request {
             'site_url'   => '',
             'base_url'   => '/',
             'base_route' => '',
+            'route' => '/',
             'request' => $_REQUEST,
             'post' => $_POST,
             'query' => $_GET,
