@@ -3,8 +3,8 @@
     <div class="uk-panel-box uk-panel-card date-time-widget">
 
         <?php
-            $i18ndata = $app("i18n")->data($app("i18n")->locale);
-            $weekdays = $i18ndata["@meta"]["date"]["shortdays"] ?? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            $i18ndata = $app->helper('i18n')->data($app("i18n")->locale);
+            $weekdays = $i18ndata['@meta']['date']['shortdays'] ?? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
             $weekday  = date('N') + 0;
             $uid      = uniqid('weekdays');
         ?>

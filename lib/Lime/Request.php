@@ -25,7 +25,8 @@ class Request {
             'request' => $_REQUEST,
             'post' => $_POST,
             'query' => $_GET,
-            'server' => $_SERVER
+            'server' => $_SERVER,
+            'headers' => function_exists('getallheaders') ? \getallheaders() : self::getAllHeaders($_SERVER)
         ];
 
         // check for php://input and merge with $_REQUEST
@@ -162,5 +163,45 @@ class Request {
         }
 
         return false;
+    }
+
+    public static function getAllHeaders($server) {
+
+        if (!$server) {
+            $server = $_SERVER;
+        }
+
+        $headers = [];
+
+        $copy_server = [
+            'CONTENT_TYPE'   => 'Content-Type',
+            'CONTENT_LENGTH' => 'Content-Length',
+            'CONTENT_MD5'    => 'Content-Md5',
+        ];
+
+        foreach ($server as $key => $value) {
+            if (substr($key, 0, 5) === 'HTTP_') {
+                $key = substr($key, 5);
+                if (!isset($copy_server[$key]) || !isset($server[$key])) {
+                    $key = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', $key))));
+                    $headers[$key] = $value;
+                }
+            } elseif (isset($copy_server[$key])) {
+                $headers[$copy_server[$key]] = $value;
+            }
+        }
+
+        if (!isset($headers['Authorization'])) {
+            if (isset($server['REDIRECT_HTTP_AUTHORIZATION'])) {
+                $headers['Authorization'] = $server['REDIRECT_HTTP_AUTHORIZATION'];
+            } elseif (isset($server['PHP_AUTH_USER'])) {
+                $basic_pass = isset($server['PHP_AUTH_PW']) ? $server['PHP_AUTH_PW'] : '';
+                $headers['Authorization'] = 'Basic ' . base64_encode($server['PHP_AUTH_USER'] . ':' . $basic_pass);
+            } elseif (isset($server['PHP_AUTH_DIGEST'])) {
+                $headers['Authorization'] = $server['PHP_AUTH_DIGEST'];
+            }
+        }
+
+        return $headers;
     }
 }

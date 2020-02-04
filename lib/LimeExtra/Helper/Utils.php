@@ -344,14 +344,14 @@ class Utils extends \Lime\Helper {
 
         $headers = null;
         $token   = null;
-        $server  = $server;
+        $server  = $this->app->request->server;
 
         if (isset($server['Authorization'])) {
             $headers = \trim($server['Authorization']);
         } elseif (isset($server['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
             $headers = \trim($server['HTTP_AUTHORIZATION']);
-        } elseif (\function_exists('apache_request_headers')) {
-            $requestHeaders = \apache_request_headers();
+        } else {
+            $requestHeaders = $this->app->request->headers;
             // Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
             $requestHeaders = \array_combine(\array_map('ucwords', \array_keys($requestHeaders)), \array_values($requestHeaders));
             if (isset($requestHeaders['Authorization'])) {
