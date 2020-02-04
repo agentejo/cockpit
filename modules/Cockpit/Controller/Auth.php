@@ -40,7 +40,7 @@ class Auth extends \LimeExtra\Controller {
                 $this->app->trigger('cockpit.authentication.failed', [$data, 'User not found']);
             }
 
-            if ($this->request->is('ajax')) {
+            if ($this->app->request->is('ajax')) {
                 return $user ? ['success' => true, 'user' => $user, 'avatar'=> md5($user['email'])] : ['success' => false, 'error' => 'User not found'];
             } else {
                 $this->reroute('/');
@@ -60,7 +60,7 @@ class Auth extends \LimeExtra\Controller {
 
         $this->module('cockpit')->logout();
 
-        if ($this->request->is('ajax')) {
+        if ($this->app->request->is('ajax')) {
             return '{"logout":1}';
         } else {
             $this->reroute('/auth/login?logout=1');

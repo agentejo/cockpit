@@ -57,7 +57,7 @@ class Controller extends \Lime\AppAware {
      * @return Mixed
      */
     protected function param($key, $default=null) {
-        return $this->app->param($key, $default);
+        return $this->app->request->param($key, $default);
     }
 
     /**
