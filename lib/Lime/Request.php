@@ -56,9 +56,10 @@ class Request {
         $this->body = $config['body'] ?? [];
         $this->headers = $config['headers'] ?? [];
 
-        $this->site_url = $config['headers'] ?? '';
+        $this->site_url = $config['site_url'] ?? '';
         $this->base_url = $config['base_url'] ?? '';
         $this->base_route = $config['base_route'] ?? '';
+        $this->route = $config['route'] ?? '/';
     }
 
     public function param($index=null, $default = null, $source = null) {
