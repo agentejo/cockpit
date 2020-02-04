@@ -19,22 +19,23 @@ $app->helpers['admin'] = 'Cockpit\\Helper\\Admin';
 $app->helpers['csfr']  = 'Cockpit\\Helper\\Csfr';
 
 // init + load i18n
+$app->on('before', function() {
 
-$app('i18n')->locale = $app->retrieve('i18n', 'en');
+    $this->helper('i18n')->locale = $this->retrieve('i18n', 'en');
 
-$locale = $app->module('cockpit')->getUser('i18n', $app('i18n')->locale);
+    $locale = $this->module('cockpit')->getUser('i18n', $this->helper('i18n')->locale);
 
-if ($translationspath = $app->path("#config:cockpit/i18n/{$locale}.php")) {
-    $app('i18n')->locale = $locale;
-    $app('i18n')->load($translationspath, $locale);
-}
+    if ($translationspath = $this->path("#config:cockpit/i18n/{$locale}.php")) {
+        $this->helper('i18n')->locale = $locale;
+        $this->helper('i18n')->load($translationspath, $locale);
+    }
 
-$app->bind('/cockpit.i18n.data', function() {
-    $this->response->mime = 'js';
-    $data = $this('i18n')->data($this('i18n')->locale);
-    return 'if (i18n) { i18n.register('.(count($data) ? json_encode($data):'{}').'); }';
+    $this->bind('/cockpit.i18n.data', function() {
+        $this->response->mime = 'js';
+        $data = $this->helper('i18n')->data($this->helper('i18n')->locale);
+        return 'if (i18n) { i18n.register('.(count($data) ? json_encode($data):'{}').'); }';
+    });
 });
-
 
 /**
  * register assets

@@ -16,8 +16,8 @@ $_REQUEST = CLI::opts(); // make option available via $app->param()
 $app = cockpit();
 
 $request = new \Lime\Request([
-    'request' => $_REQUEST,
-    'server' => $_SERVER,
+    'request'    => $_REQUEST,
+    'server'     => $_SERVER,
     'site_url'   => $app['site_url'],
     'base_url'   => $app['base_url'],
     'base_route' => $app['base_route']

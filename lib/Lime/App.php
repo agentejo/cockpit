@@ -1005,7 +1005,7 @@ class App implements \ArrayAccess {
     * @return String
     */
     public function getClientLang($default="en") {
-        return isset($this->request) ? $$this->request->getClientLang($default) : $default;
+        return isset($this->request) ? $this->request->getClientLang($default) : $default;
     }
 
     /**
