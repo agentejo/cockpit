@@ -127,6 +127,8 @@ $app->on('admin.init', function() {
 // check + validate session time
 $app->bind('/check-backend-session', function() {
 
+    session_write_close();
+    
     $user = $this->module('cockpit')->getUser();
     $status = true;
 

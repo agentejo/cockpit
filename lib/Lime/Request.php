@@ -8,6 +8,7 @@ class Request {
     public $post = [];
     public $query = [];
     public $files = [];
+    public $cookies = [];
     public $headers = [];
     
     public $server = [];
@@ -27,6 +28,7 @@ class Request {
             'route' => '/',
             'request' => $_REQUEST,
             'post' => $_POST,
+            'cookies' => $_COOKIE,
             'query' => $_GET,
             'files' => $_FILES,
             'server' => $_SERVER,
@@ -57,7 +59,8 @@ class Request {
         $this->server = $config['server'] ?? [];
         $this->body = $config['body'] ?? [];
         $this->headers = $config['headers'] ?? [];
-
+        $this->cookies = $config['cookies'] ?? [];
+        
         $this->site_url = $config['site_url'] ?? '';
         $this->base_url = $config['base_url'] ?? '';
         $this->base_route = $config['base_route'] ?? '';
