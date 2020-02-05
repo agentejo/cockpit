@@ -132,9 +132,9 @@ class Request {
         switch (\strtolower($type)){
             case 'ajax':
                 return (
-                    (isset($this->server['HTTP_X_REQUESTED_WITH']) && ($this->server['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'))       ||
-                    (isset($this->server["CONTENT_TYPE"]) && \stripos($this->server["CONTENT_TYPE"],'application/json')!==false)           ||
-                    (isset($this->server["HTTP_CONTENT_TYPE"]) && \stripos($this->server["HTTP_CONTENT_TYPE"],'application/json')!==false)
+                    (isset($this->server['HTTP_X_REQUESTED_WITH']) && ($this->server['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'))        ||
+                    (isset($this->server['CONTENT_TYPE']) && \stripos($this->server['CONTENT_TYPE'],'application/json')!==false)           ||
+                    (isset($this->server['HTTP_CONTENT_TYPE']) && \stripos($this->server['HTTP_CONTENT_TYPE'],'application/json')!==false)
                 );
                 break;
 

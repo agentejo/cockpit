@@ -53,7 +53,14 @@ class Auth extends \LimeExtra\Controller {
 
 
     public function login() {
-        return $this->render('cockpit:views/layouts/login.php');
+
+        $redirectTo = '/';
+
+        if ($this->param('to') && \substr($this->param('to'), 0, 1) == '/') {
+            $redirectTo = $this->param('to');
+        }
+
+        return $this->render('cockpit:views/layouts/login.php', compact('redirectTo'));
     }
 
     public function logout() {

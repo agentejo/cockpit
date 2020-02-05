@@ -128,7 +128,7 @@ $app->on('admin.init', function() {
 $app->bind('/check-backend-session', function() {
 
     session_write_close();
-    
+
     $user = $this->module('cockpit')->getUser();
     $status = true;
 
@@ -225,7 +225,7 @@ $app->on('after', function() {
             } else {
 
                 if (!$this->module('cockpit')->getUser()) {
-                    $this->reroute('/auth/login');
+                    $this->reroute('/auth/login?to='.$this->retrieve('route'));
                 }
 
                 $this->response->body = $this->view('cockpit:views/errors/404.php');

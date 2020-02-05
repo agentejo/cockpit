@@ -98,6 +98,8 @@
             this.error = false;
             this.$user  = null;
 
+            var redirectTo = '{{ $redirectTo }}';
+
             submit(e) {
 
                 e.preventDefault();
@@ -114,7 +116,7 @@
                         this.$user = data.user;
 
                         setTimeout(function(){
-                            App.reroute('/');
+                            App.reroute(redirectTo);
                         }, 2000)
 
                     } else {
