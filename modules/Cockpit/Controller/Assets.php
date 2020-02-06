@@ -36,7 +36,7 @@ class Assets extends \Cockpit\AuthController {
             'filter' => ['_p' => $this->param('folder', '')],
             'sort' => ['name' => 1]
         ];
-        $this->app->trigger('cockpit.folders.find.before', [&$options]);
+        $this->app->trigger('cockpit.assetsfolders.find.before', [&$options]);
         $ret['folders'] = $this->app->storage->find('cockpit/assets_folders', $options)->toArray();
 
         return $ret;
