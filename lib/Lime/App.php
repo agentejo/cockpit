@@ -996,7 +996,7 @@ class App implements \ArrayAccess {
     * @return Boolean
     */
     public function req_is($type){
-        return $this->request->is($type);
+        return isset($this->request) ? $this->request->is($type) : false;
     }
 
     /**
@@ -1020,7 +1020,7 @@ class App implements \ArrayAccess {
     * @return String
     */
     public function getSiteUrl($withpath = false) {
-        return $this->request->getSiteUrl($withpath);
+        return isset($this->request) ? $this->request->getSiteUrl($withpath) : '';
     }
 
     /**

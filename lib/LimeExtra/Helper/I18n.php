@@ -543,7 +543,11 @@ class I18n extends \Lime\Helper {
      */
     public function initialize(){
 
-        $this->locale = $this->app->getClientLang();
+        $locale = $this->app->getClientLang();
+
+        if ($locale) {
+            $this->locale = $locale;
+        }
     }
 
     /**
