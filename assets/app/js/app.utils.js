@@ -225,7 +225,7 @@
         });
 
         p.cancel = function() {
-        	 canceled = true;
+             canceled = true;
         };
 
         return p;
@@ -245,7 +245,7 @@
         // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
         allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
         after = input || '';
-        // removes tha '<' char at the end of the string to replicate PHP's behaviour
+        // removes the '<' char at the end of the string to replicate PHP's behaviour
         after = (after.substring(after.length - 1) === '<') ? after.substring(0, after.length - 1) : after;
       
         // recursively remove tags to ensure that the returned string doesn't contain forbidden tags after previous passes (e.g. '<<bait/>switch/>')
@@ -392,17 +392,17 @@
     App.Utils.multiline = (function(){
 
         var stripIndent = function (str) {
-        	var match = str.match(/^[ \t]*(?=\S)/gm);
+            var match = str.match(/^[ \t]*(?=\S)/gm);
 
-        	if (!match) return str;
+            if (!match) return str;
 
-        	var indent = Math.min.apply(Math, match.map(function (el) {
-        		return el.length;
-        	}));
+            var indent = Math.min.apply(Math, match.map(function (el) {
+                return el.length;
+            }));
 
-        	var re = new RegExp('^[ \\t]{' + indent + '}', 'gm');
+            var re = new RegExp('^[ \\t]{' + indent + '}', 'gm');
 
-        	return indent > 0 ? str.replace(re, '') : str;
+            return indent > 0 ? str.replace(re, '') : str;
         };
 
         // start matching after: comment start block => ! or @preserve => optional whitespace => newline
@@ -410,21 +410,21 @@
         var reCommentContents = /\/\*!?(?:\@preserve)?[ \t]*(?:\r\n|\n)([\s\S]*?)(?:\r\n|\n)[ \t]*\*\//;
 
         var multiline = function (fn) {
-        	if (typeof fn !== 'function') {
-        		throw new TypeError('Expected a function');
-        	}
+            if (typeof fn !== 'function') {
+                throw new TypeError('Expected a function');
+            }
 
-        	var match = reCommentContents.exec(fn.toString());
+            var match = reCommentContents.exec(fn.toString());
 
-        	if (!match) {
-        		throw new TypeError('Multiline comment missing.');
-        	}
+            if (!match) {
+                throw new TypeError('Multiline comment missing.');
+            }
 
-        	return match[1];
+            return match[1];
         };
 
         multiline.stripIndent = function (fn) {
-        	return stripIndent(multiline(fn));
+            return stripIndent(multiline(fn));
         };
 
         return multiline;

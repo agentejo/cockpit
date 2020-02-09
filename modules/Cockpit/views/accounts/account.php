@@ -112,7 +112,8 @@
                         <cp-actionbar>
                             <div class="uk-container uk-container-center">
                                 <button class="uk-button uk-button-large uk-button-primary">@lang('Save')</button>
-                                <a class="uk-button uk-button-large uk-button-link" href="@route('/accounts')">@lang('Cancel')</a>
+                                <a class="uk-button uk-button-large uk-button-link" href="@route($app->module('cockpit')->hasaccess('cockpit', 'accounts') ? '/accounts' : '/')">@lang('Cancel')
+                                </a>
                             </div>
                         </cp-actionbar>
 
