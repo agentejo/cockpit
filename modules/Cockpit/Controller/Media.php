@@ -72,7 +72,7 @@ class Media extends \Cockpit\AuthController {
                         'name' => $filename,
                         'path' => trim($path.'/'.$file->getFilename(), '/'),
                         'rel_site_path' => trim(str_replace($sitefolder, '', $file->getPathname()), '/'),
-                        'url'  => $this->app->pathToUrl($file->getPathname()),
+                        'url'  => $this->app->pathToUrl($file->getPathname(), ($sitefolder != $this->path('#root:'))),
                         'size' => $isDir ? '' : $this->app->helper('utils')->formatSize($file->getSize()),
                         'filesize' => $isDir ? '' : $file->getSize(),
                         'ext'  => $isDir ? '' : strtolower($file->getExtension()),
