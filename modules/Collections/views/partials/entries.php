@@ -353,7 +353,8 @@
         this.fields.push(this.fieldsidx['_created']);
         this.fields.push(this.fieldsidx['_modified']);
 
-        this.sort     = {[this.collection.sort_by || '_created'] : this.collection.sort_dir || -1}
+        this.sort = {}
+        this.sort[this.collection.sort_column_name] = this.collection.sort_direction
         this.selected = [];
         this.listmode = App.session.get('collections.entries.'+this.collection.name+'.listmode', 'list');
 

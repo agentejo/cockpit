@@ -69,12 +69,12 @@
 
                     <div class="uk-margin">
                         <label class="uk-text-small">@lang('Sort by')</label>
-                        <field-select bind="collection.sort_by" options="{ getFieldsSortByOptions() }"></field-select>
+                        <field-select bind="collection.sort_column_name" options="{ getFieldsSortColumnNameOptions() }"></field-select>
                     </div>
 
                     <div class="uk-margin">
                         <label class="uk-text-small">@lang('Sort direction')</label>
-                        <field-select bind="collection.sort_dir" options="{ fieldsSortDirOptions }"></field-select>
+                        <field-select bind="collection.sort_direction" options="{ fieldsSortDirectionOptions }"></field-select>
                     </div>
 
                     @trigger('collections.settings.aside')
@@ -274,9 +274,14 @@
             this.collection.acl = {};
         }
 
-        this.fieldsSortDirOptions = [
-            {value: -1, label: App.i18n.get('Ascending')},
-            {value:  1, label: App.i18n.get('Descending')}
+        this.fieldsSortDirectionOptions = [
+            { value: -1, label: App.i18n.get('Ascending') },
+            { value:  1, label: App.i18n.get('Descending') }
+        ]
+
+        var timestampSortOptions = [
+            { value: '_created', label: App.i18n.get('Created') },
+            { value: '_modified', label: App.i18n.get('Modified') }
         ]
 
         this.on('update', function(){
@@ -320,11 +325,13 @@
         }
 
         // Convert fields to format required by select
-        getFieldsSortByOptions() {
-            return this.collection.fields.map(field => ({
-                value: field.name,
-                label: field.label || field.name
-            }))
+        getFieldsSortColumnNameOptions() {
+            return this.collection.fields
+                .map(field => ({
+                    value: field.name,
+                    label: field.label || field.name
+                }))
+                .concat(timestampSortOptions)
         }
 
         submit(e) {
