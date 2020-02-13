@@ -290,6 +290,11 @@
             if (this.collection._id) {
                 this.refs.name.disabled = true;
             }
+
+            // Cast to integer
+            if (this.collection.sort_direction) {
+                this.collection.sort_direction = parseInt(this.collection.sort_direction, 10)
+            }
         });
 
         this.on('mount', function(){
