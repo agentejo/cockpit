@@ -67,6 +67,16 @@
                         <field-boolean bind="collection.sortable" title="@lang('Sortable entries')" label="@lang('Custom sortable entries')"></field-boolean>
                     </div>
 
+                    <div class="uk-margin">
+                        <label class="uk-text-small">@lang('Sort by')</label>
+                        <field-select bind="collection.sort_by" options="{ getFieldsSortByOptions() }"></field-select>
+                    </div>
+
+                    <div class="uk-margin">
+                        <label class="uk-text-small">@lang('Sort direction')</label>
+                        <field-select bind="collection.sort_dir" options="{ fieldsSortDirOptions }"></field-select>
+                    </div>
+
                     @trigger('collections.settings.aside')
 
                 </div>
@@ -264,6 +274,11 @@
             this.collection.acl = {};
         }
 
+        this.fieldsSortDirOptions = [
+            {value: -1, label: App.i18n.get('Ascending')},
+            {value:  1, label: App.i18n.get('Descending')}
+        ]
+
         this.on('update', function(){
 
             // lock name if saved
@@ -302,6 +317,14 @@
 
         selectIcon(e) {
             this.collection.icon = e.target.getAttribute('icon');
+        }
+
+        // Convert fields to format required by select
+        getFieldsSortByOptions() {
+            return this.collection.fields.map(field => ({
+                value: field.name,
+                label: field.label || field.name
+            }))
         }
 
         submit(e) {
