@@ -354,7 +354,7 @@
         this.fields.push(this.fieldsidx['_modified']);
 
         this.sort = {}
-        this.sort[this.collection.sort_column_name] = this.collection.sort_direction
+        this.sort[this.collection.sort.column] = this.collection.sort.dir
         this.selected = [];
         this.listmode = App.session.get('collections.entries.'+this.collection.name+'.listmode', 'list');
 

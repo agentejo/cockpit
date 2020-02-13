@@ -69,12 +69,12 @@
 
                     <div class="uk-margin">
                         <label class="uk-text-small">@lang('Sort by')</label>
-                        <field-select bind="collection.sort_column_name" options="{ getFieldsSortColumnNameOptions() }"></field-select>
+                        <field-select bind="collection.sort.column" options="{ getFieldsSortColumnNameOptions() }"></field-select>
                     </div>
 
                     <div class="uk-margin">
                         <label class="uk-text-small">@lang('Sort direction')</label>
-                        <field-select bind="collection.sort_direction" options="{ fieldsSortDirectionOptions }"></field-select>
+                        <field-select bind="collection.sort.dir" options="{ fieldsSortDirectionOptions }"></field-select>
                     </div>
 
                     @trigger('collections.settings.aside')
@@ -291,9 +291,17 @@
                 this.refs.name.disabled = true;
             }
 
+            // Add default sort properties for collection created previously without sort feature
+            if (!this.collection.sort) {
+                this.collection.sort = {
+                    column: '_created',
+                    dir: -1
+                }
+            }
+
             // Cast to integer
-            if (this.collection.sort_direction) {
-                this.collection.sort_direction = parseInt(this.collection.sort_direction, 10)
+            if (typeof this.collection.sort.dir === 'string') {
+                this.collection.sort.dir = parseInt(this.collection.sort.dir, 10)
             }
         });
 
