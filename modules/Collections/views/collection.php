@@ -67,6 +67,16 @@
                         <field-boolean bind="collection.sortable" title="@lang('Sortable entries')" label="@lang('Custom sortable entries')"></field-boolean>
                     </div>
 
+                    <div class="uk-margin">
+                        <label class="uk-text-small">@lang('Sort by')</label>
+                        <field-select bind="collection.sort.column" options="{ getFieldsSortColumnNameOptions() }"></field-select>
+                    </div>
+
+                    <div class="uk-margin">
+                        <label class="uk-text-small">@lang('Sort direction')</label>
+                        <field-select bind="collection.sort.dir" options="{ fieldsSortDirectionOptions }"></field-select>
+                    </div>
+
                     @trigger('collections.settings.aside')
 
                 </div>
@@ -264,11 +274,34 @@
             this.collection.acl = {};
         }
 
+        this.fieldsSortDirectionOptions = [
+            { value: -1, label: App.i18n.get('Ascending') },
+            { value:  1, label: App.i18n.get('Descending') }
+        ]
+
+        var timestampSortOptions = [
+            { value: '_created', label: App.i18n.get('Created') },
+            { value: '_modified', label: App.i18n.get('Modified') }
+        ]
+
         this.on('update', function(){
 
             // lock name if saved
             if (this.collection._id) {
                 this.refs.name.disabled = true;
+            }
+
+            // Add default sort properties for collection created previously without sort feature
+            if (!this.collection.sort) {
+                this.collection.sort = {
+                    column: '_created',
+                    dir: -1
+                }
+            }
+
+            // Cast to integer
+            if (typeof this.collection.sort.dir === 'string') {
+                this.collection.sort.dir = parseInt(this.collection.sort.dir, 10)
             }
         });
 
@@ -302,6 +335,16 @@
 
         selectIcon(e) {
             this.collection.icon = e.target.getAttribute('icon');
+        }
+
+        // Convert fields to format required by select
+        getFieldsSortColumnNameOptions() {
+            return this.collection.fields
+                .map(field => ({
+                    value: field.name,
+                    label: field.label || field.name
+                }))
+                .concat(timestampSortOptions)
         }
 
         submit(e) {

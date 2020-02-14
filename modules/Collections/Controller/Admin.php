@@ -76,6 +76,10 @@ class Admin extends \Cockpit\AuthController {
             'fields'=>[],
             'acl' => new \ArrayObject,
             'sortable' => false,
+            'sort' => [
+                'column' => '_created',
+                'dir' => -1,
+            ],
             'in_menu' => false
         ];
 
@@ -170,6 +174,10 @@ class Admin extends \Cockpit\AuthController {
 
         $collection = array_merge([
             'sortable' => false,
+            'sort' => [
+                'column' => '_created',
+                'dir' => -1,
+            ],
             'color' => '',
             'icon' => '',
             'description' => ''
@@ -219,6 +227,10 @@ class Admin extends \Cockpit\AuthController {
 
         $collection = array_merge([
             'sortable' => false,
+            'sort' => [
+                'column' => '_created',
+                'dir' => -1,
+            ],
             'color' => '',
             'icon' => '',
             'description' => ''
