@@ -3689,7 +3689,7 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
 
 });
 
-riot.tag2('field-select', '<select ref="input" class="uk-width-1-1 {opts.cls}" bind="{opts.bind}"> <option value=""></option> <option each="{option,idx in options}" riot-value="{option.value}" selected="{parent.root.$value === option.value}">{option.label}</option> </select>', '', '', function(opts) {
+riot.tag2('field-select', '<select ref="input" class="uk-width-1-1 {opts.cls}" bind="{opts.bind}"> <option value=""></option> <option each="{option,idx in options}" riot-value="{option.value}" selected="{parent.root.$value == option.value}">{option.label}</option> </select>', '', '', function(opts) {
 
         var $this = this;
 

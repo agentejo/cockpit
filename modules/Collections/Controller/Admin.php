@@ -69,7 +69,7 @@ class Admin extends \Cockpit\AuthController {
             return $this->helper('admin')->denyRequest();
         }
 
-        $collection = [
+        $default = [
             'name' => '',
             'label' => '',
             'color' => '',
@@ -82,6 +82,8 @@ class Admin extends \Cockpit\AuthController {
             ],
             'in_menu' => false
         ];
+
+        $collection = $default;
 
         if ($name) {
 
@@ -96,6 +98,8 @@ class Admin extends \Cockpit\AuthController {
             }
 
             $this->app->helper('admin')->lockResourceId($collection['_id']);
+
+            $collection = array_merge($default, $collection);
         }
 
         // get field templates

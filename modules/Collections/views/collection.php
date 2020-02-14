@@ -67,14 +67,20 @@
                         <field-boolean bind="collection.sortable" title="@lang('Sortable entries')" label="@lang('Custom sortable entries')"></field-boolean>
                     </div>
 
-                    <div class="uk-margin">
-                        <label class="uk-text-small">@lang('Sort by')</label>
-                        <field-select bind="collection.sort.column" options="{ getFieldsSortColumnNameOptions() }"></field-select>
-                    </div>
 
-                    <div class="uk-margin">
-                        <label class="uk-text-small">@lang('Sort direction')</label>
-                        <field-select bind="collection.sort.dir" options="{ fieldsSortDirectionOptions }"></field-select>
+                    <div class="uk-margin" show="{!collection.sortable}">
+                        <label class="uk-text-small">@lang('Default sorting by')</label>
+                        <div class="uk-grid uk-grid-small uk-margin-small-top">
+
+                            <div class="uk-width-2-3">
+                                <field-select bind="collection.sort.column" class="uk-display-block uk-width-1-1" options="{ getFieldsSortColumnNameOptions() }"></field-select>
+                            </div>
+                            
+                            <div class="uk-width-1-3">
+                                <field-select bind="collection.sort.dir" class="uk-display-block uk-width-1-1" options="{ fieldsSortDirectionOptions }"></field-select>
+                            </div>
+
+                        </div>
                     </div>
 
                     @trigger('collections.settings.aside')
@@ -275,14 +281,9 @@
         }
 
         this.fieldsSortDirectionOptions = [
-            { value: -1, label: App.i18n.get('Ascending') },
-            { value:  1, label: App.i18n.get('Descending') }
-        ]
-
-        var timestampSortOptions = [
-            { value: '_created', label: App.i18n.get('Created') },
-            { value: '_modified', label: App.i18n.get('Modified') }
-        ]
+            { value:  1, label: App.i18n.get('ASC') },
+            { value: -1, label: App.i18n.get('DESC') }
+        ];
 
         this.on('update', function(){
 
@@ -339,12 +340,13 @@
 
         // Convert fields to format required by select
         getFieldsSortColumnNameOptions() {
-            return this.collection.fields
-                .map(field => ({
-                    value: field.name,
-                    label: field.label || field.name
-                }))
-                .concat(timestampSortOptions)
+            
+            return this.collection.fields.map(function(field){
+                return { value: field.name, label: (field.label || field.name) };
+            }).concat([
+                { value: '_created', label: App.i18n.get('Created') },
+                { value: '_modified', label: App.i18n.get('Modified') }
+            ]);
         }
 
         submit(e) {
