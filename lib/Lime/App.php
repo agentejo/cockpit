@@ -420,7 +420,8 @@ class App implements \ArrayAccess {
             $url = \implode('/', \array_map('rawurlencode', explode('/', $url)));
 
             if ($full) {
-                $url = \rtrim($this->registry['site_url'], '/').$url;
+                $site_url = str_replace(parse_url($this->registry['site_url'], \PHP_URL_PATH), '', $this->registry['site_url']);
+                $url = \rtrim($site_url, '/').$url;
             }
         }
 
