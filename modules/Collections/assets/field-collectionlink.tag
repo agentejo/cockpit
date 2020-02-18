@@ -451,6 +451,10 @@
                 if (!display) {
                     display = _entry.name ? 'name':'title';
                     link.display = _entry[display] || 'n/a';
+                } else if(Array.isArray(display)) {
+                	link.display = display.map(function(field){
+                		return _entry[field] || "";
+                	}).join(", ");
                 } else {
                     link.display = _entry[display] || App.Utils.interpolate(display, _entry);
                 }
