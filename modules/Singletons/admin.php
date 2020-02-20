@@ -22,13 +22,19 @@ $app->on('admin.init', function() {
     // bind admin routes /singleton/*
     $this->bindClass('Singletons\\Controller\\Admin', 'singletons');
 
+    $active = strpos($this['route'], '/singletons') === 0;
+
     // add to modules menu
     $this->helper('admin')->addMenuItem('modules', [
         'label' => 'Singletons',
         'icon'  => 'singletons:icon.svg',
         'route' => '/singletons',
-        'active' => strpos($this['route'], '/singletons') === 0
+        'active' => $active
     ]);
+
+    if ($active) {
+        $this->helper('admin')->favicon = 'singletons:icon.svg';
+    } 
 
     /**
      * listen to app search to filter singleton

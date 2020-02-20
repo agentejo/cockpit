@@ -14,8 +14,6 @@
 
     <div class="uk-width-medium-2-3">
 
-        <h3>@lang('General')</h3>
-
         <div class="uk-panel uk-panel-space uk-text-center">
 
             <cp-gravatar email="{ account.email }" size="100" alt="{ account.name || account.user }"></cp-gravatar>

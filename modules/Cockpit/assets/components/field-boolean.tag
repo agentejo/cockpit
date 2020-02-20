@@ -22,11 +22,17 @@
             App.$(this.refs.container).addClass(opts.cls);
         }
 
+
         this.value = opts.default || false;
        
+
         this.$updateValue = function(value) {
 
-            if (this.value != value) {
+            if (typeof(value) !== 'boolean') {
+                return this.$setValue(!!value);
+            }
+
+            if (this.value !== value) {
                 this.value = value;
                 this.update();
             }
@@ -49,6 +55,7 @@
             this.$setValue(this.value);
 
         };
+
 
     </script>
 

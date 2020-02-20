@@ -22,13 +22,19 @@ $app->on('admin.init', function() {
     // bind admin routes /forms/*
     $this->bindClass('Forms\\Controller\\Admin', 'forms');
 
+    $active = strpos($this['route'], '/forms') === 0;
+
     // add to modules menu
     $this->helper('admin')->addMenuItem('modules', [
         'label' => 'Forms',
         'icon'  => 'forms:icon.svg',
         'route' => '/forms',
-        'active' => strpos($this['route'], '/forms') === 0
+        'active' => $active
     ]);
+
+    if ($active) {
+        $this->helper('admin')->favicon = 'forms:icon.svg';
+    } 
 
     /**
      * listen to app search to filter forms

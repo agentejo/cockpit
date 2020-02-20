@@ -15,7 +15,8 @@
 // because auto-load not ready yet
 include(__DIR__.'/Helper/Admin.php');
 
-$app->helpers['admin']  = 'Cockpit\\Helper\\Admin';
+$app->helpers['admin'] = 'Cockpit\\Helper\\Admin';
+$app->helpers['csfr']  = 'Cockpit\\Helper\\Csfr';
 
 // init + load i18n
 

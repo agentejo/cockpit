@@ -69,7 +69,10 @@
 
             e.preventDefault();
 
-            App.request('/auth/check', {auth:{user:this.refs.user.value, password:this.refs.password.value}}).then(function(data) {
+            App.request('/auth/check', {
+                auth : {user:this.refs.user.value, password:this.refs.password.value},
+                csfr : "{{ $app('csfr')->token('login') }}"
+            }).then(function(data) {
 
                 if (data && data.success) {
 

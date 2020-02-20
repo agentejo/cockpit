@@ -22,6 +22,11 @@ class Auth extends \LimeExtra\Controller {
                 $data['user']  = '';
             }
 
+            if (!$this->app->helper('csfr')->isValid('login', $this->param('csfr'), true)) {
+                $this->app->trigger('cockpit.authentication.failed', [$data, 'Csfr validation failed']);
+                return ['success' => false, 'error' => 'Csfr validation failed'];
+            }
+
             $user = $this->module('cockpit')->authenticate($data);
 
             if ($user && !$this->module('cockpit')->hasaccess('cockpit', 'backend', @$user['group'])) {
@@ -32,11 +37,11 @@ class Auth extends \LimeExtra\Controller {
                 $this->app->trigger('cockpit.authentication.success', [&$user]);
                 $this->module('cockpit')->setUser($user);
             } else {
-                $this->app->trigger('cockpit.authentication.failed', [$data['user']]);
+                $this->app->trigger('cockpit.authentication.failed', [$data, 'User not found']);
             }
 
             if ($this->req_is('ajax')) {
-                return $user ? json_encode(['success' => true, 'user' => $user, 'avatar'=> md5($user['email'])]) : '{"success": false}';
+                return $user ? ['success' => true, 'user' => $user, 'avatar'=> md5($user['email'])] : ['success' => false, 'error' => 'User not found'];
             } else {
                 $this->reroute('/');
             }
@@ -48,7 +53,6 @@ class Auth extends \LimeExtra\Controller {
 
 
     public function login() {
-
         return $this->render('cockpit:views/layouts/login.php');
     }
 

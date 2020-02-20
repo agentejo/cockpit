@@ -1,6 +1,6 @@
 {
     "name": "cockpit-next",
-    "version": "0.9.3",
+    "version": "0.10.0",
     "license": "MIT",
     "scripts": {
         "build": "npm run build-style && npm run build-components",

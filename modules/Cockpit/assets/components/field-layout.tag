@@ -31,6 +31,23 @@
             color: rgba(0,0,0,.3);
         }
 
+        .layout-field-preview {
+            display: block;
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 1px rgba(0,0,0,.05) dotted;
+        }
+
+        .layout-field-preview canvas {
+            background-size: contain; 
+            background-position: 50% 50%; 
+            background-repeat: no-repeat; 
+        }
+
+        .layout-field-preview:empty {
+            display:none
+        }
+
     </style>
 
 
@@ -44,24 +61,27 @@
                     <a class="uk-link-muted" onclick="{ parent.settings }">{ item.name || parent.components[item.component].label || App.Utils.ucfirst(item.component) }</a>
                 </div>
                 <div class="uk-text-small uk-invisible">
-                    <a onclick="{ parent.addComponent }" title="{ App.i18n.get('Add Component') }"><i class="uk-icon-plus"></i></a>
+                    <a onclick="{ parent.cloneComponent }" title="{ App.i18n.get('Clone Component') }"><i class="uk-icon-clone"></i></a>
+                    <a class="uk-margin-small-left" onclick="{ parent.addComponent }" title="{ App.i18n.get('Add Component') }"><i class="uk-icon-plus"></i></a>
                     <a class="uk-margin-small-left uk-text-danger" onclick="{ parent.remove }"><i class="uk-icon-trash-o"></i></a>
                 </div>
             </div>
 
             <div class="uk-margin" if="{parent.components[item.component].children}">
-                <field-layout bind="items[{idx}].children" child="true" components="{ parent.components }" exclude="{ opts.exclude }"></field-layout>
+                <field-layout bind="items[{idx}].children" child="true" parent-component="{parent.components[item.component]}" components="{ parent.components }" exclude="{ opts.exclude }" preview="{opts.preview}"></field-layout>
             </div>
 
             <div class="uk-margin" if="{item.component == 'grid'}">
-                <field-layout-grid bind="items[{idx}].columns" components="{ parent.components }" exclude="{ opts.exclude }"></field-layout-grid>
+                <field-layout-grid bind="items[{idx}].columns" components="{ parent.components }" exclude="{ opts.exclude }" preview="{opts.preview}"></field-layout-grid>
             </div>
+
+            <raw class="layout-field-preview uk-text-small uk-text-muted" content="{getPreview(item)}" if="{showPreview}"></raw>
 
         </div>
     </div>
 
     <div class="uk-margin uk-text-center">
-        <a class="uk-text-primary { !opts.child && 'uk-button uk-button-outline uk-button-large'}" onclick="{ addComponent }" title="{ App.i18n.get('Add component') }" data-uk-tooltip="pos:'bottom'"><i class="uk-icon-plus-circle"></i></a>
+        <a class="uk-text-primary { !opts.child && 'uk-button uk-button-outline uk-button-large'}" onclick="{ addComponent.bind(this, true) }" title="{ App.i18n.get('Add component') }" data-uk-tooltip="pos:'bottom'"><i class="uk-icon-plus-circle"></i></a>
     </div>
 
     <div class="uk-modal uk-sortable-nodrag" ref="modalComponents">
@@ -229,8 +249,14 @@
             this.components = App.$.extend(true, this.components, window.CP_LAYOUT_COMPONENTS);
         }
 
+        if (opts.parentComponent && opts.parentComponent.options) {
+            opts = App.$.extend(true, opts.parentComponent.options, opts);
+        }
 
+        
         this.on('mount', function() {
+
+            this.showPreview = opts.preview === undefined ? true : opts.preview;
 
             App.trigger('field.layout.components', {components:this.components, opts:opts});
 
@@ -363,10 +389,22 @@
             }
         }
 
-        addComponent(e) {
+        addComponent(e, push) {
             this.componentGroup = null;
-            this.refs.modalComponents.afterComponent = e.item && e.item.item ? e.item.idx : false;
+            this.refs.modalComponents.afterComponent = !push && e.item && e.item.item ? e.item.idx : false;
             UIkit.modal(this.refs.modalComponents, {modal:false}).show();
+        }
+
+        cloneComponent(e) {
+
+            var item = JSON.parse(JSON.stringify(e.item.item)), idx = e.item.idx;
+
+            this.items.splice(idx + 1, 0, item);
+            this.$setValue(this.items);
+
+            setTimeout(function() {
+                if (opts.child) $this.propagateUpdate();
+            }.bind(this));
         }
 
         add(e) {
@@ -469,6 +507,75 @@
             this.componentGroup = e.item && e.item.group || false;
         }
 
+        getPreview(component) {
+            //console.log(component)
+
+            var def = this.components[component.component];
+
+            if (!def || def.children || component.component == 'grid') {
+                return;
+            }
+
+            if (['heading', 'button'].indexOf(component.component) > -1) {
+                return component.settings.text ? '<div class="uk-text-truncate">'+App.Utils.stripTags(component.settings.text)+'</div>':'';
+            }
+
+            if (['text', 'html'].indexOf(component.component) > -1) {
+                var txt = App.Utils.stripTags(component.settings.text, '<b><strong>').trim();
+                return txt ? '<div class="uk-text-truncate">'+txt.substr(0, 100)+'</div>':'';
+            }
+
+            if (component.component == 'image' && component.settings.image && component.settings.image.path) {
+
+                var src = getPathUrl(component.settings.image.path),
+                    url = component.settings.image.path.match(/^(http\:|https\:|\/\/)/) ? component.settings.image.path : encodeURI(SITE_URL+'/'+component.settings.image.path), 
+                    html;
+                
+                html = '<canvas class="uk-responsive-width" width="50" height="50" style="background-image:url('+src+')"></canvas>';
+
+                return '<a href="'+url+'" data-uk-lightbox>'+html+'</a>';
+            }
+
+            if (component.component== 'gallery' && Array.isArray(component.settings.gallery) && component.settings.gallery.length) {
+                
+                var html = [], url, src;
+
+                html.push('<div class="uk-flex">');
+                component.settings.gallery.forEach(function(img) {
+                    if (html.length > 6) return;
+                    url = img.path.match(/^(http\:|https\:|\/\/)/) ? img.path : encodeURI(SITE_URL+'/'+img.path);
+                    src = getPathUrl(img.path);
+
+                    html.push('<div><a href="'+url+'" data-uk-lightbox><canvas class="uk-responsive-width" width="50" height="50" style="background-image:url('+src+')"></canvas></a></div>')
+                });
+
+                html.push('</div>');
+
+                return html.join('');
+            }
+
+            return '';
+        }
+
+        function getPathUrl(path) {
+
+            var p = path, 
+                url = p.match(/^(http\:|https\:|\/\/)/) ? p : encodeURI(SITE_URL+'/'+p),
+                html, src;
+
+            if (url.match(/^(http\:|https\:|\/\/)/) && !(url.includes(ASSETS_URL) || url.includes(SITE_URL))) {
+                src = url;
+            } else {
+                src = App.route('/cockpit/utils/thumb_url?src='+url+'&w=50&h=50&m=bestFit&o=1');
+            }
+            
+            if (src.match(/\.(svg|ico)$/i)) {
+                src = url;
+            }
+
+            return src;
+        }
+
     </script>
 
 </field-layout>
@@ -479,16 +586,17 @@
         <a class="uk-button uk-button-link" onclick="{ addColumn }">{ App.i18n.get('Add Column') }</a>
     </div>
 
-    <div class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-{columns.length > 4 ? 1 : columns.length}" show="{columns.length}" ref="columns" data-uk-sortable="animation:false">
+    <div class="uk-sortable uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-{columns.length > 5 ? 1 : columns.length}" show="{columns.length}" ref="columns" data-uk-sortable="animation:false">
         <div class="uk-grid-margin" each="{column,idx in columns}">
             <div class="uk-panel">
                 <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">
-                    <div class="uk-flex-item-1 uk-margin-small-right"><a class="uk-text-muted uk-text-uppercase field-layout-column-label" onclick="{ parent.settings }" title="{ App.i18n.get('Settings') }">{ App.i18n.get('Column') } { (idx+1) }</a></div>
-                    <a class="uk-invisible uk-text-upper uk-text-bold uk-margin-small-right" onclick="{ parent.addColumn }" title="{ App.i18n.get('Add Column') }"><i class="uk-icon-plus"></i></a>
+                    <div class="uk-flex-item-1 uk-margin-small-right"><a class="uk-text-muted uk-text-uppercase field-layout-column-label" onclick="{ parent.settings }" title="{ App.i18n.get('Settings') }"><i class="uk-icon-columns" alt="Column {(idx+1)}"></i> { (idx+1) }</a></div>
+                    <a class="uk-invisible uk-margin-small-right" onclick="{ parent.cloneColumn }" title="{ App.i18n.get('Clone Column') }"><i class="uk-icon-clone"></i></a>
+                    <a class="uk-invisible uk-margin-small-right" onclick="{ parent.addColumn }" title="{ App.i18n.get('Add Column') }"><i class="uk-icon-plus"></i></a>
                     <a class="uk-invisible" onclick="{ parent.remove }"><i class="uk-text-danger uk-icon-trash-o"></i></a>
                 </div>
                 <div class="uk-margin">
-                    <field-layout bind="columns[{idx}].children" child="true" components="{ opts.components }" exclude="{ opts.exclude }"></field-layout>
+                    <field-layout bind="columns[{idx}].children" child="true" components="{ opts.components }" exclude="{ opts.exclude }" preview="{opts.preview}"></field-layout>
                 </div>
             </div>
         </div>
@@ -601,6 +709,16 @@
             };
 
             this.columns.push(column);
+            this.$setValue(this.columns);
+
+            this.propagateUpdate();
+        }
+
+        cloneColumn(e) {
+
+            var column = JSON.parse(JSON.stringify(e.item.column)), idx = e.item.idx;
+
+            this.columns.splice(idx + 1, 0, column);
             this.$setValue(this.columns);
 
             this.propagateUpdate();

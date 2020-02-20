@@ -31,15 +31,12 @@ class Settings extends \Cockpit\AuthController {
         $info['phpversion']    = phpversion();
         $info['sapi_name']     = php_sapi_name();
         $info['extensions']    = get_loaded_extensions();
+        $info['mailer']        = $this->app->retrieve('config/mailer', false);
 
-        $size = 0;
-
-        foreach (['#cache:','#tmp:','#thumbs:'] as $dir) {
-            $size += $this->app->helper("fs")->getDirSize($dir);
-        }
-
-        $info['cacheSize'] = $size ? $this->app->helper('utils')->formatSize($size) : 0;
-        $info['mailer']    = $this->app->retrieve('config/mailer', false);
+        $info['jobs_queue'] = [
+            'running' => $this->app->helper('jobs')->isRunnerActive(),
+            'cntjobs' => $this->app->helper('jobs')->countJobs()
+        ];
 
         $update = $this->getUptdateInfo();
 

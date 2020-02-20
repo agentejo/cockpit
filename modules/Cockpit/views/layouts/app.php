@@ -20,12 +20,14 @@
     <meta charset="UTF-8">
     <title>{{ implode(' &raquo; ', $_title).(count($_title) ? ' - ':'').$app['app.name'] }}</title>
     <link rel="icon" href="@base('/favicon.png')" type="image/png">
+    {{ $app->helper('admin')->favicon('red') }}
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <script>
         // App constants
         var SITE_URL   = '{{ rtrim($app->filestorage->getUrl('site://'), '/') }}';
         var ASSETS_URL = '{{ rtrim($app->filestorage->getUrl('assets://'), '/') }}';
+        var PUBLIC_STORAGE_URL = '{{ rtrim($app->pathToUrl('#pstorage:'), '/') }}';
     </script>
 
     {{ $app->assets($app('admin')->data->get('assets'), $app['debug'] ? time() : $app['cockpit/version']) }}
@@ -54,14 +56,14 @@
 
                     <div>
 
-                        <div data-uk-dropdown="delay:400,mode:'click'">
+                        <div class="app-menu-container" data-uk-dropdown="delay:400,mode:'click'">
 
                             <a href="@route('/')" class="uk-link-muted uk-text-bold app-name-link uk-flex uk-flex-middle">
                                 <span class="app-logo"></span>
                                 <span class="app-name">{{ $app['app.name'] }}</span>
                             </a>
 
-                            <div class="uk-dropdown app-panel-dropdown">
+                            <div class="uk-dropdown app-panel-dropdown uk-dropdown-close">
 
                                 @if($app('admin')->data['menu.modules']->count())
                                 <div class="uk-visible-small">

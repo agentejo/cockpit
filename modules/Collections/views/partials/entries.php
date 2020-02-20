@@ -73,7 +73,7 @@
 
         <div class="uk-clearfix uk-margin-top" show="{ !loading && (entries.length || filter) }">
 
-            <div class="uk-float-left uk-margin-right">
+            <div class="uk-float-left">
 
                 <div class="uk-button-group">
                     <button class="uk-button uk-button-large {listmode=='list' && 'uk-button-primary'}" onclick="{ toggleListMode }"><i class="uk-icon-list"></i></button>
@@ -82,7 +82,18 @@
 
             </div>
 
-            <div class="uk-float-left uk-width-1-2">
+            <div class="uk-float-left uk-form-select uk-margin-small-left" if="{ !loading && languages.length }">
+                <span class="uk-button uk-button-large uk-button-link {lang ? 'uk-text-primary' : 'uk-text-muted'}">
+                    <i class="uk-icon-globe"></i>
+                    { lang ? _.find(languages,{'code':lang}).label : App.$data.languageDefaultLabel }
+                </span>
+                <select onchange="{changelanguage}">
+                    <option value="" selected="{lang === ''}">{App.$data.languageDefaultLabel}</option>
+                    <option each="{language,idx in languages}" value="{language.code}" selected="{lang === language.code}">{language.label}</option>
+                </select>
+            </div>
+
+            <div class="uk-float-left uk-width-1-2 uk-margin-small-left">
                 <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted">
 
                     <i class="uk-icon-search"></i>
@@ -113,7 +124,6 @@
                 @endif
             </div>
         </div>
-
 
         <div class="uk-margin-top" show="{ !loading && (entries.length || filter) }">
 
@@ -318,6 +328,11 @@
         this.entries    = [];
         this.fieldsidx  = {};
         this.imageField = null;
+        this.languages  = App.$data.languages;
+
+        if (this.languages.length) {
+            this.lang = App.session.get('collections.entry.'+this.collection._id+'.lang', '');
+        }
 
         this.fields     = this.collection.fields.filter(function(field){
 
@@ -460,6 +475,10 @@
         load(initial) {
 
             var options = { sort:this.sort };
+
+            if (this.lang) {
+                options.lang = this.lang;
+            }
 
             if (this.filter) {
                 options.filter = this.filter;
@@ -650,6 +669,14 @@
 
         batchedit() {
             this.tags['entries-batchedit'].open(this.entries, this.selected)
+        }
+
+        changelanguage(e) {
+            var lang = e.target.value;
+            App.session.set('collections.entry.'+this.collection._id+'.lang', lang);
+            this.lang = lang;
+            this.load(false);
+            this.update();
         }
 
     </script>

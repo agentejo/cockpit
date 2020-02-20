@@ -7,10 +7,36 @@ if (PHP_SAPI !== 'cli') {
 
 define('COCKPIT_CLI', true);
 
+// set default timezone
+date_default_timezone_set('UTC');
+
 include_once(__DIR__.'/bootstrap.php');
 
 $_REQUEST = CLI::opts(); // make option available via $app->param()
 $app = cockpit();
+
+register_shutdown_function(function() use($app){
+    $app->trigger('shutdown');
+});
+
+set_exception_handler(function($exception) use($app) {
+
+    $error = [
+        'message' => $exception->getMessage(),
+        'file' => $exception->getFile(),
+        'line' => $exception->getLine(),
+    ];
+
+    $app->trigger('error', [$error, $exception]);
+
+    if (function_exists('cockpit_error_handler')) {
+        cockpit_error_handler($error);
+    }
+
+    CLI::writeln('COCKPIT CLI ERROR:', false);
+    CLI::writeln('-> in '.$error['file'].':'.$error['line']."\n");
+    CLI::writeln($error['message']."\n");
+});
 
 if (isset($argv[1])) {
 

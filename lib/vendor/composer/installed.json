@@ -1,17 +1,17 @@
 [
     {
         "name": "claviska/simpleimage",
-        "version": "3.3.3",
-        "version_normalized": "3.3.3.0",
+        "version": "3.3.4",
+        "version_normalized": "3.3.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/claviska/SimpleImage.git",
-            "reference": "31ba5b8358e1663a2813e2ada7242fa8d97a96dc"
+            "reference": "3786d80af8e6d05e5e42f0350e5e5da5b92041a0"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/claviska/SimpleImage/zipball/31ba5b8358e1663a2813e2ada7242fa8d97a96dc",
-            "reference": "31ba5b8358e1663a2813e2ada7242fa8d97a96dc",
+            "url": "https://api.github.com/repos/claviska/SimpleImage/zipball/3786d80af8e6d05e5e42f0350e5e5da5b92041a0",
+            "reference": "3786d80af8e6d05e5e42f0350e5e5da5b92041a0",
             "shasum": ""
         },
         "require": {
@@ -19,7 +19,7 @@
             "league/color-extractor": "0.3.*",
             "php": ">=5.6.0"
         },
-        "time": "2017-09-12T09:03:56+00:00",
+        "time": "2019-09-26T01:22:02+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -295,17 +295,17 @@
     },
     {
         "name": "league/flysystem",
-        "version": "1.0.53",
-        "version_normalized": "1.0.53.0",
+        "version": "1.0.57",
+        "version_normalized": "1.0.57.0",
         "source": {
             "type": "git",
             "url": "https://github.com/thephpleague/flysystem.git",
-            "reference": "08e12b7628f035600634a5e76d95b5eb66cea674"
+            "reference": "0e9db7f0b96b9f12dcf6f65bc34b72b1a30ea55a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/08e12b7628f035600634a5e76d95b5eb66cea674",
-            "reference": "08e12b7628f035600634a5e76d95b5eb66cea674",
+            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/0e9db7f0b96b9f12dcf6f65bc34b72b1a30ea55a",
+            "reference": "0e9db7f0b96b9f12dcf6f65bc34b72b1a30ea55a",
             "shasum": ""
         },
         "require": {
@@ -335,7 +335,7 @@
             "spatie/flysystem-dropbox": "Allows you to use Dropbox storage",
             "srmklive/flysystem-dropbox-v2": "Allows you to use Dropbox storage for PHP 5 applications"
         },
-        "time": "2019-06-18T20:09:29+00:00",
+        "time": "2019-10-16T21:01:05+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -435,17 +435,17 @@
     },
     {
         "name": "mongodb/mongodb",
-        "version": "1.4.2",
-        "version_normalized": "1.4.2.0",
+        "version": "1.4.3",
+        "version_normalized": "1.4.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/mongodb/mongo-php-library.git",
-            "reference": "bd148eab0493e38354e45e2cd7db59b90fdcad79"
+            "reference": "18fca8cc8d0c2cc07f76605760d20632bb3dab96"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/bd148eab0493e38354e45e2cd7db59b90fdcad79",
-            "reference": "bd148eab0493e38354e45e2cd7db59b90fdcad79",
+            "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/18fca8cc8d0c2cc07f76605760d20632bb3dab96",
+            "reference": "18fca8cc8d0c2cc07f76605760d20632bb3dab96",
             "shasum": ""
         },
         "require": {
@@ -457,13 +457,8 @@
         "require-dev": {
             "phpunit/phpunit": "^4.8.36 || ^6.4"
         },
-        "time": "2018-07-18T14:33:41+00:00",
+        "time": "2019-07-02T18:04:14+00:00",
         "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.4.x-dev"
-            }
-        },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
@@ -502,17 +497,17 @@
     },
     {
         "name": "phpmailer/phpmailer",
-        "version": "v6.0.7",
-        "version_normalized": "6.0.7.0",
+        "version": "v6.1.1",
+        "version_normalized": "6.1.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/PHPMailer/PHPMailer.git",
-            "reference": "0c41a36d4508d470e376498c1c0c527aa36a2d59"
+            "reference": "26bd96350b0b2fcbf0ef4e6f0f9cf3528302a9d8"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/0c41a36d4508d470e376498c1c0c527aa36a2d59",
-            "reference": "0c41a36d4508d470e376498c1c0c527aa36a2d59",
+            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/26bd96350b0b2fcbf0ef4e6f0f9cf3528302a9d8",
+            "reference": "26bd96350b0b2fcbf0ef4e6f0f9cf3528302a9d8",
             "shasum": ""
         },
         "require": {
@@ -537,7 +532,7 @@
             "stevenmaguire/oauth2-microsoft": "Needed for Microsoft XOAUTH2 authentication",
             "symfony/polyfill-mbstring": "To support UTF-8 if the Mbstring PHP extension is not enabled (^1.2)"
         },
-        "time": "2019-02-01T15:04:28+00:00",
+        "time": "2019-09-27T21:33:43+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -547,16 +542,16 @@
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
-            "LGPL-2.1"
+            "LGPL-2.1-only"
         ],
         "authors": [
             {
-                "name": "Jim Jagielski",
-                "email": "jimjag@gmail.com"
-            },
-            {
                 "name": "Marcus Bointon",
                 "email": "phpmailer@synchromedia.co.uk"
+            },
+            {
+                "name": "Jim Jagielski",
+                "email": "jimjag@gmail.com"
             },
             {
                 "name": "Andy Prevost",

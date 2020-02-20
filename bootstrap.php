@@ -88,11 +88,11 @@ function cockpit($module = null) {
 
     if (!$app) {
 
-        $customconfig = [];
+        $customConfig = [];
 
         // load custom config
         if (file_exists(COCKPIT_CONFIG_PATH)) {
-            $customconfig = preg_match('/\.yaml$/', COCKPIT_CONFIG_PATH) ? Spyc::YAMLLoad(COCKPIT_CONFIG_PATH) : include(COCKPIT_CONFIG_PATH);
+            $customConfig = preg_match('/\.yaml$/', COCKPIT_CONFIG_PATH) ? Spyc::YAMLLoad(COCKPIT_CONFIG_PATH) : include(COCKPIT_CONFIG_PATH);
         }
 
         // load config
@@ -128,7 +128,7 @@ function cockpit($module = null) {
 
             'filestorage' => [],
 
-        ], is_array($customconfig) ? $customconfig : []);
+        ], is_array($customConfig) ? $customConfig : []);
 
         // make sure Cockpit module is not disabled
         if (isset($config['modules.disabled']) && in_array('Cockpit', $config['modules.disabled'])) {

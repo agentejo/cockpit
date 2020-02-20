@@ -2,6 +2,13 @@
     window.__collections = {{ json_encode($collections) }};
 </script>
 
+<style>
+    .panel-footer-aside {
+        display: inline-block;
+        min-width: 50px;
+    }
+</style>
+
 <div>
     <ul class="uk-breadcrumb">
         <li class="uk-active"><span>@lang('Collections')</span></li>
@@ -72,7 +79,7 @@
 
                         <div data-uk-dropdown="mode:'click'">
 
-                            <a class="uk-icon-cog" style="color:{ (collection.meta.color) }"></a>
+                            <a class="panel-footer-aside uk-icon-cog" style="color:{ (collection.meta.color) };"></a>
 
                             <div class="uk-dropdown">
                                 <ul class="uk-nav uk-nav-dropdown">
@@ -92,10 +99,12 @@
                                 </ul>
                             </div>
                         </div>
-
-                        <a class="uk-text-bold uk-flex-item-1 uk-text-center uk-link-muted" href="@route('/collections/entries')/{collection.name}">{ collection.label }</a>
-                        <div>
-                            <span class="uk-badge" riot-style="background-color:{ (collection.meta.color) }">{ collection.meta.itemsCount }</span>
+                        <div class="uk-flex-item-1 uk-text-center uk-text-truncate"><a class="uk-text-bold uk-link-muted" href="@route('/collections/entries')/{collection.name}">{ collection.label }</a></div>
+                        <div class="panel-footer-aside uk-text-right">
+                            <span class="uk-badge" riot-style="background-color:{ (collection.meta.color) }">
+                                <span if="{ collection.meta.itemsCount !==null }">{ collection.meta.itemsCount }</span>
+                                <span class="uk-icon-spinner uk-icon-spin" if="{ collection.meta.itemsCount == null }"></span>
+                            </span>
                         </div>
                     </div>
 
@@ -126,6 +135,9 @@
             this.groups = _.uniq(this.groups.sort());
         }
 
+        this.on('mount', function() {
+            this.loadCounts();
+        });
 
         remove(e, collection) {
 
@@ -176,6 +188,21 @@
             name  = [collection.name.toLowerCase(), collection.label.toLowerCase()].join(' ');
 
             return name.indexOf(value) !== -1;
+        }
+
+        loadCounts() {
+
+            App.request('/collections/utils/getUserCollections').then(function(collections) {
+
+                this.collections.forEach(function(collection) {
+
+                    if (collections[collection.name]) {
+                        collection.meta.itemsCount = collections[collection.name].itemsCount;
+                    }
+                });
+                
+                this.update();
+            }.bind(this));
         }
 
     </script>

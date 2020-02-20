@@ -43,6 +43,29 @@ class Utils extends \Cockpit\AuthController {
         return $this->module('cockpit')->thumbnail($options);
     }
 
+    public function getCacheSize() {
+        
+        \session_write_close();
+
+        $size = 0;
+        $dirs = ['#cache:','#tmp:','#thumbs:', '#pstorage:tmp'];
+
+        foreach ($dirs as &$dir) {
+            $dir = $this->app->path($dir);
+        }
+
+        foreach (array_unique($dirs) as $dir) {
+            $size += $this->app->helper("fs")->getDirSize($dir);
+        }
+
+        $ret = [
+            'size' => $size,
+            'size_pretty' => $this->app->helper('utils')->formatSize($size)
+        ];
+
+        return $ret;
+    }
+
 
     public function revisionsCount() {
 
@@ -141,5 +164,23 @@ class Utils extends \Cockpit\AuthController {
         }
 
         return ['success' => $success];
+    }
+
+    public function startJobRunner() {
+        $this->app->helper('async')->exec("cockpit()->helper('jobs')->stopRunner();cockpit()->helper('jobs')->run();");
+        sleep(3);
+        return ['running' => $this->app->helper('jobs')->isRunnerActive()];
+    }
+
+    public function restartJobRunner() {
+        $this->app->helper('async')->exec("cockpit()->helper('jobs')->stopRunner();cockpit()->helper('jobs')->run();");
+        sleep(3);
+        return ['running' => $this->app->helper('jobs')->isRunnerActive()];
+    }
+
+    public function stopJobRunner() {
+        $this->app->helper('async')->exec("cockpit()->helper('jobs')->stopRunner();");
+        sleep(3);
+        return ['running' => $this->app->helper('jobs')->isRunnerActive()];
     }
 }

@@ -67,6 +67,11 @@ class Admin extends \Cockpit\AuthController {
             'description' => ''
         ], $form);
 
+        $this->app->helper('admin')->favicon = [
+            'path' => 'forms:icon.svg',
+            'color' => $form['color']
+        ];
+
         $view = 'forms:views/entries.php';
 
         if ($override = $this->app->path('#config:forms/'.$form['name'].'/views/entries.php')) {
