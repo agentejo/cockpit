@@ -11,8 +11,9 @@
 // Helpers
 
 $this->helpers['revisions']  = 'Cockpit\\Helper\\Revisions';
-$this->helpers['updater']  = 'Cockpit\\Helper\\Updater';
-$this->helpers['async']  = 'Cockpit\\Helper\\Async';
+$this->helpers['updater']    = 'Cockpit\\Helper\\Updater';
+$this->helpers['async']      = 'Cockpit\\Helper\\Async';
+$this->helpers['jobs']       = 'Cockpit\\Helper\\Jobs';
 
 // API
 $this->module('cockpit')->extend([
@@ -30,7 +31,11 @@ $this->module('cockpit')->extend([
 
     'clearCache' => function() use($app) {
 
-        $dirs = ['#cache:','#tmp:','#thumbs:'];
+        $dirs = ['#cache:','#tmp:','#thumbs:', '#pstorage:tmp'];
+
+        foreach (array_unique($dirs) as &$dir) {
+            $dir = $this->app->path($dir);
+        }
 
         foreach ($dirs as $dir) {
 
@@ -56,6 +61,10 @@ $this->module('cockpit')->extend([
             $size += $app->helper('fs')->getDirSize($dir);
         }
 
+        if (function_exists('opcache_reset')) {
+            opcache_reset();
+        }
+        
         return ['size'=>$app->helper('utils')->formatSize($size)];
     },
 
@@ -336,7 +345,7 @@ if (COCKPIT_ADMIN_CP) {
         $token = $this->param('token', '');
         $this->response->mime = 'js';
 
-        $apiurl = ($this->req_is('ssl') ? 'https':'http').'://';
+        $apiurl = ($this->request->is('ssl') ? 'https':'http').'://';
 
         if (!in_array($this->registry['base_port'], ['80', '443'])) {
             $apiurl .= $this->registry['base_host'].":".$this->registry['base_port'];

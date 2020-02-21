@@ -225,7 +225,7 @@
         });
 
         p.cancel = function() {
-        	 canceled = true;
+             canceled = true;
         };
 
         return p;
@@ -235,6 +235,29 @@
         var i = Math.floor( Math.log(size) / Math.log(1024) );
         return Number(size) ? ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i] : 'n/a';
     };
+
+    App.Utils.stripTags = function(input, allowed) { // eslint-disable-line camelcase
+
+        var tags = /<\/?([a-z0-9]*)\b[^>]*>?/gi,
+            commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi,
+            after, before;
+      
+        // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
+        allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
+        after = input || '';
+        // removes the '<' char at the end of the string to replicate PHP's behaviour
+        after = (after.substring(after.length - 1) === '<') ? after.substring(0, after.length - 1) : after;
+      
+        // recursively remove tags to ensure that the returned string doesn't contain forbidden tags after previous passes (e.g. '<<bait/>switch/>')
+        while (true) {
+            before = after
+            after = before.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
+                return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+            });
+            // return once no more tags are removed
+            if (before === after) return after;
+        }
+      };
 
     // custom renderer
     App.Utils.renderer = {};
@@ -369,17 +392,17 @@
     App.Utils.multiline = (function(){
 
         var stripIndent = function (str) {
-        	var match = str.match(/^[ \t]*(?=\S)/gm);
+            var match = str.match(/^[ \t]*(?=\S)/gm);
 
-        	if (!match) return str;
+            if (!match) return str;
 
-        	var indent = Math.min.apply(Math, match.map(function (el) {
-        		return el.length;
-        	}));
+            var indent = Math.min.apply(Math, match.map(function (el) {
+                return el.length;
+            }));
 
-        	var re = new RegExp('^[ \\t]{' + indent + '}', 'gm');
+            var re = new RegExp('^[ \\t]{' + indent + '}', 'gm');
 
-        	return indent > 0 ? str.replace(re, '') : str;
+            return indent > 0 ? str.replace(re, '') : str;
         };
 
         // start matching after: comment start block => ! or @preserve => optional whitespace => newline
@@ -387,21 +410,21 @@
         var reCommentContents = /\/\*!?(?:\@preserve)?[ \t]*(?:\r\n|\n)([\s\S]*?)(?:\r\n|\n)[ \t]*\*\//;
 
         var multiline = function (fn) {
-        	if (typeof fn !== 'function') {
-        		throw new TypeError('Expected a function');
-        	}
+            if (typeof fn !== 'function') {
+                throw new TypeError('Expected a function');
+            }
 
-        	var match = reCommentContents.exec(fn.toString());
+            var match = reCommentContents.exec(fn.toString());
 
-        	if (!match) {
-        		throw new TypeError('Multiline comment missing.');
-        	}
+            if (!match) {
+                throw new TypeError('Multiline comment missing.');
+            }
 
-        	return match[1];
+            return match[1];
         };
 
         multiline.stripIndent = function (fn) {
-        	return stripIndent(multiline(fn));
+            return stripIndent(multiline(fn));
         };
 
         return multiline;

@@ -22,27 +22,19 @@ $app->on('admin.init', function() {
     // bind admin routes /forms/*
     $this->bindClass('Forms\\Controller\\Admin', 'forms');
 
+    $active = strpos($this['route'], '/forms') === 0;
+
     // add to modules menu
     $this->helper('admin')->addMenuItem('modules', [
         'label' => 'Forms',
         'icon'  => 'forms:icon.svg',
         'route' => '/forms',
-        'active' => strpos($this['route'], '/forms') === 0
+        'active' => $active
     ]);
 
-    $this->on('cockpit.menu.aside', function() {
-
-        $frms  = $this->module('forms')->forms();
-        $forms = [];
-
-        foreach($frms as $form) {
-            if ($form['in_menu']) $forms[] = $form;
-        }
-
-        if (count($forms)) {
-            $this->renderView("forms:views/partials/menu.php", compact('forms'));
-        }
-    });
+    if ($active) {
+        $this->helper('admin')->favicon = 'forms:icon.svg';
+    } 
 
     /**
      * listen to app search to filter forms

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ $app('i18n')->locale }}" class="uk-height-1-1" data-base="@base('/')" data-route="@route('/')" data-locale="{{ $app('i18n')->locale }}">
+<html lang="{{ $app('i18n')->locale }}" class="uk-height-1-1 app-page-login" data-base="@base('/')" data-route="@route('/')" data-locale="{{ $app('i18n')->locale }}">
 <head>
     <meta charset="UTF-8">
     <title>@lang('Authenticate Please!')</title>
@@ -25,11 +25,6 @@
             height: 80px;
         }
 
-        .uk-panel-box-header {
-            background-color: #fafafa;
-            border-bottom: none;
-        }
-
         svg path,
         svg rect,
         svg circle {
@@ -38,8 +33,8 @@
 
     </style>
 
-    {{ $app->assets($app['app.assets.base'], $app['cockpit/version']) }}
-    {{ $app->assets(['assets:lib/uikit/js/components/form-password.min.js'], $app['cockpit/version']) }}
+    {{ $app->assets($app['app.assets.base'], $app['debug'] ? time() : $app['cockpit/version']) }}
+    {{ $app->assets(['assets:lib/uikit/js/components/form-password.min.js'], $app['debug'] ? time() : $app['cockpit/version']) }}
 
 
     @trigger('app.login.header')
@@ -51,7 +46,7 @@
 
         <form class="uk-form" method="post" action="@route('/auth/check')" onsubmit="{ submit }">
 
-            <div class="uk-panel-box uk-panel-space uk-panel-card uk-nbfc uk-text-center uk-animation-slide-bottom" if="{$user}">
+            <div class="uk-panel-space uk-nbfc uk-text-center uk-animation-slide-bottom" if="{$user}">
 
                 <h1 class="uk-h2 uk-text-bold uk-text-truncate">@lang('Welcome back!')</h1>
 
@@ -63,7 +58,7 @@
 
             <div id="login-dialog" class="login-dialog uk-panel-box uk-panel-space uk-nbfc" show="{!$user}">
 
-                <div name="header" class="uk-panel-box-header uk-text-bold uk-text-center">
+                <div name="header" class="uk-panel-space uk-text-bold uk-text-center">
 
                     <div class="uk-margin login-image"></div>
 
@@ -80,7 +75,7 @@
 
                 <div class="uk-form-row">
                     <div class="uk-form-password uk-width-1-1">
-                        <input ref="password" class="uk-form-large uk-width-1-1" type="password" aria-label="@lang('Password')"placeholder="@lang('Password')" required>
+                        <input ref="password" class="uk-form-large uk-width-1-1" type="password" aria-label="@lang('Password')" placeholder="@lang('Password')" required>
                         <a href="#" class="uk-form-password-toggle" data-uk-form-password>@lang('Show')</a>
                     </div>
                 </div>
@@ -103,20 +98,25 @@
             this.error = false;
             this.$user  = null;
 
+            var redirectTo = '{{ $redirectTo }}';
+
             submit(e) {
 
                 e.preventDefault();
 
                 this.error = false;
 
-                App.request('/auth/check', {"auth":{"user":this.refs.user.value, "password":this.refs.password.value}}).then(function(data){
+                App.request('/auth/check', {
+                    auth : {user:this.refs.user.value, password:this.refs.password.value },
+                    csfr : "{{ $app('csfr')->token('login') }}"
+                }).then(function(data) {
 
                     if (data && data.success) {
 
                         this.$user = data.user;
 
                         setTimeout(function(){
-                            App.reroute('/');
+                            App.reroute(redirectTo);
                         }, 2000)
 
                     } else {

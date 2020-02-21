@@ -26,7 +26,7 @@ $this->on('before', function() {
             return false;
         }
 
-        $token = $this->param('token', $_SERVER['HTTP_COCKPIT_TOKEN'] ?? $this->helper('utils')->getBearerToken());
+        $token = $this->param('token', $this->request->server['HTTP_COCKPIT_TOKEN'] ?? $this->helper('utils')->getBearerToken());
 
         // api key check
         $allowed = false;

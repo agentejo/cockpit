@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="app-page-404">
 <head>
     <meta charset="UTF-8">
     <title>Page not found</title>
@@ -10,12 +10,10 @@
 
     <div class="uk-container uk-container-center uk-text-center uk-animation-slide-bottom">
 
-        <h1><strong>404</strong></h1>
+        <img src="@base('assets:app/media/icons/lighthouse.svg')" width="150" height="1050">
 
-        <img src="@base('assets:app/media/icons/lighthouse.svg')" width="100" height="100">
-
-        <p class="uk-text-large uk-margin-large">Uuuups, Page not found.</p>
-        <p><a href="@route('/')">@lang('Back to start')</a></p>
+        <p class="uk-text-large uk-margin-large uk-text-bold">Uuuups, Page not found.</p>
+        <p><a class="uk-button uk-button-link" href="@route('/')">@lang('Back to start')</a></p>
 
     </div>
 

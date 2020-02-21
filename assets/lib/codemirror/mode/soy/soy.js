@@ -21,11 +21,12 @@
     "@inject": paramData,
     "@inject?": paramData,
     "@state": paramData,
-    "@state?": paramData,
     "template": { soyState: "templ-def", variableScope: true},
     "literal": { },
     "msg": {},
     "fallbackmsg": { noEndTag: true, reduceIndent: true},
+    "select": {},
+    "plural": {},
     "let": { soyState: "var-def" },
     "if": {},
     "elseif": { noEndTag: true, reduceIndent: true},
@@ -248,7 +249,8 @@
             return null;
 
           case "param-type":
-            if (stream.peek() == "}") {
+            var peekChar = stream.peek();
+            if (peekChar == "}" || peekChar == "=") {
               state.soyState.pop();
               return null;
             }
@@ -286,7 +288,7 @@
               state.soyState.pop();
               return "keyword";
             } else if (stream.match(/^([\w?]+)(?==)/)) {
-              if (stream.current() == "kind" && (match = stream.match(/^="([^"]+)/, false))) {
+              if (state.context && state.context.tag == tagName && stream.current() == "kind" && (match = stream.match(/^="([^"]+)/, false))) {
                 var kind = match[1];
                 state.context.kind = kind;
                 var mode = modes[kind] || modes.html;
@@ -327,7 +329,6 @@
 
           case "literal":
             if (stream.match(/^(?=\{\/literal})/)) {
-              state.indent -= config.indentUnit;
               state.soyState.pop();
               return this.token(stream, state);
             }

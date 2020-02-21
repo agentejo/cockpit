@@ -15,10 +15,14 @@
 
             if (this.value != value) {
 
+                if (typeof(value) != 'string') {
+                    value = '';
+                }
+
                 this.value = value;
 
                 if (editor && force) {
-                    editor.setContent(this.value || '');
+                    editor.setContent(this.value);
                 }
             }
 
@@ -61,7 +65,7 @@
 
                         tinymce.init(App.$.extend(true, {
                             language: lang,
-                            language_url : lang == 'en' ? '' : App.route('/config/cockpit/i18n/tinymce/'+lang+'.js'),
+                            language_url : lang == 'en' ? '' : PUBLIC_STORAGE_URL + '/assets/cockpit/i18n/tinymce/'+lang+'.js',
                             branding: false,
                             resize: true,
                             height: 350,
@@ -78,11 +82,11 @@
                           selector: '#'+this.refs.input.id,
                           setup: function (ed) {
 
-                              $this.refs.input.value = $this.value;
+                              $this.refs.input.value = $this.value || '';
 
                               var clbChange = function(e){
                                 ed.save();
-                                $this.$setValue($this.refs.input.value, true);
+                                $this.$setValue($this.refs.input.value || '', true);
                               };
 
                               ed.on('ExecCommand', clbChange);
@@ -117,10 +121,10 @@
 
             }.bind(this)).catch(function(){
 
-                this.refs.input.value = this.value;
+                this.refs.input.value = this.value || '';
 
                 App.$(this.refs.input).css('visibility','').on('change', function() {
-                    $this.$setValue(this.value);
+                    $this.$setValue(this.value || '');
                 });
 
             }.bind(this));

@@ -21,11 +21,19 @@ class Admin extends \Lime\Helper {
     public $options;
     public $user;
 
+    public $favicon;
+
     public function initialize(){
 
         $this->data =  new \ContainerArray();
         $this->options = [];
         $this->user = $this->app->module('cockpit')->getUser();
+
+        // unset security related information
+        if ($this->user) {
+            unset($this->user['password'], $this->user['api_key'], $this->user['_reset_token']);
+        }
+
         $this->user['data'] = new \ContainerArray(isset($this->user['data']) && is_array($this->user['data']) ? $this->user['data']:[]);
     }
 
@@ -94,6 +102,39 @@ class Admin extends \Lime\Helper {
                 ]
             ]
         ]);
+    }
+
+    public function favicon() {
+        
+        if (!$this->favicon) return;
+
+        $favicon = $this->favicon;
+        $color = null;
+
+        if (is_array($this->favicon)) {
+            $favicon = $this->favicon['path'];
+            $color = $this->favicon['color'] ?? null;
+        }
+
+        $ext = \strtolower(pathinfo($favicon, PATHINFO_EXTENSION));
+
+        if (!$ext) return;
+
+        $type = $ext == 'svg' ? 'image/svg+xml':"image/{$ext}";
+
+        if (strpos($favicon, ':') && !preg_match('/^(\/|http\:|https\:)\//', $favicon)) {
+            $path = $this->app->path($favicon);
+            if (!$path) return;
+            $favicon = $this->app->baseUrl($favicon);
+
+            if ($ext=='svg' && $color) {
+                $svg = file_get_contents($path);
+                $svg = preg_replace('/fill="(.*?)"/', 'fill="'.$color.'"', $svg);
+                $favicon = 'data:image/svg+xml;base64,'.base64_encode($svg);
+            }
+        }
+
+        return '<link rel="icon" type="'.$type.'" href="'.$favicon.'" app-icon="true">';
     }
 
     public function addMenuItem($menu, $data) {

@@ -23,7 +23,6 @@ $extensions = ['php', 'md', 'html', 'js', 'tag'];
 $strings    = [];
 $dirs       = [COCKPIT_DIR.'/modules'];
 
-
 foreach ($dirs as $dir) {
 
     $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(COCKPIT_DIR.'/modules'), RecursiveIteratorIterator::SELF_FIRST);
@@ -66,7 +65,7 @@ if (count($strings)) {
 
     ksort($strings);
 
-    $app->helper('fs')->write("#config:cockpit/i18n/{$lang}.php", '<?php return '.var_export($strings, true).';');
+    $app->helper('fs')->write("#config:cockpit/i18n/{$lang}.php", '<?php return '.$app->helper('utils')->var_export($strings, true).';');
 }
 
 CLI::writeln("Done! Language file created: config/cockpit/i18n/{$lang}.php", true);

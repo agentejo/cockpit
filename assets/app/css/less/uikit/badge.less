@@ -20,13 +20,15 @@
 @badge-warning-background:                      @global-warning-background;
 @badge-danger-background:                       @global-danger-background;
 
+@badge-padding-horizontal:                      10px;
+
 
 // Component
 // ========================================================================
 
 .hook-badge() {
     padding: round((@badge-padding-horizontal * 0.5)) @badge-padding-horizontal;
-    border-radius: @global-border-radius;
+    border-radius: 30px;
     text-transform: uppercase;
     letter-spacing: .2px;
 }

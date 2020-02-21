@@ -15,25 +15,27 @@
 // because auto-load not ready yet
 include(__DIR__.'/Helper/Admin.php');
 
-$app->helpers['admin']  = 'Cockpit\\Helper\\Admin';
+$app->helpers['admin'] = 'Cockpit\\Helper\\Admin';
+$app->helpers['csfr']  = 'Cockpit\\Helper\\Csfr';
 
 // init + load i18n
+$app->on('before', function() {
 
-$app('i18n')->locale = $app->retrieve('i18n', 'en');
+    $this->helper('i18n')->locale = $this->retrieve('i18n', 'en');
 
-$locale = $app->module('cockpit')->getUser('i18n', $app('i18n')->locale);
+    $locale = $this->module('cockpit')->getUser('i18n', $this->helper('i18n')->locale);
 
-if ($translationspath = $app->path("#config:cockpit/i18n/{$locale}.php")) {
-    $app('i18n')->locale = $locale;
-    $app('i18n')->load($translationspath, $locale);
-}
+    if ($translationspath = $this->path("#config:cockpit/i18n/{$locale}.php")) {
+        $this->helper('i18n')->locale = $locale;
+        $this->helper('i18n')->load($translationspath, $locale);
+    }
 
-$app->bind('/cockpit.i18n.data', function() {
-    $this->response->mime = 'js';
-    $data = $this('i18n')->data($this('i18n')->locale);
-    return 'if (i18n) { i18n.register('.(count($data) ? json_encode($data):'{}').'); }';
+    $this->bind('/cockpit.i18n.data', function() {
+        $this->response->mime = 'js';
+        $data = $this->helper('i18n')->data($this->helper('i18n')->locale);
+        return 'if (i18n) { i18n.register('.(count($data) ? json_encode($data):'{}').'); }';
+    });
 });
-
 
 /**
  * register assets
@@ -125,6 +127,8 @@ $app->on('admin.init', function() {
 // check + validate session time
 $app->bind('/check-backend-session', function() {
 
+    session_write_close();
+
     $user = $this->module('cockpit')->getUser();
     $status = true;
 
@@ -186,7 +190,7 @@ $app->on('cockpit.search', function($search, $list) {
 
 $app->on('admin.dashboard.widgets', function($widgets) {
 
-    $title   = $this('i18n')->get('Today');
+    $title = $this('i18n')->get('Today');
 
     $widgets[] = [
         'name'    => 'time',
@@ -205,7 +209,7 @@ $app->on('after', function() {
 
         case 401:
 
-            if ($this->req_is('ajax') || COCKPIT_API_REQUEST) {
+            if ($this->request->is('ajax') || COCKPIT_API_REQUEST) {
                 $this->response->body = '{"error": "401", "message":"Unauthorized"}';
             } else {
                 $this->response->body = $this->view('cockpit:views/errors/401.php');
@@ -216,12 +220,12 @@ $app->on('after', function() {
 
         case 404:
 
-            if ($this->req_is('ajax') || COCKPIT_API_REQUEST) {
+            if ($this->request->is('ajax') || COCKPIT_API_REQUEST) {
                 $this->response->body = '{"error": "404", "message":"File not found"}';
             } else {
 
                 if (!$this->module('cockpit')->getUser()) {
-                    $this->reroute('/auth/login');
+                    $this->reroute('/auth/login?to='.$this->retrieve('route'));
                 }
 
                 $this->response->body = $this->view('cockpit:views/errors/404.php');

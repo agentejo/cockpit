@@ -67,9 +67,23 @@
                         <field-boolean bind="collection.sortable" title="@lang('Sortable entries')" label="@lang('Custom sortable entries')"></field-boolean>
                     </div>
 
-                    <div class="uk-margin">
-                        <field-boolean bind="collection.in_menu" title="@lang('Show in system menu')" label="@lang('Show in system menu')"></field-boolean>
+
+                    <div class="uk-margin" show="{!collection.sortable}">
+                        <label class="uk-text-small">@lang('Default sorting by')</label>
+                        <div class="uk-grid uk-grid-small uk-margin-small-top">
+
+                            <div class="uk-width-2-3">
+                                <field-select bind="collection.sort.column" class="uk-display-block uk-width-1-1" options="{ getFieldsSortColumnNameOptions() }"></field-select>
+                            </div>
+                            
+                            <div class="uk-width-1-3">
+                                <field-select bind="collection.sort.dir" class="uk-display-block uk-width-1-1" options="{ fieldsSortDirectionOptions }"></field-select>
+                            </div>
+
+                        </div>
                     </div>
+
+                    @trigger('collections.settings.aside')
 
                 </div>
             </div>
@@ -266,11 +280,29 @@
             this.collection.acl = {};
         }
 
+        this.fieldsSortDirectionOptions = [
+            { value:  1, label: App.i18n.get('ASC') },
+            { value: -1, label: App.i18n.get('DESC') }
+        ];
+
         this.on('update', function(){
 
             // lock name if saved
             if (this.collection._id) {
                 this.refs.name.disabled = true;
+            }
+
+            // Add default sort properties for collection created previously without sort feature
+            if (!this.collection.sort) {
+                this.collection.sort = {
+                    column: '_created',
+                    dir: -1
+                }
+            }
+
+            // Cast to integer
+            if (typeof this.collection.sort.dir === 'string') {
+                this.collection.sort.dir = parseInt(this.collection.sort.dir, 10)
             }
         });
 
@@ -304,6 +336,17 @@
 
         selectIcon(e) {
             this.collection.icon = e.target.getAttribute('icon');
+        }
+
+        // Convert fields to format required by select
+        getFieldsSortColumnNameOptions() {
+            
+            return this.collection.fields.map(function(field){
+                return { value: field.name, label: (field.label || field.name) };
+            }).concat([
+                { value: '_created', label: App.i18n.get('Created') },
+                { value: '_modified', label: App.i18n.get('Modified') }
+            ]);
         }
 
         submit(e) {

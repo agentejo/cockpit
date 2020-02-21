@@ -44,6 +44,16 @@ class Collection {
     }
 
     /**
+     * Insert many documents
+     *
+     * @param array $documents
+     * @return count of inserted documents for arrays
+     */
+    public function insertMany($documents) {
+        return $this->insert($documents);
+    }
+
+    /**
      * Insert document
      *
      * @param  array $document
@@ -88,7 +98,7 @@ class Collection {
         $fields = [];
         $values = [];
 
-        foreach($data as $col=>$value){
+        foreach ($data as $col=>$value){
             $fields[] = "`{$col}`";
             $values[] = (\is_null($value) ? 'NULL' : $this->database->connection->quote($value));
         }
@@ -100,7 +110,7 @@ class Collection {
         $res = $this->database->connection->exec($sql);
 
         if ($res){
-            return $this->database->connection->lastInsertId();
+            return $document['_id'];
         } else {
             trigger_error('SQL Error: '.\implode(', ', $this->database->connection->errorInfo()).":\n".$sql);
             return false;

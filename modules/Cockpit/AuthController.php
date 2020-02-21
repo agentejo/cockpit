@@ -20,7 +20,7 @@ class AuthController extends \LimeExtra\Controller {
         $user = $app->module('cockpit')->getUser();
 
         if (!$user) {
-            $app->reroute('/auth/login');
+            $app->reroute('/auth/login?to='.$app->retrieve('route'));
             $app->stop();
         }
 

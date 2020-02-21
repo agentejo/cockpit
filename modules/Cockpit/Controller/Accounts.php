@@ -37,6 +37,8 @@ class Accounts extends \Cockpit\AuthController {
 
         $account = $this->app->storage->findOne('cockpit/accounts', ['_id' => $uid]);
 
+        $this->app['user'] = $this->user;
+
         if (!$account) {
             return false;
         }

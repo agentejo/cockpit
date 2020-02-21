@@ -14,7 +14,7 @@
 @icon-hover-hover-color:                        @global-color;
 
 @icon-button-height:                            @icon-button-width;
-@icon-button-font-size:                         round((@icon-button-width * 0.5));
+@icon-button-font-size:                         15px;
 @icon-button-color:                             @global-color;
 
 @icon-button-hover-color:                       @global-color;
@@ -46,6 +46,39 @@
 // ========================================================================
 
 .hook-icon-misc() {
+
+    .uk-icon-button-primary {
+        background: @global-primary-background;
+        color: @global-contrast-color;
+    }
+
+    .uk-icon-button-primary:hover,
+    .uk-icon-button-primary:focus,
+    .uk-icon-button-primary:active {
+        background: darken(@global-primary-background, 15%);
+        color: @global-contrast-color;
+    }
+
+    .uk-icon-button-danger {
+        background: @global-danger-background;
+        color: @global-contrast-color;
+    }
+
+    .uk-icon-button-danger:hover,
+    .uk-icon-button-danger:focus,
+    .uk-icon-button-danger:active {
+        background: darken(@global-danger-background, 15%);
+        color: @global-contrast-color;
+    }
+
+    .uk-icon-button-outline,
+    .uk-icon-button-outline:hover,
+    .uk-icon-button-outline:focus,
+    .uk-icon-button-outline:active {
+        background: none;
+        color: inherit;
+        border: 1px currentColor solid;
+    }
 
     .uk-icon-justify {
         width: 1.5em;

@@ -22,6 +22,10 @@
                 <ul class="uk-nav uk-nav-dropdown">
                     <li class="uk-nav-header">@lang('Actions')</li>
                     <li><a href="@route('/collections/collection/'.$collection['name'])">@lang('Edit')</a></li>
+                    @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
+                    <li class="uk-nav-divider"></li>
+                    <li><a href="@route('/collections/trash/collection/'.$collection['name'])">@lang('Trash')</a></li>
+                    @endif
                     <li class="uk-nav-divider"></li>
                     <li class="uk-text-truncate"><a href="@route('/collections/export/'.$collection['name'])" download="{{ $collection['name'] }}.collection.json">@lang('Export entries')</a></li>
                     <li class="uk-text-truncate"><a href="@route('/collections/import/collection/'.$collection['name'])">@lang('Import entries')</a></li>
@@ -47,7 +51,7 @@
     </div>
 
     <div class="uk-grid" if="{revisions.length}">
-        <div class="uk-width-3-4">
+        <div class="uk-width-4-5">
 
             <div class="uk-text-muted uk-width-medium-1-3 uk-viewport-height-1-3 uk-container-center uk-text-center uk-flex uk-flex-center uk-flex-middle" if="{!active}">
                 <div>
@@ -113,7 +117,7 @@
             </div>
 
         </div>
-        <div class="uk-width-1-4">
+        <div class="uk-width-1-5">
 
             <h3 class="uk-text-bold uk-flex">
                 <span class="uk-flex-item-1">@lang('Revisions')</span>
@@ -122,12 +126,16 @@
 
             <div class="uk-margin revisions-box { revisions.length > 10 && 'uk-scrollable-box'}">
                 <ul class="uk-nav">
-                    <li class="uk-flex {rev == active && 'uk-active'}" each="{rev,idx in revisions}">
-                        <a class="uk-flex-item-1 uk-margin-small-right {rev !== active && 'uk-text-muted'}" onclick="{ parent.selectRevision }">
-                            { App.Utils.dateformat(rev._created*1000, 'MMMM Do YYYY') }<br>
-                            <span class="uk-text-small">{ App.Utils.dateformat(rev._created*1000, 'hh:mm:ss a') }</span>
-                        </a>
-                        <a show="{rev==active}" onclick="{remove}"><i class="uk-text-danger uk-icon-trash-o"></i></a>
+                    <li class="uk-margin-small-bottom {rev == active && 'uk-active uk-text-large'}" each="{rev,idx in revisions}">
+                        <hr show="{rev==active}">
+                        <div class="uk-flex">
+                            <a class="uk-flex-item-1 uk-margin-small-right {rev !== active && 'uk-text-muted'}" onclick="{ parent.selectRevision }">
+                                { App.Utils.dateformat(rev._created*1000, 'MMMM Do YYYY') }<br>
+                                <span class="uk-text-small">{ App.Utils.dateformat(rev._created*1000, 'hh:mm:ss a') }</span>
+                            </a>
+                            <a show="{rev==active}" onclick="{remove}"><i class="uk-icon-button uk-icon-button-danger uk-icon-trash-o"></i></a>
+                        </div>
+                        <hr show="{rev==active}">
                     </li>
                 </ul>
             </div>

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Lime\Helper;
+namespace LimeExtra\Helper;
 
 /**
  * Class Utils
@@ -345,13 +345,14 @@ class Utils extends \Lime\Helper
 
         $headers = null;
         $token   = null;
+        $server  = $this->app->request->server;
 
-        if (isset($_SERVER['Authorization'])) {
-            $headers = \trim($_SERVER['Authorization']);
-        } elseif (isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
-            $headers = \trim($_SERVER['HTTP_AUTHORIZATION']);
-        } elseif (\function_exists('apache_request_headers')) {
-            $requestHeaders = \apache_request_headers();
+        if (isset($server['Authorization'])) {
+            $headers = \trim($server['Authorization']);
+        } elseif (isset($server['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
+            $headers = \trim($server['HTTP_AUTHORIZATION']);
+        } else {
+            $requestHeaders = $this->app->request->headers;
             // Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
             $requestHeaders = \array_combine(\array_map('ucwords', \array_keys($requestHeaders)), \array_values($requestHeaders));
             if (isset($requestHeaders['Authorization'])) {
@@ -463,5 +464,27 @@ class Utils extends \Lime\Helper
             $times--;
             goto retrybeginning;
         }
+    }
+
+    /**
+     * var_export with bracket array notation
+     * source: https://www.php.net/manual/en/function.var-export.php#122853
+     *
+     * @param [type] $expr
+     * @param boolean $return
+     * @return void
+     */
+    function var_export($expr, $return=false) {
+        
+        $export = var_export($expr, true);
+        $array  = preg_split("/\r\n|\n|\r/", $export);
+        $array  = preg_replace(["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"], [NULL, ']$1', ' => ['], $array);
+        $export = join(PHP_EOL, array_filter(["["] + $array));
+        
+        if ($return) {
+            return $export;
+        }
+        
+        echo $export;
     }
 }

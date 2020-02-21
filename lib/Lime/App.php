@@ -25,6 +25,10 @@
 
 namespace Lime;
 
+include(__DIR__.'/Request.php');
+include(__DIR__.'/Response.php');
+
+
 class App implements \ArrayAccess {
 
     protected static $apps = [];
@@ -41,131 +45,14 @@ class App implements \ArrayAccess {
     /** @var Response|null  */
     public $response    = null;
 
-    /** @var \ArrayObject */
+    /** @var Request|null  */
+    public $request    = null;
+
     public $helpers;
     public $layout      = false;
 
     /* global view variables */
     public $viewvars    = [];
-
-    /* status codes */
-    public static $statusCodes = [
-        // Informational 1xx
-        100 => 'Continue',
-        101 => 'Switching Protocols',
-        // Successful 2xx
-        200 => 'OK',
-        201 => 'Created',
-        202 => 'Accepted',
-        203 => 'Non-Authoritative Information',
-        204 => 'No Content',
-        205 => 'Reset Content',
-        206 => 'Partial Content',
-        // Redirection 3xx
-        300 => 'Multiple Choices',
-        301 => 'Moved Permanently',
-        302 => 'Found',
-        303 => 'See Other',
-        304 => 'Not Modified',
-        305 => 'Use Proxy',
-        307 => 'Temporary Redirect',
-        // Client Error 4xx
-        400 => 'Bad Request',
-        401 => 'Unauthorized',
-        402 => 'Payment Required',
-        403 => 'Forbidden',
-        404 => 'Not Found',
-        405 => 'Method Not Allowed',
-        406 => 'Not Acceptable',
-        407 => 'Proxy Authentication Required',
-        408 => 'Request Timeout',
-        409 => 'Conflict',
-        410 => 'Gone',
-        411 => 'Length Required',
-        412 => 'Precondition Failed',
-        413 => 'Request Entity Too Large',
-        414 => 'Request-URI Too Long',
-        415 => 'Unsupported Media Type',
-        416 => 'Request Range Not Satisfiable',
-        417 => 'Expectation Failed',
-        // Server Error 5xx
-        500 => 'Internal Server Error',
-        501 => 'Not Implemented',
-        502 => 'Bad Gateway',
-        503 => 'Service Unavailable',
-        504 => 'Gateway Timeout',
-        505 => 'HTTP Version Not Supported',
-    ];
-
-    /* mime types */
-    public static $mimeTypes = [
-        'asc'   => 'text/plain',
-        'au'    => 'audio/basic',
-        'avi'   => 'video/x-msvideo',
-        'bin'   => 'application/octet-stream',
-        'class' => 'application/octet-stream',
-        'css'   => 'text/css',
-        'csv'   => 'application/vnd.ms-excel',
-        'doc'   => 'application/msword',
-        'dll'   => 'application/octet-stream',
-        'dvi'   => 'application/x-dvi',
-        'exe'   => 'application/octet-stream',
-        'htm'   => 'text/html',
-        'html'  => 'text/html',
-        'json'  => 'application/json',
-        'js'    => 'application/x-javascript',
-        'txt'   => 'text/plain',
-        'rtf'   => 'text/rtf',
-        'wml'   => 'text/vnd.wap.wml',
-        'wmls'  => 'text/vnd.wap.wmlscript',
-        'xsl'   => 'text/xml',
-        'xml'   => 'text/xml',
-        'bmp'   => 'image/bmp',
-        'rss'   => 'application/rss+xml',
-        'atom'  => 'application/atom+xml',
-        'gif'   => 'image/gif',
-        'jpeg'  => 'image/jpeg',
-        'jpg'   => 'image/jpeg',
-        'jpe'   => 'image/jpeg',
-        'png'   => 'image/png',
-        'tiff'  => 'image/tiff',
-        'tif'   => 'image/tiff',
-        'ico'   => 'image/vnd.microsoft.icon',
-        'svg'   => 'image/svg+xml',
-        'mpeg'  => 'video/mpeg',
-        'mpg'   => 'video/mpeg',
-        'mpe'   => 'video/mpeg',
-        'webm'  => 'video/webm',
-        'qt'    => 'video/quicktime',
-        'mov'   => 'video/quicktime',
-        'wmv'   => 'video/x-ms-wmv',
-        'mp2'   => 'audio/mpeg',
-        'mp3'   => 'audio/mpeg',
-        'snd'   => 'audio/basic',
-        'midi'  => 'audio/midi',
-        'mid'   => 'audio/midi',
-        'm3u'   => 'audio/x-mpegurl',
-        'rm'    => 'audio/x-pn-realaudio',
-        'ram'   => 'audio/x-pn-realaudio',
-        'rpm'   => 'audio/x-pn-realaudio-plugin',
-        'ra'    => 'audio/x-realaudio',
-        'wav'   => 'audio/x-wav',
-        'weba'  => 'audio/webm',
-        'zip'   => 'application/zip',
-        'epub'  => 'application/epub+zip',
-        'pdf'   => 'application/pdf',
-        'xls'   => 'application/vnd.ms-excel',
-        'ppt'   => 'application/vnd.ms-powerpoint',
-        'wbxml' => 'application/vnd.wap.wbxml',
-        'wmlc'  => 'application/vnd.wap.wmlc',
-        'wmlsc' => 'application/vnd.wap.wmlscriptc',
-        'spl'   => 'application/x-futuresplash',
-        'gtar'  => 'application/x-gtar',
-        'gzip'  => 'application/x-gzip',
-        'swf'   => 'application/x-shockwave-flash',
-        'tar'   => 'application/x-tar',
-        'xhtml' => 'application/xhtml+xml',
-    ];
 
     /**
      * Constructor
@@ -197,9 +84,9 @@ class App implements \ArrayAccess {
         $this->registry['modules'] = new \ArrayObject([]);
 
         // try to guess site url
-        if (!isset($this['site_url'])) {
+        if (!isset($this['site_url']) && \PHP_SAPI !== 'cli') {
 
-            $url = ($this->req_is('ssl') ? 'https':'http').'://';
+            $url = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https':'http').'://';
 
             if (!\in_array($this->registry['base_port'], ['80', '443'])) {
                 $url .= $this->registry['base_host'].':'.$this->registry['base_port'];
@@ -207,11 +94,11 @@ class App implements \ArrayAccess {
                 $url .= $this->registry['base_host'];
             }
 
-            $this['site_url'] = \trim($url, '/');
+            $this->registry['site_url'] = \trim($url, '/');
         }
 
         if (!isset($this['docs_root'])) {
-            $this['docs_root'] = \str_replace(DIRECTORY_SEPARATOR, '/', isset($_SERVER['DOCUMENT_ROOT']) ? \realpath($_SERVER['DOCUMENT_ROOT']) : \dirname($_SERVER['SCRIPT_FILENAME']));
+            $this->registry['docs_root'] = \str_replace(DIRECTORY_SEPARATOR, '/', isset($_SERVER['DOCUMENT_ROOT']) ? \realpath($_SERVER['DOCUMENT_ROOT']) : \dirname($_SERVER['SCRIPT_FILENAME']));
         }
 
         // make sure base + route url doesn't end with a slash;
@@ -220,14 +107,14 @@ class App implements \ArrayAccess {
 
         // default global viewvars
         $this->viewvars['app']        = $this;
-        $this->viewvars['base_url']   = $this['base_url'];
-        $this->viewvars['base_route'] = $this['base_route'];
-        $this->viewvars['docs_root']  = $this['docs_root'];
+        $this->viewvars['base_url']   = $this->registry['base_url'];
+        $this->viewvars['base_route'] = $this->registry['base_route'];
+        $this->viewvars['docs_root']  = $this->registry['docs_root'];
 
         self::$apps[$this['app.name']] = $this;
 
         // default helpers
-        $this->helpers = new \ArrayObject(\array_merge(['session' => 'Lime\\Session', 'cache' => 'Lime\\Cache'], $this->registry["helpers"]));
+        $this->helpers = new \ArrayObject(\array_merge(['session' => 'Lime\\Helper\\Session', 'cache' => 'Lime\\Helper\\Cache'], $this->registry['helpers']));
 
         // register simple autoloader
         spl_autoload_register(function ($class) use($self) {
@@ -243,15 +130,8 @@ class App implements \ArrayAccess {
             }
         });
 
-
-        // check for php://input and merge with $_REQUEST
-        if (
-            (isset($_SERVER['CONTENT_TYPE']) && \stripos($_SERVER['CONTENT_TYPE'],'application/json')!==false) ||
-            (isset($_SERVER['HTTP_CONTENT_TYPE']) && \stripos($_SERVER['HTTP_CONTENT_TYPE'],'application/json')!==false) // PHP build in Webserver !?
-        ) {
-            if ($json = json_decode(@\file_get_contents('php://input'), true)) {
-                $_REQUEST = \array_merge($_REQUEST, $json);
-            }
+        if (PHP_SAPI !== 'cli') {
+            $this->request = $this->getRequestfromGlobals();
         }
     }
 
@@ -295,6 +175,19 @@ class App implements \ArrayAccess {
 
         $this->exit = true;
 
+        if (!isset($this->response)) {
+            
+            if (\is_array($data) || \is_object($data)) {
+                $data = \json_encode($data);
+            }
+
+            if ($data) {
+                echo $data;
+            }
+            
+            exit;
+        }
+
         if ($status) {
            $this->response->status = $status;
         }
@@ -303,14 +196,14 @@ class App implements \ArrayAccess {
             $this->response->body = $data;
         }
 
-        if (\is_numeric($data) && isset(self::$statusCodes[$data])) {
+        if (\is_numeric($data) && isset(Response::$statusCodes[$data])) {
 
             $this->response->status = $data;
 
             if ($this->response->mime == 'json') {
-                $this->response->body = \json_encode(['error' => self::$statusCodes[$data]]);
+                $this->response->body = \json_encode(['error' => Response::$statusCodes[$data]]);
             } else {
-                $this->response->body = self::$statusCodes[$data];
+                $this->response->body = Response::$statusCodes[$data];
             }
         }
 
@@ -540,7 +433,8 @@ class App implements \ArrayAccess {
             $url = \implode('/', \array_map('rawurlencode', explode('/', $url)));
 
             if ($full) {
-                $url = \rtrim($this->registry['site_url'], '/').$url;
+                $site_url = str_replace(parse_url($this->registry['site_url'], \PHP_URL_PATH), '', $this->registry['site_url']);
+                $url = \rtrim($site_url, '/').$url;
             }
         }
 
@@ -750,41 +644,11 @@ class App implements \ArrayAccess {
     }
 
     /**
-     * Get request variables
-     * @param  String $index
-     * @param  Mixed $default
-     * @param  Array $source
-     * @return Mixed
-     */
-    public function param($index = null, $default = null, $source = null) {
-
-        $src = $source ? $source : $_REQUEST;
-        $cast = null;
-
-        if (\strpos($index, ':') !== false) {
-            list($index, $cast) = \explode(':', $index, 2);
-        }
-
-        $value = fetch_from_array($src, $index, $default);
-
-        if ($cast) {
-
-            if (\in_array($cast, ['bool', 'boolean']) && \is_string($value) && \in_array($cast, ['true', 'false'])) {
-                $value = $value == 'true' ? true : false;
-            }
-
-            \settype($value, $cast);
-        }
-
-        return $value;
-    }
-
-    /**
-     * Get style inc. markup
-     * @param  String $href
-     * @return String
-     */
-    public function style($href, $version = false) {
+    * Get style inc. markup
+    * @param  String $href
+    * @return String
+    */
+    public function style($href, $version=false) {
 
         $list = [];
 
@@ -861,9 +725,9 @@ class App implements \ArrayAccess {
      * @param  \Closure  $callback
      * @param  Boolean $condition
      * @return void
-    */
+     */
     public function get($path, $callback, $condition = true) {
-        if (!$this->req_is('get')) return;
+        if (!$this->request->is('get')) return;
         $this->bind($path, $callback, $condition);
     }
 
@@ -875,7 +739,7 @@ class App implements \ArrayAccess {
      * @return void
      */
     public function post($path, $callback, $condition = true) {
-        if (!$this->req_is('post')) return;
+        if (!$this->request->is('post')) return;
         $this->bind($path, $callback, $condition);
     }
 
@@ -964,7 +828,7 @@ class App implements \ArrayAccess {
      * @param  String $route Route to parse
      * @return void
      */
-    public function run($route = null) {
+    public function run($route = null, $request = null, $flush = true) {
 
         $self = $this;
 
@@ -972,10 +836,20 @@ class App implements \ArrayAccess {
             $this->registry['route'] = $route;
         }
 
+        if ($request) {
+            $this->request = $request;
+        }
+
+        if (!isset($this->request)) {
+            $this->request = $this->getRequestfromGlobals();
+        }
+
         \register_shutdown_function(function() use($self) {
             \session_write_close();
             $self->trigger('shutdown');
         });
+
+        $this->request->route = $this->registry['route'];
 
         $this->response = new Response();
         $this->trigger('before');
@@ -987,11 +861,16 @@ class App implements \ArrayAccess {
 
         $this->trigger('after');
 
-        if ($this->response->gzip && !\ob_start('ob_gzhandler')) {
-            \ob_start();
+        if ($flush) {
+
+            if ($this->response->gzip && !\ob_start('ob_gzhandler')) {
+                \ob_start();
+            }
+
+            $this->response->flush();
         }
 
-        $this->response->flush();
+        return $this->response;
     }
 
     /**
@@ -1114,77 +993,31 @@ class App implements \ArrayAccess {
     }
 
     /**
+     * Get request variables
+     * @param  String $index
+     * @param  Mixed $default
+     * @param  Array $source
+     * @return Mixed
+     */
+    public function param($index=null, $default = null, $source = null) {
+        return isset($this->request) ? $this->request->param($index, $default, $source) : $default;
+    }
+
+    /**
      * Request helper function
      * @param  String $type
      * @return Boolean
      */
-    public function req_is($type) {
-
-        switch (\strtolower($type)) {
-            case 'ajax':
-                return (
-                    (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'))       ||
-                    (isset($_SERVER["CONTENT_TYPE"]) && \stripos($_SERVER["CONTENT_TYPE"],'application/json')!==false)           ||
-                    (isset($_SERVER["HTTP_CONTENT_TYPE"]) && \stripos($_SERVER["HTTP_CONTENT_TYPE"],'application/json')!==false)
-                );
-                break;
-
-            case 'mobile':
-
-                $mobileDevices = [
-                    'midp','240x320','blackberry','netfront','nokia','panasonic','portalmmm','sharp','sie-','sonyericsson',
-                    'symbian','windows ce','benq','mda','mot-','opera mini','philips','pocket pc','sagem','samsung',
-                    'sda','sgh-','vodafone','xda','iphone', 'ipod','android'
-                ];
-
-                return \preg_match('/(' . \implode('|', $mobileDevices). ')/i', \strtolower($_SERVER['HTTP_USER_AGENT']));
-                break;
-
-            case 'post':
-                return (\strtolower($_SERVER['REQUEST_METHOD']) == 'post');
-                break;
-
-            case 'get':
-                return (\strtolower($_SERVER['REQUEST_METHOD']) == 'get');
-                break;
-
-            case 'put':
-                return (\strtolower($_SERVER['REQUEST_METHOD']) == 'put');
-                break;
-
-            case 'delete':
-                return (\strtolower($_SERVER['REQUEST_METHOD']) == 'delete');
-                break;
-
-            case 'ssl':
-                return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
-                break;
-        }
-
-        return false;
+    public function req_is($type){
+        return isset($this->request) ? $this->request->is($type) : false;
     }
 
     /**
      * Get client ip.
      * @return String
      */
-    public function getClientIp() {
-
-        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            // Use the forwarded IP address, typically set when the
-            // client is using a proxy server.
-            return $_SERVER['HTTP_X_FORWARDED_FOR'];
-        }elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
-            // Use the forwarded IP address, typically set when the
-            // client is using a proxy server.
-            return $_SERVER['HTTP_CLIENT_IP'];
-        }
-        elseif (isset($_SERVER['REMOTE_ADDR'])) {
-            // The remote IP address
-            return $_SERVER['REMOTE_ADDR'];
-        }
-
-        return null;
+    public function getClientIp(){
+        return isset($this->request) ? $this->request->getClientIp() : '';
     }
 
     /**
@@ -1192,10 +1025,7 @@ class App implements \ArrayAccess {
      * @return String
      */
     public function getClientLang($default="en") {
-        if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            return $default;
-        }
-        return \strtolower(\substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2));
+        return isset($this->request) ? $this->request->getClientLang($default) : $default;
     }
 
     /**
@@ -1203,14 +1033,7 @@ class App implements \ArrayAccess {
      * @return String
      */
     public function getSiteUrl($withpath = false) {
-
-        $url = $this->registry['site_url'];
-
-        if ($withpath) {
-            $url .= \implode('/', \array_slice(\explode('/', $_SERVER['SCRIPT_NAME']), 0, -1));
-        }
-
-        return \rtrim($url, '/');
+        return isset($this->request) ? $this->request->getSiteUrl($withpath) : '';
     }
 
     /**
@@ -1411,54 +1234,17 @@ class App implements \ArrayAccess {
 
         return $this->helper($helper);
     }
-} // End site
 
+    protected function getRequestfromGlobals() {
 
-class Response {
-    public $body    = '';
-    public $status  = 200;
-    public $mime    = 'html';
-    public $gzip    = false;
-    public $nocache = false;
-    public $etag    = false;
-    public $headers = [];
-
-    /**
-     * Flush response
-     */
-    public function flush() {
-
-        if (!headers_sent($filename, $linenum)) {
-
-            $body = $this->body;
-
-            if (\is_array($this->body) || \is_object($this->body)) {
-                $body = \json_encode($this->body);
-                $this->mime = 'json';
-            }
-
-            if ($this->nocache) {
-                \header('Cache-Control: no-cache, must-revalidate'); // HTTP/1.1
-                \header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
-                \header('Pragma: no-cache');
-            }
-
-            if ($this->etag) {
-                \header('ETag: "'.md5($this->body).'"');
-            }
-
-            \header('HTTP/1.0 '.$this->status.' '.App::$statusCodes[$this->status]);
-            \header('Content-type: '.App::$mimeTypes[$this->mime]);
-
-            foreach ($this->headers as $h) {
-                \header($h);
-            }
-
-            echo $body;
-        }
+        return Request::fromGlobalRequest([
+            'site_url'   => $this->registry['site_url'],
+            'base_url'   => $this->registry['base_url'],
+            'base_route' => $this->registry['base_route']
+        ]);
     }
-}
 
+} // End App
 
 // Helpers
 
@@ -1552,182 +1338,9 @@ class Module extends AppAware {
 
 class Helper extends AppAware { }
 
-/**
- * Session helper
- */
-class Session extends Helper {
 
-    /** @var string - Session initialization state */
-    protected $initialized = false;
-
-    /** @var string - Session name */
-    public $name;
-
-    /**
-     * Init session
-     * @param  string $session
-     */
-    public function init($sessionname = null) {
-
-        if ($this->initialized) return;
-
-        if (!\strlen(\session_id())) {
-            $this->name = $sessionname ? $sessionname : $this->app["session.name"];
-
-            \session_name($this->name);
-            \session_start();
-        } else {
-            $this->name = \session_name();
-        }
-
-        $this->initialized = true;
-    }
-
-    /**
-     * Write to session
-     * @param  string $key
-     * @param  mixed $value
-     */
-    public function write($key, $value) {
-        $_SESSION[$key] = $value;
-    }
-
-    /**
-     * Read from session
-     * @param  string $key
-     * @praam  mixed $default
-     * @return mixed
-     */
-    public function read($key, $default = null) {
-        return fetch_from_array($_SESSION, $key, $default);
-    }
-
-    /**
-     * Delete from session
-     * @param  string $key
-     */
-    public function delete($key) {
-        unset($_SESSION[$key]);
-    }
-
-    /**
-     * Destroy session
-     */
-    public function destroy() {
-        \session_destroy();
-    }
-}
-
-/**
- * Filesystem cache helper
- */
-class Cache extends Helper {
-
-    /** @var string - Cache prefix */
-    public $prefix = null;
-
-    /** @var string - Cache path */
-    protected $cachePath = null;
-
-    /**
-     * @inheritdoc
-     */
-    public function initialize() {
-        $this->cachePath = \rtrim(\sys_get_temp_dir(),"/\\").'/';
-        $this->prefix    = $this->app['app.name'];
-    }
-
-    /**
-     * Set cache path
-     * @param  string $path
-     */
-    public function setCachePath($path) {
-        if ($path) {
-            $this->cachePath = rtrim($this->app->path($path), "/\\").'/';
-        }
-    }
-
-    /**
-     * Get cache path
-     * @return string|null
-     */
-    public function getCachePath() {
-
-        return $this->cachePath;
-    }
-
-    /**
-     * Write to cache
-     * @param  string $key
-     * @param  mixed $value
-     * @param  int $duration
-     */
-    public function write($key, $value, $duration = -1) {
-
-        $expire = ($duration==-1) ? -1:(\time() + (\is_string($duration) ? \strtotime($duration):$duration));
-
-        $safe_var = [
-            'expire' => $expire,
-            'value' => \serialize($value)
-        ];
-
-        \file_put_contents($this->cachePath.\md5($this->prefix.'-'.$key).".cache" , \serialize($safe_var));
-    }
-
-    /**
-     * Read from cache
-     * @param  string $key
-     * @param  mixed $default
-     * @return mixed
-     */
-    public function read($key, $default = null) {
-
-        $var = @\file_get_contents($this->cachePath.\md5($this->prefix.'-'.$key).".cache");
-
-        if ($var==='') {
-            return $default;
-        } else {
-
-            $time = \time();
-            $var  = \unserialize($var);
-
-            if (($var['expire'] < $time) && $var['expire']!=-1) {
-                $this->delete($key);
-                return \is_callable($default) ? \call_user_func($default):$default;
-            }
-
-            return \unserialize($var['value']);
-        }
-    }
-
-    /**
-     * Delete from cache
-     * @param string $key
-     */
-    public function delete($key) {
-
-        $file = $this->cachePath.\md5($this->prefix.'-'.$key).".cache";
-
-        if (\file_exists($file)) {
-            @unlink($file);
-        }
-
-    }
-
-    /**
-     * Clear cache
-     */
-    public function clear() {
-
-        $iterator = new \RecursiveDirectoryIterator($this->cachePath);
-
-        foreach ($iterator as $file) {
-            if ($file->isFile() && \substr($file, -6)==".cache") {
-                @\unlink($this->cachePath.$file->getFilename());
-            }
-        }
-    }
-}
+include(__DIR__.'/Helper/Session.php');
+include(__DIR__.'/Helper/Cache.php');
 
 // helper functions
 

@@ -16,6 +16,11 @@ namespace MongoLite;
 class Database {
 
     /**
+     * @var string - DSN path form memory database
+     */
+    public const DSN_PATH_MEMORY = ':memory:';
+
+    /**
      * @var PDO object
      */
     public $connection;
@@ -35,14 +40,13 @@ class Database {
      */
     protected $document_criterias = [];
 
-
     /**
      * Constructor
      *
      * @param string $path
      * @param array  $options
      */
-    public function __construct($path = ":memory:", $options = []) {
+    public function __construct($path = self::DSN_PATH_MEMORY, $options = []) {
 
         $dns = "sqlite:{$path}";
 
@@ -142,7 +146,7 @@ class Database {
      * Drop database
      */
     public function drop() {
-        if ($this->path != ':memory:') {
+        if ($this->path != static::DSN_PATH_MEMORY) {
             \unlink($this->path);
         }
     }
@@ -163,6 +167,9 @@ class Database {
      */
     public function dropCollection($name) {
         $this->connection->exec("DROP TABLE `{$name}`");
+
+        // Remove collection from cache
+        unset($this->collections[$name]);
     }
 
     /**
@@ -333,7 +340,6 @@ class UtilArrayQuery {
                 $r = $a == $b;
                 break;
 
-            case '$not' :
             case '$ne' :
                 $r = $a != $b;
                 break;
@@ -395,7 +401,11 @@ class UtilArrayQuery {
             case '$regex' :
             case '$preg' :
             case '$match' :
-                $r = (boolean) @\preg_match(isset($b[0]) && $b[0]=='/' ? $b : '/'.$b.'/i', $a, $match);
+            case '$not':
+                $r = (boolean) @\preg_match(isset($b[0]) && $b[0]=='/' ? $b : '/'.$b.'/iu', $a, $match);
+                if ($func === '$not') {
+                    $r = !$r;
+                }
                 break;
 
             case '$size' :
@@ -406,8 +416,7 @@ class UtilArrayQuery {
             case '$mod' :
                 if (! \is_array($b))
                     throw new \InvalidArgumentException('Invalid argument for $mod option must be array');
-                list($x, $y) = each($b);
-                $r = $a % $x == 0;
+                $r = $a % $b[0] == $b[1] ?? 0;
                 break;
 
             case '$func' :
@@ -486,7 +495,7 @@ function fuzzy_search($search, $text, $distance = 3){
                 $score += 1;
             } else {
 
-                $d = \levenshtein_utf8($needle, $token);
+                $d = levenshtein_utf8($needle, $token);
 
                 if ($d <= $distance) {
                     $l       = \mb_strlen($token, 'UTF-8');
@@ -503,11 +512,16 @@ function fuzzy_search($search, $text, $distance = 3){
 
 function createMongoDbLikeId() {
 
+    // use native MongoDB ObjectId if available
+    if (class_exists('MongoDB\\BSON\\ObjectId')) {
+        $objId = new \MongoDB\BSON\ObjectId();
+        return (string)$objId;
+    }
+
     // based on https://gist.github.com/h4cc/9b716dc05869296c1be6
 
     $timestamp = \microtime(true);
-    $hostname  = \php_uname('n');
-    $processId = \getmypid();
+    $processId = \random_int(10000, 99999);
     $id        = \random_int(10, 1000);
     $result    = '';
 
@@ -515,7 +529,7 @@ function createMongoDbLikeId() {
     $bin = \sprintf(
         '%s%s%s%s',
         \pack('N', $timestamp),
-        \substr(md5($hostname), 0, 3),
+        \substr(md5(uniqid()), 0, 3),
         \pack('n', $processId),
         \substr(\pack('N', $id), 1, 3)
     );

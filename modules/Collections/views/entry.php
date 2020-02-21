@@ -1,74 +1,89 @@
 
 <script type="riot/tag" src="@base('collections:assets/collection-entrypreview.tag')"></script>
 
-@if(isset($collection['color']) && $collection['color'])
 <style>
+    @if(isset($collection['color']) && $collection['color'])
     .app-header { border-top: 8px {{ $collection['color'] }} solid; }
+    @endif
 </style>
-@endif
 
 <script>
     window.__collectionEntry = {{ json_encode($entry) }};
 </script>
 
-<div>
-    <ul class="uk-breadcrumb">
-        <li><a href="@route('/collections')">@lang('Collections')</a></li>
-        <li data-uk-dropdown="mode:'hover', delay:300">
-            <a href="@route('/collections/entries/'.$collection['name'])"><i class="uk-icon-bars"></i> {{ htmlspecialchars(@$collection['label'] ? $collection['label']:$collection['name']) }}</a>
+<div riot-view>
 
-            @if($app->module('collections')->hasaccess($collection['name'], 'collection_edit'))
-            <div class="uk-dropdown">
-                <ul class="uk-nav uk-nav-dropdown">
-                    <li class="uk-nav-header">@lang('Actions')</li>
-                    <li><a href="@route('/collections/collection/'.$collection['name'])">@lang('Edit')</a></li>
-                    <li class="uk-nav-divider"></li>
-                    <li class="uk-text-truncate"><a href="@route('/collections/export/'.$collection['name'])" download="{{ $collection['name'] }}.collection.json">@lang('Export entries')</a></li>
-                    <li class="uk-text-truncate"><a href="@route('/collections/import/collection/'.$collection['name'])">@lang('Import entries')</a></li>
-                </ul>
+    <div class="header-sub-panel">
+
+        <div class="uk-container uk-container-center">
+
+            <ul class="uk-breadcrumb">
+                <li><a href="@route('/collections')">@lang('Collections')</a></li>
+                <li data-uk-dropdown="mode:'hover', delay:300">
+                    <a href="@route('/collections/entries/'.$collection['name'])"><i class="uk-icon-bars"></i> {{ htmlspecialchars(@$collection['label'] ? $collection['label']:$collection['name']) }}</a>
+
+                    @if($app->module('collections')->hasaccess($collection['name'], 'collection_edit'))
+                    <div class="uk-dropdown">
+                        <ul class="uk-nav uk-nav-dropdown">
+                            <li class="uk-nav-header">@lang('Actions')</li>
+                            <li><a href="@route('/collections/collection/'.$collection['name'])">@lang('Edit')</a></li>
+                            @if($app->module('collections')->hasaccess($collection['name'], 'entries_delete'))
+                            <li class="uk-nav-divider"></li>
+                            <li><a href="@route('/collections/trash/collection/'.$collection['name'])">@lang('Trash')</a></li>
+                            @endif
+                            <li class="uk-nav-divider"></li>
+                            <li class="uk-text-truncate"><a href="@route('/collections/export/'.$collection['name'])" download="{{ $collection['name'] }}.collection.json">@lang('Export entries')</a></li>
+                            <li class="uk-text-truncate"><a href="@route('/collections/import/collection/'.$collection['name'])">@lang('Import entries')</a></li>
+                        </ul>
+                    </div>
+                    @endif
+                </li>
+            </ul>
+
+            <div class="uk-flex uk-flex-middle uk-text-bold uk-h3">
+                <div class="uk-margin-small-right">
+                    <img src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="40" alt="icon">
+                </div>
+                <div class="uk-margin-right">{ App.i18n.get(entry._id ? 'Edit Entry':'Add Entry') }</div>
+                <a onclick="{showPreview}" if="{ collection.contentpreview && collection.contentpreview.enabled }" title="@lang('Preview')"><i class="uk-icon-button uk-icon-eye"></i></a>
+                @if($app->module('cockpit')->isSuperAdmin())
+                <div class="uk-flex-item-1"></div>
+                <a class="uk-button uk-button-outline uk-text-warning" onclick="{showEntryObject}">@lang('Show json')</a>
+                @endif
             </div>
-            @endif
-        </li>
-    </ul>
-</div>
+        </div>
 
-<div class="uk-margin-top-large" riot-view>
+        <ul class="uk-tab header-sub-panel-tab uk-flex uk-flex-center" divider="true" if="{ App.Utils.count(_groups) > 1 && App.Utils.count(_groups) < 6 }">
+            <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
+            <li class="{ group==parent.group && 'uk-active'}" each="{group, idx in _groups}" show="{ parent.groups[group].length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+        </ul>
+
+        <ul class="uk-tab header-sub-panel-tab uk-flex uk-flex-center" divider="true" if="{ App.Utils.count(_groups) > 5 }">
+            <li class="uk-active" data-uk-dropdown="mode:'click', pos:'bottom-center'">
+                <a>{ App.i18n.get(group || 'All') } <i class="uk-margin-small-left uk-icon-angle-down"></i></a>
+                <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-close">
+                    <ul class="uk-nav uk-nav-dropdown">
+                    <li class="uk-nav-header">@lang('Groups')</li>
+                    <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
+                    <li class="uk-nav-divider"></li>
+                    <li class="{ group==parent.group && 'uk-active'}" each="{group in _groups}" show="{ parent.groups[group].length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+
 
     <div class="uk-alert" if="{ !fields.length }">
         @lang('No fields defined'). <a href="@route('/collections/collection')/{ collection.name }">@lang('Define collection fields').</a>
     </div>
-
-    <h3 class="uk-flex uk-flex-middle uk-text-bold">
-        <img class="uk-margin-small-right" src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="25" alt="icon">
-        { App.i18n.get(entry._id ? 'Edit Entry':'Add Entry') }
-
-        <a class="uk-text-large uk-margin-small-left" onclick="{showPreview}" if="{ collection.contentpreview && collection.contentpreview.enabled }" title="@lang('Preview')"><i class="uk-icon-eye"></i></a>
-    </h3>
 
     <div class="uk-grid">
 
         <div class="uk-grid-margin uk-width-medium-3-4">
 
             <form class="uk-form" if="{ fields.length }" onsubmit="{ submit }">
-
-                <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center" if="{ App.Utils.count(_groups) > 1 && App.Utils.count(_groups) < 6 }">
-                    <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
-                    <li class="{ group==parent.group && 'uk-active'}" each="{group, idx in _groups}" show="{ parent.groups[group].length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
-                </ul>
-
-                <ul class="uk-tab uk-margin-large-bottom uk-flex uk-flex-center" if="{ App.Utils.count(_groups) > 5 }">
-                    <li class="uk-active" data-uk-dropdown="mode:'click', pos:'bottom-center'">
-                        <a>{ App.i18n.get(group || 'All') } <i class="uk-margin-small-left uk-icon-angle-down"></i></a>
-                        <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-close">
-                            <ul class="uk-nav uk-nav-dropdown">
-                            <li class="uk-nav-header">@lang('Groups')</li>
-                            <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
-                            <li class="uk-nav-divider"></li>
-                            <li class="{ group==parent.group && 'uk-active'}" each="{group in _groups}" show="{ parent.groups[group].length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
 
                 <div class="uk-grid uk-grid-match uk-grid-gutter" if="{ !preview }">
 
@@ -79,13 +94,14 @@
                             <label title="{ field.name }">
 
                                 <span class="uk-text-bold"><i class="uk-icon-pencil-square uk-margin-small-right"></i> { field.label || App.Utils.ucfirst(field.name) }</span>
+                                <span class="uk-text-muted" show="{field.required}">&mdash; @lang('required')</span>
 
                                 <span if="{ field.localize }" data-uk-dropdown="mode:'click'">
                                     <a class="uk-icon-globe" title="@lang('Localized field')" data-uk-tooltip="pos:'right'"></a>
                                     <div class="uk-dropdown uk-dropdown-close">
                                         <ul class="uk-nav uk-nav-dropdown">
                                             <li class="uk-nav-header">@lang('Copy content from:')</li>
-                                            <li show="{parent.lang}"><a onclick="{parent.copyLocalizedValue}" lang="" field="{field.name}">@lang('Default')</a></li>
+                                            <li show="{parent.lang}"><a onclick="{parent.copyLocalizedValue}" lang="" field="{field.name}">{App.$data.languageDefaultLabel}</a></li>
                                             <li show="{parent.lang != language.code}" each="{language,idx in languages}" value="{language.code}"><a onclick="{parent.parent.copyLocalizedValue}" lang="{language.code}" field="{field.name}">{language.label}</a></li>
                                         </ul>
                                     </div>
@@ -93,12 +109,12 @@
 
                             </label>
 
-                            <div class="uk-margin uk-text-small uk-text-muted">
-                                { field.info || ' ' }
+                            <div class="uk-margin-top">
+                                <cp-field type="{field.type || 'text'}" bind="entry.{ field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" opts="{ field.options || {} }"></cp-field>
                             </div>
 
-                            <div class="uk-margin">
-                                <cp-field type="{field.type || 'text'}" bind="entry.{ field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" opts="{ field.options || {} }"></cp-field>
+                            <div class="uk-margin-top uk-text-small uk-text-muted" if="{field.info}">
+                                { field.info || ' ' }
                             </div>
 
                         </cp-fieldcontainer>
@@ -169,7 +185,8 @@
 
     </div>
 
-    <collection-entrypreview collection="{collection}" entry="{entry}" groups="{ groups }" fields="{ fields }" fieldsidx="{ fieldsidx }" excludeFields="{ excludeFields }" languages="{ languages }" settings="{ collection.contentpreview }" if="{ preview }"></collection-entrypreview>
+    <collection-entrypreview collection="{collection}" entry="{entry}" groups="{ groups }" fields="{ fields }" fieldsidx="{ fieldsidx }" excludeFields="{ excludeFields }" languages="{ languages }" lang="{ lang }" settings="{ collection.contentpreview }" if="{ preview }"></collection-entrypreview>
+    <cp-inspectobject ref="inspect"></cp-inspectobject>
 
     <script type="view/script">
 
@@ -389,6 +406,11 @@
             }
 
             return true;
+        }
+
+        showEntryObject() {
+            $this.refs.inspect.show($this.entry);
+            $this.update();
         }
 
     </script>

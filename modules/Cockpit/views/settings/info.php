@@ -19,7 +19,6 @@
                     <p><strong><span class="uk-badge app-badge">System</span></strong></p>
 
                     <h4 class="uk-text-bold">@lang('General')</h4>
-                    <hr>
 
                     <table class="uk-table uk-table-striped">
                         <tbody>
@@ -31,12 +30,15 @@
                     </table>
 
                     <h4 class="uk-text-bold">@lang('Cache')</h4>
-                    <hr>
 
-                    <div class="uk-margin">
+                    <div class="uk-margin" if="{cacheSize==null}">
+                        <i class="uk-icon-spinner uk-icon-spin"></i>
+                    </div>
+
+                    <div class="uk-margin" if="{cacheSize!==null}">
 
                         <div class="uk-panel uk-panel-box" if="{ !cleaning && cacheSize }">
-                            { cacheSize } <a title="@lang('Clear cache')" data-uk-tooltip="pos:'right'" onclick="{cleanUpCache}"><i class="uk-icon-trash-o"></i></a>
+                            { cacheSize } <a class="uk-margin-small-left" title="@lang('Clear cache')" data-uk-tooltip="pos:'right'" onclick="{cleanUpCache}"><i class="uk-icon-button uk-icon-trash-o"></i></a>
                         </div>
 
                         <div class="uk-alert" if="{ cleaning }">
@@ -48,10 +50,36 @@
                         </div>
                     </div>
 
+                    <h4 class="uk-text-bold">@lang('Jobs queue')</h4>
+
+                    <table class="uk-table uk-table-striped">
+                        <tbody>
+                            <tr>
+                                <td width="30%" class="uk-text-small uk-text-bold">@lang('Runner active')</td>
+                                <td class="uk-text-small uk-flex">
+                                    <div class="uk-flex-item-1 uk-flex-middle uk-margin-right">
+                                        <span class="uk-badge uk-badge-outline uk-text-{ jobsQueue.running ? 'success':'danger' }">{ jobsQueue.running ? 'Yes':'No' }</span>
+                                    </div>
+                                    <div>
+                                        <i class="uk-icon-spinner uk-icon-spin" show="{JobsRunnerLoading}"></i>
+                                        <div class="uk-button-group" show="{!JobsRunnerLoading}">
+                                            <button type="button" class="uk-button uk-button-small" if="{!jobsQueue.running}" onclick="{startJobsRunner}"><i class="uk-icon-play"></i></button>
+                                            <button type="button" class="uk-button uk-button-small" if="{jobsQueue.running}" onclick="{restartJobsRunner}"><i class="uk-icon-refresh"></i></button>
+                                            <button type="button" class="uk-button uk-button-small" if="{jobsQueue.running}" onclick="{stopJobsRunner}"><i class="uk-icon-stop"></i></button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%" class="uk-text-small uk-text-bold">@lang('Jobs in queue')</td>
+                                <td class="uk-text-small"><span class="uk-text-{{ !$info['jobs_queue']['cntjobs'] ? 'muted':'' }}">{{ $info['jobs_queue']['cntjobs'] }}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     @if($app->module('cockpit')->isSuperAdmin() && count(getenv()))
 
                     <h4 class="uk-text-bold">@lang('Environment Variables')</h4>
-                    <hr>
 
                     <table class="uk-table uk-table-striped">
                         <tbody>
@@ -139,11 +167,17 @@
 
             this._system = {};
             this.system  = {{ json_encode($info['app']) }};
-            this.cacheSize = {{ $info['cacheSize'] ? '"'.$info['cacheSize'].'"':0 }};
+            this.jobsQueue = {{ json_encode($info['jobs_queue']) }};
+            this.cacheSize = null;
             this.loading = false;
 
             this.on('mount', function() {
 
+                App.request('/cockpit/utils/getCacheSize').then(function(rsp) {
+
+                    $this.cacheSize = rsp.size ? rsp.size_pretty : 0;
+                    $this.update();
+                });
 
             });
 
@@ -157,6 +191,48 @@
                         $this.cacheSize = 0;
                         $this.update();
                     }, 1000);
+                });
+            }
+
+            startJobsRunner() {
+                this.JobsRunnerLoading = true;
+                App.request('/cockpit/utils/startJobRunner').then(function(rsp) {
+
+                    if (!rsp.running) {
+                        App.ui.notify('Runner failed to start', 'danger');
+                    }
+
+                    $this.jobsQueue.running = rsp.running;
+                    $this.JobsRunnerLoading = false;
+                    $this.update();
+                });
+            }
+
+            restartJobsRunner() {
+                this.JobsRunnerLoading = true;
+                App.request('/cockpit/utils/restartJobRunner').then(function(rsp) {
+
+                    if (!rsp.running) {
+                        App.ui.notify('Runner failed to start', 'danger');
+                    }
+
+                    $this.jobsQueue.running = rsp.running;
+                    $this.JobsRunnerLoading = false;
+                    $this.update();
+                });
+            }
+
+            stopJobsRunner() {
+                this.JobsRunnerLoading = true;
+                App.request('/cockpit/utils/stopJobRunner').then(function(rsp) {
+                    
+                    if (rsp.running) {
+                        App.ui.notify('Runner failed to terminate', 'danger');
+                    }
+
+                    $this.jobsQueue.running = rsp.running;
+                    $this.JobsRunnerLoading = false;
+                    $this.update();
                 });
             }
 

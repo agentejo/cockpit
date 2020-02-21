@@ -11,26 +11,25 @@
     <div class="uk-grid">
         <div class="uk-width-2-3">
 
-            <div class="uk-text-large uk-text-bold">
-                <span class="uk-text-uppercase">@lang('Master API-Key')</span>
-                <span class="uk-badge uk-badge-danger" show="{ keys.master }">@lang('Share with caution')</span>
-            </div>
-
-            <div class="uk-grid uk-grid-small uk-flex-middle uk-margin-top">
+ 
+            <div class="uk-text-upper uk-text-small uk-text-bold">@lang('Master API-Key')</div>
+   
+            <div class="uk-grid uk-grid-small uk-flex-middle uk-margin-small-top">
                 <div class="uk-flex-item-1">
-                    <input class="uk-width-1-1 uk-form-large uk-text-primary" type="text" placeholder="@lang('No key generated')" bind="keys.master" name="fullaccesskey" readonly>
+                    <input class="uk-width-1-1 uk-form-large uk-text-primary uk-text-monospace" type="text" placeholder="@lang('No key generated')" bind="keys.master" name="fullaccesskey" readonly>
+                    <span class="uk-text-small uk-text-danger uk-margin-small-top" show="{ keys.master }">@lang('Share with caution')</span>
                 </div>
                 <div if="{keys.master}">
-                    <a class="uk-margin-right" onclick="{ copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-copy"></i></a>
+                    <a class="uk-margin-right" onclick="{ copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-clone"></i></a>
                     <a onclick="{ removeMasterKey }" title="@lang('Delete')" data-uk-tooltip="pos:'top'"><i class="uk-icon-trash-o uk-text-danger"></i></a>
                 </div>
                 <div>
-                    <button class="uk-button uk-button-primary uk-button-large" type="button" onclick="{ generate }" title="@lang('Generate Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-magic"></i></button>
+                    <a onclick="{ generate }" title="@lang('Generate Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-button uk-icon-button-primary uk-icon-magic"></i></a>
                 </div>
             </div>
 
             <div class="uk-margin-large-top">
-                <span class="uk-badge uk-badge-outline uk-text-muted">@lang('Custom keys')</span>
+                <span class="uk-text-upper uk-text-small uk-text-bold uk-text-muted">@lang('Custom keys')</span>
             </div>
 
             <div class="uk-margin" show="{keys.special.length}">
@@ -39,11 +38,11 @@
                     <div class="uk-panel uk-panel-box uk-panel-card uk-flex-item-1 uk-margin-right">
 
                         <div class="uk-form-row">
-                            <label class="uk-text-small uk-text-uppercase">@lang('API-Key')</label>
+                            <label class="uk-text-small uk-text-bold uk-text-uppercase">@lang('API-Key')</label>
 
                             <div class="uk-flex uk-flex-middle">
-                                <input class="uk-width-1-1 uk-form-large uk-margin-right uk-text-primary" type="text" placeholder="@lang('No key generated')" bind="keys.special[{idx}].token" readonly>
-                                <a class="uk-margin-right" onclick="{ parent.copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-copy"></i></a>
+                                <input class="uk-width-1-1 uk-form-large uk-margin-right uk-text-primary uk-text-monospace" type="text" placeholder="@lang('No key generated')" bind="keys.special[{idx}].token" readonly>
+                                <a class="uk-margin-right" onclick="{ parent.copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-clone"></i></a>
                                 <a onclick="{ parent.generate }" title="@lang('Generate Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-magic"></i></a>
                             </div>
                         </div>
@@ -61,8 +60,8 @@
                     </div>
 
                     <div>
-                        <button class="uk-button uk-button-large uk-button-danger uk-display-block" onclick="{ parent.removeKey }" title="@lang('Remove Key')" data-uk-tooltip="pos:'right'"><i class="uk-icon-trash"></i></button>
-                        <button class="uk-button uk-button-large uk-button-link uk-text-muted uk-display-block uk-margin-small-top" onclick="{ addKey }" title="@lang('Add Key')" data-uk-tooltip="pos:'right'"><i class="uk-icon-plus"></i></button>
+                        <a onclick="{ parent.removeKey }" title="@lang('Remove Key')" data-uk-tooltip="pos:'right'"><i class="uk-icon-button uk-icon-button-danger uk-icon-trash"></i></a>
+                        <a class="uk-display-block uk-margin-small-top" onclick="{ addKey }" title="@lang('Add Key')" data-uk-tooltip="pos:'right'"><i class="uk-icon-button uk-icon-plus"></i></a>
                     </div>
                 </div>
 

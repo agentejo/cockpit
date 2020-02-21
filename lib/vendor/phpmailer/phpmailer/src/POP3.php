@@ -3,13 +3,13 @@
  * PHPMailer POP-Before-SMTP Authentication Class.
  * PHP Version 5.5.
  *
- * @see       https://github.com/PHPMailer/PHPMailer/ The PHPMailer GitHub project
+ * @see https://github.com/PHPMailer/PHPMailer/ The PHPMailer GitHub project
  *
  * @author    Marcus Bointon (Synchro/coolbru) <phpmailer@synchromedia.co.uk>
  * @author    Jim Jagielski (jimjag) <jimjag@gmail.com>
  * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
  * @author    Brent R. Matzelle (original founder)
- * @copyright 2012 - 2017 Marcus Bointon
+ * @copyright 2012 - 2019 Marcus Bointon
  * @copyright 2010 - 2012 Jim Jagielski
  * @copyright 2004 - 2009 Andy Prevost
  * @license   http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
@@ -29,14 +29,14 @@ namespace PHPMailer\PHPMailer;
  *   and then loop through your mail sending script. Providing this process doesn't
  *   take longer than the verification period lasts on your POP3 server, you should be fine.
  * 3) This is really ancient technology; you should only need to use it to talk to very old systems.
- * 4) This POP3 class is deliberately lightweight and incomplete, and implements just
+ * 4) This POP3 class is deliberately lightweight and incomplete, implementing just
  *   enough to do authentication.
  *   If you want a more complete class there are other POP3 classes for PHP available.
  *
- * @author  Richard Davey (original author) <rich@corephp.co.uk>
- * @author  Marcus Bointon (Synchro/coolbru) <phpmailer@synchromedia.co.uk>
- * @author  Jim Jagielski (jimjag) <jimjag@gmail.com>
- * @author  Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
+ * @author Richard Davey (original author) <rich@corephp.co.uk>
+ * @author Marcus Bointon (Synchro/coolbru) <phpmailer@synchromedia.co.uk>
+ * @author Jim Jagielski (jimjag) <jimjag@gmail.com>
+ * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
  */
 class POP3
 {
@@ -45,7 +45,7 @@ class POP3
      *
      * @var string
      */
-    const VERSION = '6.0.7';
+    const VERSION = '6.1.1';
 
     /**
      * Default POP3 port number.

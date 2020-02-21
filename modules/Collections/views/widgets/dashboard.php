@@ -2,7 +2,7 @@
 
     <div class="uk-panel-box uk-panel-card">
 
-        <div class="uk-panel-box-header uk-flex">
+        <div class="uk-panel-box-header uk-flex uk-flex-middle">
             <strong class="uk-panel-box-header-title uk-flex-item-1">
                 @lang('Collections')
 

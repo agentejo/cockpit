@@ -37,6 +37,11 @@
     opacity: .2;
 }
 
+.uk-text-upper {
+    text-transform: uppercase!important;
+    letter-spacing: .1em!important;
+}
+
 .uk-animation-fast {
     -webkit-animation-duration: .35s;
     animation-duration: .35s;
@@ -100,6 +105,21 @@
     margin-top: 25px;
     width: 600px;
     max-width: 85vw;
+    border: none;
+    box-shadow: none;
+    background: rgba(249, 249, 249, 0);
+    padding: 0;
+}
+
+.app-panel-dropdown:before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(249, 249, 249, .95);
+    z-index: -1;
 }
 
 .app-header-topbar a {
@@ -191,10 +211,31 @@ cp-fieldcontainer {
 .dashboard-header-panel {
     background: @global-contrast-color;
     margin-top: -35px;
-    margin-bottom: -80px;
+    margin-bottom: -70px;
     padding-top: 20px;
     padding-bottom: 120px;
     z-index: 0;
+}
+
+.header-sub-panel {
+    &:extend(.uk-container-breakout);
+    background: @global-contrast-color;
+    margin-top: -35px;
+    margin-bottom: 35px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    box-shadow: 0 0 2px 0 rgba(0,0,0,0.22);
+}
+
+.header-sub-panel-tab {
+    margin-top: 20px;
+    margin-bottom: -20px;
+    border-bottom: 0;
+}
+
+.header-sub-panel-tab[divider="true"] {
+    padding-top: 10px;
+    border-top: 1px rgba(0,0,0,.1) solid;
 }
 
 
@@ -245,6 +286,10 @@ div.jsoneditor-tree {
 div.jsoneditor-menu>button,
 div.jsoneditor-menu>div.jsoneditor-modes>button {
     color: #000 !important;
+}
+
+.CodeMirror {
+    font-size: 13px;
 }
 
 .CodeMirror span.cm-comment { color: #a86; }

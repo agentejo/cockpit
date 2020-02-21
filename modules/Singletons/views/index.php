@@ -31,7 +31,7 @@
 
         <div class="uk-margin" if="{groups.length}">
 
-            <ul class="uk-tab uk-flex uk-flex-center uk-noselect">
+            <ul class="uk-tab uk-tab-noborder uk-flex uk-flex-center uk-noselect">
                 <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize { group && 'uk-text-muted'}" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
                 <li class="{ group==parent.group && 'uk-active'}" each="{group in groups}"><a class="uk-text-capitalize { group!=parent.group && 'uk-text-muted'}" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
             </ul>
@@ -73,10 +73,9 @@
 
                     <div class="uk-grid uk-grid-small">
 
-                        <div data-uk-dropdown="delay:300">
+                        <div data-uk-dropdown="mode:'click'">
 
-                            <a aria-label="{App.i18n.get('Edit singleton')}" class="uk-icon-cog" style="color: { (singleton.meta.color) }" href="@route('/singletons/singleton')/{ singleton.name }" if="{ singleton.meta.allowed.singleton_edit }"></a>
-                            <a class="uk-icon-cog" style="color: { (singleton.meta.color) }" if="{ !singleton.meta.allowed.singleton_edit }"></a>
+                            <a class="uk-icon-cog" style="color: { (singleton.meta.color) }"></a>
 
                             <div class="uk-dropdown">
                                 <ul class="uk-nav uk-nav-dropdown">

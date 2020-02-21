@@ -388,6 +388,7 @@
 
                 this.filter.$or = [];
                 this.filter.$or.push({title: {'$regex':this.refs.filtertitle.value, '$options': 'i'}});
+                this.filter.$or.push({description: {'$regex':this.refs.filtertitle.value, '$options': 'i'}});
                 this.filter.$or.push({tags: this.refs.filtertitle.value});
             }
 
@@ -654,7 +655,7 @@
                           <div class="cp-assets-fp" title="Focal Point" data-uk-tooltip></div>
                       </div>
                       <div class="uk-margin-top uk-text-truncate uk-text-small uk-text-muted">
-                          <a class="uk-button uk-button-outline uk-text-primary" href="{ASSETS_URL+asset.path}" target="_blank"  title="{ App.i18n.get('Direct link to asset') }" data-uk-tooltip><i class="uk-icon-link"></i></a>
+                          <a href="{ASSETS_URL+asset.path}" target="_blank"  title="{ App.i18n.get('Direct link to asset') }" data-uk-tooltip><i class="uk-icon-button uk-icon-button-outline uk-text-primary uk-icon-link"></i></a>
                       </div>
                   </div>
               </div>
