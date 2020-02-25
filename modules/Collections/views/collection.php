@@ -12,31 +12,31 @@
         <div class="uk-grid" data-uk-grid-margin>
 
             <div class="uk-width-medium-1-4">
-               <div class="uk-panel uk-panel-box uk-panel-card">
+                <div class="uk-panel uk-panel-box uk-panel-card">
 
-                   <div class="uk-margin">
-                       <label class="uk-text-small">@lang('Name')</label>
-                       <input aria-label="@lang('Name')" class="uk-width-1-1 uk-form-large" type="text" ref="name" bind="collection.name" pattern="[a-zA-Z0-9_]+" required>
-                       <p class="uk-text-small uk-text-muted" if="{!collection._id}">
-                           @lang('Only alpha nummeric value is allowed')
-                       </p>
-                   </div>
+                    <div class="uk-margin">
+                        <label class="uk-text-small">@lang('Name')</label>
+                        <input aria-label="@lang('Name')" class="uk-width-1-1 uk-form-large" type="text" ref="name" bind="collection.name" pattern="[a-zA-Z0-9_]+" required>
+                        <p class="uk-text-small uk-text-muted" if="{!collection._id}">
+                            @lang('Only alpha nummeric value is allowed')
+                        </p>
+                    </div>
 
-                   <div class="uk-margin">
-                       <label class="uk-text-small">@lang('Label')</label>
-                       <input aria-label="@lang('Label')" class="uk-width-1-1 uk-form-large" type="text" ref="label" bind="collection.label">
-                   </div>
+                    <div class="uk-margin">
+                        <label class="uk-text-small">@lang('Label')</label>
+                        <input aria-label="@lang('Label')" class="uk-width-1-1 uk-form-large" type="text" ref="label" bind="collection.label">
+                    </div>
 
-                   <div class="uk-margin">
-                       <label class="uk-text-small">@lang('Group')</label>
-                       <input aria-label="@lang('Group')" class="uk-width-1-1 uk-form-large" type="text" ref="group" bind="collection.group">
-                   </div>
+                    <div class="uk-margin">
+                        <label class="uk-text-small">@lang('Group')</label>
+                        <input aria-label="@lang('Group')" class="uk-width-1-1 uk-form-large" type="text" ref="group" bind="collection.group">
+                    </div>
 
-                   <div class="uk-margin">
-                       <label class="uk-text-small">@lang('Icon')</label>
-                       <div data-uk-dropdown="pos:'right-center', mode:'click'">
-                           <a><img class="uk-display-block uk-margin uk-container-center" riot-src="{ collection.icon ? '@url('assets:app/media/icons/')'+collection.icon : '@url('collections:icon.svg')'}" alt="icon" width="100"></a>
-                           <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-width-2">
+                    <div class="uk-margin">
+                        <label class="uk-text-small">@lang('Icon')</label>
+                        <div data-uk-dropdown="pos:'right-center', mode:'click'">
+                            <a><img class="uk-display-block uk-margin uk-container-center" riot-src="{ collection.icon ? '@url('assets:app/media/icons/')'+collection.icon : '@url('collections:icon.svg')'}" alt="icon" width="100"></a>
+                            <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-width-2">
                                 <div class="uk-grid uk-grid-gutter">
                                     <div>
                                         <a class="uk-dropdown-close" onclick="{ selectIcon }" icon=""><img src="@url('collections:icon.svg')" width="30" icon=""></a>
@@ -47,21 +47,21 @@
                                     </div>
                                     @endforeach
                                 </div>
-                           </div>
-                       </div>
-                   </div>
+                            </div>
+                        </div>
+                    </div>
 
-                   <div class="uk-margin">
-                       <label class="uk-text-small">@lang('Color')</label>
-                       <div class="uk-margin-small-top">
-                           <field-colortag bind="collection.color" title="@lang('Color')" size="20px"></field-colortag>
-                       </div>
-                   </div>
+                    <div class="uk-margin">
+                        <label class="uk-text-small">@lang('Color')</label>
+                        <div class="uk-margin-small-top">
+                            <field-colortag bind="collection.color" title="@lang('Color')" size="20px"></field-colortag>
+                        </div>
+                    </div>
 
-                   <div class="uk-margin">
-                       <label class="uk-text-small">@lang('Description')</label>
-                       <textarea aria-label="@lang('Description')" class="uk-width-1-1 uk-form-large" name="description" bind="collection.description" bind-event="input" rows="5"></textarea>
-                   </div>
+                    <div class="uk-margin">
+                        <label class="uk-text-small">@lang('Description')</label>
+                        <textarea aria-label="@lang('Description')" class="uk-width-1-1 uk-form-large" name="description" bind="collection.description" bind-event="input" rows="5"></textarea>
+                    </div>
 
                     <div class="uk-margin">
                         <field-boolean bind="collection.sortable" title="@lang('Sortable entries')" label="@lang('Custom sortable entries')"></field-boolean>
@@ -75,7 +75,7 @@
                             <div class="uk-width-2-3">
                                 <field-select bind="collection.sort.column" class="uk-display-block uk-width-1-1" options="{ getFieldsSortColumnNameOptions() }"></field-select>
                             </div>
-                            
+
                             <div class="uk-width-1-3">
                                 <field-select bind="collection.sort.dir" class="uk-display-block uk-width-1-1" options="{ fieldsSortDirectionOptions }"></field-select>
                             </div>
