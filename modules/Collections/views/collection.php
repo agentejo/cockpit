@@ -47,21 +47,21 @@
                                     </div>
                                     @endforeach
                                 </div>
-                           </div>
-                       </div>
-                   </div>
+                            </div>
+                        </div>
+                    </div>
 
-                   <div class="uk-margin">
-                       <label class="uk-text-small">@lang('Color')</label>
-                       <div class="uk-margin-small-top">
-                           <field-colortag bind="collection.color" title="@lang('Color')" size="20px"></field-colortag>
-                       </div>
-                   </div>
+                    <div class="uk-margin">
+                        <label class="uk-text-small">@lang('Color')</label>
+                        <div class="uk-margin-small-top">
+                            <field-colortag bind="collection.color" title="@lang('Color')" size="20px"></field-colortag>
+                        </div>
+                    </div>
 
-                   <div class="uk-margin">
-                       <label class="uk-text-small">@lang('Description')</label>
-                       <textarea aria-label="@lang('Description')" class="uk-width-1-1 uk-form-large" name="description" bind="collection.description" bind-event="input" rows="5"></textarea>
-                   </div>
+                    <div class="uk-margin">
+                        <label class="uk-text-small">@lang('Description')</label>
+                        <textarea aria-label="@lang('Description')" class="uk-width-1-1 uk-form-large" name="description" bind="collection.description" bind-event="input" rows="5"></textarea>
+                    </div>
 
                     <div class="uk-margin">
                         <field-boolean bind="collection.sortable" title="@lang('Sortable entries')" label="@lang('Custom sortable entries')"></field-boolean>
@@ -75,7 +75,7 @@
                             <div class="uk-width-2-3">
                                 <field-select bind="collection.sort.column" class="uk-display-block uk-width-1-1" options="{ getFieldsSortColumnNameOptions() }"></field-select>
                             </div>
-                            
+
                             <div class="uk-width-1-3">
                                 <field-select bind="collection.sort.dir" class="uk-display-block uk-width-1-1" options="{ fieldsSortDirectionOptions }"></field-select>
                             </div>
