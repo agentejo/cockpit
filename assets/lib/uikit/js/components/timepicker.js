@@ -90,6 +90,8 @@
 
             var arr, timeArray, meridian = 'AM', hour, minute, time = this.autocomplete.input.val();
 
+            if (time === '') return;
+
             if (this.options.format == '12h') {
                 arr = time.split(' ');
                 timeArray = arr[0].split(':');
