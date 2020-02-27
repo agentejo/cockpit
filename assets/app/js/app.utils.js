@@ -264,7 +264,7 @@
 
     App.Utils.renderer.default = function(v) {
         v = String(v === undefined ? '': (['number','string'].indexOf(typeof(v)) > -1) ? v:JSON.stringify(v));
-        return v.length > 30 ? v.substr(0,30)+'...':v;
+        return v.length > 30 ? v.substr(0,30).replace(/</g,'&lt;').replace(/>/g,'&gt;')+'...' : v.replace(/</g,'&lt;').replace(/>/g,'&gt;');
     };
 
     App.Utils.renderer.location = function(v) {
