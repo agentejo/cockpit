@@ -1,9 +1,16 @@
 
 (function() {
 
-    const fn = e => {
+    var oldTarget = null;
 
+    const tabKeydown = e => {
         if (e.keyCode != 9) return;
+        oldTarget = e.target;
+    };
+
+    const tabKeyup = e => {
+
+        if (e.keyCode != 9 || e.target == oldTarget	) return;
 
         let viewHeight   = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
         let footerHeight = document.querySelector('cp-actionbar').offsetHeight;
@@ -41,7 +48,8 @@
         connectedCallback() {
             document.body.style.paddingBottom = `calc(2rem + ${this.offsetHeight}px)`;
 
-            document.addEventListener('keyup', fn);
+            document.addEventListener('keydown', tabKeydown);
+            document.addEventListener('keyup', tabKeyup);
         }
 
         disconnectedCallback() {
