@@ -360,6 +360,10 @@
         return App.Utils.renderer.default(v);
     };
 
+    App.Utils.renderer.wysiwyg = function(v) {
+        v = App.Utils.stripTags(v);
+        return v.length < 50 ? v : App.$.trim(v).substring(0, 50).split(' ').slice(0, -1).join(' ') + '...';
+    };
 
     App.Utils.renderValue = function(renderer, v, meta) {
         return (this.renderer[renderer] || this.renderer.default)(v, meta);
