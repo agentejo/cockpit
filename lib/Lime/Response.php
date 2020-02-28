@@ -164,8 +164,18 @@ class Response {
             foreach ($this->headers as $h) {
                 \header($h);
             }
+            
+            if (!$this->gzip || ($this->gzip && !\ob_start('ob_gzhandler'))) {
+                \ob_start();
+            }
 
             echo $body;
+            $size = ob_get_length();
+            \header("Content-Length: {$size}");
+            \header('Connection: close');
+
+            ob_end_flush();
+            \flush();
         }
     }
 }
