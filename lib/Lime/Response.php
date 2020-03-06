@@ -170,12 +170,9 @@ class Response {
             }
 
             echo $body;
-            $size = ob_get_length();
-            \header("Content-Length: {$size}");
-            \header('Connection: close');
 
-            ob_end_flush();
             \flush();
+            \ob_flush();
         }
     }
 }
