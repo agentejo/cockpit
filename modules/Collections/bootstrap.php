@@ -231,12 +231,46 @@ $this->module('collections')->extend([
         }
 
         if (isset($options['populate']) && $options['populate']) {
-            $entries = $this->_populate($entries, is_numeric($options['populate']) ? intval($options['populate']) : false, 0, $fieldsFilter);
+            $entries = $this->_fixConnectionLink($entries, $name);
+            $populateLevel = is_numeric($options['populate'])
+              ? intval($options['populate'])
+              : (is_bool($options['populate'] && $options['populate'] === true) ? 1 : -1);
+            $entries = $this->_populate($entries, $populateLevel, 0, $fieldsFilter);
         }
 
         $this->app->trigger('collections.find.after', [$name, &$entries, false]);
         $this->app->trigger("collections.find.after.{$name}", [$name, &$entries, false]);
 
+        return $entries;
+    },
+    '_fixConnectionLink' => function($entries, $collection) {
+        if (is_string($collection)) {
+            $collection = $this->collection($collection);
+        }
+        $collectionFields = array_merge(...array_map(function ($field) {
+            return [$field['name'] => $field];
+        }, $collection['fields']));
+        foreach ($entries as &$entry) {
+            foreach ($entry as $field => &$value) {
+                $filedInfo = $collectionFields[$field];
+                if ($filedInfo['type'] !== 'collectionlink') continue;
+                if (!$filedInfo['options']['multiple']) {
+                    $value = [
+                      '_id' => $value['_id'],
+                      'link' => $value['link'] ?? $value['_link'],
+                      'display' => $value['display']
+                    ];
+                    continue;
+                }
+                foreach ($value as &$subValue) {
+                    $subValue = [
+                      '_id' => $subValue['_id'],
+                      'link' => $subValue['link'] ?? $subValue['_link'],
+                      'display' => $subValue['display']
+                    ];
+                }
+            }
+        }
         return $entries;
     },
 
@@ -271,6 +305,7 @@ $this->module('collections')->extend([
         $name       = $collection;
         $collection = $_collection['_id'];
         $data       = isset($data[0]) ? $data : [$data];
+        $data = $this->_fixConnectionLink($data, $name);
         $return     = [];
         $modified   = time();
 

@@ -247,7 +247,7 @@ class Admin extends \Cockpit\AuthController {
 
         if ($id) {
 
-            $entry = $this->module('collections')->findOne($collection['name'], ['_id' => $id]);
+            $entry = $this->module('collections')->findOne($collection['name'], ['_id' => $id], null, false);
             //$entry = $this->app->storage->findOne("collections/{$collection['_id']}", ['_id' => $id]);
 
             if (!$entry) {
