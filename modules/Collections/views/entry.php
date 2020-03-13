@@ -386,7 +386,7 @@
         persistLanguage(e) {
             App.session.set('collections.entry.'+this.collection._id+'.lang', e.target.value);
             var lang = e.target.value
-            var classList = document.querySelector('html');
+            var classList = document.querySelector('html').classList;
             while (classList.length > 0) {
                classList.remove(classList.item(0));
             }
