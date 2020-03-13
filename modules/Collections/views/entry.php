@@ -5,7 +5,7 @@
     @if(isset($collection['color']) && $collection['color'])
     .app-header { border-top: 8px {{ $collection['color'] }} solid; }
     @endif
-    html.editor-en *:not(img){
+    html.editor-en *:not(img), html.editor-en *:not(canvas){
         filter: hue-rotate(90deg);
     }
 </style>
