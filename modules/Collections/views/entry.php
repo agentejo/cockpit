@@ -5,6 +5,9 @@
     @if(isset($collection['color']) && $collection['color'])
     .app-header { border-top: 8px {{ $collection['color'] }} solid; }
     @endif
+    html.editor-en *:not(img){
+        filter: hue-rotate(90deg);
+    }
 </style>
 
 <script>
@@ -382,6 +385,8 @@
 
         persistLanguage(e) {
             App.session.set('collections.entry.'+this.collection._id+'.lang', e.target.value);
+            var lang = e.target.value
+            lang && document.querySelector('html').classList.add('editor-' + lang)
         }
 
         copyLocalizedValue(e) {
