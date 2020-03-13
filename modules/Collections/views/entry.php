@@ -386,7 +386,11 @@
         persistLanguage(e) {
             App.session.set('collections.entry.'+this.collection._id+'.lang', e.target.value);
             var lang = e.target.value
-            document.querySelector('html').classList.add('editor-' + lang || 'default')
+            var classList = document.querySelector('html');
+            while (classList.length > 0) {
+               classList.remove(classList.item(0));
+            }
+            classList.add('editor-' + (lang || 'default'))
         }
 
         copyLocalizedValue(e) {
