@@ -5,7 +5,10 @@
     @if(isset($collection['color']) && $collection['color'])
     .app-header { border-top: 8px {{ $collection['color'] }} solid; }
     @endif
-    html.editor-en *:not(img):not(canvas):not(div):not(body):not(form):not(iframe){
+    html.editor-en b, html.editor-en big, html.editor-en i, html.editor-en small, html.editor-en tt, html.editor-en abbr,
+    html.editor-en acronym, html.editor-en cite, html.editor-en code, html.editor-en dfn, html.editor-en em, html.editor-en kbd, html.editor-en strong,
+    html.editor-en samp, html.editor-en var, html.editor-en a, html.editor-en bdo, html.editor-en br, html.editor-en map, html.editor-en object, html.editor-en q,
+    html.editor-en span, html.editor-en sub, html.editor-en sup, html.editor-en button, html.editor-en input, html.editor-en label, html.editor-en select, html.editor-en textarea {
         filter: hue-rotate(45deg);
     }
 </style>
