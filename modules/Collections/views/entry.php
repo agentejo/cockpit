@@ -206,7 +206,11 @@
 
         if (this.languages.length) {
             this.lang = App.session.get('collections.entry.'+this.collection._id+'.lang', '');
-            this.updateLangUI(this.lang)
+            var classList = document.querySelector('html').classList;
+            while (classList.length > 0) {
+               classList.remove(classList.item(0));
+            }
+            classList.add('editor-' + (this.lang || 'default'))
         }
 
         // fill with default values
@@ -386,16 +390,6 @@
 
         persistLanguage(e) {
             App.session.set('collections.entry.'+this.collection._id+'.lang', e.target.value);
-            var lang = e.target.value
-            this.updateLangUI(lang)
-        }
-
-        updateLangUI (lang) {
-            var classList = document.querySelector('html').classList;
-            while (classList.length > 0) {
-               classList.remove(classList.item(0));
-            }
-            classList.add('editor-' + (lang || 'default'))
         }
 
         copyLocalizedValue(e) {
