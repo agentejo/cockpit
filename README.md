@@ -22,6 +22,11 @@ make also sure that <code>$_SERVER['DOCUMENT_ROOT']</code> exists and is set cor
 3. Go to __/cockpit/install__ via Browser
 4. You're ready to use Cockpit :-)
 
+or
+
+1. Run the command `docker run -p 8080:80 gabskoro/cockpit-nginx`
+2. Open `http://localhost:8080/install`
+
 
 ### Build (Only if you modify JS components)
 
