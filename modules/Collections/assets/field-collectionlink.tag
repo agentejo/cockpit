@@ -68,17 +68,6 @@
 
             <h3>{ collection && (collection.label || opts.link) }</h3>
 
-            <div class="uk-float-left uk-form-select uk-margin-small-left" if="{ languages.length }">
-				<span class="uk-button uk-button-large uk-button-link {lang ? 'uk-text-primary' : 'uk-text-muted'}">
-					<i class="uk-icon-globe"></i>
-					{ lang ? _.find(languages,{'code':lang}).label : App.$data.languageDefaultLabel }
-				</span>
-				<select onchange="{changelanguage}">
-					<option value="" selected="{lang === ''}">{App.$data.languageDefaultLabel}</option>
-					<option each="{language,idx in languages}" value="{language.code}" selected="{lang === language.code}">{language.label}</option>
-				</select>
-			</div>
-
             <div class="uk-margin uk-flex uk-flex-middle" if="{collection}">
 
                 <div class="uk-form-icon uk-form uk-flex-item-1 uk-text-muted">
@@ -86,6 +75,17 @@
                     <i class="uk-icon-search"></i>
                     <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="{ App.i18n.get('Filter items...') }" onchange="{ updatefilter }">
 
+                </div>
+
+                <div class="uk-float-left uk-form-select uk-margin-small-left" if="{ languages.length }">
+                    <span class="uk-button uk-button-large uk-button-link {lang ? 'uk-text-primary' : 'uk-text-muted'}">
+                        <i class="uk-icon-globe"></i>
+                        { lang ? _.find(languages,{'code':lang}).label : App.$data.languageDefaultLabel }
+                    </span>
+                    <select onchange="{changelanguage}">
+                        <option value="" selected="{lang === ''}">{App.$data.languageDefaultLabel}</option>
+                        <option each="{language,idx in languages}" value="{language.code}" selected="{lang === language.code}">{language.label}</option>
+                    </select>
                 </div>
 
                 <div show="{selected.length}">
