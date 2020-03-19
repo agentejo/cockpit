@@ -164,8 +164,15 @@ class Response {
             foreach ($this->headers as $h) {
                 \header($h);
             }
+            
+            if (!$this->gzip || ($this->gzip && !\ob_start('ob_gzhandler'))) {
+                \ob_start();
+            }
 
             echo $body;
+
+            \flush();
+            \ob_flush();
         }
     }
 }

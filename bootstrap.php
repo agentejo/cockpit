@@ -214,7 +214,13 @@ function cockpit($module = null) {
 
         // mailer service
         $app->service('mailer', function() use($app, $config){
-            $options   = isset($config['mailer']) ? $config['mailer']:[];
+            
+            $options = isset($config['mailer']) ? $config['mailer']:[];
+
+            if (is_string($options)) {
+                parse_str($options, $options);
+            }
+
             $mailer    = new \Mailer($options['transport'] ?? 'mail', $options);
             return $mailer;
         });

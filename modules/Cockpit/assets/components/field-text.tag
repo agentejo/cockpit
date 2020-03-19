@@ -43,7 +43,7 @@
             if (opts.slug) {
                 this.slug = this.$getValue(opts.bind+'_slug') || '';
             }
-    
+
             (['maxlength', 'minlength', 'step', 'placeholder', 'pattern', 'size', 'min', 'max']).forEach( function(key) {
                 if (opts[key]) $this.refs.input.setAttribute(key, opts[key]);
             });

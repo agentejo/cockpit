@@ -300,13 +300,15 @@
                 e.preventDefault();
             }
 
-            var required = [];
+            var required = [], val;
 
-            this.fields.forEach(function(field){
+            this.fields.forEach(function(field) {
 
-                if (field.required && !$this.entry[field.name]) {
+                val = $this.entry[field.name];
 
-                    if (!($this.entry[field.name]===false || $this.entry[field.name]===0)) {
+                if (field.required && (!val || (Array.isArray(val) && !val.length))) {
+
+                    if (!(val===false || val===0)) {
                         required.push(field.label || field.name);
                     }
                 }

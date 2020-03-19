@@ -290,7 +290,7 @@ $this->module('collections')->extend([
                     }
 
                     if (!isset($entry[$field['name']])) {
-                        $value = $field['default'] ?? '';
+                        $value = $field['default'] ?? null;
                     } else {
                         $value = $entry[$field['name']];
                     }

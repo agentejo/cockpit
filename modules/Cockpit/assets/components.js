@@ -587,6 +587,21 @@ riot.tag2('cp-assets-folderselect', '<div data-uk-dropdown="mode:\'click\'"> <a 
 riot.tag2('cp-field', '<div ref="field" data-is="{\'field-\'+opts.type}" bind="{opts.bind}" cls="{opts.cls}"></div>', '', '', function(opts) {
 
         this.on('mount', function() {
+
+            var o = opts.opts || {};
+
+            if (this.root.$value == undefined && o.default !== undefined) {
+                this.$setValue(o.default);
+            }
+
+            if (this.root.$value == undefined) {
+                this.$setValue(null);
+            }
+
+            if (o.disabled) {
+                this.root.classList.add('uk-disabled');
+            }
+
             this.parent.update();
         });
 
@@ -3733,7 +3748,7 @@ riot.tag2('field-select', '<select ref="input" class="uk-width-1-1 {opts.cls}" b
 
 });
 
-riot.tag2('field-set', '<div> <div class="uk-alert" if="{fields && !fields.length}"> {App.i18n.get(\'Fields definition is missing\')} </div> <div class="uk-margin" each="{field,idx in fields}"> <label class="uk-display-block uk-text-bold uk-text-small">{field.label || field.name || \'\'}</label> <cp-field class="uk-display-block uk-margin-small-top" type="{field.type || \'text\'}" bind="value.{field.name}" opts="{field.options || {}}"></cp-field> </div> </div>', '', '', function(opts) {
+riot.tag2('field-set', '<div> <div class="uk-alert" if="{fields && !fields.length}"> {App.i18n.get(\'Fields definition is missing\')} </div> <div class="uk-margin" each="{field,idx in fields}"> <label class="uk-display-block uk-text-bold uk-text-small">{field.label || field.name || \'\'}</label> <cp-field class="uk-display-block uk-margin-small-top" type="{field.type || \'text\'}" bind="value.{field.name}" opts="{field.options || {}}"></cp-field> <div class="uk-margin-small-top uk-text-small uk-text-muted" if="{field.info}"> {field.info || \' \'} </div> </div> </div>', '', '', function(opts) {
 
         var $this = this;
 

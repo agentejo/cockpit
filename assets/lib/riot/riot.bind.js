@@ -3,9 +3,9 @@
  * simple two way data-binding for riot
  */
 
-(function(riot, global){
+(function (riot, global) {
 
-    riot.util.bind = function(tag, namespace) {
+    riot.util.bind = function (tag, namespace) {
 
         var root = tag.root;
 
@@ -15,7 +15,7 @@
 
             var field;
 
-            Array.prototype.forEach.call(root.querySelectorAll('[bind]'), function(ele) {
+            Array.prototype.forEach.call(root.querySelectorAll('[bind]'), function (ele) {
 
                 field = ele.getAttribute('bind');
 
@@ -23,7 +23,7 @@
                     init(ele);
                 }
 
-                if (ele.$boundTo !== tag ) {
+                if (ele.$boundTo !== tag) {
                     return;
                 }
 
@@ -40,7 +40,7 @@
 
             var element = ele.parentNode, _tag = tag;
 
-			while (element && element.nodeType === 1) {
+            while (element && element.nodeType === 1) {
 
                 if (element._tag && element.$bindingRoot) {
 
@@ -51,27 +51,27 @@
                     break;
                 }
 
-				element = element.parentNode;
-			}
+                element = element.parentNode;
+            }
 
             ele.$boundTo = _tag;
 
-            ele.$getValue = function(field) {
+            ele.$getValue = function (field) {
 
                 field = field || ele.getAttribute('bind');
 
                 var value = null;
 
-                if (ele.$boundTo !== _tag ) {
+                if (ele.$boundTo !== _tag) {
                     return;
                 }
 
                 return _.get(_tag, field);
             };
 
-            ele.$setValue = (function() {
+            ele.$setValue = (function () {
 
-                return function(value, silent, field) {
+                return function (value, silent, field) {
 
                     field = field || ele.getAttribute('bind');
 
@@ -97,14 +97,14 @@
             })();
 
 
-            ele.$updateValue = function(value) {};
+            ele.$updateValue = function (value) { };
 
             var nodeType = ele.nodeName.toLowerCase(),
-                defaultEvt = ('oninput' in ele) && nodeType=='input' ? 'input':'change';
+                defaultEvt = ('oninput' in ele) && nodeType == 'input' ? 'input' : 'change';
 
             if (['input', 'select', 'textarea'].indexOf(nodeType) !== -1) {
 
-                ele.addEventListener(ele.getAttribute('bind-event') || defaultEvt, _.debounce(function() {
+                ele.addEventListener(ele.getAttribute('bind-event') || defaultEvt, _.debounce(function () {
 
                     var isCheckbox = (ele.nodeName == 'INPUT' && ele.getAttribute('type') == 'checkbox'),
                         isNumeric = (ele.nodeName == 'INPUT' && ele.getAttribute('type') == 'number');
@@ -117,11 +117,11 @@
                             ele.$setValue(isNumeric ? Number(ele.value || 0) : ele.value);
                         }
 
-                    } catch(e) {}
+                    } catch (e) { }
 
                 }, 200), false);
 
-                ele.$updateValue = (function(fn, body) {
+                ele.$updateValue = (function (fn, body) {
 
                     var isCheckbox = (ele.nodeName == 'INPUT' && ele.getAttribute('type') == 'checkbox'),
                         isNumeric = (ele.nodeName == 'INPUT' && ele.getAttribute('type') == 'number');
@@ -132,9 +132,9 @@
                         body = 'input.value = val || "";';
                     }
 
-                    fn = new Function('input', 'val', 'try{'+body+'}catch(e){}');
+                    fn = new Function('input', 'val', 'try{' + body + '}catch(e){}');
 
-                    return function(value) {
+                    return function (value) {
 
                         if (document.activeElement === ele && nodeType == 'input' && !isCheckbox) {
                             return;
@@ -151,9 +151,9 @@
 
                     ele._tag.$getValue = ele.$getValue;
                     ele._tag.$setValue = ele.$setValue;
-                    ele._tag.$boundTo  = _tag;
+                    ele._tag.$boundTo = _tag;
 
-                    ele.$updateValue = function(value, field) {
+                    ele.$updateValue = function (value, field) {
 
                         if (ele._tag.$updateValue) {
                             ele._tag.$updateValue.apply(ele._tag, [value, field, ele.__bindField != field]);
@@ -171,15 +171,15 @@
         }
 
         // init values
-        tag.on('mount'  , function() { update(); });
-        tag.on('updated', function() { update(); });
-        tag.on('bind'   , function() { update(); });
-        tag.$bindUpdate = function() { update(); };
+        tag.on('mount', function () { update(); });
+        tag.on('updated', function () { update(); });
+        tag.on('bind', function () { update(); });
+        tag.$bindUpdate = function () { update(); };
 
     };
 
     var Mixin = {
-        init: function() {
+        init: function () {
             riot.util.bind(this);
         }
     };

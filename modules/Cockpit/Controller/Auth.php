@@ -68,7 +68,7 @@ class Auth extends \LimeExtra\Controller {
         $this->module('cockpit')->logout();
 
         if ($this->app->request->is('ajax')) {
-            return '{"logout":1}';
+            return ['logout' => true];
         } else {
             $this->reroute('/auth/login?logout=1');
         }

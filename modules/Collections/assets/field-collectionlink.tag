@@ -77,6 +77,17 @@
 
                 </div>
 
+                <div class="uk-float-left uk-form-select uk-margin-small-left" if="{ languages.length }">
+                    <span class="uk-button uk-button-large uk-button-link {lang ? 'uk-text-primary' : 'uk-text-muted'}">
+                        <i class="uk-icon-globe"></i>
+                        { lang ? _.find(languages,{'code':lang}).label : App.$data.languageDefaultLabel }
+                    </span>
+                    <select onchange="{changelanguage}">
+                        <option value="" selected="{lang === ''}">{App.$data.languageDefaultLabel}</option>
+                        <option each="{language,idx in languages}" value="{language.code}" selected="{lang === language.code}">{language.label}</option>
+                    </select>
+                </div>
+
                 <div show="{selected.length}">
                     <button type="button" class="uk-button uk-button-large uk-button-link" onclick="{linkItems}">
                         <i class="uk-icon-link"></i> {selected.length} {App.i18n.get('Entries')}
@@ -151,6 +162,10 @@
             return field.lst;
         });
 
+		if (this.collection && this.languages.length) {
+			this.lang = App.session.get('collections.entry.'+this.collection._id+'.lang', '');
+		}
+
         this.fields.push({name:'_modified', 'label':App.i18n.get('Modified')});
 
         this.update();
@@ -159,6 +174,8 @@
 
     this.link = null;
     this.sort = {'_created': -1};
+    this.languages  = App.$data.languages;
+    this.lang = null;
 
     this.selected = [];
 
@@ -303,11 +320,9 @@
         this.$setValue(this.link);
     }
 
-    load() {
-
+    load(replace=false) {
         var limit = 50;
-
-        var options = { sort:this.sort };
+        var options = { sort:this.sort, lang:this.lang };
 
         if (this.filter) {
             options.filter = this.filter;
@@ -319,14 +334,14 @@
 
         if (!this.collection.sortable) {
             options.limit = limit;
-            options.skip  = this.entries.length || 0;
+            options.skip  = replace ? 0 : this.entries.length;
         }
 
         this.loading = true;
 
         return App.request('/collections/find', {collection:this.collection.name, options:options}).then(function(data){
 
-            this.entries = this.entries.concat(data.entries);
+            this.entries = replace ? data.entries : this.entries.concat(data.entries);
 
             this.ready    = true;
             this.loadmore = data.entries.length && data.entries.length == limit;
@@ -352,7 +367,7 @@
 
             this.entries = [];
             this.loading = true;
-            this.load();
+            this.load(true);
         }
 
         return false;
@@ -419,12 +434,11 @@
     }
     
     getDisplay(link) {
-        
         var display = '...';
-        
-        if (!cache[link._id]) {
-            
-            cache[link._id] = App.request('/collections/find', {collection:this.collection.name, options:{filter:{_id:link._id}}}).then(function(data){
+
+        var cacheKey = link._id + ":" + this.lang;
+        if (!cache[cacheKey]) {
+            App.request('/collections/find', {collection:this.collection.name, options:{lang:this.lang, filter:{_id:link._id}}}).then(function(data){
 
                 if (!data.entries.length) {
                     link.display = 'n/a';
@@ -437,21 +451,34 @@
                 if (!display) {
                     display = _entry.name ? 'name':'title';
                     link.display = _entry[display] || 'n/a';
+                } else if(Array.isArray(display)) {
+                	link.display = display.map(function(field){
+                		return _entry[field] || "";
+                	}).join(", ");
                 } else {
                     link.display = _entry[display] || App.Utils.interpolate(display, _entry);
                 }
+
+                cache[cacheKey] = link.display;
                 
                 this.update();
 
             }.bind(this))
             
         } else {
-            display = link.display
+            display = cache[cacheKey];
         }
         
         return display;
     }
 
+    changelanguage(e) {
+		var lang = e.target.value;
+		App.session.set('collections.entry.'+this.collection._id+'.lang', lang);
+		this.lang = lang;
+		this.load(true);
+		this.update();
+	}
 
     </script>
 

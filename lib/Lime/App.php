@@ -849,11 +849,6 @@ class App implements \ArrayAccess {
         $this->trigger('after');
 
         if ($flush) {
-
-            if ($this->response->gzip && !\ob_start('ob_gzhandler')) {
-                \ob_start();
-            }
-
             $this->response->flush();
         }
 

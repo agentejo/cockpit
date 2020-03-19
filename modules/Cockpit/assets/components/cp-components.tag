@@ -5,6 +5,21 @@
     <script>
 
         this.on('mount', function() {
+
+            var o = opts.opts || {};
+
+            if (this.root.$value == undefined && o.default !== undefined) {
+                this.$setValue(o.default);
+            }
+
+            if (this.root.$value == undefined) {
+                this.$setValue(null);
+            }
+
+            if (o.disabled) {
+                this.root.classList.add('uk-disabled');
+            }
+
             this.parent.update();
         });
 

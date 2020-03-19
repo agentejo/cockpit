@@ -60,7 +60,7 @@
                 <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted">
 
                     <i class="uk-icon-search"></i>
-                    <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="@lang('Filter items...')" onchange="{ updatefilter }">
+                    <input class="uk-width-1-1 uk-form-large uk-form-blank {filter && filter.match(/\{(.*)\}/) && 'uk-text-monospace'}" type="text" ref="txtfilter" placeholder="@lang('Filter items...')" onchange="{ updatefilter }">
 
                 </div>
             </div>
