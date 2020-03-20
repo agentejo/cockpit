@@ -56,8 +56,7 @@
 // ========================================================================
 
 .hook-button() {
-    // border-radius: @global-border-radius;
-    border-radius: 30px;
+    border-radius: @global-border-radius;
     font-weight: bold;
     letter-spacing: .6px;
     text-transform: uppercase;
@@ -160,7 +159,7 @@
 
     .uk-button-group > .uk-button:only-child,
     .uk-button-group > div:only-child .uk-button {
-        border-radius: 30px;
+        border-radius: @global-border-radius;
     }
 
     /*
@@ -180,7 +179,7 @@
         border-width: 1px;
         border-style: solid;
         border-color: currentColor;
-        border-radius: 30px;
+        border-radius: @global-border-radius;
 
         &:hover, &:active {
             background: none;
