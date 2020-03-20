@@ -8,6 +8,8 @@
 <script>
 
   window.__revisions = {{ json_encode($revisions) }};
+  window.__collection = {{ json_encode($collection) }};
+  window.__entry = {{ json_encode($entry) }};
 
 </script>
 
@@ -149,9 +151,9 @@
 
         var $this = this;
 
-        this.collection = {{ json_encode($collection) }};
+        this.collection = window.__collection;
         this.revisions  = window.__revisions;
-        this.current    = {{ json_encode($entry) }};
+        this.current    = window.__entry;
 
         this.showOnlyChanged = true;
 

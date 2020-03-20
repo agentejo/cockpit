@@ -1339,7 +1339,7 @@ riot.tag2('cp-finder', '<div show="{App.Utils.count(data)}"> <div class="uk-clea
 
 });
 
-riot.tag2('cp-gravatar', '<canvas ref="image" class="uk-responsive-width uk-border-circle" width="{size}" height="{size}"></canvas>', '', '', function(opts) {
+riot.tag2('cp-gravatar', '<canvas ref="image" class="uk-responsive-width" width="{size}" height="{size}"></canvas>', '', '', function(opts) {
 
         var $this = this;
 

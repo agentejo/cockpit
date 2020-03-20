@@ -1,6 +1,6 @@
 <cp-gravatar>
 
-    <canvas ref="image" class="uk-responsive-width uk-border-circle" width="{ size }" height="{ size }"></canvas>
+    <canvas ref="image" class="uk-responsive-width" width="{ size }" height="{ size }"></canvas>
 
     <script>
 

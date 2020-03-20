@@ -7,6 +7,7 @@
 
 <script>
     window.__singletonData = {{ json_encode($data) }} || {};
+    window.__singleton = {{ json_encode($singleton) }} || {};
 </script>
 
 <div riot-view>
@@ -131,19 +132,17 @@
 
             <div class="uk-grid-margin uk-width-medium-1-4 uk-flex-order-first uk-flex-order-last-medium">
 
-                <div class="uk-margin uk-form" if="{ languages.length }">
-
-                    <div class="uk-width-1-1 uk-form-select">
-
-                        <label class="uk-text-small">@lang('Language')</label>
-                        <div class="uk-margin-small-top"><span class="uk-badge uk-badge-outline {lang ? 'uk-text-primary' : 'uk-text-muted'}">{ lang ? _.find(languages,{code:lang}).label:App.$data.languageDefaultLabel }</span></div>
-
-                        <select bind="lang">
-                            <option value="">{App.$data.languageDefaultLabel}</option>
-                            <option each="{language in languages}" value="{language.code}">{language.label}</option>
-                        </select>
+                <div class="uk-panel uk-panel-framed uk-width-1-1 uk-form-select uk-form" if="{ languages.length }">
+                    
+                    <div class="uk-text-bold {lang ? 'uk-text-primary' : 'uk-text-muted'}">
+                        <i class="uk-icon-globe"></i>
+                        <span class="uk-margin-small-left">{ lang ? _.find(languages,{code:lang}).label:App.$data.languageDefaultLabel }</span>
                     </div>
 
+                    <select bind="lang" onchange="{persistLanguage}">
+                        <option value="">{App.$data.languageDefaultLabel}</option>
+                        <option each="{language,idx in languages}" value="{language.code}">{language.label}</option>
+                    </select>
                 </div>
 
                 <div class="uk-margin">
@@ -184,7 +183,7 @@
 
             this.mixin(RiotBindMixin);
 
-            this.singleton = {{ json_encode($singleton) }};
+            this.singleton = window.__singleton;
             this.fields    = this.singleton.fields;
             this.fieldsidx = {};
 

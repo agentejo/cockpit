@@ -8,6 +8,8 @@
 <script>
 
   window.__revisions = {{ json_encode($revisions) }};
+  window.__singleton = {{ json_encode($singleton) }};
+  window.__singletonData = {{ json_encode($data) }};
 
 </script>
 
@@ -144,9 +146,9 @@
 
         var $this = this;
 
-        this.singleton  = {{ json_encode($singleton) }};
+        this.singleton  = window.__singleton;
         this.revisions  = window.__revisions;
-        this.current    = {{ json_encode($data) }};
+        this.current    = window.__singletonData;
 
         this.showOnlyChanged = true;
 
