@@ -360,6 +360,18 @@
         return App.Utils.renderer.default(v);
     };
 
+    App.Utils.renderer.wysiwyg = function(v) {
+        v = App.Utils.stripTags(v);
+        return v.length < 50 ? v : App.$.trim(v).substring(0, 50).split(' ').slice(0, -1).join(' ') + '...';
+    };
+
+    App.Utils.renderer.text = function(v) {
+        if (!(typeof v == 'string' || typeof v == 'number')) return '';
+
+        return v.length > 30 ? v.substr(0,30).replace(/</g,'&lt;').replace(/>/g,'&gt;')+'...' : v.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    };
+
+    App.Utils.renderer.textarea = App.Utils.renderer.text;
 
     App.Utils.renderValue = function(renderer, v, meta) {
         return (this.renderer[renderer] || this.renderer.default)(v, meta);
