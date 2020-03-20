@@ -133,7 +133,8 @@ $this->module('cockpit')->extend([
             'quality' => 100,
             'rebuild' => false,
             'base64' => false,
-            'output' => false
+            'output' => false,
+            'redirect' => false,
         ], $options);
 
         extract($options);
@@ -323,6 +324,10 @@ $this->module('cockpit')->extend([
             header('Content-Length: '.$this->app->filestorage->getSize($thumbpath));
             echo $this->app->filestorage->read($thumbpath);
             $this->app->stop();
+        }
+
+        if ($redirect) {
+            $this->app->reroute($this->app->filestorage->getURL($thumbpath));
         }
 
         return $this->app->filestorage->getURL($thumbpath);
