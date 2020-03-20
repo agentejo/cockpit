@@ -9,7 +9,7 @@
 
                 <div class="uk-flex">
                     <div riot-mount>
-                        <cp-gravatar email="{{ $app['user']['email'] }}" size="87" alt="{{ $app["user"]["name"] ? $app["user"]["name"] : $app["user"]["user"] }}"><canvas width="90" height="90"></canvas></cp-gravatar>
+                        <cp-gravatar email="{{ $app['user']['email'] }}" size="87" alt="{{ $app["user"]["name"] ? $app["user"]["name"] : $app["user"]["user"] }}"><canvas width="87" height="87"></canvas></cp-gravatar>
                     </div>
                     <div class="uk-flex-item-1 uk-margin-left">
                         <div class="uk-h3 uk-text-bold uk-margin-small-top">
