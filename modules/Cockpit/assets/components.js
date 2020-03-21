@@ -3687,8 +3687,13 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
                         item.value.forEach(_item => {
                             if (!_item.value) return;
                             Object.keys(_item.value).forEach(key => {
-                                const stringValue = _item.value[key];
-                                if (typeof stringValue === 'string') value += stringValue + ' '
+                                let stringValue = _item.value[key];
+
+                                if (typeof stringValue === 'string' && value.length < 120)
+                                    if (stringValue.length < 20)
+                                        value += stringValue + ' '
+                                    else
+                                        value += stringValue.substring(0, 17) + '... '
                             })
                         })
                     } else
