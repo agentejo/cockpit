@@ -225,7 +225,7 @@ class RestApi extends \LimeExtra\Controller {
             'rebuild' => intval($this->param('r', false)),
             'base64'  => intval($this->param('b64', false)),
             'output'  => $this->param('o', false),
-            'redirect' => intval($this->param('r', false))
+            'redirect' => intval($this->param('re', false))
         ];
 
         // Set single filter when available

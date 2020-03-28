@@ -1444,7 +1444,7 @@ riot.tag2('cp-search', '<div ref="autocomplete" class="uk-autocomplete uk-form u
 
 riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" class="uk-icon-spinner uk-icon-spin uk-position-center"></i> <canvas ref="canvas" width="{this.width || \'\'}" height="{this.height || \'\'}" style="background-size:contain;background-position:50% 50%;background-repeat:no-repeat;visibility:hidden;"></canvas> </div>', '', '', function(opts) {
 
-        var $this = this, src;
+        var $this = this, src, cache = {};
 
         this.inView = false;
         this.width  = opts.width;
@@ -1484,7 +1484,7 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
 
         this.load = function() {
 
-            var _src = opts.src || opts.riotSrc || opts['riot-src'], mode = opts.mode || 'bestFit', img;
+            var _src = opts.src || opts.riotSrc || opts['riot-src'], img;
 
             if (!_src || src === _src) {
                 return;
@@ -1492,43 +1492,19 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
 
             this.refs.spinner.style.display = '';
 
-            src = _src;
-            img = new Image();
+            this.getUrl(_src).then(function(url) {
 
-            img.onload = function() {
-
-                setTimeout(function() {
-                    $this.updateCanvasDim(img)
-                }, 0);
-            }
-
-            img.onerror = function() {
-
-            }
-
-            requestAnimationFrame(function() {
-
-                if (_src.match(/^(http\:|https\:|\/\/)/) && !(_src.includes(ASSETS_URL) || _src.includes(SITE_URL))) {
-
-                    src = _src;
+                img = new Image();
+                img.onload = function() {
 
                     setTimeout(function() {
-                        img.src = _src;
-                    }, 50);
-
-                    return;
+                        $this.updateCanvasDim(img)
+                    }, 0);
                 }
 
-                var url;
-
-                if (_src.match(/\.(svg|ico)$/i)) {
-                    url = _src;
-                } else {
-                    url = App.route(`/cockpit/utils/thumb_url?src=${_src}&w=${opts.width}&h=${opts.height}&m=${mode}&o=1`);
-                }
+                img.onerror = function() {}
 
                 img.src = url;
-
             });
         };
 
@@ -1558,6 +1534,30 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
             }.bind(this), 0);
 
         }
+
+        this.getUrl = function(url) {
+
+            var mode = opts.mode || 'bestFit', key = url;
+
+            if (!cache[key]) {
+
+                cache[key] = new Promise(function(resolve) {
+
+                    if (url.match(/^(http\:|https\:|\/\/)/) && !(url.includes(ASSETS_URL) || url.includes(SITE_URL))) {
+                        resolve(url);
+                        return;
+                    }
+
+                    if (!url.match(/\.(svg|ico)$/i)) {
+                        url = App.route(`/cockpit/utils/thumb_url?src=${url}&w=${opts.width}&h=${opts.height}&m=${mode}&re=1`);
+                    }
+
+                    resolve(url);
+                });
+            }
+
+            return cache[key];
+        }.bind(this)
 
 });
 
@@ -3094,7 +3094,7 @@ riot.tag2('field-layout', '<div class="uk-sortable layout-components {!items.len
             if (url.match(/^(http\:|https\:|\/\/)/) && !(url.includes(ASSETS_URL) || url.includes(SITE_URL))) {
                 src = url;
             } else {
-                src = App.route('/cockpit/utils/thumb_url?src='+url+'&w=50&h=50&m=bestFit&o=1');
+                src = App.route('/cockpit/utils/thumb_url?src='+url+'&w=50&h=50&m=bestFit&re=1');
             }
 
             if (src.match(/\.(svg|ico)$/i)) {

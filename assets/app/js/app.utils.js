@@ -278,19 +278,11 @@
     App.Utils.renderer.asset = function (v) {
 
         if (v && v.mime) {
+
             if (v.mime.match(/^image\//)) {
 
-                var id = 'img' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);;
-
-                App.request('/cockpit/utils/thumb_url', { src: ASSETS_URL + v.path, w: 30, h: 30 }, 'text').then(function (url) {
-
-                    App.$('#' + id).attr('src', url);
-
-                }).catch(function (e) {
-                    // todo
-                });
-
-                return '<img id="' + id + '" width="20" height="20">';
+                var url = App.route('/cockpit/utils/thumb_url?src=' + (ASSETS_URL + v.path) + '&w=30&h=30&re=1');
+                return '<img src="' + url + '" width="20" height="20">';
             }
 
             return '<span class="uk-badge">' + v.mime + '</span>';

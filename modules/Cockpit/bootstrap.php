@@ -270,6 +270,10 @@ $this->module('cockpit')->extend([
 
             try {
 
+                if ($rebuild && $this->app->filestorage->has($thumbpath)) {
+                    $this->app->filestorage->delete($thumbpath);
+                }
+
                 $img = $this->app->helper("image")->take($path)->{$method}($width, $height, $fp);
 
                 $_filters = [
