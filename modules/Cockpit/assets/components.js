@@ -1484,7 +1484,7 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
 
         this.load = function() {
 
-            var _src = opts.src || opts.riotSrc || opts['riot-src'], img;
+            var _src = opts.src || opts.riotSrc || opts['riot-src'], img, mode = opts.mode || 'bestFit';
 
             if (!_src || src === _src) {
                 return;
@@ -1492,7 +1492,7 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
 
             this.refs.spinner.style.display = '';
 
-            this.getUrl(_src).then(function(url) {
+            this.getUrl(_src, mode).then(function(url) {
 
                 img = new Image();
                 img.onload = function() {
@@ -1535,9 +1535,9 @@ riot.tag2('cp-thumbnail', '<div class="uk-position-relative"> <i ref="spinner" c
 
         }
 
-        this.getUrl = function(url) {
+        this.getUrl = function(url, mode) {
 
-            var mode = opts.mode || 'bestFit', key = url;
+            var key = `${url}:${mode}`;
 
             if (!cache[key]) {
 

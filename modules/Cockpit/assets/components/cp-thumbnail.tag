@@ -47,7 +47,7 @@
 
         this.load = function() {
 
-            var _src = opts.src || opts.riotSrc || opts['riot-src'], img;
+            var _src = opts.src || opts.riotSrc || opts['riot-src'], img, mode = opts.mode || 'bestFit';
 
             if (!_src || src === _src) {
                 return;
@@ -55,7 +55,7 @@
 
             this.refs.spinner.style.display = '';
 
-            this.getUrl(_src).then(function(url) {
+            this.getUrl(_src, mode).then(function(url) {
 
                 img = new Image();
                 img.onload = function() {    
@@ -99,9 +99,9 @@
 
         }
 
-        getUrl(url) {
+        getUrl(url, mode) {
 
-            var mode = opts.mode || 'bestFit', key = url;
+            var key = `${url}:${mode}`;
 
             if (!cache[key]) {
 
