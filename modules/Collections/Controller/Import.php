@@ -27,6 +27,8 @@ class Import extends \Cockpit\AuthController {
 
     public function execute() {
 
+        \session_write_close();
+
         $collection = $this->param('collection', null);
         $entries = $this->param('entries', null);
 

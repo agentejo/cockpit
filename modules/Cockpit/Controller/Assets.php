@@ -19,6 +19,8 @@ class Assets extends \Cockpit\AuthController {
 
     public function listAssets() {
 
+        \session_write_close();
+
         $options = [
             'sort' => ['created' => -1]
         ];
@@ -48,6 +50,8 @@ class Assets extends \Cockpit\AuthController {
     }
 
     public function upload() {
+
+        \session_write_close();
 
         $meta = ['folder' => $this->param('folder', '')];
 
