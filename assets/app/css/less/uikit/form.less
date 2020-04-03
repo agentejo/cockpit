@@ -18,6 +18,7 @@
 
 @form-focus-color:                              @global-color;
 @form-focus-background:                         @form-background;
+@form-focus-border:                             lighten(@global-primary-background, 20%);
 
 @form-disabled-background:                      none;
 @form-disabled-border:                          @global-border;
@@ -52,7 +53,9 @@
 }
 
 // Focus state
-.hook-form-focus() {}
+.hook-form-focus() {
+    
+}
 
 // Disabled state
 .hook-form-disabled() {}
