@@ -51,6 +51,10 @@
                 <p>
                     <cp-gravatar email="{ $user.email }" size="80" alt="{ $user.name || $user.user }" if="{$user}"></cp-gravatar>
                 </p>
+                <hr class="uk-width-1-2 uk-container-center">
+                <p class="uk-text-center uk-text-bold uk-text-muted uk-text-upper uk-margin-top">
+                    @lang('Welcome back!')
+                </p>
 
             </div>
 
@@ -68,14 +72,14 @@
                 </div>
 
                 <div class="uk-form-row">
-                    <label class="uk-text-small uk-text-bold uk-margin-small-bottom">@lang('Username')</label>
+                    <label class="uk-text-small uk-text-bold uk-text-upper uk-margin-small-bottom">@lang('Username')</label>
                     <input ref="user" class="uk-form-large uk-width-1-1" type="text" aria-label="@lang('Username')" placeholder="" autofocus required>
                 </div>
 
                 <div class="uk-form-row">
                     <div class="uk-form-password uk-width-1-1">
-                        <label class="uk-text-small uk-text-bold uk-margin-small-bottom">@lang('Password')</label>
-                        <input ref="password" class="uk-form-large uk-width-1-1" type="password" aria-label="@lang('Password')" placeholder="••••••••••" required>
+                        <label class="uk-text-small uk-text-bold uk-text-upper uk-margin-small-bottom">@lang('Password')</label>
+                        <input ref="password" class="uk-form-large uk-width-1-1" type="password" aria-label="@lang('Password')" placeholder="" required>
                         <a href="#" class="uk-form-password-toggle" data-uk-form-password>@lang('Show')</a>
                     </div>
                 </div>

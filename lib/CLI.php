@@ -112,4 +112,31 @@ class CLI {
     public static function writeln($out, $fgcolor = null, $bgcolor = null) {
         self::write("{$out}\n", $fgcolor, $bgcolor);
     }
+
+    public static function progress($percent, $dec = 0) {
+
+        if ($percent === false) {
+            echo PHP_EOL;
+            return;
+        }
+
+        $len = 4 + (($dec > 0) ? ($dec + 1) : 0);
+
+        $str = str_pad(number_format($percent, $dec) . '%', $len, " ", STR_PAD_LEFT);
+        $len += 3; // add 2 for () and a space before bar starts.
+
+        $width = `tput cols`;
+        $barWidth = $width - ($len) - 2; // subtract 2 for [] around bar
+        $numBars = round(($percent) / 100 * ($barWidth));
+        $numEmptyBars = $barWidth - $numBars;
+
+        $barsString = '[' . str_repeat("=", ($numBars)) . str_repeat(" ", ($numEmptyBars)) . ']';
+
+        echo "($str) " . $barsString . "\r";
+
+        if ($percent == 100) {
+            echo PHP_EOL;
+        }
+    }
+
 }
