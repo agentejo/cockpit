@@ -89,7 +89,6 @@
                     action: App.route('/assetsmanager/upload'),
                     type: 'json',
                     filelimit: 1,
-                    allow: (this.opts.upload && this.opts.upload.allow) || '*.*',
                     before: function(options) {
 
                     },

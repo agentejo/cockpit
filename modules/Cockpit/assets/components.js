@@ -1872,7 +1872,6 @@ riot.tag2('field-asset', '<div ref="uploadprogress" class="uk-margin uk-hidden">
                     action: App.route('/assetsmanager/upload'),
                     type: 'json',
                     filelimit: 1,
-                    allow: (this.opts.upload && this.opts.upload.allow) || '*.*',
                     before: function(options) {
 
                     },
