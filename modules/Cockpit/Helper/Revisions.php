@@ -23,12 +23,16 @@ class Revisions extends \Lime\Helper {
         return $this->storage->count('cockpit/revisions', ['_oid' => $id]);
     }
 
-    public function getList($id) {
+    public function getList($id, $limit = 50, $skip = 0) {
 
-        return $this->storage->find('cockpit/revisions', [
+        $options = [
             'filter' => ['_oid' => $id],
-            'sort'   => ['_created' => -1]
-        ])->toArray();
+            'sort'   => ['_created' => -1],
+            'limit'  => $limit,
+            'skip'   => $skip
+        ];
+
+        return $this->storage->find('cockpit/revisions', $options)->toArray();
     }
 
     public function add($id, $data, $meta = null, $creator = null) {
