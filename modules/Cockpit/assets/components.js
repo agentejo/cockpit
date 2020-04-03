@@ -125,10 +125,11 @@ riot.tag2('cp-assets', '<div ref="list" show="{mode==\'list\'}"> <div ref="uploa
         this.page     = 1;
         this.pages    = 1;
         this.limit    = opts.limit || 15;
+        this.pattern    = opts.pattern || '*.*'
 
         this.on('mount', function() {
 
-            this.listAssets(1);
+            this.updateFilter();
 
             App.assets.require(['/assets/lib/uikit/js/components/upload.js'], function() {
 
@@ -136,6 +137,7 @@ riot.tag2('cp-assets', '<div ref="list" show="{mode==\'list\'}"> <div ref="uploa
 
                     action: App.route('/assetsmanager/upload'),
                     type: 'json',
+                    allow: $this.pattern,
                     before: function(options) {
                         options.params.folder = $this.folder
                     },
@@ -176,7 +178,8 @@ riot.tag2('cp-assets', '<div ref="list" show="{mode==\'list\'}"> <div ref="uploa
                             App.ui.notify("Something went wrong.", "danger");
                         }
 
-                    }
+                    },
+
                 },
 
                 uploadselect = UIkit.uploadSelect(App.$('.js-upload-select', $this.root)[0], uploadSettings),
@@ -232,8 +235,12 @@ riot.tag2('cp-assets', '<div ref="list" show="{mode==\'list\'}"> <div ref="uploa
 
             this.filter = null;
 
-            if (this.refs.filtertitle.value || this.refs.filtertype.value) {
+            if (this.refs.filtertitle.value || this.refs.filtertype.value || this.pattern !== '*.*') {
                 this.filter = {};
+            }
+
+            if (this.pattern !== '*.*') {
+                this.filter.path = {'$regex': '^.*\.(' + this.pattern.replace(/\*./g, '') + ')$', '$options': 'i'};
             }
 
             if (this.refs.filtertitle.value) {
@@ -1856,6 +1863,7 @@ riot.tag2('field-asset', '<div ref="uploadprogress" class="uk-margin uk-hidden">
         }.bind(this);
 
         this.on('mount', function() {
+            $this.pattern = opts.pattern || '*.*';
 
             App.assets.require(['/assets/lib/uikit/js/components/upload.js'], function() {
 
@@ -1864,6 +1872,7 @@ riot.tag2('field-asset', '<div ref="uploadprogress" class="uk-margin uk-hidden">
                     action: App.route('/assetsmanager/upload'),
                     type: 'json',
                     filelimit: 1,
+                    allow: (this.opts.upload && this.opts.upload.allow) || '*.*',
                     before: function(options) {
 
                     },
@@ -1904,7 +1913,7 @@ riot.tag2('field-asset', '<div ref="uploadprogress" class="uk-margin uk-hidden">
                 if (Array.isArray(assets)) {
                     $this.$setValue(assets[0]);
                 }
-            });
+            }, { pattern: $this.pattern });
         }.bind(this)
 
         this.reset = function() {
