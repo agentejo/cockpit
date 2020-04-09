@@ -14,13 +14,13 @@
 @global-link-color: @global-primary-background;
 
 .uk-noselect {
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    -webkit-user-select: none !important;
+    user-select: none !important;
 }
 
 .uk-disabled {
+    -webkit-user-select: none;
+    user-select: none;
     pointer-events: none;
 }
 

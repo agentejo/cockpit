@@ -331,6 +331,8 @@ class Admin extends \Cockpit\AuthController {
 
     public function delete_entries($collection) {
 
+        \session_write_close();
+
         $collection = $this->module('collections')->collection($collection);
 
         if (!$collection) {
@@ -375,6 +377,8 @@ class Admin extends \Cockpit\AuthController {
 
     public function update_order($collection) {
 
+        \session_write_close();
+
         $collection = $this->module('collections')->collection($collection);
         $entries = $this->param('entries');
 
@@ -395,6 +399,8 @@ class Admin extends \Cockpit\AuthController {
 
     public function export($collection) {
 
+        \session_write_close();
+
         if (!$this->app->module("cockpit")->hasaccess('collections', 'manage')) {
             return false;
         }
@@ -414,6 +420,8 @@ class Admin extends \Cockpit\AuthController {
 
 
     public function tree() {
+
+        \session_write_close();
 
         $collection = $this->app->param('collection');
 

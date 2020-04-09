@@ -10,7 +10,7 @@
     </style>
 
     <div class="uk-text-xlarge uk-text-center uk-text-primary uk-margin-large-top" show="{!isReady}">
-        <i class="uk-icon-spinner uk-icon-spin"></i>
+        <cp-preloader class="uk-container-center"></cp-preloader>
     </div>
 
     <div class="picoedit" show="{isReady}">

@@ -198,6 +198,7 @@
         this.languages = opts.languages || [];
         this.collection = opts.collection;
         this.entry = opts.entry;
+        this.ws = null;
 
         this.mode = 'desktop';
         this.group = '';
@@ -218,24 +219,14 @@
 
             $this.$cache = JSON.stringify(this.entry);
 
-            this.ws = new Promise(function(resolve, reject) {
+            if (this.settings.wsurl) {
 
-                if ($this.settings.wsurl && !window.WebSocket) {
-                    return reject('Missing support for Websockets');
-                }
-
-                var protocols = ($this.settings.wsprotocols || '').split(',').map(function(p) {
-                    return p.trim();
-                });
-
-                var ws = $this.settings.wsurl ? new WebSocket($this.settings.wsurl, $this.settings.wsprotocols ? protocols : undefined) : null;
-
-                if (ws) {
-                    ws.onopen = function() { resolve(ws); };
+                if (this.settings.wsurl && !window.WebSocket) {
+                    console.log('Missing support for Websockets');
                 } else {
-                    resolve(ws);
+                    this.initWebsocket();
                 }
-            });
+            };
 
             this.refs.iframe.addEventListener('load', function() {
 
@@ -261,6 +252,7 @@
 
         this.on('unmount', function() {
             clearTimeout(this.$idle);
+            this.ws.close(1000);
         });
 
         setMode(mode) {
@@ -279,10 +271,7 @@
             };
 
             this.$iframe.postMessage(data, '*');
-
-            this.ws.then(function(ws) {
-                return ws && ws.send(JSON.stringify(data));
-            }).catch(function(e){ console.log(e) });
+            this.ws.send(JSON.stringify(data));
         }
 
         toggleGroup() {
@@ -335,6 +324,37 @@
             }
 
             return true;
+        }
+
+        initWebsocket() {
+
+            var protocols = (this.settings.wsprotocols || '').split(',').map(function(p) {
+                return p.trim();
+            });
+
+            var ws = this.settings.wsurl ? new WebSocket(this.settings.wsurl, this.settings.wsprotocols ? protocols : undefined) : {send:function(){}, close:function(){}};
+
+            this.ws = {send:function(){}};
+
+            ws.onopen = function() { 
+                $this.ws = ws;
+            };
+
+            ws.reconnect = function(e){
+                console.log(1)
+                ws.removeAllListeners();
+                setTimeout(function(){ $this.initWebsocket(); }, 5000);
+            };
+
+            ws.onclose = function(e) {
+                if (e.code != 1000) ws.reconnect(e);
+            };
+
+            ws.onerror = function(e) {
+                if (e.code == 'ECONNREFUSED') ws.reconnect(e);
+            };
+
+            return ws;
         }
 
     </script>

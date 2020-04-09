@@ -17,7 +17,7 @@
             <div class="uk-grid uk-grid-small uk-flex-middle uk-margin-small-top">
                 <div class="uk-flex-item-1">
                     <input class="uk-width-1-1 uk-form-large uk-text-primary uk-text-monospace" type="text" placeholder="@lang('No key generated')" bind="keys.master" name="fullaccesskey" readonly>
-                    <span class="uk-text-small uk-text-danger uk-margin-small-top" show="{ keys.master }">@lang('Share with caution')</span>
+                    <span class="uk-text-small uk-text-danger uk-text-bold uk-text-upper uk-margin-small-top" show="{ keys.master }">@lang('Share with caution')</span>
                 </div>
                 <div if="{keys.master}">
                     <a class="uk-margin-right" onclick="{ copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-clone"></i></a>
@@ -38,10 +38,10 @@
                     <div class="uk-panel uk-panel-box uk-panel-card uk-flex-item-1 uk-margin-right">
 
                         <div class="uk-form-row">
-                            <label class="uk-text-small uk-text-bold uk-text-uppercase">@lang('API-Key')</label>
+                            <label class="uk-text-small uk-text-bold uk-text-upper">@lang('API-Key')</label>
 
                             <div class="uk-flex uk-flex-middle">
-                                <input class="uk-width-1-1 uk-form-large uk-margin-right uk-text-primary uk-text-monospace" type="text" placeholder="@lang('No key generated')" bind="keys.special[{idx}].token" readonly>
+                                <input class="uk-width-1-1 uk-form-large uk-margin-right uk-text-monospace" type="text" placeholder="@lang('No key generated')" bind="keys.special[{idx}].token" readonly>
                                 <a class="uk-margin-right" onclick="{ parent.copyApiKey }" title="@lang('Copy Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-clone"></i></a>
                                 <a onclick="{ parent.generate }" title="@lang('Generate Token')" data-uk-tooltip="pos:'top'"><i class="uk-icon-magic"></i></a>
                             </div>

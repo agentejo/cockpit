@@ -202,20 +202,19 @@
                                         <cp-thumbnail src="{file.url}" width="400" height="300" if="{ parent.getIconCls(file) == 'image' }"></cp-thumbnail>
                                     </div>
 
-
                                     <div class="uk-flex">
                                         <a class="uk-link-muted uk-flex-item-1 js-no-item-select uk-text-truncate uk-margin-small-right" onclick="{ parent.open }">{ file.name }</a>
                                         <span class="uk-margin-small-right" data-uk-dropdown="mode:'click', pos:'bottom-right'">
                                             <a><i class="uk-icon-ellipsis-v js-no-item-select"></i></a>
                                             <div class="uk-dropdown">
-                                                <ul class="uk-nav uk-nav-dropdown">
+                                                <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                                                     <li class="uk-nav-header uk-text-truncate">{ file.name }</li>
-                                                    <li><a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">{ App.i18n.get('Open') }</a></li>
-                                                    <li><a class="uk-dropdown-close" onclick="{ parent.rename }">{ App.i18n.get('Rename') }</a></li>
-                                                    <li><a class="uk-dropdown-close" onclick="{ parent.download }">{ App.i18n.get('Download') }</a></li>
+                                                    <li><a class="uk-link-muted js-no-item-select" onclick="{ parent.open }">{ App.i18n.get('Open') }</a></li>
+                                                    <li><a onclick="{ parent.rename }">{ App.i18n.get('Rename') }</a></li>
+                                                    <li><a onclick="{ parent.download }">{ App.i18n.get('Download') }</a></li>
                                                     <li if="{ file.ext == 'zip' }"><a onclick="{ parent.unzip }">{ App.i18n.get('Unzip') }</a></li>
                                                     <li class="uk-nav-divider"></li>
-                                                    <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">{ App.i18n.get('Delete') }</a></li>
+                                                    <li class="uk-nav-item-danger"><a onclick="{ parent.remove }">{ App.i18n.get('Delete') }</a></li>
                                                 </ul>
                                             </div>
                                         </span>
@@ -257,12 +256,12 @@
                                             <div class="uk-dropdown uk-dropdown-flip">
                                                 <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
                                                     <li class="uk-nav-header">{ App.i18n.get('Actions') }</li>
-                                                    <li><a class="uk-link-muted uk-dropdown-close js-no-item-select" onclick="{ parent.open }">{ App.i18n.get('Open') }</a></li>
-                                                    <li><a class="uk-dropdown-close" onclick="{ parent.rename }">{ App.i18n.get('Rename') }</a></li>
-                                                    <li><a class="uk-dropdown-close" onclick="{ parent.download }">{ App.i18n.get('Download') }</a></li>
+                                                    <li><a class="uk-link-muted js-no-item-select" onclick="{ parent.open }">{ App.i18n.get('Open') }</a></li>
+                                                    <li><a onclick="{ parent.rename }">{ App.i18n.get('Rename') }</a></li>
+                                                    <li><a onclick="{ parent.download }">{ App.i18n.get('Download') }</a></li>
                                                     <li if="{ file.ext == 'zip' }"><a onclick="{ parent.unzip }">{ App.i18n.get('Unzip') }</a></li>
                                                     <li class="uk-nav-divider"></li>
-                                                    <li class="uk-nav-item-danger"><a class="uk-dropdown-close" onclick="{ parent.remove }">{ App.i18n.get('Delete') }</a></li>
+                                                    <li class="uk-nav-item-danger"><a onclick="{ parent.remove }">{ App.i18n.get('Delete') }</a></li>
                                                 </ul>
                                             </div>
                                         </span>
@@ -417,7 +416,7 @@
                     {'source': file.url, 'type':'video'}
                 ]).show();
 
-            } else if(name.match(typefilters.text)) {
+            } else if(name.match(typefilters.text) || name=='.env') {
 
                 UIkit.offcanvas.show(this.refs.editor);
                 this.tags.picoedit.open(file.path);

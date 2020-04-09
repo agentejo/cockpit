@@ -7,7 +7,7 @@
 
     <script>
 
-        var $this = this, src;
+        var $this = this, src, cache = {};
 
         this.inView = false;
         this.width  = opts.width;
@@ -47,51 +47,27 @@
 
         this.load = function() {
 
-            var _src = opts.src || opts.riotSrc || opts['riot-src'], mode = opts.mode || 'bestFit', img;
+            var _src = opts.src || opts.riotSrc || opts['riot-src'], img, mode = opts.mode || 'bestFit';
 
             if (!_src || src === _src) {
                 return;
             }
 
             this.refs.spinner.style.display = '';
-            
-            src = _src;
-            img = new Image();
-                
-            img.onload = function() {    
-                
-                setTimeout(function() {
-                    $this.updateCanvasDim(img)
-                }, 0);
-            }
-            
-            img.onerror = function() {
-                //console.log(`error ${url}`)
-            }
 
-            requestAnimationFrame(function() {
+            this.getUrl(_src, mode).then(function(url) {
 
-                if (_src.match(/^(http\:|https\:|\/\/)/) && !(_src.includes(ASSETS_URL) || _src.includes(SITE_URL))) {
-
-                    src = _src;
-
+                img = new Image();
+                img.onload = function() {    
+                    
                     setTimeout(function() {
-                        img.src = _src;
-                    }, 50);
+                        $this.updateCanvasDim(img)
+                    }, 0);
+                }
+                
+                img.onerror = function() {}
 
-                    return;
-                }
-                
-                var url;
-                
-                if (_src.match(/\.(svg|ico)$/i)) {
-                    url = _src;
-                } else {
-                    url = App.route(`/cockpit/utils/thumb_url?src=${_src}&w=${opts.width}&h=${opts.height}&m=${mode}&o=1`);
-                }
-                
                 img.src = url;
-                
             });
         };
 
@@ -121,6 +97,30 @@
 
             }.bind(this), 0);
 
+        }
+
+        getUrl(url, mode) {
+
+            var key = `${url}:${mode}`;
+
+            if (!cache[key]) {
+
+                cache[key] = new Promise(function(resolve) {
+                    
+                    if (url.match(/^(http\:|https\:|\/\/)/) && !(url.includes(ASSETS_URL) || url.includes(SITE_URL))) {
+                        resolve(url);
+                        return;
+                    }
+                    
+                    if (!url.match(/\.(svg|ico)$/i)) {
+                        url = App.route(`/cockpit/utils/thumb_url?src=${url}&w=${opts.width}&h=${opts.height}&m=${mode}&re=1`);
+                    }
+                    
+                    resolve(url);
+                });
+            }
+
+            return cache[key];
         }
 
     </script>
