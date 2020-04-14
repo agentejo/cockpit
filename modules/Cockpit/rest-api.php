@@ -74,7 +74,7 @@ $this->on('before', function() {
                             $rule = trim($rule);
                             if (!$rule) continue;
 
-                            if (preg_match("#{$rule}#", COCKPIT_ADMIN_ROUTE)) {
+                            if ($rule == '*' || preg_match("#{$rule}#", COCKPIT_ADMIN_ROUTE)) {
                                 $allowed = true;
                                 break;
                             }
