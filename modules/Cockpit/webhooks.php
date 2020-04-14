@@ -77,6 +77,8 @@ $app->on('shutdown', function() use($webHookCalls) {
 
     foreach ($webHookCalls as $webhook) {
 
+        $this->trigger('cockpit.webhook', [&$webhook]);
+
         $ch = curl_init($webhook['url']);
 
         // add basic http auth
