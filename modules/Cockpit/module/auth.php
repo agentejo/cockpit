@@ -164,7 +164,7 @@ $this->module('cockpit')->extend([
 
             $data[$key] = $value;
 
-            $app->storage->update('cockpit/accounts', ['_id' => $user['_id']], ['data' => $data]);
+            $app->storage->update('cockpit/accounts', ['_id' => $user['_id']], ['$set' => ['data' => $data]]);
 
             return $value;
         }
