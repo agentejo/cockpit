@@ -2783,7 +2783,7 @@ riot.tag2('field-layout', '<div class="uk-sortable layout-components {!items.len
         }
 
         if (opts.parentComponent && opts.parentComponent.options) {
-            opts = App.$.extend(true, opts.parentComponent.options, opts);
+            opts = App.$.extend(true, {}, opts.parentComponent.options, opts);
         }
 
         this.on('mount', function() {

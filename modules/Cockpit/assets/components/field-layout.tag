@@ -250,7 +250,7 @@
         }
 
         if (opts.parentComponent && opts.parentComponent.options) {
-            opts = App.$.extend(true, opts.parentComponent.options, opts);
+            opts = App.$.extend(true, {}, opts.parentComponent.options, opts);
         }
 
         
