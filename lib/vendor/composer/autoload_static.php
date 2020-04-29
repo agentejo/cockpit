@@ -7,6 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
 {
     public static $files = array (
+        '7aed44d824e149ce152c0fb82af9379a' => __DIR__ . '/..' . '/colinodell/json5/src/global.php',
         '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
     );
 
@@ -34,6 +35,7 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
         'C' => 
         array (
             'ColorThief\\' => 11,
+            'ColinODell\\Json5\\' => 17,
         ),
     );
 
@@ -61,6 +63,10 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
         'ColorThief\\' => 
         array (
             0 => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief',
+        ),
+        'ColinODell\\Json5\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/colinodell/json5/src',
         ),
     );
 
@@ -90,6 +96,8 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
     );
 
     public static $classMap = array (
+        'ColinODell\\Json5\\Json5Decoder' => __DIR__ . '/..' . '/colinodell/json5/src/Json5Decoder.php',
+        'ColinODell\\Json5\\SyntaxError' => __DIR__ . '/..' . '/colinodell/json5/src/SyntaxError.php',
         'ColorThief\\CMap' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/CMap.php',
         'ColorThief\\ColorThief' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/ColorThief.php',
         'ColorThief\\Image\\Adapter\\GDImageAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/Image/Adapter/GDImageAdapter.php',

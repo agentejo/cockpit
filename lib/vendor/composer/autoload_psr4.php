@@ -12,5 +12,6 @@ return array(
     'League\\Flysystem\\' => array($vendorDir . '/league/flysystem/src'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'ColorThief\\' => array($vendorDir . '/ksubileau/color-thief-php/lib/ColorThief'),
+    'ColinODell\\Json5\\' => array($vendorDir . '/colinodell/json5/src'),
     '' => array($vendorDir . '/league/color-extractor/src'),
 );

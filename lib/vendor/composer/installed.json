@@ -41,6 +41,72 @@
         "description": "A PHP class that makes working with images as simple as possible."
     },
     {
+        "name": "colinodell/json5",
+        "version": "v2.1.0",
+        "version_normalized": "2.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/colinodell/json5.git",
+            "reference": "86136a74726d48ec60285d5b8585d62e0645b56c"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/colinodell/json5/zipball/86136a74726d48ec60285d5b8585d62e0645b56c",
+            "reference": "86136a74726d48ec60285d5b8585d62e0645b56c",
+            "shasum": ""
+        },
+        "require": {
+            "ext-json": "*",
+            "ext-mbstring": "*",
+            "php": "^5.6|^7.0"
+        },
+        "require-dev": {
+            "mikehaertl/php-shellcommand": "^1.2.5",
+            "phpunit/phpunit": "^4.8.36|^7.3",
+            "squizlabs/php_codesniffer": "^2.3",
+            "symfony/finder": "^2.8|^3.4|^4.1"
+        },
+        "time": "2019-03-28T18:28:32+00:00",
+        "bin": [
+            "bin/json5"
+        ],
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "ColinODell\\Json5\\": "src"
+            },
+            "files": [
+                "src/global.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Colin O'Dell",
+                "email": "colinodell@gmail.com",
+                "homepage": "https://www.colinodell.com",
+                "role": "Developer"
+            }
+        ],
+        "description": "UTF-8 compatible JSON5 parser for PHP",
+        "homepage": "https://github.com/colinodell/json5",
+        "keywords": [
+            "JSON5",
+            "json",
+            "json5_decode",
+            "json_decode"
+        ]
+    },
+    {
         "name": "erusev/parsedown",
         "version": "1.7.3",
         "version_normalized": "1.7.3.0",

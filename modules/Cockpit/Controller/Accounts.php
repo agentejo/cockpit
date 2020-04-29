@@ -218,23 +218,28 @@ class Accounts extends \Cockpit\AuthController {
             'sort'   => ['user' => 1]
         ], $this->param('options', []));
 
-        if (isset($options['filter'])) {
+        if (isset($options['filter']) && is_string($options['filter'])) {
 
-            if (is_string($options['filter'])) {
+            $filter = null;
 
-                if ($filter = json_decode($options['filter'], true)) {
-                    $options['filter'] = $filter;
-                } else {
+            if (\preg_match('/^\{(.*)\}$/', $options['filter'])) {
 
-                    $options['filter'] = [
-                        '$or' => [
-                            ['name' => ['$regex' => $options['filter']]],
-                            ['user' => ['$regex' => $options['filter']]],
-                            ['email' => ['$regex' => $options['filter']]],
-                        ]
-                    ];
-                }
+                try {
+                    $filter = json5_decode($options['filter'], true);
+                } catch (\Exception $e) {}
             }
+
+            if (!$filter) {
+                $filter = [
+                    '$or' => [
+                        ['name' => ['$regex' => $options['filter']]],
+                        ['user' => ['$regex' => $options['filter']]],
+                        ['email' => ['$regex' => $options['filter']]],
+                    ]
+                ];
+            }
+
+            $options['filter'] = $filter;
         }
 
         $accounts = $this->app->storage->find('cockpit/accounts', $options)->toArray();

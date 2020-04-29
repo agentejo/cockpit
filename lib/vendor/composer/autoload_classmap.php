@@ -6,6 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname(dirname($vendorDir));
 
 return array(
+    'ColinODell\\Json5\\Json5Decoder' => $vendorDir . '/colinodell/json5/src/Json5Decoder.php',
+    'ColinODell\\Json5\\SyntaxError' => $vendorDir . '/colinodell/json5/src/SyntaxError.php',
     'ColorThief\\CMap' => $vendorDir . '/ksubileau/color-thief-php/lib/ColorThief/CMap.php',
     'ColorThief\\ColorThief' => $vendorDir . '/ksubileau/color-thief-php/lib/ColorThief/ColorThief.php',
     'ColorThief\\Image\\Adapter\\GDImageAdapter' => $vendorDir . '/ksubileau/color-thief-php/lib/ColorThief/Image/Adapter/GDImageAdapter.php',

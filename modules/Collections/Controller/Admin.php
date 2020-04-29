@@ -455,11 +455,20 @@ class Admin extends \Cockpit\AuthController {
 
         if (isset($options['filter']) && is_string($options['filter'])) {
 
-            if (\preg_match('/^\{(.*)\}$/', $options['filter']) && $filter = json_decode($options['filter'], true)) {
-                $options['filter'] = $filter;
-            } else {
-                $options['filter'] = $this->_filter($options['filter'], $collection, $options['lang'] ?? null);
+            $filter = null;
+
+            if (\preg_match('/^\{(.*)\}$/', $options['filter'])) {
+
+                try {
+                    $filter = json5_decode($options['filter'], true);
+                } catch (\Exception $e) {}
             }
+
+            if (!$filter) {
+                $filter = $this->_filter($options['filter'], $collection, $options['lang'] ?? null);
+            }
+
+            $options['filter'] = $filter;
         }
 
         $this->app->trigger("collections.admin.find.before.{$collection['name']}", [&$options]);

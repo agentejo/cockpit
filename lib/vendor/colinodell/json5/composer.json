@@ -1,0 +1,57 @@
+{
+    "name": "colinodell/json5",
+    "type": "library",
+    "description": "UTF-8 compatible JSON5 parser for PHP",
+    "keywords": [
+        "json5",
+        "json",
+        "json5_decode",
+        "json_decode"
+    ],
+    "homepage": "https://github.com/colinodell/json5",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Colin O'Dell",
+            "email": "colinodell@gmail.com",
+            "homepage": "https://www.colinodell.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^5.6|^7.0",
+        "ext-json": "*",
+        "ext-mbstring": "*"
+    },
+    "require-dev": {
+        "mikehaertl/php-shellcommand": "^1.2.5",
+        "phpunit/phpunit": "^4.8.36|^7.3",
+        "squizlabs/php_codesniffer": "^2.3",
+        "symfony/finder": "^2.8|^3.4|^4.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "ColinODell\\Json5\\": "src"
+        },
+        "files": ["src/global.php"]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ColinODell\\Json5\\Test\\": "test"
+        }
+    },
+    "bin": ["bin/json5"],
+    "scripts": {
+        "test": "phpunit",
+        "check-style": "phpcs -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src test",
+        "fix-style": "phpcbf -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src test"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.0-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

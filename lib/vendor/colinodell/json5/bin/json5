@@ -1,0 +1,152 @@
+#!/usr/bin/env php
+<?php
+
+/*
+ * This file is part of the colinodell/json5 package.
+ *
+ * (c) Colin O'Dell <colinodell@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+requireAutoloader();
+
+ini_set('display_errors', 'stderr');
+
+foreach ($argv as $i => $arg) {
+    if ($i === 0) {
+        continue;
+    }
+
+    if (substr($arg, 0, 1) === '-') {
+        switch ($arg) {
+            case '-h':
+            case '--help':
+                echo getHelpText();
+                exit(0);
+        }
+    } else {
+        $src = $arg;
+    }
+}
+
+if (isset($src)) {
+    if (!file_exists($src)) {
+        fail('File not found: ' . $src);
+    }
+
+    $json = file_get_contents($src);
+} else {
+    $stdin = fopen('php://stdin', 'r');
+
+    if (stream_set_blocking($stdin, false)) {
+        $json = stream_get_contents($stdin);
+    }
+
+    fclose($stdin);
+
+    if (empty($json)) {
+        fail(getHelpText());
+    }
+}
+
+try {
+    $decoded = \ColinODell\Json5\Json5Decoder::decode($json);
+    echo json_encode($decoded);
+} catch (\ColinODell\Json5\SyntaxError $e) {
+    fail($e->getMessage());
+}
+
+/**
+ * Get help and usage info
+ *
+ * @return string
+ */
+function getHelpText()
+{
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        return <<<WINDOWSHELP
+JSON5 - JSON for Humans
+
+Converts JSON5 to plain JSON
+
+Usage: json5 [OPTIONS] [FILE]
+
+    -h, --help  Shows help and usage information
+
+    (Reading data from STDIN is not currently supported on Windows)
+
+Examples:
+
+    Converting a file named file.json5:
+
+        json5 file.json5
+
+    Converting a file and saving its output:
+
+        json5 file.json5 > file.json
+
+See https://github.com/colinodell/json5 for more information
+
+WINDOWSHELP;
+    }
+
+    return <<<HELP
+JSON5 - JSON for Humans
+
+Converts JSON5 to plain JSON
+
+Usage: json5 [OPTIONS] [FILE]
+
+    -h, --help  Shows help and usage information
+
+    If no file is given, input will be read from STDIN
+
+Examples:
+
+    Converting a file named file.json5:
+
+        json5 file.json5
+
+    Converting a file and saving its output:
+
+        json5 file.json5 > file.json
+
+    Converting from STDIN:
+
+        echo -e "{hello: 'world!'}" | json5
+
+    Converting from STDIN and saving the output:
+
+        echo -e "{hello: 'world!'}" | json5 > output.json
+
+See https://github.com/colinodell/json5 for more information
+
+HELP;
+}
+
+/**
+ * @param string $message Error message
+ */
+function fail($message)
+{
+    fwrite(STDERR, $message . "\n");
+    exit(1);
+}
+
+function requireAutoloader()
+{
+    $autoloadPaths = array(
+        // Local package usage
+      __DIR__ . '/../vendor/autoload.php',
+        // Package was included as a library
+      __DIR__ . '/../../../autoload.php',
+    );
+    foreach ($autoloadPaths as $path) {
+        if (file_exists($path)) {
+            require_once $path;
+            break;
+        }
+    }
+}
