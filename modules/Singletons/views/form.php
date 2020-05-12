@@ -237,6 +237,10 @@
                 this.group = $this._groups[1];
             }
 
+            if (this.languages.length) {
+                this.lang = App.session.get('singletons.form.'+this.singleton._id+'.lang', '');
+            }
+
             this.on('mount', function(){
 
                 // bind global command + save
@@ -368,6 +372,10 @@
                 }
 
                 return true;
+            }
+
+            persistLanguage(e) {
+                App.session.set('singletons.form.'+this.singleton._id+'.lang', e.target.value);
             }
 
             showDataObject() {

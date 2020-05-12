@@ -8,7 +8,9 @@
 
 <div class="uk-margin-top uk-form" riot-view>
 
-    <div class="uk-grid">
+    @trigger('cockpit.restadmin.top', [&$keys])
+
+    <div class="uk-grid uk-grid-large">
         <div class="uk-width-2-3">
 
  
@@ -72,6 +74,8 @@
                 <button class="uk-button uk-button-link" onclick="{ addKey }"><i class="uk-icon-plus"></i> @lang('API Key')</button>
             </div>
 
+            @trigger('cockpit.restadmin.main', [&$keys])
+
             <cp-actionbar>
                 <div class="uk-container uk-container-center">
                     <button class="uk-button uk-button-primary uk-button-large" type="button" name="button" onclick="{ save }">@lang('Save')</button>
@@ -82,7 +86,7 @@
         </div>
 
         <div class="uk-width-1-3">
-            <!-- TODo: Quick Docs -->
+            @trigger('cockpit.restadmin.aside', [&$keys])
         </div>
     </div>
 
