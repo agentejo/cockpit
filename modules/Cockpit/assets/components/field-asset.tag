@@ -79,6 +79,7 @@
         }.bind(this);
 
         this.on('mount', function() {
+            $this.pattern = opts.pattern || '*.*';
 
             // handle uploads
             App.assets.require(['/assets/lib/uikit/js/components/upload.js'], function() {
@@ -128,7 +129,7 @@
                 if (Array.isArray(assets)) {
                     $this.$setValue(assets[0]);
                 }
-            });
+            }, { pattern: $this.pattern });
         }
 
         reset() {

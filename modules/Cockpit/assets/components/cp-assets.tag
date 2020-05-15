@@ -272,10 +272,11 @@
         this.page     = 1;
         this.pages    = 1;
         this.limit    = opts.limit || 15;
+        this.pattern    = opts.pattern || '*.*'
 
         this.on('mount', function() {
 
-            this.listAssets(1);
+            this.updateFilter();
 
             // handle uploads
             App.assets.require(['/assets/lib/uikit/js/components/upload.js'], function() {
@@ -284,6 +285,7 @@
 
                     action: App.route('/assetsmanager/upload'),
                     type: 'json',
+                    allow: $this.pattern,
                     before: function(options) {
                         options.params.folder = $this.folder
                     },
@@ -324,7 +326,8 @@
                             App.ui.notify("Something went wrong.", "danger");
                         }
 
-                    }
+                    },
+                    
                 },
 
                 uploadselect = UIkit.uploadSelect(App.$('.js-upload-select', $this.root)[0], uploadSettings),
@@ -380,8 +383,12 @@
 
             this.filter = null;
 
-            if (this.refs.filtertitle.value || this.refs.filtertype.value) {
+            if (this.refs.filtertitle.value || this.refs.filtertype.value || this.pattern !== '*.*') {
                 this.filter = {};
+            }
+
+            if (this.pattern !== '*.*') {
+                this.filter.path = {'$regex': '^.*\.(' + this.pattern.replace(/\*./g, '') + ')$', '$options': 'i'};
             }
 
             if (this.refs.filtertitle.value) {
