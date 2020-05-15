@@ -22,7 +22,7 @@
 
                                 <span class="uk-button uk-button-large { getRefValue('filtertype') && 'uk-button-primary'} uk-text-capitalize"><i class="uk-icon-eye uk-margin-small-right"></i> { getRefValue('filtertype') || App.i18n.get('All') }</span>
 
-                                <select ref="filtertype" onchange="{ updateFilter }" aria-label="{App.i18n.get('Mime Type')}">
+                                <select ref="filtertype" onchange="{ updateFilter }" aria-label="{App.i18n.get('Mime Type')}" if="{!opts.typefilter}">
                                     <option value="">All</option>
                                     <option value="image">Image</option>
                                     <option value="video">Video</option>
@@ -32,6 +32,7 @@
                                     <option value="code">Code</option>
                                 </select>
 
+                                <input type="hidden" ref="filtertype" value="{opts.typefilter}" aria-label="{App.i18n.get('Mime Type')}" onload="{ updateFilter }" if="{opts.typefilter}">
                             </div>
                         </div>
                         <div class="uk-flex-item-1">
@@ -275,6 +276,7 @@
 
         this.on('mount', function() {
 
+            this.updateFilter();
             this.listAssets(1);
 
             // handle uploads

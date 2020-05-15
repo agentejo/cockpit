@@ -122,12 +122,22 @@
         })
 
         selectAsset() {
+            var typefilter = "",
+                predefinedTypefilters = ["image", "video", "audio", "document", "archive", "code"];
+            if (opts.typefilter) {
+                opts.typefilter = (opts.typefilter + "").toLowerCase() // Force lowercase string
+                if (predefinedTypefilters.indexOf(opts.typefilter) != -1) {
+                    typefilter = opts.typefilter;
+                }
+            }
 
             Cockpit.assets.select(function(assets){
 
                 if (Array.isArray(assets)) {
                     $this.$setValue(assets[0]);
                 }
+            }, {
+                typefilter: typefilter
             });
         }
 
