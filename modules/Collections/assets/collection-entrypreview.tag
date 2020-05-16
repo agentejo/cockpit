@@ -198,7 +198,7 @@
         this.languages = opts.languages || [];
         this.collection = opts.collection;
         this.entry = opts.entry;
-        this.ws = {send:function(){}};
+        this.ws = {send:function(){}, close:function(){}};
 
         this.mode = 'desktop';
         this.group = '';
@@ -334,7 +334,7 @@
 
             var ws = this.settings.wsurl ? new WebSocket(this.settings.wsurl, this.settings.wsprotocols ? protocols : undefined) : {send:function(){}, close:function(){}};
 
-            this.ws = {send:function(){}};
+            this.ws = {send:function(){}, close:function(){}};
 
             ws.onopen = function() { 
                 $this.ws = ws;
