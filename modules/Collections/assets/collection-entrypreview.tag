@@ -198,7 +198,7 @@
         this.languages = opts.languages || [];
         this.collection = opts.collection;
         this.entry = opts.entry;
-        this.ws = null;
+        this.ws = {send:function(){}};
 
         this.mode = 'desktop';
         this.group = '';
