@@ -176,7 +176,8 @@
                     $this.$setValue($this.image);
                     $this.update();
                 }
-            });
+                
+            }, {typefilter: 'image'});
         }
 
         remove() {

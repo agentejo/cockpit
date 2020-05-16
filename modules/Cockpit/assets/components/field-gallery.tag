@@ -280,7 +280,8 @@
 
                     $this.$setValue($this.images.concat(images));
                 }
-            });
+                
+            }, {typefilter: 'image'});
         }
 
         selectImage(e) {

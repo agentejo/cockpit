@@ -17,7 +17,7 @@
             <div class="uk-grid uk-grid-width-1-2">
                 <div>
                     <div class="uk-grid uk-grid-small uk-flex-middle">
-                        <div>
+                        <div show="{!opts.typefilter}">
                             <div class="uk-form-select">
 
                                 <span class="uk-button uk-button-large { getRefValue('filtertype') && 'uk-button-primary'} uk-text-capitalize"><i class="uk-icon-eye uk-margin-small-right"></i> { getRefValue('filtertype') || App.i18n.get('All') }</span>
@@ -275,6 +275,10 @@
 
         this.on('mount', function() {
 
+            if (opts.typefilter) {
+                this.refs.filtertype.value = opts.typefilter;
+            }
+
             this.listAssets(1);
 
             // handle uploads
@@ -344,6 +348,24 @@
             this.page    = page || 1;
             this.loading = true;
 
+            this.filter = null;
+
+            if (this.refs.filtertitle.value || this.refs.filtertype.value) {
+                this.filter = {};
+            }
+
+            if (this.refs.filtertitle.value) {
+
+                this.filter.$or = [];
+                this.filter.$or.push({title: {'$regex':this.refs.filtertitle.value, '$options': 'i'}});
+                this.filter.$or.push({description: {'$regex':this.refs.filtertitle.value, '$options': 'i'}});
+                this.filter.$or.push({tags: this.refs.filtertitle.value});
+            }
+
+            if (this.refs.filtertype.value) {
+                this.filter[this.refs.filtertype.value] = true;
+            }
+
             var options = {
                 filter : this.filter || null,
                 limit  : this.limit,
@@ -377,24 +399,6 @@
         }
 
         updateFilter() {
-
-            this.filter = null;
-
-            if (this.refs.filtertitle.value || this.refs.filtertype.value) {
-                this.filter = {};
-            }
-
-            if (this.refs.filtertitle.value) {
-
-                this.filter.$or = [];
-                this.filter.$or.push({title: {'$regex':this.refs.filtertitle.value, '$options': 'i'}});
-                this.filter.$or.push({description: {'$regex':this.refs.filtertitle.value, '$options': 'i'}});
-                this.filter.$or.push({tags: this.refs.filtertitle.value});
-            }
-
-            if (this.refs.filtertype.value) {
-                this.filter[this.refs.filtertype.value] = true;
-            }
 
             this.listAssets(1);
         }

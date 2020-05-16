@@ -128,7 +128,8 @@
                 if (Array.isArray(assets)) {
                     $this.$setValue(assets[0]);
                 }
-            });
+
+            }, {typefilter: opts.typefilter});
         }
 
         reset() {
