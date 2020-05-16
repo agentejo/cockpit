@@ -34,7 +34,7 @@ $this->module('collections')->extend([
         $collection = array_replace_recursive([
             'name'      => $name,
             'label'     => $name,
-            '_id'       => uniqid($name),
+            '_id'       => $name,
             'fields'    => [],
             'sortable'  => false,
             'in_menu'   => false,

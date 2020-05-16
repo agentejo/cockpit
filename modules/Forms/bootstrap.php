@@ -32,7 +32,7 @@ $this->module('forms')->extend([
         $time = time();
 
         $form = array_replace_recursive([
-            '_id'       => uniqid($name),
+            '_id'       => $name,
             'name'      => $name,
             'label'     => $name,
             'save_entry' => true,

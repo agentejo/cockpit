@@ -52,7 +52,7 @@ class Admin extends \Cockpit\AuthController {
             return $this->helper('admin')->denyRequest();
         }
 
-        $singleton = [ 'name'=>'', 'description' => '', 'fields'=>[], 'template' => '', 'data' => null];
+        $singleton = [ 'name'=>'', 'description' => '', 'fields'=>[], 'data' => null];
 
         if ($name) {
 

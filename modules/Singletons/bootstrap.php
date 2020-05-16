@@ -34,9 +34,8 @@ $this->module('singletons')->extend([
         $singleton = array_replace_recursive([
             'name'      => $name,
             'label'     => $name,
-            '_id'       => uniqid($name),
+            '_id'       => $name,
             'fields'    => [],
-            'template'  => '',
             'data'      => null,
             '_created'  => $time,
             '_modified' => $time
