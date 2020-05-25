@@ -16,7 +16,14 @@ class RestApi extends \LimeExtra\Controller {
         $this->app->response->mime = 'json';
     }
 
+    /**
+     * Deprecated! use /entries instead
+     */
     public function get($collection = null) {
+        return $this->entries($collection);
+    }
+
+    public function entries($collection = null) {
 
         if (!$collection) {
             return $this->stop('{"error": "Missing collection name"}', 412);
