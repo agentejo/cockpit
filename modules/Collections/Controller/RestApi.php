@@ -124,7 +124,7 @@ class RestApi extends \LimeExtra\Controller {
             return $this->stop('{"error": "Collection not found"}', 412);
         }
 
-        if (!$id) {
+        if (!$id && !$this->param('filter')) {
             return $this->stop('{"error": "Missing id parameter"}', 412);
         }
 
@@ -136,6 +136,12 @@ class RestApi extends \LimeExtra\Controller {
             if (!$this->module('collections')->hasaccess($collection['name'], 'entries_view')) {
                 return $this->stop('{"error": "Unauthorized"}', 401);
             }
+        }
+
+        $filter = $this->param('filter');
+
+        if (!$filter) {
+            $filter = ['_id' => $id];
         }
 
         $options = [];
@@ -153,7 +159,7 @@ class RestApi extends \LimeExtra\Controller {
             $options['fieldsFilter'] = $fieldsFilter;
         }
 
-        $entry = $this->module('collections')->findOne($collection['name'], ['_id' => $id], $options['fields'] ?? null, $options['populate'] ?? false, $options['fieldsFilter'] ?? []);
+        $entry = $this->module('collections')->findOne($collection['name'], $filter, $options['fields'] ?? null, $options['populate'] ?? false, $options['fieldsFilter'] ?? []);
 
         if (!$entry) {
             return $this->stop('{"error": "Entry not found."}', 404);
