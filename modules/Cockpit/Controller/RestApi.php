@@ -257,6 +257,24 @@ class RestApi extends \LimeExtra\Controller {
         return $this->module('cockpit')->listAssets($options);
     }
 
+    public function asset($id = null) {
+
+        if (!$id) {
+            return $this->stop('{"error": "Missing id parameter"}', 412);
+        }
+
+        $options = [
+            'filter' => ['_id' => $id]
+        ];
+
+        if ($filter = $this->param('filter', null)) $options['filter'] = $filter;
+        if ($fields = $this->param('fields', null)) $options['fields'] = $fields;
+
+        $assets = $this->module('cockpit')->listAssets($options);
+
+        return $assets[0] ?? false;
+    }
+
     public function addAssets() {
         return $this->module('cockpit')->uploadAssets('files', $this->param('meta', []));
     }
