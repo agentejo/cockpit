@@ -5,6 +5,19 @@ services:
     build:
       type: dockerfile
       config: ./.runme/Dockerfile
+    environment:
+      COCKPIT_SESSION_NAME: cockpit
+      COCKPIT_SALT: S0meS@lt
+      COCKPIT_DATABASE_SERVER: 'mongodb://root:password@mongo:27017'
+      COCKPIT_DATABASE_NAME: cockpit_master
     ports:
       - container: 80
         public: 80
+
+  mongo:
+    image: bitnami/mongodb:4.0
+    environment:
+      MONGODB_REPLICA_SET_MODE: primary
+      MONGODB_REPLICA_SET_NAME: rs0
+      MONGODB_ROOT_PASSWORD: password
+      MONGODB_REPLICA_SET_KEY: replicasetkey123
