@@ -2,10 +2,9 @@ version: 1.0
 publish: app
 services:
   app:
-    command: some
     build:
       type: dockerfile
-      config: ./Dockerfile
+      config: ./.runme/Dockerfile
     ports:
-      - container: 8080
+      - container: 80
         public: 80
