@@ -22,4 +22,4 @@ COPY . .
 
 RUN chown -R www-data:www-data /var/www/html
 
-CMD ["apache2-foreground"]
+CMD ["/bin/bash", "-c", "set -m; apache2-foreground & for i in {1..10}; do curl http://localhost/install/ -v && s=$$? && break || s=$$?; sleep 1; done; fg %1"]
