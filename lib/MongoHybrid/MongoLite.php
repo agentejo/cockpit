@@ -22,11 +22,11 @@ class MongoLite {
 
     public function getCollection($name, $db = null){
 
-        if(strpos($name, '/') !== false) {
+        if (strpos($name, '/') !== false) {
             list($db, $name) = explode('/', $name, 2);
         }
 
-        if(!$db) {
+        if (!$db) {
             $db = $this->db;
         }
 
@@ -37,17 +37,35 @@ class MongoLite {
 
     public function dropCollection($name, $db = null){
 
-        if(strpos($name, '/') !== false) {
+        if (strpos($name, '/') !== false) {
             list($db, $name) = explode('/', $name, 2);
         }
 
-        if(!$db) {
+        if (!$db) {
             $db = $this->db;
         }
 
         $name = str_replace('/', '_', $name);
 
         return $db->dropCollection($name);
+    }
+
+    public function renameCollection($name, $newname, $db = null) {
+
+        if (!$db) {
+            $db = $this->db;
+        }
+
+        $name = str_replace('/', '_', $name);
+        $newname = str_replace('/', '_', $newname);
+
+        if (!in_array($name, $db->getCollectionNames())) {
+            return false;
+        }
+
+        $db->connection->exec("ALTER TABLE `{$name}` RENAME TO `{$newname}`");
+
+        return true;
     }
 
     public function findOne($collection, $filter = [], $projection = null) {
@@ -69,9 +87,9 @@ class MongoLite {
 
         $cursor = $this->getCollection($collection)->find($filter, $fields);
 
-        if($limit) $cursor->limit($limit);
-        if($sort)  $cursor->sort($sort);
-        if($skip)  $cursor->skip($skip);
+        if ($limit) $cursor->limit($limit);
+        if ($sort)  $cursor->sort($sort);
+        if ($skip)  $cursor->skip($skip);
 
         $docs      = $cursor->toArray();
         $resultSet = new ResultSet($this, $docs);

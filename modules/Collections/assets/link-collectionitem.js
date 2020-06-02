@@ -1,8 +1,8 @@
-(function() {
+(function () {
 
     var linkCache = {};
 
-    App.Utils.renderer.collectionlink = function(v, field) {
+    App.Utils.renderer.collectionlink = function (v, field) {
 
         if (!v) {
             return '<i class="uk-icon-eye-slash uk-text-muted"></i>';
@@ -17,18 +17,18 @@
 
         if (!linkCache[v._id]) {
 
-            linkCache[v._id] = new Promise(function(resolve) {
+            linkCache[v._id] = new Promise(function (resolve) {
 
-                App.request('/collections/find', {collection:field.options.link, options:{filter:{_id:v._id}}}).then(function(data){
+                App.request('/collections/find', { collection: field.options.link, options: { filter: { _id: v._id } } }).then(function (data) {
 
                     if (!data.entries || !data.entries.length) {
                         v.display = 'n/a';
                     } else {
 
-                        var _entry  = data.entries[0], display = field.options.display;
+                        var _entry = data.entries[0], display = field.options.display;
 
                         if (!display) {
-                            display = _entry.name ? 'name':'title';
+                            display = _entry.name ? 'name' : 'title';
                             v.display = _entry[display] || 'n/a';
                         } else {
                             v.display = _entry[display] || App.Utils.interpolate(display, _entry);
@@ -59,12 +59,12 @@
     function selectCollectionItem(fn, options) {
 
         var options = _.extend({
-            release: fn || function() {}
+            release: fn || function () { }
         }, options || {});
 
         var dialog = UIkit.modal.dialog(
             '<div riot-view><link-collectionitem></link-collectionitem></div>',
-            {modal:false}
+            { modal: false }
         );
 
         options.dialog = dialog;
@@ -75,45 +75,45 @@
     Cockpit.selectCollectionItem = selectCollectionItem;
 
     // register picker
-    App.$(document).on('init-html-editor', function(e, editor){
+    App.$(document).on('init-html-editor', function (e, editor) {
 
         editor.addButtons({
             cpcollectionlink: {
-                title : 'Collection Link',
-                label : `<img src="${App.base('/modules/Collections/icon.svg')}" width="13" height="13" style="transform: translateY(-2px)">`
+                title: 'Collection Link',
+                label: `<img src="${App.base('/modules/Collections/icon.svg')}" width="13" height="13" style="transform: translateY(-2px)">`
             }
         });
 
 
-        editor.on('action.cpcollectionlink', function() {
+        editor.on('action.cpcollectionlink', function () {
 
-            selectCollectionItem(function(data){
+            selectCollectionItem(function (data) {
 
                 if (editor.getCursorMode() == 'markdown') {
-                    editor['replaceSelection']('['+data.title+']('+data.url+')');
+                    editor['replaceSelection']('[' + data.title + '](' + data.url + ')');
                 } else {
-                    editor['replaceSelection']('<a href="'+data.url+'">'+data.title+'</a>');
+                    editor['replaceSelection']('<a href="' + data.url + '">' + data.title + '</a>');
                 }
 
-            }, {url:'',title:''});
+            }, { url: '', title: '' });
 
         });
 
         editor.options.toolbar = editor.options.toolbar.concat(['cpcollectionlink']);
     });
 
-    App.$(document).on('init-wysiwyg-editor', function(e, editor){
+    App.$(document).on('init-wysiwyg-editor', function (e, editor) {
 
-        tinymce.PluginManager.add('cpcollectionlink', function(ed) {
+        tinymce.PluginManager.add('cpcollectionlink', function (ed) {
 
             ed.addMenuItem('pageurl', {
                 icon: 'link',
                 text: App.i18n.get('Link Collection Item'),
-                onclick: function(){
+                onclick: function () {
 
-                    selectCollectionItem(function(data){
-                        ed.insertContent('<a href="' + data.url + '" alt="">'+data.title+'</a>');
-                    }, {url:'',title:''});
+                    selectCollectionItem(function (data) {
+                        ed.insertContent('<a href="' + data.url + '" alt="">' + data.title + '</a>');
+                    }, { url: '', title: '' });
                 },
                 context: 'insert',
                 prependToContext: true
@@ -125,7 +125,7 @@
 
 
     riot.tag2('link-collectionitem',
-              `
+        `
                 <div class="uk-modal-header uk-text-large">
                     { App.i18n.get('Link Collection Item') }
                 </div>
@@ -223,80 +223,80 @@
                     <button class="uk-button uk-button-link uk-button-large uk-modal-close">${App.i18n.get('Cancel')}</button>
                 </div>
 
-              `, '', '', function(opts) {
+              `, '', '', function (opts) {
 
-                    var $this = this;
+        var $this = this;
 
-                    this.count = 0;
-                    this.page  = 1;
-                    this.pages = 1;
+        this.count = 0;
+        this.page = 1;
+        this.pages = 1;
 
-                    App.request('/collections/_collections').then(function(data){
-                        $this.collections = data;
-                        $this.update();
-                    });
+        App.request('/collections/_collections').then(function (data) {
+            $this.collections = data;
+            $this.update();
+        });
 
-                    this.on('mount', function() {
+        this.on('mount', function () {
 
-                        App.$(this.refs.form).on('submit', function(e) {
+            App.$(this.refs.form).on('submit', function (e) {
 
-                            e.preventDefault();
-                            $this.parent.opts.release({url:$this.refs.url.value, title:$this.refs.title.value});
-                            $this.parent.opts.dialog.hide();
-                        });
-                    })
-
-                    this.selectCollection = function(e) {
-                        this.collection = e.item.name;
-                        this.filter = '';
-                        this.page   = 1;
-                        this.load();
-                    }.bind(this)
-
-                    this.apply = function(e) {
-                        this.refs.url.value   = 'collection://'+this.collection+'/'+e.item.item._id;
-                        this.refs.title.value = e.item.item.title || e.item.item.name || '';
-                    }.bind(this)
-
-                    this.val = function(ref) {
-                        return this.refs[ref] && this.refs[ref].value;
-                    }.bind(this)
-
-                    this.updatefilter = function(e) {
-                        this.filter = e.target.value;
-                        this.page   = 1;
-                        this.load();
-                    }.bind(this)
-
-                    this.loadpage = function(page) {
-                        this.page = page > this.pages ? this.pages:page;
-                        this.load();
-                    }.bind(this)
-
-                    this.load = function() {
-
-                        this.items = null;
-
-                        var options = {
-                            limit: 20
-                        };
-
-                        if (this.filter) {
-                            options.filter = this.filter;
-                        }
-
-                        options.skip  = (this.page - 1) * options.limit;
-
-                        App.request('/collections/find', {collection:this.collection, options:options}).then(function(data){
-
-                            this.items = data.entries;
-                            this.page  = data.page;
-                            this.pages = data.pages;
-                            this.count = data.count;
-                            this.update();
-
-                        }.bind(this))
-                    }.bind(this)
+                e.preventDefault();
+                $this.parent.opts.release({ url: $this.refs.url.value, title: $this.refs.title.value });
+                $this.parent.opts.dialog.hide();
             });
+        })
+
+        this.selectCollection = function (e) {
+            this.collection = e.item.name;
+            this.filter = '';
+            this.page = 1;
+            this.load();
+        }.bind(this)
+
+        this.apply = function (e) {
+            this.refs.url.value = 'collection://' + this.collection + '/' + e.item.item._id;
+            this.refs.title.value = e.item.item.title || e.item.item.name || '';
+        }.bind(this)
+
+        this.val = function (ref) {
+            return this.refs[ref] && this.refs[ref].value;
+        }.bind(this)
+
+        this.updatefilter = function (e) {
+            this.filter = e.target.value;
+            this.page = 1;
+            this.load();
+        }.bind(this)
+
+        this.loadpage = function (page) {
+            this.page = page > this.pages ? this.pages : page;
+            this.load();
+        }.bind(this)
+
+        this.load = function () {
+
+            this.items = null;
+
+            var options = {
+                limit: 20
+            };
+
+            if (this.filter) {
+                options.filter = this.filter;
+            }
+
+            options.skip = (this.page - 1) * options.limit;
+
+            App.request('/collections/find', { collection: this.collection, options: options }).then(function (data) {
+
+                this.items = data.entries;
+                this.page = data.page;
+                this.pages = data.pages;
+                this.count = data.count;
+                this.update();
+
+            }.bind(this))
+        }.bind(this)
+    });
 
 })();
