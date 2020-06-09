@@ -19,9 +19,7 @@ class Client {
 
         if (strpos($server, 'mongodb://')===0 || strpos($server, 'mongodb+srv://')===0) {
 
-            $cls = 'MongoHybrid\\Mongo';
-
-            $this->driver = new $cls($server, $options, $driverOptions);
+            $this->driver = new Mongo($server, $options, $driverOptions);
             $this->type = 'mongodb';
         }
 
@@ -35,9 +33,8 @@ class Client {
         return $this->driver->getCollection($name, $db)->drop();
     }
 
-    public function renameCollection($newname, $db = null) {
-
-        return $this->driver->getCollection($name, $db)->renameCollection($newname);
+    public function renameCollection($name, $newname, $db = null) {
+        return $this->driver->renameCollection($name, $newname, $db);
     }
 
     public function save($collection, &$data) {

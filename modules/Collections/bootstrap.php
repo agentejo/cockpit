@@ -138,8 +138,7 @@ $this->module('collections')->extend([
 
         $collection = include($this->app->path("#storage:collections/{$name}.collection.php"));
 
-        $_collectionSrc = "collections/{$collection['_id']}";
-        $_collectionTarget = "collections/{$to}";
+        $_collectionSrc = $collection['_id'];
 
         $collection['name'] = $to;
         $collection['_id'] = $to;
@@ -162,7 +161,7 @@ $this->module('collections')->extend([
             }
         }
 
-        $this->app->storage->renameCollection($_collectionSrc, $_collectionTarget);
+        $this->app->storage->renameCollection($_collectionSrc, $to, 'collections');
 
         return true;
     },

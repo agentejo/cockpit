@@ -47,14 +47,20 @@ class MongoLite {
 
         $name = str_replace('/', '_', $name);
 
-        return $db->dropCollection($name);
+        return $this->client->selectDB($db)->dropCollection($name);
     }
 
     public function renameCollection($name, $newname, $db = null) {
 
+        if (strpos($name, '/') !== false) {
+            list($db, $name) = explode('/', $name, 2);
+        }
+
         if (!$db) {
             $db = $this->db;
         }
+
+        $db = $this->client->selectDB($db);
 
         $name = str_replace('/', '_', $name);
         $newname = str_replace('/', '_', $newname);

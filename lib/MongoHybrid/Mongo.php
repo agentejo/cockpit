@@ -53,25 +53,24 @@ class Mongo {
 
         if ($db) {
             $name = "{$db}/{$name}";
+            $newname = "{$db}/{$newname}";
         }
 
         $name = str_replace('/', '_', $name);
         $newname = str_replace('/', '_', $newname);
 
-        $collections = $this->db->listCollections([
+        $collections = iterator_to_array($this->db->listCollections([
             'filter' => [ 'name' => $name ]
-        ]);
+        ]));
 
         if (!count($collections)) {
             return false;
         }
 
-        $dbname = $this->db->getDatabaseName();
+        //$dbname = $this->db->getDatabaseName();
 
-        $this->db->command([
-            'renameCollection' => "{$dbname}.{$name}",
-            'to' => "{$dbname}.{$newname}"
-        ]);
+        // notice works for mongodb < 4.0
+        $this->db->command(["eval" => "db.{$name}.renameCollection({$newname})"]);
 
         return true;
     }
