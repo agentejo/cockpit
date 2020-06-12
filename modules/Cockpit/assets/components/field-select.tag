@@ -2,6 +2,9 @@
     <div if="{loading}"><i class="uk-icon-spinner uk-icon-spin"></i></div>
     <select ref="input" class="uk-width-1-1 {opts.cls}" bind="{ opts.bind }" show="{!loading}">
         <option value=""></option>
+        <optgroup each="{group in Object.keys(groups).sort()}" label="{group}">
+            <option each="{ option,idx in parent.groups[group] }" value="{ option.value }" selected="{ parent.parent.root.$value == option.value }">{ option.label }</option>
+        </optgroup>
         <option each="{ option,idx in options }" value="{ option.value }" selected="{ parent.root.$value == option.value }">{ option.label }</option>
     </select>
 
@@ -10,7 +13,8 @@
         var $this = this;
 
         this.loading = opts.src && opts.src.url ? true : false;
-        this.goups = [];
+        this.groups = {};
+        this.options = null;
 
         this.on('mount', function() {
 
@@ -46,15 +50,27 @@
 
                     $this.options = [];
 
-                    data.forEach(function(item) {
+                    data.forEach(function(item, option) {
 
                         if (item[fieldVal] === undefined) return;
 
-                        $this.options.push({
+                        option = {
                             value: item[fieldVal],
                             label: item[fieldLabel] || item[fieldVal],
                             group: fieldGroup && item[fieldGroup] ? item[fieldGroup] : false
-                        });
+                        };
+
+                        if (option.group) {
+                            
+                            if (!$this.groups[option.group]) {
+                                $this.groups[option.group] = [];
+                            }
+
+                            $this.groups[option.group].push(option);
+                        } else {
+                            $this.options.push(option);
+                        }
+
                     })
 
                     $this.update();
@@ -78,13 +94,13 @@
                 return;
             }
 
-            if (!this.options) {
+            if (this.options === null) {
 
                 this.options = [];
 
                 if (typeof(opts.options) === 'string' || Array.isArray(opts.options)) {
 
-                    this.options = (typeof(opts.options) === 'string' ? opts.options.split(',') : opts.options || []).map(function(option) {
+                    (typeof(opts.options) === 'string' ? opts.options.split(',') : opts.options || []).forEach(function(option) {
 
                         option = {
                             value : (option.hasOwnProperty('value') ? option.value.toString().trim() : option.toString().trim()),
@@ -92,7 +108,17 @@
                             group : (option.hasOwnProperty('group') ? option.group.toString().trim() : '')
                         };
 
-                        return option;
+                        if (option.group) {
+                            
+                            if (!$this.groups[option.group]) {
+                                $this.groups[option.group] = [];
+                            }
+
+                            $this.groups[option.group].push(option);
+                        } else {
+                            $this.options.push(option);
+                        }
+
                     });
 
                 } else if (typeof(opts.options) === 'object') {
