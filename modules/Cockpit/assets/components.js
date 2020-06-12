@@ -3758,9 +3758,9 @@ riot.tag2('field-select', '<div if="{loading}"><i class="uk-icon-spinner uk-icon
                         if (item[fieldVal] === undefined) return;
 
                         option = {
-                            value: item[fieldVal],
-                            label: item[fieldLabel] || item[fieldVal],
-                            group: fieldGroup && item[fieldGroup] ? item[fieldGroup] : false
+                            value: _.get(item, fieldVal),
+                            label: _.get(item, fieldLabel),
+                            group: fieldGroup ? _.get(item, fieldGroup) : false
                         };
 
                         if (option.group) {
