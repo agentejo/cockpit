@@ -3711,7 +3711,7 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
 
 });
 
-riot.tag2('field-select', '<div if="{loading}"><i class="uk-icon-spinner uk-icon-spin"></i></div> <select ref="input" class="uk-width-1-1 {opts.cls}" bind="{opts.bind}" show="{!loading}"> <option value=""></option> <optgroup each="{group in Object.keys(groups).sort()}" label="{group}"> <option each="{option,idx in parent.groups[group]}" riot-value="{option.value}" selected="{parent.parent.root.$value == option.value}">{option.label}</option> </optgroup> <option each="{option,idx in options}" riot-value="{option.value}" selected="{parent.root.$value == option.value}">{option.label}</option> </select>', '', '', function(opts) {
+riot.tag2('field-select', '<div if="{loading}"><i class="uk-icon-spinner uk-icon-spin"></i></div> <select ref="input" class="uk-width-1-1 {opts.cls}" bind="{opts.bind}" show="{!loading}" multiple="{opts.multiple}"> <option value=""></option> <optgroup each="{group in Object.keys(groups).sort()}" label="{group}"> <option each="{option,idx in parent.groups[group]}" riot-value="{option.value}" selected="{isSelected(option.value)}">{option.label}</option> </optgroup> <option each="{option,idx in options}" riot-value="{option.value}" selected="{isSelected(option.value)}">{option.label}</option> </select>', '', '', function(opts) {
 
         var $this = this;
 
@@ -3724,6 +3724,10 @@ riot.tag2('field-select', '<div if="{loading}"><i class="uk-icon-spinner uk-icon
             (['required']).forEach( function(key) {
                 if (opts[key]) $this.refs.input.setAttribute(key, opts[key]);
             });
+
+            if (opts.multiple) {
+                $this.refs.input.style.height = (opts.height ? String(opts.height).replace('px', '') : 200)+'px';
+            }
 
             if (opts.src && opts.src.url && opts.src.value) {
 
@@ -3783,10 +3787,6 @@ riot.tag2('field-select', '<div if="{loading}"><i class="uk-icon-spinner uk-icon
             this.update();
         });
 
-        this.$updateValue = function(value, field) {
-
-        }.bind(this);
-
         this.on('update', function() {
 
             if (opts.required) {
@@ -3837,13 +3837,20 @@ riot.tag2('field-select', '<div if="{loading}"><i class="uk-icon-spinner uk-icon
                 }
             }
 
-            this.refs.input.value = this.root.$value;
+            if (!opts.multiple) {
+                this.refs.input.value = this.root.$value;
+            }
 
         });
 
-        this.getGroups = function() {
+        this.isSelected = function(value) {
 
-        }
+            if (opts.multiple) {
+                return (Array.isArray(this.root.$value) ? this.root.$value : []).indexOf(value) > -1;
+            }
+
+            return this.root.$value == value;
+        }.bind(this)
 
 });
 

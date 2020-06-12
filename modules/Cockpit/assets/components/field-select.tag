@@ -1,11 +1,11 @@
 <field-select>
     <div if="{loading}"><i class="uk-icon-spinner uk-icon-spin"></i></div>
-    <select ref="input" class="uk-width-1-1 {opts.cls}" bind="{ opts.bind }" show="{!loading}">
+    <select ref="input" class="uk-width-1-1 {opts.cls}" bind="{ opts.bind }" show="{!loading}" multiple="{opts.multiple}">
         <option value=""></option>
         <optgroup each="{group in Object.keys(groups).sort()}" label="{group}">
-            <option each="{ option,idx in parent.groups[group] }" value="{ option.value }" selected="{ parent.parent.root.$value == option.value }">{ option.label }</option>
+            <option each="{ option,idx in parent.groups[group] }" value="{ option.value }" selected="{ isSelected(option.value) }">{ option.label }</option>
         </optgroup>
-        <option each="{ option,idx in options }" value="{ option.value }" selected="{ parent.root.$value == option.value }">{ option.label }</option>
+        <option each="{ option,idx in options }" value="{ option.value }" selected="{ isSelected(option.value) }">{ option.label }</option>
     </select>
 
     <script>
@@ -21,6 +21,10 @@
             (['required']).forEach( function(key) {
                 if (opts[key]) $this.refs.input.setAttribute(key, opts[key]);
             });
+
+            if (opts.multiple) {
+                $this.refs.input.style.height = (opts.height ? String(opts.height).replace('px', '') : 200)+'px';
+            }
 
             if (opts.src && opts.src.url && opts.src.value) {
                 
@@ -80,10 +84,6 @@
             this.update();
         });
 
-        this.$updateValue = function(value, field) {
-
-        }.bind(this);
-
         this.on('update', function() {
 
             if (opts.required) {
@@ -134,12 +134,19 @@
                 }
             }
 
-            this.refs.input.value = this.root.$value;
+            if (!opts.multiple) {
+                this.refs.input.value = this.root.$value;
+            }
 
         });
 
-        this.getGroups = function() {
+        isSelected(value) {
 
+            if (opts.multiple) {
+                return (Array.isArray(this.root.$value) ? this.root.$value : []).indexOf(value) > -1;
+            }
+
+            return this.root.$value == value;
         }
 
     </script>

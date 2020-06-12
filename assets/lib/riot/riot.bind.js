@@ -107,12 +107,22 @@
                 ele.addEventListener(ele.getAttribute('bind-event') || defaultEvt, _.debounce(function () {
 
                     var isCheckbox = (ele.nodeName == 'INPUT' && ele.getAttribute('type') == 'checkbox'),
-                        isNumeric = (ele.nodeName == 'INPUT' && ele.getAttribute('type') == 'number');
+                        isNumeric = (ele.nodeName == 'INPUT' && ele.getAttribute('type') == 'number'),
+                        isMultipleSelect = (ele.nodeName == 'SELECT' && ele.multiple);
 
                     try {
 
                         if (isCheckbox) {
                             ele.$setValue(ele.checked);
+                        } else if (isMultipleSelect) {
+                            
+                            var values = [];
+
+                            Array.from(ele.selectedOptions).forEach(function(o,i,a) { 
+                                values.push(o.value); 
+                            });
+
+                            ele.$setValue(values || []);
                         } else {
                             ele.$setValue(isNumeric ? Number(ele.value || 0) : ele.value);
                         }
@@ -137,6 +147,15 @@
                     return function (value) {
 
                         if (document.activeElement === ele && nodeType == 'input' && !isCheckbox) {
+                            return;
+                        }
+
+                        if (nodeType == 'select' && ele.multiple) {
+                            try {
+                                Array.from(ele.options).forEach(function(option) {
+                                    option.selected = (Array.isArray(value) ? value : []).indexOf(option.value) > -1
+                                })
+                            } catch (e) { };
                             return;
                         }
 
