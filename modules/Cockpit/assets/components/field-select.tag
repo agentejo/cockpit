@@ -1,6 +1,6 @@
 <field-select>
-
-    <select ref="input" class="uk-width-1-1 {opts.cls}" bind="{ opts.bind }">
+    <div if="{loading}"><i class="uk-icon-spinner uk-icon-spin"></i></div>
+    <select ref="input" class="uk-width-1-1 {opts.cls}" bind="{ opts.bind }" show="{!loading}">
         <option value=""></option>
         <option each="{ option,idx in options }" value="{ option.value }" selected="{ parent.root.$value == option.value }">{ option.label }</option>
     </select>
@@ -9,10 +9,64 @@
 
         var $this = this;
 
+        this.loading = opts.src && opts.src.url ? true : false;
+        this.goups = [];
+
         this.on('mount', function() {
-            this.refs.input.value = this.root.$value;
+
+            (['required']).forEach( function(key) {
+                if (opts[key]) $this.refs.input.setAttribute(key, opts[key]);
+            });
+
+            if (opts.src && opts.src.url && opts.src.value) {
+                
+                this.loading = true;
+
+                var url = opts.src.url, 
+                    fieldVal = opts.src.value, 
+                    fieldLabel = opts.src.label || fieldVal
+                    fieldGroup = opts.src.group || null;
+
+                if (url.match('^collection=')) {
+                    url = '/collections/find?'+url;
+                }
+
+                App.request(opts.src.url).then(function(data) {
+
+                    $this.loading = false;
+
+                    if (url.match('^\/collections\/find\?')) {
+                        data = data.entries;
+                    }
+
+                    if (!Array.isArray(data)) {
+                        $this.update();
+                        return;
+                    }
+
+                    $this.options = [];
+
+                    data.forEach(function(item) {
+
+                        if (item[fieldVal] === undefined) return;
+
+                        $this.options.push({
+                            value: item[fieldVal],
+                            label: item[fieldLabel] || item[fieldVal],
+                            group: fieldGroup && item[fieldGroup] ? item[fieldGroup] : false
+                        });
+                    })
+
+                    $this.update();
+                })
+            }
+
             this.update();
         });
+
+        this.$updateValue = function(value, field) {
+
+        }.bind(this);
 
         this.on('update', function() {
 
@@ -20,32 +74,47 @@
                 this.refs.input.setAttribute('required', 'required');
             }
 
-            this.options = [];
-
-            if (typeof(opts.options) === 'string' || Array.isArray(opts.options)) {
-
-                this.options = (typeof(opts.options) === 'string' ? opts.options.split(',') : opts.options || []).map(function(option) {
-
-                    option = {
-                      value : (option.hasOwnProperty('value') ? option.value.toString().trim() : option.toString().trim()),
-                      label : (option.hasOwnProperty('label') ? option.label.toString().trim() : option.toString().trim())
-                    };
-
-                    return option;
-                });
-
-            } else if(typeof(opts.options) === 'object') {
-
-                Object.keys(opts.options).forEach(function(key) {
-
-                    $this.options.push({
-                        value: key,
-                        label: opts.options[key]
-                    })
-                })
+            if (this.loading) {
+                return;
             }
 
+            if (!this.options) {
+
+                this.options = [];
+
+                if (typeof(opts.options) === 'string' || Array.isArray(opts.options)) {
+
+                    this.options = (typeof(opts.options) === 'string' ? opts.options.split(',') : opts.options || []).map(function(option) {
+
+                        option = {
+                            value : (option.hasOwnProperty('value') ? option.value.toString().trim() : option.toString().trim()),
+                            label : (option.hasOwnProperty('label') ? option.label.toString().trim() : option.toString().trim()),
+                            group : (option.hasOwnProperty('group') ? option.group.toString().trim() : '')
+                        };
+
+                        return option;
+                    });
+
+                } else if (typeof(opts.options) === 'object') {
+
+                    Object.keys(opts.options).forEach(function(key) {
+
+                        $this.options.push({
+                            value: key,
+                            label: opts.options[key],
+                            group: ''
+                        })
+                    })
+                }
+            }
+
+            this.refs.input.value = this.root.$value;
+
         });
+
+        this.getGroups = function() {
+
+        }
 
     </script>
 
