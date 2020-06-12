@@ -72,7 +72,7 @@
 
             <div class="uk-margin uk-flex uk-flex-middle" if="{collection}">
 
-                <div class="uk-form-icon uk-form uk-flex-item-1 uk-text-muted">
+                <div class="uk-form-icon uk-form uk-flex-item-1 uk-text-muted" show="{!opts.filter}">
 
                     <i class="uk-icon-search"></i>
                     <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="{ App.i18n.get('Filter items...') }" onchange="{ updatefilter }">
@@ -100,7 +100,7 @@
 
             <div class="uk-overflow-container" if="{collection}">
 
-                <div class="uk-text-xlarge uk-text-center uk-text-muted uk-margin-large-bottom" if="{ !entries.length && filter && !loading }">
+                <div class="uk-text-xlarge uk-text-center uk-text-muted uk-margin-large-bottom" if="{ !entries.length && (filter || opts.filter) && !loading }">
                     { App.i18n.get('No entries found') }.
                 </div>
 
@@ -178,7 +178,7 @@
 
     this.modalOpen = false;
     this.link = null;
-    this.sort = {'_created': -1};
+    this.sort = {_created: -1};
     this.languages  = App.$data.languages;
     this.lang = null;
 
@@ -198,6 +198,8 @@
     }.bind(this);
 
     this.on('mount', function(){
+
+        this.sort = opts.sort || {_created: -1};
 
         if (!opts.link) return;
 
