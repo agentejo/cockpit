@@ -123,6 +123,8 @@
 
     });
 
+    App.Utils.renderer.collectionlinkselect = App.Utils.renderer.collectionlink;
+
 
     riot.tag2('link-collectionitem',
         `
