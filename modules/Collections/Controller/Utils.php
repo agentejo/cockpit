@@ -70,7 +70,16 @@ class Utils extends \Cockpit\AuthController {
 
                     if ($entry['_id'] == $id) continue;
 
+                    $_label = "{$name}/{$entry['_id']}";
+
+                    if (isset($entry['title'])) {
+                        $_label = $entry['title'];
+                    } elseif (isset($entry['name'])) {
+                        $_label = $entry['name'];
+                    }
+
                     $return['collections'][$label][] = [
+                        'label' => $_label,
                         'link' => $this->app->routeUrl("/collections/entry/{$name}/{$entry['_id']}")
                     ];
                 }

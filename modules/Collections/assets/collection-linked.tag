@@ -35,17 +35,22 @@
                     <div class="uk-margin" each="{resources,group in data}">
                         <div class="uk-margin">
                             
-                            <div class="uk-text-bold uk-text-capitalize uk-h3"><i class="uk-icon-cube"></i> { group }</div>
+                            <div class="uk-text-bold uk-text-capitalize uk-h3"><i class="uk-icon-cubes"></i> { group }</div>
                             <hr>
                             <div class="uk-margin" each="{items,resource in resources}">
 
-                                <div class="uk-text-small uk-text-bold uk-text-upper">{resource}</div>
+                                <div class="uk-text-small uk-text-bold uk-text-upper"><i class="uk-icon-cube"></i> {resource}</div>
 
-                                <ul class="uk-list">
-                                    <li class="uk-text-truncate" each="{item in items}">
-                                        <a href="{ item.link }" target="_blank">{ item.label || item.link }</a>
-                                    </li>
-                                </ul>
+                                <div class="uk-margin uk-margin-left { items.length > 10 ? 'uk-scrollable-box':'' }">
+                                    <ul class="uk-list">
+                                        <li class="uk-text-truncate" each="{item in items}">
+                                            <a href="{ item.link }" target="_blank">
+                                                <i class="uk-badge uk-badge-outline uk-text-primary uk-icon-link uk-margin-small-right"></i> 
+                                                <span class="uk-text-muted">{ item.label || item.link }</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -61,6 +66,14 @@
         var $this = this;
 
         this.entry = null;
+
+        this.on('mount', function() {
+
+            App.$(this.root).on('hide.uk.offcanvas', function() {
+                $this.entry = null;
+                setTimeout($this.update, 100);
+            });
+        });
 
         load() {
 

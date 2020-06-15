@@ -66,21 +66,11 @@
     <div class="uk-modal" ref="modal">
 
         <div class="uk-modal-dialog uk-modal-dialog-large">
-            <a href="" class="uk-modal-close uk-close"></a>
 
-            <h3>{ collection && (collection.label || opts.link) }</h3>
-
-            <div class="uk-margin uk-flex uk-flex-middle" if="{collection}">
-
-                <div class="uk-form-icon uk-form uk-flex-item-1 uk-text-muted" show="{!opts.filter}">
-
-                    <i class="uk-icon-search"></i>
-                    <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="{ App.i18n.get('Filter items...') }" onchange="{ updatefilter }">
-
-                </div>
-
-                <div class="uk-float-left uk-form-select uk-margin-small-left" if="{ languages.length }">
-                    <span class="uk-button uk-button-large uk-button-link {lang ? 'uk-text-primary' : 'uk-text-muted'}">
+            <h3 class="uk-flex uk-flex-middle">
+                <div class="uk-flex-item-1">{ collection && (collection.label || opts.link) }</div>
+                <div class="uk-form-select uk-margin-left" if="{ languages.length }">
+                    <span class="uk-button uk-button-large uk-button-link {lang ? 'uk-text-primary' : 'uk-text-muted'}" style="padding-right:0;">
                         <i class="uk-icon-globe"></i>
                         { lang ? _.find(languages,{'code':lang}).label : App.$data.languageDefaultLabel }
                     </span>
@@ -89,11 +79,17 @@
                         <option each="{language,idx in languages}" value="{language.code}" selected="{lang === language.code}">{language.label}</option>
                     </select>
                 </div>
+                <div>
+                <a class="uk-modal-close uk-link-muted uk-margin-left"><i class="uk-icon-close"></i></a></div>
+            </h3>
 
-                <div show="{selected.length}">
-                    <button type="button" class="uk-button uk-button-large uk-button-link" onclick="{linkItems}">
-                        <i class="uk-icon-link"></i> {selected.length} {App.i18n.get('Entries')}
-                    </button>
+            <div class="uk-margin uk-flex uk-flex-middle" if="{collection}">
+
+                <div class="uk-form-icon uk-form uk-flex-item-1 uk-text-muted" show="{!opts.filter}">
+
+                    <i class="uk-icon-search"></i>
+                    <input class="uk-width-1-1 uk-form-large uk-form-blank" type="text" ref="txtfilter" placeholder="{ App.i18n.get('Filter items...') }" onchange="{ updatefilter }">
+
                 </div>
 
             </div>
@@ -126,7 +122,7 @@
                                 <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name], field) }"></raw>
                             </td>
                             <td>{ App.Utils.dateformat( new Date( 1000 * entry._modified )) }</td>
-                            <td>
+                            <td show="{!parent.opts.multiple}">
                                 <a onclick="{ parent.linkItem }"><i class="uk-icon-link"></i></a>
                             </td>
                         </tr>
@@ -143,6 +139,13 @@
                     </a>
                 </div>
 
+            </div>
+
+            <div class="uk-modal-footer uk-text-right" if="{opts.multiple}">
+                <button type="button" class="uk-button uk-button-large uk-button-primary" onclick="{linkItems}" show="{selected.length}">
+                    <i class="uk-icon-link"></i> {selected.length} {App.i18n.get('Entries')}
+                </button>
+                <a class="uk-modal-close uk-button uk-button-large uk-margin-small-left">{App.i18n.get('Cancel')}</a>
             </div>
         </div>
     </div>
