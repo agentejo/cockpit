@@ -1,15 +1,19 @@
-
-<script type="riot/tag" src="@base('collections:assets/collection-entrypreview.tag')"></script>
+<script type="riot/tag" src="@base('collections:assets/collection-entrypreview.tag')?nc={{ $app['debug'] ? time() : $app['cockpit/version'] }}"></script>
+<script type="riot/tag" src="@base('collections:assets/collection-linked.tag')?nc={{ $app['debug'] ? time() : $app['cockpit/version'] }}"></script>
 
 <style>
-    @if(isset($collection['color']) && $collection['color'])
-    .app-header { border-top: 8px {{ $collection['color'] }} solid; }
+    @if(isset($collection['color']) && $collection['color']) 
+    
+    .app-header {
+        border-top: 8px <?=$collection['color']?> solid;
+    }
+
     @endif
 </style>
 
 <script>
-    window.__collectionEntry = {{ json_encode($entry) }};
-    window.__collection = {{ json_encode($collection) }};
+    window.__collectionEntry = <?=json_encode($entry)?>;
+    window.__collection = <?=json_encode($collection)?>;
 </script>
 
 <div riot-view>
@@ -46,11 +50,14 @@
                     <img src="@url($collection['icon'] ? 'assets:app/media/icons/'.$collection['icon']:'collections:icon.svg')" width="40" alt="icon">
                 </div>
                 <div class="uk-margin-right">{ App.i18n.get(entry._id ? 'Edit Entry':'Add Entry') }</div>
-                <a onclick="{showPreview}" if="{ collection.contentpreview && collection.contentpreview.enabled }" title="@lang('Preview')"><i class="uk-icon-button uk-icon-eye"></i></a>
-                @if($app->module('cockpit')->isSuperAdmin())
                 <div class="uk-flex-item-1"></div>
-                <a class="uk-button uk-button-outline uk-text-warning" onclick="{showEntryObject}">@lang('Show json')</a>
-                @endif
+                <div class="uk-button-group" if="{entry._id}">
+                    <a class="uk-button" onclick="{showPreview}" if="{ collection.contentpreview && collection.contentpreview.enabled }">@lang('Preview')</a>
+                    <a class="uk-button" onclick="{showLinkedOverview}">@lang('Linked')</a>
+                    @if($app->module('cockpit')->isSuperAdmin())
+                    <a class="uk-button" onclick="{showEntryObject}">@lang('Json')</a>
+                    @endif
+                </div>
             </div>
         </div>
 
@@ -64,10 +71,10 @@
                 <a>{ App.i18n.get(group || 'All') } <i class="uk-margin-small-left uk-icon-angle-down"></i></a>
                 <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-close">
                     <ul class="uk-nav uk-nav-dropdown">
-                    <li class="uk-nav-header">@lang('Groups')</li>
-                    <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
-                    <li class="uk-nav-divider"></li>
-                    <li class="{ group==parent.group && 'uk-active'}" each="{group in _groups}" show="{ parent.groups[group].length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+                        <li class="uk-nav-header">@lang('Groups')</li>
+                        <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
+                        <li class="uk-nav-divider"></li>
+                        <li class="{ group==parent.group && 'uk-active'}" each="{group in _groups}" show="{ parent.groups[group].length }"><a class="uk-text-capitalize" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
                     </ul>
                 </div>
             </li>
@@ -140,7 +147,7 @@
         <div class="uk-grid-margin uk-width-medium-1-4  uk-width-large-1-5 uk-flex-order-first uk-flex-order-last-medium">
 
             <div class="uk-panel uk-panel-framed uk-width-1-1 uk-form-select uk-form" if="{ languages.length }">
-                
+
                 <div class="uk-text-bold {lang ? 'uk-text-primary' : 'uk-text-muted'}">
                     <i class="uk-icon-globe"></i>
                     <span class="uk-margin-small-left">{ lang ? _.find(languages,{code:lang}).label:App.$data.languageDefaultLabel }</span>
@@ -155,7 +162,7 @@
             <div class="uk-margin">
                 <label class="uk-text-small">@lang('Last Modified')</label>
                 <div class="uk-margin-small-top uk-text-muted" if="{entry._id}">
-                    <i class="uk-icon-calendar uk-margin-small-right"></i> {  App.Utils.dateformat( new Date( 1000 * entry._modified )) }
+                    <i class="uk-icon-calendar uk-margin-small-right"></i> { App.Utils.dateformat( new Date( 1000 * entry._modified )) }
                 </div>
                 <div class="uk-margin-small-top uk-text-muted" if="{!entry._id}">@lang('Not saved yet')</div>
             </div>
@@ -185,6 +192,7 @@
 
     <collection-entrypreview collection="{collection}" entry="{entry}" groups="{ groups }" fields="{ fields }" fieldsidx="{ fieldsidx }" excludeFields="{ excludeFields }" languages="{ languages }" lang="{ lang }" settings="{ collection.contentpreview }" if="{ preview }"></collection-entrypreview>
     <cp-inspectobject ref="inspect"></cp-inspectobject>
+    <collection-linked ref="entrylinked"></collection-linked>
 
     <script type="view/script">
 
@@ -411,6 +419,15 @@
         showEntryObject() {
             $this.refs.inspect.show($this.entry);
             $this.update();
+        }
+
+        showLinkedOverview() {
+
+            console.log(this.refs)
+
+            $this.refs.entrylinked.show($this.entry);
+            $this.update();
+            
         }
 
     </script>
