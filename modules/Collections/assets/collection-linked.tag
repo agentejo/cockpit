@@ -13,7 +13,7 @@
 
     <div class="uk-offcanvas" ref="offcanvas">
 
-        <div class="uk-offcanvas-bar uk-offcanvas-bar-flip uk-width-3-4 uk-flex uk-flex-column">
+        <div class="uk-offcanvas-bar uk-offcanvas-bar-flip uk-width-3-4 uk-width-medium-1-3 uk-flex uk-flex-column">
             <div class="uk-flex uk-flex-middle header">
                 <span class="uk-badge">{opts.title || 'Linked Items' }</span>
                 <a class="uk-margin-left" onclick="{ load }"><i class="uk-icon-refresh"></i></a>
@@ -25,8 +25,9 @@
 
                 <cp-preloader class="uk-container-center uk-margin-large-top" if="{loading}"></cp-preloader>
 
-                <div class="uk-margin-large-top uk-text-muted" if="{!loading && !App.Utils.count(data)}">
-                    {App.i18n.get('No links found') }
+                <div class="uk-margin-large-top uk-text-muted uk-text-center uk-h2" if="{!loading && !App.Utils.count(data)}">
+                    <div><i class="uk-icon-unlink"></i></div>
+                    <p>{App.i18n.get('No links found') }</p>
                 </div>
 
                 <div if="{!loading && App.Utils.count(data)}">
@@ -47,8 +48,7 @@
                                 </ul>
                             </div>
                         </div>
-                    </divdiv>
-                
+                    </div>
                 </div>
 
             </div>
