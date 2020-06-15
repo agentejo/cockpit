@@ -68,11 +68,11 @@
             </div>
 
             <div class="uk-margin" if="{parent.components[item.component].children}">
-                <field-layout bind="items[{idx}].children" child="true" parent-component="{parent.components[item.component]}" components="{ parent.components }" exclude="{ opts.exclude }" preview="{opts.preview}"></field-layout>
+                <field-layout bind="items[{idx}].children" child="true" parent-component="{parent.components[item.component]}" components="{ parent.components }" exclude="{ opts.exclude }" restrict="{ opts.restrict }" preview="{opts.preview}"></field-layout>
             </div>
 
             <div class="uk-margin" if="{item.component == 'grid'}">
-                <field-layout-grid bind="items[{idx}].columns" components="{ parent.components }" exclude="{ opts.exclude }" preview="{opts.preview}"></field-layout-grid>
+                <field-layout-grid bind="items[{idx}].columns" components="{ parent.components }" exclude="{ opts.exclude }" restrict="{ opts.restrict }" preview="{opts.preview}"></field-layout-grid>
             </div>
 
             <raw class="layout-field-preview uk-text-small uk-text-muted" content="{getPreview(item)}" if="{showPreview}"></raw>
@@ -97,7 +97,7 @@
             </ul>
 
             <div class="uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-4">
-                 <div class="uk-grid-margin" each="{component,name in components}" show="{ !componentGroup || (componentGroup == component.group) }">
+                 <div class="uk-grid-margin" each="{component,name in components}" show="{ isComponentAvailable(name) }">
                     <div class="uk-panel uk-panel-framed uk-text-center">
                         <img riot-src="{ component.icon || App.base('/assets/app/media/icons/component.svg')}" width="30">
                         <p class="uk-text-small">{ component.label || App.Utils.ucfirst(name) }</p>
@@ -260,20 +260,14 @@
 
             App.trigger('field.layout.components', {components:this.components, opts:opts});
 
-            // exclude components?
-            if (Array.isArray(opts.exclude) && opts.exclude.length) {
-
-                opts.exclude.forEach(function(c) {
-                    if ($this.components[c]) delete $this.components[c];
-                });
-            }
-
-
             if (opts.components && App.Utils.isObject(opts.components)) {
                 this.components = App.$.extend(true, this.components, opts.components);
             }
 
             Object.keys(this.components).forEach(function(k) {
+
+                if (Array.isArray(opts.exclude) && opts.exclude.indexOf(k) > -1) return;
+                if (Array.isArray(opts.restrict) && opts.restrict.indexOf(k) == -1) return;
 
                 $this.components[k].group = $this.components[k].group || 'Misc';
 
@@ -387,6 +381,14 @@
                 }
                 n = n.parent;
             }
+        }
+
+        isComponentAvailable(name) {
+
+            if (Array.isArray(opts.exclude) && opts.exclude.indexOf(name) > -1) return false;
+            if (Array.isArray(opts.restrict) && opts.restrict.indexOf(name) == -1) return false;
+
+            return !this.componentGroup || (this.componentGroup == this.components[name].group);
         }
 
         addComponent(e, push) {
