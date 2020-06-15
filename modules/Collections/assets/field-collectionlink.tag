@@ -134,7 +134,7 @@
                 </div>
 
                 <div class="uk margin" if="{ loadmore && !loading }">
-                    <a class="uk-button uk-width-1-1" onclick="{ load }">
+                    <a class="uk-button uk-width-1-1" onclick="{ load.bind(this, false) }">
                         { App.i18n.get('Load more...') }
                     </a>
                 </div>
@@ -348,7 +348,7 @@
         this.$setValue(this.link);
     }
 
-    load(replace=false) {
+    load(replace) {
 
         var limit = 50;
         var options = { sort:this.sort, lang:this.lang };
