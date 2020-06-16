@@ -43,7 +43,7 @@
 
                                 <div class="uk-margin uk-margin-left { items.length > 10 ? 'uk-scrollable-box':'' }">
                                     <ul class="uk-list">
-                                        <li class="uk-text-truncate" each="{item in items}">
+                                        <li class="uk-text-truncate uk-margin-small" each="{item in items}">
                                             <a href="{ item.link }" target="_blank">
                                                 <i class="uk-badge uk-badge-outline uk-text-primary uk-icon-link uk-margin-small-right"></i> 
                                                 <span class="uk-text-muted">{ item.label || item.link }</span>
