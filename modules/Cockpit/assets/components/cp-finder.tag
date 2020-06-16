@@ -62,7 +62,7 @@
 
             </div>
 
-            <div class="uk-float-right">
+            <div class="uk-float-right uk-flex">
 
                 <span class="uk-margin-right uk-position-relative" data-uk-dropdown="mode:'click', pos:'bottom-right'">
 
@@ -78,17 +78,34 @@
 
                 </span>
 
-                <span class="uk-button-group">
+                <div class="uk-button-group" data-uk-dropdown="mode:'click'">
 
-                    <span class="uk-button uk-button-large uk-button-primary uk-form-file">
-                        <input class="js-upload-select" type="file" multiple="true" title="">
-                        <i class="uk-icon-upload"></i>
-                    </span>
+                    <a class="uk-button uk-button-large uk-button-primary"><i class="uk-icon-upload"></i></a>
 
-                    <button class="uk-button uk-button-large" onclick="{ refresh }">
-                        <i class="uk-icon-refresh"></i>
-                    </button>
-                </span>
+                    <div class="uk-dropdown uk-margin-top uk-text-left">
+
+                        <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
+                            <li class="uk-nav-header">{ App.i18n.get('Upload') }</li>
+                            <li>
+                                <a class="uk-form-file">
+                                    <i class="uk-icon-file-o uk-icon-justify"></i> { App.i18n.get('File') }
+                                    <input class="js-upload-select" type="file" multiple="true" title="">
+                                </a>
+                                <a class="uk-form-file">
+                                    <i class="uk-icon-folder-o uk-icon-justify"></i> { App.i18n.get('Folder') }
+                                    <input class="js-upload-folder" type="file" title="" multiple multiple directory webkitdirectory allowdirs>
+                                </a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    
+                </div>
+
+                <button class="uk-button uk-button-large" onclick="{ refresh }">
+                    <i class="uk-icon-refresh"></i>
+                </button>
 
                 <span class="uk-margin-left" if="{ selected.count }" data-uk-dropdown="mode:'click', pos:'bottom-right'">
                     <span class="uk-button uk-button-large"><strong>{ App.i18n.get('Batch') }:</strong> { selected.count } &nbsp;<i class="uk-icon-caret-down"></i></span>
@@ -332,7 +349,10 @@
             this.loadPath()
 
             // handle uploads
-            App.assets.require(['/assets/lib/uikit/js/components/upload.js'], function() {
+            App.assets.require([
+                '/assets/lib/uikit/js/components/upload.js',
+                '/assets/lib/uppie.js'
+            ], function() {
 
                 var uploadSettings = {
 
@@ -374,6 +394,51 @@
 
                 uploadselect = UIkit.uploadSelect(App.$('.js-upload-select', $this.root)[0], uploadSettings),
                 uploaddrop   = UIkit.uploadDrop($this.root, uploadSettings);
+
+                // upload folder
+                
+                var uppie = new Uppie();
+
+                uppie($this.root.querySelector('.js-upload-folder'), async (e, formData, files) => {
+                    
+                    if (!files) return;
+
+                    files.forEach(function(path) {
+                        formData.append("paths[]", path);
+                    });
+
+                    formData.append("path", $this.currentpath);
+
+                    var xhr = new XMLHttpRequest();
+
+                    xhr.open('POST', App.route('/media/api?cmd=uploadfolder'), true);
+
+                    xhr.setRequestHeader('Accept', 'application/json');
+
+                    xhr.upload.addEventListener('progress', function(e){
+                        uploadSettings.progress((e.loaded / e.total)*100, e);
+                    }, false);
+
+                    xhr.addEventListener('loadstart', function(e){ uploadSettings.loadstart(e); }, false);
+                    
+                    xhr.onreadystatechange = function() {
+
+                        if (xhr.readyState==4){
+
+                            var response = xhr.responseText;
+
+                            try {
+                                response = App.$.parseJSON(response);
+                            } catch(e) {
+                                response = false;
+                            }
+
+                            uploadSettings.allcomplete(response, xhr);
+                        }
+                    };
+                    
+                    xhr.send(formData);
+                });
 
                 UIkit.init(this.root);
             });
@@ -428,7 +493,7 @@
 
         refresh() {
             this.loadPath().then(function(){
-                App.ui.notify('Folder reloaded');
+                App.ui.notify('Folder reloaded', 'success');
             });
         }
 
@@ -563,6 +628,8 @@
                     $this.data[item.is_file ? "files":"folders"].splice(index, 1);
 
                     App.ui.notify("Item(s) deleted", "success");
+
+                    $this.resetselected();
 
                     $this.update();
                 });

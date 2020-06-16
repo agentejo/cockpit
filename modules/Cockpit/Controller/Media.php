@@ -129,6 +129,56 @@ class Media extends \Cockpit\AuthController {
         return json_encode(['uploaded' => $uploaded, 'failed' => $failed]);
     }
 
+    protected function uploadfolder() {
+
+        $path = $this->_getPathParameter();
+
+        if (!$path) return false;
+
+        $files      = $_FILES['files'] ?? [];
+        $paths      = $this->param('paths') ?? [];
+        $targetpath = $this->root.'/'.trim($path, '/');
+        $uploaded   = [];
+        $failed     = [];
+
+        // absolute paths for hook
+        $_uploaded  = [];
+        $_failed    = [];
+
+        if (isset($files['name']) && $path && file_exists($targetpath)) {
+
+            for ($i = 0; $i < count($files['name']); $i++) {
+
+                $_path = dirname(strip_tags($paths[$i]));
+
+                // clean filename
+                $clean = preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $files['name'][$i]));
+                $_file = $targetpath.'/'.$_path.'/'.$clean;
+
+                if (!is_dir(dirname($_file))){
+                    mkdir(dirname($_file), 0777, true);
+                }
+
+                if (!$files['error'][$i] && $this->_isFileTypeAllowed($clean) && move_uploaded_file($files['tmp_name'][$i], $_file)) {
+                    $uploaded[]  = $files['name'][$i];
+                    $_uploaded[] = $_file;
+
+                    if (\preg_match('/\.(svg|xml)$/i', $clean)) {
+                        file_put_contents($_file, \SVGSanitizer::clean(\file_get_contents($_file)));
+                    }
+
+                } else {
+                    $failed[]  = ['file' => $files['name'][$i], 'error' => $files['error'][$i]];
+                    $_failed[] = $_file;
+                }
+            }
+        }
+
+        $this->app->trigger('cockpit.media.upload', [$_uploaded, $_failed]);
+
+        return json_encode(['uploaded' => $uploaded, 'failed' => $failed]);
+    }
+
     protected function createfolder() {
 
         $path = $this->_getPathParameter();
