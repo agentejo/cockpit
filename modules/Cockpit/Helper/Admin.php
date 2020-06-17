@@ -96,6 +96,7 @@ class Admin extends \Lime\Helper {
                 'languages' => $languages,
                 'languageDefaultLabel' => $langDefaultLabel,
                 'groups' => $this->app->helper('acl')->getGroups(),
+                'maxUploadSize' => $this->app->helper('utils')->getMaxUploadSize(),
 
                 'acl' => [
                     'finder' => $this->app->module('cockpit')->hasaccess('cockpit', 'finder')

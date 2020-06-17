@@ -14,9 +14,15 @@
 
         <div class="uk-form" if="{ mode=='list' }">
 
-            <div class="uk-grid uk-grid-width-1-2">
+            <div class="uk-grid">
                 <div>
                     <div class="uk-grid uk-grid-small uk-flex-middle">
+                        <div>
+                            <span class="uk-button-group uk-margin-right">
+                                <button class="uk-button uk-button-large {listmode=='list' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }" aria-label="{ App.i18n.get('Switch to list-mode') }"><i class="uk-icon-list"></i></button>
+                                <button class="uk-button uk-button-large {listmode=='grid' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }" aria-label="{ App.i18n.get('Switch to tile-mode') }"><i class="uk-icon-th"></i></button>
+                            </span>
+                        </div>
                         <div show="{!opts.typefilter}">
                             <div class="uk-form-select">
 
@@ -42,7 +48,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="uk-text-right">
+                <div class="uk-flex-item-1"></div>
+                <div class="uk-flex uk-flex-middle">
 
                     <button class="uk-button uk-button-large uk-button-danger" type="button" onclick="{ removeSelected }" show="{ selected.length }">
                         { App.i18n.get('Delete') } <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
@@ -50,15 +57,31 @@
 
                     <button class="uk-button uk-button-large uk-button-link" onclick="{addFolder}">{ App.i18n.get('Add folder') }</button>
 
-                    <span class="uk-button-group uk-button-large">
-                        <button class="uk-button uk-button-large {listmode=='list' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }" aria-label="{ App.i18n.get('Switch to list-mode') }"><i class="uk-icon-list"></i></button>
-                        <button class="uk-button uk-button-large {listmode=='grid' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }" aria-label="{ App.i18n.get('Switch to tile-mode') }"><i class="uk-icon-th"></i></button>
-                    </span>
+                    <div data-uk-dropdown="mode:'click'">
 
-                    <span class="uk-button uk-button-large uk-button-primary uk-form-file">
-                        <input class="js-upload-select" aria-label="{ App.i18n.get('Select file') }" type="file" multiple="true">
-                        <i class="uk-icon-upload"></i>
-                    </span>
+                        <a class="uk-button uk-button-large uk-button-primary"><i class="uk-icon-upload"></i></a>
+
+                        <div class="uk-dropdown uk-margin-top uk-text-left">
+
+                            <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
+                                <li class="uk-nav-header uk-flex uk-flex-middle">
+                                    <span class="uk-flex-item-1">{ App.i18n.get('Upload') }</span>
+                                    <span class="uk-badge uk-badge-outline uk-text-warning"> max. { App.Utils.formatSize(App.$data.maxUploadSize) }</span>
+                                </li>
+                                <li>
+                                    <a class="uk-form-file">
+                                        <i class="uk-icon-file-o uk-icon-justify"></i> { App.i18n.get('File') }
+                                        <input class="js-upload-select" aria-label="{ App.i18n.get('Select file') }" type="file" multiple="true">
+                                    </a>
+                                    <a class="uk-form-file">
+                                        <i class="uk-icon-folder-o uk-icon-justify"></i> { App.i18n.get('Folder') }
+                                        <input class="js-upload-folder" type="file" title="" multiple multiple directory webkitdirectory allowdirs>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
                 </div>
             </div>
 
@@ -282,7 +305,10 @@
             this.listAssets(1);
 
             // handle uploads
-            App.assets.require(['/assets/lib/uikit/js/components/upload.js'], function() {
+            App.assets.require([
+                '/assets/lib/uikit/js/components/upload.js',
+                '/assets/lib/uppie.js'
+            ], function() {
 
                 var uploadSettings = {
 
@@ -333,6 +359,51 @@
 
                 uploadselect = UIkit.uploadSelect(App.$('.js-upload-select', $this.root)[0], uploadSettings),
                 uploaddrop   = UIkit.uploadDrop($this.refs.list, uploadSettings);
+
+                // upload folder
+                
+                var uppie = new Uppie();
+
+                uppie($this.root.querySelector('.js-upload-folder'), async (e, formData, files) => {
+                    
+                    if (!files) return;
+
+                    files.forEach(function(path) {
+                        formData.append("paths[]", path);
+                    });
+
+                    formData.append("folder", $this.folder);
+
+                    var xhr = new XMLHttpRequest();
+
+                    xhr.open('POST', App.route('/assetsmanager/uploadfolder'), true);
+
+                    xhr.setRequestHeader('Accept', 'application/json');
+
+                    xhr.upload.addEventListener('progress', function(e){
+                        uploadSettings.progress((e.loaded / e.total)*100, e);
+                    }, false);
+
+                    xhr.addEventListener('loadstart', function(e){ uploadSettings.loadstart(e); }, false);
+                    
+                    xhr.onreadystatechange = function() {
+
+                        if (xhr.readyState==4){
+
+                            var response = xhr.responseText;
+
+                            try {
+                                response = App.$.parseJSON(response);
+                            } catch(e) {
+                                response = false;
+                            }
+
+                            uploadSettings.allcomplete(response, xhr);
+                        }
+                    };
+                    
+                    xhr.send(formData);
+                });
 
                 UIkit.init(this.root);
             });

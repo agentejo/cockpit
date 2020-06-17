@@ -88,6 +88,8 @@ class Media extends \Cockpit\AuthController {
 
     protected function upload() {
 
+        \session_write_close();
+
         $path       = $this->_getPathParameter();
 
         if (!$path) return false;
@@ -131,6 +133,8 @@ class Media extends \Cockpit\AuthController {
 
     protected function uploadfolder() {
 
+        \session_write_close();
+
         $path = $this->_getPathParameter();
 
         if (!$path) return false;
@@ -149,7 +153,7 @@ class Media extends \Cockpit\AuthController {
 
             for ($i = 0; $i < count($files['name']); $i++) {
 
-                $_path = dirname(strip_tags($paths[$i]));
+                $_path = str_replace('\\', '/', dirname(strip_tags($paths[$i])));
 
                 // clean filename
                 $clean = preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $files['name'][$i]));

@@ -10,6 +10,8 @@
 
 namespace Cockpit\Controller;
 
+use ArrayObject;
+
 class Assets extends \Cockpit\AuthController {
 
     public function index() {
@@ -56,6 +58,104 @@ class Assets extends \Cockpit\AuthController {
         $meta = ['folder' => $this->param('folder', '')];
 
         return $this->module('cockpit')->uploadAssets('files', $meta);
+    }
+
+    public function uploadfolder() {
+
+        \session_write_close();
+
+        $paths = $this->param('paths') ?? [];
+        $root = $this->param('folder');
+        $files = $_FILES['files'] ?? [];
+
+        if (!$paths) {
+            return false;
+        }
+
+        $user = $this->module('cockpit')->getUser();
+        $cache = new \ArrayObject([]);
+
+        $mkdir = function($path) use($root, $cache, $user) {
+
+            $folders = explode('/', $path);
+            $i = 0;
+            $_path = [];
+            $folderId = null;
+            $parentId = $root;
+
+            while ($i < count($folders)) {
+                $folder = $folders[$i];
+                $_path[] = $folder;
+                $_cpath = implode('/', $_path);
+
+                if (!isset($cache[$_cpath])) {
+
+                    $exists = $this->app->storage->findOne('cockpit/assets_folders', [
+                        '_p' => $parentId, 
+                        'name' => basename($_cpath)
+                    ]);
+
+                    if ($exists) {
+                        $cache[$_cpath] = $exists['_id'];
+                    } else {
+
+                        $f = [
+                            'name' => basename($_cpath),
+                            '_p' => $parentId,
+                            '_by' => $user['_id'],
+                        ];
+                
+                        $this->app->storage->save('cockpit/assets_folders', $f);
+                        $cache[$_cpath] = $f['_id'];
+                    }
+
+                }
+
+                $folderId = $cache[$_cpath];
+                $parentId = $folderId;
+
+                $i++;
+            }
+
+            $cache[$path] = $folderId;
+
+            return $folderId;
+        };
+
+        $mkdir = $mkdir->bindTo($this, $this);
+        $folders = [];
+
+        for ($i = 0; $i < count($files['name']); $i++) {
+
+            $path = str_replace('\\', '/', dirname($paths[$i]));
+
+            if (!isset($cache[$path])) {
+                $mkdir($path);
+            }
+
+            if (!isset($folders[$path])) {
+                
+                $folders[$path] = [
+                    'name' => [],
+                    'error' => [],
+                    'tmp_name' => [],
+                ];
+            }
+
+            $folders[$path]['name'][] = $files['name'][$i];
+            $folders[$path]['error'][] = $files['error'][$i];
+            $folders[$path]['tmp_name'][] = $files['tmp_name'][$i];
+
+        }
+
+        $ret = [];
+
+        foreach ($folders as $path => $_files) {
+            $meta = ['folder' => $cache[$path]];
+            $ret = \array_merge_recursive($ret, $this->module('cockpit')->uploadAssets($_files, $meta));
+        } 
+
+        return $ret;
     }
 
     public function removeAssets() {

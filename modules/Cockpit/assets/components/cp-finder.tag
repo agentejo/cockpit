@@ -78,14 +78,17 @@
 
                 </span>
 
-                <div class="uk-button-group" data-uk-dropdown="mode:'click'">
+                <div data-uk-dropdown="mode:'click'">
 
                     <a class="uk-button uk-button-large uk-button-primary"><i class="uk-icon-upload"></i></a>
 
                     <div class="uk-dropdown uk-margin-top uk-text-left">
 
                         <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
-                            <li class="uk-nav-header">{ App.i18n.get('Upload') }</li>
+                            <li class="uk-nav-header uk-flex uk-flex-middle">
+                                <span class="uk-flex-item-1">{ App.i18n.get('Upload') }</span>
+                                <span class="uk-badge uk-badge-outline uk-text-warning"> max. { App.Utils.formatSize(App.$data.maxUploadSize) }</span>
+                            </li>
                             <li>
                                 <a class="uk-form-file">
                                     <i class="uk-icon-file-o uk-icon-justify"></i> { App.i18n.get('File') }
