@@ -19,7 +19,7 @@
                 <li><a href="@route('/singletons')">@lang('Singletons')</a></li>
                 <li class="uk-active" data-uk-dropdown>
 
-                    <a><i class="uk-icon-bars"></i> {{ htmlspecialchars(@$singleton['label'] ? $singleton['label']:$singleton['name']) }}</a>
+                    <a><i class="uk-icon-bars"></i> {{ htmlspecialchars(@$singleton['label'] ? $singleton['label']:$singleton['name'], ENT_QUOTES, 'UTF-8') }}</a>
 
                     @if($app->module('singletons')->hasaccess($singleton['name'], 'edit'))
                     <div class="uk-dropdown">
@@ -73,7 +73,7 @@
 
         @if($singleton['description'])
         <div class="uk-margin uk-text-muted">
-            {{ htmlspecialchars($singleton['description']) }}
+            {{ htmlspecialchars($singleton['description'], ENT_QUOTES, 'UTF-8') }}
         </div>
         @endif
 

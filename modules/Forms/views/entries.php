@@ -10,7 +10,7 @@
         <li><a href="@route('/forms')">@lang('Forms')</a></li>
         <li class="uk-active" data-uk-dropdown>
 
-            <a><i class="uk-icon-bars"></i> {{ htmlspecialchars(@$form['label'] ? $form['label']:$form['name']) }}</a>
+            <a><i class="uk-icon-bars"></i> {{ htmlspecialchars(@$form['label'] ? $form['label']:$form['name'], ENT_QUOTES, 'UTF-8') }}</a>
 
             <div class="uk-dropdown">
                 <ul class="uk-nav uk-nav-dropdown">
@@ -33,7 +33,7 @@
         <img class="uk-svg-adjust" src="@url($form['icon'] ? 'assets:app/media/icons/'.$form['icon']:'forms:icon.svg')" width="50" alt="icon" data-uk-svg>
         @if($form['description'])
         <div class="uk-container-center uk-margin-top uk-width-medium-1-2">
-            {{ htmlspecialchars($form['description']) }}
+            {{ htmlspecialchars($form['description'], ENT_QUOTES, 'UTF-8') }}
         </div>
         @endif
     </div>
@@ -57,7 +57,7 @@
                 <img class="uk-svg-adjust" src="@url($form['icon'] ? 'assets:app/media/icons/'.$form['icon']:'forms:icon.svg')" width="50" alt="icon" data-uk-svg>
                 @if($form['description'])
                 <div class="uk-margin-top uk-text-small">
-                    {{ htmlspecialchars($form['description']) }}
+                    {{ htmlspecialchars($form['description'], ENT_QUOTES, 'UTF-8') }}
                 </div>
                 @endif
                 <hr>
@@ -71,7 +71,7 @@
 
             <div class="uk-flex-item-1 uk-flex uk-flex-middle uk-h3">
                 <div class="uk-margin-small-right"><img src="@url($form['icon'] ? 'assets:app/media/icons/'.$form['icon']:'forms:icon.svg')" width="40" alt="icon"></div>
-                <strong class="uk-margin-small-right">{{ htmlspecialchars(@$form['label'] ? $form['label']:$form['name']) }}</strong> 
+                <strong class="uk-margin-small-right">{{ htmlspecialchars(@$form['label'] ? $form['label']:$form['name'], ENT_QUOTES, 'UTF-8') }}</strong> 
                 @lang('Entries')
             </div>
 

@@ -17,7 +17,7 @@
     <ul class="uk-breadcrumb">
         <li><a href="@route('/singletons')">@lang('Singletons')</a></li>
         <li data-uk-dropdown="mode:'hover', delay:300">
-            <a href="@route('/singletons/form/'.$singleton['name'])"><i class="uk-icon-bars"></i> {{ htmlspecialchars(@$singleton['label'] ? $singleton['label']:$singleton['name']) }}</a>
+            <a href="@route('/singletons/form/'.$singleton['name'])"><i class="uk-icon-bars"></i> {{ htmlspecialchars(@$singleton['label'] ? $singleton['label']:$singleton['name'], ENT_QUOTES, 'UTF-8') }}</a>
 
             @if($app->module('singletons')->hasaccess($singleton['name'], 'edit'))
             <div class="uk-dropdown">

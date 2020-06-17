@@ -27,7 +27,7 @@
 
                             <img class="uk-margin-small-right uk-svg-adjust" src="@url(isset($form['icon']) && $form['icon'] ? 'assets:app/media/icons/'.$form['icon']:'forms:icon.svg')" width="18px" alt="icon" data-uk-svg>
 
-                            {{ htmlspecialchars(@$form['label'] ? $form['label'] : $form['name']) }}
+                            {{ htmlspecialchars(@$form['label'] ? $form['label'] : $form['name'], ENT_QUOTES, 'UTF-8') }}
                         </a>
                     </li>
                     @endforeach

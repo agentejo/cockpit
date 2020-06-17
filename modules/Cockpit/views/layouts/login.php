@@ -102,7 +102,7 @@
             this.error = false;
             this.$user  = null;
 
-            var redirectTo = '{{ $redirectTo }}';
+            var redirectTo = '{{ htmlspecialchars($redirectTo, ENT_QUOTES, 'UTF-8') }}';
 
             submit(e) {
 
