@@ -194,7 +194,7 @@
                         <div class="uk-margin-top"><field-boolean bind="collection.contentpreview.enabled" label="@lang('Enabled')"></field-boolean></div>
                         <div class="uk-form-icon uk-form uk-width-1-1 uk-text-muted uk-margin-top" show="{collection.contentpreview && collection.contentpreview.enabled}">
                             <i class="uk-icon-globe"></i>
-                            <input class="uk-width-1-1 uk-form-large uk-text-primary" type="url" placeholder="@lang('http://...')" bind="collection.contentpreview.url">
+                            <input class="uk-width-1-1 uk-form-large uk-text-primary" type="text" placeholder="@lang('http://...')" bind="collection.contentpreview.url">
                         </div>
                         <div class="uk-grid uk-margin-top" show="{collection.contentpreview && collection.contentpreview.enabled}">
                             <div class="uk-width-medium-2-3">
