@@ -211,6 +211,9 @@
             wsprotocols: null
         }, opts.settings || {});
 
+        this.settings.url = this.settings.url.replace('site://', SITE_URL+'/');
+        this.settings.url = this.settings.url.replace('base://', App.base('/'));
+
         this.on('mount', function() {
 
             setTimeout(function() {
