@@ -211,8 +211,15 @@
             wsprotocols: null
         }, opts.settings || {});
 
-        this.settings.url = this.settings.url.replace('site://', SITE_URL+'/');
-        this.settings.url = this.settings.url.replace('base://', App.base('/'));
+        var replacements = {
+            'root://':'/',
+            'site://':SITE_URL+'/',
+            'base://':App.base('/')
+        };
+
+        Object.keys(replacements).forEach(function(key) {
+            $this.settings.url = $this.settings.url.replace(key, replacements[key]);
+        });
 
         this.on('mount', function() {
 
