@@ -25,6 +25,13 @@
             </div>
         </div>
 
+        <div class="uk-margin-small uk-margin-small-left uk-text-small" each="{option,idx in options}">
+            <a data-value="{ option._id }" class="{ isSelected(option._id) ? 'uk-text-primary':'uk-text-muted' }" onclick="{ toggleMultipleItem }" title="{ option.display }">
+                <i class="uk-icon-{ isSelected(option._id) ? 'circle':'circle-o' } uk-margin-small-right"></i>
+                { option.display }
+            </a>
+        </div>
+
     </div>
     <span class="uk-text-small uk-text-muted" if="{ opts.multiple && App.Utils.count(idx) > 10}">{selected.length} { App.i18n.get('selected') }</span>
 
