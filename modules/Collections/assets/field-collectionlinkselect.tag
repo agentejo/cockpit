@@ -36,8 +36,6 @@
     <span class="uk-text-small uk-text-muted" if="{ opts.multiple && App.Utils.count(idx) > 10}">{selected.length} { App.i18n.get('selected') }</span>
 
 
-
-
     <script>
 
         var $this = this;
@@ -66,7 +64,7 @@
                     options.filter = opts.filter;
                 }
 
-                if (options.sort) {
+                if (opts.sort) {
                     options.sort = opts.sort;
                 }
 
