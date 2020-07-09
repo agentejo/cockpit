@@ -69,6 +69,19 @@ class Admin extends \Cockpit\AuthController {
             $this->app->helper('admin')->lockResourceId($singleton['_id']);
         }
 
+        // get field templates
+        $templates = [];
+
+        if ($templatesPath = $this->path('#config:singletons/templates')) {
+            foreach ($this->app->helper('fs')->ls('*.php', $templatesPath) as $file) {
+                $templates[] = include($file->getRealPath());
+            }
+        }
+
+        foreach ($this->app->module('singletons')->singletons() as $sin) {
+            $templates[] = $sin;
+        }
+
         // acl groups
         $aclgroups = [];
 
@@ -77,7 +90,7 @@ class Admin extends \Cockpit\AuthController {
             if (!$superAdmin) $aclgroups[] = $group;
         }
 
-        return $this->render('singletons:views/singleton.php', compact('singleton', 'aclgroups'));
+        return $this->render('singletons:views/singleton.php', compact('singleton', 'aclgroups', 'templates'));
     }
 
     public function form($name = null) {
