@@ -38,9 +38,6 @@
                     <img src="@url($singleton['icon'] ? 'assets:app/media/icons/'.$singleton['icon']:'singletons:icon.svg')" width="40" alt="icon">
                 </div>
                 <div class="uk-flex-item-1">{ singleton.label || singleton.name }</div>
-                @if($app->module('cockpit')->isSuperAdmin())
-                <a class="uk-button uk-button-outline uk-text-warning" onclick="{showDataObject}">@lang('Show json')</a>
-                @endif
             </div>
         </div>
 
@@ -132,7 +129,14 @@
 
             <div class="uk-grid-margin uk-width-medium-1-4 uk-flex-order-first uk-flex-order-last-medium">
 
-                <div class="uk-panel uk-panel-framed uk-width-1-1 uk-form-select uk-form" if="{ languages.length }">
+                @if($app->module('cockpit')->isSuperAdmin())
+                <div class="uk-button-group uk-flex uk-margin">
+                    <a class="uk-button" onclick="{showDataObject}">@lang('Show json')</a>
+                </div>
+                @endif
+
+
+                <div class="uk-panel uk-panel-box uk-panel-framed uk-width-1-1 uk-form-select uk-form" if="{ languages.length }">
                     
                     <div class="uk-text-bold {lang ? 'uk-text-primary' : 'uk-text-muted'}">
                         <i class="uk-icon-globe"></i>

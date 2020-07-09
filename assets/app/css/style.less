@@ -187,11 +187,17 @@ cp-gravatar canvas {
     cp-fieldcontainer {
         padding-left: 15px;
         border-left: 2px rgba(0,0,0,.1) solid;
-        transition: border-color 200ms;
+        transition: border-color 200ms, opacity 100ms ease;
+        opacity: .7;
+    }
+
+    cp-fieldcontainer:hover {
+        opacity: 1;
     }
 
     cp-fieldcontainer[active="true"] {
         border-color: @global-primary-background;
+        opacity: 1;
     }
 }
 

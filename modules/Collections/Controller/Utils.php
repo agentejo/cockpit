@@ -33,7 +33,7 @@ class Utils extends \Cockpit\AuthController {
             return false;
         }
 
-        $return = [];
+        $return = new \ArrayObject([]);
 
         $collections = $this->app->module('collections')->collections();
 
@@ -92,6 +92,8 @@ class Utils extends \Cockpit\AuthController {
         }
 
         if (isset($return['collections']) && !count($return['collections'])) unset($return['collections']);
+
+        $this->app->trigger('collections.linkeditems', [$id, $return]);
 
         return $return;
 

@@ -51,13 +51,6 @@
                 </div>
                 <div class="uk-margin-right">{ App.i18n.get(entry._id ? 'Edit Entry':'Add Entry') }</div>
                 <div class="uk-flex-item-1"></div>
-                <div class="uk-button-group" if="{entry._id}">
-                    <a class="uk-button" onclick="{showPreview}" if="{ collection.contentpreview && collection.contentpreview.enabled }">@lang('Preview')</a>
-                    <a class="uk-button" onclick="{showLinkedOverview}">@lang('Linked')</a>
-                    @if($app->module('cockpit')->isSuperAdmin())
-                    <a class="uk-button" onclick="{showEntryObject}">@lang('Json')</a>
-                    @endif
-                </div>
             </div>
         </div>
 
@@ -146,7 +139,15 @@
 
         <div class="uk-grid-margin uk-width-medium-1-4  uk-width-large-1-5 uk-flex-order-first uk-flex-order-last-medium">
 
-            <div class="uk-panel uk-panel-framed uk-width-1-1 uk-form-select uk-form" if="{ languages.length }">
+            <div class="uk-button-group uk-flex uk-margin" if="{entry._id}">
+                <a class="uk-button" onclick="{showPreview}" if="{ collection.contentpreview && collection.contentpreview.enabled }">@lang('Preview')</a>
+                <a class="uk-button" onclick="{showLinkedOverview}">@lang('Linked')</a>
+                @if($app->module('cockpit')->isSuperAdmin())
+                <a class="uk-button" onclick="{showEntryObject}">@lang('Json')</a>
+                @endif
+            </div>
+
+            <div class="uk-panel uk-panel-box uk-panel-framed uk-width-1-1 uk-form-select uk-form" if="{ languages.length }">
 
                 <div class="uk-text-bold {lang ? 'uk-text-primary' : 'uk-text-muted'}">
                     <i class="uk-icon-globe"></i>
