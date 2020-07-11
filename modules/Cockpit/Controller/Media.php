@@ -193,7 +193,14 @@ class Media extends \Cockpit\AuthController {
         $ret  = false;
 
         if ($name && $path) {
-            $ret = mkdir($this->root.'/'.trim($path, '/').'/'.$name);
+            $parentFolder = $this->root.'/'.trim($path, '/').'/';
+            $ret = mkdir($parentFolder.$name);
+
+            // prevent fatal error when creating folders without bootstrap.php in addons/modules dirs
+            // see this discussion, why it is necessary; https://github.com/agentejo/cockpit/pull/1019
+            if ($ret && in_array($parentFolder,[$this->path('#addons:'), $this->path('#modules:')])) {
+                @file_put_contents($parentFolder.$name.'/bootstrap.php', "<?php\r\n");
+            }
         }
 
         return json_encode(['success' => $ret]);
