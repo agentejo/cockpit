@@ -1138,9 +1138,10 @@ class App implements \ArrayAccess {
 
     protected function bootModule($module) {
 
-        $app = $this;
-
-        require($module->_bootfile);
+        if (is_file($module->_bootfile)) {
+            $app = $this;
+            require($module->_bootfile);
+        }
     }
 
     // accces to services
