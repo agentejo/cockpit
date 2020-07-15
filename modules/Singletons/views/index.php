@@ -89,8 +89,8 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="uk-flex-item-1 uk-text-center">
-                            <a class="uk-text-bold uk-link-muted" href="@route('/singletons/form')/{singleton.name}">{ singleton.label }</a>
+                        <div class="uk-flex-item-1 uk-text-center uk-text-truncate">
+                            <a class="uk-text-bold uk-link-muted" href="@route('/singletons/form')/{singleton.name}" title="{ singleton.label }">{ singleton.label }</a>
                         </div>
                         <div>&nbsp;</div>
 

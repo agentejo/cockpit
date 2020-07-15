@@ -99,7 +99,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="uk-flex-item-1 uk-text-center uk-text-truncate"><a class="uk-text-bold uk-link-muted" href="@route('/collections/entries')/{collection.name}">{ collection.label }</a></div>
+                        <div class="uk-flex-item-1 uk-text-center uk-text-truncate"><a class="uk-text-bold uk-link-muted" href="@route('/collections/entries')/{collection.name}" title="{ collection.label }">{ collection.label }</a></div>
                         <div class="panel-footer-aside uk-text-right">
                             <span class="uk-badge" riot-style="background-color:{ (collection.meta.color) }">
                                 <span if="{ collection.meta.itemsCount !==null }">{ collection.meta.itemsCount }</span>
