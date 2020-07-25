@@ -167,6 +167,7 @@ class Cursor implements \Iterator {
      */
     protected function getData() {
 
+        $conn = $this->collection->database->connection;
         $sql = ['SELECT document FROM '.$this->collection->name];
 
         if ($this->criteria) {
@@ -179,7 +180,7 @@ class Cursor implements \Iterator {
             $orders = [];
 
             foreach ($this->sort as $field => $direction) {
-                $orders[] = 'document_key("'.$field.'", document) '.($direction==-1 ? 'DESC':'ASC');
+                $orders[] = 'document_key('.$conn->quote($field).', document) '.($direction==-1 ? 'DESC':'ASC');
             }
 
             $sql[] = 'ORDER BY '.\implode(',', $orders);
@@ -193,7 +194,7 @@ class Cursor implements \Iterator {
 
         $sql = implode(' ', $sql);
 
-        $stmt      = $this->collection->database->connection->query($sql);
+        $stmt      = $conn->query($sql);
         $result    = $stmt->fetchAll( \PDO::FETCH_ASSOC);
         $documents = [];
 
