@@ -145,6 +145,14 @@ $this->module('singletons')->extend([
             ], $options);
 
             $data = $this->app->storage->getKey('singletons', $name);
+
+            if (is_null($data)) {
+                $data = [];
+                if (isset($singleton['fields']) && is_array($singleton['fields'])) {
+                    foreach ($singleton['fields'] as $f) $data[$f['name']] = null;
+                }
+            }
+
             $data = $this->_filterFields($data, $singleton, $options);
 
             if ($options['populate'] && function_exists('cockpit_populate_collection')) {
