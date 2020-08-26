@@ -76,11 +76,11 @@ class Cursor implements \Iterator {
 
         if (!$this->criteria) {
 
-            $stmt = $this->collection->database->connection->query('SELECT COUNT(*) AS C FROM '.$this->collection->name);
+            $stmt = $this->collection->database->connection->query('SELECT COUNT(*) AS C FROM '.$this->collection->database->connection->quote($this->collection->name));
 
         } else {
 
-            $sql = ['SELECT COUNT(*) AS C FROM '.$this->collection->name];
+            $sql = ['SELECT COUNT(*) AS C FROM '.$this->collection->database->connection->quote($this->collection->name)];
 
             $sql[] = 'WHERE document_criteria("'.$this->criteria.'", document)';
 
@@ -168,7 +168,7 @@ class Cursor implements \Iterator {
     protected function getData() {
 
         $conn = $this->collection->database->connection;
-        $sql = ['SELECT document FROM '.$this->collection->name];
+        $sql = ['SELECT document FROM '.$conn->quote($this->collection->name)];
 
         if ($this->criteria) {
 
