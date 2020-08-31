@@ -157,7 +157,7 @@ class Database {
      * @param  string $name
      */
     public function createCollection($name) {
-        $this->connection->exec("CREATE TABLE {$name} ( id INTEGER PRIMARY KEY AUTOINCREMENT, document TEXT )");
+        $this->connection->exec("CREATE TABLE `{$name}` ( id INTEGER PRIMARY KEY AUTOINCREMENT, document TEXT )");
     }
 
     /**

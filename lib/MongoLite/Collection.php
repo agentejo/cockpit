@@ -106,7 +106,7 @@ class Collection {
         $fields = \implode(',', $fields);
         $values = \implode(',', $values);
 
-        $sql = "INSERT INTO {$table} ({$fields}) VALUES ({$values})";
+        $sql = "INSERT INTO `{$table}` ({$fields}) VALUES ({$values})";
         $res = $this->database->connection->exec($sql);
 
         if ($res){
@@ -149,8 +149,9 @@ class Collection {
      */
     public function update($criteria, $data, $merge = true) {
 
-        $sql    = 'SELECT id, document FROM '.$this->name.' WHERE document_criteria("'.$this->database->registerCriteriaFunction($criteria).'", document)';
-        $stmt   = $this->database->connection->query($sql);
+        $conn   = $this->database->connection;
+        $sql    = 'SELECT id, document FROM `'.$this->name.'` WHERE document_criteria("'.$this->database->registerCriteriaFunction($criteria).'", document)';
+        $stmt   = $conn->query($sql);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($result as &$doc) {
@@ -159,9 +160,9 @@ class Collection {
             $document        = $merge ? \array_merge($_doc, isset($data['$set']) ? $data['$set'] : []) : $data;
             $document['_id'] = $_doc['_id'];
 
-            $sql = 'UPDATE '.$this->name.' SET document='.$this->database->connection->quote(json_encode($document, JSON_UNESCAPED_UNICODE)).' WHERE id='.$doc['id'];
+            $sql = 'UPDATE `'.$this->name.'` SET document='.$conn->quote(json_encode($document, JSON_UNESCAPED_UNICODE)).' WHERE id='.$doc['id'];
 
-            $this->database->connection->exec($sql);
+            $conn->exec($sql);
         }
 
         return count($result);
@@ -175,7 +176,7 @@ class Collection {
      */
     public function remove($criteria) {
 
-        $sql = 'DELETE FROM '.$this->name.' WHERE document_criteria("'.$this->database->registerCriteriaFunction($criteria).'", document)';
+        $sql = 'DELETE FROM `'.$this->name.'` WHERE document_criteria("'.$this->database->registerCriteriaFunction($criteria).'", document)';
 
         return $this->database->connection->exec($sql);
     }
@@ -224,7 +225,7 @@ class Collection {
 
         if (!in_array($newname, $this->database->getCollectionNames())) {
 
-            $this->database->connection->exec('ALTER TABLE '.$this->name.' RENAME TO '.$newname);
+            $this->database->connection->exec('ALTER TABLE `'.$this->name.'` RENAME TO `'.$newname.'`');
 
             $this->name = $newname;
 
