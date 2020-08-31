@@ -235,7 +235,7 @@ class LiteDBQuery {
         $fields = implode(',', $fields);
         $values = implode(',', $values);
 
-        $sql = "INSERT INTO {$table} ({$fields}) VALUES ({$values})";
+        $sql = "INSERT INTO `{$table}` ({$fields}) VALUES ({$values})";
 
         $this->connection->log[] = $sql;
 
@@ -269,7 +269,7 @@ class LiteDBQuery {
 
         $fields = implode(',', $fields);
 
-        $sql = "UPDATE ".$table." SET {$fields} {$conditions}";
+        $sql = "UPDATE `{$table}` SET {$fields} {$conditions}";
 
         $this->connection->log[] = $sql;
 
@@ -291,7 +291,7 @@ class LiteDBQuery {
 
         if (strlen(trim($conditions))>0) $conditions = "WHERE ".$conditions;
 
-        $sql = "DELETE FROM {$table} {$conditions}";
+        $sql = "DELETE FROM `{$table}` {$conditions}";
 
         $this->connection->log[] = $sql;
 
@@ -306,11 +306,11 @@ class LiteDBQuery {
     }
 
     public function truncate() {
-        $this->connection->exec("DELETE FROM ".$this->table);
+        $this->connection->exec("DELETE FROM `{$this->table}`");
     }
 
     public function drop() {
-        $this->connection->exec("DROP TABLE ".$this->table);
+        $this->connection->exec("DROP TABLE `{$this->table}`");
     }
 
 
@@ -368,7 +368,7 @@ class LiteDBQuery {
             $order = "ORDER BY ".$order;
         }
 
-        $sql = trim("SELECT {$fields} FROM {$table} {$joins} {$conditions} {$group} {$having} {$order} {$limit}");
+        $sql = trim("SELECT {$fields} FROM `{$table}` {$joins} {$conditions} {$group} {$having} {$order} {$limit}");
 
         return $sql;
 
