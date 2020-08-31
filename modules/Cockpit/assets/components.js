@@ -634,7 +634,7 @@ riot.tag2('cp-assets-folderselect', '<div data-uk-dropdown="mode:\'click\'"> <a 
 
 });
 
-riot.tag2('cp-field', '<div ref="field" data-is="{\'field-\'+opts.type}" bind="{opts.bind}" cls="{opts.cls}"></div>', '', '', function(opts) {
+riot.tag2('cp-field', '<div ref="field" data-is="{\'field-\'+opts.type}" bind="{opts.bind}"></div>', '', '', function(opts) {
 
         this.on('mount', function() {
 
@@ -658,7 +658,8 @@ riot.tag2('cp-field', '<div ref="field" data-is="{\'field-\'+opts.type}" bind="{
         this.on('update', function() {
 
             this.refs.field.opts.bind = opts.bind;
-            this.refs.field.opts.bind = opts.opts || {};
+
+            if (opts.required) this.refs.field.opts.required = opts.required;
 
             if (opts.opts) {
                 App.$.extend(this.refs.field.opts, opts.opts);

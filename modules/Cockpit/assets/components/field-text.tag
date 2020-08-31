@@ -27,11 +27,11 @@
     <script>
 
         var $this = this;
-        
+
         this.on('mount', function() {
 
             this.type = opts.type || 'text';
-            
+
             if (opts.cls) {
                 App.$(this.refs.input).addClass(opts.cls);
             }
