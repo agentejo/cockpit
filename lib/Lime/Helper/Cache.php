@@ -40,12 +40,16 @@ class Cache extends \Lime\Helper {
 
         $var = @\file_get_contents($this->cachePath.\md5($this->prefix.'-'.$key).".cache");
 
-        if ($var==='') {
+        if (!$var) {
             return $default;
         } else {
 
             $time = \time();
             $var  = \unserialize($var);
+
+            if (!isset($var['expire'])) {
+                return $default;
+            }
 
             if (($var['expire'] < $time) && $var['expire']!=-1) {
                 $this->delete($key);
