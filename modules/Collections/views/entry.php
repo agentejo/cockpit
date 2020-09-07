@@ -3,7 +3,7 @@
 
 <style>
     @if(isset($collection['color']) && $collection['color']) 
-    
+
     .app-header {
         border-top: 8px <?=$collection['color']?> solid;
     }
@@ -110,7 +110,7 @@
                             </label>
 
                             <div class="uk-margin-top">
-                                <cp-field type="{field.type || 'text'}" bind="entry.{ field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" opts="{ field.options || {} }"></cp-field>
+                                <cp-field type="{field.type || 'text'}" bind="entry.{ field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" opts="{ field.options || {} }" required="{ field.required || false }"></cp-field>
                             </div>
 
                             <div class="uk-margin-top uk-text-small uk-text-muted" if="{field.info}">
@@ -428,7 +428,7 @@
 
             $this.refs.entrylinked.show($this.entry);
             $this.update();
-            
+
         }
 
     </script>
