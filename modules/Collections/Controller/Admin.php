@@ -322,7 +322,11 @@ class Admin extends \Cockpit\AuthController {
 
         }
 
-        $entry = $this->module('collections')->save($collection['name'], $entry, ['revision' => $revision]);
+        try {
+            $entry = $this->module('collections')->save($collection['name'], $entry, ['revision' => $revision]);
+        } catch(\Throwable $e) {
+            $this->app->stop(['error' => $e->getMessage()], 412);
+        }
 
         $this->app->helper('admin')->lockResourceId($entry['_id']);
 

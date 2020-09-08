@@ -177,7 +177,7 @@ $this->module('cockpit')->extend([
 
         $assets = isset($assets[0]) ? $assets : [$assets];
 
-        foreach($assets as &$asset) {
+        foreach ($assets as &$asset) {
 
             if (!isset($asset['_id'])) continue;
 
