@@ -187,7 +187,7 @@ class Mongo {
         $criteria = $this->_fixMongoIds($criteria);
         $data     = $this->_fixMongoIds($data);
 
-        return $this->getCollection($collection)->updateMany($criteria, $data);
+        return $this->getCollection($collection)->updateMany($criteria, ['$set' => $data]);
     }
 
     public function remove($collection, $filter=[]) {
