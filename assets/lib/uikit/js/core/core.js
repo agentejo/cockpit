@@ -78,10 +78,9 @@
 
             var element = document.body || document.documentElement,
                 transEndEventNames = {
+                    transition       : 'transitionend',
                     WebkitTransition : 'webkitTransitionEnd',
-                    MozTransition    : 'transitionend',
-                    OTransition      : 'oTransitionEnd otransitionend',
-                    transition       : 'transitionend'
+                    MozTransition    : 'transitionend'
                 }, name;
 
             for (name in transEndEventNames) {
@@ -98,10 +97,9 @@
 
             var element = document.body || document.documentElement,
                 animEndEventNames = {
+                    animation       : 'animationend',
                     WebkitAnimation : 'webkitAnimationEnd',
-                    MozAnimation    : 'animationend',
-                    OAnimation      : 'oAnimationEnd oanimationend',
-                    animation       : 'animationend'
+                    MozAnimation    : 'animationend'
                 }, name;
 
             for (name in animEndEventNames) {

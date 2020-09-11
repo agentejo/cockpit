@@ -1,8 +1,8 @@
 /*! UIkit 2.27.5 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 /*
- * Based on nativesortable - Copyright (c) Brian Grinstead - https://github.com/bgrins/nativesortable
- */
- (function(addon) {
+  * Based on nativesortable - Copyright (c) Brian Grinstead - https://github.com/bgrins/nativesortable
+  */
+(function(addon) {
 
     var component;
 
