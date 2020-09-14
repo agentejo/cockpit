@@ -148,8 +148,8 @@ class Auth extends \LimeExtra\Controller {
 
             $user = [
                 'md5email' => md5($user['email']),
-                'user' => $user['name'],
-                'name' => $user['user'],
+                'user' => $user['user'],
+                'name' => $user['name'],
             ];
 
             return $this->render('cockpit:views/layouts/newpassword.php', compact('user', 'token'));
