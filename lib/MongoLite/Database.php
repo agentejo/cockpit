@@ -429,7 +429,7 @@ class UtilArrayQuery {
             case '$func' :
             case '$fn' :
             case '$f' :
-                if (! \is_callable($b))
+                if (\is_string($b) || !\is_callable($b))
                     throw new \InvalidArgumentException('Function should be callable');
                 $r = $b($a);
                 break;
