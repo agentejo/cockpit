@@ -38,14 +38,18 @@ class Auth extends \LimeExtra\Controller {
             }
 
             if ($user) {
+                
                 $this->app->trigger('cockpit.authentication.success', [&$user]);
                 $this->module('cockpit')->setUser($user);
+
+                unset($user['api_key'], $user['_reset_token']);
+
             } else {
                 $this->app->trigger('cockpit.authentication.failed', [$data, 'User not found']);
             }
 
             if ($this->app->request->is('ajax')) {
-                return $user ? ['success' => true, 'user' => $user, 'avatar'=> md5($user['email'])] : ['success' => false, 'error' => 'User not found'];
+                return $user ? ['success' => true, 'user' => $user] : ['success' => false, 'error' => 'User not found'];
             } else {
                 $this->reroute('/');
             }
