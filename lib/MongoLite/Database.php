@@ -235,6 +235,12 @@ class Database {
 
 class UtilArrayQuery {
 
+    protected static $closures = [];
+
+    public static function closureCall($uid, $doc) {
+        return call_user_func_array(self::$closures[$uid], [$doc]);
+    }
+
     public static function buildCondition($criteria, $concat = ' && ') {
 
         $fn = [];
@@ -268,10 +274,15 @@ class UtilArrayQuery {
 
                 case '$where':
 
-                    if (\is_callable($value)) {
-
-                        // need implementation
+                    if (\is_string($value) || !\is_callable($value)) {
+                        throw new \InvalidArgumentException($key.' Function should be callable');
                     }
+
+                    $uid = \uniqid('mongoliteCallable').bin2hex(random_bytes(5));
+
+                    self::$closures[$uid] = $value;
+
+                    $fn[] = '\\MongoLite\\UtilArrayQuery::closureCall("'.$uid.'", $document)';
 
                     break;
 
@@ -424,14 +435,6 @@ class UtilArrayQuery {
                 if (! \is_array($b))
                     throw new \InvalidArgumentException('Invalid argument for $mod option must be array');
                 $r = $a % $b[0] == $b[1] ?? 0;
-                break;
-
-            case '$func' :
-            case '$fn' :
-            case '$f' :
-                if (\is_string($b) || !\is_callable($b))
-                    throw new \InvalidArgumentException('Function should be callable');
-                $r = $b($a);
                 break;
 
             case '$exists':
