@@ -18,18 +18,20 @@ use Spyc;
  */
 class YAML extends \Lime\Helper {
 
-
+    /** @var string|bool - Cache path */
     protected $cachePath = false;
 
     /**
-     * @param $path
+     * Set cache path
+     * @param string|bool $path
      */
-    public function setCachePath($path){
+    public function setCachePath($path) {
         $this->cachePath = \is_string($path) ? \rtrim($path, "/\\") : $path;
     }
 
     /**
-     * @param $string
+     * Create YAML from string
+     * @param  string $string
      * @return array
      */
     public static function fromString($string) {
@@ -38,7 +40,8 @@ class YAML extends \Lime\Helper {
     }
 
     /**
-     * @param $file
+     * Create YAML from file
+     * @param  string $file
      * @return array|mixed
      */
     public function fromFile($file) {
@@ -61,7 +64,8 @@ class YAML extends \Lime\Helper {
     }
 
     /**
-     * @param $array
+     * Convert to YAML
+     * @param  array $array
      * @return string
      */
     public function toYAML($array) {
@@ -69,8 +73,9 @@ class YAML extends \Lime\Helper {
     }
 
     /**
-     * @param $file
-     * @param $array
+     * Write to file
+     * @param  string $file
+     * @param  array $array
      * @return int
      */
     public function toFile($file, $array) {
@@ -78,7 +83,8 @@ class YAML extends \Lime\Helper {
     }
 
     /**
-     * @param $file
+     * Get cached file
+     * @param  string $file
      * @return bool|string
      */
     protected function get_cached_file($file) {
@@ -104,14 +110,14 @@ class YAML extends \Lime\Helper {
     }
 
     /**
-     * @param $file
-     * @param $cachedfile
+     * @param string $file
+     * @param string $cachedfile
      * @param null $filemtime
      * @return bool
      */
     protected function cache_file($file, $cachedfile, $filemtime = null) {
 
-        if (!$filemtime){
+        if (!$filemtime) {
             $filemtime = \filemtime($file);
         }
 
@@ -124,5 +130,4 @@ class YAML extends \Lime\Helper {
 
         return false;
     }
-
 }

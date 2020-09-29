@@ -17,13 +17,15 @@ use ParsedownExtra;
  * Class Markdown
  * @package Lime\Helper
  */
-class Markdown extends \Lime\Helper {
-
+class Markdown extends \Lime\Helper
+{
+    /** @var \Parsedown */
     protected $parser;
+    /** @var \ParsedownExtra */
     protected $parserExtra;
 
     /**
-     * @inherit
+     * @inheritdoc
      */
     public function initialize() {
 
@@ -32,7 +34,8 @@ class Markdown extends \Lime\Helper {
     }
 
     /**
-     * @param $text
+     * Parse
+     * @param string $text
      * @param bool|true $extra
      * @return mixed
      */
@@ -40,5 +43,4 @@ class Markdown extends \Lime\Helper {
 
         return $extra ? $this->parserExtra->text($text) : $this->parser->text($text);
     }
-
 }

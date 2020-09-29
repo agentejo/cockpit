@@ -19,7 +19,7 @@ class Controller extends \Lime\AppAware {
     protected $layout = false;
 
     /**
-     * @param $app
+     * @param \Lime\App $app
      */
     public function __construct($app) {
         parent::__construct($app);
@@ -28,6 +28,7 @@ class Controller extends \Lime\AppAware {
     }
 
     /**
+     * Index action
      * @return string
      */
     public function index() {
@@ -35,11 +36,12 @@ class Controller extends \Lime\AppAware {
     }
 
     /**
-     *
+     * Before hook
      */
     protected function before() { }
 
     /**
+     * Render view
      * @param $view
      * @param array $params
      * @return mixed
@@ -52,8 +54,9 @@ class Controller extends \Lime\AppAware {
     }
 
     /**
-     * @param $key
-     * @param null $default
+     * Get request variable
+     * @param string $key
+     * @param mixed $default
      * @return Mixed
      */
     protected function param($key, $default=null) {
@@ -61,23 +64,27 @@ class Controller extends \Lime\AppAware {
     }
 
     /**
-     * @param $module
-     * @return null
+     * Get app module
+     * @param string $module
+     * @return \Lime\Module|null
      */
     protected function module($module) {
         return $this->app->module($module);
     }
 
     /**
-     * @param $name
-     * @return mixed
+     * Get app helper
+     * @param string $name
+     * @return \Lime\Helper
      */
     protected function helper($name) {
         return $this->app->helper($name);
     }
 
     /**
-     *
+     * Stop app
+     * @param bool|int $data - Response body or HTTP status
+     * @param int $status - HTTP status
      */
     protected function stop($data = false, $status = null) {
         $this->app->stop($data, $status);

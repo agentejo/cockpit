@@ -13,8 +13,8 @@ namespace LimeExtra\Helper;
 /**
  * Assets class.
  */
-class Assets extends \Lime\Helper {
-
+class Assets extends \Lime\Helper
+{
     /**
      * Compile styles and return in a link tag
      *
@@ -25,7 +25,7 @@ class Assets extends \Lime\Helper {
      * @param  Boolean $version
      * @return String
      */
-    public function style($assets, $name, $path="", $cache=0, $version=false) {
+    public function style($assets, $name, $path = '', $cache = 0, $version = false) {
 
         $path = $this->path($path);
 
@@ -58,7 +58,7 @@ class Assets extends \Lime\Helper {
      * @param  Boolean $version
      * @return String
      */
-    public function script($assets, $name, $path="", $cache=0, $version=false){
+    public function script($assets, $name, $path="", $cache=0, $version=false) {
 
         $path = $this->path($path);
 
@@ -123,13 +123,13 @@ class Assets extends \Lime\Helper {
 
             $offset = 0;
 
-            while(($pos = strpos($content, 'url(', $offset)) !== false){
+            while(($pos = strpos($content, 'url(', $offset)) !== false) {
 
                 if(($urlend = strpos($content, ')', $pos))!==false) {
 
                     $path = trim(str_replace(array('"', "'"), "", substr($content, $pos+4, $urlend-($pos+4))));
 
-                    if(!preg_match("#^(http|/|data\:)#",trim($path))){
+                    if(!preg_match("#^(http|/|data\:)#",trim($path))) {
                         $content = str_replace($path, $csspath.$path, $content);
                     }
                 }
@@ -186,5 +186,4 @@ class Assets extends \Lime\Helper {
         // Add newlines between files to fix problem with stacking comments.
         return implode("\n", $output);
     }
-
 }
