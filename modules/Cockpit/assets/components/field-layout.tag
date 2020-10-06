@@ -58,7 +58,7 @@
             <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">
                 <img class="uk-margin-small-right" riot-src="{ parent.components[item.component].icon ? parent.components[item.component].icon : App.base('/assets/app/media/icons/component.svg')}" width="16">
                 <div class="uk-text-bold uk-text-truncate uk-flex-item-1">
-                    <a class="uk-link-muted" onclick="{ parent.settings }">{ item.name || parent.components[item.component].label || App.Utils.ucfirst(item.component) }</a>
+                    <a class="uk-link-muted" onclick="{ parent.settings }">{ itemDisplayName(item, parent) }</a>
                 </div>
                 <div class="uk-text-small uk-invisible">
                     <a onclick="{ parent.cloneComponent }" title="{ App.i18n.get('Clone Component') }"><i class="uk-icon-clone"></i></a>
@@ -364,7 +364,7 @@
                 value = [];
             }
 
-            if (JSON.stringify(this.items) != JSON.stringify(value)) {
+            if (JSON.stringify(this.items) !== JSON.stringify(value)) {
                 this.items = value;
                 this.update();
             }
@@ -376,19 +376,19 @@
             var n = this;
 
             while (n.parent) {
-                if (n.parent.root.getAttribute('data-is') == 'field-layout') {
+                if (n.parent.root.getAttribute('data-is') === 'field-layout') {
                     n.parent.$setValue(n.parent.items);
                 }
                 n = n.parent;
             }
-        }
+        };
 
         isComponentAvailable(name) {
 
             if (Array.isArray(opts.exclude) && opts.exclude.indexOf(name) > -1) return false;
-            if (Array.isArray(opts.restrict) && opts.restrict.indexOf(name) == -1) return false;
+            if (Array.isArray(opts.restrict) && opts.restrict.indexOf(name) === -1) return false;
 
-            return !this.componentGroup || (this.componentGroup == this.components[name].group);
+            return !this.componentGroup || (this.componentGroup === this.components[name].group);
         }
 
         addComponent(e, push) {
@@ -429,7 +429,7 @@
                 item.children = [];
             }
 
-            if (e.item.name == 'grid') {
+            if (e.item.name === 'grid') {
                 item.columns = [];
             }
 
@@ -578,6 +578,14 @@
             return src;
         }
 
+        itemDisplayName(item, parent) {
+            var componentName = parent.components[item.component].label || App.Utils.ucfirst(item.component);
+            if (item.name) {
+                return item.name + " (" + componentName + ")";
+            }
+            return componentName;
+        }
+
     </script>
 
 </field-layout>
@@ -655,12 +663,12 @@
             var n = this;
 
             while (n.parent) {
-                if (n.parent.root.tagName == 'field-layout' || n.parent.root.getAttribute('data-is') == 'field-layout') {
+                if (n.parent.root.tagName === 'field-layout' || n.parent.root.getAttribute('data-is') === 'field-layout') {
                     n.parent.$setValue(n.parent.items);
                 }
                 n = n.parent;
             }
-        }
+        };
 
         this.on('mount', function() {
 
