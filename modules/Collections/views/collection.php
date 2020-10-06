@@ -209,6 +209,7 @@
                                     <input class="uk-width-1-1 uk-form-large uk-text-primary" type="text" placeholder="protocol-1, protocol-2" bind="collection.contentpreview.wsprotocols" title="Websocket Protocol">
                                 </div>
                             </div>
+                            <div class="uk-margin-top"><field-boolean bind="collection.contentpreview.populate" label="@lang('Populate')"></field-boolean></div>
                         </div>
 
                     </div>
