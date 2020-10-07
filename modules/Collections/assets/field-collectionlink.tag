@@ -103,7 +103,7 @@
                 <table class="uk-table uk-table-tabbed uk-table-striped" if="{ modalOpen && entries.length }">
                     <thead>
                         <tr>
-                            <th show="{opts.multiple}"></th>
+                            <th></th>
                             <th class="uk-text-small" each="{field,idx in fields}">
                                 <a class="uk-link-muted { parent.sort[field.name] ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
 
@@ -112,19 +112,18 @@
                                     <span if="{parent.sort[field.name]}" class="uk-icon-long-arrow-{ parent.sort[field.name] == 1 ? 'up':'down'}"></span>
                                 </a>
                             </th>
-                            <th width="20"></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr each="{entry,idx in entries}">
                             <td show="{parent.opts.multiple}"><input class="uk-checkbox" type="checkbox" onclick="{parent.toggleSelected}"></td>
+                            <td show="{!parent.opts.multiple}">
+                                <a onclick="{ parent.linkItem }"><i class="uk-icon-link"></i></a>
+                            </td>
                             <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' }">
                                 <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name], field, lang) }"></raw>
                             </td>
                             <td>{ App.Utils.dateformat( new Date( 1000 * entry._modified )) }</td>
-                            <td show="{!parent.opts.multiple}">
-                                <a onclick="{ parent.linkItem }"><i class="uk-icon-link"></i></a>
-                            </td>
                         </tr>
                     </tbody>
                 </table>
