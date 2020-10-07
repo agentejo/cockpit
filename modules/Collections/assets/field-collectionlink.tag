@@ -118,7 +118,7 @@
                         <tr each="{entry,idx in entries}">
                             <td show="{parent.opts.multiple}"><input class="uk-checkbox" type="checkbox" onclick="{parent.toggleSelected}"></td>
                             <td show="{!parent.opts.multiple}">
-                                <a onclick="{ parent.linkItem }"><i class="uk-icon-link"></i></a>
+                                <a onclick="{ parent.linkItem }" class="uk-button uk-button-primary"><i class="uk-icon-link"></i></a>
                             </td>
                             <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' }">
                                 <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name], field, lang) }"></raw>
