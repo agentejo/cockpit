@@ -26,7 +26,7 @@
                     <span class="uk-flex-item-1">
                         { getDisplay(link) }
                     </span>
-                    <a class="uk-margin-small-left" target="_blank" href="{ App.route('/collections/entry/'+opts.link+'/'+link._id) }"><i class="uk-icon-link"></i></a>
+                    <a class="uk-margin-small-left" target="_blank" href="{ App.route('/collections/entry/'+opts.link+'/'+link._id) }"><i class="uk-icon-external-link"></i></a>
                 </div>
 
                 <div class="uk-panel-box-footer uk-text-small uk-padding-bottom-remove">
@@ -47,7 +47,7 @@
                             <div><a onclick="{ removeListItem }"><i class="uk-icon-trash-o"></i></a></div>
                             <div class="uk-flex uk-flex-item-1">
                                 <span class="uk-flex-item-1">{ parent.getDisplay(l) }</span>
-                                <a class="uk-margin-small-left" target="_blank" href="{ App.route('/collections/entry/'+parent.opts.link+'/'+l._id) }"><i class="uk-icon-link"></i></a>
+                                <a class="uk-margin-small-left" target="_blank" href="{ App.route('/collections/entry/'+parent.opts.link+'/'+l._id) }"><i class="uk-icon-external-link"></i></a>
                             </div>
                         </div>
                     </li>
