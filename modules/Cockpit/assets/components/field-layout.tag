@@ -48,6 +48,12 @@
             display:none
         }
 
+        .field-layout-component-badge {
+            padding: .2em .2em;
+            font-size: 80%;
+            line-height: 1;
+        }
+
     </style>
 
 
@@ -57,8 +63,9 @@
 
             <div class="uk-flex uk-flex-middle uk-text-small uk-visible-hover">
                 <img class="uk-margin-small-right" riot-src="{ parent.components[item.component].icon ? parent.components[item.component].icon : App.base('/assets/app/media/icons/component.svg')}" width="16">
-                <div class="uk-text-bold uk-text-truncate uk-flex-item-1">
-                    <a class="uk-link-muted" onclick="{ parent.settings }">{ itemDisplayName(item, parent) }</a>
+                <div class="uk-text-truncate uk-flex-item-1">
+                    <a class="uk-text-bold uk-link-muted" onclick="{ parent.settings }">{ itemDisplayName(item, parent) }</a>
+                    <span class="uk-text-muted uk-badge uk-badge-outline field-layout-component-badge uk-margin-small-left" if="{item.name}">{ componentDisplayName(item.component, parent) }</span>
                 </div>
                 <div class="uk-text-small uk-invisible">
                     <a onclick="{ parent.cloneComponent }" title="{ App.i18n.get('Clone Component') }"><i class="uk-icon-clone"></i></a>
@@ -564,6 +571,14 @@
             return '';
         }
 
+        itemDisplayName(item, parent) {
+            return item.name || this.componentDisplayName(item.component, parent);
+        }
+
+        componentDisplayName(component, parent) {
+            return parent.components[component].label || App.Utils.ucfirst(component)
+        }
+
         function getPathUrl(path) {
 
             var p = path, 
@@ -581,14 +596,6 @@
             }
 
             return src;
-        }
-
-        itemDisplayName(item, parent) {
-            var componentName = parent.components[item.component].label || App.Utils.ucfirst(item.component);
-            if (item.name) {
-                return item.name + " (" + componentName + ")";
-            }
-            return componentName;
         }
 
     </script>
