@@ -214,6 +214,10 @@
 
         if (this.languages.length) {
             this.lang = App.session.get('collections.entry.'+this.collection._id+'.lang', '');
+            if (typeof window.URLSearchParams === 'function') {
+                var langParam = new URLSearchParams(document.location.search.substring(1)).get("lang");
+                if (langParam) this.lang = langParam;
+            }
         }
 
         // fill with default values
