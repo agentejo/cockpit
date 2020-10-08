@@ -379,7 +379,7 @@
 
         initState() {
 
-            var searchParams = new URLSearchParams(location.search);
+            var searchParams = App.Utils.params();
 
             if (searchParams.has('q')) {
 
