@@ -5,13 +5,12 @@
 
 (function (App, riot) {
 
-
     App.Utils = App.Utils || {};
-
+    
     App.Utils.md5 = md5;
     App.Utils.str2json = UIkit.Utils.str2json;
     App.Utils.debounce = UIkit.Utils.debounce;
-
+    
     App.Utils.isString = function (val) { return "string" === typeof val; };
     App.Utils.isNumber = function (val) { return "number" === typeof val; };
     App.Utils.isNumeric = function (val) { return !isNaN(parseFloat(val)) && isFinite(val); };
@@ -19,6 +18,11 @@
     App.Utils.isUndefined = function (val) { return "undefined" === typeof val; };
     App.Utils.isDefined = function (val) { return "undefined" !== typeof val; };
     App.Utils.isObject = function (val) { return null !== val && "object" === typeof val; };
+    
+    App.Utils.params = function(key) {
+        var params = new URLSearchParams(location.search);
+        return key ? params.get(key) : params;
+    }
 
     App.Utils.ucfirst = function (string) {
         return string[0].toUpperCase() + string.slice(1);

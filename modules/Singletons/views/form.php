@@ -242,7 +242,7 @@
             }
 
             if (this.languages.length) {
-                this.lang = App.session.get('singletons.form.'+this.singleton._id+'.lang', '');
+                this.lang = App.Utils.params('lang') || App.session.get('singletons.form.'+this.singleton._id+'.lang', '');
             }
 
             this.on('mount', function(){
