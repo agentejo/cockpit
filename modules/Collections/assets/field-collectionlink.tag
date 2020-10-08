@@ -26,7 +26,7 @@
                     <span class="uk-flex-item-1">
                         { getDisplay(link) }
                     </span>
-                    <a class="uk-margin-small-left" href="{ App.route('/collections/entry/'+opts.link+'/'+link._id) }"><i class="uk-icon-link"></i></a>
+                    <a class="uk-margin-small-left" target="_blank" href="{ App.route('/collections/entry/'+opts.link+'/'+link._id) }"><i class="uk-icon-external-link"></i></a>
                 </div>
 
                 <div class="uk-panel-box-footer uk-text-small uk-padding-bottom-remove">
@@ -47,7 +47,7 @@
                             <div><a onclick="{ removeListItem }"><i class="uk-icon-trash-o"></i></a></div>
                             <div class="uk-flex uk-flex-item-1">
                                 <span class="uk-flex-item-1">{ parent.getDisplay(l) }</span>
-                                <a class="uk-margin-small-left" href="{ App.route('/collections/entry/'+parent.opts.link+'/'+l._id) }"><i class="uk-icon-link"></i></a>
+                                <a class="uk-margin-small-left" target="_blank" href="{ App.route('/collections/entry/'+parent.opts.link+'/'+l._id) }"><i class="uk-icon-external-link"></i></a>
                             </div>
                         </div>
                     </li>
@@ -206,9 +206,9 @@
 
         if (!opts.link) return;
 
-        modal = UIkit.modal(this.refs.modal, {modal:false});
+        modal = UIkit.modal(this.refs.modal, { modal:false });
 
-        modal.element.appendTo(document.body)
+        modal.element.appendTo(document.body);
 
         App.request('/collections/_collections').then(function(data){
             collections = data;
@@ -218,7 +218,7 @@
 
         App.$(this.root).on('keydown', 'input',function(e){
 
-            if (e.keyCode == 13) {
+            if (e.keyCode === 13) {
                 e.preventDefault();
                 e.stopPropagation();
 
@@ -238,7 +238,7 @@
                 $this.modalOpen = true;
                 $this.update();
             }
-        })
+        });
 
         modal.element.on('hide.uk.modal', function() {
 
@@ -246,7 +246,7 @@
                 $this.modalOpen = false;
                 $this.update();
             }
-        })
+        });
     });
     
     this.on('before-unmount', function() {
