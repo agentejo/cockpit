@@ -368,7 +368,7 @@ class App implements \ArrayAccess {
                 if (count($parts)==2){
                     if (!isset($this->paths[$parts[0]])) return false;
 
-                    foreach ($this->paths[$parts[0]] as &$path){
+                    foreach ($this->paths[$parts[0]] as &$path) {
                         if (\file_exists($path.$parts[1])){
                             return $path.$parts[1];
                         }
