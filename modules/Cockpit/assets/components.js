@@ -2886,6 +2886,11 @@ riot.tag2('field-layout', '<div class="uk-sortable layout-components {!items.len
 
         if (opts.parentComponent && opts.parentComponent.options) {
             opts = App.$.extend(true, {}, opts.parentComponent.options, opts);
+            for (var field of ["restrict", "exclude"]) {
+                if (opts.parentComponent.options[field] !== undefined) {
+                    opts[field] = opts.parentComponent.options[field];
+                }
+            }
         }
 
         this.on('mount', function() {
