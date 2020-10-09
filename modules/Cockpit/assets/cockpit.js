@@ -80,7 +80,7 @@
 
                         Object.keys(s.paths).forEach(function (path) {
 
-                            if (options.pattern == '*' || App.Utils.fnmatch(options.pattern, path)) {
+                            if (options.pattern === '*' || App.Utils.fnmatch(options.pattern, path)) {
 
                                 selected.push(s.paths[path].rel_site_path);
                             }
@@ -96,7 +96,6 @@
         },
 
         assets: {
-
             select: function (callback, options) {
 
                 options = App.$.extend({
@@ -173,26 +172,20 @@
         }
     };
 
-
     var _accounts = {}; // cache
 
     Cockpit.account = function (id) {
-
         if (!_accounts[id]) {
-
             _accounts[id] = new Promise(function (resolve, reject) {
-
                 App.request('/accounts/find', { options: { filter: { _id: id } } }).then(function (response) {
                     resolve(response && Array.isArray(response.accounts) && response.accounts[0] ? response.accounts[0] : null);
                 });
             });
         }
-
         return _accounts[id];
-    }
+    };
 
     App.$.extend(true, App, Cockpit);
 
     window.Cockpit = Cockpit;
-
 })(jQuery);
