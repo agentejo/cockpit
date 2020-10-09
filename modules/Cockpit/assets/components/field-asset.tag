@@ -117,14 +117,11 @@
         });
 
         selectAsset() {
-
-            Cockpit.assets.select(function(assets){
-
+            Cockpit.assets.select(function (assets) {
                 if (Array.isArray(assets)) {
                     $this.$setValue(assets[0]);
                 }
-
-            }, {typefilter: opts.typefilter});
+            }, { typefilter: opts.typefilter, single: true });
         }
 
         reset() {

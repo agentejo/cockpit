@@ -167,17 +167,13 @@
         }
 
         selectAsset() {
-
             App.assets.select(function(assets){
-
                 if (Array.isArray(assets) && assets[0]) {
-
-                    $this.image.path = ASSETS_URL.replace(SITE_URL, '')+assets[0].path;
+                    $this.image.path = ASSETS_URL.replace(SITE_URL, '') + assets[0].path;
                     $this.$setValue($this.image);
                     $this.update();
                 }
-                
-            }, {typefilter: 'image'});
+            }, { typefilter: 'image', single: true });
         }
 
         remove() {

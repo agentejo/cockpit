@@ -52,7 +52,7 @@
                 <div class="uk-flex uk-flex-middle">
 
                     <button class="uk-button uk-button-large uk-button-danger" type="button" onclick="{ removeSelected }" show="{ selected.length }">
-                        { App.i18n.get('Delete') } <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
+                        { App.i18n.get('Delete') }<span class="uk-badge uk-badge-contrast uk-margin-small-left" if="{ !this.single }"> { selected.length }</span>
                     </button>
 
                     <button class="uk-button uk-button-large uk-button-link" onclick="{addFolder}">{ App.i18n.get('Add folder') }</button>
@@ -277,6 +277,7 @@
             'document' : /\.(txt|pdf|md)$/i,
             'code'     : /\.(htm|html|php|css|less|js|json|yaml|xml|htaccess)$/i
         };
+        this.single = opts.single === "true";
 
         this.mode     = 'list';
         this.listmode = App.session.get('app.assets.listmode', 'list');
@@ -557,7 +558,11 @@
             var idx = this.selected.indexOf(e.item.asset);
 
             if (idx === -1) {
-                this.selected.push(e.item.asset);
+                if (this.single) {
+                    this.selected = [e.item.asset];
+                } else {
+                    this.selected.push(e.item.asset);
+                }
             } else {
                 this.selected.splice(idx, 1);
             }
