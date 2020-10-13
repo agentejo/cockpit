@@ -77,7 +77,8 @@
                                 "table contextmenu paste"
                             ],
                             toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table | fontsizeselect forecolor",
-                            relative_urls: false
+                            relative_urls: false,
+                            convert_urls : false
                         }, opts.editor || {}, {
 
                           selector: '#'+this.refs.input.id,

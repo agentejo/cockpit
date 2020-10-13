@@ -4384,7 +4384,8 @@ riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" 
                                 "table contextmenu paste"
                             ],
                             toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table | fontsizeselect forecolor",
-                            relative_urls: false
+                            relative_urls: false,
+                            convert_urls : false
                         }, opts.editor || {}, {
 
                           selector: '#'+this.refs.input.id,
