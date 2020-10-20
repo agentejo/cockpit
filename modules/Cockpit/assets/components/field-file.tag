@@ -18,6 +18,8 @@
 
                 <div class="uk-dropdown" if="{App.$data.acl.finder}">
                     <ul class="uk-nav uk-nav-dropdown uk-dropdown-close">
+                        <li if="{ shouldShowOpen() }" class="uk-nav-header">{ App.i18n.get('Open') }</li>
+                        <li if="{ shouldShowOpen() }"><a onclick="{ open }">{ App.i18n.get('Open in new tab') }</a></li>
                         <li class="uk-nav-header">{ App.i18n.get('Source') }</li>
                         <li><a onclick="{ selectAsset }">{ App.i18n.get('Select Asset') }</a></li>
                         <li><a onclick="{ selectFile }">{ App.i18n.get('Select File') }</a></li>
@@ -104,6 +106,20 @@
             });
         }
 
+        shouldShowOpen() {
+            return $this.refs.input.value.trim().length > 0;
+        }
+
+        open() {
+            var url = $this.refs.input.value.trim();
+            if (url) {
+                if (!url.match(/^(https?:)?\/\/?/i)) {
+                    url = SITE_URL + "/" + url;
+                }
+                var win = window.open(url, '_blank');
+                win.focus();
+            }
+        }
     </script>
 
 </field-file>
