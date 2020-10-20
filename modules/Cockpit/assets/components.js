@@ -2373,14 +2373,12 @@ riot.tag2('field-file', '<div class="uk-panel uk-panel-box uk-panel-card "> <div
         }.bind(this)
 
         this.selectAsset = function() {
-
-            App.assets.select(function(assets){
-
+            App.assets.select(function (assets) {
                 if (Array.isArray(assets) && assets[0]) {
                     $this.refs.input.$setValue(ASSETS_URL.replace(SITE_URL+'/', '')+assets[0].path);
                     $this.update();
                 }
-            });
+            }, { typefilter: opts.typefilter, single: true });
         }.bind(this)
 
         this.shouldShowOpen = function() {
