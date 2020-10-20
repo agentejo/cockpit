@@ -372,8 +372,8 @@
 
     App.Utils.renderer.textarea = App.Utils.renderer.text;
 
-    App.Utils.renderValue = function (renderer, v, meta) {
-        return (this.renderer[renderer] || this.renderer.default)(v, meta);
+    App.Utils.renderValue = function (renderer, v, meta, lang) {
+        return (this.renderer[renderer] || this.renderer.default)(v, meta, lang);
     };
 
     // riot enhancments
