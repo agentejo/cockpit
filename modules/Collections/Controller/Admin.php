@@ -535,6 +535,8 @@ class Admin extends \Cockpit\AuthController {
         $criterias    = [];
         $_filter      = null;
 
+        $this->app->trigger("collections.admin._filterMongo.before", [&$filter, &$allowedtypes, &$criterias]);
+
         foreach ($collection['fields'] as $field) {
 
             $name = $field['name'];
@@ -570,6 +572,7 @@ class Admin extends \Cockpit\AuthController {
                 $criterias[] = $criteria;
             }
 
+            $this->app->trigger("collections.admin._filterMongo.field", [$name, $field, $filter, &$criterias]);
         }
 
         if (count($criterias)) {
