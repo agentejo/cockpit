@@ -311,7 +311,7 @@
     App.Utils.renderer.colortag = App.Utils.renderer.color;
 
     App.Utils.renderer.file = function (v) {
-        return v ? '<a title="' + v + '" dta-uk-tooltip><i class="uk-icon-paperclip></i></a>' : null;
+        return v ? '<a title="' + v + '" data-uk-tooltip><i class="uk-icon-paperclip"></i></a>' : null;
     };
 
     App.Utils.renderer.rating = function (v) {
