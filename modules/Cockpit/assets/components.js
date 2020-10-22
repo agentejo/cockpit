@@ -4154,10 +4154,9 @@ riot.tag2('field-tags', '<div class="uk-grid uk-grid-small uk-flex-middle" data-
                 },
 
                 'selectitem.uk.autocomplete keydown': function(e, data) {
+                    var value = e.type === 'keydown' ? $this.refs.input.value : data.value;
 
-                    var value = e.type=='keydown' ? $this.refs.input.value : data.value;
-
-                    if (e.type=='keydown' && e.keyCode != 13 && e.keyCode != 188) {
+                    if (e.type === 'keydown' && e.keyCode !== 13 && e.key !== ",") {
                         return;
                     }
 
