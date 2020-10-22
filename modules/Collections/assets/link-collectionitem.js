@@ -2,9 +2,9 @@
 
     var linkCache = {};
 
-    App.Utils.renderer.collectionlink = function (v, field) {
+    App.Utils.renderer.collectionlink = function (v, field, lang) {
 
-        if (!v) {
+        if (!v || v.length === 0) {
             return '<i class="uk-icon-eye-slash uk-text-muted"></i>';
         }
 
@@ -19,7 +19,7 @@
 
             linkCache[v._id] = new Promise(function (resolve) {
 
-                App.request('/collections/find', { collection: field.options.link, options: { filter: { _id: v._id } } }).then(function (data) {
+                App.request('/collections/find', { collection: field.options.link, options: { lang: lang, filter: { _id: v._id } } }).then(function (data) {
 
                     if (!data.entries || !data.entries.length) {
                         v.display = 'n/a';

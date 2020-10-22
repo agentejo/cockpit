@@ -194,7 +194,7 @@
                         <div class="uk-margin-small-bottom" each="{field,idy in parent.fields}" if="{ field.name != '_modified' && field.name != '_created' }">
                             <span class="uk-text-small uk-text-uppercase uk-text-muted">{ field.label || field.name }</span>
                             <a class="uk-link-muted uk-text-small uk-display-block uk-text-truncate" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
-                                <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name], field) }" if="{parent.entry[field.name] !== undefined}"></raw>
+                                <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name], field, lang) }" if="{parent.entry[field.name] !== undefined}"></raw>
                                 <span class="uk-icon-eye-slash uk-text-muted" if="{parent.entry[field.name] === undefined}"></span>
                             </a>
                         </div>
@@ -226,7 +226,7 @@
                         <td><input class="uk-checkbox" type="checkbox" data-check data-id="{ entry._id }"></td>
                         <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' && field.name != '_created' }">
                             <a class="uk-link-muted" href="@route('/collections/entry/'.$collection['name'])/{ parent.entry._id }">
-                                <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name], field) }" if="{parent.entry[field.name] !== undefined}"></raw>
+                                <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name], field, lang) }" if="{parent.entry[field.name] !== undefined}"></raw>
                                 <span class="uk-icon-eye-slash uk-text-muted" if="{parent.entry[field.name] === undefined}"></span>
                             </a>
                         </td>
