@@ -15,9 +15,11 @@
             v = v[0];
         }
 
-        if (!linkCache[v._id]) {
+        var displayId = lang ? `${v._id}_${lang}` : v._id;
 
-            linkCache[v._id] = new Promise(function (resolve) {
+        if (!linkCache[displayId]) {
+
+            linkCache[displayId] = new Promise(function (resolve) {
 
                 App.request('/collections/find', { collection: field.options.link, options: { lang: lang, filter: { _id: v._id } } }).then(function (data) {
 
@@ -42,9 +44,9 @@
         }
 
         setTimeout(() => {
-            linkCache[v._id].then(display => {
+            linkCache[displayId].then(display => {
 
-                let spans = document.querySelectorAll(`[data-collection-display-id='${v._id}']`);
+                let spans = document.querySelectorAll(`[data-collection-display-id='${displayId}']`);
 
                 [...spans].forEach(span => {
                     span.innerText = display;
@@ -53,7 +55,7 @@
             })
         });
 
-        return `<span data-collection-display-id="${v._id}"><i class="uk-icon-spin uk-icon-spinner uk-text-muted"></i></span>`;
+        return `<span data-collection-display-id="${displayId}"><i class="uk-icon-spin uk-icon-spinner uk-text-muted"></i></span>`;
     };
 
     function selectCollectionItem(fn, options) {
