@@ -517,25 +517,13 @@ class Admin extends \Cockpit\AuthController {
 
     protected function _filter($filter, $collection, $lang = null) {
 
-        if ($this->app->storage->type == 'mongolite') {
-            return $this->_filterMongo($filter, $collection, $lang, true);
-        }
-
-        if ($this->app->storage->type == 'mongodb') {
-            return $this->_filterMongo($filter, $collection, $lang);
-        }
-
-        return null;
-
-    }
-
-    protected function _filterMongo($filter, $collection, $lang, $isMongoLite = false) {
+        $isMongoLite  = ($this->app->storage->type == 'mongolite');
 
         $allowedtypes = ['text','longtext','boolean','select','html','wysiwyg','markdown','code'];
         $criterias    = [];
         $_filter      = null;
 
-        $this->app->trigger("collections.admin._filterMongo.before", [&$filter, &$allowedtypes, &$criterias]);
+        $this->app->trigger('collections.admin._filter.before', [$collection, &$filter, &$allowedtypes, &$criterias]);
 
         foreach ($collection['fields'] as $field) {
 
@@ -546,33 +534,42 @@ class Admin extends \Cockpit\AuthController {
             }
 
             if ($field['type'] != 'boolean' && in_array($field['type'], $allowedtypes)) {
+                
                 $criteria = [];
                 $criteria[$name] = ['$regex' => $filter];
+
                 if (!$isMongoLite) {
                   $criteria[$name]['$options'] = 'i';
                 }
+                
                 $criterias[] = $criteria;
             }
 
             if ($field['type']=='collectionlink') {
+                
                 $criteria = [];
                 $criteria[$name.'.display'] = ['$regex' => $filter];
+
                 if (!$isMongoLite) {
                   $criteria[$name]['$options'] = 'i';
                 }
+
                 $criterias[] = $criteria;
             }
 
             if ($field['type']=='location') {
+                
                 $criteria = [];
                 $criteria[$name.'.address'] = ['$regex' => $filter];
+                
                 if (!$isMongoLite) {
                   $criteria[$name]['$options'] = 'i';
                 }
+
                 $criterias[] = $criteria;
             }
 
-            $this->app->trigger("collections.admin._filterMongo.field", [$name, $field, $filter, &$criterias]);
+            $this->app->trigger('collections.admin._filter.field', [$collection, $name, $field, $filter, &$criterias]);
         }
 
         if (count($criterias)) {
