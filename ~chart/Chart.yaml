@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Agentejo Cockpit Chart for Kubernetes
+name: agentejocockpit
+version: 0.0.1
