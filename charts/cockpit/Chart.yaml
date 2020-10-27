@@ -1,6 +1,41 @@
 apiVersion: v2
 name: cockpit
 description: A Cockpit Helm chart for Kubernetes
+long_description: |
+  Cockpit is a headless CMS with an API-first approach that puts content first. It is designed to simplify the process of publication by separating content management from content consumption on the client side.
+
+  Cockpit is focusing just on the back-end work to manage content. Rather than worry about delivery of content through pages, its goal is to provide structured content across different channels via a simple API.
+
+  Key features:
+   - Manage flexible content models. There are no pre-defined content models. Define the content model yourself.
+   - Uncluttered UI. Cockpit offers you a modern and simple user interface.
+   - One system, consume it the way you want. Receive your content via a simple API.
+
+  The Advantages Of Going Headless
+   - No presentation limitations – build the best design ever.
+   - Content for multiple channels – create content once, consume anywhere.
+   - Highly scalable content – for all your devices and microsites.
+   - Minimum training required – get started, immediately.
+   - Easy integrations – connect with everything.
+
+  ## Installation
+  Temporary instructions:
+  ```bash
+  # pull the chart
+  git clone https://github.com/beasteers/cockpit.git
+  git checkout k8s-helm
+
+  # overwrite with custom values (optional)
+  cp ./cockpit/charts/cockpit/values.yml ./cockpit.values.yml
+
+  helm install cockpit ./cockpit/charts/cockpit -f ./cockpit.values.yml
+  ```
+  Eventually, we should have something like `helm repo add cockpit.github.io/helm`
+
+  ## Uninstalling
+  ```bash
+  helm uninstall cockpit
+  ```
 
 # A chart can be either an 'application' or a 'library' chart.
 #
