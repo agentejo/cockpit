@@ -1,16 +1,17 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "cockpit.fullname" . }}
   labels:
     {{- include "cockpit.labels" . | nindent 4 }}
 spec:
 {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.replicas }}
 {{- end }}
   selector:
     matchLabels:
       {{- include "cockpit.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "cockpit.fullname" . }}
   template:
     metadata:
     {{- with .Values.podAnnotations }}
@@ -41,12 +42,24 @@ spec:
             httpGet:
               path: /
               port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
           readinessProbe:
             httpGet:
               path: /
               port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{ if .Values.persistence.enabled -}}
+          volumeMounts:
+          - name: cockpit-storage
+            mountPath: "/var/www/html/storage"
+            {{- if .Values.persistence.subPath }}
+            subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
+          {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -59,3 +72,16 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
+  {{ if .Values.persistence.enabled -}}
+  volumeClaimTemplates:
+   - metadata:
+       name: cockpit-storage
+     spec:
+       accessModes:
+        - ReadWriteMany
+       storageClassName: {{ .Values.persistence.storageClassName }}
+       resources:
+         requests:
+           storage: {{ .Values.persistence.size }}
+  {{- end }}

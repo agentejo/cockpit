@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
+replicas: 1
 
 image:
   repository: agentejo/cockpit
@@ -53,6 +53,19 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+## Copied from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
+##
+persistence:
+  enabled: false
+  storageClassName: ""
+  # accessModes:
+  #   - ReadWriteMany
+  size: 1Gi
+  subPath: ""
+  # existingClaim:
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
