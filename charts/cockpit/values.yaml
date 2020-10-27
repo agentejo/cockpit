@@ -2,15 +2,81 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicas: 1
+replicas: 1  # the number of pod replicas
 
 image:
-  repository: agentejo/cockpit
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  repository: agentejo/cockpit  # Image repository
+  pullPolicy: IfNotPresent  # Image pull policy
+  tag: ""  # Image tag. Overrides the image tag whose default is the chart appVersion.
+  pullSecrets: []  # Image pull secrets
 
-extraEnv: {}
+nameOverride: ""  # override the ... something
+fullnameOverride: ""  # override the pod/service/ingress names
+
+config: {}  # cockpit configuration options. See https://getcockpit.com/documentation/reference/configuration
+  # app.name: My Project X  # cockpit session name
+  # session.name: mysession  # cockpit session name
+  # sec-key: xxxxx-SiteSecKeyPleaseChangeMe-xxxxx  # app custom security key
+  # site_url: https://mydomain.com  # site url (optional) - helpful if you're behind a reverse proxy
+  # languages: {}  # define language mapping. setting a default language is optional
+  #   # default: English
+  #   # fr: French
+  #   # de: German
+  #
+  # groups:  # define additional groups
+  #   author:
+  #     $admin: false
+  #     $vars:
+  #       finder.path: /storage/upload
+  #     cockpit:
+  #       backend: true
+  #       finder: true
+  #     collections:
+  #       manage: true
+  #
+  # database:  # define the database connection e.g. use mongodb as main data storage
+  #   server: mongodb://localhost:27017
+  #   options:
+  #     db: cockpitdb
+  #
+  # mailer:  # use smtp to send emails
+  #   from: info@mydomain.tld
+  #   transport: smtp
+  #   host: smtp.myhost.tld
+  #   user: username
+  #   password: xxpasswordxx
+  #   port: 25
+  #   auth: true
+  #   encryption: '' # '', 'ssl' or 'tls'
+  #
+  # cors:  # Define Access-Control (CORS) settings.
+  #   allowedHeaders: X-Requested-With, Content-Type, Origin, Cache-Control, Pragma, Authorization, Accept, Accept-Encoding, Cockpit-Token
+  #   allowedMethods: PUT, POST, GET, OPTIONS, DELETE
+  #   allowedOrigins: '*'
+  #   maxAge: 1000
+  #   allowCredentials: true
+  #   exposedHeaders: true
+
+
+languages: []  # supported languages (use il8n code). Source: https://github.com/agentejo/cockpit-i18n
+#   - UA_uk  # Українська
+#   - cs     # Čeština
+#   - de     # Deutsch
+#   - es     # Español
+#   - fr     # Français
+#   - it_IT  # Italiano
+#   - ja     # 日本語
+#   - nb_NO  # Norsk Bokmål
+#   - nl     # Nederlands
+#   - nn_NO  # Norsk Nynorsk
+#   - pl     # Polski
+#   - pt_BR  # Português Brasileiro
+#   - pt_PT  # Português
+#   - ru_RU  # Русский
+#   - tr     # Türkçe
+#   - zh_CN  # 中文
+
+extraEnv: {}  # extra environment variables.
   # COCKPIT_ADMIN_USER: asdf
   # COCKPIT_ADMIN_NAME: Asdf Asdf
   # COCKPIT_ADMIN_PASSWORD: asdf
@@ -18,46 +84,20 @@ extraEnv: {}
   # COCKPIT_ADMIN_I18N: en
   # COCKPIT_SALT: asddfasdfasdf
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-podAnnotations: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
 service:
-  type: ClusterIP
-  port: 80
+  type: ClusterIP  # Kubernetes service type
+  port: 80  # Kubernetes port where service is exposed
 
 ingress:
-  enabled: false
-  annotations: {}
+  enabled: false  # enable ingress
+  annotations: {}  # Ingress annotations
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  hosts:
+  hosts:  # ingress hosts
     - host: chart-example.local
       paths:
         - /
-  tls: []
+  tls: []  # Ingress TLS configuration
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
@@ -67,15 +107,17 @@ ingress:
 ## Copied from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
 ##
 persistence:
-  enabled: false
-  storageClassName: ""
-  # accessModes:
-  #   - ReadWriteMany
-  size: 1Gi
-  subPath: ""
-  # existingClaim:
+  enabled: false  # enable persistent storage
+  storageClassName: ""  # Type of volume claim
+  size: 1Gi  # Size of volume claim
+  subPath: ""  # Mount a sub dir of the persistent volume
 
-resources: {}
+
+# Boring stuff
+
+
+
+resources: {}  # define required node resources
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -87,15 +129,34 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
+
+serviceAccount:
+  create: true  # Specifies whether a service account should be created
+  annotations: {}  # Annotations to add to the service account
+  name: ""  # The name of the service account to use. If not set and create is true, a name is generated using the fullname template
+
+podAnnotations: {}  #	Pod annotations
+
+podSecurityContext: {}  # pod securityContext
+  # fsGroup: 2000
+
+securityContext: {}  # statefulset securityContext
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
 autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
+  enabled: false  # enable autoscaling
+  minReplicas: 1  # minimum number of autoscale replicas
+  maxReplicas: 100  # maximum number of autoscale replicas
+  targetCPUUtilizationPercentage: 80  # target cpu utilization
   # targetMemoryUtilizationPercentage: 80
 
-nodeSelector: {}
+nodeSelector: {}  # Node labels for pod assignment
 
-tolerations: []
+tolerations: []  # Toleration labels for pod assignment
 
-affinity: {}
+affinity: {}  # Affinity settings for pod assignment

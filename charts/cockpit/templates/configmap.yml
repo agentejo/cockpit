@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  config.yaml: |
+    {{- toYaml .Values.config | nindent 4 }}
+kind: ConfigMap
+metadata:
+  name: cockpit-configmap

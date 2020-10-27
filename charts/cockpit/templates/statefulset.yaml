@@ -21,7 +21,7 @@ spec:
       labels:
         {{- include "cockpit.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -62,18 +62,50 @@ spec:
               path: /
               port: http
             initialDelaySeconds: 3
-            periodSeconds: 2
+            periodSeconds: 3
             failureThreshold: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{ if .Values.persistence.enabled -}}
           volumeMounts:
-          - name: cockpit-storage
-            mountPath: "/var/www/html/storage"
-            {{- if .Values.persistence.subPath }}
-            subPath: {{ .Values.persistence.subPath }}
+            - name: cockpit-config
+              mountPath: /var/www/html/config
+            {{ if .Values.persistence.enabled -}}
+            - name: cockpit-storage
+              mountPath: "/var/www/html/storage"
+              {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+              {{- end }}
             {{- end }}
-          {{- end }}
+      initContainers:
+        - name: copy-config
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              (false | cp -irL /configmap/* /config) && \
+              mkdir -p config/cockpit/i18n && \
+              cd config/cockpit/i18n/ && \
+              {{ range $lang := .Values.languages -}}
+              [[ -f {{ $lang }}.php ]] || \
+              wget https://raw.githubusercontent.com/agentejo/cockpit-i18n/master/{{ $lang }}.php && \
+              {{ end -}}
+              {{ with .Values.config.i18n -}}
+              [[ -f {{ . }}.php ]] || \
+              wget https://raw.githubusercontent.com/agentejo/cockpit-i18n/master/{{ . }}.php && \
+              {{ end -}}
+              echo "yay!"
+          volumeMounts:
+            - name: cockpit-config
+              mountPath: /config
+            - name: cockpit-configmap
+              mountPath: /configmap
+      volumes:
+        - name: cockpit-config
+          emptyDir: {}
+        - name: cockpit-configmap
+          configMap:
+            name: cockpit-configmap
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
