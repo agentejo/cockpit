@@ -10,6 +10,14 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+extraEnv: {}
+  # COCKPIT_ADMIN_USER: asdf
+  # COCKPIT_ADMIN_NAME: Asdf Asdf
+  # COCKPIT_ADMIN_PASSWORD: asdf
+  # COCKPIT_ADMIN_EMAIL: asdf@asdf.asfd
+  # COCKPIT_ADMIN_I18N: en
+  # COCKPIT_SALT: asddfasdfasdf
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""

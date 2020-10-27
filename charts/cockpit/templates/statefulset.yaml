@@ -34,6 +34,11 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          {{- range $key, $value := .Values.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 80
@@ -42,14 +47,23 @@ spec:
             httpGet:
               path: /
               port: http
-            initialDelaySeconds: 10
-            periodSeconds: 5
+            initialDelaySeconds: 5
+            periodSeconds: 8
+            failureThreshold: 2
           readinessProbe:
             httpGet:
               path: /
               port: http
-            initialDelaySeconds: 10
+            initialDelaySeconds: 3
             periodSeconds: 5
+            failureThreshold: 2
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 2
+            failureThreshold: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{ if .Values.persistence.enabled -}}
