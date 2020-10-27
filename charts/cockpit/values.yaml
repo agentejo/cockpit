@@ -18,10 +18,7 @@ config: {}  # cockpit configuration options. See https://getcockpit.com/document
   # session.name: mysession  # cockpit session name
   # sec-key: xxxxx-SiteSecKeyPleaseChangeMe-xxxxx  # app custom security key
   # site_url: https://mydomain.com  # site url (optional) - helpful if you're behind a reverse proxy
-  # languages: {}  # define language mapping. setting a default language is optional
-  #   # default: English
-  #   # fr: French
-  #   # de: German
+  # i18n: en  # define default language
   #
   # groups:  # define additional groups
   #   author:
