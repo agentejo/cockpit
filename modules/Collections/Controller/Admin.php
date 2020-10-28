@@ -551,7 +551,7 @@ class Admin extends \Cockpit\AuthController {
                 $criteria[$name.'.display'] = ['$regex' => $filter];
 
                 if (!$isMongoLite) {
-                  $criteria[$name]['$options'] = 'i';
+                  $criteria[$name.'.display']['$options'] = 'i';
                 }
 
                 $criterias[] = $criteria;
@@ -563,7 +563,7 @@ class Admin extends \Cockpit\AuthController {
                 $criteria[$name.'.address'] = ['$regex' => $filter];
                 
                 if (!$isMongoLite) {
-                  $criteria[$name]['$options'] = 'i';
+                  $criteria[$name.'.address']['$options'] = 'i';
                 }
 
                 $criterias[] = $criteria;
