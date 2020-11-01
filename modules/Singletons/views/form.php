@@ -243,6 +243,7 @@
 
             if (this.languages.length) {
                 this.lang = App.Utils.params('lang') || App.session.get('singletons.form.'+this.singleton._id+'.lang', '');
+                if (!this.languages.find(function(el){return el.code == $this.lang;})) this.lang = '';
             }
 
             this.on('mount', function(){
