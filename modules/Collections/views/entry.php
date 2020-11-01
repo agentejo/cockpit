@@ -214,7 +214,7 @@
 
         if (this.languages.length) {
             this.lang = App.Utils.params('lang') || App.session.get('collections.entry.'+this.collection._id+'.lang', '');
-            if (!this.languages.includes(this.lang)) this.lang = '';
+            if (!this.languages.find(function(el){return el.code == $this.lang;})) this.lang = '';
         }
 
         // fill with default values
