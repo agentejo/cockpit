@@ -236,7 +236,7 @@ $this->module('cockpit')->extend([
             return $this->app->pathToUrl($path, true);
         }
 
-        if (!in_array($ext, ['png','jpg','jpeg','gif'])) {
+        if (!in_array($ext, ['png','jpg','jpeg','gif', 'webp'])) {
             return $this->app->pathToUrl($path, true);
         }
 
