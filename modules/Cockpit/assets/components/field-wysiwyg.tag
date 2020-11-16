@@ -148,7 +148,7 @@
 
                             App.media.select(function(selected) {
                                 editor.insertContent('<img src="' + SITE_URL+'/'+selected + '" alt="">');
-                            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
+                            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg|*.webp' });
                         },
                         context: 'insert',
                         prependToContext: true

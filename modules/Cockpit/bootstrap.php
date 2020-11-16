@@ -173,7 +173,7 @@ $this->module('cockpit')->extend([
                 return $src;
             }
 
-        } elseif (!preg_match('/\.(png|jpg|jpeg|gif|svg)$/i', $src)) {
+        } elseif (!preg_match('/\.(png|jpg|jpeg|gif|svg|webp)$/i', $src)) {
             $asset = $this->app->storage->findOne('cockpit/assets', ['_id' => $src]);
         }
 
@@ -236,7 +236,7 @@ $this->module('cockpit')->extend([
             return $this->app->pathToUrl($path, true);
         }
 
-        if (!in_array($ext, ['png','jpg','jpeg','gif'])) {
+        if (!in_array($ext, ['png','jpg','jpeg','gif', 'webp'])) {
             return $this->app->pathToUrl($path, true);
         }
 
