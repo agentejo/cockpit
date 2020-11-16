@@ -187,7 +187,7 @@
 
                     if (ress[i].match(/\.js$/i)) {
                         this._ress[ress[i]] = this.getScript(ress[i]);
-                    } else if(ress[i].match(/\.(jpg|jpeg|gif|png)$/i)) {
+                    } else if(ress[i].match(/\.(jpg|jpeg|gif|png|webp)$/i)) {
                         this._ress[ress[i]] = this.getImage(ress[i]);
                     } else if(ress[i].match(/\.css$/i)) {
                         this._ress[ress[i]] = this.getCss(ress[i]);

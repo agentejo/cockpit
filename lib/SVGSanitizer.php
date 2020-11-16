@@ -501,6 +501,7 @@ class SVGSanitizer
                 'data:image/jpg', // JPG
                 'data:image/jpe', // JPEG
                 'data:image/pjp', // PJPEG
+                'data:image/webp', // WEBP
             ))) {
                 $element->removeAttributeNS( 'http://www.w3.org/1999/xlink', 'href' );
             }

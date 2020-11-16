@@ -97,6 +97,7 @@ class Response {
         'tif'   => 'image/tiff',
         'ico'   => 'image/vnd.microsoft.icon',
         'svg'   => 'image/svg+xml',
+        'webp'   => 'image/webp',
         'mpeg'  => 'video/mpeg',
         'mpg'   => 'video/mpeg',
         'mpe'   => 'video/mpeg',
