@@ -35,7 +35,10 @@ $this->module('cockpit')->extend([
             $name = basename($file);
 
             // clean filename
-            $clean = uniqid().preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $name));
+            $filename = pathinfo($file, PATHINFO_FILENAME);
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+            $cleanFilename = preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $filename));
+            $clean = $cleanFilename.uniqid("_uid_").'.'.$ext;
             $path  = '/'.date('Y/m/d').'/'.$clean;
 
             $asset = [
