@@ -173,7 +173,7 @@ $this->module('cockpit')->extend([
                 return $src;
             }
 
-        } elseif (!preg_match('/\.(png|jpg|jpeg|gif|svg)$/i', $src)) {
+        } elseif (!preg_match('/\.(png|jpg|jpeg|gif|svg|webp)$/i', $src)) {
             $asset = $this->app->storage->findOne('cockpit/assets', ['_id' => $src]);
         }
 

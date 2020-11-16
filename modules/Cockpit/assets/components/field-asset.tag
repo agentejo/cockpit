@@ -54,7 +54,7 @@
     <script>
 
         var $this = this, typefilters = {
-            'image'    : /\.(jpg|jpeg|png|gif|svg)$/i,
+            'image'    : /\.(jpg|jpeg|png|gif|svg|webp)$/i,
             'video'    : /\.(mp4|mov|ogv|webv|wmv|flv|avi)$/i,
             'audio'    : /\.(mp3|weba|ogg|wav|flac)$/i,
             'archive'  : /\.(zip|rar|7zip|gz)$/i,

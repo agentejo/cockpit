@@ -45,7 +45,7 @@ $this->module('cockpit')->extend([
                 'description' => '',
                 'tags' => [],
                 'size' => filesize($file),
-                'image' => preg_match('/\.(jpg|jpeg|png|gif|svg)$/i', $file) ? true:false,
+                'image' => preg_match('/\.(jpg|jpeg|png|gif|svg|webp)$/i', $file) ? true:false,
                 'video' => preg_match('/\.(mp4|mov|ogv|webv|wmv|flv|avi)$/i', $file) ? true:false,
                 'audio' => preg_match('/\.(mp3|weba|ogg|wav|flac)$/i', $file) ? true:false,
                 'archive' => preg_match('/\.(zip|rar|7zip|gz|tar)$/i', $file) ? true:false,

@@ -101,7 +101,7 @@ riot.tag2('cp-assets', '<div ref="list" show="{mode==\'list\'}"> <div ref="uploa
         this.mixin(RiotBindMixin);
 
         var $this = this, typefilters = {
-            'image'    : /\.(jpg|jpeg|png|gif|svg)$/i,
+            'image'    : /\.(jpg|jpeg|png|gif|svg|webp)$/i,
             'video'    : /\.(mp4|mov|ogv|webv|wmv|flv|avi)$/i,
             'audio'    : /\.(mp3|weba|ogg|wav|flac)$/i,
             'archive'  : /\.(zip|rar|7zip|gz)$/i,
@@ -934,7 +934,7 @@ riot.tag2('cp-finder', '<div show="{App.Utils.count(data)}"> <div class="uk-clea
 
         var $this = this,
             typefilters = {
-                'image'    : /\.(jpg|jpeg|png|gif|svg)$/i,
+                'image'    : /\.(jpg|jpeg|png|gif|svg|webp)$/i,
                 'video'    : /\.(mp4|mov|ogv|webv|flv|avi)$/i,
                 'audio'    : /\.(mp3|weba|ogg|wav|flac)$/i,
                 'archive'  : /\.(zip|rar|7zip|gz)$/i,
@@ -1930,7 +1930,7 @@ riot.tag2('field-account-link', '<div class="uk-text-center uk-panel uk-panel-fr
 riot.tag2('field-asset', '<div ref="uploadprogress" class="uk-margin uk-hidden"> <div class="uk-progress"> <div ref="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div> </div> </div> <div class="uk-placeholder uk-text-center uk-text-muted" if="{!asset}"> <img class="uk-svg-adjust" riot-src="{App.base(\'/assets/app/media/icons/assets.svg\')}" width="100" data-uk-svg> <p>{App.i18n.get(\'No asset selected\')}. <a onclick="{selectAsset}">{App.i18n.get(\'Select one\')}</a></p> </div> <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-card" if="{asset}"> <div class="uk-overlay uk-display-block uk-position-relative {asset.mime.match(/^image\\//) && \'uk-bg-transparent-pattern\'}"> <canvas class="uk-responsive-width" width="200" height="150"></canvas> <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle"> <div class="uk-width-1-1 uk-text-center"> <span if="{asset.mime.match(/^image\\//) == null}"><i class="uk-h1 uk-text-muted uk-icon-{getIconCls(asset.path)}"></i></span> <a href="{ASSETS_URL+asset.path}" if="{asset.mime.match(/^image\\//)}" data-uk-lightbox="type:\'image\'" title="{asset.width && [asset.width, asset.height].join(\'x\')}"> <cp-thumbnail riot-src="{asset && ASSETS_URL+asset.path}" height="160"></cp-thumbnail> </a> </div> </div> </div> <div class="uk-panel-body"> <div class="uk-margin-small-top uk-text-truncate"> <a href="{ASSETS_URL+asset.path}" target="_blank">{asset.title}</a> </div> <div class="uk-text-small uk-text-muted"> <strong>{asset.mime}</strong> {App.Utils.formatSize(asset.size)} </div> <div class="uk-margin-top"> <a class="uk-button uk-button-small uk-margin-small-right" onclick="{selectAsset}">{App.i18n.get(\'Replace\')}</a> <span class="uk-button-group"> <a class="uk-button uk-button-small" onclick="{edit}"><i class="uk-icon-pencil"></i></a> <a class="uk-button uk-button-small uk-text-danger" onclick="{reset}"><i class="uk-icon-trash-o"></i></a> </span> </div> </div> </div>', '', '', function(opts) {
 
         var $this = this, typefilters = {
-            'image'    : /\.(jpg|jpeg|png|gif|svg)$/i,
+            'image'    : /\.(jpg|jpeg|png|gif|svg|webp)$/i,
             'video'    : /\.(mp4|mov|ogv|webv|wmv|flv|avi)$/i,
             'audio'    : /\.(mp3|weba|ogg|wav|flac)$/i,
             'archive'  : /\.(zip|rar|7zip|gz)$/i,
@@ -2411,7 +2411,7 @@ riot.tag2('field-gallery', '<div ref="uploadprogress" class="uk-margin uk-hidden
 
                     action: App.route('/assetsmanager/upload'),
                     type: 'json',
-                    allow : '*.(jpg|jpeg|gif|png)',
+                    allow : '*.(jpg|jpeg|gif|png|webp)',
                     beforeAll: function() {
                         _uploads = [];
                     },
@@ -2508,7 +2508,7 @@ riot.tag2('field-gallery', '<div ref="uploadprogress" class="uk-margin uk-hidden
 
                 $this.$setValue($this.images.concat(images));
 
-            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
+            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg|*.webp' });
 
         }.bind(this)
 
@@ -2546,7 +2546,7 @@ riot.tag2('field-gallery', '<div ref="uploadprogress" class="uk-margin uk-hidden
                 $this.$setValue($this.images);
                 $this.update();
 
-            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
+            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg|*.webp' });
         }.bind(this)
 
         this.selectAsset = function(e) {
@@ -2704,7 +2704,7 @@ riot.tag2('field-image', '<div ref="uploadprogress" class="uk-margin uk-hidden">
 
                     action: App.route('/assetsmanager/upload'),
                     type: 'json',
-                    allow : '*.(jpg|jpeg|gif|png)',
+                    allow : '*.(jpg|jpeg|gif|png|webp)',
                     filelimit: 1,
                     before: function(options) {
 
@@ -2765,7 +2765,7 @@ riot.tag2('field-image', '<div ref="uploadprogress" class="uk-margin uk-hidden">
                 $this.$setValue($this.image);
                 $this.update();
 
-            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
+            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg|*.webp' });
         }.bind(this)
 
         this.selectAsset = function() {
@@ -4466,7 +4466,7 @@ riot.tag2('field-wysiwyg', '<textarea ref="input" class="uk-width-1-1" rows="5" 
 
                             App.media.select(function(selected) {
                                 editor.insertContent('<img src="' + SITE_URL+'/'+selected + '" alt="">');
-                            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
+                            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg|*.webp' });
                         },
                         context: 'insert',
                         prependToContext: true

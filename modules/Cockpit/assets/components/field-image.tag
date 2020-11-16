@@ -102,7 +102,7 @@
 
                     action: App.route('/assetsmanager/upload'),
                     type: 'json',
-                    allow : '*.(jpg|jpeg|gif|png)',
+                    allow : '*.(jpg|jpeg|gif|png|webp)',
                     filelimit: 1,
                     before: function(options) {
 
@@ -163,7 +163,7 @@
                 $this.$setValue($this.image);
                 $this.update();
 
-            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
+            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg|*.webp' });
         }
 
         selectAsset() {

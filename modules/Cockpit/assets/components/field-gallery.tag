@@ -159,7 +159,7 @@
 
                     action: App.route('/assetsmanager/upload'),
                     type: 'json',
-                    allow : '*.(jpg|jpeg|gif|png)',
+                    allow : '*.(jpg|jpeg|gif|png|webp)',
                     beforeAll: function() {
                         _uploads = [];
                     },
@@ -256,7 +256,7 @@
 
                 $this.$setValue($this.images.concat(images));
 
-            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
+            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg|*.webp' });
 
         }
 
@@ -294,7 +294,7 @@
                 $this.$setValue($this.images);
                 $this.update();
 
-            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg' });
+            }, { typefilter:'image', pattern: '*.jpg|*.jpeg|*.png|*.gif|*.svg|*.webp' });
         }
 
         selectAsset(e) {
