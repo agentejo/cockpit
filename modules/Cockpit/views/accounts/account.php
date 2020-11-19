@@ -291,6 +291,10 @@
             return false;
         }
 
+        // i18n for uikit-formPassword
+        UIkit.components.formPassword.prototype.defaults.lblShow = '@lang("Show")';
+        UIkit.components.formPassword.prototype.defaults.lblHide = '@lang("Hide")';
+
     </script>
 
 </div>
