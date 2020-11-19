@@ -47,7 +47,7 @@
                     <strong>{ App.i18n.get('Users') }</strong>
                     <div class="uk-margin-small-top">
                         <div class="uk-form-icon uk-form uk-text-muted uk-display-block">
-                            <i class="uk-icon-search"></i> <input class="uk-width-1-1" type="text" ref="txtfilter" placeholder="Filter users...">
+                            <i class="uk-icon-search"></i> <input class="uk-width-1-1" type="text" ref="txtfilter" placeholder="{ App.i18n.get('Filter users...') }">
                         </div>
                     </div>
 
