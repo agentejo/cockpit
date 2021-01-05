@@ -54,7 +54,7 @@
 
                 <div class="uk-margin">
                     <label class="uk-text-small">@lang('Description')</label>
-                    <textarea aria-label="@lang('Description')" class="uk-width-1-1 uk-form-large" name="description" bind="form.description" rows="5"></textarea>
+                    <textarea aria-label="@lang('Description')" class="uk-width-1-1 uk-form-large" name="description" bind="form.description" bind-event="input" rows="5"></textarea>
                 </div>
 
                 <div class="uk-margin">
