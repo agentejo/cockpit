@@ -9,7 +9,9 @@
 
 function CollectionHasFieldAccess(field) {
 
-    var acl = field.acl || [];
+    var acl = [];
+    if (field.acl   ) { acl = acl.concat(field.acl);    }
+    if (field.acl_ro) { acl = acl.concat(field.acl_ro); }
 
     if (field.name == '_modified' ||
         App.$data.user.group == 'admin' ||
