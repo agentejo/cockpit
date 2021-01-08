@@ -116,7 +116,10 @@
 
                 </div>
                 <div class="uk-hidden">
+                    <h3>Read/Write Access</h3>
                     <field-access-list class="uk-margin-large uk-margin-large-top uk-display-block" bind="field.acl"></field-access-list>
+                    <h3>Read Only Access</h3>
+                    <field-access-list class="uk-margin-large uk-margin-large-top uk-display-block" bind="field.acl_ro"></field-access-list>
                 </div>
             </div>
 
