@@ -302,14 +302,15 @@ class Admin extends \Cockpit\AuthController {
 
         $entry['_mby'] = $this->module('cockpit')->getUser('_id');
 
+        $old_entry = [];
         if (isset($entry['_id'])) {
 
             if (!$this->app->helper('admin')->isResourceEditableByCurrentUser($entry['_id'])) {
                 $this->stop(['error' => "Saving failed! Entry is locked!"], 412);
             }
 
-            $_entry = $this->module('collections')->findOne($collection['name'], ['_id' => $entry['_id']]);
-            $revision = !(json_encode($_entry) == json_encode($entry));
+            $old_entry = $this->module('collections')->findOne($collection['name'], ['_id' => $entry['_id']]);
+            $revision = !(json_encode($old_entry) == json_encode($entry));
 
         } else {
 
@@ -322,15 +323,34 @@ class Admin extends \Cockpit\AuthController {
 
         }
 
+        // ensure we only modify fields which user has access to
+        $new_entry = $entry;
+        $user = $this->app->module('cockpit')->getUser();
+        foreach ($collection['fields'] as $field) {
+            $hasAccess = false;
+            if (!$field['acl'] && !$field['acl_ro']) {
+                $hasAccess = true;
+            } else {
+                if($user['group'] === 'admin') {
+                    $hasAccess = true;
+                } else if(in_array($user['_id'], $field['acl'] ?? [])) {
+                    $hasAccess = true;
+                }
+            }
+            if (!$hasAccess) {
+                $new_entry[$field['name']] = $old_entry[$field['name']];
+            }
+        }
+
         try {
-            $entry = $this->module('collections')->save($collection['name'], $entry, ['revision' => $revision]);
+            $new_entry = $this->module('collections')->save($collection['name'], $new_entry, ['revision' => $revision]);
         } catch(\Throwable $e) {
             $this->app->stop(['error' => $e->getMessage()], 412);
         }
 
         $this->app->helper('admin')->lockResourceId($entry['_id']);
 
-        return $entry;
+        return $new_entry;
     }
 
     public function delete_entries($collection) {
@@ -356,7 +376,7 @@ class Admin extends \Cockpit\AuthController {
         $items = $this->module('collections')->find($collection['name'], ['filter' => $filter]);
 
         if (count($items)) {
-            
+
             $trashItems = [];
             $time = time();
             $by = $this->module('cockpit')->getUser('_id');
@@ -478,7 +498,7 @@ class Admin extends \Cockpit\AuthController {
         $this->app->trigger("collections.admin.find.before.{$collection['name']}", [&$options]);
         $entries = $this->app->module('collections')->find($collection['name'], $options);
         $this->app->trigger("collections.admin.find.after.{$collection['name']}", [&$entries, $options]);
-        
+
         $count = $this->app->module('collections')->count($collection['name'], isset($options['filter']) ? $options['filter'] : []);
         $pages = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
         $page  = 1;
