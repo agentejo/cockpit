@@ -105,19 +105,20 @@
 
     </div>
 
-    <entries-batchedit collection="{collection}" fields={fieldsidx}></entries-batchedit>
+    <entries-batchedit collection="{collection}" fields={fieldsidx_rw}></entries-batchedit>
 
     <script>
 
         var $this = this, $root = App.$(this.root);
 
-        this.ready      = false;
-        this.filter     = null;
-        this.collection = {{ json_encode($collection) }};
-        this.entries    = [];
-        this.selected   = [];
-        this.fieldsidx  = {};
-        this.languages  = App.$data.languages;
+        this.ready        = false;
+        this.filter       = null;
+        this.collection   = {{ json_encode($collection) }};
+        this.entries      = [];
+        this.selected     = [];
+        this.fieldsidx    = {};
+        this.fieldsidx_rw = {};
+        this.languages    = App.$data.languages;
 
         if (this.languages.length) {
             this.lang = App.session.get('collections.entry.'+this.collection._id+'.lang', '');
@@ -130,6 +131,9 @@
             }
 
             $this.fieldsidx[field.name] = field;
+            if(CollectionHasFieldRwAccess(field)){
+                $this.fieldsidx_rw[field.name] = field;
+            }
 
             return field.lst;
         });

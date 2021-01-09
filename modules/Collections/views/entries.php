@@ -7,12 +7,7 @@
 
 <script>
 
-function CollectionHasFieldAccess(field) {
-
-    var acl = [];
-    if (field.acl   ) { acl = acl.concat(field.acl);    }
-    if (field.acl_ro) { acl = acl.concat(field.acl_ro); }
-
+function _CollectionHasFieldAccess(field, acl) {
     if (field.name == '_modified' ||
         App.$data.user.group == 'admin' ||
         !acl ||
@@ -22,6 +17,30 @@ function CollectionHasFieldAccess(field) {
     ) { return true; }
 
     return false;
+}
+
+function CollectionHasFieldAccess(field) {
+    var acl = [];
+    if (field.acl   ) { acl = acl.concat(field.acl);    }
+    if (field.acl_ro) { acl = acl.concat(field.acl_ro); }
+
+    return _CollectionHasFieldAccess(field, acl);
+}
+
+function CollectionHasFieldRwAccess(field) {
+    var acl_rw = field.acl    || [];
+    var acl_ro = field.acl_ro || [];
+
+    // default to everyone having rw access when no acl present
+    if (!acl_rw.length && !acl_ro.length) { return true; }
+
+    if(App.$data.user.group == 'admin') { return true; }
+
+    // treat acl_rw as a whitelist when it has any values
+    if(acl_rw.length && _CollectionHasFieldAccess(field, acl_rw)){ return true; }
+
+    // treat acl_ro as a blacklist
+    return !this._CollectionHasFieldAccess(field, acl_ro);
 }
 
 </script>

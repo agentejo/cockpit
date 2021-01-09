@@ -313,22 +313,23 @@
     </div>
 
     @if($app->module('collections')->hasaccess($collection['name'], 'entries_edit'))
-    <entries-batchedit collection="{collection}" fields={fieldsidx}></entries-batchedit>
+    <entries-batchedit collection="{collection}" fields={fieldsidx_rw}></entries-batchedit>
     @endif
 
     <script type="view/script">
 
         var $this = this, $root = App.$(this.root);
 
-        this.collection = {{ json_encode($collection) }};
-        this.loading    = true;
-        this.count      = 0;
-        this.page       = 1;
-        this.limit      = 20;
-        this.entries    = [];
-        this.fieldsidx  = {};
-        this.imageField = null;
-        this.languages  = App.$data.languages;
+        this.collection   = {{ json_encode($collection) }};
+        this.loading      = true;
+        this.count        = 0;
+        this.page         = 1;
+        this.limit        = 20;
+        this.entries      = [];
+        this.fieldsidx    = {};
+        this.fieldsidx_rw = {};
+        this.imageField   = null;
+        this.languages    = App.$data.languages;
 
         if (this.languages.length) {
             this.lang = App.session.get('collections.entry.'+this.collection._id+'.lang', '');
@@ -339,6 +340,9 @@
             if (!CollectionHasFieldAccess(field)) return false;
 
             $this.fieldsidx[field.name] = field;
+            if(CollectionHasFieldRwAccess(field)){
+                $this.fieldsidx_rw[field.name] = field;
+            }
 
             if (!$this.imageField && (field.type=='image' || field.type=='asset')) {
                 $this.imageField = field;
