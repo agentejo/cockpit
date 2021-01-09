@@ -18,6 +18,10 @@
 
             if (o.disabled) {
                 this.root.classList.add('uk-disabled');
+                let elms = this.root.querySelectorAll('input, button, select, textarea, a');
+                for(let x of elms){
+                    x.tabIndex = -1;
+                }
             }
 
             this.parent.update();
