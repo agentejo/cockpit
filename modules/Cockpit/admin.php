@@ -16,7 +16,7 @@
 include(__DIR__.'/Helper/Admin.php');
 
 $app->helpers['admin'] = 'Cockpit\\Helper\\Admin';
-$app->helpers['csfr']  = 'Cockpit\\Helper\\Csfr';
+$app->helpers['csrf']  = 'Cockpit\\Helper\\Csrf';
 
 // init + load i18n
 $app->on('before', function() {

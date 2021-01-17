@@ -1,7 +1,7 @@
 <div id="loginmodal" class="uk-modal" riot-view>
 
     <style>
-        .uk-modal-login { 
+        .uk-modal-login {
             max-width: 400px;
             padding: 30px;
         }
@@ -79,7 +79,7 @@
 
             App.request('/auth/check', {
                 auth : {user:this.refs.user.value, password:this.refs.password.value},
-                csfr : "{{ $app('csfr')->token('login') }}"
+                csrf : "{{ $app('csrf')->token('login') }}"
             }).then(function(data) {
 
                 if (data && data.success) {

@@ -26,9 +26,9 @@ class Auth extends \LimeExtra\Controller {
                 $data['user']  = '';
             }
 
-            if (!$this->app->helper('csfr')->isValid('login', $this->param('csfr'), true)) {
-                $this->app->trigger('cockpit.authentication.failed', [$data, 'Csfr validation failed']);
-                return ['success' => false, 'error' => 'Csfr validation failed'];
+            if (!$this->app->helper('csrf')->isValid('login', $this->param('csrf'), true)) {
+                $this->app->trigger('cockpit.authentication.failed', [$data, 'Csrf validation failed']);
+                return ['success' => false, 'error' => 'Csrf validation failed'];
             }
 
             $user = $this->module('cockpit')->authenticate($data);
@@ -38,7 +38,7 @@ class Auth extends \LimeExtra\Controller {
             }
 
             if ($user) {
-                
+
                 $this->app->trigger('cockpit.authentication.success', [&$user]);
                 $this->module('cockpit')->setUser($user);
 
