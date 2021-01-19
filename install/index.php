@@ -79,7 +79,7 @@ if (!count($failed)) {
         'active'   => true,
         'group'    => 'admin',
         'password' => $app->hash('admin'),
-        'i18n'     => 'en',
+        'i18n'     => $app->helper('i18n')->locale,
         '_created' => $created,
         '_modified'=> $created,
     ];
