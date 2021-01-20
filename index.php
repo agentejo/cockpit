@@ -14,7 +14,7 @@ define('COCKPIT_ADMIN', 1);
 date_default_timezone_set('UTC');
 
 // handle php webserver
-if (PHP_SAPI == 'cli-server' && is_file(__DIR__.parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))) {
+if (PHP_SAPI == 'cli-server' && !include_once(__DIR__.'/.ht.router.php')) {
     return false;
 }
 
