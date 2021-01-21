@@ -9,7 +9,7 @@
  */
 
 /**
- * Handle php webserver (dev-only)
+ * Handle php command line webserver (dev-only)
  *
  * usage: [ php -S localhost:8080 index.php ]
  *
@@ -17,15 +17,15 @@
  */
 if (PHP_SAPI == 'cli-server') {
 
-    $path  = pathinfo($_SERVER["SCRIPT_FILENAME"]);
+    $path  = pathinfo($_SERVER['SCRIPT_FILENAME']);
     $index = realpath($path['dirname'].'/index.php');
-    $file  = $_SERVER["SCRIPT_FILENAME"];
+    $file  = $_SERVER['SCRIPT_FILENAME'];
 
     /* "dot" routes (see: https://bugs.php.net/bug.php?id=61286) */
     $_SERVER['PATH_INFO'] = $_SERVER['REQUEST_URI'];
 
     /* static files (eg. assets/app/css/style.css) */
-    if (is_file($file) && $path['extension'] != "php") {
+    if (is_file($file) && $path['extension'] != 'php') {
         if ($path['extension'] == 'tag') {
             header('Content-Type: application/javascript');
             readfile($file);
