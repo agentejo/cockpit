@@ -25,9 +25,9 @@ if (PHP_SAPI == 'cli-server') {
     $_SERVER['PATH_INFO'] = $_SERVER['REQUEST_URI'];
 
     /* static files (eg. assets/app/css/style.css) */
-    if (is_file($file) && $path["extension"] != "php") {
-        if ($path["extension"] == "tag") {
-            header("Content-Type: application/javascript");
+    if (is_file($file) && $path['extension'] != "php") {
+        if ($path['extension'] == 'tag') {
+            header('Content-Type: application/javascript');
             readfile($file);
         }
         return false;
