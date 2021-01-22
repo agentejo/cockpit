@@ -36,7 +36,7 @@ function ensure_writable($path) {
 
 // misc checks
 $checks = array(
-    'Php version >= 7.1.0'                              => (version_compare(PHP_VERSION, '7.1.0') >= 0),
+    'Php version >= 7.3.0'                              => (version_compare(PHP_VERSION, '7.3.0') >= 0),
     'Missing PDO extension with Sqlite support'         => $sqlitesupport,
     'GD extension not available'                        => extension_loaded('gd'),
     'MBString extension not available'                  => extension_loaded('mbstring'),
