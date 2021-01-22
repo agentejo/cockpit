@@ -242,13 +242,30 @@ $this->module('forms')->extend([
 
     'open' => function($name, $options = []) {
 
+        $this->app->trigger("forms.open.before", [$name, &$options]);
+
         $options = array_merge([
-            'id'    => uniqid('form'),
-            'class' => '',
-            'csrf'  => $this->app->hash($name)
+            'id'          => uniqid('form'),
+            'class'       => '',
+            'action'      => $this->app->routeUrl('/api/forms/submit/'.$name),
+            'method'      => 'post',
+            'csrf'        => $this->app->hash($name),
+            'mailsubject' => false,
+            'include_js'  => true
         ], $options);
 
         $this->app->renderView('forms:views/api/form.php', compact('name', 'options'));
+
+        $this->app->trigger("forms.open.after", [$name, &$options]);
+
+    },
+
+    'close' => function($name = null, $options = []) {
+
+        $this->app->trigger("forms.close.before", [$name, &$options]);
+        echo '</form>';
+        $this->app->trigger("forms.close.after", [$name, &$options]);
+
     },
 
     'submit' => function($form, $data, $options = []) {
