@@ -26,11 +26,17 @@ if (PHP_SAPI == 'cli-server') {
 
     /* static files (eg. assets/app/css/style.css) */
     if (is_file($file) && $path['extension'] != 'php') {
+
+        // custom Mime Types
         if ($path['extension'] == 'tag') {
             header('Content-Type: application/javascript');
             readfile($file);
+            exit;
         }
+
+        // standard Mime Types
         return false;
+
     }
 
     /* index files (eg. install/index.php) */
