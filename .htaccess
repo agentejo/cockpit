@@ -2,20 +2,20 @@
 # Apache/PHP/Cockpit settings:
 #
 
-# Protect application and system files from being viewed
-<FilesMatch "(\.*|composer\.(json|lock)|package\.json|(README|CONTRIBUTING)\.md|cp|Dockerfile|LICENSE|\.(sqlite|sdb|s3db|db|yaml|yml))$">
-  <IfVersion >= 2.4>
-     Require all denied
-  </IfVersion>
-  <IfVersion < 2.4>
-     Deny from all
-  </IfVersion>
+# Deny access to application and system files from being viewed
+<FilesMatch "(composer\.(json|lock)|package\.json|(README|CONTRIBUTING)\.md|cp|Dockerfile|LICENSE|\.(sqlite|sdb|s3db|db|yaml|yml))$">
+    <IfVersion >= 2.4>
+        Require all denied
+    </IfVersion>
+    <IfVersion < 2.4>
+        Deny from all
+    </IfVersion>
 </FilesMatch>
 
 # Disable directory listings
 Options -Indexes
 
-# Requires mod_rewrite to be enabled.
+# Requires mod_rewrite to be enabled
 <IfModule mod_rewrite.c>
 
     # Disable implicit filename pattern match
@@ -29,6 +29,9 @@ Options -Indexes
 
     # Installation directory (subfolder)
     # RewriteBase /cockpit/
+
+    # Deny access to files and directories whose names begin with a period
+    RewriteRule "/\.|^\.(?!well-known/)" - [F]
 
     # Allow any files or directories that exist to be displayed directly
     RewriteCond %{REQUEST_FILENAME} !-f
