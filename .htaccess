@@ -1,47 +1,40 @@
-# Deny access to database + config files
-<Files ~ "\.(sqlite|sdb|s3db|db|yaml|yml)$">
-    <IfVersion >= 2.4>
-       Require all denied
-    </IfVersion>
-    <IfVersion < 2.4>
-       Deny from all
-    </IfVersion>
-</Files>
+#
+# Apache/PHP/Cockpit settings:
+#
 
-<Files ".*">
-    <IfVersion >= 2.4>
-       Require all denied
-    </IfVersion>
-    <IfVersion < 2.4>
-       Deny from all
-    </IfVersion>
-</Files>
+# Protect application and system files from being viewed
+<FilesMatch "(\.*|composer\.(json|lock)|package\.json|(README|CONTRIBUTING)\.md|cp|Dockerfile|LICENSE|\.(sqlite|sdb|s3db|db|yaml|yml))$">
+  <IfVersion >= 2.4>
+     Require all denied
+  </IfVersion>
+  <IfVersion < 2.4>
+     Deny from all
+  </IfVersion>
+</FilesMatch>
 
-<Files "cp">
-    <IfVersion >= 2.4>
-       Require all denied
-    </IfVersion>
-    <IfVersion < 2.4>
-       Deny from all
-    </IfVersion>
-</Files>
-
-# Don't show directory listings
+# Disable directory listings
 Options -Indexes
 
-# URL rewrites
+# Requires mod_rewrite to be enabled.
 <IfModule mod_rewrite.c>
 
+    # Disable implicit filename pattern match
     Options -MultiViews
 
+    # Turn on URL rewriting
     RewriteEngine On
+
+    # Installation directory (web root)
     # RewriteBase /
 
-    # Protect some contents
-    RewriteRule ^.*/?\.git+ - [F,L]
+    # Installation directory (subfolder)
+    # RewriteBase /cockpit/
 
+    # Allow any files or directories that exist to be displayed directly
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Rewrite all other URLs to index.php
     RewriteRule .* index.php [L]
 
 </IfModule>
