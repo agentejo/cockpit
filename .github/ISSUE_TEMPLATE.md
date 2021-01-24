@@ -18,4 +18,4 @@
 * Operating System and version:
 * Link to your project:
 
-<!-- This `PULL_REQUEST_TEMPLATE.md` is based on @TalAter's template https://github.com/TalAter/open-source-templates -->
+<!-- This `ISSUE_TEMPLATE.md` is based on @TalAter's template https://github.com/TalAter/open-source-templates -->
