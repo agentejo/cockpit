@@ -152,7 +152,7 @@ $this->module('forms')->extend([
 
         $form = $forms['_id'];
 
-        return $this->app->storage->getform("forms/{$form}");
+        return $this->app->storage->getCollection("forms/{$form}");
     },
 
     'find' => function($form, $options = []) {
