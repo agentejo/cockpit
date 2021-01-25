@@ -20,7 +20,6 @@ package-lock.json
 /storage/*.*
 /storage/*/*
 /config/*
-/tests/*
 /node_modules
 addons/
 !.gitignore

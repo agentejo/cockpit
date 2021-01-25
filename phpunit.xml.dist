@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/7.0/phpunit.xsd"
+         bootstrap="bootstrap.php"
+         forceCoversAnnotation="true"
+         beStrictAboutCoversAnnotation="true"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTodoAnnotatedTests="true"
+         colors="true"
+         cacheResult="false"
+         verbose="true">
+  <php>
+    <ini name="display_errors" value="true"/>
+  </php>
+  <testsuites>
+    <testsuite name="Cockpit Modules">
+        <directory>tests/modules</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>
