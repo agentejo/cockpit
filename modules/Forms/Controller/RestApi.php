@@ -20,18 +20,15 @@ class RestApi extends \LimeExtra\Controller {
             return false;
         }
 
-        if ($data = $this->param('form', false)) {
+        $data    = $this->param('form', []);
+        $options = $this->param('form_options', []);
 
-            $options = [];
-
-            if ($this->param('__mailsubject')) {
-                $options['subject'] = $this->param('__mailsubject');
-            }
-
-            return $this->module('forms')->submit($form, $data, $options);
+        if ($this->param('__mailsubject')) {
+            $options['subject'] = $this->param('__mailsubject');
         }
 
-        return false;
+        return $this->module('forms')->submit($form, $data, $options);
+
     }
 
 	public function export($form) {

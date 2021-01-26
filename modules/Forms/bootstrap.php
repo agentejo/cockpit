@@ -266,6 +266,11 @@ $this->module('forms')->extend([
 
         $this->app->trigger('forms.submit.before', [$form, &$data, $frm, &$options]);
 
+        // Invalid form data
+        if (empty($data)) {
+            return false;
+        }
+
         if (isset($frm['email_forward']) && $frm['email_forward']) {
 
             $emails          = array_map('trim', explode(',', $frm['email_forward']));
@@ -339,11 +344,10 @@ if (COCKPIT_API_REQUEST) {
             return false;
         }
 
-        if ($data = $this->param('form', false)) {
-            return $this->module('forms')->submit($form, $data, $this->param('form_options', []));
-        }
+        $data    = $this->param('form', []);
+        $options = $this->param('form_options', []);
 
-        return false;
+        return $this->module('forms')->submit($form, $data, $options);
 
     }, $this->param('__csrf', false));
 
