@@ -24,9 +24,9 @@ class Lexy {
         'extensions',
         'comments',
         'echos',
+        'unless',
         'default_structures',
         'else',
-        'unless',
         'unescape_echos',
         'php_tags'
     );
@@ -398,7 +398,7 @@ class Lexy {
      * @return string
      */
     protected function compile_unless($value) {
-        $value = preg_replace('/(\s*)@unless(\s*\(.*\))/', '$1<?php if (!($2)) { ?>', $value);
+        $value = preg_replace('/(\s*)@unless(\s*\(.*\))/', '$1<?php if (!$2) { ?>', $value);
         $value = str_replace('@endunless', '<?php } ?>', $value);
         return $value;
     }
