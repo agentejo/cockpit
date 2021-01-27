@@ -74,7 +74,7 @@
 </script>
 @endif
 
-<form id="{{ $options['id'] }}" name="{{ $name }}" class="{{ $options['class'] }}" action="{{ $options['action'] }}" method="{{ $options['method'] }}"{{ (!empty($options['include_js']) ? ' onsubmit="return false;"' : '') }}>
+<form id="{{ $options['id'] }}" name="{{ $name }}" class="{{ $options['class'] }}" action="{{ $options['action'] }}" method="{{ $options['method'] }}" enctype="{{ $options['enctype'] }}"{{ (!empty($options['include_js']) ? ' onsubmit="return false;"' : '') }}>
 <input type="hidden" name="__csrf" value="{{ $options['csrf'] }}">
 @if(!empty($options["mailsubject"]))
 <input type="hidden" name="__mailsubject" value="{{ $options['mailsubject'] }}">

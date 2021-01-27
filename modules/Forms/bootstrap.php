@@ -249,6 +249,7 @@ $this->module('forms')->extend([
             'class'       => '',
             'action'      => $this->app->routeUrl('/api/forms/submit/'.$name),
             'method'      => 'post',
+            'enctype'     => 'multipart/form-data',
             'csrf'        => $this->app->hash($name),
             'mailsubject' => false,
             'include_js'  => true
