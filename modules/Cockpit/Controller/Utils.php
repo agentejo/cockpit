@@ -20,6 +20,7 @@ class Utils extends \Cockpit\AuthController {
             'src' => $this->param('src', false),
             'fp' => $this->param('fp', null),
             'mode' => $this->param('m', 'thumbnail'),
+            'mime' => $this->param('mime', null),
             'filters' => (array) $this->param('f', []),
             'width' => intval($this->param('w', null)),
             'height' => intval($this->param('h', null)),
@@ -45,7 +46,7 @@ class Utils extends \Cockpit\AuthController {
     }
 
     public function getCacheSize() {
-        
+
         \session_write_close();
 
         $size = 0;
@@ -123,7 +124,7 @@ class Utils extends \Cockpit\AuthController {
         }
 
         $meta = $this->app->helper('admin')->lockResourceId($resourceId);
-        
+
         return $meta;
     }
 
@@ -188,7 +189,7 @@ class Utils extends \Cockpit\AuthController {
     public function stopJobRunner() {
 
         \session_write_close();
-        
+
         $this->app->helper('async')->exec("cockpit()->helper('jobs')->stopRunner();");
         sleep(3);
         return ['running' => $this->app->helper('jobs')->isRunnerActive()];
