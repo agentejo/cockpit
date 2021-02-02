@@ -93,7 +93,7 @@
 
                             <label title="{ field.name }">
 
-                                <span class="uk-text-bold"><i class="uk-icon-pencil-square uk-margin-small-right"></i> { App.i18n.get(field.label) || field.label } </span>
+                                <span class="uk-text-bold"><i class="uk-icon-pencil-square uk-margin-small-right"></i> { App.i18n.get(field.label) || field.label || App.Utils.ucfirst(field.name) } </span>
                                 <span class="uk-text-muted" show="{field.required}">&mdash; @lang('required')</span>
 
                                 <span if="{ field.localize }" data-uk-dropdown="mode:'click'">
