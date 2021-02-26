@@ -1,3 +1,4 @@
+@if(!empty($options['include_js']))
 <script>
 
     setTimeout(function(){
@@ -52,7 +53,7 @@
 
             disableForm(true);
 
-            xhr.open('POST', "@route('/api/forms/submit/'.$name)", true);
+            xhr.open('POST', "{{ $options['action'] }}", true);
             xhr.send(data);
         };
 
@@ -71,9 +72,10 @@
     }, 100);
 
 </script>
+@endif
 
-<form id="{{ $options["id"] }}" name="{{ $name }}" class="{{ $options["class"] }}" action="@route('/api/forms/submit/'.$name)" method="post" onsubmit="return false;">
-<input type="hidden" name="__csrf" value="{{ $options["csrf"] }}">
-@if(isset($options["mailsubject"])):
-<input type="hidden" name="__mailsubject" value="{{ $options["mailsubject"] }}">
+<form id="{{ $options['id'] }}" name="{{ $name }}" class="{{ $options['class'] }}" action="{{ $options['action'] }}" method="{{ $options['method'] }}" enctype="{{ $options['enctype'] }}"{{ (!empty($options['include_js']) ? ' onsubmit="return false;"' : '') }}>
+<input type="hidden" name="__csrf" value="{{ $options['csrf'] }}">
+@if(!empty($options["mailsubject"]))
+<input type="hidden" name="__mailsubject" value="{{ $options['mailsubject'] }}">
 @endif
