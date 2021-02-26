@@ -111,7 +111,7 @@ class SVGSanitizer
             'lang', 'lengthadjust', 'letter-spacing',
             'kernelmatrix', 'kernelunitlength',
             'lighting-color', 'local',
-            'marker-end', 'marker-mid', 'marker-start', 'markerheight', 'markerunits', 'markerwidth', 'maskcontentunits', 'maskunits', 'max', 'mask', 'media', 'method', 'mode', 'min',
+            'marker-end', 'marker-mid', 'marker-start', 'markerheight', 'markerunits', 'markerwidth', 'maskcontentunits', 'maskunits', 'max', 'mask', 'mask-type', 'media', 'method', 'mode', 'min',
             'name', 'numoctaves',
             'offset', 'operator', 'opacity', 'order', 'orient', 'orientation', 'origin', 'overflow',
             'paint-order', 'path', 'pathlength', 'patterncontentunits', 'patterntransform', 'patternunits', 'points', 'preservealpha', 'preserveaspectratio',
