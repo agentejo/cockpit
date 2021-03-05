@@ -103,7 +103,7 @@ class SVGSanitizer
             'class', 'clip', 'clip-path', 'clip-rule', 'color', 'color-interpolation', 'color-interpolation-filters', 'color-profile', 'color-rendering', 'cx', 'cy',
             'd', 'dx', 'dy', 'diffuseconstant', 'direction', 'display', 'divisor', 'dur',
             'edgemode', 'elevation', 'end',
-            'fill', 'fill-opacity', 'fill-rule', 'filter', 'flood-color', 'flood-opacity', 'font-family', 'font-size', 'font-size-adjust', 'font-stretch', 'font-style', 'font-variant', 'font-weight', 'fx', 'fy',
+            'fill', 'fill-opacity', 'fill-rule', 'filter', 'filterUnits', 'flood-color', 'flood-opacity', 'font-family', 'font-size', 'font-size-adjust', 'font-stretch', 'font-style', 'font-variant', 'font-weight', 'fx', 'fy',
             'g1', 'g2', 'glyph-name', 'glyphref', 'gradientunits', 'gradienttransform',
             'height', 'href',
             'id', 'image-rendering', 'in', 'in2',
