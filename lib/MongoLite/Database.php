@@ -290,6 +290,10 @@ class UtilArrayQuery {
 
                     $d = '$document';
 
+                    if (\strpos($key, '(') !== false) {
+                        throw new \InvalidArgumentException('Unallowed characters used in filter keys');
+                    }
+
                     if (\strpos($key, '.') !== false) {
 
                         $keys = \explode('.', $key);
