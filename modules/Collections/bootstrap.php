@@ -313,7 +313,7 @@ $this->module('collections')->extend([
 
             $isUpdate = isset($entry['_id']);
 
-            $entry['_modified'] = $modified;
+            $entry['_modified'] = isset($entry['_modified']) ? $entry['_modified'] : $modified;
 
             if (isset($_collection['fields'])) {
 
