@@ -545,7 +545,7 @@ class Admin extends \Cockpit\AuthController {
                 $criterias[] = $criteria;
             }
 
-            if ($field['type']=='collectionlink') {
+            if ($field['type']=='collectionlink' || $field['type']=='collectionlinkselect') {
                 
                 $criteria = [];
                 $criteria[$name.'.display'] = ['$regex' => $filter];
