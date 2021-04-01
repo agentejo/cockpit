@@ -139,6 +139,10 @@
                             console.log("Couldn't find a collection reference for "+value);
                             $this.resolve(null);
                         }
+                    })
+                    .catch(() => {
+                        console.log("Couldn't find a collection reference for "+value);
+                        $this.resolve(null);
                     });
 
                 }
