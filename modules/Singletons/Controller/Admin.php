@@ -119,7 +119,7 @@ class Admin extends \Cockpit\AuthController {
         $this->app->helper('admin')->lockResourceId($lockId);
 
         return $this->render('singletons:views/form.php', compact('singleton', 'data'));
-        
+
     }
 
     public function remove_singleton($singleton) {
@@ -193,8 +193,31 @@ class Admin extends \Cockpit\AuthController {
             return false;
         }
 
+        $languages = $this->app->retrieve('config/languages', []);
+
+        $allowedFields = [];
+
+        foreach ($singleton['fields'] as $field) {
+
+            if (isset($field['acl']) && is_array($field['acl']) && count($field['acl'])) {
+
+                if (!( in_array($user['group'], $field['acl']) || in_array($user['_id'], $field['acl']) )) {
+                    continue;
+                }
+            }
+
+            $allowedFields[] = $field['name'];
+
+            if (isset($field['localize']) && $field['localize']) {
+                foreach ($languages as $key => $val) {
+                    if (is_numeric($key)) $key = $val;
+                    $allowedFields[] = "{$field['name']}_{$key}";
+                }
+            }
+        }
+
         $revisions = $this->app->helper('revisions')->getList($id);
 
-        return $this->render('singletons:views/revisions.php', compact('singleton', 'data', 'revisions', 'id'));
+        return $this->render('singletons:views/revisions.php', compact('singleton', 'data', 'revisions', 'id', 'allowedFields'));
     }
 }

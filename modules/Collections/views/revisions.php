@@ -7,6 +7,7 @@
 
 <script>
 
+  window.__allowedFields = {{ json_encode($allowedFields) }};
   window.__revisions = {{ json_encode($revisions) }};
   window.__collection = {{ json_encode($collection) }};
   window.__entry = {{ json_encode($entry) }};
@@ -99,7 +100,7 @@
                             </div>
                         </div>
 
-                        <div class="uk-panel uk-margin" each="{value,key in active.data}" if="{['_id','_modified','_created','_by'].indexOf(key) < 0 && (showOnlyChanged ? JSON.stringify(value) !== JSON.stringify(current[key]) : true)}">
+                        <div class="uk-panel uk-margin" each="{value,key in active.data}" if="{['_id','_modified','_created','_by'].indexOf(key) < 0 && allowedFields.indexOf(key) > -1 && (showOnlyChanged ? JSON.stringify(value) !== JSON.stringify(current[key]) : true)}">
 
                             <div class="uk-margin uk-panel uk-panel-box uk-panel-card">
 
@@ -151,6 +152,7 @@
 
         var $this = this;
 
+        this.allowedFields = window.__allowedFields;
         this.collection = window.__collection;
         this.revisions  = window.__revisions;
         this.current    = window.__entry;
@@ -171,6 +173,7 @@
             for (var k in this.active.data) {
 
                 if (['_id','_modified','_created','_by'].indexOf(k) > -1) continue;
+                if (this.allowedFields.indexOf(k) == -1) continue;
 
                 if (JSON.stringify(this.active.data[k]) != JSON.stringify(this.current[k])) {
                     return true;
