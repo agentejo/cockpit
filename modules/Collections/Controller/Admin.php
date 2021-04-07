@@ -356,7 +356,7 @@ class Admin extends \Cockpit\AuthController {
         $items = $this->module('collections')->find($collection['name'], ['filter' => $filter]);
 
         if (count($items)) {
-            
+
             $trashItems = [];
             $time = time();
             $by = $this->module('cockpit')->getUser('_id');
@@ -478,7 +478,7 @@ class Admin extends \Cockpit\AuthController {
         $this->app->trigger("collections.admin.find.before.{$collection['name']}", [&$options]);
         $entries = $this->app->module('collections')->find($collection['name'], $options);
         $this->app->trigger("collections.admin.find.after.{$collection['name']}", [&$entries, $options]);
-        
+
         $count = $this->app->module('collections')->count($collection['name'], isset($options['filter']) ? $options['filter'] : []);
         $pages = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
         $page  = 1;
@@ -509,10 +509,33 @@ class Admin extends \Cockpit\AuthController {
             return false;
         }
 
+        $user = $this->app->module('cockpit')->getUser();
+        $languages = $this->app->retrieve('config/languages', []);
+
+        $allowedFields = [];
+
+        foreach ($collection['fields'] as $field) {
+
+            if (isset($field['acl']) && is_array($field['acl']) && count($field['acl'])) {
+
+                if (!( in_array($user['group'], $field['acl']) || in_array($user['_id'], $field['acl']) )) {
+                    continue;
+                }
+            }
+
+            $allowedFields[] = $field['name'];
+
+            if (isset($field['localize']) && $field['localize']) {
+                foreach ($languages as $key => $val) {
+                    if (is_numeric($key)) $key = $val;
+                    $allowedFields[] = "{$field['name']}_{$key}";
+                }
+            }
+        }
+
         $revisions = $this->app->helper('revisions')->getList($id);
 
-
-        return $this->render('collections:views/revisions.php', compact('collection', 'entry', 'revisions'));
+        return $this->render('collections:views/revisions.php', compact('collection', 'entry', 'revisions', 'allowedFields'));
     }
 
     protected function _filter($filter, $collection, $lang = null) {
@@ -534,19 +557,19 @@ class Admin extends \Cockpit\AuthController {
             }
 
             if ($field['type'] != 'boolean' && in_array($field['type'], $allowedtypes)) {
-                
+
                 $criteria = [];
                 $criteria[$name] = ['$regex' => $filter];
 
                 if (!$isMongoLite) {
                   $criteria[$name]['$options'] = 'i';
                 }
-                
+
                 $criterias[] = $criteria;
             }
 
             if ($field['type']=='collectionlink' || $field['type']=='collectionlinkselect') {
-                
+
                 $criteria = [];
                 $criteria[$name.'.display'] = ['$regex' => $filter];
 
@@ -558,10 +581,10 @@ class Admin extends \Cockpit\AuthController {
             }
 
             if ($field['type']=='location') {
-                
+
                 $criteria = [];
                 $criteria[$name.'.address'] = ['$regex' => $filter];
-                
+
                 if (!$isMongoLite) {
                   $criteria[$name.'.address']['$options'] = 'i';
                 }

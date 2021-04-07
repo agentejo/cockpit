@@ -153,7 +153,7 @@ $this->module('collections')->extend([
 
         // rename rules
         if ($this->app->path('#storage:collections/rules')) {
-            
+
             $rulesPath = $this->app->path('#storage:collections/rules');
 
             foreach (['create', 'read', 'update', 'delete'] as $method) {
@@ -525,7 +525,7 @@ $this->module('collections')->extend([
 
             $languages = [];
 
-            foreach($this->app->retrieve('config/languages', []) as $key => $val) {
+            foreach ($this->app->retrieve('config/languages', []) as $key => $val) {
                 if (is_numeric($key)) $key = $val;
                 $languages[] = $key;
             }
@@ -638,7 +638,7 @@ function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $field
     foreach ($items as $k => &$v) {
 
         if (!is_array($v)) {
-            continue; 
+            continue;
         }
 
         if (is_array($items[$k])) {
