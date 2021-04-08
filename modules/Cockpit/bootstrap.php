@@ -241,9 +241,12 @@ $this->module('cockpit')->extend([
             return $this->app->pathToUrl($path, true);
         }
 
-        if (!$width || !$height) {
+        if (!$width || !$height || $width == 'original' || $height == 'original') {
 
             list($w, $h, $type, $attr)  = getimagesize($path);
+
+            if ($width == 'original') $width = $w;
+            if ($height == 'original') $height = $h;
 
             if (!$width) $width = ceil($w * ($height/$h));
             if (!$height) $height = ceil($h * ($width/$w));

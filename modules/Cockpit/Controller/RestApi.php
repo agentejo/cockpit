@@ -214,14 +214,23 @@ class RestApi extends \LimeExtra\Controller {
 
     public function image() {
 
+        $width = $this->param('w', null);
+        $height = $this->param('h', null);
+
+        $mime = $this->param('mime', null);
+
+        if ($mime == 'auto' && strpos($this->app->request->headers['Accept'] ?? '', 'image/webp') !== false) {
+            $mime = 'image/webp';
+        }
+
         $options = [
             'src'     => $this->param('src', false),
             'mode'    => $this->param('m', 'thumbnail'),
-            'mime'    => $this->param('mime', null),
+            'mime'    => $mime,
             'fp'      => $this->param('fp', null),
             'filters' => (array) $this->param('f', []),
-            'width'   => intval($this->param('w', null)),
-            'height'  => intval($this->param('h', null)),
+            'width'   => $width == 'original' ? 'original' : intval($width),
+            'height'  => $height == 'original' ? 'original' : intval($height),
             'quality' => intval($this->param('q', 100)),
             'rebuild' => intval($this->param('r', false)),
             'base64'  => intval($this->param('b64', false)),
