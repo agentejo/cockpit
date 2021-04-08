@@ -220,7 +220,8 @@ class RestApi extends \LimeExtra\Controller {
         $mime = $this->param('mime', null);
 
         if ($mime == 'auto' && strpos($this->app->request->headers['Accept'] ?? '', 'image/webp') !== false) {
-            $mime = 'image/webp';
+            $gdinfo = \gd_info();
+            $mime = isset($gdinfo['WebP Support']) && $gdinfo['WebP Support'] ? 'image/webp' : 'auto';
         }
 
         $options = [
