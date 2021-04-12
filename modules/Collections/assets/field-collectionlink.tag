@@ -481,6 +481,7 @@
                 if (!data.entries.length) {
                     cache[cacheKey] = 'n/a';
                     link.display = 'n/a';
+		    delete this.linkQueue[link._id]
                     this.update();
                     return;
                 }
