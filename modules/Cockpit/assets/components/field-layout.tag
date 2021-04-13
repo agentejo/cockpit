@@ -39,9 +39,9 @@
         }
 
         .layout-field-preview canvas {
-            background-size: contain; 
-            background-position: 50% 50%; 
-            background-repeat: no-repeat; 
+            background-size: contain;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
         }
 
         .layout-field-preview:empty {
@@ -265,7 +265,7 @@
             }
         }
 
-        
+
         this.on('mount', function() {
 
             this.showPreview = opts.preview === undefined ? true : opts.preview;
@@ -522,7 +522,15 @@
         }
 
         getPreview(component) {
-            //console.log(component)
+            var params = {
+                component: component,
+                definition: this.components[component.component],
+                output: false
+            };
+
+            App.trigger('field.layout.component.preview', params);
+
+            if (params.output) return params.output;
 
             var def = this.components[component.component];
 
@@ -542,16 +550,16 @@
             if (component.component == 'image' && component.settings.image && component.settings.image.path) {
 
                 var src = getPathUrl(component.settings.image.path),
-                    url = component.settings.image.path.match(/^(http\:|https\:|\/\/)/) ? component.settings.image.path : encodeURI(SITE_URL+'/'+component.settings.image.path), 
+                    url = component.settings.image.path.match(/^(http\:|https\:|\/\/)/) ? component.settings.image.path : encodeURI(SITE_URL+'/'+component.settings.image.path),
                     html;
-                
+
                 html = '<canvas class="uk-responsive-width" width="50" height="50" style="background-image:url('+src+')"></canvas>';
 
                 return '<a href="'+url+'" data-uk-lightbox>'+html+'</a>';
             }
 
             if (component.component== 'gallery' && Array.isArray(component.settings.gallery) && component.settings.gallery.length) {
-                
+
                 var html = [], url, src;
 
                 html.push('<div class="uk-flex">');
@@ -581,7 +589,7 @@
 
         function getPathUrl(path) {
 
-            var p = path, 
+            var p = path,
                 url = p.match(/^(http\:|https\:|\/\/)/) ? p : encodeURI(SITE_URL+'/'+p),
                 html, src;
 
@@ -590,7 +598,7 @@
             } else {
                 src = App.route('/cockpit/utils/thumb_url?src='+url+'&w=50&h=50&m=bestFit&re=1');
             }
-            
+
             if (src.match(/\.(svg|ico)$/i)) {
                 src = url;
             }

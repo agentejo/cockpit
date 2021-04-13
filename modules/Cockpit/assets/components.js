@@ -3166,6 +3166,15 @@ riot.tag2('field-layout', '<div class="uk-sortable layout-components {!items.len
         }.bind(this)
 
         this.getPreview = function(component) {
+            var params = {
+                component: component,
+                definition: this.components[component.component],
+                output: false
+            };
+
+            App.trigger('field.layout.component.preview', params);
+
+            if (params.output) return params.output;
 
             var def = this.components[component.component];
 
