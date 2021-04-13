@@ -107,7 +107,7 @@
                 var selected = [], dialog = UIkit.modal.dialog([
                     '<div>',
                     '<div class="uk-modal-header uk-text-large">' + App.i18n.get('Select asset') + '</div>',
-                    '<cp-assets path="' + (options.path || '') + '" typefilter="' + (options.typefilter || '') + '" modal="true"></cp-assets>',
+                    '<cp-assets typefilter="' + (options.typefilter || '') + '" modal="true"></cp-assets>',
                     '<div class="uk-modal-footer uk-text-right">',
                     '<button class="uk-button uk-button-primary uk-margin-right uk-button-large uk-hidden js-select-button">' + App.i18n.get('Select') + ': <span></span> item(s)</button>',
                     '<a class="uk-button uk-button-large uk-button-link uk-modal-close">' + App.i18n.get('Close') + '</a>',

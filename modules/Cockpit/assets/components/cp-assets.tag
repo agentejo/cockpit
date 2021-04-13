@@ -285,8 +285,8 @@
         this.selected = [];
 
         this.folders  = [];
-        this.folder   = '';
-        this.foldersPath = [];
+        this.folder   = App.session.get('app.assets.last.folder', '');
+        this.foldersPath = App.session.get('app.assets.last.foldersPath', []);
 
         this.modal    = opts.modal;
 
@@ -297,6 +297,7 @@
         this.limit    = opts.limit || 15;
 
         this.on('mount', function() {
+            this.refs.filtertitle.value = App.session.get('app.assets.last.filtertitle', '');
 
             if (opts.typefilter) {
                 this.refs.filtertype.value = opts.typefilter;
@@ -470,7 +471,7 @@
         }
 
         updateFilter() {
-
+            App.session.set('app.assets.last.filtertitle', this.refs.filtertitle.value);
             this.listAssets(1);
         }
 
@@ -671,6 +672,9 @@
             } else {
                 this.foldersPath = [];
             }
+
+            App.session.set('app.assets.last.folder', this.folder);
+            App.session.set('app.assets.last.foldersPath', this.foldersPath);
 
             $this.listAssets(1);
         }
