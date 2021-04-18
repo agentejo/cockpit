@@ -3182,6 +3182,21 @@ riot.tag2('field-layout', '<div class="uk-sortable layout-components {!items.len
                 return;
             }
 
+            if (def.options && def.options.preview) {
+
+                if (typeof(def.options.preview) == 'string') {
+
+                    try {
+                        def.options.preview = new Function('$v', '$c', '$def', `return \`${def.options.preview}\`;`);
+                    } catch(e) {
+                        console.warn(e);
+                        def.options.preview = null;
+                    }
+                }
+
+                return (def.options.preview && def.options.preview(component.settings || {}, component, def)) || '';
+            }
+
             if (['heading', 'button'].indexOf(component.component) > -1) {
                 return component.settings.text ? '<div class="uk-text-truncate">'+App.Utils.stripTags(component.settings.text)+'</div>':'';
             }
