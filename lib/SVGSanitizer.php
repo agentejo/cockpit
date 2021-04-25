@@ -3,7 +3,7 @@
 
 /**
  * Class SVGSanitizer
- * 
+ *
  * simplified/compact version of svg-sanitizer - https://github.com/darylldoyle/svg-sanitizer by Daryll Doyle
  *
  * @package enshrined\svgSanitize
@@ -61,7 +61,7 @@ class SVGSanitizer
      * SVGSanitizer::clean('<svg ...>')
      */
     public static function clean($svgText) {
-        
+
         $sanitizer = new static();
 
         return $sanitizer->sanitize($svgText);
@@ -74,7 +74,7 @@ class SVGSanitizer
     {
         // Load default tags/attributes
         $this->allowedAttrs = [
-            
+
             // HTML
             'accept', 'action', 'align', 'alt', 'autocomplete',
             'background', 'bgcolor', 'border',
@@ -270,7 +270,7 @@ class SVGSanitizer
     /**
      * Set XML options to use when saving XML
      * See: DOMDocument::saveXML
-     * 
+     *
      * @param int  $xmlOptions
      */
     public function setXMLOptions($xmlOptions)
@@ -281,7 +281,7 @@ class SVGSanitizer
      /**
      * Get XML options to use when saving XML
      * See: DOMDocument::saveXML
-     * 
+     *
      * @return int
      */
     public function getXMLOptions()
@@ -397,8 +397,10 @@ class SVGSanitizer
      */
     protected function setUpBefore()
     {
-        // Turn off the entity loader
-        $this->xmlLoaderValue = libxml_disable_entity_loader(true);
+        if (!version_compare(phpversion(), '8.0.0', '>=')) {
+            // Turn off the entity loader
+            $this->xmlLoaderValue = libxml_disable_entity_loader(true);
+        }
 
         // Suppress the errors because we don't really have to worry about formation before cleansing
         libxml_use_internal_errors(true);
@@ -409,8 +411,10 @@ class SVGSanitizer
      */
     protected function resetAfter()
     {
-        // Reset the entity loader
-        libxml_disable_entity_loader($this->xmlLoaderValue);
+        if (!version_compare(phpversion(), '8.0.0', '>=')) {
+            // Reset the entity loader
+            libxml_disable_entity_loader($this->xmlLoaderValue);
+        }
     }
 
     /**
