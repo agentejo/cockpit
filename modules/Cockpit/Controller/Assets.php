@@ -47,7 +47,7 @@ class Assets extends \Cockpit\AuthController {
     }
 
     public function asset($id) {
-  
+
         return $this->app->storage->findOne('cockpit/assets', ['_id' => $id]);
     }
 
@@ -91,7 +91,7 @@ class Assets extends \Cockpit\AuthController {
                 if (!isset($cache[$_cpath])) {
 
                     $exists = $this->app->storage->findOne('cockpit/assets_folders', [
-                        '_p' => $parentId, 
+                        '_p' => $parentId,
                         'name' => basename($_cpath)
                     ]);
 
@@ -104,7 +104,7 @@ class Assets extends \Cockpit\AuthController {
                             '_p' => $parentId,
                             '_by' => $user['_id'],
                         ];
-                
+
                         $this->app->storage->save('cockpit/assets_folders', $f);
                         $cache[$_cpath] = $f['_id'];
                     }
@@ -134,7 +134,7 @@ class Assets extends \Cockpit\AuthController {
             }
 
             if (!isset($folders[$path])) {
-                
+
                 $folders[$path] = [
                     'name' => [],
                     'error' => [],
@@ -153,7 +153,7 @@ class Assets extends \Cockpit\AuthController {
         foreach ($folders as $path => $_files) {
             $meta = ['folder' => $cache[$path]];
             $ret = \array_merge_recursive($ret, $this->module('cockpit')->uploadAssets($_files, $meta));
-        } 
+        }
 
         return $ret;
     }
@@ -256,6 +256,21 @@ class Assets extends \Cockpit\AuthController {
         $folders = parent_sort($_folders);
 
         return $folders;
+    }
+
+    public function updateAssetFile() {
+
+        $asset = $this->param('asset');
+
+        if (!$asset) {
+            return false;
+        }
+
+        if (\is_string($asset)) {
+            $asset = \json_decode($asset, true);
+        }
+
+        return $this->module('cockpit')->updateAssetFile('file', $asset);
     }
 
 }
