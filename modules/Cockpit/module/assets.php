@@ -22,7 +22,7 @@ $this->module('cockpit')->extend([
         return compact('assets', 'total');
     },
 
-    'addAssets' => function($files, $meta = []) use($app) {
+    'saveAssets' => function($files, $meta = [], $update = false) use($app) {
 
         $files     = isset($files[0]) ? $files : [$files];
         $finfo     = finfo_open(FILEINFO_MIME_TYPE);
@@ -54,6 +54,9 @@ $this->module('cockpit')->extend([
                 'archive' => preg_match('/\.(zip|rar|7zip|gz|tar)$/i', $file) ? true:false,
                 'document' => preg_match('/\.(txt|htm|html|pdf|md)$/i', $file) ? true:false,
                 'code' => preg_match('/\.(htm|html|php|css|less|js|json|md|markdown|yaml|xml|htaccess)$/i', $file) ? true:false,
+                'colors' => null,
+                'width' => null,
+                'height' => null,
                 'created' => $created,
                 'modified' => $created,
                 '_by' => $this->app->module('cockpit')->getUser('_id')
@@ -116,7 +119,15 @@ $this->module('cockpit')->extend([
 
         if (count($assets)) {
             $this->app->trigger('cockpit.assets.save', [&$assets]);
-            $this->app->storage->insert('cockpit/assets', $assets);
+
+            if ($update) {
+                foreach ($assets as $asset) {
+                    $this->app->storage->save('cockpit/assets', $asset);
+                }
+            } else {
+                $this->app->storage->insert('cockpit/assets', $assets);
+            }
+
         }
 
         return $assets;
@@ -166,7 +177,7 @@ $this->module('cockpit')->extend([
 
         if (count($_files)) {
 
-            $assets = $this->addAssets($_files, $meta);
+            $assets = $this->saveAssets($_files, $meta);
 
             foreach ($_files as $file) {
                 unlink($file);
@@ -174,6 +185,46 @@ $this->module('cockpit')->extend([
         }
 
         return ['uploaded' => $uploaded, 'failed' => $failed, 'assets' => $assets];
+    },
+
+    'updateAssetFile' => function($param = 'file', $asset) {
+
+        $allowed   = $this->getGroupVar('assets.allowed_uploads', $this->app->retrieve('allowed_uploads', '*'));
+        $allowed   = $allowed == '*' ? true : str_replace([' ', ','], ['', '|'], preg_quote(is_array($allowed) ? implode(',', $allowed) : $allowed));
+        $max_size = $this->getGroupVar('assets.max_upload_size', $this->app->retrieve('max_upload_size', 0));
+
+        $file = $_FILES[$param] ?? null;
+
+        if (!$file) {
+            return false;
+        }
+
+        $_file  = $this->app->path('#tmp:').'/'.$file['name'];
+        $_isAllowed = $allowed === true ? true : preg_match("/\.({$allowed})$/i", $_file);
+        $_sizeAllowed = $max_size ? filesize($file['tmp_name']) < $max_size : true;
+
+        if (!$file['error'] && $_isAllowed && $_sizeAllowed && move_uploaded_file($file['tmp_name'], $_file)) {
+
+            if (\preg_match('/\.(svg|xml)$/i', $_file)) {
+                file_put_contents($_file, \SVGSanitizer::clean(\file_get_contents($_file)));
+            }
+
+            $_asset = $this->saveAssets([$_file], [
+                '_id' => $asset['_id'],
+                'title' => $asset['title'],
+                'description' => $asset['description'],
+                'tags' => $asset['tags'],
+                'created' => $asset['created'],
+            ], true)[0];
+
+            unlink($_file);
+
+            $this->app->trigger('cockpit.assets.updatefile', [$_asset, $asset]);
+
+            return $_asset;
+        }
+
+        return false;
     },
 
     'removeAssets' => function($assets) {

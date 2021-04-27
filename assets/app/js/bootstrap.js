@@ -86,6 +86,10 @@
         var trigger = $(this), w = trigger.outerWidth(), h = trigger.outerHeight(),
             d = Math.min(w, h), isInput = trigger.is('input'), surfaceCSS, surface;
 
+        if (this.matches('input[type="file"]')) {
+            return;
+        }
+
         surfaceCSS = {
             top      : trigger.offset().top,
             left     : trigger.offset().left,
@@ -128,7 +132,7 @@
         if (favicon && (favicon.href.match(/\.svg$/) || favicon.href.match(/^data\:image\/svg\+xml/))) {
 
             var img = new Image();
-    
+
             img.onload = function() {
                 var canvas = document.createElement('canvas');
                 canvas.width = img.width;
@@ -138,11 +142,11 @@
                 delete img;
                 delete canvas;
             }
-    
+
             img.src = favicon.href;
         }
     }
 
-    
+
 
 })(jQuery, UIkit);

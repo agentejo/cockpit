@@ -248,9 +248,9 @@
     <div class="uk-form" if="{asset && mode=='edit'}">
 
         <h3 class="uk-text-bold">{ App.i18n.get('Edit Asset') }</h3>
-        
+
         <cp-asset asset="{asset._id}"></cp-asset>
-        
+
         <div class="uk-margin-top" show="{modal}">
             <button type="button" class="uk-button uk-button-large uk-button-primary" onclick="{ saveAsset }">{ App.i18n.get('Save') }</button>
             <a class="uk-button uk-button-large uk-button-link" onclick="{ cancelAssetEdit }">{ App.i18n.get('Cancel') }</a>
@@ -362,11 +362,11 @@
                 uploaddrop   = UIkit.uploadDrop($this.refs.list, uploadSettings);
 
                 // upload folder
-                
+
                 var uppie = new Uppie();
 
                 uppie($this.root.querySelector('.js-upload-folder'), async (e, formData, files) => {
-                    
+
                     if (!files) return;
 
                     files.forEach(function(path) {
@@ -386,7 +386,7 @@
                     }, false);
 
                     xhr.addEventListener('loadstart', function(e){ uploadSettings.loadstart(e); }, false);
-                    
+
                     xhr.onreadystatechange = function() {
 
                         if (xhr.readyState==4){
@@ -402,7 +402,7 @@
                             uploadSettings.allcomplete(response, xhr);
                         }
                     };
-                    
+
                     xhr.send(formData);
                 });
 
@@ -536,9 +536,9 @@
             this.asset = e.item.asset;
             this.mode  = 'edit';
         }
-        
+
         saveAsset() {
-          
+
           App.$('cp-asset', this.root)[0]._tag.updateAsset(function(asset) {
               $this.asset = _.extend($this.asset, asset);
           });
@@ -686,7 +686,7 @@
 <cp-asset>
 
   <style>
-  
+
     .cp-assets-fp {
         position: absolute;
         width: 10px;
@@ -701,7 +701,7 @@
         visibility: hidden;
     }
   </style>
-  
+
   <div class="uk-text-center uk-margin-large-top" show="{ !asset }">
       <cp-preloader class="uk-container-center"></cp-preloader>
   </div>
@@ -728,7 +728,7 @@
                   </div>
 
                   <div class="uk-margin-large-top uk-text-center" if="{asset}">
-                      <span class="uk-h1" if="{asset.mime.match(/^image\//) == null }"><i class="uk-icon-{ getIconCls(asset.path) }"></i></span>
+                      <span class="uk-h1" if="{asset.mime.match(/^image\//) == null }"><i class="uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
                       <div class="uk-display-inline-block uk-position-relative asset-fp-image" if="{asset.mime.match(/^image\//) }">
                           <cp-thumbnail src="{ASSETS_URL+asset.path}" width="800"></cp-thumbnail>
                           <div class="cp-assets-fp" title="Focal Point" data-uk-tooltip></div>
@@ -779,6 +779,18 @@
                       <cp-account account="{asset._by}"></cp-account>
                   </div>
               </div>
+              <hr>
+              <div class="uk-margin">
+                    <div class="uk-form-file">
+                        <a class="uk-button">{ App.i18n.get('Replace asset') }</a>
+                        <input class="js-upload-select" aria-label="{ App.i18n.get('Select file') }" type="file">
+                    </div>
+                    <div ref="uploadprogress" class="uk-margin uk-hidden">
+                        <div class="uk-progress">
+                            <div ref="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div>
+                        </div>
+                    </div>
+              </div>
 
           </div>
       </div>
@@ -786,13 +798,13 @@
       <div data-is="{'assetspanel-'+p.name}" asset="{asset}" each="{p in panels}" show="{panel == p.name}"></div>
 
   </div>
-  
+
   <script>
-    
+
     this.mixin(RiotBindMixin);
-    
+
     var $this = this, $root = App.$(this.root);
-    
+
     this.panel  = null;
     this.panels = [];
 
@@ -805,20 +817,20 @@
             this.panels.push({name:f, value:f});
         }
     }
-    
+
     this.on('mount', function() {
-      
+
       App.request('/assetsmanager/asset/'+opts.asset, {}).then(function(asset) {
-          
+
           $this.asset = asset;
           $this.update();
-          
+
           if ($this.asset.mime.match(/^image\//)) {
-              
+
               setTimeout(function() {
-                  
+
                   $this.placeFocalPoint($this.asset.fp);
-                  
+
                   $root.on('click', '.asset-fp-image canvas', function(e) {
 
                       var x = e.offsetX, y = e.offsetY,
@@ -828,26 +840,70 @@
                       $this.asset.fp = {x: px, y: py};
                       $this.placeFocalPoint($this.asset.fp);
                   });
-                  
+
               }, 500)
           }
-          
+
+        // handle uploads
+        App.assets.require([
+            '/assets/lib/uikit/js/components/upload.js'
+        ], function() {
+
+            var uploadSettings = {
+
+                action: App.route('/assetsmanager/updateAssetFile'),
+                type: 'json',
+                single: true,
+                param: 'file',
+                before: function(options) {
+                    options.params.asset = JSON.stringify($this.asset);
+                },
+                loadstart: function() {
+                    $this.refs.uploadprogress.classList.remove('uk-hidden');
+                },
+                progress: function(percent) {
+
+                    percent = Math.ceil(percent) + '%';
+
+                    $this.refs.progressbar.innerHTML   = '<span>'+percent+'</span>';
+                    $this.refs.progressbar.style.width = percent;
+                },
+                allcomplete: function(asset) {
+
+                    $this.refs.uploadprogress.classList.add('uk-hidden');
+
+                    if (!asset) {
+                        App.ui.notify("File failed to upload.", "danger");
+                    }
+
+                    if (asset) {
+
+                        Object.assign($this.asset, asset);
+                        App.ui.notify("File uploaded.", "success");
+                        $this.update();
+                    }
+                }
+            },
+
+            uploadselect = UIkit.uploadSelect(App.$('.js-upload-select', $this.root)[0], uploadSettings)
+        });
+
       }, function(res) {
           App.ui.notify(res && (res.message || res.error) ? (res.message || res.error) : 'Loading failed.', 'danger');
       });
-      
+
     });
-    
+
     selectPanel(e) {
         this.panel = e.item ? e.item.p.name : null;
     }
 
     updateAsset(clb) {
-  
+
         if (!this.asset) {
           return;
         }
-        
+
         return App.request('/assetsmanager/updateAsset', {asset:$this.asset}).then(function(asset) {
 
             if (Array.isArray(asset)) {
@@ -857,15 +913,16 @@
             App.$.extend($this.asset, asset);
             App.ui.notify("Asset updated", "success");
             $this.update();
-            
+            $this.parent.update();
+
             if (clb) clb(asset);
-            
+
             return asset;
         });
     }
-    
+
     placeFocalPoint(point) {
-        
+
         point = point || {x:0.5, y:0.5};
 
         var canvas = $root.find('.asset-fp-image canvas')[0];
@@ -878,7 +935,7 @@
             visibility: 'visible'
         });
     }
-  
+
   </script>
 
 </cp-asset>
