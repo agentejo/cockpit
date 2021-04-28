@@ -37,32 +37,22 @@ class Utils extends \Cockpit\AuthController {
 
         $collections = $this->app->module('collections')->collections();
 
+        $filter = ($this->app->storage->type == 'mongolite') ?
+            function ($doc) use ($id) { return strpos(json_encode($doc), $id) !== false;}
+            :
+            ['$where' => "function() { return JSON.stringify(this).indexOf('{$id}') > -1; }"]
+        ;
+
         foreach ($collections as $name => $meta) {
 
             $label = isset($meta['label']) && $meta['label'] ? $meta['label'] : $name;
-            $entries = [];
 
-            if ($this->app->storage->type == 'mongolite') {
-
-                $entries = $this->app->storage->find("collections/{$meta['_id']}", [
-                    'filter' => function ($doc) use ($id) {
-                        return strpos(json_encode($doc), $id) !== false;
-                    }
-                ])->toArray();
-
-            }
-
-            if ($this->app->storage->type == 'mongodb') {
-
-                $entries = $this->app->storage->find("collections/{$meta['_id']}", [
-                    'filter' => [
-                        '$where' => "function() { return JSON.stringify(this).indexOf('{$id}') > -1; }"
-                    ]
-                ])->toArray();
-            }
+            $entries = $this->app->storage->find("collections/{$meta['_id']}", [
+                'filter' => $filter
+            ])->toArray();
 
             if (count($entries)) {
-                
+
                 if (!isset($return['collections'])) $return['collections'] = [];
                 if (!isset($return['collections'][$label])) $return['collections'][$label] = [];
 

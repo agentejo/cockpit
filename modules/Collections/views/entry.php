@@ -2,7 +2,7 @@
 <script type="riot/tag" src="@base('collections:assets/collection-linked.tag')?nc={{ $app['debug'] ? time() : $app['cockpit/version'] }}"></script>
 
 <style>
-    @if(isset($collection['color']) && $collection['color']) 
+    @if(isset($collection['color']) && $collection['color'])
 
     .app-header {
         border-top: 8px <?=$collection['color']?> solid;
@@ -424,8 +424,6 @@
         }
 
         showLinkedOverview() {
-
-            console.log(this.refs)
 
             $this.refs.entrylinked.show($this.entry);
             $this.update();
