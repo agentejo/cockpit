@@ -260,6 +260,8 @@ class Assets extends \Cockpit\AuthController {
 
     public function updateAssetFile() {
 
+        \session_write_close();
+
         $asset = $this->param('asset');
 
         if (!$asset) {

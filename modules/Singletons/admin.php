@@ -34,7 +34,7 @@ $app->on('admin.init', function() {
 
     if ($active) {
         $this->helper('admin')->favicon = 'singletons:icon.svg';
-    } 
+    }
 
     /**
      * listen to app search to filter singleton
@@ -86,4 +86,36 @@ $app->on('admin.init', function() {
         ] as &$evt) { $triggers[] = $evt; }
     });
 
+    // update assets references on file update
+    $this->on('cockpit.assets.updatefile', function($asset) {
+
+        $id = $asset['_id'];
+        $filter = ($this->storage->type == 'mongolite') ?
+            function ($doc) use ($id) { return strpos(json_encode($doc), $id) !== false;}
+            :
+            ['$where' => "function() { return JSON.stringify(this).indexOf('{$id}') > -1; }"]
+        ;
+
+        $update = function(&$items) use($asset, $id, &$update) {
+
+            if (!is_array($items)) return $items;
+
+            foreach ($items as $k => &$v) {
+                if (!is_array($v)) continue;
+                if (is_array($items[$k])) $items[$k] = $update($items[$k]);
+                if (isset($v['_id']) && $v['_id'] == $id) $items[$k] = $asset;
+            }
+            return $items;
+        };
+
+        $singletons = $this->storage->find('singletons', ['filter' => $filter])->toArray();
+
+        if (!count($singletons)) return;
+
+        $singletons = $update($singletons);
+
+        foreach ($singletons as $singleton) {
+            $this->storage->save('singletons', $singleton);
+        }
+    });
 });
