@@ -187,7 +187,7 @@ $this->module('cockpit')->extend([
         return ['uploaded' => $uploaded, 'failed' => $failed, 'assets' => $assets];
     },
 
-    'updateAssetFile' => function($param = 'file', $asset) {
+    'updateAssetFile' => function($param = 'file', $asset = null) {
 
         $allowed   = $this->getGroupVar('assets.allowed_uploads', $this->app->retrieve('allowed_uploads', '*'));
         $allowed   = $allowed == '*' ? true : str_replace([' ', ','], ['', '|'], preg_quote(is_array($allowed) ? implode(',', $allowed) : $allowed));
