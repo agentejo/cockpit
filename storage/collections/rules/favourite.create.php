@@ -5,5 +5,9 @@ if ($context->user) {
     if (empty($_entry['_id'])) {
         return cockpit()->stop('{"error": "Item not exist"}', 404);
     }
-    // TODO: check da like
+    // check already like
+    $last = cockpit()->module('collections')->findOne("favourite", ['item_id' => $context->entry['item_id'], '_by' => $context->user['_id']]);
+    if (!empty($last['_id'])) {
+        return cockpit()->stop('{"error": "Already favourite"}', 400);
+    }
 }
