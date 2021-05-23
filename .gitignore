@@ -27,6 +27,7 @@ addons/
 !.gitkeep
 !/storage/*/index.html
 !/storage/*/.htaccess
+!/storage/collections/*
 defines.php
 # Sublime Text
 *.sublime-workspace
