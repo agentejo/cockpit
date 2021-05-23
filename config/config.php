@@ -1,5 +1,17 @@
 <?php
 return [
+    'account' => [
+        'fields' => [
+            'app_mode' => [
+                'label' => 'App Mode',
+                'type' => 'select',
+                'options' => [
+                    'options' => 'LITE, PRO',
+                    'default' => 'LITE',
+                ],
+            ],
+        ],
+    ],
     # define additional groups
     'groups' => [
         'publisher' => [
