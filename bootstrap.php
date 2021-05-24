@@ -99,7 +99,7 @@ function cockpit($module = null) {
         $config = array_replace_recursive([
 
             'debug'        => preg_match('/(localhost|::1|\.local)$/', @$_SERVER['SERVER_NAME']),
-            'app.name'     => 'Cockpit',
+            'app.name'     => 'Nutricia',
             'base_url'     => COCKPIT_BASE_URL,
             'base_route'   => COCKPIT_BASE_ROUTE,
             'docs_root'    => COCKPIT_DOCS_ROOT,
