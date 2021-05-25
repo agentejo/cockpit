@@ -22,6 +22,7 @@
       'acl' => 
       array (
       ),
+      'required' => true,
     ),
     1 => 
     array (
@@ -42,6 +43,7 @@
       'acl' => 
       array (
       ),
+      'required' => true,
     ),
     2 => 
     array (
@@ -60,6 +62,7 @@
       'acl' => 
       array (
       ),
+      'required' => true,
     ),
     3 => 
     array (
@@ -100,6 +103,7 @@
       'acl' => 
       array (
       ),
+      'required' => true,
     ),
     5 => 
     array (
@@ -118,13 +122,14 @@
       'acl' => 
       array (
       ),
+      'required' => false,
     ),
   ),
   'sortable' => false,
   'in_menu' => false,
   '_created' => 1621751919,
-  '_modified' => 1621766419,
-  'color' => '',
+  '_modified' => 1621938226,
+  'color' => '#48CFAD',
   'acl' => 
   array (
     'publisher' => 
