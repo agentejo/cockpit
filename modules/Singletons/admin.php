@@ -58,12 +58,14 @@ $app->on('admin.init', function() {
     $this->on('admin.dashboard.widgets', function($widgets) {
 
         $singletons = $this->module('singletons')->getSingletonsInGroup();
-
-        $widgets[] = [
-            'name'    => 'singleton',
-            'content' => $this->view('singletons:views/widgets/dashboard.php', compact('singletons')),
-            'area'    => 'aside-right'
-        ];
+// ---CUSTOM---
+// Hide singleton from widget
+//        $widgets[] = [
+//            'name'    => 'singleton',
+//            'content' => $this->view('singletons:views/widgets/dashboard.php', compact('singletons')),
+//            'area'    => 'aside-right'
+//        ];
+// ---CUSTOM---
 
     }, 100);
 

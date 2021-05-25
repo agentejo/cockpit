@@ -694,6 +694,16 @@ $app('acl')->addResource("collections", ['create', 'delete', 'manage']);
 
 $this->module("collections")->extend([
 
+    //---CUSTOM---
+    'getPROUserCount' => function() {
+        return $this->app->storage->getCollection("cockpit/accounts")->countDocuments(['app_mode' => "PRO"], []);
+    },
+
+    'getLITEUserCount' => function() {
+        return $this->app->storage->getCollection("cockpit/accounts")->countDocuments(['app_mode' => "LITE"], []);
+    },
+    //---CUSTOM---
+
     'getCollectionsInGroup' => function($group = null, $extended = false) {
 
         if (!$group) {

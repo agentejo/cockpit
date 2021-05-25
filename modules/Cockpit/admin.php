@@ -64,6 +64,7 @@ $assets = [
     'assets:lib/mousetrap.js',
     'assets:lib/storage.js',
     'assets:lib/i18n.js',
+    'assets:lib/Chart.min.js',
 
     // app
     'assets:app/js/app.js',
@@ -189,14 +190,16 @@ $app->on('cockpit.search', function($search, $list) {
 
 
 $app->on('admin.dashboard.widgets', function($widgets) {
-
-    $title = $this('i18n')->get('Today');
+    //---CUSTOM---
+    $pro_count = $this->module("collections")->getPROUserCount();
+    $lite_count = $this->module("collections")->getLITEUserCount();
 
     $widgets[] = [
-        'name'    => 'time',
-        'content' => $this->view('cockpit:views/widgets/datetime.php', compact('title')),
-        'area'    => 'main'
+        'name'    => 'user-statistics',
+        'content' => $this->view('cockpit:views/widgets/users_statistics.php', compact('pro_count', 'lite_count')),
+        'area'    => 'aside-right'
     ];
+    //---CUSTOM---
 
 }, 100);
 
