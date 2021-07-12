@@ -28,6 +28,9 @@ class RestApi extends \LimeExtra\Controller {
                 $options['subject'] = $this->param('__mailsubject');
             }
 
+            if ($this->param('__replyTo')) {
+                $options['reply_to'] = $this->param('__replyTo');
+            }
             return $this->module('forms')->submit($form, $data, $options);
         }
 
