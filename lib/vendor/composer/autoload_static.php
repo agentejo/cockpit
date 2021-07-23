@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
+class ComposerStaticInit405704b77720fc10cb62e297a751511c
 {
     public static $files = array (
         '7aed44d824e149ce152c0fb82af9379a' => __DIR__ . '/..' . '/colinodell/json5/src/global.php',
@@ -108,6 +108,7 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
         'ColorThief\\Image\\ImageLoader' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/Image/ImageLoader.php',
         'ColorThief\\PQueue' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/PQueue.php',
         'ColorThief\\VBox' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/VBox.php',
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Firebase\\JWT\\BeforeValidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/BeforeValidException.php',
         'Firebase\\JWT\\ExpiredException' => __DIR__ . '/..' . '/firebase/php-jwt/src/ExpiredException.php',
         'Firebase\\JWT\\JWT' => __DIR__ . '/..' . '/firebase/php-jwt/src/JWT.php',
@@ -243,7 +244,6 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
         'PHPMailer\\PHPMailer\\SMTP' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/SMTP.php',
         'Parsedown' => __DIR__ . '/..' . '/erusev/parsedown/Parsedown.php',
         'ParsedownExtra' => __DIR__ . '/..' . '/erusev/parsedown-extra/ParsedownExtra.php',
-        'ParsedownExtraTest' => __DIR__ . '/..' . '/erusev/parsedown-extra/test/ParsedownExtraTest.php',
         'ZipStream\\Exception' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/Exception.php',
         'ZipStream\\Exception\\FileNotFoundException' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/Exception/FileNotFoundException.php',
         'ZipStream\\Exception\\FileNotReadableException' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/Exception/FileNotReadableException.php',
@@ -256,11 +256,11 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$fallbackDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit405704b77720fc10cb62e297a751511c::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit405704b77720fc10cb62e297a751511c::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInit405704b77720fc10cb62e297a751511c::$fallbackDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit405704b77720fc10cb62e297a751511c::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit405704b77720fc10cb62e297a751511c::$classMap;
 
         }, null, ClassLoader::class);
     }
