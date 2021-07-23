@@ -290,9 +290,7 @@ class UtilArrayQuery {
 
                     $d = '$document';
 
-                    // single quote ' would allow to break out of the `isset($document['$key'])` string
-                    // rel https://github.com/agentejo/cockpit/commit/b40d6bdedb87265e700ac09007603e72459e7629#commitcomment-53000630
-                    if (\strpos($key, '\'') !== false) {
+                    if (\strpos($key, '(') !== false || \strpos($key, '"') !== false || \strpos($key, "'") !== false) {
                         throw new \InvalidArgumentException('Unallowed characters used in filter keys');
                     }
 
