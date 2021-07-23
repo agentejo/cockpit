@@ -45,11 +45,11 @@ class Auth extends \LimeExtra\Controller {
                 unset($user['api_key'], $user['_reset_token']);
 
             } else {
-                $this->app->trigger('cockpit.authentication.failed', [$data, 'User not found']);
+                $this->app->trigger('cockpit.authentication.failed', [$data, 'Authentication failed']);
             }
 
             if ($this->app->request->is('ajax')) {
-                return $user ? ['success' => true, 'user' => $user] : ['success' => false, 'error' => 'User not found'];
+                return $user ? ['success' => true, 'user' => $user] : ['success' => false, 'error' => 'Authentication failed'];
             } else {
                 $this->reroute('/');
             }
@@ -102,7 +102,8 @@ class Auth extends \LimeExtra\Controller {
             $user = $this->app->storage->findOne('cockpit/accounts', $query);
 
             if (!$user) {
-                return $this->stop(['error' => $this('i18n')->get('User does not exist')], 404);
+                // "fail silently" to not allow user-name bruteforce guessing
+                return ['message' => $this('i18n')->get('Recovery email sent if user exists')];
             }
 
             $token  = uniqid('rp-'.bin2hex(random_bytes(16)));
@@ -126,7 +127,7 @@ class Auth extends \LimeExtra\Controller {
                 return $this->stop(['error' => $this('i18n')->get($response)], 404);
             }
 
-            return ['message' => $this('i18n')->get('Recovery email sent')];
+            return ['message' => $this('i18n')->get('Recovery email sent if user exists')];
         }
 
         return $this->stop(['error' => $this('i18n')->get('User required')], 412);
