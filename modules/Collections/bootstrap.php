@@ -266,7 +266,7 @@ $this->module('collections')->extend([
         }
 
         if (isset($options['populate']) && $options['populate']) {
-            $entries = $this->_populate($entries, is_numeric($options['populate']) ? intval($options['populate']) : false, 0, $fieldsFilter);
+            $entries = $this->_populate($entries, is_numeric($options['populate']) ? intval($options['populate']) : false, $fieldsFilter, $name);
         }
 
         $this->app->trigger('collections.find.after', [$name, &$entries, false]);
@@ -484,13 +484,13 @@ $this->module('collections')->extend([
         return $cache[$link][$_id];
     },
 
-    '_populate' => function($items, $maxlevel=-1, $level=0, $fieldsFilter = []) {
+    '_populate' => function($items, $maxlevel=-1, $fieldsFilter = [], $collection = null) {
 
         if (!is_array($items)) {
             return $items;
         }
 
-        return cockpit_populate_collection($items, $maxlevel, 0, $fieldsFilter);
+        return cockpit_populate_collection($items, $maxlevel, 0, $fieldsFilter, $collection);
     },
 
     '_filterFields' => function($items, $collection, $filter) {
@@ -625,7 +625,7 @@ $this->module('collections')->extend([
     }
 ]);
 
-function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $fieldsFilter = [], &$stack = null) {
+function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $fieldsFilter = [], $collection = null, $stack = null) {
     if (!is_array($items)) {
         return $items;
     }
@@ -634,30 +634,34 @@ function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $field
         return $items;
     }
 
-    if(!is_array($stack) && $stack !== false) {
-        $stack = [];
-    }
-
     foreach ($items as $k => &$v) {
         if (!is_array($v)) {
             continue;
         }
 
+        $inner_stack = $stack;
         if ($level > 0) {
             $id = $v['_id'];
             $link = $v['link'];
             if(!empty($id) && !empty($link)) {
-                if ($stack && in_array([$id, $link], $stack)) {
-                    continue;
+                // prevent recursion:
+                // check to see if this _id/link combo has already been seen on this branch
+                // this does not prevent populating adjacent items that point to the same item 
+                if($stack !== false) { // passing false disables the recursion check.
+                    if ($stack && in_array([$id, $link], $stack)) {
+                        continue;
+                    }
+                    $inner_stack = array_merge($stack ?: [], [[$id, $link]]);
                 }
                 $items[$k] = cockpit('collections')->_resolveLinkedItem($v['link'], (string)$v['_id'], $fieldsFilter);
                 $items[$k]['_link'] = $link;
-                if($stack !== false) {
-                    $stack[] = [$id, $link];
-                }
             }
         }
-        $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ($level + 1), $fieldsFilter, $stack);
+        else if(!empty($collection) && !empty($v['_id'])) {
+            // this lets you prevent the top level from re-occurring if you provide $collection
+            $inner_stack = array_merge($stack ?: [], [[$v['_id'], $collection]]);
+        }
+        $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ($level + 1), $fieldsFilter, null, $inner_stack);
     }
     return $items;
 }
