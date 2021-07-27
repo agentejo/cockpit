@@ -625,34 +625,40 @@ $this->module('collections')->extend([
     }
 ]);
 
-function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $fieldsFilter = []) {
-
+function cockpit_populate_collection(&$items, $maxlevel = -1, $level = 0, $fieldsFilter = [], &$stack = null) {
     if (!is_array($items)) {
         return $items;
     }
 
-    if (is_numeric($maxlevel) && $maxlevel > -1 && $level > ($maxlevel+1)) {
+    if (is_numeric($maxlevel) && ($maxlevel == 0 || $maxlevel > 0 && $level > $maxlevel)) {
         return $items;
     }
 
-    foreach ($items as $k => &$v) {
+    if(!is_array($stack) && $stack !== false) {
+        $stack = [];
+    }
 
+    foreach ($items as $k => &$v) {
         if (!is_array($v)) {
             continue;
         }
 
-        if (is_array($items[$k])) {
-            $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ($level + 1), $fieldsFilter);
-        }
-
-        if ($level > 0 && isset($v['_id'], $v['link'])) {
+        if ($level > 0) {
+            $id = $v['_id'];
             $link = $v['link'];
-            $items[$k] = cockpit('collections')->_resolveLinkedItem($v['link'], (string)$v['_id'], $fieldsFilter);
-            $items[$k]['_link'] = $link;
-            $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ($level + 1), $fieldsFilter);
+            if(!empty($id) && !empty($link)) {
+                if ($stack && in_array([$id, $link], $stack)) {
+                    continue;
+                }
+                $items[$k] = cockpit('collections')->_resolveLinkedItem($v['link'], (string)$v['_id'], $fieldsFilter);
+                $items[$k]['_link'] = $link;
+                if($stack !== false) {
+                    $stack[] = [$id, $link];
+                }
+            }
         }
+        $items[$k] = cockpit_populate_collection($items[$k], $maxlevel, ($level + 1), $fieldsFilter, $stack);
     }
-
     return $items;
 }
 
