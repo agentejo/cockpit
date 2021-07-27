@@ -101,6 +101,7 @@ $this->module('singletons')->extend([
         if ($singleton = $this->singleton($name)) {
 
             $this->app->helper('fs')->delete("#storage:singleton/{$name}.singleton.php");
+            $this->app->storage->removeKey('singletons', $name);
 
             $this->app->trigger('singleton.remove', [$singleton]);
             $this->app->trigger("singleton.remove.{$name}", [$singleton]);
