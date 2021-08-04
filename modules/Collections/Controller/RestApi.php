@@ -198,10 +198,12 @@ class RestApi extends \LimeExtra\Controller {
 
             foreach ($data as &$entry) {
                 $entry['_by'] = $userId;
+                if (empty($entry['_id'])) { unset($entry['_id']) }
             }
 
         } else {
             $data['_by'] = $userId;
+            if (empty($data['_id'])) { unset($data['_id']) }
         }
 
         $options = [];
