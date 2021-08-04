@@ -209,7 +209,7 @@ class RestApi extends \LimeExtra\Controller {
         if ($revision = $this->param('revision', null)) $options['revision'] = $this->app->helper('utils')->fixStringBooleanValues($revision);
 
         try {
-            $data = $this->module('collections')->save($collection, $data, $options); 
+            $data = $this->module('collections')->save($collection, $data, $options);
         } catch(\Throwable $e) {
             $this->app->stop(['error' => $e->getMessage()], 412);
         }
@@ -249,6 +249,12 @@ class RestApi extends \LimeExtra\Controller {
         $this->module('collections')->remove($collection, $filter);
 
         return ['success' => true, 'count' => $count];
+    }
+
+    public function count($collection) {
+      $filter = $this->param('filter', null);
+      $count = $this->module('collections')->count($collection, $filter);
+      return ['success' => true, 'total' => $count];
     }
 
     public function createCollection() {
