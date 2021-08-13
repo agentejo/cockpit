@@ -58,10 +58,10 @@ class Cookie extends \Lime\Helper {
 
         if ($result) {
             $this->_cookies[$name] = $value;
-        }
 
-        if (isset($this->_deleted_cookies[$name])) {
-            unset($this->_deleted_cookies[$name]);
+            if (isset($this->_deleted_cookies[$name])) {
+                unset($this->_deleted_cookies[$name]);
+            }
         }
 
         return $result;
