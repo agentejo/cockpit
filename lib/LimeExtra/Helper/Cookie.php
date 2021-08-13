@@ -33,14 +33,14 @@ class Cookie extends \Lime\Helper {
      * @param bool $http_only
      * @param (string|null) $same_site
      * @return bool
-     * @throws Exception - throws Exception if SameSite=None and Secure=False
+     * @throws \Exception - throws Exception if SameSite=None and Secure=False
      */
     public function set($name, $value = "", $ttl = 86400 /* 1 day */, $path = '/', $domain = '', $secure = false, $http_only = false, $same_site = null)
     {
         if ($same_site && strtolower($same_site) === 'none' && !$secure) {
             // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite#fixing_common_warnings
             // "SameSite=None" only if "Secure=True"
-            throw new Exception('"SameSite=None" only if "Secure=True"');
+            throw new \Exception('"SameSite=None" only if "Secure=True"');
         }
 
         $options = [
