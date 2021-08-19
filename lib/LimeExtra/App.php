@@ -28,7 +28,7 @@ class App extends \Lime\App {
             'image'   => 'LimeExtra\\Helper\\Image',
             'i18n'    => 'LimeExtra\\Helper\\I18n',
             'utils'   => 'LimeExtra\\Helper\\Utils',
-            'coockie' => 'LimeExtra\\Helper\\Cookie',
+            'cookie'  => 'LimeExtra\\Helper\\Cookie',
             'yaml'    => 'LimeExtra\\Helper\\YAML',
         ], $settings['helpers'] ?? []);
 

@@ -31,14 +31,37 @@ class Cookie extends \Lime\Helper {
      * @param string $domain
      * @param bool $secure
      * @param bool $http_only
+     * @param (string|null) $same_site
      * @return bool
+     * @throws \Exception - throws Exception if SameSite=None and Secure=False
      */
-    public function set($name, $value, $ttl = 86400 /* 1 day */, $path = '/', $domain = '', $secure = false, $http_only = false) {
-        $this->_cookies[$name] = $value;
-        $result = \setcookie($name, $value, time() + $ttl, $path, $domain, $secure, $http_only);
+    public function set($name, $value = "", $ttl = 86400 /* 1 day */, $path = '/', $domain = '', $secure = false, $http_only = false, $same_site = null)
+    {
+        if ($same_site && strtolower($same_site) === 'none' && !$secure) {
+            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite#fixing_common_warnings
+            // "SameSite=None" only if "Secure=True"
+            throw new \Exception('"SameSite=None" only if "Secure=True"');
+        }
 
-        if (isset($this->_deleted_cookies[$name])) {
-            unset($this->_deleted_cookies[$name]);
+        $options = [
+            'expires' => time() + $ttl,
+            'path' => $path,
+            'domain' => $domain,
+            'secure' => $secure,
+            'httponly' => $http_only
+        ];
+        if($same_site){
+            $options['samesite'] = $same_site;
+        }
+
+        $result = \setcookie($name, $value, $options);
+
+        if ($result) {
+            $this->_cookies[$name] = $value;
+
+            if (isset($this->_deleted_cookies[$name])) {
+                unset($this->_deleted_cookies[$name]);
+            }
         }
 
         return $result;
@@ -71,8 +94,8 @@ class Cookie extends \Lime\Helper {
      * @param string $name
      * @return bool
      */
-    public function delete($name, $path = '/', $domain = '', $secure = false, $http_only = false) {
-        $success = $this->set($name, null, -10, $path, $domain, $secure, $http_only);
+    public function delete($name, $path = '/', $domain = '', $secure = false, $http_only = false, $same_site = null) {
+        $success = $this->set($name, null, -10, $path, $domain, $secure, $http_only, $same_site);
         $this->_deleted_cookies[$name] = $name;
 
         if (isset($this->_cookies[$name])) {
@@ -88,9 +111,9 @@ class Cookie extends \Lime\Helper {
      * @param string $name
      * @return mixed
      */
-    public function getAndDelete($name, $path = '/', $domain = '', $secure = false, $http_only = false) {
+    public function getAndDelete($name, $path = '/', $domain = '', $secure = false, $http_only = false, $same_site = null) {
         $value = $this->get($name);
-        $this->delete($name, $path, $domain, $secure, $http_only);
+        $this->delete($name, $path, $domain, $secure, $http_only, $same_site);
 
         return $value;
     }
