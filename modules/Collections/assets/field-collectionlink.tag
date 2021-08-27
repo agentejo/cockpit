@@ -44,7 +44,7 @@
                 <ul class="uk-list uk-list-space uk-sortable" data-uk-sortable>
                     <li each="{l,index in link}" data-idx="{ index }">
                         <div class="uk-grid uk-grid-small uk-text-small">
-                            <div><a onclick="{ removeListItem }"><i class="uk-icon-trash-o"></i></a></div>
+                            <div><a onclick="{ removeListItem }"><i class="uk-text-danger uk-icon-trash-o"></i></a></div>
                             <div class="uk-flex uk-flex-item-1">
                                 <span class="uk-flex-item-1">{ parent.getDisplay(l) }</span>
                                 <a class="uk-margin-small-left" target="_blank" href="{ App.route('/collections/entry/'+parent.opts.link+'/'+l._id) }"><i class="uk-icon-external-link"></i></a>
