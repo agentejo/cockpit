@@ -103,7 +103,9 @@
                 <table class="uk-table uk-table-tabbed uk-table-striped" if="{ modalOpen && entries.length }">
                     <thead>
                         <tr>
-                            <th></th>
+                            <th>
+                                <input if="{opts.multiple}" class="uk-checkbox" type="checkbox" onclick="{toggleAll}"/>
+                            </th>
                             <th class="uk-text-small" each="{field,idx in fields}">
                                 <a class="uk-link-muted { parent.sort[field.name] ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
 
@@ -459,6 +461,10 @@
                 this.selected.splice(idx, 1);
             }
         }
+    }
+
+    toggleAll(e) {
+        App.$(e.target).parents("table").find("tr>td input" + (e.target.checked ? ":not(:checked)" : ":checked")).click();
     }
     
     getDisplay(link) {
