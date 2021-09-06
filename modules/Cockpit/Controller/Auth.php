@@ -15,25 +15,27 @@ class Auth extends \LimeExtra\Controller {
 
     public function check() {
 
-        if ($data = $this->param('auth')) {
+        if ($auth = $this->param('auth')) {
 
-            if (!\is_string($data['user']) || !\is_string($data['password'])) {
+            if (!isset($auth['user'], $auth['password']) || !\is_string($auth['user']) || !\is_string($auth['password'])) {
                 return ['success' => false, 'error' => 'Pre-condition failed'];
             }
 
-            if (isset($data['user']) && $this->app->helper('utils')->isEmail($data['user'])) {
-                $data['email'] = $data['user'];
-                $data['user']  = '';
+            $auth = ['user' => $auth['user'], 'password' => $auth['password']];
+
+            if (isset($auth['user']) && $this->app->helper('utils')->isEmail($auth['user'])) {
+                $auth['email'] = $auth['user'];
+                $auth['user']  = '';
             }
 
             if (!$this->app->helper('csrf')->isValid('login', $this->param('csrf'), true)) {
-                $this->app->trigger('cockpit.authentication.failed', [$data, 'Csrf validation failed']);
+                $this->app->trigger('cockpit.authentication.failed', [$auth, 'Csrf validation failed']);
                 return ['success' => false, 'error' => 'Csrf validation failed'];
             }
 
-            $user = $this->module('cockpit')->authenticate($data);
+            $user = $this->module('cockpit')->authenticate($auth);
 
-            if ($user && !$this->module('cockpit')->hasaccess('cockpit', 'backend', @$user['group'])) {
+            if ($user && !$this->module('cockpit')->hasaccess('cockpit', 'backend', $user['group'] ?? null)) {
                 $user = null;
             }
 
@@ -45,7 +47,7 @@ class Auth extends \LimeExtra\Controller {
                 unset($user['api_key'], $user['_reset_token']);
 
             } else {
-                $this->app->trigger('cockpit.authentication.failed', [$data, 'Authentication failed']);
+                $this->app->trigger('cockpit.authentication.failed', [$auth, 'Authentication failed']);
             }
 
             if ($this->app->request->is('ajax')) {
