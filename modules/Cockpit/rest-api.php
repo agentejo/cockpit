@@ -40,10 +40,10 @@ $this->on('before', function() {
                 $allowed = true;
                 $this->module('cockpit')->setUser($account, false);
             }
-        
+
         // is jwt token?
         } elseif ($token && preg_match('/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/', $token)) {
-        
+
             // todo
 
         // default
@@ -113,6 +113,11 @@ $this->on('before', function() {
 
         $output = false;
         $user   = $this->module('cockpit')->getUser();
+
+        if (strpos($path, '../') !== false) {
+            // normalize path
+            $path = implode('/', array_filter(explode('/', $path), function($s) { return trim($s, '.'); }));
+        }
 
         if ($resource == 'public' && $resourcefile = $this->path("#config:api/{$path}.php")) {
 

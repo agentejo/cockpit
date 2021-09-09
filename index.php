@@ -28,9 +28,6 @@ if (COCKPIT_ADMIN && !defined('COCKPIT_ADMIN_ROUTE')) {
 
     if ($route == '') {
         $route = '/';
-    } elseif (strpos($route, '../') !== false) {
-        // normalize route
-        $route = implode('/', array_filter(explode('/', $route), function($s) { return trim($s, '.'); }));
     }
 
     define('COCKPIT_ADMIN_ROUTE', $route);
