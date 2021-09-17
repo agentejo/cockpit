@@ -1,0 +1,17 @@
+{
+    "name": "mongod",
+    "id" : "STANDALONE_AUTH",
+    "auth_key": "secret",
+    "login": "root",
+    "password": "toor",
+    "procParams": {
+        "dbpath": "/tmp/standalone-auth/",
+        "ipv6": true,
+        "logappend": true,
+        "logpath": "/tmp/standalone-auth/m.log",
+        "journal": true,
+        "port": 2200,
+        "bind_ip_all": true,
+        "setParameter": {"enableTestCommands": 1}
+    }
+}

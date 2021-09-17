@@ -1,0 +1,594 @@
+########################################
+# Evergreen Template for MongoDB Drivers
+########################################
+
+# When a task that used to pass starts to fail
+# Go through all versions that may have been skipped to detect
+# when the task started failing
+stepback: true
+
+# Mark a failure as a system/bootstrap failure (purple box) rather then a task
+# failure by default.
+# Actual testing tasks are marked with `type: test`
+command_type: system
+
+# Protect ourself against rogue test case, or curl gone wild, that runs forever
+# Good rule of thumb: the averageish length a task takes, times 5
+# That roughly accounts for variable system performance for various buildvariants
+exec_timeout_secs: 1800 # 6 minutes is the longest we'll ever run
+
+# What to do when evergreen hits the timeout (`post:` tasks are run automatically)
+timeout:
+  - command: shell.exec
+    params:
+      script: |
+        ls -la
+
+functions:
+  "fetch source":
+    # Executes git clone and applies the submitted patch, if any
+    - command: git.get_project
+      params:
+        directory: "src"
+    # Make an evergreen exapanstion file with dynamic values
+    - command: shell.exec
+      params:
+        working_dir: "src"
+        script: |
+           # Get the current unique version of this checkout
+           if [ "${is_patch}" = "true" ]; then
+              CURRENT_VERSION=$(git describe)-patch-${version_id}
+           else
+              CURRENT_VERSION=latest
+           fi
+
+           export DRIVERS_TOOLS="$(pwd)/../drivers-tools"
+           export PROJECT_DIRECTORY="$(pwd)"
+
+           # Python has cygwin path problems on Windows. Detect prospective mongo-orchestration home directory
+           if [ "Windows_NT" = "$OS" ]; then # Magic variable in cygwin
+              export DRIVERS_TOOLS=$(cygpath -m $DRIVERS_TOOLS)
+              export PROJECT_DIRECTORY=$(cygpath -m $PROJECT_DIRECTORY)
+           fi
+
+           export MONGO_ORCHESTRATION_HOME="$DRIVERS_TOOLS/.evergreen/orchestration"
+           export MONGODB_BINARIES="$DRIVERS_TOOLS/mongodb/bin"
+           export UPLOAD_BUCKET="${project}"
+
+           cat <<EOT > expansion.yml
+           CURRENT_VERSION: "$CURRENT_VERSION"
+           DRIVERS_TOOLS: "$DRIVERS_TOOLS"
+           MONGO_ORCHESTRATION_HOME: "$MONGO_ORCHESTRATION_HOME"
+           MONGODB_BINARIES: "$MONGODB_BINARIES"
+           UPLOAD_BUCKET: "$UPLOAD_BUCKET"
+           PROJECT_DIRECTORY: "$PROJECT_DIRECTORY"
+           PREPARE_SHELL: |
+              set -o errexit
+              set -o xtrace
+              export DRIVERS_TOOLS="$DRIVERS_TOOLS"
+              export MONGO_ORCHESTRATION_HOME="$MONGO_ORCHESTRATION_HOME"
+              export MONGODB_BINARIES="$MONGODB_BINARIES"
+              export UPLOAD_BUCKET="$UPLOAD_BUCKET"
+              export PROJECT_DIRECTORY="$PROJECT_DIRECTORY"
+
+              export TMPDIR="$MONGO_ORCHESTRATION_HOME/db"
+              export PATH="$MONGODB_BINARIES:$PATH"
+              export PROJECT="${project}"
+           EOT
+           # See what we've done
+           cat expansion.yml
+
+    # Load the expansion file to make an evergreen variable with the current unique version
+    - command: expansions.update
+      params:
+        file: src/expansion.yml
+
+  "prepare resources":
+    - command: shell.exec
+      params:
+        script: |
+          ${PREPARE_SHELL}
+          rm -rf $DRIVERS_TOOLS
+          if [ "${project}" = "drivers-tools" ]; then
+            # If this was a patch build, doing a fresh clone would not actually test the patch
+            cp -R ${PROJECT_DIRECTORY}/ $DRIVERS_TOOLS
+          else
+            git clone git://github.com/mongodb-labs/drivers-evergreen-tools.git $DRIVERS_TOOLS
+          fi
+          echo "{ \"releases\": { \"default\": \"$MONGODB_BINARIES\" }}" > $MONGO_ORCHESTRATION_HOME/orchestration.config
+
+  "upload mo artifacts":
+    - command: shell.exec
+      params:
+        script: |
+          ${PREPARE_SHELL}
+          find $MONGO_ORCHESTRATION_HOME -name \*.log | xargs tar czf mongodb-logs.tar.gz
+    - command: s3.put
+      params:
+        aws_key: ${aws_key}
+        aws_secret: ${aws_secret}
+        local_file: mongodb-logs.tar.gz
+        remote_file: ${UPLOAD_BUCKET}/${build_variant}/${revision}/${version_id}/${build_id}/logs/${task_id}-${execution}-mongodb-logs.tar.gz
+        bucket: mciuploads
+        permissions: public-read
+        content_type: ${content_type|application/x-gzip}
+        display_name: "mongodb-logs.tar.gz"
+    - command: s3.put
+      params:
+        aws_key: ${aws_key}
+        aws_secret: ${aws_secret}
+        local_file: ${DRIVERS_TOOLS}/.evergreen/orchestration/server.log
+        remote_file: ${UPLOAD_BUCKET}/${build_variant}/${revision}/${version_id}/${build_id}/logs/${task_id}-${execution}-orchestration.log
+        bucket: mciuploads
+        permissions: public-read
+        content_type: ${content_type|text/plain}
+        display_name: "orchestration.log"
+
+  "upload working dir":
+    - command: archive.targz_pack
+      params:
+        target: "working-dir.tar.gz"
+        source_dir: ${PROJECT_DIRECTORY}/
+        include:
+          - "./**"
+    - command: s3.put
+      params:
+        aws_key: ${aws_key}
+        aws_secret: ${aws_secret}
+        local_file: working-dir.tar.gz
+        remote_file: ${UPLOAD_BUCKET}/${build_variant}/${revision}/${version_id}/${build_id}/artifacts/${task_id}-${execution}-working-dir.tar.gz
+        bucket: mciuploads
+        permissions: public-read
+        content_type: ${content_type|application/x-gzip}
+        display_name: "working-dir.tar.gz"
+    - command: archive.targz_pack
+      params:
+        target: "drivers-dir.tar.gz"
+        source_dir: ${DRIVERS_TOOLS}
+        include:
+          - "./**"
+        exclude_files:
+          # Windows cannot read the mongod *.lock files because they are locked.
+          - "*.lock"
+    - command: s3.put
+      params:
+        aws_key: ${aws_key}
+        aws_secret: ${aws_secret}
+        local_file: drivers-dir.tar.gz
+        remote_file: ${UPLOAD_BUCKET}/${build_variant}/${revision}/${version_id}/${build_id}/artifacts/${task_id}-${execution}-drivers-dir.tar.gz
+        bucket: mciuploads
+        permissions: public-read
+        content_type: ${content_type|application/x-gzip}
+        display_name: "drivers-dir.tar.gz"
+
+  "upload test results":
+    - command: attach.xunit_results
+      params:
+        file: "${PROJECT_DIRECTORY}/test-results.xml"
+    - command: attach.results
+      params:
+        file_location: "${DRIVERS_TOOLS}/results.json"
+
+  "bootstrap mongo-orchestration":
+    - command: shell.exec
+      params:
+        script: |
+          ${PREPARE_SHELL}
+          MONGODB_VERSION=${VERSION} ORCHESTRATION_FILE=${ORCHESTRATION_FILE} TOPOLOGY=${TOPOLOGY} AUTH=${AUTH} SSL=${SSL} STORAGE_ENGINE=${STORAGE_ENGINE} sh ${PROJECT_DIRECTORY}/.evergreen/run-orchestration.sh
+    # run-orchestration generates expansion file with the MONGODB_URI for the cluster
+    - command: expansions.update
+      params:
+        file: mo-expansion.yml
+
+  "stop mongo-orchestration":
+    - command: shell.exec
+      params:
+        script: |
+          ${PREPARE_SHELL}
+          sh ${DRIVERS_TOOLS}/.evergreen/stop-orchestration.sh
+
+  "bootstrap mongohoused":
+    - command: shell.exec
+      params:
+        script: |
+          DRIVERS_TOOLS="${DRIVERS_TOOLS}" sh ${DRIVERS_TOOLS}/.evergreen/atlas_data_lake/build-mongohouse-local.sh
+    - command: shell.exec
+      params:
+        background: true
+        script: |
+          DRIVERS_TOOLS="${DRIVERS_TOOLS}" sh ${DRIVERS_TOOLS}/.evergreen/atlas_data_lake/run-mongohouse-local.sh
+
+  "run tests":
+    - command: shell.exec
+      type: test
+      params:
+        working_dir: "src"
+        script: |
+          ${PREPARE_SHELL}
+          PHP_VERSION=${PHP_VERSION} AUTH=${AUTH} SSL=${SSL} MONGODB_URI="${MONGODB_URI}" sh ${PROJECT_DIRECTORY}/.evergreen/run-tests.sh
+
+  "run atlas data lake test":
+     - command: shell.exec
+       type: test
+       params:
+         working_dir: "src"
+         script: |
+           ${PREPARE_SHELL}
+           PHP_VERSION=${PHP_VERSION} TESTS="atlas-data-lake" AUTH=${AUTH} SSL=${SSL} MONGODB_URI="${MONGODB_URI}" sh ${PROJECT_DIRECTORY}/.evergreen/run-tests.sh
+
+  "cleanup":
+    - command: shell.exec
+      params:
+        script: |
+          ${PREPARE_SHELL}
+          rm -rf $DRIVERS_TOOLS || true
+
+  "fix absolute paths":
+    - command: shell.exec
+      params:
+        script: |
+          ${PREPARE_SHELL}
+          for filename in $(find ${DRIVERS_TOOLS} -name \*.json); do
+            perl -p -i -e "s|ABSOLUTE_PATH_REPLACEMENT_TOKEN|${DRIVERS_TOOLS}|g" $filename
+          done
+
+  "windows fix":
+    - command: shell.exec
+      params:
+        script: |
+          ${PREPARE_SHELL}
+          for i in $(find ${DRIVERS_TOOLS}/.evergreen ${PROJECT_DIRECTORY}/.evergreen -name \*.sh); do
+            cat $i | tr -d '\r' > $i.new
+            mv $i.new $i
+          done
+          # Copy client certificate because symlinks do not work on Windows.
+          cp ${DRIVERS_TOOLS}/.evergreen/x509gen/client.pem ${MONGO_ORCHESTRATION_HOME}/lib/client.pem
+
+  "make files executable":
+    - command: shell.exec
+      params:
+        script: |
+          ${PREPARE_SHELL}
+          for i in $(find ${DRIVERS_TOOLS}/.evergreen ${PROJECT_DIRECTORY}/.evergreen -name \*.sh); do
+            chmod +x $i
+          done
+
+  "install dependencies":
+    - command: shell.exec
+      params:
+        working_dir: "src"
+        script: |
+          ${PREPARE_SHELL}
+          file="${PROJECT_DIRECTORY}/.evergreen/install-dependencies.sh"
+          # Don't use ${file} syntax here because evergreen treats it as an empty expansion.
+          [ -f "$file" ] && PHP_VERSION=${PHP_VERSION} DRIVER_VERSION=${DRIVER_VERSION} DRIVER_REPO=${DRIVER_REPO} DRIVER_BRANCH=${DRIVER_BRANCH} DEPENDENCIES=${DEPENDENCIES} sh $file || echo "$file not available, skipping"
+
+pre:
+  - func: "fetch source"
+  - func: "prepare resources"
+  - func: "windows fix"
+  - func: "fix absolute paths"
+  - func: "make files executable"
+  - func: "install dependencies"
+
+post:
+  # Skip: uploading the full working directory is not needed by drivers-evergreen-tools.
+  # - func: "upload working dir"
+  - func: "upload mo artifacts"
+  - func: "upload test results"
+  - func: "stop mongo-orchestration"
+  - func: "cleanup"
+
+tasks:
+
+    # Wildcard task. Do you need to find out what tools are available and where?
+    # Throw it here, and execute this task on all buildvariants
+    - name: getdata
+      commands:
+        - command: shell.exec
+          type: test
+          params:
+            script: |
+               set -o xtrace
+               . ${DRIVERS_TOOLS}/.evergreen/download-mongodb.sh || true
+               get_distro || true
+               echo $DISTRO
+               echo $MARCH
+               echo $OS
+               uname -a || true
+               ls /etc/*release* || true
+               cc --version || true
+               gcc --version || true
+               clang --version || true
+               gcov --version || true
+               lcov --version || true
+               llvm-cov --version || true
+               echo $PATH
+               ls -la /usr/local/Cellar/llvm/*/bin/ || true
+               ls -la /usr/local/Cellar/ || true
+               scan-build --version || true
+               genhtml --version || true
+               valgrind --version || true
+
+
+# Standard test tasks {{{
+
+    - name: "test-standalone"
+      tags: ["standalone"]
+      commands:
+        - func: "bootstrap mongo-orchestration"
+          vars:
+            TOPOLOGY: "server"
+        - func: "run tests"
+
+    - name: "test-replica_set"
+      tags: ["replica_set"]
+      commands:
+        - func: "bootstrap mongo-orchestration"
+          vars:
+            TOPOLOGY: "replica_set"
+        - func: "run tests"
+
+    - name: "test-sharded_cluster"
+      tags: ["sharded_cluster"]
+      commands:
+        - func: "bootstrap mongo-orchestration"
+          vars:
+            TOPOLOGY: "sharded_cluster"
+        - func: "run tests"
+
+    - name: "test-atlas-data-lake"
+      commands:
+        - func: "bootstrap mongohoused"
+        - func: "run atlas data lake test"
+
+
+# }}}
+
+
+axes:
+  - id: php-versions
+    display_name: PHP Version
+    values:
+      - id: "7.4"
+        display_name: "7.4"
+        variables:
+          PHP_VERSION: "7.4.7"
+      - id: "7.3"
+        display_name: "7.3"
+        variables:
+          PHP_VERSION: "7.3.8"
+      - id: "7.2"
+        display_name: "7.2"
+        variables:
+          PHP_VERSION: "7.2.21"
+      - id: "7.1"
+        display_name: "7.1"
+        variables:
+          PHP_VERSION: "7.1.31"
+      - id: "7.0"
+        display_name: "7.0"
+        variables:
+          PHP_VERSION: "7.0.32"
+
+  - id: php-edge-versions
+    display_name: PHP Version
+    values:
+      - id: "latest-stable"
+        display_name: "7.4"
+        variables:
+          PHP_VERSION: "7.4.7"
+      - id: "oldest-supported"
+        display_name: "7.0"
+        variables:
+          PHP_VERSION: "7.0.32"
+
+  - id: versions
+    display_name: MongoDB Version
+    values:
+      - id: "latest"
+        display_name: "latest"
+        variables:
+           VERSION: "latest"
+      - id: "4.4"
+        display_name: "4.4"
+        variables:
+           VERSION: "4.4"
+      - id: "4.2"
+        display_name: "4.2"
+        variables:
+           VERSION: "4.2"
+      - id: "4.0"
+        display_name: "4.0"
+        variables:
+           VERSION: "4.0"
+      - id: "3.6"
+        display_name: "3.6"
+        variables:
+           VERSION: "3.6"
+      - id: "3.4"
+        display_name: "3.4"
+        variables:
+           VERSION: "3.4"
+      - id: "3.2"
+        display_name: "3.2"
+        variables:
+           VERSION: "3.2"
+      - id: "3.0"
+        display_name: "3.0"
+        variables:
+           VERSION: "3.0"
+
+  - id: edge-versions
+    display_name: MongoDB Version
+    values:
+      - id: "latest-stable"
+        display_name: "4.4"
+        variables:
+          VERSION: "4.4"
+      - id: "oldest-supported"
+        display_name: "3.0"
+        variables:
+          VERSION: "3.0"
+
+  - id: driver-versions
+    display_name: Driver Version
+    values:
+      - id: "lowest-supported"
+        display_name: "1.8.1"
+        variables:
+          DRIVER_VERSION: "1.8.1"
+      - id: "latest-stable"
+        display_name: "1.9-stable"
+        variables:
+          DRIVER_VERSION: "stable"
+      - id: "1.8-dev"
+        display_name: "1.8-dev"
+        variables:
+          DRIVER_BRANCH: "v1.8"
+      - id: "1.9-dev"
+        display_name: "1.9-dev"
+        variables:
+          DRIVER_BRANCH: "v1.9"
+      - id: "latest-dev"
+        display_name: "1.10-dev (master)"
+        variables:
+          DRIVER_BRANCH: "master"
+
+  - id: os-php7
+    display_name: OS
+    values:
+      - id: debian92-test
+        display_name: "Debian 9.2"
+        run_on: debian92-test
+      - id: rhel70-test
+        display_name: "RHEL 7.0"
+        run_on: rhel70
+      - id: rhel71-power8
+        display_name: "RHEL 7.1 Power 8"
+        run_on: rhel71-power8-test
+      - id: rhel74-zseries
+        display_name: "RHEL 7.4 zSeries"
+        run_on: rhel74-zseries-test
+      - id: ubuntu1804-arm64-test
+        display_name: "Ubuntu 18.04 ARM64"
+        run_on: ubuntu1804-arm64-test
+
+  - id: topology
+    display_name: Topology
+    values:
+      - id: standalone
+        display_name: Standalone
+        variables:
+           TOPOLOGY: "server"
+      - id: replicaset
+        display_name: Replica Set
+        variables:
+           TOPOLOGY: "replica_set"
+      - id: sharded-cluster
+        display_name: Sharded Cluster
+        variables:
+           TOPOLOGY: "sharded_cluster"
+
+  - id: auth
+    display_name: Authentication
+    values:
+      - id: auth
+        display_name: Auth
+        variables:
+           AUTH: "auth"
+      - id: noauth
+        display_name: NoAuth
+        variables:
+           AUTH: "noauth"
+
+  - id: ssl
+    display_name: SSL
+    values:
+      - id: ssl
+        display_name: SSL
+        variables:
+           SSL: "ssl"
+      - id: nossl
+        display_name: NoSSL
+        variables:
+           SSL: "nossl"
+
+  - id: storage-engine
+    display_name: Storage
+    values:
+      - id: mmapv1
+        display_name: MMAPv1
+        variables:
+           STORAGE_ENGINE: "mmapv1"
+      - id: wiredtiger
+        display_name: WiredTiger
+        variables:
+           STORAGE_ENGINE: "wiredtiger"
+      - id: inmemory
+        display_name: InMemory
+        variables:
+           STORAGE_ENGINE: "inmemory"
+
+  - id: dependencies
+    display_name: Dependencies
+    values:
+      - id: lowest
+        display_name: Lowest
+        variables:
+          DEPENDENCIES: "lowest"
+
+buildvariants:
+
+# Tests all PHP versions on all operating systems.
+# Only tests against latest MongoDB and ext-mongodb versions
+- matrix_name: "test-php-versions"
+  matrix_spec: {"os-php7": "*", "php-versions": "*", "edge-versions": "latest-stable", "driver-versions": "latest-stable" }
+  exclude_spec:
+    # rhel71-power8 fails due to not reaching pecl
+    - { "os-php7": "rhel71-power8", "php-versions": "*", edge-versions: "*", "driver-versions": "*" }
+    # rhel74-zseries doesn't start in a timely fashion - most likely missing executors
+    - { "os-php7": "rhel74-zseries", "php-versions": "*", edge-versions: "*", "driver-versions": "*" }
+  display_name: "* ${os-php7}, PHP ${php-versions}, MongoDB ${edge-versions}, ext-mongodb ${driver-versions}"
+  tasks:
+    - name: "test-standalone"
+    - name: "test-replica_set"
+    - name: "test-sharded_cluster"
+
+# Tests all driver versions on all PHP versions
+# Only tests on Ubuntu 18.04 and latest MongoDB
+- matrix_name: "test-driver-versions"
+  matrix_spec: {"os-php7": "ubuntu1804-arm64-test", "php-versions": "*", "edge-versions": "latest-stable", "driver-versions": "*" }
+  display_name: "ext-mongodb ${driver-versions}, PHP ${php-versions}, ${os-php7}, MongoDB ${edge-versions}"
+  tasks:
+    - name: "test-standalone"
+    - name: "test-replica_set"
+    - name: "test-sharded_cluster"
+
+# Tests all MongoDB versions
+# Only tests on Ubuntu 18.04, with latest stable PHP and driver versions
+# Tests against various topologies
+- matrix_name: "test-mongodb-versions"
+  matrix_spec: {"os-php7": "rhel70-test", "php-edge-versions": "latest-stable", "versions": "*", "driver-versions": "latest-stable" }
+  display_name: "MongoDB ${versions}, PHP ${php-edge-versions}, ${os-php7}, ext-mongodb ${driver-versions}"
+  tasks:
+    - name: "test-standalone"
+    - name: "test-replica_set"
+    - name: "test-sharded_cluster"
+
+# Tests oldest supported version
+# Enables --prefer-lowest for composer to test oldest dependencies against all server versions
+- matrix_name: "test-dependencies"
+  matrix_spec: { "dependencies": "lowest", "os-php7": "rhel70-test", "php-edge-versions": "oldest-supported", "versions": "*", "driver-versions": "lowest-supported" }
+  display_name: "Dependencies: ${dependencies}, MongoDB ${versions}, PHP ${php-edge-versions}, ${os-php7}, ext-mongodb ${driver-versions}"
+  tasks:
+    - name: "test-standalone"
+    - name: "test-replica_set"
+    - name: "test-sharded_cluster"
+
+- matrix_name: "atlas-data-lake-test"
+  matrix_spec: { "php-edge-versions": "latest-stable" }
+  display_name: "Atlas Data Lake test"
+  run_on: rhel70
+  tasks:
+    - name: "test-atlas-data-lake"

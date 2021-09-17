@@ -31,6 +31,8 @@
 
     "config": {
         "vendor-dir": "lib/vendor",
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "prefer-dist": true,
+        "lock": false
     }
 }

@@ -17,7 +17,10 @@
 
 namespace MongoDB\Exception;
 
-class ResumeTokenException extends \Exception
+use function get_debug_type;
+use function sprintf;
+
+class ResumeTokenException extends RuntimeException
 {
     /**
      * Thrown when a resume token has an invalid type.
@@ -27,7 +30,7 @@ class ResumeTokenException extends \Exception
      */
     public static function invalidType($value)
     {
-        return new static(sprintf('Expected resume token to have type "array or object" but found "%s"', gettype($value)));
+        return new static(sprintf('Expected resume token to have type "array or object" but found "%s"', get_debug_type($value)));
     }
 
     /**

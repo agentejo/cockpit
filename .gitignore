@@ -15,6 +15,7 @@ package-lock.json
 /lib/**/phpunit*
 /lib/**/tests/*
 /lib/**/test/*
+/lib/**/\.github/*
 /lib/**/\.travis/*
 /lib/**/\.travis.yml
 /storage/*.*

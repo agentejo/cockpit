@@ -19,16 +19,41 @@ namespace MongoDB\GridFS;
 
 use MongoDB\Collection;
 use MongoDB\Driver\Cursor;
+use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\ReadConcern;
 use MongoDB\Driver\ReadPreference;
 use MongoDB\Driver\WriteConcern;
-use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
+use MongoDB\Exception\UnsupportedException;
 use MongoDB\GridFS\Exception\CorruptFileException;
 use MongoDB\GridFS\Exception\FileNotFoundException;
+use MongoDB\GridFS\Exception\StreamException;
+use MongoDB\Model\BSONArray;
+use MongoDB\Model\BSONDocument;
 use MongoDB\Operation\Find;
 use stdClass;
+use function array_intersect_key;
+use function fopen;
+use function get_resource_type;
+use function in_array;
+use function is_array;
+use function is_bool;
+use function is_integer;
+use function is_object;
+use function is_resource;
+use function is_string;
+use function method_exists;
+use function MongoDB\apply_type_map_to_document;
+use function MongoDB\BSON\fromPHP;
+use function MongoDB\BSON\toJSON;
+use function property_exists;
+use function sprintf;
+use function stream_context_create;
+use function stream_copy_to_stream;
+use function stream_get_meta_data;
+use function stream_get_wrappers;
+use function urlencode;
 
 /**
  * Bucket provides a public API for interacting with the GridFS files and chunks
@@ -38,24 +63,50 @@ use stdClass;
  */
 class Bucket
 {
+    /** @var string */
     private static $defaultBucketName = 'fs';
+
+    /** @var integer */
     private static $defaultChunkSizeBytes = 261120;
+
+    /** @var array */
     private static $defaultTypeMap = [
-        'array' => 'MongoDB\Model\BSONArray',
-        'document' => 'MongoDB\Model\BSONDocument',
-        'root' => 'MongoDB\Model\BSONDocument',
+        'array' => BSONArray::class,
+        'document' => BSONDocument::class,
+        'root' => BSONDocument::class,
     ];
+
+    /** @var string */
     private static $streamWrapperProtocol = 'gridfs';
 
+    /** @var CollectionWrapper */
     private $collectionWrapper;
+
+    /** @var string */
     private $databaseName;
+
+    /** @var Manager */
     private $manager;
+
+    /** @var string */
     private $bucketName;
+
+    /** @var boolean */
     private $disableMD5;
+
+    /** @var integer */
     private $chunkSizeBytes;
+
+    /** @var ReadConcern */
     private $readConcern;
+
+    /** @var ReadPreference */
     private $readPreference;
+
+    /** @var array */
     private $typeMap;
+
+    /** @var WriteConcern */
     private $writeConcern;
 
     /**
@@ -93,28 +144,28 @@ class Bucket
             'disableMD5' => false,
         ];
 
-        if (isset($options['bucketName']) && ! is_string($options['bucketName'])) {
+        if (! is_string($options['bucketName'])) {
             throw InvalidArgumentException::invalidType('"bucketName" option', $options['bucketName'], 'string');
         }
 
-        if (isset($options['chunkSizeBytes']) && ! is_integer($options['chunkSizeBytes'])) {
+        if (! is_integer($options['chunkSizeBytes'])) {
             throw InvalidArgumentException::invalidType('"chunkSizeBytes" option', $options['chunkSizeBytes'], 'integer');
         }
 
-        if (isset($options['chunkSizeBytes']) && $options['chunkSizeBytes'] < 1) {
+        if ($options['chunkSizeBytes'] < 1) {
             throw new InvalidArgumentException(sprintf('Expected "chunkSizeBytes" option to be >= 1, %d given', $options['chunkSizeBytes']));
         }
 
-        if (isset($options['disableMD5']) && ! is_bool($options['disableMD5'])) {
+        if (! is_bool($options['disableMD5'])) {
             throw InvalidArgumentException::invalidType('"disableMD5" option', $options['disableMD5'], 'boolean');
         }
 
         if (isset($options['readConcern']) && ! $options['readConcern'] instanceof ReadConcern) {
-            throw InvalidArgumentException::invalidType('"readConcern" option', $options['readConcern'], 'MongoDB\Driver\ReadConcern');
+            throw InvalidArgumentException::invalidType('"readConcern" option', $options['readConcern'], ReadConcern::class);
         }
 
         if (isset($options['readPreference']) && ! $options['readPreference'] instanceof ReadPreference) {
-            throw InvalidArgumentException::invalidType('"readPreference" option', $options['readPreference'], 'MongoDB\Driver\ReadPreference');
+            throw InvalidArgumentException::invalidType('"readPreference" option', $options['readPreference'], ReadPreference::class);
         }
 
         if (isset($options['typeMap']) && ! is_array($options['typeMap'])) {
@@ -122,7 +173,7 @@ class Bucket
         }
 
         if (isset($options['writeConcern']) && ! $options['writeConcern'] instanceof WriteConcern) {
-            throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], 'MongoDB\Driver\WriteConcern');
+            throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], WriteConcern::class);
         }
 
         $this->manager = $manager;
@@ -130,10 +181,10 @@ class Bucket
         $this->bucketName = $options['bucketName'];
         $this->chunkSizeBytes = $options['chunkSizeBytes'];
         $this->disableMD5 = $options['disableMD5'];
-        $this->readConcern = isset($options['readConcern']) ? $options['readConcern'] : $this->manager->getReadConcern();
-        $this->readPreference = isset($options['readPreference']) ? $options['readPreference'] : $this->manager->getReadPreference();
-        $this->typeMap = isset($options['typeMap']) ? $options['typeMap'] : self::$defaultTypeMap;
-        $this->writeConcern = isset($options['writeConcern']) ? $options['writeConcern'] : $this->manager->getWriteConcern();
+        $this->readConcern = $options['readConcern'] ?? $this->manager->getReadConcern();
+        $this->readPreference = $options['readPreference'] ?? $this->manager->getReadPreference();
+        $this->typeMap = $options['typeMap'] ?? self::$defaultTypeMap;
+        $this->writeConcern = $options['writeConcern'] ?? $this->manager->getWriteConcern();
 
         $collectionOptions = array_intersect_key($options, ['readConcern' => 1, 'readPreference' => 1, 'typeMap' => 1, 'writeConcern' => 1]);
 
@@ -188,15 +239,19 @@ class Bucket
      * @param resource $destination Writable Stream
      * @throws FileNotFoundException if no file could be selected
      * @throws InvalidArgumentException if $destination is not a stream
+     * @throws StreamException if the file could not be uploaded
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
     public function downloadToStream($id, $destination)
     {
-        if ( ! is_resource($destination) || get_resource_type($destination) != "stream") {
+        if (! is_resource($destination) || get_resource_type($destination) != "stream") {
             throw InvalidArgumentException::invalidType('$destination', $destination, 'resource');
         }
 
-        stream_copy_to_stream($this->openDownloadStream($id), $destination);
+        $source = $this->openDownloadStream($id);
+        if (@stream_copy_to_stream($source, $destination) === false) {
+            throw StreamException::downloadFromIdFailed($id, $source, $destination);
+        }
     }
 
     /**
@@ -223,15 +278,19 @@ class Bucket
      * @param array    $options     Download options
      * @throws FileNotFoundException if no file could be selected
      * @throws InvalidArgumentException if $destination is not a stream
+     * @throws StreamException if the file could not be uploaded
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
     public function downloadToStreamByName($filename, $destination, array $options = [])
     {
-        if ( ! is_resource($destination) || get_resource_type($destination) != "stream") {
+        if (! is_resource($destination) || get_resource_type($destination) != "stream") {
             throw InvalidArgumentException::invalidType('$destination', $destination, 'resource');
         }
 
-        stream_copy_to_stream($this->openDownloadStreamByName($filename, $options), $destination);
+        $source = $this->openDownloadStreamByName($filename, $options);
+        if (@stream_copy_to_stream($source, $destination) === false) {
+            throw StreamException::downloadFromFilenameFailed($filename, $source, $destination);
+        }
     }
 
     /**
@@ -332,7 +391,7 @@ class Bucket
         $file = $this->getRawFileDocumentForStream($stream);
 
         // Filter the raw document through the specified type map
-        return \MongoDB\apply_type_map_to_document($file, $this->typeMap);
+        return apply_type_map_to_document($file, $this->typeMap);
     }
 
     /**
@@ -352,9 +411,9 @@ class Bucket
          * the root type so we can reliably access the ID.
          */
         $typeMap = ['root' => 'stdClass'] + $this->typeMap;
-        $file = \MongoDB\apply_type_map_to_document($file, $typeMap);
+        $file = apply_type_map_to_document($file, $typeMap);
 
-        if ( ! isset($file->_id) && ! property_exists($file, '_id')) {
+        if (! isset($file->_id) && ! property_exists($file, '_id')) {
             throw new CorruptFileException('file._id does not exist');
         }
 
@@ -531,7 +590,7 @@ class Bucket
             ? $updateResult->getMatchedCount() === 1
             : $this->collectionWrapper->findFileById($id) !== null;
 
-        if ( ! $found) {
+        if (! $found) {
             throw FileNotFoundException::byId($id, $this->getFilesNamespace());
         }
     }
@@ -557,16 +616,21 @@ class Bucket
      * @param array    $options  Stream options
      * @return mixed ID of the newly created GridFS file
      * @throws InvalidArgumentException if $source is not a GridFS stream
+     * @throws StreamException if the file could not be uploaded
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
     public function uploadFromStream($filename, $source, array $options = [])
     {
-        if ( ! is_resource($source) || get_resource_type($source) != "stream") {
+        if (! is_resource($source) || get_resource_type($source) != "stream") {
             throw InvalidArgumentException::invalidType('$source', $source, 'resource');
         }
 
         $destination = $this->openUploadStream($filename, $options);
-        stream_copy_to_stream($source, $destination);
+
+        if (@stream_copy_to_stream($source, $destination) === false) {
+            $destinationUri = $this->createPathForFile($this->getRawFileDocumentForStream($destination));
+            throw StreamException::uploadFailed($filename, $source, $destinationUri);
+        }
 
         return $this->getFileIdForStream($destination);
     }
@@ -579,10 +643,10 @@ class Bucket
      */
     private function createPathForFile(stdClass $file)
     {
-        if ( ! is_object($file->_id) || method_exists($file->_id, '__toString')) {
+        if (! is_object($file->_id) || method_exists($file->_id, '__toString')) {
             $id = (string) $file->_id;
         } else {
-            $id = \MongoDB\BSON\toJSON(\MongoDB\BSON\fromPHP(['_id' => $file->_id]));
+            $id = toJSON(fromPHP(['_id' => $file->_id]));
         }
 
         return sprintf(
@@ -631,14 +695,14 @@ class Bucket
      */
     private function getRawFileDocumentForStream($stream)
     {
-        if ( ! is_resource($stream) || get_resource_type($stream) != "stream") {
+        if (! is_resource($stream) || get_resource_type($stream) != "stream") {
             throw InvalidArgumentException::invalidType('$stream', $stream, 'resource');
         }
 
         $metadata = stream_get_meta_data($stream);
 
-        if ( ! isset ($metadata['wrapper_data']) || ! $metadata['wrapper_data'] instanceof StreamWrapper) {
-            throw InvalidArgumentException::invalidType('$stream wrapper data', isset($metadata['wrapper_data']) ? $metadata['wrapper_data'] : null, 'MongoDB\Driver\GridFS\StreamWrapper');
+        if (! isset($metadata['wrapper_data']) || ! $metadata['wrapper_data'] instanceof StreamWrapper) {
+            throw InvalidArgumentException::invalidType('$stream wrapper data', $metadata['wrapper_data'] ?? null, StreamWrapper::class);
         }
 
         return $metadata['wrapper_data']->getFile();

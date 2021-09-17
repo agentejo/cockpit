@@ -4,7 +4,7 @@ A PHP class that makes working with images as simple as possible.
 
 Developed and maintained by [Cory LaViska](https://github.com/claviska).
 
-_If this project has you loving PHP image manipulation again, please consider making [a small donation](https://paypal.me/claviska) to support its development._
+_If this project has you loving PHP image manipulation again, please consider [sponsoring me](https://github.com/sponsors/claviska) to support its development._
 
 ---
 
@@ -75,7 +75,7 @@ require 'src/claviska/SimpleImage.php';
 
 SimpleImage is developed and maintained by [Cory LaViska](https://github.com/claviska). Copyright A Beautiful Site, LLC.
 
-Contributions are appreciated! If you enjoy using SimpleImage, especially in commercial applications, please consider [making a contribution](https://paypal.me/claviska) to support its development.
+If you enjoy using SimpleImage, especially in commercial applications, please consider [sponsoring me](https://github.com/sponsors/claviska) to support its development.
 
 Thanks! 🙌
 
@@ -146,7 +146,7 @@ Returns a SimpleImage object.
 Generates a data URI.
 
 - `$mimeType` (string) - The image format to output as a mime type (defaults to the original mime type).
-- `$quality` (int) - Image quality as a percentage (default 100).
+- `$quality` (int) - Image quality as a percentage (default 100). This argument has no effect on PNG images, since the format is lossless.
 
 Returns a string containing a data URI.
 
@@ -156,7 +156,7 @@ Forces the image to be downloaded to the clients machine. Must be called before 
 
 - `$filename`* (string) - The filename (without path) to send to the client (e.g. 'image.jpeg').
 - `$mimeType` (string) - The image format to output as a mime type (defaults to the original mime type).
-- `$quality` (int) - Image quality as a percentage (default 100).
+- `$quality` (int) - Image quality as a percentage (default 100). This argument has no effect on PNG images, since the format is lossless.
 
 Returns a SimpleImage object.
 
@@ -165,7 +165,7 @@ Returns a SimpleImage object.
 Writes the image to a file.
 
 - `$mimeType` (string) - The image format to output as a mime type (defaults to the original mime type).
-- `$quality` (int) - Image quality as a percentage (default 100).
+- `$quality` (int) - Image quality as a percentage (default 100). This argument has no effect on PNG images, since the format is lossless.
 
 Returns a SimpleImage object.
 
@@ -174,7 +174,7 @@ Returns a SimpleImage object.
 Outputs the image to the screen. Must be called before any output is sent to the screen.
 
 - `$mimeType` (string) - The image format to output as a mime type (defaults to the original mime type).
-- `$quality` (int) - Image quality as a percentage (default 100).
+- `$quality` (int) - Image quality as a percentage (default 100). This argument has no effect on PNG images, since the format is lossless.
 
 Returns a SimpleImage object.
 
@@ -183,7 +183,7 @@ Returns a SimpleImage object.
 Generates an image string.
 
 - `$mimeType` (string) - The image format to output as a mime type (defaults to the original mime type).
-- `$quality` (int) - Image quality as a percentage (default 100).
+- `$quality` (int) - Image quality as a percentage (default 100). This argument has no effect on PNG images, since the format is lossless.
 
 Returns a SimpleImage object.
 
@@ -304,6 +304,7 @@ Place an image on top of the current image.
 - `$opacity` (float) - The opacity level of the overlay 0-1 (default 1).
 - `$xOffset` (int) - Horizontal offset in pixels (default 0).
 - `$yOffset` (int) - Vertical offset in pixels (default 0).
+- `$calculateOffsetFromEdge` (bool) - Calculate Offset referring to the edges of the image. $xOffset and $yOffset have no effect in center anchor. (default false).
 
 Returns a SimpleImage object.
 
@@ -348,9 +349,11 @@ Adds text to the image.
   - `xOffset` (int) - The horizontal offset in pixels (default 0).
   - `yOffset` (int) - The vertical offset in pixels (default 0).
   - `shadow` (array) - Text shadow params.
-    - `x`* (int) - Horizontal offset in pixels.
-    - `y`* (int) - Vertical offset in pixels.
-    - `color`* (string|array) - The text shadow color.
+      - `x`* (int) - Horizontal offset in pixels.
+      - `y`* (int) - Vertical offset in pixels.
+      - `color`* (string|array) - The text shadow color.
+  - `calculateOffsetFromEdge` (bool) - Calculate Offset referring to the edges of the image (default false).
+  - `baselineAlign` (bool) - Align the text font with the baseline. (default true).
 - `$boundary` (array) - If passed, this variable will contain an array with coordinates that
   surround the text: [x1, y1, x2, y2, width, height]. This can be used for calculating the
   text's position after it gets added to the image.

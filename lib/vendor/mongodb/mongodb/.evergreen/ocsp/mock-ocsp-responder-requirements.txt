@@ -1,0 +1,3 @@
+asn1crypto==1.3.0
+flask==1.1.1
+oscrypto==1.2.0

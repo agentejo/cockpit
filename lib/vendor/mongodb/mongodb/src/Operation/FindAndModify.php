@@ -18,13 +18,22 @@
 namespace MongoDB\Operation;
 
 use MongoDB\Driver\Command;
+use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Server;
 use MongoDB\Driver\Session;
 use MongoDB\Driver\WriteConcern;
-use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnexpectedValueException;
 use MongoDB\Exception\UnsupportedException;
+use function current;
+use function is_array;
+use function is_bool;
+use function is_integer;
+use function is_object;
+use function is_string;
+use function MongoDB\create_field_path_type_map;
+use function MongoDB\is_pipeline;
+use function MongoDB\server_supports_feature;
 
 /**
  * Operation for the findAndModify command.
@@ -37,13 +46,31 @@ use MongoDB\Exception\UnsupportedException;
  */
 class FindAndModify implements Executable, Explainable
 {
+    /** @var integer */
     private static $wireVersionForArrayFilters = 6;
+
+    /** @var integer */
     private static $wireVersionForCollation = 5;
+
+    /** @var integer */
     private static $wireVersionForDocumentLevelValidation = 4;
+
+    /** @var integer */
+    private static $wireVersionForHint = 9;
+
+    /** @var integer */
+    private static $wireVersionForHintServerSideError = 8;
+
+    /** @var integer */
     private static $wireVersionForWriteConcern = 4;
 
+    /** @var string */
     private $databaseName;
+
+    /** @var string */
     private $collectionName;
+
+    /** @var array */
     private $options;
 
     /**
@@ -70,6 +97,13 @@ class FindAndModify implements Executable, Explainable
      *
      *  * fields (document): Limits the fields to return for the matching
      *    document.
+     *
+     *  * hint (string|document): The index to use. Specify either the index
+     *    name as a string or the index key pattern as a document. If specified,
+     *    then the query system will only consider plans using the hinted index.
+     *
+     *    This is only supported on server versions >= 4.4. Using this option in
+     *    other contexts will result in an exception at execution time.
      *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
      *    run.
@@ -133,11 +167,15 @@ class FindAndModify implements Executable, Explainable
             throw InvalidArgumentException::invalidType('"fields" option', $options['fields'], 'array or object');
         }
 
+        if (isset($options['hint']) && ! is_string($options['hint']) && ! is_array($options['hint']) && ! is_object($options['hint'])) {
+            throw InvalidArgumentException::invalidType('"hint" option', $options['hint'], ['string', 'array', 'object']);
+        }
+
         if (isset($options['maxTimeMS']) && ! is_integer($options['maxTimeMS'])) {
             throw InvalidArgumentException::invalidType('"maxTimeMS" option', $options['maxTimeMS'], 'integer');
         }
 
-        if ( ! is_bool($options['new'])) {
+        if (! is_bool($options['new'])) {
             throw InvalidArgumentException::invalidType('"new" option', $options['new'], 'boolean');
         }
 
@@ -145,12 +183,12 @@ class FindAndModify implements Executable, Explainable
             throw InvalidArgumentException::invalidType('"query" option', $options['query'], 'array or object');
         }
 
-        if ( ! is_bool($options['remove'])) {
+        if (! is_bool($options['remove'])) {
             throw InvalidArgumentException::invalidType('"remove" option', $options['remove'], 'boolean');
         }
 
         if (isset($options['session']) && ! $options['session'] instanceof Session) {
-            throw InvalidArgumentException::invalidType('"session" option', $options['session'], 'MongoDB\Driver\Session');
+            throw InvalidArgumentException::invalidType('"session" option', $options['session'], Session::class);
         }
 
         if (isset($options['sort']) && ! is_array($options['sort']) && ! is_object($options['sort'])) {
@@ -166,14 +204,14 @@ class FindAndModify implements Executable, Explainable
         }
 
         if (isset($options['writeConcern']) && ! $options['writeConcern'] instanceof WriteConcern) {
-            throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], 'MongoDB\Driver\WriteConcern');
+            throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], WriteConcern::class);
         }
 
-        if ( ! is_bool($options['upsert'])) {
+        if (! is_bool($options['upsert'])) {
             throw InvalidArgumentException::invalidType('"upsert" option', $options['upsert'], 'boolean');
         }
 
-        if ( ! (isset($options['update']) xor $options['remove'])) {
+        if (! (isset($options['update']) xor $options['remove'])) {
             throw new InvalidArgumentException('The "remove" option must be true or an "update" document must be specified, but not both');
         }
 
@@ -198,34 +236,40 @@ class FindAndModify implements Executable, Explainable
      */
     public function execute(Server $server)
     {
-        if (isset($this->options['arrayFilters']) && ! \MongoDB\server_supports_feature($server, self::$wireVersionForArrayFilters)) {
+        if (isset($this->options['arrayFilters']) && ! server_supports_feature($server, self::$wireVersionForArrayFilters)) {
             throw UnsupportedException::arrayFiltersNotSupported();
         }
 
-        if (isset($this->options['collation']) && ! \MongoDB\server_supports_feature($server, self::$wireVersionForCollation)) {
+        if (isset($this->options['collation']) && ! server_supports_feature($server, self::$wireVersionForCollation)) {
             throw UnsupportedException::collationNotSupported();
         }
 
-        if (isset($this->options['writeConcern']) && ! \MongoDB\server_supports_feature($server, self::$wireVersionForWriteConcern)) {
+        /* Server versions >= 4.1.10 raise errors for unknown findAndModify
+         * options (SERVER-40005), but the CRUD spec requires client-side errors
+         * for server versions < 4.2. For later versions, we'll rely on the
+         * server to either utilize the option or report its own error. */
+        if (isset($this->options['hint']) && ! $this->isHintSupported($server)) {
+            throw UnsupportedException::hintNotSupported();
+        }
+
+        if (isset($this->options['writeConcern']) && ! server_supports_feature($server, self::$wireVersionForWriteConcern)) {
             throw UnsupportedException::writeConcernNotSupported();
         }
 
+        $inTransaction = isset($this->options['session']) && $this->options['session']->isInTransaction();
+        if ($inTransaction && isset($this->options['writeConcern'])) {
+            throw UnsupportedException::writeConcernNotSupportedInTransaction();
+        }
+
         $cursor = $server->executeWriteCommand($this->databaseName, new Command($this->createCommandDocument($server)), $this->createOptions());
-        $result = current($cursor->toArray());
-
-        if ( ! isset($result->value)) {
-            return null;
-        }
-
-        if ( ! is_object($result->value)) {
-            throw new UnexpectedValueException('findAndModify command did not return a "value" document');
-        }
 
         if (isset($this->options['typeMap'])) {
-            return \MongoDB\apply_type_map_to_document($result->value, $this->options['typeMap']);
+            $cursor->setTypeMap(create_field_path_type_map($this->options['typeMap'], 'value'));
         }
 
-        return $result->value;
+        $result = current($cursor->toArray());
+
+        return $result->value ?? null;
     }
 
     public function getCommandDocument(Server $server)
@@ -236,6 +280,7 @@ class FindAndModify implements Executable, Explainable
     /**
      * Create the findAndModify command document.
      *
+     * @param Server $server
      * @return array
      */
     private function createCommandDocument(Server $server)
@@ -249,21 +294,27 @@ class FindAndModify implements Executable, Explainable
             $cmd['upsert'] = $this->options['upsert'];
         }
 
-        foreach (['collation', 'fields', 'query', 'sort', 'update'] as $option) {
+        foreach (['collation', 'fields', 'query', 'sort'] as $option) {
             if (isset($this->options[$option])) {
                 $cmd[$option] = (object) $this->options[$option];
             }
         }
 
-        if (isset($this->options['arrayFilters'])) {
-            $cmd['arrayFilters'] = $this->options['arrayFilters'];
+        if (isset($this->options['update'])) {
+            $cmd['update'] = is_pipeline($this->options['update'])
+                ? $this->options['update']
+                : (object) $this->options['update'];
         }
 
-        if (isset($this->options['maxTimeMS'])) {
-            $cmd['maxTimeMS'] = $this->options['maxTimeMS'];
+        foreach (['arrayFilters', 'hint', 'maxTimeMS'] as $option) {
+            if (isset($this->options[$option])) {
+                $cmd[$option] = $this->options[$option];
+            }
         }
 
-        if (isset($this->options['bypassDocumentValidation']) && \MongoDB\server_supports_feature($server, self::$wireVersionForDocumentLevelValidation)) {
+        if (! empty($this->options['bypassDocumentValidation']) &&
+            server_supports_feature($server, self::$wireVersionForDocumentLevelValidation)
+        ) {
             $cmd['bypassDocumentValidation'] = $this->options['bypassDocumentValidation'];
         }
 
@@ -289,5 +340,21 @@ class FindAndModify implements Executable, Explainable
         }
 
         return $options;
+    }
+
+    private function isAcknowledgedWriteConcern() : bool
+    {
+        if (! isset($this->options['writeConcern'])) {
+            return true;
+        }
+
+        return $this->options['writeConcern']->getW() > 1 || $this->options['writeConcern']->getJournal();
+    }
+
+    private function isHintSupported(Server $server) : bool
+    {
+        $requiredWireVersion = $this->isAcknowledgedWriteConcern() ? self::$wireVersionForHintServerSideError : self::$wireVersionForHint;
+
+        return server_supports_feature($server, $requiredWireVersion);
     }
 }

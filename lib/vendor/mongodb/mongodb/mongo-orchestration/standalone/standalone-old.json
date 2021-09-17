@@ -1,0 +1,16 @@
+{
+    "name": "mongod",
+    "id" : "STANDALONE",
+    "procParams": {
+        "dbpath": "/tmp/standalone/",
+        "ipv6": true,
+        "logappend": true,
+        "logpath": "/tmp/standalone/mongod.log",
+        "journal": true,
+        "nssize": 1,
+        "port": 2700,
+        "bind_ip": "::,0.0.0.0",
+        "smallfiles": true,
+        "setParameter": {"enableTestCommands": 1}
+    }
+}

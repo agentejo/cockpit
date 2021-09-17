@@ -18,8 +18,23 @@
 namespace MongoDB\GridFS;
 
 use MongoDB\BSON\UTCDateTime;
-use Exception;
 use stdClass;
+use Throwable;
+use function explode;
+use function get_class;
+use function in_array;
+use function is_integer;
+use function sprintf;
+use function stream_context_get_options;
+use function stream_get_wrappers;
+use function stream_wrapper_register;
+use function stream_wrapper_unregister;
+use function trigger_error;
+use const E_USER_WARNING;
+use const SEEK_CUR;
+use const SEEK_END;
+use const SEEK_SET;
+use const STREAM_IS_URL;
 
 /**
  * Stream wrapper for reading and writing a GridFS file.
@@ -30,14 +45,25 @@ use stdClass;
  */
 class StreamWrapper
 {
-    /**
-     * @var resource|null Stream context (set by PHP)
-     */
+    /** @var resource|null Stream context (set by PHP) */
     public $context;
 
+    /** @var string|null */
     private $mode;
+
+    /** @var string|null */
     private $protocol;
+
+    /** @var ReadableStream|WritableStream|null */
     private $stream;
+
+    public function __destruct()
+    {
+        /* This destructor is a workaround for PHP trying to use the stream well
+         * after all objects have been destructed. This can cause autoloading
+         * issues and possibly segmentation faults during PHP shutdown. */
+        $this->stream = null;
+    }
 
     /**
      * Return the stream's file document.
@@ -60,7 +86,7 @@ class StreamWrapper
             stream_wrapper_unregister($protocol);
         }
 
-        stream_wrapper_register($protocol, get_called_class(), \STREAM_IS_URL);
+        stream_wrapper_register($protocol, static::class, STREAM_IS_URL);
     }
 
     /**
@@ -70,6 +96,10 @@ class StreamWrapper
      */
     public function stream_close()
     {
+        if (! $this->stream) {
+            return;
+        }
+
         $this->stream->close();
     }
 
@@ -81,7 +111,7 @@ class StreamWrapper
      */
     public function stream_eof()
     {
-        if ( ! $this->stream instanceof ReadableStream) {
+        if (! $this->stream instanceof ReadableStream) {
             return false;
         }
 
@@ -96,6 +126,7 @@ class StreamWrapper
      * @param string  $mode       Mode used to open the file (only "r" and "w" are supported)
      * @param integer $options    Additional flags set by the streams API
      * @param string  $openedPath Not used
+     * @return boolean
      */
     public function stream_open($path, $mode, $options, &$openedPath)
     {
@@ -125,14 +156,15 @@ class StreamWrapper
      */
     public function stream_read($length)
     {
-        if ( ! $this->stream instanceof ReadableStream) {
+        if (! $this->stream instanceof ReadableStream) {
             return '';
         }
 
         try {
             return $this->stream->readBytes($length);
-        } catch (Exception $e) {
-            trigger_error(sprintf('%s: %s', get_class($e), $e->getMessage()), \E_USER_WARNING);
+        } catch (Throwable $e) {
+            trigger_error(sprintf('%s: %s', get_class($e), $e->getMessage()), E_USER_WARNING);
+
             return false;
         }
     }
@@ -145,15 +177,15 @@ class StreamWrapper
      * @param integer $whence One of SEEK_SET, SEEK_CUR, or SEEK_END
      * @return boolean True if the position was updated and false otherwise
      */
-    public function stream_seek($offset, $whence = \SEEK_SET)
+    public function stream_seek($offset, $whence = SEEK_SET)
     {
         $size = $this->stream->getSize();
 
-        if ($whence === \SEEK_CUR) {
+        if ($whence === SEEK_CUR) {
             $offset += $this->stream->tell();
         }
 
-        if ($whence === \SEEK_END) {
+        if ($whence === SEEK_END) {
             $offset += $size;
         }
 
@@ -221,14 +253,15 @@ class StreamWrapper
      */
     public function stream_write($data)
     {
-        if ( ! $this->stream instanceof WritableStream) {
+        if (! $this->stream instanceof WritableStream) {
             return 0;
         }
 
         try {
             return $this->stream->writeBytes($data);
-        } catch (Exception $e) {
-            trigger_error(sprintf('%s: %s', get_class($e), $e->getMessage()), \E_USER_WARNING);
+        } catch (Throwable $e) {
+            trigger_error(sprintf('%s: %s', get_class($e), $e->getMessage()), E_USER_WARNING);
+
             return false;
         }
     }
@@ -241,6 +274,7 @@ class StreamWrapper
     private function getStatTemplate()
     {
         return [
+            // phpcs:disable Squiz.Arrays.ArrayDeclaration.IndexNoNewline
             0  => 0,  'dev'     => 0,
             1  => 0,  'ino'     => 0,
             2  => 0,  'mode'    => 0,
@@ -254,6 +288,7 @@ class StreamWrapper
             10 => 0,  'ctime'   => 0,
             11 => -1, 'blksize' => -1,
             12 => -1, 'blocks'  => -1,
+            // phpcs:enable
         ];
     }
 

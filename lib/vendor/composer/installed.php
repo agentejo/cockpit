@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '8856aa2cd2ccf1c92bef6374ba238aa02ca080d3',
+    'reference' => '33fa6432c928aa146bdba2a9690286fb13e78195',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -18,34 +18,43 @@
       'aliases' => 
       array (
       ),
-      'reference' => '8856aa2cd2ccf1c92bef6374ba238aa02ca080d3',
+      'reference' => '33fa6432c928aa146bdba2a9690286fb13e78195',
     ),
     'claviska/simpleimage' => 
     array (
-      'pretty_version' => '3.3.4',
-      'version' => '3.3.4.0',
+      'pretty_version' => '3.6.3',
+      'version' => '3.6.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3786d80af8e6d05e5e42f0350e5e5da5b92041a0',
+      'reference' => '21b6f4bf4ef1927158b3e29bd0c2d99c6681c750',
     ),
     'colinodell/json5' => 
     array (
-      'pretty_version' => 'v2.1.0',
-      'version' => '2.1.0.0',
+      'pretty_version' => 'v2.2.0',
+      'version' => '2.2.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '86136a74726d48ec60285d5b8585d62e0645b56c',
+      'reference' => 'dd7f788c5de3837d1483a216dc9b30e5d9c8c00a',
+    ),
+    'composer/package-versions-deprecated' => 
+    array (
+      'pretty_version' => '1.11.99.4',
+      'version' => '1.11.99.4',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'b174585d1fe49ceed21928a945138948cb394600',
     ),
     'erusev/parsedown' => 
     array (
-      'pretty_version' => '1.7.3',
-      'version' => '1.7.3.0',
+      'pretty_version' => '1.7.4',
+      'version' => '1.7.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => '6d893938171a817f4e9bc9e86f2da1e370b7bcd7',
+      'reference' => 'cb17b6477dfff935958ba01325f2e8a2bfa6dab3',
     ),
     'erusev/parsedown-extra' => 
     array (
@@ -58,12 +67,21 @@
     ),
     'firebase/php-jwt' => 
     array (
-      'pretty_version' => 'v5.0.0',
-      'version' => '5.0.0.0',
+      'pretty_version' => 'v5.4.0',
+      'version' => '5.4.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '9984a4d3a32ae7673d6971ea00bae9d0a1abba0e',
+      'reference' => 'd2113d9b2e0e349796e72d2a63cf9319100382d2',
+    ),
+    'jean85/pretty-package-versions' => 
+    array (
+      'pretty_version' => '1.6.0',
+      'version' => '1.6.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '1e0104b46f045868f11942aea058cd7186d6c303',
     ),
     'ksubileau/color-thief-php' => 
     array (
@@ -85,12 +103,21 @@
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '1.0.57',
-      'version' => '1.0.57.0',
+      'pretty_version' => '1.1.5',
+      'version' => '1.1.5.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0e9db7f0b96b9f12dcf6f65bc34b72b1a30ea55a',
+      'reference' => '18634df356bfd4119fe3d6156bdb990c414c14ea',
+    ),
+    'league/mime-type-detection' => 
+    array (
+      'pretty_version' => '1.7.0',
+      'version' => '1.7.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '3b9dff8aaf7323590c1d2e443db701eb1f9aa0d3',
     ),
     'maennchen/zipstream-php' => 
     array (
@@ -110,21 +137,37 @@
     ),
     'mongodb/mongodb' => 
     array (
-      'pretty_version' => '1.4.3',
-      'version' => '1.4.3.0',
+      'pretty_version' => '1.8.0',
+      'version' => '1.8.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '18fca8cc8d0c2cc07f76605760d20632bb3dab96',
+      'reference' => '953dbc19443aa9314c44b7217a16873347e6840d',
+    ),
+    'ocramius/package-versions' => 
+    array (
+      'replaced' => 
+      array (
+        0 => '1.11.99',
+      ),
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.1.1',
-      'version' => '6.1.1.0',
+      'pretty_version' => 'v6.5.1',
+      'version' => '6.5.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '26bd96350b0b2fcbf0ef4e6f0f9cf3528302a9d8',
+      'reference' => 'dd803df5ad7492e1b40637f7ebd258fee5ca7355',
+    ),
+    'symfony/polyfill-php80' => 
+    array (
+      'pretty_version' => 'v1.23.1',
+      'version' => '1.23.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '1100343ed1a92e3a38f9ae122fc0eb21602547be',
     ),
   ),
 );

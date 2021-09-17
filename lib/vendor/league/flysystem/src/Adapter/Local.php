@@ -206,8 +206,9 @@ class Local extends AbstractAdapter
 
         $result = compact('type', 'path', 'size', 'contents');
 
-        if ($mimetype = $config->get('mimetype') ?: Util::guessMimeType($path, $contents)) {
-            $result['mimetype'] = $mimetype;
+        if ($visibility = $config->get('visibility')) {
+            $this->setVisibility($path, $visibility);
+            $result['visibility'] = $visibility;
         }
 
         return $result;
@@ -286,6 +287,8 @@ class Local extends AbstractAdapter
 
             $result[] = $this->normalizeFileInfo($file);
         }
+
+        unset($iterator);
 
         return array_filter($result);
     }
@@ -411,6 +414,8 @@ class Local extends AbstractAdapter
             $this->guardAgainstUnreadableFileInfo($file);
             $this->deleteFileInfoObject($file);
         }
+
+        unset($contents);
 
         return rmdir($location);
     }

@@ -1,0 +1,24 @@
+{
+    "id": "REPLICASET_SINGLE",
+    "name": "mongod",
+    "members": [
+        {
+            "procParams": {
+                "dbpath": "/tmp/REPLICASET/3020/",
+                "ipv6": true,
+                "logappend": true,
+                "logpath": "/tmp/REPLICASET/3020/mongod.log",
+                "journal": true,
+                "port": 3020,
+                "bind_ip_all": true
+            },
+            "rsParams": {
+                "tags": {
+                    "ordinal": "one",
+                    "dc": "pa"
+                }
+            },
+            "server_id": "RS-alone"
+        }
+    ]
+}

@@ -19,7 +19,7 @@ function eval_params {
 } 
 
 function r {
-    echo $1| cut -d'/' -f 2
+    echo $1| awk -F'/' '{print $(NF-1)}'| sed 's/standalone/servers/'
 }
 
 function a {
@@ -72,7 +72,7 @@ case $2 in
 start)
     if [ "$HTTP_CODE" != "200" ]
     then
-        WORKSPACE=~/tmp/orchestrations
+        WORKSPACE=${TRAVIS_BUILD_DIR}/orchestrations
         rm -fr $WORKSPACE
         mkdir $WORKSPACE
         LOGPATH=$WORKSPACE

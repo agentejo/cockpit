@@ -1,0 +1,126 @@
+{
+    "configsvrs": [ {
+        "members" : [
+            {
+                "procParams": {
+                    "dbpath": "/tmp/SHARDED-RS/CFG/4490",
+                    "logpath": "/tmp/SHARDED-RS/CFG/4490/mongod.log",
+                    "ipv6": true,
+                    "journal": true,
+                    "logappend": true,
+                    "port": 4490,
+                    "bind_ip_all": true
+                }
+            },
+            {
+                "procParams": {
+                    "dbpath": "/tmp/SHARDED-RS/CFG/4491",
+                    "logpath": "/tmp/SHARDED-RS/CFG/4491/mongod.log",
+                    "ipv6": true,
+                    "journal": true,
+                    "logappend": true,
+                    "port": 4491,
+                    "bind_ip_all": true
+                }
+            },
+            {
+                "procParams": {
+                    "dbpath": "/tmp/SHARDED-RS/CFG/4492",
+                    "logpath": "/tmp/SHARDED-RS/CFG/4492/mongod.log",
+                    "ipv6": true,
+                    "journal": true,
+                    "logappend": true,
+                    "port": 4492,
+                    "bind_ip_all": true
+                }
+            }
+        ]
+    } ],
+    "id": "cluster_rs",
+    "shards": [
+        {
+            "id": "cluster-rs-sh01", 
+            "shardParams": {
+                "id": "sh01-rs",
+                "members": [
+                    { "procParams": {
+                        "dbpath": "/tmp/SHARDED-RS/SHARD1/4400",
+                        "logpath": "/tmp/SHARDED-RS/SHARD1/4400/mongod.log",
+                        "ipv6": true,
+                        "journal": true,
+                        "logappend": true,
+                        "port": 4400,
+                        "bind_ip_all": true,
+                        "setParameter":  {
+                            "periodicNoopIntervalSecs":  1,
+                            "writePeriodicNoops":  true
+                        }
+                    } },
+                    { "procParams": {
+                        "dbpath": "/tmp/SHARDED-RS/SHARD1/4401",
+                        "logpath": "/tmp/SHARDED-RS/SHARD1/4401/mongod.log",
+                        "ipv6": true,
+                        "journal": true,
+                        "logappend": true,
+                        "port": 4401,
+                        "bind_ip_all": true,
+                        "setParameter":  {
+                            "periodicNoopIntervalSecs":  1,
+                            "writePeriodicNoops":  true
+                        }
+                    } }
+                ]
+            }
+        }, 
+        {
+            "id": "cluster-rs-sh02", 
+            "shardParams": {
+                "id": "sh02-rs",
+                "members": [
+                    { "procParams": {
+                        "dbpath": "/tmp/SHARDED-RS/SHARD2/4410",
+                        "logpath": "/tmp/SHARDED-RS/SHARD2/4410/mongod.log",
+                        "ipv6": true,
+                        "journal": true,
+                        "logappend": true,
+                        "port": 4410,
+                        "bind_ip_all": true,
+                        "setParameter":  {
+                            "periodicNoopIntervalSecs":  1,
+                            "writePeriodicNoops":  true
+                        }
+                    } },
+                    { "procParams": {
+                        "dbpath": "/tmp/SHARDED-RS/SHARD2/4411",
+                        "logpath": "/tmp/SHARDED-RS/SHARD2/4411/mongod.log",
+                        "ipv6": true,
+                        "journal": true,
+                        "logappend": true,
+                        "port": 4411,
+                        "bind_ip_all": true,
+                        "setParameter":  {
+                            "periodicNoopIntervalSecs":  1,
+                            "writePeriodicNoops":  true
+                        }
+                    } }
+                ]
+            }
+        }
+    ], 
+    "routers": [
+        {
+            "logpath": "/tmp/SHARDED-RS/ROUTER/4430/mongod.log",
+            "ipv6": true,
+            "logappend": true,
+            "port": 4430,
+            "bind_ip_all": true
+        },
+        {
+            "logpath": "/tmp/SHARDED-RS/ROUTER/4431/mongod.log",
+            "ipv6": true,
+            "logappend": true,
+            "port": 4431,
+            "bind_ip_all": true
+        }
+    ]
+}

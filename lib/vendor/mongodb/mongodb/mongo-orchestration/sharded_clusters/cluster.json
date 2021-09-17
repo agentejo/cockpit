@@ -1,0 +1,86 @@
+{
+    "configsvrs": [ {
+        "members" : [
+            {
+                "procParams": {
+                    "dbpath": "/tmp/SHARDED/CFG/4000",
+                    "logpath": "/tmp/SHARDED/CFG/4000/mongod.log",
+                    "ipv6": true,
+                    "journal": true,
+                    "logappend": true,
+                    "port": 4000,
+                    "bind_ip_all": true
+                }
+            },
+            {
+                "procParams": {
+                    "dbpath": "/tmp/SHARDED/CFG/4001",
+                    "logpath": "/tmp/SHARDED/CFG/4001/mongod.log",
+                    "ipv6": true,
+                    "journal": true,
+                    "logappend": true,
+                    "port": 4001,
+                    "bind_ip_all": true
+                }
+            },
+            {
+                "procParams": {
+                    "dbpath": "/tmp/SHARDED/CFG/4002",
+                    "logpath": "/tmp/SHARDED/CFG/4002/mongod.log",
+                    "ipv6": true,
+                    "journal": true,
+                    "logappend": true,
+                    "port": 4002,
+                    "bind_ip_all": true
+                }
+            }
+        ]
+    } ],
+    "id": "cluster_1", 
+    "shards": [
+        {
+            "id": "sh01", 
+            "shardParams": {
+                "procParams": {
+                    "dbpath": "/tmp/SHARDED/SHARD1/4100",
+                    "logpath": "/tmp/SHARDED/SHARD1/4100/mongod.log",
+                    "ipv6": true,
+                    "journal": true,
+                    "logappend": true,
+                    "port": 4100,
+                    "bind_ip_all": true
+                }
+            }
+        }, 
+        {
+            "id": "sh02", 
+            "shardParams": {
+                "procParams": {
+                    "dbpath": "/tmp/SHARDED/SHARD2/4200",
+                    "logpath": "/tmp/SHARDED/SHARD2/4200/mongod.log",
+                    "ipv6": true,
+                    "journal": true,
+                    "logappend": true,
+                    "port": 4200,
+                    "bind_ip_all": true
+                }
+            }
+        }
+    ], 
+    "routers": [
+        {
+            "logpath": "/tmp/SHARDED/ROUTER/4300/mongod.log",
+            "ipv6": true,
+            "logappend": true,
+            "port": 4300,
+            "bind_ip_all": true
+        },
+        {
+            "logpath": "/tmp/SHARDED/ROUTER/4301/mongod.log",
+            "ipv6": true,
+            "logappend": true,
+            "port": 4301,
+            "bind_ip_all": true
+        }
+    ]
+}

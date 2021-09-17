@@ -1,0 +1,169 @@
+
+global:
+  # All subject names will have these elements automatically,
+  # unless `explicit_subject: true` is specified.
+  output_path: '../drivers-evergreen-tools/.evergreen/ocsp/ecdsa/' # See README.md if customizing this path
+  Subject:
+    C: 'US'
+    ST: 'New York'
+    L: 'New York City'
+    O: 'MongoDB'
+    OU: 'Kernel'
+
+certs:
+
+###
+# OCSP Tree
+###
+- name: 'ca.pem'
+  description: >-
+    Primary Root Certificate Authority
+    Most Certificates are issued by this CA.
+  Subject: {CN: 'Kernel Test CA'}
+  Issuer: self
+  include_header: false
+  output_path: '../drivers-evergreen-tools/.evergreen/ocsp/rsa'
+  extensions:
+    basicConstraints:
+      critical: true
+      CA: true
+
+- name: 'server.pem'
+  description: >-
+    Certificate with OCSP for the mongodb server.
+  Subject:
+    CN: 'localhost'
+    C: US
+    ST: NY
+    L: OCSP-1
+  Issuer: 'ca.pem'
+  include_header: false
+  output_path: '../drivers-evergreen-tools/.evergreen/ocsp/rsa'
+  extensions:
+    basicConstraints: {CA: false}
+    subjectAltName:
+      DNS: localhost
+      IP: 127.0.0.1
+    authorityInfoAccess: 'OCSP;URI:http://localhost:9001/power/level,OCSP;URI:http://localhost:8100/status'
+    subjectKeyIdentifier: hash
+    keyUsage: [digitalSignature, keyEncipherment]
+    extendedKeyUsage: [serverAuth, clientAuth]
+
+- name: 'server-mustStaple.pem'
+  description: >-
+    Certificate with Must Staple OCSP for the mongodb server.
+  Subject:
+    CN: 'localhost'
+    C: US
+    ST: NY
+    L: OCSP-1
+  Issuer: 'ca.pem'
+  include_header: false
+  output_path: '../drivers-evergreen-tools/.evergreen/ocsp/rsa'
+  extensions:
+    basicConstraints: {CA: false}
+    subjectAltName:
+      DNS: localhost
+      IP: 127.0.0.1
+    authorityInfoAccess: 'OCSP;URI:http://localhost:9001/power/level,OCSP;URI:http://localhost:8100/status'
+    mustStaple: true
+    subjectKeyIdentifier: hash
+    keyUsage: [digitalSignature, keyEncipherment]
+    extendedKeyUsage: [serverAuth, clientAuth]
+
+- name: 'server-singleEndpoint.pem'
+  description: >-
+    Certificate with a single OCSP endpoint for the mongodb server.
+  Subject:
+    CN: 'localhost'
+    C: US
+    ST: NY
+    L: OCSP-1
+  Issuer: 'ca.pem'
+  include_header: false
+  output_path: '../drivers-evergreen-tools/.evergreen/ocsp/rsa'
+  extensions:
+    basicConstraints: {CA: false}
+    subjectAltName:
+      DNS: localhost
+      IP: 127.0.0.1
+    authorityInfoAccess: 'OCSP;URI:http://localhost:8100/status'
+    subjectKeyIdentifier: hash
+    keyUsage: [digitalSignature, keyEncipherment]
+    extendedKeyUsage: [serverAuth, clientAuth]
+
+- name: 'server-mustStaple-singleEndpoint.pem'
+  description: >-
+    Certificate with Must Staple OCSP and one OCSP endpoint for the mongodb server.
+  Subject:
+    CN: 'localhost'
+    C: US
+    ST: NY
+    L: OCSP-1
+  Issuer: 'ca.pem'
+  include_header: false
+  output_path: '../drivers-evergreen-tools/.evergreen/ocsp/rsa'
+  extensions:
+    basicConstraints: {CA: false}
+    subjectAltName:
+      DNS: localhost
+      IP: 127.0.0.1
+    authorityInfoAccess: 'OCSP;URI:http://localhost:8100/status'
+    mustStaple: true
+    subjectKeyIdentifier: hash
+    keyUsage: [digitalSignature, keyEncipherment]
+    extendedKeyUsage: [serverAuth, clientAuth]
+
+- name: 'ocsp-responder.crt'
+  description: Certificate and key for the OCSP responder
+  Subject:
+    CN: 'localhost'
+    C: US
+    ST: NY
+    L: OCSP-3
+  Issuer: 'ca.pem'
+  include_header: false
+  keyfile: 'ocsp-responder.key'
+  output_path: '../drivers-evergreen-tools/.evergreen/ocsp/rsa'
+  extensions:
+    basicConstraints: {CA: false}
+    keyUsage: [nonRepudiation, digitalSignature, keyEncipherment]
+    extendedKeyUsage: [OCSPSigning]
+    #noCheck: true
+
+###
+# ECDSA tree
+###
+
+# These are all special cases handled internally by mkcert.py
+# Do NOT change the names
+
+- name: 'ecdsa-ca-ocsp.pem'
+  description: Root of ECDSA tree for OCSP testing
+  Issuer: self
+  tags: [ecdsa]
+
+- name: 'ecdsa-server-ocsp.pem'
+  description: ECDSA server certificate w/OCSP
+  Issuer: 'ecdsa-ca-ocsp.pem'
+  tags: [ecdsa, ocsp]
+
+- name: 'ecdsa-server-ocsp-mustStaple.pem'
+  description: ECDSA server certificate w/OCSP + must-staple
+  Issuer: 'ecdsa-ca-ocsp.pem'
+  tags: [ecdsa, ocsp, must-staple]
+
+- name: 'ecdsa-ocsp-responder.crt'
+  description: ECDSA certificate and key for OCSP responder
+  Issuer: 'ecdsa-ca-ocsp.pem'
+  tags: [ecdsa, ocsp, responder ]
+
+- name: 'ecdsa-server-ocsp-singleEndpoint.pem'
+  description: ECDSA server certificate w/OCSP + one OCSP endpoint
+  Issuer: 'ecdsa-ca-ocsp.pem'
+  tags: [ecdsa, ocsp, single-ocsp-endpoint]
+
+- name: 'ecdsa-server-ocsp-mustStaple-singleEndpoint.pem'
+  description: ECDSA server certificate w/OCSP + must-staple + one OCSP endpoint
+  Issuer: 'ecdsa-ca-ocsp.pem'
+  tags: [ecdsa, ocsp, must-staple, single-ocsp-endpoint]

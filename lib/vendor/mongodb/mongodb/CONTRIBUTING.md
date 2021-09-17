@@ -20,13 +20,14 @@ Installation directions for Composer may be found in its
 
 ## Testing
 
-The library's test suite uses [PHPUnit](https://phpunit.de/), which should be
-installed as a development dependency by Composer.
+The library's test suite uses [PHPUnit](https://phpunit.de/), which is installed
+through the [PHPUnit Bridge](https://symfony.com/phpunit-bridge) dependency by
+Composer.
 
 The test suite may be executed with:
 
 ```
-$ vendor/bin/phpunit
+$ vendor/bin/simple-phpunit
 ```
 
 The `phpunit.xml.dist` file is used as the default configuration file for the
@@ -34,6 +35,39 @@ test suite. In addition to various PHPUnit options, it defines required
 `MONGODB_URI` and `MONGODB_DATABASE` environment variables. You may customize
 this configuration by creating your own `phpunit.xml` file based on the
 `phpunit.xml.dist` file we provide.
+
+By default, the `simple-phpunit` binary chooses the correct PHPUnit version for
+the PHP version you are running. To run tests against a specific PHPUnit version,
+use the `SYMFONY_PHPUNIT_VERSION` environment variable:
+
+```
+$ SYMFONY_PHPUNIT_VERSION=7.5 vendor/bin/simple-phpunit
+```
+
+## Checking coding standards
+
+The library's code is checked using [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer),
+which is installed as a development dependency by Composer. Due to the PHP
+requirement, the base version of the coding standard is not installed and needs
+to be added manually if you plan to contributing code:
+
+```
+$ composer require --dev doctrine/coding-standard=^6.0
+```
+
+Once the coding standard has been installed, you can check the code for style
+errors:
+
+
+```
+$ vendor/bin/phpcs
+```
+
+To automatically fix all fixable errors, use the `phpcbf` binary:
+
+```
+$ vendor/bin/phpcbf
+```
 
 ## Documentation
 
@@ -164,8 +198,13 @@ Thanks for our community contributors for this release:
  * [$CONTRIBUTOR_NAME](https://github.com/$GITHUB_USERNAME)
 ```
 
-Release announcements should also be sent to the `mongodb-user@googlegroups.com`
-and `mongodb-announce@googlegroups.com` mailing lists.
+Release announcements should also be sent to the [MongoDB Product & Driver Announcements](https://community.mongodb.com/tags/c/community/release-notes/35/php-driver).
 
 Consider announcing each release on Twitter. Significant releases should also be
 announced via [@MongoDB](http://twitter.com/mongodb) as well.
+
+### Update compatibility tables in MongoDB docs
+
+The [compatibility tables](https://docs.mongodb.com/drivers/driver-compatibility-reference#php-driver-compatibility) in
+the MongoDB documentation must be updated to account for new releases. Make sure to update both MongoDB and Language
+compatibility tables, as shown in [this pull request](https://github.com/mongodb/docs-ecosystem/pull/642).

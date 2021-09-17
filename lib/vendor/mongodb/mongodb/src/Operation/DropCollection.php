@@ -18,12 +18,15 @@
 namespace MongoDB\Operation;
 
 use MongoDB\Driver\Command;
+use MongoDB\Driver\Exception\CommandException;
 use MongoDB\Driver\Server;
 use MongoDB\Driver\Session;
 use MongoDB\Driver\WriteConcern;
-use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnsupportedException;
+use function current;
+use function is_array;
+use function MongoDB\server_supports_feature;
 
 /**
  * Operation for the drop command.
@@ -35,11 +38,22 @@ use MongoDB\Exception\UnsupportedException;
  */
 class DropCollection implements Executable
 {
+    /** @var integer */
+    private static $errorCodeNamespaceNotFound = 26;
+
+    /** @var string */
     private static $errorMessageNamespaceNotFound = 'ns not found';
+
+    /** @var integer */
     private static $wireVersionForWriteConcern = 5;
 
+    /** @var string */
     private $databaseName;
+
+    /** @var string */
     private $collectionName;
+
+    /** @var array */
     private $options;
 
     /**
@@ -67,7 +81,7 @@ class DropCollection implements Executable
     public function __construct($databaseName, $collectionName, array $options = [])
     {
         if (isset($options['session']) && ! $options['session'] instanceof Session) {
-            throw InvalidArgumentException::invalidType('"session" option', $options['session'], 'MongoDB\Driver\Session');
+            throw InvalidArgumentException::invalidType('"session" option', $options['session'], Session::class);
         }
 
         if (isset($options['typeMap']) && ! is_array($options['typeMap'])) {
@@ -75,7 +89,7 @@ class DropCollection implements Executable
         }
 
         if (isset($options['writeConcern']) && ! $options['writeConcern'] instanceof WriteConcern) {
-            throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], 'MongoDB\Driver\WriteConcern');
+            throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], WriteConcern::class);
         }
 
         if (isset($options['writeConcern']) && $options['writeConcern']->isDefault()) {
@@ -98,21 +112,26 @@ class DropCollection implements Executable
      */
     public function execute(Server $server)
     {
-        if (isset($this->options['writeConcern']) && ! \MongoDB\server_supports_feature($server, self::$wireVersionForWriteConcern)) {
+        if (isset($this->options['writeConcern']) && ! server_supports_feature($server, self::$wireVersionForWriteConcern)) {
             throw UnsupportedException::writeConcernNotSupported();
+        }
+
+        $inTransaction = isset($this->options['session']) && $this->options['session']->isInTransaction();
+        if ($inTransaction && isset($this->options['writeConcern'])) {
+            throw UnsupportedException::writeConcernNotSupportedInTransaction();
         }
 
         $command = new Command(['drop' => $this->collectionName]);
 
         try {
             $cursor = $server->executeWriteCommand($this->databaseName, $command, $this->createOptions());
-        } catch (DriverRuntimeException $e) {
+        } catch (CommandException $e) {
             /* The server may return an error if the collection does not exist.
-             * Check for an error message (unfortunately, there isn't a code)
-             * and NOP instead of throwing.
-             */
-            if ($e->getMessage() === self::$errorMessageNamespaceNotFound) {
-                return (object) ['ok' => 0, 'errmsg' => self::$errorMessageNamespaceNotFound];
+             * Check for an error code (or message for pre-3.2 servers) and
+             * return the command reply instead of throwing. */
+            if ($e->getCode() === self::$errorCodeNamespaceNotFound ||
+                $e->getMessage() === self::$errorMessageNamespaceNotFound) {
+                return $e->getResultDocument();
             }
 
             throw $e;

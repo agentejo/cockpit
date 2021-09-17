@@ -1,11 +1,19 @@
 language: php
-dist: trusty
-sudo: false
+dist: xenial
+php: "7.4"
 
 addons:
   apt:
     packages:
       - gdb
+      - libcurl3
+      - libgssapi-krb5-2
+      - libkrb5-dbg
+      - libldap-2.4-2
+      - libpcap0.8
+      - libsasl2-2
+      - snmp
+      - openssl
 
 cache:
   directories:
@@ -15,67 +23,65 @@ cache:
 
 env:
   global:
-    - DRIVER_VERSION=1.5.0
-    - SERVER_VERSION=4.0.0
+    - DRIVER_VERSION=stable
+    - SERVER_DISTRO=enterprise-ubuntu1604
+    - SERVER_VERSION=4.4.0
+    - DEPLOYMENT=STANDALONE
+    - COMPOSER_OPTIONS=
 
-matrix:
-  fast_finish: true
+jobs:
   include:
-    - php: 5.5
-    - php: 5.6
-    - php: 7.0
-    - php: 7.1
-    - php: 7.2
-    - php: 7.0
+
+    - stage: Smoke Testing
       env:
-        - SERVER_VERSION=3.0.15
-    - php: 7.0
+        - CHECKS=phpunit
+    - stage: Smoke Testing
+      php: "7.1"
+      before_install: []
+      before_script:
+        - .travis/install-extension.sh
+        - composer require --no-update doctrine/coding-standard=^6.0
+        - composer install --no-interaction --no-progress --no-suggest ${COMPOSER_OPTIONS}
+      script: vendor/bin/phpcs
+      after_script: []
+      after_failure: []
       env:
-        - SERVER_VERSION=3.2.20
-    - php: 7.0
+        - CHECKS=phpcs
+
+    # Test against PHP 8
+    - stage: Test
+      php: "8.0snapshot"
+    - stage: Test
+      php: "8.0snapshot"
       env:
-        - SERVER_VERSION=3.4.15
-    - php: 7.0
+        - DEPLOYMENT=REPLICASET
+    - stage: Test
+      php: "8.0snapshot"
       env:
-        - SERVER_VERSION=3.6.5
+        - DEPLOYMENT=SHARDED_CLUSTER_RS
 
 before_install:
   - pip install "mongo-orchestration>=0.6.7,<1.0" --user `whoami`
-  - wget http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-${SERVER_VERSION}.tgz
-  - tar zxf mongodb-linux-x86_64-${SERVER_VERSION}.tgz
-  - export PATH=${PWD}/mongodb-linux-x86_64-${SERVER_VERSION}/bin/:${PATH}
+  - export SERVER_FILENAME=mongodb-linux-x86_64-${SERVER_DISTRO}-${SERVER_VERSION}
+  - wget -qO- https://downloads.mongodb.com/linux/${SERVER_FILENAME}.tgz | tar xz
+  - export PATH=${PWD}/${SERVER_FILENAME}/bin:${PATH}
   - mongod --version
   - mongo-orchestration --version
   - export MO_PATH=`python -c 'import mongo_orchestration; from os import path; print(path.dirname(mongo_orchestration.__file__));'`
-  - |
-    INI=~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-    # tpecl is a helper to compile and cache php extensions
-      tpecl () {
-          local ext_name=$1
-          local ext_so=$2
-          local ext_dir=$(php -r "echo ini_get('extension_dir');")
-          local ext_cache=~/php-ext/$(basename $ext_dir)/$ext_name
-          if [[ -e $ext_cache/$ext_so ]]; then
-              echo extension = $ext_cache/$ext_so >> $INI
-          else
-              mkdir -p $ext_cache
-              echo yes | pecl install -f $ext_name &&
-              cp $ext_dir/$ext_so $ext_cache
-          fi
-      }
-      export -f tpecl
 
 before_script:
   - mongo-orchestration start
-  - pushd ${MO_PATH} && ${TRAVIS_BUILD_DIR}/.travis/mo.sh configurations/servers/clean.json start && popd
-  - tpecl mongodb-${DRIVER_VERSION} mongodb.so
+  - .travis/setup_mo.sh
+  - .travis/install-extension.sh
   - php --ri mongodb
-  - composer install --no-interaction --no-progress --no-suggest
+  - composer update --no-interaction --no-progress --no-suggest --prefer-dist --prefer-stable ${COMPOSER_OPTIONS}
   - ulimit -c
   - ulimit -c unlimited -S
 
 script:
-  - vendor/bin/phpunit -v
+  - export MONGODB_URI=`cat /tmp/uri.txt`
+  - echo $MONGODB_URI
+  - vendor/bin/simple-phpunit -v
 
 before_cache:
   - rm -f ${HOME}/.cache/pip/log/debug.log
