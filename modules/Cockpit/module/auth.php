@@ -47,6 +47,8 @@ $this->module('cockpit')->extend([
     'setUser' => function($user, $permanent = true) use($app) {
 
         if ($permanent) {
+            // prevent session fixation attacks
+            session_regenerate_id(true);
             $app('session')->write('cockpit.app.auth', $user);
         }
 
@@ -73,6 +75,9 @@ $this->module('cockpit')->extend([
     'logout' => function() use($app) {
         $app->trigger('cockpit.account.logout', [$this->getUser()]);
         $app('session')->delete('cockpit.app.auth');
+
+        // prevent session fixation attacks
+        session_regenerate_id(true);
     },
 
     'hasaccess' => function($resource, $action, $group = null) use($app) {
