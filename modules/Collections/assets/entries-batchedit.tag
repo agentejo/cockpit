@@ -130,8 +130,7 @@
             var required = [], field;
 
             Object.keys(this.checked).forEach(function(name){
-
-                field = $this.fields[name];
+                field = _.find($this._fields, {name: name});
 
                 if (field.required && !$this._entry[field.name]) {
 
