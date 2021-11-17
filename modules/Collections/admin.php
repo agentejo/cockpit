@@ -89,6 +89,8 @@ $app->on('admin.init', function() {
             'collections.remove.before.{$name}',
             'collections.removecollection',
             'collections.removecollection.{$name}',
+            'collections.reorder',
+            'collections.reorder.{$name}',
             'collections.save.after',
             'collections.save.after.{$name}',
             'collections.save.before',
