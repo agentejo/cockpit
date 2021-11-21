@@ -13,7 +13,8 @@
 
     </style>
 
-    <div class="uk-grid uk-grid-small uk-flex-middle" data-uk-grid-margin="observe:true">
+    <div if="{loading}"><i class="uk-icon-spinner uk-icon-spin"></i></div>
+    <div show="{!loading}" class="uk-grid uk-grid-small uk-flex-middle" data-uk-grid-margin="observe:true">
 
         <div class="uk-text-primary" each="{ _tag,idx in _tags }">
             <span class="field-tag"><i class="uk-icon-tag"></i> { _tag } <a onclick="{ parent.remove }"><i class="uk-icon-close"></i></a></span>
@@ -34,31 +35,93 @@
 
         this._tags = [];
         this.allowInput = true;
+        this.autocompleteOptions = [];
+        this.loading = 0;
 
         this.on('mount', function(){
-            this.update()
-        });
-
-        this.on('update', function(){
-
-            if ($this.opts.limit) {
-                $this.allowInput = $this._tags.length < $this.opts.limit;
+            var _source = [];
+            if (Array.isArray(opts.autocomplete) && opts.autocomplete.length && !opts.autocomplete[0].value) {
+                opts.autocomplete.forEach(function(value) {
+                    $this.autocompleteOptions.push({value: value});
+                });
+            } else if(opts.autocomplete) {
+                _source = opts.autocomplete;
             }
 
-            if (opts.autocomplete) {
+            $this.autocomplete = UIkit.autocomplete(this.refs.autocomplete, {
+                source: _source,
+                delay: typeof opts.delay === "number" ? opts.delay : undefined,
+                minLength: typeof opts.minLength === "number" ? opts.minLength : 1
+            });
 
-                var _source = opts.autocomplete;
+            var sources = [];
+            if (Array.isArray(opts.src)) {
+                sources = opts.src;
+            } else if (opts.src && opts.src.url && opts.src.value) {
+                sources.push(opts.src);
+            }
 
-                if (Array.isArray(opts.autocomplete) && opts.autocomplete.length && !opts.autocomplete[0].value) {
+            sources.forEach(function (src) {
+                if (src && src.url && src.value) {
 
-                    _source = [];
+                    $this.loading++;
 
-                    opts.autocomplete.forEach(function(val) {
-                        _source.push({value:val})
+                    var url = src.url;
+                    var fieldVal = src.value;
+
+                    if (url.match('^collection=')) {
+                        url = '/collections/find?' + url;
+                    }
+
+                    App.request(url).then(function (data) {
+
+                        $this.loading--;
+
+                        if (url.match('^\/collections\/find\?')) {
+                            data = data.entries;
+                        }
+
+                        if (!Array.isArray(data)) {
+                            $this.update();
+                            return;
+                        }
+
+                        data.forEach(function (item) {
+                            var value = _.get(item, fieldVal);
+                            if (Array.isArray(value)) {
+                                value.forEach(function (val) {
+                                    $this.autocompleteOptions.push({value: val});
+                                });
+                            } else if (typeof value == "string") {
+                                $this.autocompleteOptions.push({value: value});
+                            }
+                        });
+
+                        $this.update();
                     })
                 }
 
-                UIkit.autocomplete(this.refs.autocomplete, {source: _source, minLength: opts.minLength || 1});
+            });
+
+            if (opts.minLength === 0) {
+                this.refs.input.onfocus = function(e) {
+                    $this.autocomplete.handle();
+                    $this.autocomplete.show();
+                };
+            }
+
+            this.update();
+        });
+
+        this.on('update', function(){
+            if ($this.autocomplete && $this.autocompleteOptions.length > 0) {
+                $this.autocomplete.options.source = _.sortBy($this.autocompleteOptions, ["value"]);
+                $this.autocomplete.options.source = _.uniqBy($this.autocomplete.options.source, function (e) {return e.value});
+                $this.autocomplete.options.source = _.filter($this.autocomplete.options.source, function (e) { return $this._tags.indexOf(e.value) === -1;  });
+            }
+
+            if ($this.opts.limit) {
+                $this.allowInput = $this._tags.length < $this.opts.limit;
             }
 
             App.$(this.root).on({
