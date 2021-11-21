@@ -614,21 +614,25 @@
             this.load();
         }
 
-        duplicateEntry(e, collection, entry, idx) {
+        duplicateEntry(e) {
+            var collection = this.collection.name;
+            var id = e.item.entry._id;
+            var options = { "filter": { "_id": id } };
 
-            collection = this.collection.name;
-            entry      = App.$.extend({}, e.item.entry);
-            idx        = e.item.idx;
-
-            delete entry._id;
-
-            App.request('/collections/save_entry/'+this.collection.name, {"entry": entry}).then(function(entry) {
-
-                if (entry) {
-
-                    $this.entries.unshift(entry);
-                    App.ui.notify("Entry duplicated", "success");
-                    $this.update();
+            App.request('/collections/find', {"collection":collection, "options":options}).then(function(data){
+                if (data.count === 1) {
+                    var entry = data.entries[0];
+                    delete entry._id;
+                    App.request('/collections/save_entry/'+collection, {"entry": entry}).then(function(entry) {
+                        if (entry) {
+                            App.ui.notify("Entry duplicated", "success");
+                            $this.load(false);
+                        } else {
+                            App.ui.notify("Could not duplicate entry", "danger");
+                        }
+                    });
+                } else {
+                    App.ui.notify("Could not duplicate entry", "danger");
                 }
             });
         }
