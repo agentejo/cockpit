@@ -669,7 +669,11 @@
         }
 
         batchedit() {
-            this.tags['entries-batchedit'].open(this.entries, this.selected)
+            if (!this.lang) {
+                this.tags['entries-batchedit'].open(this.entries, this.selected);
+            } else {
+                App.ui.notify("Cannot batch edit while in non-default language", "danger");
+            }
         }
 
         changelanguage(e) {
