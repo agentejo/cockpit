@@ -331,6 +331,13 @@
         return '<span class="uk-badge">' + (cnt + (cnt == 1 ? ' Item' : ' Items')) + '</span>';
     };
 
+    App.Utils.renderer.select = function (v, field) {
+        if (field.options && field.options.options && field.options.options[v]) {
+            return '<span title="Value: ' + v + '" data-uk-tooltip>' + field.options.options[v] + '</span>';
+        }
+        return v;
+    };
+
     App.Utils.renderer.tags = App.Utils.renderer.multipleselect = function (v) {
 
         if (Array.isArray(v) && v.length > 1) {
