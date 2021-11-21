@@ -96,14 +96,12 @@
         }
 
         selectAsset() {
-
-            App.assets.select(function(assets){
-
+            App.assets.select(function (assets) {
                 if (Array.isArray(assets) && assets[0]) {
                     $this.refs.input.$setValue(ASSETS_URL.replace(SITE_URL+'/', '')+assets[0].path);
                     $this.update();
                 }
-            });
+            }, { typefilter: opts.typefilter, single: true });
         }
 
         shouldShowOpen() {

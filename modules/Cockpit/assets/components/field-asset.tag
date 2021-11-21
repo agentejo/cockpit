@@ -2,16 +2,13 @@
 
     <div ref="uploadprogress" class="uk-margin uk-hidden">
         <div class="uk-progress">
-            <div ref="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div>
+            <div ref="progressbar" class="uk-progress-bar" style="width: 0;">&nbsp;</div>
         </div>
     </div>
 
-    <div class="uk-placeholder uk-text-center uk-text-muted" if="{!asset}">
-
-        <img class="uk-svg-adjust" riot-src="{ App.base('/assets/app/media/icons/assets.svg') }" width="100" data-uk-svg>
-
+    <div class="uk-placeholder uk-text-center uk-text-muted" if="{ !asset }">
+        <img class="uk-svg-adjust" riot-src="{ App.base('/assets/app/media/icons/assets.svg') }" width="100" data-uk-svg />
         <p>{ App.i18n.get('No asset selected') }. <a onclick="{ selectAsset }">{ App.i18n.get('Select one') }</a></p>
-
     </div>
 
     <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-card" if="{asset}">
@@ -20,11 +17,10 @@
             <canvas class="uk-responsive-width" width="200" height="150"></canvas>
             <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle">
                 <div class="uk-width-1-1 uk-text-center">
-
                     <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-h1 uk-text-muted uk-icon-{ getIconCls(asset.path) }"></i></span>
 
                     <a href="{ASSETS_URL+asset.path}" if="{ asset.mime.match(/^image\//) }" data-uk-lightbox="type:'image'" title="{ asset.width && [asset.width, asset.height].join('x') }">
-                        <cp-thumbnail src="{asset && ASSETS_URL+asset.path}" height="160"></cp-thumbnail>
+                        <cp-thumbnail src="{ asset && ASSETS_URL + asset.path }" height="160"></cp-thumbnail>
                     </a>
                 </div>
             </div>
@@ -32,7 +28,7 @@
         
         <div class="uk-panel-body">
             <div class="uk-margin-small-top uk-text-truncate">
-              <a href="{ASSETS_URL+asset.path}" target="_blank">{ asset.title }</a>
+              <a href="{ ASSETS_URL + asset.path }" target="_blank">{ asset.title }</a>
             </div>
             <div class="uk-text-small uk-text-muted">
                 <strong>{ asset.mime }</strong>
@@ -66,7 +62,7 @@
 
         this.$updateValue = function(value, field, force) {
 
-            if (force || (JSON.stringify(this.asset) != JSON.stringify(value))) {
+            if (force || (JSON.stringify(this.asset) !== JSON.stringify(value))) {
                 
                 if (value && !value._id) {
                     value = false;
@@ -79,7 +75,6 @@
         }.bind(this);
 
         this.on('mount', function() {
-
             // handle uploads
             App.assets.require(['/assets/lib/uikit/js/components/upload.js'], function() {
 
@@ -119,17 +114,14 @@
                     }
                 });
             });
-        })
+        });
 
         selectAsset() {
-
-            Cockpit.assets.select(function(assets){
-
+            Cockpit.assets.select(function (assets) {
                 if (Array.isArray(assets)) {
                     $this.$setValue(assets[0]);
                 }
-
-            }, {typefilter: opts.typefilter});
+            }, { typefilter: opts.typefilter, single: true });
         }
 
         reset() {
@@ -138,7 +130,6 @@
         }
         
         edit() {
-          
             var dialog = UIkit.modal.dialog([
                 '<div>',
                     '<div class="uk-modal-header uk-text-large"><h3>'+App.i18n.get('Edit asset')+'</h3></div>',
@@ -165,7 +156,6 @@
         }
 
         getIconCls(path) {
-
             var name = path.toLowerCase();
 
             if (name.match(typefilters.image)) {
@@ -196,8 +186,5 @@
                 return 'paperclip';
             }
         }
-
-
     </script>
-
 </field-asset>

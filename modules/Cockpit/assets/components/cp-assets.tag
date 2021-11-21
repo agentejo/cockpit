@@ -4,26 +4,26 @@
         .uk-breadcrumb { margin-bottom: 0; }
     </style>
 
-    <div ref="list" show="{ mode=='list' }">
+    <div ref="list" show="{ mode === 'list' }">
 
         <div ref="uploadprogress" class="uk-margin uk-hidden">
             <div class="uk-progress">
-                <div ref="progressbar" class="uk-progress-bar" style="width: 0%;">&nbsp;</div>
+                <div ref="progressbar" class="uk-progress-bar" style="width: 0;">&nbsp;</div>
             </div>
         </div>
 
-        <div class="uk-form" if="{ mode=='list' }">
+        <div class="uk-form" if="{ mode === 'list' }">
 
             <div class="uk-grid">
                 <div>
                     <div class="uk-grid uk-grid-small uk-flex-middle">
                         <div>
                             <span class="uk-button-group uk-margin-right">
-                                <button class="uk-button uk-button-large {listmode=='list' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }" aria-label="{ App.i18n.get('Switch to list-mode') }"><i class="uk-icon-list"></i></button>
-                                <button class="uk-button uk-button-large {listmode=='grid' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }" aria-label="{ App.i18n.get('Switch to tile-mode') }"><i class="uk-icon-th"></i></button>
+                                <button class="uk-button uk-button-large {listmode === 'list' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }" aria-label="{ App.i18n.get('Switch to list-mode') }"><i class="uk-icon-list"></i></button>
+                                <button class="uk-button uk-button-large {listmode === 'grid' && 'uk-button-primary'}" type="button" onclick="{ toggleListMode }" aria-label="{ App.i18n.get('Switch to tile-mode') }"><i class="uk-icon-th"></i></button>
                             </span>
                         </div>
-                        <div show="{!opts.typefilter}">
+                        <div show="{ !opts.typefilter }">
                             <div class="uk-form-select">
 
                                 <span class="uk-button uk-button-large { getRefValue('filtertype') && 'uk-button-primary'} uk-text-capitalize"><i class="uk-icon-eye uk-margin-small-right"></i> { getRefValue('filtertype') || App.i18n.get('All') }</span>
@@ -52,7 +52,7 @@
                 <div class="uk-flex uk-flex-middle">
 
                     <button class="uk-button uk-button-large uk-button-danger" type="button" onclick="{ removeSelected }" show="{ selected.length }">
-                        { App.i18n.get('Delete') } <span class="uk-badge uk-badge-contrast uk-margin-small-left">{ selected.length }</span>
+                        { App.i18n.get('Delete') }<span class="uk-badge uk-badge-contrast uk-margin-small-left" if="{ !this.single }"> { selected.length }</span>
                     </button>
 
                     <button class="uk-button uk-button-large uk-button-link" onclick="{addFolder}">{ App.i18n.get('Add folder') }</button>
@@ -71,11 +71,11 @@
                                 <li>
                                     <a class="uk-form-file">
                                         <i class="uk-icon-file-o uk-icon-justify"></i> { App.i18n.get('File') }
-                                        <input class="js-upload-select" aria-label="{ App.i18n.get('Select file') }" type="file" multiple="true">
+                                        <input class="js-upload-select" aria-label="{ App.i18n.get('Select file') }" type="file" multiple>
                                     </a>
                                     <a class="uk-form-file">
                                         <i class="uk-icon-folder-o uk-icon-justify"></i> { App.i18n.get('Folder') }
-                                        <input class="js-upload-folder" type="file" title="" multiple multiple directory webkitdirectory allowdirs>
+                                        <input class="js-upload-folder" type="file" title="" multiple directory webkitdirectory allowdirs>
                                     </a>
                                 </li>
                             </ul>
@@ -136,9 +136,9 @@
 
                     <strong class="uk-text-small uk-text-muted"><i class="uk-icon-file-o uk-margin-small-right"></i> {count} {App.i18n.get('Assets')}</strong>
 
-                    <div class="uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-5" if="{ listmode=='grid' }">
-                        <div class="uk-grid-margin" each="{ asset,idx in assets }" onclick="{ select }">
-                            <div class="uk-panel uk-panel-box uk-panel-card uk-padding-remove { selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}">
+                    <div class="uk-grid uk-grid-match uk-grid-small uk-grid-width-medium-1-5" if="{ listmode === 'grid' }">
+                        <div class="uk-grid-margin" each="{ asset, idx in assets }" onclick="{ select }">
+                            <div class="uk-panel uk-panel-box uk-panel-card uk-padding-remove { selected.length && selected.indexOf(asset) !== -1 ? 'uk-selected':''}">
                                 <div class="uk-overlay uk-display-block uk-position-relative { asset.mime.match(/^image\//) && 'uk-bg-transparent-pattern' }">
                                     <canvas class="uk-responsive-width" width="200" height="150"></canvas>
                                     <div class="uk-position-absolute uk-position-cover uk-flex uk-flex-middle">
@@ -164,7 +164,7 @@
                         </div>
                     </div>
 
-                    <table class="uk-table uk-table-tabbed" if="{ listmode=='list' }">
+                    <table class="uk-table uk-table-tabbed" if="{ listmode === 'list' }">
                         <thead>
                             <tr>
                                 <td width="30"></td>
@@ -176,7 +176,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="{ selected.length && selected.indexOf(asset) != -1 ? 'uk-selected':''}" each="{ asset,idx in assets }" onclick="{ select }">
+                            <tr class="{ selected.length && selected.indexOf(asset) !== -1 ? 'uk-selected':''}" each="{ asset,idx in assets }" onclick="{ select }">
                                 <td class="uk-text-center">
 
                                     <span if="{ asset.mime.match(/^image\//) == null }"><i class="uk-text-muted uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
@@ -245,7 +245,7 @@
         </div>
     </div>
 
-    <div class="uk-form" if="{asset && mode=='edit'}">
+    <div class="uk-form" if="{asset && mode === 'edit'}">
 
         <h3 class="uk-text-bold">{ App.i18n.get('Edit Asset') }</h3>
 
@@ -277,6 +277,7 @@
             'document' : /\.(txt|pdf|md)$/i,
             'code'     : /\.(htm|html|php|css|less|js|json|yaml|xml|htaccess)$/i
         };
+        this.single = opts.single === "true";
 
         this.mode     = 'list';
         this.listmode = App.session.get('app.assets.listmode', 'list');
@@ -411,7 +412,7 @@
         });
 
         toggleListMode() {
-            this.listmode = this.listmode=='list' ? 'grid':'list';
+            this.listmode = this.listmode === 'list' ? 'grid':'list';
             App.session.set('app.assets.listmode', this.listmode);
         }
 
@@ -556,8 +557,12 @@
 
             var idx = this.selected.indexOf(e.item.asset);
 
-            if (idx == -1) {
-                this.selected.push(e.item.asset);
+            if (idx === -1) {
+                if (this.single) {
+                    this.selected = [e.item.asset];
+                } else {
+                    this.selected.push(e.item.asset);
+                }
             } else {
                 this.selected.splice(idx, 1);
             }
@@ -653,7 +658,7 @@
 
             var folder = e.item ? e.item.folder : {_id:''};
 
-            if (this.folder == folder._id) {
+            if (this.folder === folder._id) {
                 return;
             }
 
@@ -664,7 +669,7 @@
                 var skip = false;
 
                 this.foldersPath = this.foldersPath.filter(function(f) {
-                    if (f._id == folder._id) skip = true;
+                    if (f._id === folder._id) skip = true;
                     return !skip;
                 });
 
@@ -709,17 +714,17 @@
   <div class="uk-form" if="{asset}">
 
       <ul class="uk-tab uk-flex-center uk-margin" show="{ App.Utils.count(panels) }">
-          <li class="{!panel && 'uk-active'}"><a onclick="{selectPanel}">Main</a></li>
-          <li class="uk-text-capitalize {p.name == panel && 'uk-active'}" each="{p in panels}"><a onclick="{parent.selectPanel}">{p.name}</a></li>
+          <li class="{!panel && 'uk-active'}"><a onclick="{ selectPanel }">Main</a></li>
+          <li class="uk-text-capitalize {p.name === panel && 'uk-active'}" each="{p in panels}"><a onclick="{parent.selectPanel}">{p.name}</a></li>
       </ul>
 
-      <div class="uk-grid" show="{!panel}">
+      <div class="uk-grid" show="{ !panel }">
           <div class="uk-width-2-3">
 
               <div class="uk-panel uk-panel-box uk-panel-card uk-panel-space">
                   <div class="uk-form-row">
                       <label class="uk-text-small uk-text-bold">{ App.i18n.get('Title') }</label>
-                      <input class="uk-width-1-1" type="text" bind="asset.title" required>
+                      <input class="uk-width-1-1" type="text" bind="asset.title" required />
                   </div>
 
                   <div class="uk-form-row">
@@ -730,7 +735,7 @@
                   <div class="uk-margin-large-top uk-text-center" if="{asset}">
                       <span class="uk-h1" if="{asset.mime.match(/^image\//) == null }"><i class="uk-icon-{ parent.getIconCls(asset.path) }"></i></span>
                       <div class="uk-display-inline-block uk-position-relative asset-fp-image" if="{asset.mime.match(/^image\//) }">
-                          <cp-thumbnail src="{ASSETS_URL+asset.path}" width="800"></cp-thumbnail>
+                          <cp-thumbnail src="{ ASSETS_URL + asset.path }" width="800"></cp-thumbnail>
                           <div class="cp-assets-fp" title="Focal Point" data-uk-tooltip></div>
                       </div>
                       <div class="uk-margin-top uk-text-truncate uk-text-small uk-text-muted">
@@ -810,7 +815,7 @@
 
     for (var tag in riot.tags) {
 
-        if (tag.indexOf('assetspanel-')==0) {
+        if (tag.indexOf('assetspanel-') === 0) {
 
             var f = tag.replace('assetspanel-', '');
 

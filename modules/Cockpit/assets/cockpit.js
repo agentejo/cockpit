@@ -80,7 +80,7 @@
 
                         Object.keys(s.paths).forEach(function (path) {
 
-                            if (options.pattern == '*' || App.Utils.fnmatch(options.pattern, path)) {
+                            if (options.pattern === '*' || App.Utils.fnmatch(options.pattern, path)) {
 
                                 selected.push(s.paths[path].rel_site_path);
                             }
@@ -96,20 +96,21 @@
         },
 
         assets: {
-
             select: function (callback, options) {
 
                 options = App.$.extend({
                     selected: [],
-                    typefilter: ''
+                    typefilter: '',
+                    single: false
                 }, options);
 
-                var selected = [], dialog = UIkit.modal.dialog([
+                var selected = [];
+                var dialog = UIkit.modal.dialog([
                     '<div>',
                     '<div class="uk-modal-header uk-text-large">' + App.i18n.get('Select asset') + '</div>',
-                    '<cp-assets typefilter="' + (options.typefilter || '') + '" modal="true"></cp-assets>',
+                    '<cp-assets path="' + (options.path || '') + '" typefilter="' + (options.typefilter || '') + '" single="' + options.single + '" modal="true"></cp-assets>',
                     '<div class="uk-modal-footer uk-text-right">',
-                    '<button class="uk-button uk-button-primary uk-margin-right uk-button-large uk-hidden js-select-button">' + App.i18n.get('Select') + ': <span></span> item(s)</button>',
+                    '<button class="uk-button uk-button-primary uk-margin-right uk-button-large uk-hidden js-select-button">' + App.i18n.get('Select') + '<span class="selectcount">: <span></span> item(s)</span></button>',
                     '<a class="uk-button uk-button-large uk-button-link uk-modal-close">' + App.i18n.get('Close') + '</a>',
                     '</div>',
                     '</div>'
@@ -117,8 +118,11 @@
 
                 dialog.dialog.addClass('uk-modal-dialog-large');
 
-                var selectbtn = dialog.dialog.find('.js-select-button'),
-                    selectcount = selectbtn.find('span');
+                var selectbtn = dialog.dialog.find('.js-select-button');
+                var selectcount = selectbtn.find('.selectcount');
+                var count = selectcount.find('span');
+
+                selectcount.hide(options.single);
 
                 riot.mount(dialog.element[0], '*', options);
 
@@ -132,9 +136,7 @@
                     selected = [];
 
                     if (Array.isArray(s) && s.length) {
-
                         s.forEach(function (asset) {
-
                             //if (options.pattern == '*' || App.Utils.fnmatch(options.pattern, path)) {
                             selected.push(asset);
                             //}
@@ -142,7 +144,7 @@
                     }
 
                     selectbtn[selected.length ? 'removeClass' : 'addClass']('uk-hidden');
-                    selectcount.text(selected.length);
+                    count.text(selected.length);
                 });
 
                 dialog.show();
@@ -173,26 +175,20 @@
         }
     };
 
-
     var _accounts = {}; // cache
 
     Cockpit.account = function (id) {
-
         if (!_accounts[id]) {
-
             _accounts[id] = new Promise(function (resolve, reject) {
-
                 App.request('/accounts/find', { options: { filter: { _id: id } } }).then(function (response) {
                     resolve(response && Array.isArray(response.accounts) && response.accounts[0] ? response.accounts[0] : null);
                 });
             });
         }
-
         return _accounts[id];
-    }
+    };
 
     App.$.extend(true, App, Cockpit);
 
     window.Cockpit = Cockpit;
-
 })(jQuery);
