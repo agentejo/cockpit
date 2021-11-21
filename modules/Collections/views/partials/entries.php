@@ -690,4 +690,5 @@
 
     </script>
 
+    @trigger('collections.entries', [$collection])
 </div>
