@@ -398,6 +398,9 @@ class Admin extends \Cockpit\AuthController {
             }
         }
 
+        $this->app->trigger("collections.reorder", [$collection['name'], $entries]);
+        $this->app->trigger("collections.reorder.{$collection['name']}", [$collection['name'], $entries]);
+
         return $entries;
     }
 
