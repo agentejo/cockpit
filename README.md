@@ -1,3 +1,11 @@
+# 🚨 Cockpits next iteration development moved 🚨
+
+Cockpit's next iteration moved to a dedicated Cockpit organization on Github.
+Please visit [https://github.com/Cockpit-HQ/Cockpit](https://github.com/Cockpit-HQ/Cockpit) to follow the latest development.
+
+☝️☝️☝️
+---
+
 # Cockpit Next
 
 * Homepage: [http://getcockpit.com](https://getcockpit.com)
