@@ -95,6 +95,7 @@
 
                                 <span class="uk-text-bold"><i class="uk-icon-pencil-square uk-margin-small-right"></i> { field.label || App.Utils.ucfirst(field.name) }</span>
                                 <span class="uk-text-muted" show="{field.required}">&mdash; @lang('required')</span>
+                                <span class="uk-text-muted" show="{!hasFieldRwAccess(field.name)}"> (@lang('Read Only'))</span>
 
                                 <span if="{ field.localize }" data-uk-dropdown="mode:'click'">
                                     <a class="uk-icon-globe" title="@lang('Localized field')" data-uk-tooltip="pos:'right'"></a>
@@ -110,7 +111,7 @@
                             </label>
 
                             <div class="uk-margin-top">
-                                <cp-field type="{field.type || 'text'}" bind="entry.{ field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" opts="{ field.options || {} }" required="{ field.required || false }"></cp-field>
+                                <cp-field type="{field.type || 'text'}" bind="entry.{ field.localize && parent.lang ? (field.name+'_'+parent.lang):field.name }" opts="{ { ...(field.options || {}), disabled: !hasFieldRwAccess(field.name) } }" required="{ field.required || false }"></cp-field>
                             </div>
 
                             <div class="uk-margin-top uk-text-small uk-text-muted" if="{field.info}">
@@ -365,14 +366,7 @@
             this.preview = true;
         }
 
-        hasFieldAccess(field) {
-
-            var acl = this.fieldsidx[field] && this.fieldsidx[field].acl || [];
-
-            if (this.excludeFields.indexOf(field) > -1) {
-                return false;
-            }
-
+        _hasFieldAccess(field, acl) {
             if (field == '_modified' ||
                 App.$data.user.group == 'admin' ||
                 !acl ||
@@ -384,6 +378,44 @@
             }
 
             return false;
+        }
+
+        hasFieldRwAccess(field) {
+            if (this.excludeFields.indexOf(field) > -1) {
+                return false;
+            }
+
+            var acl_rw = this.fieldsidx[field] && this.fieldsidx[field].acl    || [];
+            var acl_ro = this.fieldsidx[field] && this.fieldsidx[field].acl_ro || [];
+
+            // default to everyone having rw access when no acl present
+            if (!acl_rw.length && !acl_ro.length) { return true; }
+
+            if(App.$data.user.group == 'admin') { return true; }
+
+            // treat acl_rw as a whitelist when it has any values
+            if(acl_rw.length && this._hasFieldAccess(field, acl_rw)){ return true; }
+
+            // treat acl_ro as a blacklist
+            return !this._hasFieldAccess(field, acl_ro);
+        }
+
+        hasFieldAccess(field) {
+            if (this.excludeFields.indexOf(field) > -1) {
+                return false;
+            }
+
+            let acl = [];
+            if(this.fieldsidx[field]) {
+                if(this.fieldsidx[field].acl) {
+                    acl = acl.concat(this.fieldsidx[field].acl);
+                }
+                if(this.fieldsidx[field].acl_ro) {
+                    acl = acl.concat(this.fieldsidx[field].acl_ro);
+                }
+            }
+
+            return this._hasFieldAccess(field, acl);
         }
 
         persistLanguage(e) {
