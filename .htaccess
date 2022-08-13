@@ -1,88 +1,117 @@
-# Deny access to database + config files
-<Files ~ "\.(sqlite|sdb|s3db|db|yaml|yml)$">
+#
+# Apache/PHP/Cockpit settings:
+#
+
+# ----------------------------------------------------------------------
+# File access
+# ----------------------------------------------------------------------
+
+# Deny access to application and system files from being viewed
+<FilesMatch "(composer\.(json|lock)|package\.json|(README|CONTRIBUTING)\.md|cp|Dockerfile|LICENSE|\.(sqlite|sdb|s3db|db|yaml|yml))$">
     <IfVersion >= 2.4>
-       Require all denied
+        Require all denied
     </IfVersion>
     <IfVersion < 2.4>
-       Deny from all
+        Deny from all
     </IfVersion>
-</Files>
+</FilesMatch>
 
-<Files ".*">
-    <IfVersion >= 2.4>
-       Require all denied
-    </IfVersion>
-    <IfVersion < 2.4>
-       Deny from all
-    </IfVersion>
-</Files>
-
-<Files "cp">
-    <IfVersion >= 2.4>
-       Require all denied
-    </IfVersion>
-    <IfVersion < 2.4>
-       Deny from all
-    </IfVersion>
-</Files>
-
-# Don't show directory listings
+# Disable directory listings
 Options -Indexes
 
-# URL rewrites
+# ----------------------------------------------------------------------
+# Rewrite Engine
+# ----------------------------------------------------------------------
+
+# Requires mod_rewrite to be enabled
 <IfModule mod_rewrite.c>
 
+    # Disable implicit filename pattern match
     Options -MultiViews
 
+    # Turn on URL rewriting
     RewriteEngine On
+
+    # Installation directory (web root)
     # RewriteBase /
 
-    # Protect some contents
-    RewriteRule ^.*/?\.git+ - [F,L]
+    # Installation directory (subfolder)
+    # RewriteBase /cockpit/
 
+    # Deny access to files and directories whose names begin with a period
+    RewriteRule "/\.|^\.(?!well-known/)" - [F]
+
+    # Allow any files or directories that exist to be displayed directly
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Rewrite all other URLs to index.php
     RewriteRule .* index.php [L]
 
 </IfModule>
 
+# ----------------------------------------------------------------------
+# Charset encoding
+# ----------------------------------------------------------------------
+
+# Serve all `text/html` and `text/plain` file with UTF-8 charset
 AddDefaultCharset utf-8
 
-AddType application/javascript          js jsonp tag
-AddType application/json                json
+# ----------------------------------------------------------------------
+# MIME Types
+# ----------------------------------------------------------------------
 
-# Audio
-AddType audio/ogg                       oga ogg
-AddType audio/mp4                       m4a f4a f4b
+# Requires mod_mime to be enabled
+<IfModule mod_mime.c>
 
-# Video
-AddType video/ogg                       ogv
-AddType video/mp4                       mp4 m4v f4v f4p
-AddType video/webm                      webm
-AddType video/x-flv                     flv
+    # Serve resources with the proper media types (MIME types)
 
-# SVG
-#   Required for svg webfonts on iPad
-#   twitter.com/FontSquirrel/status/14855840545
-AddType     image/svg+xml               svg svgz
-AddEncoding gzip                        svgz
+    # Javascript
+    AddType application/javascript          js jsonp tag
+    AddType application/json                json
 
-# Webfonts
-AddType application/vnd.ms-fontobject   eot
-AddType application/x-font-ttf          ttf ttc
-AddType font/opentype                   otf
-AddType application/x-font-woff         woff
+    # Audio
+    AddType audio/ogg                       oga ogg
+    AddType audio/mp4                       m4a f4a f4b
 
-# Assorted types
-AddType image/x-icon                    ico
-AddType image/webp                      webp
-AddType text/cache-manifest             appcache manifest
-AddType text/x-component                htc
-AddType application/xml                 rss atom xml rdf
-AddType text/x-vcard                    vcf
-AddType application/x-shockwave-flash   swf
+    # Video
+    AddType video/ogg                       ogv
+    AddType video/mp4                       mp4 m4v f4v f4p
+    AddType video/webm                      webm
+    AddType video/x-flv                     flv
 
+    # SVG
+    #   Required for svg webfonts on iPad
+    #   twitter.com/FontSquirrel/status/14855840545
+    AddType     image/svg+xml               svg svgz
+    AddEncoding gzip                        svgz
+
+    # Webfonts
+    AddType application/vnd.ms-fontobject   eot
+    AddType application/x-font-ttf          ttf ttc
+    AddType font/opentype                   otf
+    AddType application/x-font-woff         woff
+
+    # Assorted types
+    AddType image/x-icon                    ico
+    AddType image/webp                      webp
+    AddType text/cache-manifest             appcache manifest
+    AddType text/x-component                htc
+    AddType application/xml                 rss atom xml rdf
+    AddType text/x-vcard                    vcf
+    AddType application/x-shockwave-flash   swf
+
+</IfModule>
+
+# ----------------------------------------------------------------------
+# Cache Expiration
+# ----------------------------------------------------------------------
+
+# Requires mod_expires to be enabled
 <IfModule mod_expires.c>
+
+    # Serve resources with a far-future expiration date.
+
     ExpiresActive On
 
     ExpiresByType application/pdf               "access plus 1 year"
@@ -117,17 +146,26 @@ AddType application/x-shockwave-flash   swf
     ExpiresByType application/javascript        "access plus 1 year"
     ExpiresByType text/ecmascript               "access plus 1 year"
     ExpiresByType text/javascript               "access plus 1 year"
+
 </IfModule>
 
-# -------------------------------------------------------------------------
-# Disabling ETags as they are most likely misconfigured and
-# do not add functionalit beyond Last-Modified
-# -------------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ETags
+# ----------------------------------------------------------------------
+
+# Remove ETags as resources are sent with far-future expires headers.
+FileETag None
+
+# Requires mod_headers to be enabled
 <IfModule mod_headers.c>
-    # Try removing etag headers (if it's coming from proxy for example)
     Header unset ETag
 </IfModule>
 
+# -------------------------------------------------------------------------
+# Compression
+# -------------------------------------------------------------------------
+
+# Requires mod_expires to be enabled
 <IfModule mod_deflate.c>
 
   # Force deflate for mangled headers developer.yahoo.com/blogs/ydn/posts/2010/12/pushing-beyond-gzipping/
@@ -162,6 +200,3 @@ AddType application/x-shockwave-flash   swf
   </IfModule>
 
 </IfModule>
-
-# Remove ETags
-FileETag None
