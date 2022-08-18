@@ -365,7 +365,15 @@
 
     App.Utils.renderer.wysiwyg = function (v) {
         v = App.Utils.stripTags(v);
-        return v.length < 50 ? v : App.$.trim(v).substring(0, 50).split(' ').slice(0, -1).join(' ') + '...';
+        if (v.length < 50) {
+            return v;
+        }
+        var splitted_str = App.$.trim(v).substring(0, 50).split(' ');
+        if (splitted_str.length > 2) {
+            return splitted_str.slice(0, -1).join(' ') + '...';
+        } else {
+            return splitted_str.join(' ') + ' ...';
+        }
     };
 
     App.Utils.renderer.text = function (v) {
