@@ -13,6 +13,14 @@
         }
     ],
 
+    "scripts": {
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "php -r \"exec((['Darwin'=>'open', 'WINNT'=>'explorer'][PHP_OS] ?? 'xdg-open').' '.escapeshellarg('http://localhost:8080'));\"",
+            "php -S localhost:8080 index.php"
+        ]
+    },
+
     "require": {
         "php": "^7.3.0",
         "ext-json": "*",
