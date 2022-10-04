@@ -33,7 +33,7 @@
 
             <ul class="uk-tab uk-tab-noborder uk-flex uk-flex-center uk-noselect">
                 <li class="{ !group && 'uk-active'}"><a class="uk-text-capitalize { group && 'uk-text-muted'}" onclick="{ toggleGroup }">{ App.i18n.get('All') }</a></li>
-                <li class="{ group==parent.group && 'uk-active'}" each="{group in groups}"><a class="uk-text-capitalize { group!=parent.group && 'uk-text-muted'}" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
+                <li class="{ group==parent.group && 'uk-active'}" each="{group in groups}"><a class="{ group!=parent.group && 'uk-text-muted'}" onclick="{ toggleGroup }">{ App.i18n.get(group) }</a></li>
             </ul>
         </div>
 
