@@ -34,7 +34,7 @@ $app->on('admin.init', function() {
 
     if ($active) {
         $this->helper('admin')->favicon = 'forms:icon.svg';
-    } 
+    }
 
     /**
      * listen to app search to filter forms
@@ -78,6 +78,7 @@ $app->on('admin.init', function() {
             'forms.save.before.{$name}',
             'forms.submit.after',
             'forms.submit.before',
+            'forms.submit.email',
         ] as &$evt) { $triggers[] = $evt; }
     });
 
