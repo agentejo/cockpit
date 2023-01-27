@@ -82,7 +82,7 @@
 
                     <div class="uk-margin-large-top" show="{ view==='fields' }">
 
-                        <cp-fieldsmanager bind="singleton.fields"></cp-fieldsmanager>
+                        <cp-fieldsmanager bind="singleton.fields" listoption="true" templates="{ templates }"></cp-fieldsmanager>
 
                     </div>
 
@@ -162,7 +162,8 @@
         this.view = 'fields';
 
         this.singleton = {{ json_encode($singleton) }};
-        this.aclgroups  = {{ json_encode($aclgroups) }};
+        this.templates = {{ json_encode($templates) }};
+        this.aclgroups = {{ json_encode($aclgroups) }};
 
         if (!this.singleton.acl) {
             this.singleton.acl = {};

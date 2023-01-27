@@ -105,7 +105,12 @@ class Admin extends \Cockpit\AuthController {
         // get field templates
         $templates = [];
 
-        foreach ($this->app->helper('fs')->ls('*.php', 'collections:fields-templates') as $file) {
+        $templatesPath = 'collections:fields-templates';
+        if ($customTemplatesPath = $this->path('#config:collections/templates')) {
+            $templatesPath = $customTemplatesPath;
+        }
+
+        foreach ($this->app->helper('fs')->ls('*.php', $templatesPath) as $file) {
             $templates[] = include($file->getRealPath());
         }
 
