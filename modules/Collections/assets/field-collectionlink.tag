@@ -179,6 +179,7 @@
 
     }.bind(this);
 
+    this.linkQueue = [];
     this.modalOpen = false;
     this.link = null;
     this.sort = {_created: -1};
@@ -467,29 +468,36 @@
         var display = '...';
         var cacheKey = link._id + ':' + this.lang;
 
-        if (!cache[cacheKey]) {
+        if (cache[cacheKey] !== undefined && cache[cacheKey] !== display) {
+            return cache[cacheKey]
+        }
+
+        this.linkQueue[link._id] = link;
+        
+        if (Object.keys(this.linkQueue).length === 0 || Object.keys(this.linkQueue)[0] === link._id) {
 
             App.request('/collections/find', {collection:this.collection.name, options:{lang:this.lang, filter:{_id:link._id}, limit:1}}).then(function(data){
 
                 if (!data.entries.length) {
                     cache[cacheKey] = 'n/a';
                     link.display = 'n/a';
+		    delete this.linkQueue[link._id]
                     this.update();
                     return;
                 }
 
                 link.display = $this.cacheDisplay(data.entries[0]);
                 
+                delete this.linkQueue[link._id]
+                cache[cacheKey] = link.display
+
                 this.update();
 
             }.bind(this))
-
-            cache[cacheKey] = '...';
-            
-        } else {
-            display = cache[cacheKey];
         }
         
+	display = cache[cacheKey] = '...';
+	
         return display;
     }
 
