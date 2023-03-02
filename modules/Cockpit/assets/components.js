@@ -3957,10 +3957,29 @@ riot.tag2('field-repeater', '<div class="uk-alert" show="{!items.length}"> {App.
 
                 var value;
 
-                if (display == '$value') {
-                    value = App.Utils.renderValue(meta.type, item.value, meta);
+                if (display === '$value') {
+
+                    // Case for when item is a repeater, make $value extract string data from underlying
+                    // items instead of just showing the item count.
+
+                    if (item.value instanceof Array && item.value.length > 0) {
+                        value = '';
+                        item.value.forEach(_item => {
+                            if (!_item.value) return;
+                            Object.keys(_item.value).forEach(key => {
+                                let stringValue = _item.value[key];
+
+                                if (typeof stringValue === 'string' && value.length < 120)
+                                    if (stringValue.length < 20)
+                                        value += stringValue + ' '
+                                    else
+                                        value += stringValue.substring(0, 17) + '... '
+                            })
+                        })
+                    } else
+                        value = App.Utils.renderValue(meta.type, item.value, meta);
                 } else {
-                    value = _.get(item.value, display) || 'Item '+(idx+1);
+                    value = _.get(item.value, display) || 'Item ' + (idx + 1);
                 }
 
                 return value;
