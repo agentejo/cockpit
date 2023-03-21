@@ -44,7 +44,7 @@
                 <ul class="uk-list uk-list-space uk-sortable" data-uk-sortable>
                     <li each="{l,index in link}" data-idx="{ index }">
                         <div class="uk-grid uk-grid-small uk-text-small">
-                            <div><a onclick="{ removeListItem }"><i class="uk-icon-trash-o"></i></a></div>
+                            <div><a onclick="{ removeListItem }"><i class="uk-text-danger uk-icon-trash-o"></i></a></div>
                             <div class="uk-flex uk-flex-item-1">
                                 <span class="uk-flex-item-1">{ parent.getDisplay(l) }</span>
                                 <a class="uk-margin-small-left" target="_blank" href="{ App.route('/collections/entry/'+parent.opts.link+'/'+l._id) }"><i class="uk-icon-external-link"></i></a>
@@ -103,7 +103,9 @@
                 <table class="uk-table uk-table-tabbed uk-table-striped" if="{ modalOpen && entries.length }">
                     <thead>
                         <tr>
-                            <th show="{opts.multiple}"></th>
+                            <th>
+                                <input if="{opts.multiple}" class="uk-checkbox" type="checkbox" onclick="{toggleAll}"/>
+                            </th>
                             <th class="uk-text-small" each="{field,idx in fields}">
                                 <a class="uk-link-muted { parent.sort[field.name] ? 'uk-text-primary':'' }" onclick="{ parent.updatesort }" data-sort="{ field.name }">
 
@@ -112,19 +114,18 @@
                                     <span if="{parent.sort[field.name]}" class="uk-icon-long-arrow-{ parent.sort[field.name] == 1 ? 'up':'down'}"></span>
                                 </a>
                             </th>
-                            <th width="20"></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr each="{entry,idx in entries}">
                             <td show="{parent.opts.multiple}"><input class="uk-checkbox" type="checkbox" onclick="{parent.toggleSelected}"></td>
+                            <td show="{!parent.opts.multiple}">
+                                <a onclick="{ parent.linkItem }" class="uk-button uk-button-primary"><i class="uk-icon-link"></i></a>
+                            </td>
                             <td class="uk-text-truncate" each="{field,idy in parent.fields}" if="{ field.name != '_modified' }">
                                 <raw content="{ App.Utils.renderValue(field.type, parent.entry[field.name], field, lang) }"></raw>
                             </td>
                             <td>{ App.Utils.dateformat( new Date( 1000 * entry._modified )) }</td>
-                            <td show="{!parent.opts.multiple}">
-                                <a onclick="{ parent.linkItem }"><i class="uk-icon-link"></i></a>
-                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -460,6 +461,10 @@
                 this.selected.splice(idx, 1);
             }
         }
+    }
+
+    toggleAll(e) {
+        App.$(e.target).parents("table").find("tr>td input" + (e.target.checked ? ":not(:checked)" : ":checked")).click();
     }
     
     getDisplay(link) {
