@@ -88,7 +88,7 @@
     </div>
 
     <div class="uk-margin uk-text-center">
-        <a class="uk-text-primary { !opts.child && 'uk-button uk-button-outline uk-button-large'}" onclick="{ addComponent.bind(this, true) }" title="{ App.i18n.get('Add component') }" data-uk-tooltip="pos:'bottom'"><i class="uk-icon-plus-circle"></i></a>
+        <a class="uk-text-primary { !opts.child && 'uk-button uk-button-outline uk-button-large'}" onclick="{ addComponent.bind(this, true) }" title="{ addComponentLabel }" data-uk-tooltip="pos:'bottom'"><i class="uk-icon-plus-circle"></i></a>
     </div>
 
     <div class="uk-modal uk-sortable-nodrag" ref="modalComponents">
@@ -181,6 +181,10 @@
             {name: "class", type: "text", group: "General" },
             {name: "style", type: "code", group: "General", options: {syntax: "css", height: "100px"}}
         ];
+        this.addComponentLabel = App.i18n.get('Add component');
+        if (opts.parentComponent) {
+            this.addComponentLabel += ' ' + App.i18n.get('to') + ' ' + opts.parentComponent.label;
+        }
 
         this.components = {
             "section": {
