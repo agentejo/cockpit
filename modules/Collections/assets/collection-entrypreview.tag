@@ -198,12 +198,16 @@
         this.languages = opts.languages || [];
         this.collection = opts.collection;
         this.entry = opts.entry;
-        this.ws = {send:function(){}, close:function(){}};
-
+        this.ws = {
+            send: function(){},
+            close: function(){}
+        };
         this.mode = 'desktop';
         this.group = '';
         this.lang = opts.lang || '';
         this.$idle = false;
+        this.populate = opts.settings.populate;
+        this.linked_entries = {};
 
         this.settings = App.$.extend({
             url: '',
@@ -230,22 +234,20 @@
             $this.$cache = JSON.stringify(this.entry);
 
             if (this.settings.wsurl) {
-
                 if (this.settings.wsurl && !window.WebSocket) {
                     console.log('Missing support for Websockets');
                 } else {
                     this.initWebsocket();
                 }
-            };
+            }
 
             this.refs.iframe.addEventListener('load', function() {
-
                 $this.$iframe = $this.refs.iframe.contentWindow;
                 $this.$idle   = setInterval(_.throttle(function() {
 
                     var hash = JSON.stringify({entry:$this.entry, lang: $this.lang});
 
-                    if ($this.$cache != hash) {
+                    if ($this.$cache !== hash) {
                         $this.$cache = hash;
                         $this.updateIframe();
                     }
@@ -270,13 +272,12 @@
         }
 
         updateIframe() {
-
             if (!this.$iframe) return;
 
             var data = {
                 'event': 'cockpit:collections.preview',
                 'collection': this.collection.name,
-                'entry': this.entry,
+                'entry': this.enhanceEntry(this.entry),
                 'lang': this.lang || 'default'
             };
 
@@ -304,8 +305,8 @@
                 return false;
             }
 
-            if (field == '_modified' ||
-                App.$data.user.group == 'admin' ||
+            if (field === '_modified' ||
+                App.$data.user.group === 'admin' ||
                 !acl ||
                 (Array.isArray(acl) && !acl.length) ||
                 acl.indexOf(App.$data.user.group) > -1 ||
@@ -351,7 +352,7 @@
             };
 
             ws.reconnect = function(e){
-                console.log(1)
+                console.log(1);
                 ws.removeAllListeners();
                 setTimeout(function(){ $this.initWebsocket(); }, 5000);
             };
@@ -361,12 +362,59 @@
             };
 
             ws.onerror = function(e) {
-                if (e.code == 'ECONNREFUSED') ws.reconnect(e);
+                if (e.code === "ECONNREFUSED") ws.reconnect(e);
             };
 
             return ws;
         }
 
+        enhanceEntry(entry) {
+            if (!this.populate) return entry;
+            var previewEntry = {};
+            for (var property of Object.keys(entry)) {
+                previewEntry[property] = this._enhanceData(entry[property]);
+            }
+            return previewEntry;
+        }
+
+        _enhanceData(data) {
+            if (Array.isArray(data)) {
+                return data.map(this._enhanceData);
+            } else if (data != null && typeof data === "object") {
+                if(data.link && data._id) {
+                    var collection = data.link;
+                    var _id = data._id;
+                    var hash = collection + _id;
+                    if ($this.linked_entries[hash] !== undefined) {
+                        // console.log("found " + hash);
+                        return $this.linked_entries[hash];
+                    } else {
+                        // console.log("loading " + hash);
+                        var options = {
+                            filter: { _id: _id },
+                            limit: 1,
+                            lang: this.lang
+                        };
+                        App.request('/collections/find', {
+                            collection: collection,
+                            options: options
+                        }).then(function (result) {
+                            // console.log("loaded " + hash);
+                            $this.linked_entries[hash] = result.entries[0];
+                            $this.updateIframe();
+                        });
+                        return data;
+                    }
+                } else {
+                    var entry = {};
+                    for (var property of Object.keys(data)) {
+                        entry[property] = this._enhanceData(data[property]);
+                    }
+                    return entry;
+                }
+            }
+            return data;
+        }
     </script>
 
 
