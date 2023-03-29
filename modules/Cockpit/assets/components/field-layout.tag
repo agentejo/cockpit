@@ -74,6 +74,8 @@
                 </div>
             </div>
 
+            <raw class="layout-field-preview uk-text-small uk-text-muted" content="{getPreview(item)}" if="{showPreview}"></raw>
+
             <div class="uk-margin" if="{parent.components[item.component].children}">
                 <field-layout bind="items[{idx}].children" child="true" parent-component="{parent.components[item.component]}" components="{ parent.components }" exclude="{ opts.exclude }" restrict="{ opts.restrict }" preview="{opts.preview}"></field-layout>
             </div>
@@ -81,8 +83,6 @@
             <div class="uk-margin" if="{item.component == 'grid'}">
                 <field-layout-grid bind="items[{idx}].columns" components="{ parent.components }" exclude="{ opts.exclude }" restrict="{ opts.restrict }" preview="{opts.preview}"></field-layout-grid>
             </div>
-
-            <raw class="layout-field-preview uk-text-small uk-text-muted" content="{getPreview(item)}" if="{showPreview}"></raw>
 
         </div>
     </div>
