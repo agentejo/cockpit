@@ -33,12 +33,65 @@
             this.resolve(!!value);
         },
 
-        date: function(value) {
+        date: function(value, field, extra) {
+            switch(extra) {
+                case "Unix timestamp: ms":
+                case "Unix timestamp: s":
+                    if (!isNaN(Number(value))) {
+                        if (extra == "Unix timestamp: s") {
+                            value = value * 1000;
+                        }
+                        var date = new Date(value);
+                        var match = date.toISOString().match(/(.+)\T/)
+                        if (isNaN(date.getTime()) || !match[1]) {
+                            value = null;
+                        } else {
+                            value = match[1];
+                        }
+                    } else {
+                        value = null;
+                    }
+                    break;
+                default:
+                    var date = new Date(value);
 
-            var date = new Date(value);
+                    if (isNaN(date.getTime()) || !date.toISOString().match(/(.+)\T/)[1]) {
+                        value = null;
+                    }
+                    break;
+            }
 
-            if (isNaN(date.getTime()) || !date.toISOString().match(/(.+)\T/)[1]) {
-                value = null;
+            this.resolve(value);
+        },
+
+        time: function(value, field, extra){
+            switch(extra) {
+                case "Unix timestamp: ms":
+                case "Unix timestamp: s":
+                    if (!isNaN(Number(value))) {
+                        if (extra == "Unix timestamp: s") {
+                            value = value * 1000;
+                        }
+                        var date = new Date(value);
+                        date.setSeconds(0,0);
+                        var match = date.toISOString().match(/\T(.+?\:.+?)\:/);
+
+                        if (isNaN(date.getTime()) || !match[1]) {
+                            value = null;
+                        } else {
+                            value = match[1];
+                        }
+                    } else {
+                        value = null;
+                    }
+                    break;
+                default:
+                    var date = new Date(value);
+
+                    if (isNaN(date.getTime()) || !date.toISOString().match(/\T(.+)\Z/)[1]) {
+                        value = null;
+                    }
+                    break;
             }
 
             this.resolve(value);
