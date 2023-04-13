@@ -14,10 +14,17 @@ class Settings extends \Cockpit\AuthController {
 
 
     public function index() {
+        if (!$this->hasAccess()) {
+            return $this->helper('admin')->denyRequest();
+        }
+
         return $this->render('cockpit:views/settings/index.php');
     }
 
     public function info() {
+        if (!$this->hasAccess()) {
+            return $this->helper('admin')->denyRequest();
+        }
 
         if (!$this->module('cockpit')->hasaccess('cockpit', 'info')) {
             return $this->helper('admin')->denyRequest();
